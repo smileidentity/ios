@@ -60,14 +60,17 @@ class LamdaRequestJson {
   
         // get the partner params out of the auth response
         let rawJsonString = authResponse?.rawJsonString
-      
-        let authResponseDict = jsonUtils.jsonFormattedStringToDict( rawJsonString! )
-        var authResponsePartnerParamsDict = [String: String]()
-        authResponsePartnerParamsDict = authResponseDict![LamdaRequestJson.KEY_PARTNER_PARAMS]  as! [String : String]
-
         
+        // Geth the auth response dictionary from the rawJsonString
+        let authResponseDict = jsonUtils.jsonFormattedStringToDict( rawJsonString! )
         dict[LamdaRequestJson.KEY_SEC] = authResponseDict?[AuthSmileResponse.KEY_SEC]
+        
         dict[LamdaRequestJson.KEY_RETRY] = String(retry!)
+      
+        // Get the partner params dictionary out of the authResponseDict
+        var authResponsePartnerParamsDict = [String: String]()
+        authResponsePartnerParamsDict = authResponseDict![AuthSmileResponse.KEY_PARTNER_PARAMS]  as! [String : String]
+        // put the partner params dictionary into the lambdaRequest dictionary
         dict[LamdaRequestJson.KEY_PARTNER_PARAMS] = authResponsePartnerParamsDict
         dict[LamdaRequestJson.KEY_TIMESTAMP] = authResponseDict?[AuthSmileResponse.KEY_TIMESTAMP]
         

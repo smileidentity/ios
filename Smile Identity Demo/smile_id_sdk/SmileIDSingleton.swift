@@ -33,9 +33,9 @@ class SmileIDSingleton {
     var fbUserImage     : Data?
     
     /* camera settings */
-    var lensCharacteristicsFront    : LensCharacteristics?
-    var lensCharacteristicsBack     : LensCharacteristics?
-    var selfieCameraExists          : Bool = false
+    var lensCharacteristicsFront            = LensCharacteristics()
+    var lensCharacteristicsBack             = LensCharacteristics()
+    var selfieCameraExists                  : Bool = false
     var devicePortraitHorizontalResolution  : Int = 0
     var devicePortraitVerticalResolution    : Int = 0
     var minFPS                              : Int = 0

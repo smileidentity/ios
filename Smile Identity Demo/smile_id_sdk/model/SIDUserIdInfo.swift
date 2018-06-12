@@ -39,32 +39,7 @@ class SIDUserIdInfo {
         return self;
     }
     
-    func toJsonString() -> String {
-        var jsString : String?
-        var dict = [String: Any]()
-        dict[SIDUserIdInfo.FIRST_NAME] = firstName
-        dict[SIDUserIdInfo.MIDDLE_NAME] = middleName
-        dict[SIDUserIdInfo.LAST_NAME] = lastName
-        dict[SIDUserIdInfo.COUNTRY] = country
-        dict[SIDUserIdInfo.ID_TYPE] = idType
-        dict[SIDUserIdInfo.ID_NUMBER] = idNumber
-        for( key, value ) in additionalProperties {
-            dict[key] = value
-        }
-        
-        if( dataEntered() ){
-            dict[SIDUserIdInfo.ENTERED] = "true"
-        }
-        else{
-            dict[SIDUserIdInfo.ENTERED] = "false"
-        }
-        
-        let jsonUtils = JsonUtils()
-        jsString = jsonUtils.dictToJsonFormattedString(dict: dict)
-        
-        return jsString!
-        
-    }
+
     
     
     func dataEntered() -> Bool {
@@ -92,17 +67,72 @@ class SIDUserIdInfo {
         let sIdType = ", idType='" + idType + "'"
         let sIdNumber = ", idNumber='" + idNumber + "'"
         let sAdditionalProperties = ", additionalEntries='" + additionalPropertiesToString() + "'"
-        
-            return "SIDUserIdInfo{" +
-                sFirstName +
-                sLastName +
-                sMidName +
-                sCountry +
-                sIdType +
-                sIdNumber +
-                sAdditionalProperties +
-                "}";
-        }
+    
+        return "SIDUserIdInfo{" +
+            sFirstName +
+            sLastName +
+            sMidName +
+            sCountry +
+            sIdType +
+            sIdNumber +
+            sAdditionalProperties +
+            "}";
     }
+    
+    
+    func toJsonDict( useAdditionalProps : Bool ) -> Dictionary<String,Any> {
+        
+        // Create a dictionary
+        var dict = [String: Any]()
+        let jsonUtils = JsonUtils()
+        jsonUtils.putString( dict: &dict, key: SIDUserIdInfo.FIRST_NAME,
+            val:firstName )
+        
+        jsonUtils.putString( dict: &dict, key: SIDUserIdInfo.MIDDLE_NAME,
+            val:middleName )
+
+        jsonUtils.putString( dict: &dict, key: SIDUserIdInfo.LAST_NAME,
+            val:lastName )
+
+        jsonUtils.putString( dict: &dict, key: SIDUserIdInfo.COUNTRY,
+            val:country )
+
+        jsonUtils.putString( dict: &dict, key: SIDUserIdInfo.ID_TYPE,
+            val:idType )
+
+        jsonUtils.putString( dict: &dict, key: SIDUserIdInfo.ID_NUMBER,
+            val:idNumber )
+        
+        
+        if( dataEntered() ){
+            jsonUtils.putString( dict: &dict, key: SIDUserIdInfo.ENTERED,
+                val:"true" )
+        }
+        else{
+            jsonUtils.putString( dict: &dict, key: SIDUserIdInfo.ENTERED,
+                val:"false" )
+        }
+        
+        if( useAdditionalProps ){
+            for( key, value ) in additionalProperties {
+                dict[key] = value
+            }
+            
+        }
+        
+        return dict
+    }
+    
+    func toJsonString( useAdditionalProps : Bool ) -> String {
+        let jsonUtils = JsonUtils()
+
+        return jsonUtils.dictToJsonFormattedString(dict: toJsonDict(useAdditionalProps: useAdditionalProps))
+
+        
+    }
+    
+    
+    
+}
     
 

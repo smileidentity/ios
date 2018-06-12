@@ -11,13 +11,8 @@ import Foundation
 
 class SIDMetadata {
     
-    var partnerParams : PartnerParams?
-    var sidUserIdInfo : SIDUserIdInfo?
+    var partnerParams = PartnerParams()
+    var sidUserIdInfo = SIDUserIdInfo()
     
-    init() {
-        partnerParams = PartnerParams()
-        sidUserIdInfo = SIDUserIdInfo()
-        
-    }
-    
+ 
 }

@@ -9,11 +9,24 @@
 import Foundation
 
 class CameraSize {
-    var width   : Int?
-    var height  : Int?
+    var width   : Int = 0
+    var height  : Int = 0
     
     init( width : Int, height : Int ){
         self.width = width
         self.height = height
     }
+    
+    
+    func toJsonDict() -> Dictionary<String,Int> {
+        // Build a dictionary,
+        // then convert it to a formatted json string
+        var dict = [String: Int]()
+        dict["width"] = width
+        dict["height"] = height
+        
+        return dict
+    }
+    
+    
 }

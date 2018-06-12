@@ -8,14 +8,22 @@
 
 import Foundation
 
+
+/*
+ PackageInfoJson - builds the top level json for the entire info.json file.
+ 
+ Note that the "package_information" block is built by the MetaData class
+ */
 class PackageInfoJson {
     
-    static let KEY_SERVER_INFO              :
-        String = "server_information"
     static let KEY_PACKAGE_INFORMATION      :
         String = "package_information"
+    static let KEY_SERVER_INFO              :
+        String = "server_information"
     static let KEY_MISC_INFORMATION         :
         String = "misc_information"
+    static let KEY_ID_INFORMATION         :
+        String = "id_info"
 
     
     var lambdaResponse                      : UploadDataResponse?
@@ -24,38 +32,48 @@ class PackageInfoJson {
     // Here, we are passing it in.
     var sidMetaData                         : SIDMetadata?
     
-    var jsPackageInformation                = [String : String] ()
-    var jsMisc                              = [String : String] ()
+    var jsDictPackageInformation                = [String : String] ()
+    var jsDictMisc                              = [String : String] ()
     
     let jsonUtils                           = JsonUtils()
     
     init(  lambdaResponse : UploadDataResponse,
-           jsPackageInformation : [String : String],
-           jsMisc : [String : String],
+           jsDictPackageInformation : [String : String],
+           jsDictMisc : [String : String],
            sidMetaData : SIDMetadata
            ) {
         self.lambdaResponse = lambdaResponse
-        self.jsPackageInformation = jsPackageInformation
-        self.jsMisc = jsMisc
+        self.jsDictPackageInformation = jsDictPackageInformation
+        self.jsDictMisc = jsDictMisc
         self.sidMetaData = sidMetaData
 
     }
     
-    func toJsonString() -> String {
+    
+    func toJsonDict() -> Dictionary<String,Any> {
         // Build a dictionary,
-        // then convert it to a formatted json string
         var dict = [String: Any]()
-         
-        dict[PackageInfoJson.KEY_PACKAGE_INFORMATION] = jsPackageInformation
-        dict[PackageInfoJson.KEY_MISC_INFORMATION] = jsMisc
-        dict[PackageInfoJson.KEY_SERVER_INFO] = lambdaResponse!.getRawJsonString()
         
-        let jsSidUserIdInfo = sidMetaData?.sidUserIdInfo?.toJsonString()
-        let sidUserInfoDict = jsonUtils.jsonFormattedStringToDict( jsSidUserIdInfo! )
-      
-        dict[SIDUserIdInfo.SECTION_NAME] = sidUserInfoDict
-       
-        return jsonUtils.dictToJsonFormattedString( dict : dict )
+        let jsonUtils = JsonUtils()
+        
+        jsonUtils.putDict( dict: &dict, key: PackageInfoJson.KEY_PACKAGE_INFORMATION,
+            val: jsDictPackageInformation )
+        
+        jsonUtils.putDict( dict: &dict, key: PackageInfoJson.KEY_MISC_INFORMATION,
+                           val: jsDictMisc )
+        
+        jsonUtils.putString( dict: &dict, key: PackageInfoJson.KEY_SERVER_INFO,
+                             val: (lambdaResponse?.rawJsonString)! )
+        
+        jsonUtils.putDict( dict: &dict, key: PackageInfoJson.KEY_ID_INFORMATION,
+                           val: (sidMetaData?.sidUserIdInfo.toJsonDict(useAdditionalProps: false))! )
+        
+        return dict
+    }
+    
+    func toJsonString() -> String {
+  
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
 
     }
 

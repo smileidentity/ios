@@ -10,12 +10,12 @@ import Foundation
 
 class SIDNetData {
     
-    var authUrl     : String?
-    var partnerUrl  : String?
-    var partnerPort : String?
-    var lambdaUrl   : String?
-    var jobStatusUrl: String?
-    var sidAddress  : String?
-    var sidPort     : String?
+    var authUrl     : String = ""
+    var partnerUrl  : String = ""
+    var partnerPort : String = ""
+    var lambdaUrl   : String = ""
+    var jobStatusUrl: String = ""
+    var sidAddress  : String = ""
+    var sidPort     : String = ""
     
 }

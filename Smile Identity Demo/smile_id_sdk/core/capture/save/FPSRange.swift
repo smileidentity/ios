@@ -10,10 +10,13 @@ import Foundation
 
 class FPSRange{
  
-    var fpsRange = [Int]()
+    var min : Int = 0
+    var max : Int = 0
     
     init( min : Int, max : Int ){
-        self.fpsRange[0] = min
-        self.fpsRange[1] = max
+        self.min = min
+        self.max = max
     }
+    
+    
 }

@@ -60,13 +60,20 @@ class PartnerParams: Codable {
         return self
     }
     
+    
+    func clear() {
+        userId = ""
+        jobId = ""
+        jobType = -1
+        additionalValues = [String : String] ()
+    }
+    
+    
     /* Note that in the original Android code, write to parcel does not
         include the additionalValues member variable,
         but toJsonString() does. */
     
-    func toJsonString() -> String {
-        
-        var jsString : String?
+    func toJsonDict() -> Dictionary<String,Any> {
         
         // Create a dictionary
         var dict = [String: Any]()
@@ -80,19 +87,17 @@ class PartnerParams: Codable {
             dict[key] = value
         }
         
+        return dict
+    }
+    
+    
+    
+    func toJsonString() -> String {
         let jsonUtils = JsonUtils()
-        jsString = jsonUtils.dictToJsonFormattedString(dict: dict)
-        
-        return jsString!
+
+        return jsonUtils.dictToJsonFormattedString(dict: toJsonDict())
         
     }
     
-        
-    func clear() {
-        userId = ""
-        jobId = ""
-        jobType = -1
-        additionalValues = [String : String] ()
-    }
-    
+ 
 }

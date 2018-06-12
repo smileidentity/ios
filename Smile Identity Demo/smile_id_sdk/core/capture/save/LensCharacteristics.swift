@@ -53,9 +53,9 @@ class LensCharacteristics {
     var focalLength             : Float = 0.0
     var maxZoom                 : Int       = 0
     
-    var whiteBalance            : String?
+    var whiteBalance            : String    = "auto"
     
-    var fpsRange                : [Int]?
+    var fpsRange                = FPSRange(min: 0, max:0)
     
     /*
     init (
@@ -100,13 +100,24 @@ class LensCharacteristics {
         jsonUtils.putFloat( dict: &dict, key: LensCharacteristics.KEY_FOCAL_LENGTH,
                              val: focalLength )
         
+        // Create one fps range object.  Each fps range object
+        // is an array.  [0] holds the min, [1] holds the max.
         let fpsRange = FPSRange( min:
             SmileIDSingleton.sharedInstance.minFPS,
             max:SmileIDSingleton.sharedInstance.maxFPS )
+        var fpsRangeArray = [Any]()
+        fpsRangeArray[0] = fpsRange.min
+        fpsRangeArray[1] = fpsRange.max
         
-        var fpsDict = [String:Any]()
-        jsonUtils.putArray(dict: &fpsDict, key: "", val: fpsRange)
+        // Now create an array of fpsRanges.
+        // In this case there is only one.
+        var jsFpsRangeArray = [Any]()
+        jsFpsRangeArray[0] = fpsRangeArray
         
+        // Now put jsFpsRangeArray in the dictionary
+        jsonUtils.putArray(dict: &dict, key: LensCharacteristics.KEY_FPS_RANGE, val:fpsRangeArray)
+        
+       
         jsonUtils.putFloat( dict: &dict, key: LensCharacteristics.KEY_HORIZONTAL_VIEW_ANGLE,
             val: horizontalViewAngle )
         
@@ -146,14 +157,13 @@ class LensCharacteristics {
         whiteBalanceMode : AVCaptureDevice.WhiteBalanceMode ) -> String {
         
         switch( whiteBalanceMode ){
-        case locked
-            return "locked"
-        case autoWhiteBalance
-            return "auto"
-        case continuousAutoWhiteBalance
-            return "continuous"
+            case AVCaptureDevice.WhiteBalanceMode.locked :
+                return "locked"
+            case AVCaptureDevice.WhiteBalanceMode.autoWhiteBalance :
+                return "auto"
+            case AVCaptureDevice.WhiteBalanceMode.continuousAutoWhiteBalance:
+                return "continuous"
         }
-        
         
     }
 

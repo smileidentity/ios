@@ -9,12 +9,21 @@
 import Foundation
 
 class FullFrameInfo {
-    var orientation     :   Int?
-    var imageLength     :   String?
-    var imageWidth      :   String?
-    var dateTime        :   String?
-    var smileValue      :   Double?
-    var fileName        :   String?
+    static let KEY_DATE_TIME        : String = "dateTime"
+    static let KEY_FILENAME         : String = "fileName"
+    static let KEY_IMAGE_LENGTH     : String = "imageLength"
+    static let KEY_IMAGE_WIDTH      : String = "imageWidth"
+    static let KEY_IMAGE_HEIGHT     : String = "imageHeight"
+    static let KEY_ORIENTATION      : String = "orientation"
+    static let KEY_SMILE_VALUE      : String = "smileValue"
+
+    
+    var orientation     :   Int = 0
+    var imageLength     :   String = ""
+    var imageWidth      :   String = ""
+    var dateTime        :   String = ""
+    var smileValue      :   Double = 0.0
+    var fileName        :   String = ""
     
     init( smileValue    : Double,
           fileName      : String,
@@ -34,6 +43,34 @@ class FullFrameInfo {
         self.imageWidth = String( imageWidth )
         self.imageLength = String( imageLength )
     }
+    
+    
+    func toJsonDict() -> Dictionary<String,Any> {
+        
+        let jsonUtils = JsonUtils()
+        var dict = [String: Any]()
+        
+        jsonUtils.putString( dict: &dict, key: FullFrameInfo.KEY_DATE_TIME,
+                             val: dateTime )
+        
+        jsonUtils.putString( dict: &dict, key: FullFrameInfo.KEY_FILENAME,
+                             val: fileName )
+
+        jsonUtils.putString( dict: &dict, key: FullFrameInfo.KEY_IMAGE_LENGTH,
+                             val: imageLength )
+
+        jsonUtils.putString( dict: &dict, key: FullFrameInfo.KEY_IMAGE_WIDTH,
+                             val: imageWidth )
+        
+        jsonUtils.putInt( dict: &dict, key: FullFrameInfo.KEY_ORIENTATION,
+                          val: orientation )
+        
+        jsonUtils.putDouble( dict: &dict, key: FullFrameInfo.KEY_SMILE_VALUE,
+                             val: smileValue )
+        return dict
+    }
+    
+    
 
     
     

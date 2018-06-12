@@ -17,7 +17,7 @@ class AuthSmileResponse : JsonResponse {
     static let KEY_SMILE_CLIENT_ID : String    = "smile_client_id"
     static let KEY_ERRORS          : String    = "errors"
     static let KEY_USER_ERRORS     : String    = "user_errors"
-    static let PARTNER_PARAMS      : String    = "partner_params"
+    static let KEY_PARTNER_PARAMS  : String    = "partner_params"
     
     var success         : Bool?
     var errors          = [String]()
@@ -52,7 +52,7 @@ class AuthSmileResponse : JsonResponse {
     }
     
     func setPartnerParamsValues( dict : [String : Any] ) {
-        if let jsonParterParamsString = dict[AuthSmileResponse.PARTNER_PARAMS] {
+        if let jsonParterParamsString = dict[AuthSmileResponse.KEY_PARTNER_PARAMS] {
             let partnerParamsDict = jsonParterParamsString as! [String : Any]
                 partnerParams.userId = jsonUtils.getString(dict: partnerParamsDict, key: PartnerParams.USER_ID )!
                 partnerParams.jobId = jsonUtils.getString(dict: partnerParamsDict, key: PartnerParams.JOB_ID )!

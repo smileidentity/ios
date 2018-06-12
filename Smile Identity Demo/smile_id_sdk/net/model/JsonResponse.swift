@@ -15,7 +15,7 @@ class JsonResponse {
     
     var rawJsonString   : String = "";
     
-    func getRawJsonString() -> String? { return nil }
+    func getRawJsonString() -> String { return rawJsonString }
     func fromJsonString( jsonFormattedString : String ) -> JsonResponse? { return nil }
 }
 

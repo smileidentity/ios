@@ -19,8 +19,8 @@ class PackageService : BaseSaveService {
         appData.setIdTaken(idTaken: false)
         sendRequest(coreRequestData: coreRequestData)
     }
-
-
+    
+    
     func sendRequest( coreRequestData : CoreRequestData ) {
         do {
             // Save the Facebook image to a file, if it exists
@@ -30,7 +30,7 @@ class PackageService : BaseSaveService {
             if( fbUserImage != nil ) {
                 writeImageToFile(data: fbUserImage!, referenceId: referenceId!, filename: SmileIDSingleton.FB_USER_FRAME_NAME)
             }
-        
+            
             let capturedImagesManager = SmileIDSingleton.sharedInstance.capturedImagesManager
             
             if( coreRequestData.tag?.isEmpty )!{
@@ -38,18 +38,20 @@ class PackageService : BaseSaveService {
         } // do
         catch SIDError.TAG_NOT_FOUND {
             // TODO
+        }
+        
     }
         
     /*
-        Save the captured data for later use.
-         TODO : Possibly remove this code.
-         Don't remove the info.json until the upload is successfull.
-    */
+     Save the captured data for later use.
+     TODO : Possibly remove this code.
+     Don't remove the info.json until the upload is successfull.
+     */
     func saveCapturedData( tag : String,
-                           smileIdNetData : SIDNetData ) throws {
+                           sidNetData : SIDNetData ) throws {
         let capturedImagesManager = SmileIDSingleton.sharedInstance.capturedImagesManager
         
-        let metaData = readSavedMetadata()
+        var metaData = readSavedMetadata()
         if( metaData == nil ){
             clearMetadata();
             deleteMetaFolder(referenceId: SIDReferenceId.DEFAULT_REFERENCE_ID + tag);
@@ -62,35 +64,46 @@ class PackageService : BaseSaveService {
             if( captureSelfieResponseCode == SmileIDSingleton.SELFIE_RESPONSE_CODE_MAX_FRAME_TIMEOUT){
                 isMaxFrameTimeout = true
             }
+            var captureConfig = initCaptureConfig(sidNetData: sidNetData );
             
-            /* initCaptureConfig : Note that in the Android code the urls in capture config were duplicated in the sidNetData class, so not porting initCaptureConfig method here.
-             */
+            metaData = createCapturedImagesMetaData( isMaxFrameTimeout, captureConfig : captureConfig )
             
-              metaData = createCapturedImagesMetaData( isMaxFrameTimeout);
-        
-        JsonUtils().jsonWrite(getMetaFullFilename(referenceID), new Gson().toJson(metaData));
+            JsonUtils().jsonWrite(getMetaFullFilename(referenceID), new Gson().toJson(metaData));
         }
         
     }
     
 
-    func createCapturedImagesMetaData( isMaxFrameTimeout : Bool )
-        throws -> MetaData {
-            
+    func initCaptureConfig( sidNetData : SIDNetData ) -> CaptureConfig {
+        let captureConfig = CaptureConfig()
+        captureConfig.lambdaAddress = sidNetData.lambdaUrl
+        captureConfig.partnerAddress = sidNetData.partnerUrl
+        captureConfig.partnerPort = sidNetData.partnerPort
+        captureConfig.sidAddress = sidNetData.sidAddress
+        captureConfig.sidPort = sidNetData.sidPort
+        return captureConfig
+    }
+    
+    
+    func createCapturedImagesMetaData(
+        isMaxFrameTimeout : Bool,
+        captureConfig : CaptureConfig )
+        throws -> MetaData? {
             
         var fullFrameInfoPreview : FullFrameInfo?
         var fullFrameInfoIDCard  : FullFrameInfo?
         var fullFrameInfoArr     = [FullFrameInfo]()
-            
+        
         let capturedImagesManager = SmileIDSingleton.sharedInstance.capturedImagesManager
-            if( !capturedImagesManager.hasSelfies() ){
-                throw SIDError.NO_IMAGE_FOUND
-            }
+        if( !capturedImagesManager.hasSelfies() ){
+            throw SIDError.NO_IMAGE_FOUND
+        }
             
         let metaData = MetaData()
         let siFileManager = SIFileFileManager()
-            
+        
         let allCapturedImages = capturedImagesManager.getAllCapturedImages()
+        
         for capturedImage in allCapturedImages {
             if( capturedImage.filename!.isEmpty ){
                 continue
@@ -105,35 +118,54 @@ class PackageService : BaseSaveService {
             
             var fullFrameInfo = capturedImage.fullFrameInfo
             if( filename == SmileIDSingleton.PREVIEW_FRAME_NAME ){
+                /* Selfie preview frame */
                 fullFrameInfoPreview = fullFrameInfo
             }
             else if( filename == SmileIDSingleton.ID_CARD_FRAME_NAME ){
-                sidDeviceCameraInfosBack = new SIDDeviceCameraInfos(context,
-                                                                    fullFilePath,
-                                                                    smileIDSingleton.getLensCharacteristicsBack(),
-                                                                    false,
-                                                                    smileIDSingleton.getPreviewSizeListBack());
-                metaData.setSIDDeviceCameraInfosBackCam(sidDeviceCameraInfosBack);
                 
-                fullFrameInfoIDCard = fullFrameInfo;
-
+                /* id card frame */
+                fullFrameInfoIDCard = fullFrameInfo
+                
+                let sidDeviceCameraInfosBack =  SIDDeviceCameraInfos(
+                    lensCharacteristics: SmileIDSingleton.sharedInstance.lensCharacteristicsBack,
+                    isFront: false);
+                metaData.sidDeviceCameraInfosBack = sidDeviceCameraInfosBack
+            }
+            else{
+                /* selfie frames */
+                fullFrameInfoArr.append(fullFrameInfo!)
             }
             
+        } // for
+        
+        if( captureConfig.isFrontFacingCamera ){
             
-            
-            
-            
+            let sidDeviceCameraInfosFront =  SIDDeviceCameraInfos(
+                lensCharacteristics: SmileIDSingleton.sharedInstance.lensCharacteristicsFront,
+                isFront: true);
+            metaData.sidDeviceCameraInfosFront = sidDeviceCameraInfosFront
         }
-                
-    }
-    
-    
-    
-    
-    
-    
-    
-    
+            
+        if( fullFrameInfoArr.count == 0 ||
+            fullFrameInfoPreview == nil ){
+                return nil;
+        }
+
+        captureConfig.imageProcessingCaps =  ImageProcessingCaps()
+   
+        captureConfig.idCardType = AppData().getSelectedIdType(IdType.EMPTY))
+            
+            metaData.setReferenceId(referenceID);
+            metaData.setApiVersion(new APIVersion());
+            metaData.setSecurityCaps(new SecurityCaps());
+            metaData.setFrameInfo(fullFrameInfoArr);
+            metaData.setFrameInfoPreviewFull(fullFrameInfoPreview);
+            metaData.setFrameInfoIDCard(fullFrameInfoIDCard);
+            metaData.setCaptureConfig(captureConfig);
+            metaData.setMaxFrameTimeout(isMaxFrameTimeout);
+            
+            
+    } // createCapturedImagesMetaData
     
 }
 

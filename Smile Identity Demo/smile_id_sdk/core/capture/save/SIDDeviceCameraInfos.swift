@@ -29,33 +29,19 @@ class SIDDeviceCameraInfos {
     
     static let FPS_VALUE                    = 1000
     
-    var fullFilePath                        : String?
-    
-    var lensCharacteristics                 : LensCharacteristics?
-    var availableImageFormat                : String?
-
+    var availableImageFormat                : String = "jpg"
     var colorDepth                          : Int = 0
-    var maxFPS                              : Float =  0.0
-    var maxImageMemory                      : Int64 = 0
-    var isFront                             : Bool = false
-    var previewSizeList                     = [CameraSize]()
     
-    
-    init(  framePath            : String,
-           lensCharacteristics  : LensCharacteristics,
-           isFront              : Bool,
-           previewSizeList      : [CameraSize] ){
-        
-        availableImageFormat = ".jpg"
-        self.isFront = isFront
-        
-        // colorDepth is implemented to maintain compatibility
-        // with the Android code JSON format
-        colorDepth = 0
-        
+    var lensCharacteristics                 = LensCharacteristics()
  
-    }
+    var isFront                             : Bool = false
+    
+    init(  lensCharacteristics  : LensCharacteristics,
+           isFront              : Bool ){
         
+        self.isFront = isFront
+        self.lensCharacteristics = lensCharacteristics
+    }
         
     
     func toJsonString() -> String {
@@ -63,7 +49,7 @@ class SIDDeviceCameraInfos {
         var dict = [String: Any]()
         
         jsonUtils.putString( dict: &dict, key: SIDDeviceCameraInfos.KEY_AVAILABLE_IMAGE_FORMAT,
-                             val: availableImageFormat! )
+                             val: availableImageFormat )
         
         jsonUtils.putString( dict: &dict, key: SIDDeviceCameraInfos.KEY_CAMERA_MODEL,
                              val: UIDevice.current.model )
@@ -93,10 +79,14 @@ class SIDDeviceCameraInfos {
         
         
         let cameraSize = CameraSize( width: SmileIDSingleton.sharedInstance.devicePortraitHorizontalResolution, height:SmileIDSingleton.sharedInstance.devicePortraitVerticalResolution)
-        previewSizeList.append(cameraSize)
         
+        // An array of dictionaries.
+        // https://stackoverflow.com/questions/37776334/parse-//json-without-key-in-swift
+        var previewSizeList = [Dictionary<String,Int>]()
+        previewSizeList.append(cameraSize.toJsonDict())
         jsonUtils.putArray(dict: &dict, key:SIDDeviceCameraInfos.KEY_PREVIEW_SIZE_LIST,
             val: previewSizeList)
+        
         
         jsonUtils.putBool(dict: &dict, key:SIDDeviceCameraInfos.KEY_SELFIE_CAMERA_EXISTS,
         val:SmileIDSingleton.sharedInstance.selfieCameraExists)

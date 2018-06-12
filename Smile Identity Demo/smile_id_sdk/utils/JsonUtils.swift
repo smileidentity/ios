@@ -96,6 +96,24 @@ class JsonUtils {
                  val : Float ) {
         dict[key] = val
     }
+    
+    
+    
+    func getDouble( dict : [String : Any],
+                   key : String ) -> Double? {
+        let defaultVal : Double = 0.0
+        if let val = dict[key]{
+            return val as? Double
+        }
+        else{
+            return defaultVal
+        }
+    }
+    func putDouble( dict :  inout [String : Any],
+                   key : String,
+                   val : Double ) {
+        dict[key] = val
+    }
 
     
     func getInt64( dict : [String : Any],
@@ -144,6 +162,12 @@ class JsonUtils {
     func putArray( dict :  inout [String : Any],
                   key : String,
                   val : [Any] ) {
+        dict[key] = val
+    }
+    
+    func putDict( dict : inout [String : Any],
+                  key : String,
+                  val : Dictionary<String,Any> ){
         dict[key] = val
     }
     

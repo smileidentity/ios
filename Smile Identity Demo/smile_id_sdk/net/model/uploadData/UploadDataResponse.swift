@@ -14,10 +14,10 @@ class UploadDataResponse : JsonResponse {
     static let KEY_SMILE_JOB_ID         : String    = "smile_job_id"
     static let KEY_REF_ID               : String    = "ref_id"
     
-    var uploadUrl   : String?
-    var smileJobId : String?
+    var uploadUrl   : String    = ""
+    var smileJobId : String     = ""
     // private CameraConfig cameraConfig; unused
-    var refId       : String?
+    var refId       : String    = ""
     var additionalProperties        = [String : String] ()
     let jsonUtils       = JsonUtils()
     
@@ -29,18 +29,17 @@ class UploadDataResponse : JsonResponse {
         else{
             rawJsonString = jsonFormattedString
             let dict = jsonUtils.jsonFormattedStringToDict( jsonFormattedString )
-            setUploadDataResponse(dict: dict!)
+            
+            uploadUrl = jsonUtils.getString(dict: dict!, key: UploadDataResponse.KEY_UPLOAD_URL )!
+            smileJobId = jsonUtils.getString(dict: dict!, key: UploadDataResponse.KEY_SMILE_JOB_ID )!
+            refId = jsonUtils.getString(dict: dict!, key: UploadDataResponse.KEY_REF_ID )!
+            
         }
         
         return self
     }
     
-    func setUploadDataResponse( dict : [String : Any] ){
-        uploadUrl = jsonUtils.getString(dict: dict, key: UploadDataResponse.KEY_UPLOAD_URL )
-        smileJobId = jsonUtils.getString(dict: dict, key: UploadDataResponse.KEY_SMILE_JOB_ID )
-        refId = jsonUtils.getString(dict: dict, key: UploadDataResponse.KEY_REF_ID )
-        
-    }
+ 
     
  
     

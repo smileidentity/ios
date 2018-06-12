@@ -21,18 +21,18 @@ class UserInfoJson{
     static let KEY_JSON_COUNTRY_CODE    : String = "countryCode"
     static let KEY_JSON_COUNTRY_NAME    : String = "countryName"
     
-    var isVerifyProcess     : Bool?
-    var userName            : String?
-    var fbUserId            : String?
-    var fbUserFirstName     : String?
-    var fbUserLastName      : String?
-    var fbUserGender        : String?
-    var fbUserEmail         : String?
-    var fbUserPhoneNumber   : String?
-    var countryCode         : String?
-    var countryName         : String?
+    var isVerifyProcess     : Bool = false
+    var userName            : String = ""
+    var fbUserId            : String = ""
+    var fbUserFirstName     : String = ""
+    var fbUserLastName      : String = ""
+    var fbUserGender        : String = ""
+    var fbUserEmail         : String = ""
+    var fbUserPhoneNumber   : String = ""
+    var countryCode         : String = ""
+    var countryName         : String = ""
   
-    let jsonUtils                   = JsonUtils()
+    let jsonUtils           = JsonUtils()
 
     
     init ( isVerifyProcess  : Bool,
@@ -57,9 +57,10 @@ class UserInfoJson{
         self.countryName = countryName;
     }
     
-    func toJsonString() -> String {
-        // Build a dictionary,
-        // then convert it to a formatted json string
+    
+    func toJsonDict() -> Dictionary<String,Any> {
+        
+        // Create a dictionary
         var dict = [String: Any]()
         dict[UserInfoJson.KEY_JSON_VERIFIED] = isVerifyProcess
         dict[UserInfoJson.KEY_JSON_NAME] = userName
@@ -71,8 +72,13 @@ class UserInfoJson{
         dict[UserInfoJson.KEY_JSON_PHONE] = fbUserPhoneNumber
         dict[UserInfoJson.KEY_JSON_COUNTRY_CODE] = countryCode
         dict[UserInfoJson.KEY_JSON_COUNTRY_NAME] = countryName
+
+        return dict
+    }
+    
+    func toJsonString() -> String {
         
-        return jsonUtils.dictToJsonFormattedString( dict : dict )
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
 
     }
      
