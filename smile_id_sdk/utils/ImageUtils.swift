@@ -1,0 +1,238 @@
+//
+//  ImageUtils.swift
+//  Smile Identity Demo
+//
+//  Created by Janet Brumbaugh on 5/10/18.
+//  Copyright © 2018 Smile Identity. All rights reserved.
+//
+
+import Foundation
+import UIKit
+
+class ImageUtils {
+    var logger                  : SILog = SILog()
+    
+    func getCVImageBufferWidth( pixelBuffer: CVImageBuffer ) -> Int {
+        CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
+        let width = CVPixelBufferGetWidth(pixelBuffer)
+        return width
+    }
+    
+    func getCVImageBufferHeight( pixelBuffer: CVImageBuffer ) -> Int {
+        CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
+        let height = CVPixelBufferGetHeight(pixelBuffer)
+        return height
+    }
+    
+    func getCGImage(pixelBuffer : CVImageBuffer ) ->CGImage? {
+        CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
+        let baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer)
+        let width = CVPixelBufferGetWidth(pixelBuffer)
+        let height = CVPixelBufferGetHeight(pixelBuffer)
+        
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+        guard let context = CGContext(data: baseAddress, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) else {
+            return nil
+        }
+        guard let cgImage = context.makeImage() else {
+            return nil
+        }
+        
+        return cgImage
+        
+    }
+    
+    
+    
+    /* Get JPGData, no cropping.  Used for the selfie preview.
+     Will scale the image to DEFAULT_SCALING_MIN_DIMEN if necessary
+     */
+    func getJPGData( pixelBuffer : CVImageBuffer, doScale : Bool ) -> Data? {
+        
+        var cgImage = getCGImage(pixelBuffer: pixelBuffer )
+    
+        
+        var uiImage = UIImage( cgImage:cgImage!, scale: 1, orientation:.leftMirrored)
+        
+        // check size of image, and scale if necessary
+        if( doScale ){
+            uiImage = scaleImage( uiImage: uiImage )
+        }
+   
+        return UIImageJPEGRepresentation( uiImage, 100.0 )
+    }
+    
+    /*
+        ID Card.  Crop to crop rect and compress to jpg
+    */
+    func getJPGData( uiImage : UIImage,
+        cropRect : CGRect ) -> Data? {
+        let croppedImage = uiImage.cgImage?.cropping(to: cropRect)
+        let uiImage = UIImage( cgImage:croppedImage!, scale: 1, orientation:.leftMirrored)
+        return UIImageJPEGRepresentation( uiImage, 100.0 )
+
+    }
+    
+    
+    /* Get JPGData, with cropping.  Used for rubberband frames */
+    func getJPGData( pixelBuffer : CVImageBuffer,
+                     faceRect : CGRect,
+                     cropRect : inout CGRect ) -> Data? {
+        
+        
+        /* faceRect contains the face.
+         crop pixelBuffer with faceRect.
+         The resulting image needs to be a square image out
+         of the center of the original image in pixelBuffer.
+         The dimensions of the square image need to be a
+         multiple of 4.
+         cropRect is declared 'inout' because we will use it later
+         */
+        
+        
+        // Use the larger of width or height
+        var half : CGFloat?
+        if( faceRect.width > faceRect.height ){
+            half = faceRect.width/CGFloat(2.0)
+        }
+        else{
+            half = faceRect.height/CGFloat(2.0)
+        }
+        // make multiple of FaceDetectorConstants.CROP_FACE_GRAPHIC_MULTIPLE_VALUE)
+        half = half!.rounded()
+        let newHalf = half! - CGFloat(( Int(half!) % FaceDetectorConstants.CROP_FACE_GRAPHIC_MULTIPLE_VALUE));
+        
+        let midX = faceRect.origin.x + newHalf
+        let midY = faceRect.origin.y + newHalf
+        
+        // Set the left, right top and bottom of the new crop rect
+        let left = midX - newHalf
+        let top = midY - newHalf
+        
+        let cropWidth = newHalf * 2
+        let cropHeight = newHalf * 2
+        cropRect = CGRect( x:left, y:top, width:cropWidth, height:cropHeight )
+        
+        let cgImage = getCGImage(pixelBuffer: pixelBuffer )
+        
+        let croppedImage = cgImage?.cropping(to: cropRect)
+        
+        let uiImage = UIImage( cgImage:croppedImage!, scale: 1, orientation:.leftMirrored)
+        
+        
+        return UIImageJPEGRepresentation( uiImage, 100.0 )
+        
+        
+        /* .leftMirrored makes the uiImage display in the same orientation as the video  preview, which is portrait.
+         */
+        
+        
+        
+        //let orientation = uiImage.imageOrientation
+    }
+    
+    func scaleImage( uiImage: UIImage ) -> UIImage {
+        let hasAlpha = false
+        let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
+        
+        
+        let origWidth = uiImage.size.width
+        let origHeight = uiImage.size.height
+        
+        var needsScaling : Bool = false
+        if( origWidth > CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN ) ||
+            origHeight > CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN ) ){
+            needsScaling = true
+        }
+        
+        if( !needsScaling ){
+            return uiImage
+        }
+        
+        
+        // Android code actually downsamples rather than scales the image.
+        
+        var scaledWidth : CGFloat?
+        var scaledHeight : CGFloat?
+        var aspectRatio : CGFloat?
+        
+        if( origWidth > origHeight ){
+            aspectRatio = origHeight/origWidth
+            scaledWidth = CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN)
+            scaledHeight = scaledWidth! * aspectRatio!
+        }
+        else {
+            aspectRatio = origWidth/origHeight
+            scaledHeight = CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN)
+            scaledWidth = scaledHeight! * aspectRatio!
+        }
+        
+        
+        let cgSize = CGSize(width: scaledWidth!, height: scaledHeight!)
+        let scaledRect = CGRect(origin: .zero, size:cgSize)
+        UIGraphicsBeginImageContextWithOptions(cgSize, !hasAlpha, scale)
+        uiImage.draw(in: scaledRect)
+        
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return scaledImage!
+    }
+    
+    func scaleImageOld( uiImage : UIImage ) -> UIImage? {
+        
+        let origWidth = uiImage.size.width
+        let origHeight = uiImage.size.height
+        
+        var needsScaling : Bool = false
+        if( origWidth > CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN ) ||
+            origHeight > CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN ) ){
+            needsScaling = true
+        }
+        
+        if( !needsScaling ){
+            return uiImage
+        }
+        
+        
+        // Android code actually downsamples rather than scales the image.
+        
+        var scaledWidth : CGFloat?
+        var scaledHeight : CGFloat?
+        var aspectRatio : CGFloat?
+        
+        if( origWidth > origHeight ){
+            aspectRatio = origHeight/origWidth
+            scaledWidth = CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN)
+            scaledHeight = scaledWidth! * aspectRatio!
+        }
+        else {
+            aspectRatio = origWidth/origHeight
+            scaledHeight = CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN)
+            scaledWidth = scaledHeight! * aspectRatio!
+        }
+        
+        
+        let scaledRect = CGRect(origin: .zero, size: CGSize(width: scaledWidth!, height: scaledHeight!))
+        let imageView = UIImageView(frame: scaledRect )
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = uiImage
+        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, 0.0)
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        imageView.layer.render(in: context)
+        guard let scaledImage = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
+        UIGraphicsEndImageContext()
+        return scaledImage
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}

@@ -1,0 +1,17 @@
+//
+//  CameraConfig.swift
+//  Smile Identity Demo
+//
+//  Created by Janet Brumbaugh on 5/29/18.
+//  Copyright © 2018 Smile Identity. All rights reserved.
+//
+
+import Foundation
+
+class CameraConfig {
+    var additionalValues        = [String : String] ()
+    
+    func additionalValue(name : String, value : String ) {
+        additionalValues[name] = value
+    }
+}

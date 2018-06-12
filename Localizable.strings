@@ -1,0 +1,74 @@
+/* 
+  Localizable.strings
+  Smile Identity Demo
+
+  Created by Janet Brumbaugh on 5/25/18.
+  Copyright © 2018 Smile Identity. All rights reserved.
+*/
+
+"error_unable_to_init_capture_selfie" = "Unable to initialize the selfie camera.";
+"alert_front_camera_not_supported" = "Your device doesn\'t support selfie camera.";
+"id_card_capture_failed" = "ID Card capture failed.";
+"id_card_picture_callback_failed" = "ID Card picture callback failed.";
+"id_card_autofocus_failed" = "ID Card auto focus failed.";
+"id_card_touchfocus_failed" = "ID Card touch focus failed.";
+
+"id_card_draw_view_failed" = "ID Card draw view failed.";
+"id_card_camera_initialization_failed" = "ID Card camera initialization failed.";
+
+"unable_to_submit" = "Unable to submit.";
+
+"unable_to_submit_packaging_error" = "Unable to submit.  File packaging error.";
+
+"unable_to_submit_could_not_upload_zip" = "Failed to submit.  Could not upload ZIP file.";
+
+"unable_to_submit_could_not_create_zip" = "Failed to submit.  Could not create ZIP file.";
+
+"unable_to_submit_could_not_transmit_to_lambda" = "Failed to submit.  Failed to transmit to server.";
+
+"unable_to_submit_could_not_authorize" = "Failed to submit.  Could not authorize.";
+
+"unable_to_submit_could_not_transmit_to_lambda" = "Failed to submit.  Failed to transmit to server.";
+
+"unable_to_submit_could_not_authorize" = "Failed to submit.  Could not authorize.";
+
+"unable_to_verify" = "Failed to authenticate.  Could not verify.";
+
+"alert_msg_try_again" = "Some server error occurred, Please try again.";
+
+"label_signup_again" = "Either operation is timed out or you cancelled the running operation.\n \nYou need to SignUp again to continue.";
+
+"label_resubmit_again" = "Either operation is timed out or you cancelled the running operation.\n \nPlease try submitting again.";
+
+"label_previous_enroll_failed" = "Previous enroll failed";
+
+"enroll_failed" = "Enroll failed";
+
+"label_packaging_failed" = "Data packaging failed, no resources to package found, or operation has been canceled ";
+
+"label_previous_enroll_failed" = "Previous enroll failed";
+
+"authentication_before_enroll" = "Packaging failed no selfie found";
+
+"no_images_found" = "No Selfie Found";
+
+"job_type_requires_id_card" = "Job type requires an ID Card image.";
+
+"authentication_failed_enroll_not_found" = "Authentication failed enroll not found";
+
+"transmission_failed_retry_again" = "Transaction Failed, Retry Again";
+
+"tag_not_found" = "Cannot execute operation, No job found for provided tag";
+
+"error_unknown" = "An unknown error occurred.";
+
+
+
+
+
+
+
+
+
+
+
