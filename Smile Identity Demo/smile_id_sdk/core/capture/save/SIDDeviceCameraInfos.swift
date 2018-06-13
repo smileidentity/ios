@@ -42,40 +42,42 @@ class SIDDeviceCameraInfos {
         self.isFront = isFront
         self.lensCharacteristics = lensCharacteristics
     }
-        
     
-    func toJsonString() -> String {
-        let jsonUtils = JsonUtils()
+    
+    func toJsonDict() -> Dictionary<String,Any> {
+        // Build a dictionary,
         var dict = [String: Any]()
+        
+        let jsonUtils = JsonUtils()
         
         jsonUtils.putString( dict: &dict, key: SIDDeviceCameraInfos.KEY_AVAILABLE_IMAGE_FORMAT,
                              val: availableImageFormat )
         
         jsonUtils.putString( dict: &dict, key: SIDDeviceCameraInfos.KEY_CAMERA_MODEL,
                              val: UIDevice.current.model )
-
+        
         jsonUtils.putInt( dict: &dict, key: SIDDeviceCameraInfos.KEY_COLOR_DEPTH,
-                             val: colorDepth )
-   
+                          val: colorDepth )
+        
         /* Ported from Android code.  Note that the android code
-        does not switch vertical and horizontal device resolution
-        when creating the json for front or back camera.
-        front camera orientation is portrait, for the selfie,
-        and back camera is landscape for the id card.
-        */
-   
+         does not switch vertical and horizontal device resolution
+         when creating the json for front or back camera.
+         front camera orientation is portrait, for the selfie,
+         and back camera is landscape for the id card.
+         */
+        
         jsonUtils.putInt( dict: &dict, key: SIDDeviceCameraInfos.KEY_DEVICE_PORTRAIT_HORIZONTAL_RESOLUTION,
-            val: SmileIDSingleton.sharedInstance.devicePortraitHorizontalResolution )
+                          val: SmileIDSingleton.sharedInstance.devicePortraitHorizontalResolution )
         
         jsonUtils.putInt( dict: &dict, key: SIDDeviceCameraInfos.KEY_DEVICE_PORTRAIT_VERTICAL_RESOLUTION,
-            val: SmileIDSingleton.sharedInstance.devicePortraitVerticalResolution )
+                          val: SmileIDSingleton.sharedInstance.devicePortraitVerticalResolution )
         
         jsonUtils.putInt( dict: &dict, key: SIDDeviceCameraInfos.KEY_MAX_FPS,
-            val: SmileIDSingleton.sharedInstance.maxFPS )
+                          val: SmileIDSingleton.sharedInstance.maxFPS )
         
         let siFileManager = SIFileFileManager()
         jsonUtils.putInt( dict: &dict, key: SIDDeviceCameraInfos.KEY_MAX_IMAGE_MEMORY,
-            val:Int(truncatingIfNeeded: siFileManager.getFreeDiskspace()!))
+                          val:Int(truncatingIfNeeded: siFileManager.getFreeDiskspace()!))
         
         
         let cameraSize = CameraSize( width: SmileIDSingleton.sharedInstance.devicePortraitHorizontalResolution, height:SmileIDSingleton.sharedInstance.devicePortraitVerticalResolution)
@@ -85,17 +87,22 @@ class SIDDeviceCameraInfos {
         var previewSizeList = [Dictionary<String,Int>]()
         previewSizeList.append(cameraSize.toJsonDict())
         jsonUtils.putArray(dict: &dict, key:SIDDeviceCameraInfos.KEY_PREVIEW_SIZE_LIST,
-            val: previewSizeList)
+                           val: previewSizeList)
         
         
         jsonUtils.putBool(dict: &dict, key:SIDDeviceCameraInfos.KEY_SELFIE_CAMERA_EXISTS,
-        val:SmileIDSingleton.sharedInstance.selfieCameraExists)
- 
-        return jsonUtils.dictToJsonFormattedString( dict : dict )
-
+                          val:SmileIDSingleton.sharedInstance.selfieCameraExists)
+        
+        return dict
+        
+        
     }
     
-    
-    
+    func toJsonString() -> String {
+        
+        let jsonUtils = JsonUtils()
+
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
+    }
     
 }

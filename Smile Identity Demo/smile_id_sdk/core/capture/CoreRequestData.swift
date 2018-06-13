@@ -10,14 +10,14 @@ import Foundation
 
 class CoreRequestData {
     
-    var geoInfoJson         : String?
-    var partnerParams       : PartnerParams?
-    var tag                 : String?
-    var requestNewToken     : Bool?
-    var retry               : Bool?
-    var isAuthenticationMode : Bool?
-    var networkRequestData  : SIDNetData?
-    var jobType             : Int?
+    var geoInfoJson             : String?
+    var partnerParams           : PartnerParams?
+    var tag                     : String?
+    var requestNewToken         : Bool?
+    var retry                   : Bool?
+    var isAuthenticationMode    : Bool?
+    var sidNetData              : SIDNetData?
+    var jobType                 : Int?
     
     
     

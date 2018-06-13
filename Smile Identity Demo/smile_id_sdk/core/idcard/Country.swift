@@ -7,3 +7,11 @@
 //
 
 import Foundation
+
+struct Country {
+    static let KENYA        : String = "Kenya";
+    static let NIGERIA      : String =  "Nigeria";
+    static let TANZANIA     : String =  "Tanzania";
+    static let GHANA        : String =  "Ghana";
+    static let STATELESS    : String =  "Stateless";
+}

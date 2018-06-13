@@ -21,9 +21,32 @@ class APIVersion {
     static let MINOR_VERSION    : Int = 1;
     static let MAJOR_VERSION    : Int = 1;
     static let BUILD_NUMBER     : Int = 2;
-    let minorVersion = MINOR_VERSION;
-    let majorVersion = MAJOR_VERSION;
-    let buildNumber = BUILD_NUMBER;
+    var minorVersion = MINOR_VERSION;
+    var majorVersion = MAJOR_VERSION;
+    var buildNumber = BUILD_NUMBER;
+    
+    func fromJsonString( jsonFormattedString : String ) -> APIVersion? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                    jsonFormattedString )
+            
+            minorVersion = jsonUtils.getInt(dict:dict!,
+                key: APIVersion.KEY_MIN_VERSION )!
+            majorVersion = jsonUtils.getInt(dict:dict!,
+                key: APIVersion.KEY_MAJOR_VERSION )!
+            buildNumber = jsonUtils.getInt( dict:dict!,
+                key: APIVersion.KEY_BUILD_NUMBER )!
+           
+         }
+        
+        return self
+    }
+    
     
     func toJsonDict() -> Dictionary<String,Any> {
         

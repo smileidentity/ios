@@ -69,6 +69,43 @@ class PartnerParams: Codable {
     }
     
     
+    
+    func fromJsonString( jsonFormattedString : String ) -> PartnerParams? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            
+             for (key, val) in dict! {
+                
+                if( key == PartnerParams.USER_ID ) {
+                    userId = val as! String
+                }
+                else if( key == PartnerParams.JOB_ID ){
+                    jobId = val as! String
+                }
+                else if( key == PartnerParams.JOB_TYPE ){
+                    jobType = val as! Int
+                }
+                else{
+                    // set additional values,
+                    // if any are present in the json
+                    additionalValues[key] = val as? String
+                }
+                    
+            } // for
+            
+        }
+        
+        return self
+    }
+    
+    
+    
     /* Note that in the original Android code, write to parcel does not
         include the additionalValues member variable,
         but toJsonString() does. */
@@ -81,7 +118,7 @@ class PartnerParams: Codable {
         dict[PartnerParams.JOB_ID] = jobId
         dict[PartnerParams.JOB_TYPE] = jobType
         
-        /* additionalvalues are simply added into the top level,
+        /* additionalvalues are simply added into the
          rather than as an array */
         for( key, value ) in additionalValues {
             dict[key] = value

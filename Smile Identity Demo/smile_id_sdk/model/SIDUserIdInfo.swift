@@ -9,7 +9,7 @@
 import Foundation
 
 class SIDUserIdInfo {
-    static let SECTION_NAME    : String = "id_info";
+
     static let FIRST_NAME      : String = "first_name";
     static let LAST_NAME       : String = "last_name";
     static let MIDDLE_NAME     : String = "middle_name";
@@ -19,15 +19,15 @@ class SIDUserIdInfo {
     static let ENTERED         : String = "entered";
 
     
-    var firstName       : String = "";
-    var lastName        : String = "";
-    var middleName      : String = "";
-    var country         : String = "";
-    var idType          : String = "";
-    var idNumber        : String = "";
-    var additionalProperties        = [String : String] ()
+    var firstName               : String = "";
+    var lastName                : String = "";
+    var middleName              : String = "";
+    var country                 : String = "";
+    var idType                  : String = "";
+    var idNumber                : String = "";
+    var additionalProperties    = [String : String] ()
  
-    var currentHash     : String?
+    var currentHash             : String = ""
 
     
     init() {
@@ -78,6 +78,61 @@ class SIDUserIdInfo {
             sAdditionalProperties +
             "}";
     }
+    
+    
+    func fromJsonString( jsonFormattedString : String ) -> SIDUserIdInfo? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            
+            
+            for (key, val) in dict! {
+                
+                if( key == SIDUserIdInfo.FIRST_NAME ) {
+                    firstName = val as! String
+                }
+                else if( key ==  SIDUserIdInfo.MIDDLE_NAME ){
+                    middleName = val as! String
+                }
+                else if( key == SIDUserIdInfo.LAST_NAME ){
+                    lastName = val as! String
+                }
+                else if( key == SIDUserIdInfo.COUNTRY ){
+                    country = val as! String
+                }
+                else if( key == SIDUserIdInfo.ID_TYPE ){
+                    idType = val as! String
+                }
+                else if( key == SIDUserIdInfo.ID_NUMBER ){
+                    idNumber = val as! String
+                }
+                else if( key == SIDUserIdInfo.ENTERED ){
+                    let sEntered = jsonUtils.getString(dict:dict!,
+                    key: SIDUserIdInfo.ENTERED )!
+                    
+                    if( sEntered == "true" ){
+                        currentHash = toString()
+                    }
+                    else {
+                        currentHash = ""
+                    }
+                }
+                else{
+                    // set additional props,
+                    // if any are present in the json
+                    additionalProperties[key] = val as? String
+                }
+        }
+        
+        return self
+    }
+    
+    
     
     
     func toJsonDict( useAdditionalProps : Bool ) -> Dictionary<String,Any> {

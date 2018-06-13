@@ -51,6 +51,19 @@ class JsonUtils {
     
     
     
+    func putDict( dict : inout [String : Any],
+                  key : String,
+                  val : Dictionary<String,Any> ){
+        dict[key] = dictToJsonFormattedString( dict: val )
+    }
+    
+    func getDict( dict:[String : Any],
+                  key : String ) -> Dictionary<String,Any> {
+        let jsonString =  dict[key]
+        return jsonFormattedStringToDict( jsonString as! String )!
+    }
+    
+    
     
     /* If key does not exist, then Dictionary always returns nil */
     func getString( dict : [String : Any],
@@ -165,12 +178,6 @@ class JsonUtils {
         dict[key] = val
     }
     
-    func putDict( dict : inout [String : Any],
-                  key : String,
-                  val : Dictionary<String,Any> ){
-        dict[key] = val
-    }
-    
-
+ 
     
 }

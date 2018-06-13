@@ -7,3 +7,13 @@
 //
 
 import Foundation
+
+class IdCard {
+    
+    var countryName     : String = "";
+    var countryCode     : String = "";
+    var idCards         = [String]()
+    var selectedIdType  = IdType.NO_ID;
+
+    
+}

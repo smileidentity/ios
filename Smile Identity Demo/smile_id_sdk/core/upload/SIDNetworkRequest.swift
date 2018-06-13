@@ -21,6 +21,9 @@ class SIDNetworkRequest {
         // broadcast receivers for the upload
     }
     
+    // TODO
+    // implement saveDataForLaterUse
+    
    
     
 

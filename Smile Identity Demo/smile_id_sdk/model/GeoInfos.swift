@@ -25,13 +25,50 @@ class GeoInfos {
     var accuracy                : Double = 0.0;
     var lastUpdate              : String = "";
     
+    
+    func fromJsonString( jsonFormattedString : String ) -> GeoInfos? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            
+            geoPermissionGranted = jsonUtils.getBool(dict:dict!,
+                key: GeoInfos.KEY_GEO_PERMISSION_GRANTED )!
+            
+            latitude = jsonUtils.getDouble(dict:dict!,
+                key: GeoInfos.KEY_LATITUDE )!
+
+            longitude = jsonUtils.getDouble(dict:dict!,
+                key: GeoInfos.KEY_LONGITUDE )!
+            
+            altitude = jsonUtils.getDouble(dict:dict!,
+                key: GeoInfos.KEY_ALTITUDE )!
+
+            accuracy = jsonUtils.getDouble(dict:dict!,
+                key: GeoInfos.KEY_ACCURACY )!
+ 
+            lastUpdate = jsonUtils.getString(dict:dict!,
+                key: GeoInfos.KEY_LAST_UPDATE )!
+        }
+        
+        return self
+    }
+    
+    
+    
+    
+    
     func toJsonDict() -> Dictionary<String,Any> {
 
         // Create a dictionary
         var dict = [String: Any]()
         let jsonUtils = JsonUtils()
         jsonUtils.putBool( dict: &dict, key: GeoInfos.KEY_GEO_PERMISSION_GRANTED,
-                          val:geoPermissionGranted )
+            val:geoPermissionGranted )
         
         jsonUtils.putDouble( dict: &dict, key: GeoInfos.KEY_LATITUDE,
             val:latitude )

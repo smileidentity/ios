@@ -49,19 +49,33 @@ class BaseSaveService : BaseService {
         
     }
     
+    // TODO implement read info.json
     
-    func readSavedMetadata() -> MetaData? {
-        // read info.json and create metaData from the content
-        
-        
+    func readSavedMetadataAsString() -> String? {
+        var json : String?
         let siFileManager = SIFileFileManager()
         let metaDataFullFilePath = siFileManager.getMetaFullFilePath(referenceId: referenceId!)
         if( siFileManager.fileExists(fullFilePath: metaDataFullFilePath) ){
-            return MetaData()
+            return json
         }
         else{
             return nil
         }
+    }
+    
+    func readSavedMetadata() -> MetaData? {
+        var metaData : MetaData?
+        // read info.json and create metaData from the content
+        let json = readSavedMetadata()
+        if( json != nil ){
+            metaData.fromJsonString()
+        }
+        else{
+            return nil
+        }
+        
+        return metaData
+   
         
         
     }

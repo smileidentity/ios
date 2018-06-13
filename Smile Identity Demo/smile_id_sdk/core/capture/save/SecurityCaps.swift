@@ -13,8 +13,29 @@ class SecurityCaps {
     static let KEY_RSA_CAPABLE       : String = "RSACapable"
     
     
-    let AESCapable : Bool = false;
-    let RSACapable : Bool = false;
+    var AESCapable : Bool = false;
+    var RSACapable : Bool = false;
+    
+    
+    func fromJsonString( jsonFormattedString : String ) -> SecurityCaps? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            
+            AESCapable = jsonUtils.getBool(dict:dict!,
+                key: SecurityCaps.KEY_AES_CAPABLE )!
+            RSACapable = jsonUtils.getBool(dict:dict!,
+                key: SecurityCaps.KEY_RSA_CAPABLE)!
+           
+        }
+        
+        return self
+    }
     
     
     func toJsonDict() -> Dictionary<String,Any> {

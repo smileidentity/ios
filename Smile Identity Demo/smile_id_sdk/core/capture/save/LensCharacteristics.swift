@@ -100,11 +100,14 @@ class LensCharacteristics {
         jsonUtils.putFloat( dict: &dict, key: LensCharacteristics.KEY_FOCAL_LENGTH,
                              val: focalLength )
         
-        // Create one fps range object.  Each fps range object
-        // is an array.  [0] holds the min, [1] holds the max.
+        /* Ported from Android code, so that the format is compatible
+            with the old code */
+        // Create an array of arrays for the fps ranges.
+        // First, create one FPSRange object.
         let fpsRange = FPSRange( min:
             SmileIDSingleton.sharedInstance.minFPS,
             max:SmileIDSingleton.sharedInstance.maxFPS )
+        // Each FPSRange goes into an array, where [0] = min, and [1] = max
         var fpsRangeArray = [Any]()
         fpsRangeArray[0] = fpsRange.min
         fpsRangeArray[1] = fpsRange.max

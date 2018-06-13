@@ -13,7 +13,6 @@ class FullFrameInfo {
     static let KEY_FILENAME         : String = "fileName"
     static let KEY_IMAGE_LENGTH     : String = "imageLength"
     static let KEY_IMAGE_WIDTH      : String = "imageWidth"
-    static let KEY_IMAGE_HEIGHT     : String = "imageHeight"
     static let KEY_ORIENTATION      : String = "orientation"
     static let KEY_SMILE_VALUE      : String = "smileValue"
 
@@ -44,6 +43,40 @@ class FullFrameInfo {
         self.imageLength = String( imageLength )
     }
     
+      
+    func fromJsonString( jsonFormattedString : String ) -> FullFrameInfo? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            
+            dateTime = jsonUtils.getString(dict:dict!,
+                key: FullFrameInfo.KEY_DATE_TIME )!
+            
+            fileName = jsonUtils.getString(dict:dict!,
+                key: FullFrameInfo.KEY_FILENAME )!
+            
+            imageLength = jsonUtils.getString(dict:dict!,
+                key: FullFrameInfo.KEY_IMAGE_LENGTH )!
+            
+            imageWidth = jsonUtils.getString(dict:dict!,
+                key: FullFrameInfo.KEY_IMAGE_WIDTH )!
+
+            orientation = jsonUtils.getInt(dict:dict!,
+                key: FullFrameInfo.KEY_ORIENTATION )!
+
+            smileValue = jsonUtils.getDouble(dict:dict!,
+                key: FullFrameInfo.KEY_SMILE_VALUE )!
+
+            
+        }
+        
+        return self
+    }
     
     func toJsonDict() -> Dictionary<String,Any> {
         
@@ -60,7 +93,7 @@ class FullFrameInfo {
                              val: imageLength )
 
         jsonUtils.putString( dict: &dict, key: FullFrameInfo.KEY_IMAGE_WIDTH,
-                             val: imageWidth )
+            val: imageWidth )
         
         jsonUtils.putInt( dict: &dict, key: FullFrameInfo.KEY_ORIENTATION,
                           val: orientation )

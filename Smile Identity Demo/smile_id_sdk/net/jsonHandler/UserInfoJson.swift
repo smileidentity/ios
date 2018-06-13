@@ -58,21 +58,90 @@ class UserInfoJson{
     }
     
     
+    func fromJsonString( jsonFormattedString : String ) -> UserInfoJson? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            
+            isVerifyProcess = jsonUtils.getBool(dict:dict!,
+                key: UserInfoJson.KEY_JSON_VERIFIED )!
+ 
+            userName = jsonUtils.getString(dict:dict!,
+                key: UserInfoJson.KEY_JSON_NAME )!
+
+            fbUserId = jsonUtils.getString(dict:dict!,
+                key: UserInfoJson.KEY_JSON_FB_USER_ID )!
+ 
+            fbUserFirstName = jsonUtils.getString(dict:dict!,
+                key: UserInfoJson.KEY_JSON_FIRST_NAME )!
+
+            fbUserLastName = jsonUtils.getString(dict:dict!,
+                key: UserInfoJson.KEY_JSON_LAST_NAME )!
+            
+            fbUserGender = jsonUtils.getString(dict:dict!,
+                key: UserInfoJson.KEY_JSON_GENDER )!
+            
+            fbUserEmail = jsonUtils.getString(dict:dict!,
+                key: UserInfoJson.KEY_JSON_EMAIL )!
+            
+            fbUserPhoneNumber = jsonUtils.getString(dict:dict!,
+                key: UserInfoJson.KEY_JSON_PHONE )!
+
+            countryCode = jsonUtils.getString(dict:dict!,
+                key: UserInfoJson.KEY_JSON_COUNTRY_CODE )!
+
+            countryName = jsonUtils.getString(dict:dict!,
+                key: UserInfoJson.KEY_JSON_COUNTRY_NAME )!
+
+            
+        }
+        
+        return self
+    }
+    
+    
+    
+    
     func toJsonDict() -> Dictionary<String,Any> {
         
         // Create a dictionary
         var dict = [String: Any]()
-        dict[UserInfoJson.KEY_JSON_VERIFIED] = isVerifyProcess
-        dict[UserInfoJson.KEY_JSON_NAME] = userName
-        dict[UserInfoJson.KEY_JSON_FB_USER_ID] = fbUserId
-        dict[UserInfoJson.KEY_JSON_FIRST_NAME] = fbUserFirstName
-        dict[UserInfoJson.KEY_JSON_LAST_NAME] = fbUserLastName
-        dict[UserInfoJson.KEY_JSON_GENDER] = fbUserGender
-        dict[UserInfoJson.KEY_JSON_EMAIL] = fbUserEmail
-        dict[UserInfoJson.KEY_JSON_PHONE] = fbUserPhoneNumber
-        dict[UserInfoJson.KEY_JSON_COUNTRY_CODE] = countryCode
-        dict[UserInfoJson.KEY_JSON_COUNTRY_NAME] = countryName
+        
+        jsonUtils.putBool( dict: &dict, key: UserInfoJson.KEY_JSON_VERIFIED,
+            val: isVerifyProcess )
+        
+        jsonUtils.putString( dict: &dict, key: UserInfoJson.KEY_JSON_NAME,
+            val: userName )
+        
+        jsonUtils.putString( dict: &dict, key: UserInfoJson.KEY_JSON_FB_USER_ID,
+            val: fbUserId )
+        
+        jsonUtils.putString( dict: &dict, key: UserInfoJson.KEY_JSON_FIRST_NAME,
+            val: fbUserFirstName )
 
+        jsonUtils.putString( dict: &dict, key: UserInfoJson.KEY_JSON_LAST_NAME,
+            val: fbUserLastName )
+ 
+        jsonUtils.putString( dict: &dict, key: UserInfoJson.KEY_JSON_GENDER,
+            val: fbUserGender )
+        
+        jsonUtils.putString( dict: &dict, key: UserInfoJson.KEY_JSON_EMAIL,
+            val: fbUserEmail )
+        
+        jsonUtils.putString( dict: &dict, key: UserInfoJson.KEY_JSON_PHONE,
+            val: fbUserPhoneNumber )
+        
+        jsonUtils.putString( dict: &dict, key: UserInfoJson.KEY_JSON_COUNTRY_CODE,
+            val: countryCode )
+
+        jsonUtils.putString( dict: &dict, key: UserInfoJson.KEY_JSON_COUNTRY_NAME,
+            val: countryName )
+        
         return dict
     }
     

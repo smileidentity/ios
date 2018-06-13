@@ -119,38 +119,39 @@ class CaptureConfig {
      
     
     
-    
-    func toJsonString() -> String {
-        let jsonUtils = JsonUtils()
+    func toJsonDict() -> Dictionary<String,Any> {
+        // Build a dictionary,
         var dict = [String: Any]()
+        
+        let jsonUtils = JsonUtils()
         
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_ID_CARD_DELAY,
                           val:idCardDelay )
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_ACCEPT_BOX,
-                          val:acceptBox )
+                             val:acceptBox )
         
         jsonUtils.putBool( dict: &dict, key: CaptureConfig.KEY_AUTO_SEND,
-                             val:autoSend )
+                           val:autoSend )
         
         jsonUtils.putBool( dict: &dict, key: CaptureConfig.KEY_SHOW_XMIT_PROGRESS,
                            val:showXmitProgress )
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_CONSENT_MESSAGE,
-                           val:consentMessage )
+                             val:consentMessage )
         
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_DESIRED_HEIGHT,
-                             val:desiredHeight )
- 
+                          val:desiredHeight )
+        
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_DESIRED_WIDTH,
                           val:desiredWidth)
-      
+        
         jsonUtils.putBool( dict: &dict, key: CaptureConfig.KEY_DISABLE_RESTART,
-                          val:disableRestart)
+                           val:disableRestart)
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_ID_CARD_MESSAGE1,
                              val:idCardMessage1 )
-    
+        
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_ID_CARD_MESSAGE2,
                              val:idCardMessage2 )
         
@@ -159,12 +160,12 @@ class CaptureConfig {
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_ID_CARD_TYPE,
                              val:idCardType )
-   
+        
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_IMAGE_FORMAT,
-                             val:imageFormat )
+                          val:imageFormat )
         
         jsonUtils.putDict( dict: &dict, key: CaptureConfig.KEY_IMAGE_PROCESSING_CAPS,
-            val:ImageProcessingCaps().toJsonDict()
+                           val:ImageProcessingCaps().toJsonDict()
         )
         
         jsonUtils.putBool( dict: &dict, key: CaptureConfig.KEY_IS_CAPTURE_FULL_IMAGE,
@@ -174,25 +175,25 @@ class CaptureConfig {
                            val:isFrontFacingCamera )
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_LAMBDA_ADDRESS,
-                           val:lambdaAddress )
+                             val:lambdaAddress )
         
         jsonUtils.putBool( dict: &dict, key: CaptureConfig.KEY_MANUAL_CAPTURE,
                            val:manualCapture )
         
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_MAX_ARC_WIDTH,
-                           val:maxArcWidth )
+                          val:maxArcWidth )
         
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_MAX_FPS,
                           val:maxFPS )
         
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_MAX_FRAME_TIMEOUT,
                           val:maxFrameTimeout )
-
+        
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_MIN_ARC_WIDTH,
                           val:minArcWidth )
- 
+        
         jsonUtils.putFloat( dict: &dict, key: CaptureConfig.KEY_MIN_SMILE_CONFIDENCE,
-                          val:minSmileConfidence )
+                            val:minSmileConfidence )
         
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_MIN_X,
                           val:minX )
@@ -204,23 +205,23 @@ class CaptureConfig {
                           val:numImagesToCapture )
         
         jsonUtils.putBool( dict: &dict, key: CaptureConfig.KEY_ON_PREVIEW,
-                          val:onPreview )
+                           val:onPreview )
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_PARTNER_ADDRESS,
-                           val:partnerAddress )
+                             val:partnerAddress )
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_PARTNER_PORT,
                              val:partnerPort )
         
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_SCALING_FULL_CAPTURE,
                           val:scalingFullCapture )
-
+        
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_SCALING_ID_CARD,
                           val:scalingIdCard )
         
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_SCALING_MIN_DIMEN,
                           val:scalingMinDimen )
-
+        
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_SCALING_OFFSET,
                           val:scalingOffset )
         
@@ -228,11 +229,11 @@ class CaptureConfig {
                           val:scalingQuality )
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_SID_ADDRESS,
-                          val:sidAddress )
+                             val:sidAddress )
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_SID_PORT,
                              val:sidPort )
-
+        
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_SUGGESTED_FPS,
                           val:suggestedFPS )
         
@@ -241,31 +242,36 @@ class CaptureConfig {
         
         jsonUtils.putInt( dict: &dict, key: CaptureConfig.KEY_TOAST_DELAY_FOR_SAME_PROMPT,
                           val:toastDelayForSamePrompt )
-  
+        
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_TOAST_FACE_IN_OVAL,
-                          val:toastFaceInOval )
-
+                             val:toastFaceInOval )
+        
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_TOAST_MOVE_CLOSER,
                              val:toastMoveCloser )
         
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_TOAST_SMILE,
                              val:toastSmile )
-
+        
         jsonUtils.putString( dict: &dict, key: CaptureConfig.KEY_TOAST_SMILE_MORE,
                              val:toastSmileMore )
-
+        
         jsonUtils.putBool( dict: &dict, key: CaptureConfig.KEY_USE_ARC,
-                             val:useArc )
-
+                           val:useArc )
+        
         jsonUtils.putBool( dict: &dict, key: CaptureConfig.KEY_USE_EMOTICON,
                            val:useEmoticon )
         
-        return
-            jsonUtils.dictToJsonFormattedString( dict : dict )
+        return dict
         
     }
     
     
+    func toJsonString() -> String {
+        let jsonUtils = JsonUtils()
+        
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
+        
+    }
     
     
     
