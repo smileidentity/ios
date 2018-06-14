@@ -15,21 +15,72 @@ class ImageProcessingCaps {
     static let KEY_DETECT_LOW_LIGHT         : String = "detectLowLight"
     static let KEY_ROTATE_IMAGES            : String = "rotate_images"
     
-    var detectBlurryImage   : Bool = false
-    var detectLowLight      : Bool = false
-    var debug_rotate_after_crop: Bool = true
-    var rotate_images       : Bool = true
+    var detectBlurryImage           : Bool = false
+    var detectLowLight              : Bool = false
+    var debug_rotate_after_crop     : Bool = true
+    var rotate_images               : Bool = true
+    
+    
+    
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> ImageProcessingCaps? {
+        let jsonUtils = JsonUtils()
+        debug_rotate_after_crop = jsonUtils.getBool(dict:dict,
+            key: ImageProcessingCaps.KEY_DEBUG_AFTER_CROP )!
+        
+        detectBlurryImage = jsonUtils.getBool(dict:dict,
+            key: ImageProcessingCaps.KEY_DETECT_BLURRY_IMAGE )!
+        
+        detectLowLight = jsonUtils.getBool(dict:dict,
+            key: ImageProcessingCaps.KEY_DETECT_LOW_LIGHT )!
+        
+        rotate_images = jsonUtils.getBool(dict:dict,
+            key: ImageProcessingCaps.KEY_ROTATE_IMAGES )!
+
+    }
+    
+    func fromJsonString( jsonFormattedString : String ) -> ImageProcessingCaps? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            return fromJsonDict( dict: dict! )
+            
+        }
+        
+        return self
+    }
     
 
     func toJsonDict() -> Dictionary<String,Any> {
         // Build a dictionary,
         // then convert it to a formatted json string
         var dict = [String: Any]()
-        dict[ImageProcessingCaps.KEY_DEBUG_AFTER_CROP] = debug_rotate_after_crop
-        dict[ImageProcessingCaps.KEY_DETECT_BLURRY_IMAGE] = detectBlurryImage
-        dict[ImageProcessingCaps.KEY_DETECT_LOW_LIGHT] = detectLowLight
-        dict[ImageProcessingCaps.KEY_ROTATE_IMAGES] = rotate_images
+        let jsonUtils = JsonUtils()
+        
+        
+        jsonUtils.putBool( dict: &dict, key: ImageProcessingCaps.KEY_DEBUG_AFTER_CROP,
+                          val: debug_rotate_after_crop )
+        
+        jsonUtils.putBool( dict: &dict, key: ImageProcessingCaps.KEY_DETECT_BLURRY_IMAGE,
+                           val: detectBlurryImage )
+        
+        jsonUtils.putBool( dict: &dict, key: ImageProcessingCaps.KEY_DETECT_LOW_LIGHT,
+                           val: detectLowLight )
+   
+        jsonUtils.putBool( dict: &dict, key: ImageProcessingCaps.KEY_ROTATE_IMAGES,
+        val: rotate_images )
         
         return dict
     }
+    
+    
+    func toJsonString() -> String {
+        let jsonUtils = JsonUtils()
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
+    }
+    
 }

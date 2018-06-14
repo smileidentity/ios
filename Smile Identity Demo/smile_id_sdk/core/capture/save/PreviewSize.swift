@@ -17,9 +17,26 @@ class PreviewSize {
     var width   : Int = 0
     var height  : Int = 0
     
+    init() {
+        self.width = 0
+        self.height = 0
+    }
+    
     init( width : Int, height : Int ){
         self.width = width
         self.height = height
+    }
+    
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> PreviewSize? {
+        let jsonUtils = JsonUtils()
+        
+        width = jsonUtils.getInt(dict:dict,
+                                 key: PreviewSize.KEY_WIDTH )!
+        
+        height = jsonUtils.getInt(dict:dict,
+                                  key: PreviewSize.KEY_HEIGHT )!
+        
+        
     }
     
     func fromJsonString( jsonFormattedString : String ) -> PreviewSize? {
@@ -31,17 +48,16 @@ class PreviewSize {
             
             let dict = jsonUtils.jsonFormattedStringToDict(
                 jsonFormattedString )
-            
-            width = jsonUtils.getInt(dict:dict!,
-                key: PreviewSize.KEY_WIDTH )!
-
-            height = jsonUtils.getInt(dict:dict!,
-                key: PreviewSize.KEY_HEIGHT )!
+            return fromJsonDict( dict: dict! )
             
         }
         
         return self
     }
+    
+    
+    
+ 
     
     
     func toJsonDict() -> Dictionary<String,Any> {

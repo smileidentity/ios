@@ -25,6 +25,28 @@ class GeoInfos {
     var accuracy                : Double = 0.0;
     var lastUpdate              : String = "";
     
+    init() {}
+    
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> GeoInfos? {
+        let jsonUtils = JsonUtils()
+        geoPermissionGranted = jsonUtils.getBool(dict:dict,
+                                        key: GeoInfos.KEY_GEO_PERMISSION_GRANTED )!
+        
+        latitude = jsonUtils.getDouble(dict:dict,
+                                       key: GeoInfos.KEY_LATITUDE )!
+        
+        longitude = jsonUtils.getDouble(dict:dict,
+                                        key: GeoInfos.KEY_LONGITUDE )!
+        
+        altitude = jsonUtils.getDouble(dict:dict,
+                                       key: GeoInfos.KEY_ALTITUDE )!
+        
+        accuracy = jsonUtils.getDouble(dict:dict,
+                                       key: GeoInfos.KEY_ACCURACY )!
+        
+        lastUpdate = jsonUtils.getString(dict:dict,
+                                         key: GeoInfos.KEY_LAST_UPDATE )!
+    }
     
     func fromJsonString( jsonFormattedString : String ) -> GeoInfos? {
         if( jsonFormattedString.isEmpty ){
@@ -35,24 +57,8 @@ class GeoInfos {
             
             let dict = jsonUtils.jsonFormattedStringToDict(
                 jsonFormattedString )
-            
-            geoPermissionGranted = jsonUtils.getBool(dict:dict!,
-                key: GeoInfos.KEY_GEO_PERMISSION_GRANTED )!
-            
-            latitude = jsonUtils.getDouble(dict:dict!,
-                key: GeoInfos.KEY_LATITUDE )!
-
-            longitude = jsonUtils.getDouble(dict:dict!,
-                key: GeoInfos.KEY_LONGITUDE )!
-            
-            altitude = jsonUtils.getDouble(dict:dict!,
-                key: GeoInfos.KEY_ALTITUDE )!
-
-            accuracy = jsonUtils.getDouble(dict:dict!,
-                key: GeoInfos.KEY_ACCURACY )!
+            return fromJsonDict( dict: dict! )
  
-            lastUpdate = jsonUtils.getString(dict:dict!,
-                key: GeoInfos.KEY_LAST_UPDATE )!
         }
         
         return self

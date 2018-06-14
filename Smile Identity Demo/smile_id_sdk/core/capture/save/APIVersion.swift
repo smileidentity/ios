@@ -25,6 +25,20 @@ class APIVersion {
     var majorVersion = MAJOR_VERSION;
     var buildNumber = BUILD_NUMBER;
     
+
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> APIVersion? {
+        let jsonUtils = JsonUtils()
+        
+        minorVersion = jsonUtils.getInt(dict:dict,
+                                        key: APIVersion.KEY_MIN_VERSION )!
+        majorVersion = jsonUtils.getInt(dict:dict,
+                                        key: APIVersion.KEY_MAJOR_VERSION )!
+        buildNumber = jsonUtils.getInt( dict:dict,
+                                        key: APIVersion.KEY_BUILD_NUMBER )!
+        
+        return self
+    }
+    
     func fromJsonString( jsonFormattedString : String ) -> APIVersion? {
         if( jsonFormattedString.isEmpty ){
             return nil
@@ -33,18 +47,10 @@ class APIVersion {
             let jsonUtils = JsonUtils()
             
             let dict = jsonUtils.jsonFormattedStringToDict(
-                    jsonFormattedString )
+                jsonFormattedString )
+            return fromJsonDict( dict: dict! )
             
-            minorVersion = jsonUtils.getInt(dict:dict!,
-                key: APIVersion.KEY_MIN_VERSION )!
-            majorVersion = jsonUtils.getInt(dict:dict!,
-                key: APIVersion.KEY_MAJOR_VERSION )!
-            buildNumber = jsonUtils.getInt( dict:dict!,
-                key: APIVersion.KEY_BUILD_NUMBER )!
-           
-         }
-        
-        return self
+        }
     }
     
     
@@ -64,4 +70,12 @@ class APIVersion {
         
         return dict
     }
+    
+    
+    
+    func toJsonString() -> String {
+        let jsonUtils = JsonUtils()
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
+    }
+    
 }

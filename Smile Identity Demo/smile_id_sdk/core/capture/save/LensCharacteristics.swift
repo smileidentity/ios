@@ -53,9 +53,14 @@ class LensCharacteristics {
     var focalLength             : Float = 0.0
     var maxZoom                 : Int       = 0
     
-    var whiteBalance            : String    = "auto"
-    
+   
     var fpsRange                = FPSRange(min: 0, max:0)
+    
+    var maxFPS                  : Int = SmileIDSingleton.sharedInstance.maxFPS
+    var minFPS                  : Int = SmileIDSingleton.sharedInstance.minFPS
+    var devicePortraitHorizontalResolution :Int =  SmileIDSingleton.sharedInstance.devicePortraitHorizontalResolution
+    var devicePortraitVerticalResolution : Int = SmileIDSingleton.sharedInstance.devicePortraitVerticalResolution
+    var whiteBalanceMode        : AVCaptureDevice.WhiteBalanceMode     = SmileIDSingleton.sharedInstance.whiteBalanceMode
     
     /*
     init (
@@ -89,24 +94,100 @@ class LensCharacteristics {
         
     }
      */
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> LensCharacteristics? {
+        let jsonUtils = JsonUtils()
+        
+        flashMode = jsonUtils.getString(dict:dict,
+                                        key: LensCharacteristics.KEY_FLASH_MODE )!
+        
+        focalLength = jsonUtils.getFloat(dict:dict,
+                                         key: LensCharacteristics.KEY_FOCAL_LENGTH )!
+        
+        // Read array of arrays ( Ported from Android code this way,
+        // in order to maintain compatibility with the format
+        // var jsFpsRangeArray = [Any]()
+        var jsFpsRangeArray = jsonUtils.getArray(dict:dict,
+            key: LensCharacteristics.KEY_FPS_RANGE )!
+        
+        // var fpsRangeArray = [Any]()
+        var fpsRangeArray = [jsFpsRangeArray[0]]
+        
+        fpsRange = FPSRange( min:fpsRangeArray[0] as! Int,
+                             max:fpsRangeArray[1] as! Int)
+        
+        
+        horizontalViewAngle = jsonUtils.getFloat(dict:dict,
+                                                 key: LensCharacteristics.KEY_HORIZONTAL_VIEW_ANGLE )!
+        
+        verticalViewAngle = jsonUtils.getFloat(dict:dict,
+                                               key: LensCharacteristics.KEY_VERTICAL_VIEW_ANGLE )!
+        
+        jpegQuality = jsonUtils.getInt(dict:dict,
+                                       key: LensCharacteristics.KEY_JPEG_QUALITY )!
+        
+        jpegThumbnailQuality = jsonUtils.getInt(dict:dict,
+                                                key: LensCharacteristics.KEY_JPEG_THUMBNAIL_QUALITY )!
+        
+        maxFPS = jsonUtils.getInt(dict:dict,
+                                  key: LensCharacteristics.KEY_MAX_FPS )!
+        
+        minFPS = jsonUtils.getInt(dict:dict,
+                                  key: LensCharacteristics.KEY_MIN_FPS )!
+        
+        devicePortraitHorizontalResolution = jsonUtils.getInt(dict:dict,
+                                                              key: LensCharacteristics.KEY_MAX_PREVIEW_WIDTH )!
+        
+        devicePortraitVerticalResolution = jsonUtils.getInt(dict:dict,
+                                                            key: LensCharacteristics.KEY_MAX_PREVIEW_HEIGHT )!
+        
+        maxZoom = jsonUtils.getInt(dict:dict,
+                                   key: LensCharacteristics.KEY_MAX_ZOOM )!
+        
+        let sWhiteBalanceMode = jsonUtils.getString(dict:dict,
+                                                    key: LensCharacteristics.KEY_WHITE_BALANCE )!
+        whiteBalanceMode = whiteBalanceModeFromString(sWhiteBalanceMode: sWhiteBalanceMode )
+
+    }
     
-    func toJsonString() -> String {
+    func fromJsonString( jsonFormattedString : String ) -> LensCharacteristics? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            return fromJsonDict( dict: dict! )
+            
+        }
+        
+        return self
+    }
+    
+    
+    
+
+ 
+    
+    func toJsonDict() -> Dictionary<String,Any> {
+        
         let jsonUtils = JsonUtils()
         var dict = [String: Any]()
         
         jsonUtils.putString( dict: &dict, key: LensCharacteristics.KEY_FLASH_MODE,
-            val: flashMode )
+                             val: flashMode )
         
         jsonUtils.putFloat( dict: &dict, key: LensCharacteristics.KEY_FOCAL_LENGTH,
-                             val: focalLength )
+                            val: focalLength )
         
         /* Ported from Android code, so that the format is compatible
-            with the old code */
+         with the old code */
         // Create an array of arrays for the fps ranges.
         // First, create one FPSRange object.
         let fpsRange = FPSRange( min:
             SmileIDSingleton.sharedInstance.minFPS,
-            max:SmileIDSingleton.sharedInstance.maxFPS )
+                                 max:SmileIDSingleton.sharedInstance.maxFPS )
         // Each FPSRange goes into an array, where [0] = min, and [1] = max
         var fpsRangeArray = [Any]()
         fpsRangeArray[0] = fpsRange.min
@@ -118,41 +199,46 @@ class LensCharacteristics {
         jsFpsRangeArray[0] = fpsRangeArray
         
         // Now put jsFpsRangeArray in the dictionary
-        jsonUtils.putArray(dict: &dict, key: LensCharacteristics.KEY_FPS_RANGE, val:fpsRangeArray)
+        jsonUtils.putArray(dict: &dict, key: LensCharacteristics.KEY_FPS_RANGE, val:jsFpsRangeArray)
         
-       
         jsonUtils.putFloat( dict: &dict, key: LensCharacteristics.KEY_HORIZONTAL_VIEW_ANGLE,
-            val: horizontalViewAngle )
+                            val: horizontalViewAngle )
         
         jsonUtils.putFloat( dict: &dict, key: LensCharacteristics.KEY_VERTICAL_VIEW_ANGLE,
                             val: verticalViewAngle )
         
         jsonUtils.putInt( dict: &dict, key: LensCharacteristics.KEY_JPEG_QUALITY,
-                            val: jpegQuality )
+                          val: jpegQuality )
         
         jsonUtils.putInt( dict: &dict, key: LensCharacteristics.KEY_JPEG_THUMBNAIL_QUALITY,
                           val: jpegThumbnailQuality )
         
         jsonUtils.putInt( dict: &dict, key: LensCharacteristics.KEY_MAX_FPS,
-            val: SmileIDSingleton.sharedInstance.maxFPS )
-    
+                          val: maxFPS )
+        
         jsonUtils.putInt( dict: &dict, key: LensCharacteristics.KEY_MIN_FPS,
-            val: SmileIDSingleton.sharedInstance.minFPS )
-
+                          val: minFPS )
+        
         jsonUtils.putInt( dict: &dict, key: LensCharacteristics.KEY_MAX_PREVIEW_WIDTH,
-            val: SmileIDSingleton.sharedInstance.devicePortraitHorizontalResolution )
+                          val: devicePortraitHorizontalResolution )
         
         jsonUtils.putInt( dict: &dict, key: LensCharacteristics.KEY_MAX_PREVIEW_HEIGHT,
-                          val: SmileIDSingleton.sharedInstance.devicePortraitVerticalResolution )
+                          val: devicePortraitVerticalResolution )
         
         jsonUtils.putInt( dict: &dict, key: LensCharacteristics.KEY_MAX_ZOOM,
                           val:maxZoom )
-        let sWhiteBalanceMode = whiteBalanceModeToString( whiteBalanceMode: SmileIDSingleton.sharedInstance.whiteBalanceMode )
-        jsonUtils.putString( dict: &dict, key: LensCharacteristics.KEY_WHITE_BALANCE,
-                             val: sWhiteBalanceMode )
         
-        return jsonUtils.dictToJsonFormattedString( dict : dict )
-
+        let sWhiteBalanceMode = whiteBalanceModeToString( whiteBalanceMode:whiteBalanceMode  )
+        jsonUtils.putString( dict: &dict, key: LensCharacteristics.KEY_WHITE_BALANCE,
+            val : sWhiteBalanceMode )
+                             
+        
+        return dict
+    }
+    
+    func toJsonString() -> String {
+        let jsonUtils = JsonUtils()
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
     }
     
     
@@ -168,6 +254,19 @@ class LensCharacteristics {
                 return "continuous"
         }
         
+    }
+    
+    func whiteBalanceModeFromString( sWhiteBalanceMode : String ) -> AVCaptureDevice.WhiteBalanceMode {
+        
+        if( sWhiteBalanceMode == "locked" ){
+            return AVCaptureDevice.WhiteBalanceMode.locked
+        }
+        else if( sWhiteBalanceMode == "auto"  ){
+            return AVCaptureDevice.WhiteBalanceMode.autoWhiteBalance
+        }
+        else{
+            return AVCaptureDevice.WhiteBalanceMode.continuousAutoWhiteBalance
+        }
     }
 
 }

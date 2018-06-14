@@ -56,7 +56,7 @@ class CaptureConfig {
     
     static let KEY_TOAST_SMILE_MORE             : String = "toastSmileMore"
 
-     static let KEY_USE_ARC                     : String = "useArc"
+    static let KEY_USE_ARC                     : String = "useArc"
     static let KEY_USE_EMOTICON                 : String = "useEmoticon"
     
     /*
@@ -65,58 +65,210 @@ class CaptureConfig {
      */
     
      
-    let idCardDelay         : Int = 5
-    let acceptBox           : String = "Create Smile Identity"
-    let autoSend            : Bool = false
-    let showXmitProgress    : Bool = true
-    let consentMessage      : String = "Smile Identity helps us to verify your identity. By using this service you comply with the Terms of use."
+    var idCardDelay         : Int = 5
+    var acceptBox           : String = "Create Smile Identity"
+    var autoSend            : Bool = false
+    var showXmitProgress    : Bool = true
+    var consentMessage      : String = "Smile Identity helps us to verify your identity. By using this service you comply with the Terms of use."
     
-    let desiredHeight       : Int = 240
-    let desiredWidth        : Int = 320
-    let disableRestart      : Bool = true
-    let idCardMessage1      : String = "Place your ID within the rectangle and TAP the Screen"
-    let idCardMessage2      : String = "Please tap inside the rectangular bound"
+    var desiredHeight       : Int = 240
+    var desiredWidth        : Int = 320
+    var disableRestart      : Bool = true
+    var idCardMessage1      : String = "Place your ID within the rectangle and TAP the Screen"
+    var idCardMessage2      : String = "Please tap inside the rectangular bound"
     
-    let idCardMessage3     : String = "Can you read the complete ID?"
+    var idCardMessage3     : String = "Can you read the card ID?"
     var idCardType          : String = ""
-    let imageFormat         : Int = 4
+    var imageFormat         : Int = 4
     var imageProcessingCaps = ImageProcessingCaps()
-    let isCaptureFullImage  : Bool = false
-    let isFrontFacingCamera : Bool = true
-    let manualCapture       : Bool = false
-    let maxArcWidth         : Int = 10
-    let maxFPS              : Int = 5
-    let maxFrameTimeout     : Int = 120
-    let minArcWidth         : Int = 10
-    let minSmileConfidence  : Float = 0.8
-    let minX                : Int = 128
-    let minY                : Int = 128
-    let numImagesToCapture  : Int = 8
-    let onPreview           : Bool = false
+    var isCaptureFullImage  : Bool = false
+    var isFrontFacingCamera : Bool = true
+    var manualCapture       : Bool = false
+    var maxArcWidth         : Int = 10
+    var maxFPS              : Int = 5
+    var maxFrameTimeout     : Int = 120
+    var minArcWidth         : Int = 10
+    var minSmileConfidence  : Float = 0.8
+    var minX                : Int = 128
+    var minY                : Int = 128
+    var numImagesToCapture  : Int = 8
+    var onPreview           : Bool = false
     
     /* These are reset in PackageService */
     var lambdaAddress       : String = "https://3eydmgh10d.execute-api.us-west-2.amazonaws.com/test/upload"
     var partnerAddress      : String = "https://test-smileid.herokuapp.com/"
-    var partnerPort         : String = "8080"
+    var  partnerPort         : String = "8080"
     var sidAddress          : String = "smileidentity"
     var sidPort             : String = "8443"
     
-    let scalingFullCapture  : Int = 4
-    let scalingIdCard       : Int = 2
-    let scalingMinDimen     : Int = 640
-    let scalingOffset       : Int = 0
-    let scalingQuality      : Int = 100
-     let suggestedFPS        : Int = 5
-    let toastDelay          : Int = 1000
-    let toastDelayForSamePrompt : Int = 100
-    let toastFaceInOval     : String = "Put Your Face Inside Oval"
-    let toastMoveCloser     : String = "Move Closer"
-    let toastSmile          : String = "Smile"
-    let toastSmileMore      : String = "Smile More"
-    let useArc              : Bool = true
-    let useEmoticon         : Bool = false
+    var scalingFullCapture  : Int = 4
+    var scalingIdCard       : Int = 2
+    var scalingMinDimen     : Int = 640
+    var scalingOffset       : Int = 0
+    var scalingQuality      : Int = 100
+    var suggestedFPS        : Int = 5
+    var toastDelay          : Int = 1000
+    var toastDelayForSamePrompt : Int = 100
+    var toastFaceInOval     : String = "Put Your Face Inside Oval"
+    var toastMoveCloser     : String = "Move Closer"
+    var toastSmile          : String = "Smile"
+    var toastSmileMore      : String = "Smile More"
+    var useArc              : Bool = true
+    var useEmoticon         : Bool = false
 
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> CaptureConfig? {
+        let jsonUtils = JsonUtils()
+        
+        idCardDelay = jsonUtils.getInt(dict:dict,
+                                       key: CaptureConfig.KEY_ID_CARD_DELAY )!
+        acceptBox = jsonUtils.getString(dict:dict,
+                                        key: CaptureConfig.KEY_ACCEPT_BOX )!
+        autoSend = jsonUtils.getBool(dict:dict,
+                                     key: CaptureConfig.KEY_AUTO_SEND )!
+        showXmitProgress = jsonUtils.getBool(dict:dict,
+                                             key: CaptureConfig.KEY_SHOW_XMIT_PROGRESS )!
+        consentMessage = jsonUtils.getString(dict:dict,
+                                             key: CaptureConfig.KEY_CONSENT_MESSAGE )!
+        desiredHeight = jsonUtils.getInt(dict:dict,
+                                         key: CaptureConfig.KEY_DESIRED_HEIGHT )!
+        desiredWidth = jsonUtils.getInt(dict:dict,
+                                        key: CaptureConfig.KEY_DESIRED_WIDTH )!
+        disableRestart = jsonUtils.getBool(dict:dict,
+                                           key: CaptureConfig.KEY_DISABLE_RESTART )!
+        idCardMessage1 = jsonUtils.getString(dict:dict,
+                                             key: CaptureConfig.KEY_ID_CARD_MESSAGE1 )!
+        idCardMessage2 = jsonUtils.getString(dict:dict,
+                                             key: CaptureConfig.KEY_ID_CARD_MESSAGE2 )!
+        idCardMessage3 = jsonUtils.getString(dict:dict,
+                                             key: CaptureConfig.KEY_ID_CARD_MESSAGE3 )!
+        idCardType = jsonUtils.getString(dict:dict,
+                                         key: CaptureConfig.KEY_ID_CARD_TYPE )!
+        imageFormat = jsonUtils.getInt(dict:dict,
+                                       key: CaptureConfig.KEY_IMAGE_FORMAT )!
+        idCardType = jsonUtils.getString(dict:dict,
+                                         key: CaptureConfig.KEY_IMAGE_FORMAT )!
+        
+        let sImageProcessingCaps =
+            jsonUtils.getString(dict:dict,
+                                key: CaptureConfig.KEY_IMAGE_PROCESSING_CAPS )
+        imageProcessingCaps = ImageProcessingCaps()
+        imageProcessingCaps = imageProcessingCaps.fromJsonString(jsonFormattedString: sImageProcessingCaps! )!
+        
+        isCaptureFullImage = jsonUtils.getBool(dict:dict,
+                                               key: CaptureConfig.KEY_IS_CAPTURE_FULL_IMAGE )!
+        
+        isFrontFacingCamera = jsonUtils.getBool(dict:dict,
+                                                key: CaptureConfig.KEY_IS_FRONT_FACING_CAMERA )!
+        
+        lambdaAddress = jsonUtils.getString(dict:dict,
+                                            key: CaptureConfig.KEY_LAMBDA_ADDRESS )!
+        manualCapture = jsonUtils.getBool(dict:dict,
+                                          key: CaptureConfig.KEY_MANUAL_CAPTURE )!
+        
+        maxArcWidth = jsonUtils.getInt(dict:dict,
+                                       key: CaptureConfig.KEY_MAX_ARC_WIDTH )!
+        
+        maxFPS = jsonUtils.getInt(dict:dict,
+                                  key: CaptureConfig.KEY_MAX_FPS )!
+        
+        maxFrameTimeout = jsonUtils.getInt(dict:dict,
+                                           key: CaptureConfig.KEY_MAX_FRAME_TIMEOUT )!
+        
+        minArcWidth = jsonUtils.getInt(dict:dict,
+                                       key: CaptureConfig.KEY_MIN_ARC_WIDTH )!
+        
+        minSmileConfidence = jsonUtils.getFloat(dict:dict,
+                                                key: CaptureConfig.KEY_MIN_SMILE_CONFIDENCE )!
+        
+        minX = jsonUtils.getInt(dict:dict,
+                                key: CaptureConfig.KEY_MIN_X )!
+        minY = jsonUtils.getInt(dict:dict,
+                                key: CaptureConfig.KEY_MIN_Y )!
+        
+        minY = jsonUtils.getInt(dict:dict,
+                                key: CaptureConfig.KEY_MIN_Y )!
+        numImagesToCapture = jsonUtils.getInt(dict:dict,
+                                              key: CaptureConfig.KEY_NUM_IMAGES_TO_CAPTURE )!
+        
+        onPreview = jsonUtils.getBool(dict:dict,
+                                      key: CaptureConfig.KEY_ON_PREVIEW )!
+        
+        partnerAddress = jsonUtils.getString(dict:dict,
+                                             key: CaptureConfig.KEY_PARTNER_ADDRESS )!
+        
+        partnerPort = jsonUtils.getString(dict:dict,
+                                          key: CaptureConfig.KEY_PARTNER_PORT )!
+        
+        scalingFullCapture = jsonUtils.getInt(dict:dict,
+                                              key: CaptureConfig.KEY_SCALING_FULL_CAPTURE )!
+        
+        scalingIdCard = jsonUtils.getInt(dict:dict,
+                                         key: CaptureConfig.KEY_SCALING_ID_CARD )!
+        
+        scalingMinDimen = jsonUtils.getInt(dict:dict,
+                                           key: CaptureConfig.KEY_SCALING_MIN_DIMEN )!
+        
+        scalingOffset = jsonUtils.getInt(dict:dict,
+                                         key: CaptureConfig.KEY_SCALING_OFFSET )!
+        
+        scalingQuality = jsonUtils.getInt(dict:dict,
+                                          key: CaptureConfig.KEY_SCALING_QUALITY )!
+        
+        sidAddress = jsonUtils.getString(dict:dict,
+                                         key: CaptureConfig.KEY_SID_ADDRESS )!
+        
+        sidPort = jsonUtils.getString(dict:dict,
+                                      key: CaptureConfig.KEY_SID_PORT )!
+        
+        suggestedFPS = jsonUtils.getInt(dict:dict,
+                                        key: CaptureConfig.KEY_SUGGESTED_FPS )!
+        
+        toastDelay = jsonUtils.getInt(dict:dict,
+                                      key: CaptureConfig.KEY_TOAST_DELAY )!
+        
+        toastDelayForSamePrompt = jsonUtils.getInt(dict:dict,
+                                                   key: CaptureConfig.KEY_TOAST_DELAY_FOR_SAME_PROMPT )!
+        
+        toastFaceInOval = jsonUtils.getString(dict:dict,
+                                              key: CaptureConfig.KEY_TOAST_FACE_IN_OVAL )!
+        
+        toastMoveCloser = jsonUtils.getString(dict:dict,
+                                              key: CaptureConfig.KEY_TOAST_MOVE_CLOSER )!
+        
+        toastSmile = jsonUtils.getString(dict:dict,
+                                         key: CaptureConfig.KEY_TOAST_SMILE )!
+        
+        toastSmileMore = jsonUtils.getString(dict:dict,
+                                             key: CaptureConfig.KEY_TOAST_SMILE_MORE )!
+        
+        useArc = jsonUtils.getBool(dict:dict,
+                                   key: CaptureConfig.KEY_USE_ARC )!
+        
+        useEmoticon = jsonUtils.getBool(dict:dict,
+                                        key: CaptureConfig.KEY_USE_EMOTICON )!
+
+        
+        
+        
+    }
      
+    
+    
+    func fromJsonString( jsonFormattedString : String ) -> CaptureConfig? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            return fromJsonDict( dict: dict! )
+            
+        }
+        
+        return self
+    }
     
     
     func toJsonDict() -> Dictionary<String,Any> {
@@ -165,7 +317,7 @@ class CaptureConfig {
                           val:imageFormat )
         
         jsonUtils.putDict( dict: &dict, key: CaptureConfig.KEY_IMAGE_PROCESSING_CAPS,
-                           val:ImageProcessingCaps().toJsonDict()
+                           val:imageProcessingCaps.toJsonDict()
         )
         
         jsonUtils.putBool( dict: &dict, key: CaptureConfig.KEY_IS_CAPTURE_FULL_IMAGE,

@@ -112,7 +112,7 @@ class NetRequest {
                            jobType : Int,
                            isAuthenticationMode : Bool) throws -> AuthSmileResponse {
         
-        var response : AuthSmileResponse?
+        let response : AuthSmileResponse?
         let appData = AppData()
 
         let userId = appData.getUserId( defaultUserId: "" )
@@ -171,7 +171,7 @@ class NetRequest {
             logOutput = "executeAuthSmile auth response:--"
         }
         
-        logOutput = logOutput! + (response.getRawJsonString())! + " request:" + request.toJsonString()
+        logOutput = logOutput! + (response.getRawJsonString()) + " request:" + request.toJsonString()
         
         logger.SIPrint(logOutput: logOutput!)
     }

@@ -17,6 +17,17 @@ class SecurityCaps {
     var RSACapable : Bool = false;
     
     
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> SecurityCaps? {
+        let jsonUtils = JsonUtils()
+        
+        AESCapable = jsonUtils.getBool(dict:dict,
+                                       key: SecurityCaps.KEY_AES_CAPABLE )!
+        RSACapable = jsonUtils.getBool(dict:dict,
+                                       key: SecurityCaps.KEY_RSA_CAPABLE)!
+
+        
+    }
+    
     func fromJsonString( jsonFormattedString : String ) -> SecurityCaps? {
         if( jsonFormattedString.isEmpty ){
             return nil
@@ -26,17 +37,14 @@ class SecurityCaps {
             
             let dict = jsonUtils.jsonFormattedStringToDict(
                 jsonFormattedString )
+            return fromJsonDict( dict: dict! )
             
-            AESCapable = jsonUtils.getBool(dict:dict!,
-                key: SecurityCaps.KEY_AES_CAPABLE )!
-            RSACapable = jsonUtils.getBool(dict:dict!,
-                key: SecurityCaps.KEY_RSA_CAPABLE)!
-           
         }
         
         return self
     }
     
+   
     
     func toJsonDict() -> Dictionary<String,Any> {
         
@@ -50,6 +58,14 @@ class SecurityCaps {
                            val: RSACapable )
      
         return dict
+    }
+    
+    
+    func toJsonString() -> String {
+        let jsonUtils = JsonUtils()
+        
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
+        
     }
     
     

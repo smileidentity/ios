@@ -32,8 +32,8 @@ class UserInfoJson{
     var countryCode         : String = ""
     var countryName         : String = ""
   
-    let jsonUtils           = JsonUtils()
-
+  
+    init() {}
     
     init ( isVerifyProcess  : Bool,
            userName         : String,
@@ -58,6 +58,41 @@ class UserInfoJson{
     }
     
     
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> UserInfoJson? {
+        let jsonUtils = JsonUtils()
+        
+        isVerifyProcess = jsonUtils.getBool(dict:dict,
+                                        key: UserInfoJson.KEY_JSON_VERIFIED )!
+        
+        userName = jsonUtils.getString(dict:dict,
+                                       key: UserInfoJson.KEY_JSON_NAME )!
+        
+        fbUserId = jsonUtils.getString(dict:dict,
+                                       key: UserInfoJson.KEY_JSON_FB_USER_ID )!
+        
+        fbUserFirstName = jsonUtils.getString(dict:dict,
+                                        key: UserInfoJson.KEY_JSON_FIRST_NAME )!
+        
+        fbUserLastName = jsonUtils.getString(dict:dict,
+                                        key: UserInfoJson.KEY_JSON_LAST_NAME )!
+        
+        fbUserGender = jsonUtils.getString(dict:dict,
+                                        key: UserInfoJson.KEY_JSON_GENDER )!
+        
+        fbUserEmail = jsonUtils.getString(dict:dict,
+                                        key: UserInfoJson.KEY_JSON_EMAIL )!
+        
+        fbUserPhoneNumber = jsonUtils.getString(dict:dict,
+                                        key: UserInfoJson.KEY_JSON_PHONE )!
+        
+        countryCode = jsonUtils.getString(dict:dict,
+                                        key: UserInfoJson.KEY_JSON_COUNTRY_CODE )!
+        
+        countryName = jsonUtils.getString(dict:dict,
+                                        key: UserInfoJson.KEY_JSON_COUNTRY_NAME )!
+
+     }
+    
     func fromJsonString( jsonFormattedString : String ) -> UserInfoJson? {
         if( jsonFormattedString.isEmpty ){
             return nil
@@ -68,37 +103,7 @@ class UserInfoJson{
             let dict = jsonUtils.jsonFormattedStringToDict(
                 jsonFormattedString )
             
-            isVerifyProcess = jsonUtils.getBool(dict:dict!,
-                key: UserInfoJson.KEY_JSON_VERIFIED )!
- 
-            userName = jsonUtils.getString(dict:dict!,
-                key: UserInfoJson.KEY_JSON_NAME )!
-
-            fbUserId = jsonUtils.getString(dict:dict!,
-                key: UserInfoJson.KEY_JSON_FB_USER_ID )!
- 
-            fbUserFirstName = jsonUtils.getString(dict:dict!,
-                key: UserInfoJson.KEY_JSON_FIRST_NAME )!
-
-            fbUserLastName = jsonUtils.getString(dict:dict!,
-                key: UserInfoJson.KEY_JSON_LAST_NAME )!
-            
-            fbUserGender = jsonUtils.getString(dict:dict!,
-                key: UserInfoJson.KEY_JSON_GENDER )!
-            
-            fbUserEmail = jsonUtils.getString(dict:dict!,
-                key: UserInfoJson.KEY_JSON_EMAIL )!
-            
-            fbUserPhoneNumber = jsonUtils.getString(dict:dict!,
-                key: UserInfoJson.KEY_JSON_PHONE )!
-
-            countryCode = jsonUtils.getString(dict:dict!,
-                key: UserInfoJson.KEY_JSON_COUNTRY_CODE )!
-
-            countryName = jsonUtils.getString(dict:dict!,
-                key: UserInfoJson.KEY_JSON_COUNTRY_NAME )!
-
-            
+            return fromJsonDict(dict: dict!)
         }
         
         return self
@@ -108,6 +113,7 @@ class UserInfoJson{
     
     
     func toJsonDict() -> Dictionary<String,Any> {
+        let jsonUtils = JsonUtils()
         
         // Create a dictionary
         var dict = [String: Any]()
@@ -146,9 +152,9 @@ class UserInfoJson{
     }
     
     func toJsonString() -> String {
+        let jsonUtils = JsonUtils()
         
         return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
-
     }
      
     

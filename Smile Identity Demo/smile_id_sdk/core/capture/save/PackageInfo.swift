@@ -53,10 +53,76 @@ class PackageInfo {
     var frameInfoIDCard             : FullFrameInfo?
     var isMaxFrameTimeout           : Bool?
     
-    func fromDict() -> PackageInfo {
+    
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> PackageInfo? {
+        let jsonUtils = JsonUtils()
         
+        let sidDeviceCameraInfosBackDict = jsonUtils.getDict(dict:dict,
+            key: PackageInfo.KEY_SID_DEVICE_CAMERA_INFOS_BACK )
+        sidDeviceCameraInfosBack = SIDDeviceCameraInfos().fromJsonDict(dict: sidDeviceCameraInfosBackDict)
+        
+        let sidDeviceCameraInfosFrontDict = jsonUtils.getDict(dict:dict,
+            key: PackageInfo.KEY_SID_DEVICE_CAMERA_INFOS_FRONT )
+        sidDeviceCameraInfosFront = SIDDeviceCameraInfos().fromJsonDict(dict: sidDeviceCameraInfosFrontDict)
+        
+        let apiVersionDict = jsonUtils.getDict(dict:dict,
+            key: PackageInfo.KEY_API_VERSION )
+        apiVersion = APIVersion().fromJsonDict(dict: apiVersionDict)
+
+        let captureConfigDict = jsonUtils.getDict(dict:dict,
+            key: PackageInfo.KEY_CAPTURE_CONFIG )
+        captureConfig = CaptureConfig().fromJsonDict(dict: captureConfigDict)
+
+        /* An array of dictionaries */
+        var frameInfoDictArray = [Dictionary<String,Any>]()
+        frameInfoDictArray =  jsonUtils.getArray(dict:dict,
+            key: PackageInfo.KEY_FRAME_INFO ) as! [Dictionary<String, Any>]
+        
+        fullFrameInfoList = [FullFrameInfo]()
+        for frameInfoDict in frameInfoDictArray {
+            let frameData = FullFrameInfo().fromJsonDict( dict: frameInfoDict )
+            fullFrameInfoList?.append(frameData!)
+        }
+    
+        
+        let frameInfoIdCardDict = jsonUtils.getDict(dict:dict,
+                key: PackageInfo.KEY_FRAME_INFO_ID_CARD )
+        frameInfoIDCard = FullFrameInfo().fromJsonDict(dict: frameInfoIdCardDict)
+
+        let frameInfoPreviewFullDict = jsonUtils.getDict(dict:dict,
+                key: PackageInfo.KEY_FRAME_INFO_PREVIEW_FULL )
+        frameInfoPreviewFull = FullFrameInfo().fromJsonDict(dict: frameInfoPreviewFullDict)
+        
+        isMaxFrameTimeout = jsonUtils.getBool(dict:dict,
+            key: PackageInfo.KEY_IS_MAX_FRAME_TIMEOUT )
+ 
+        referenceId = jsonUtils.getString(dict:dict,
+            key: PackageInfo.KEY_REFERENCE_ID )
+        
+        let securityCapsDict = jsonUtils.getDict(dict:dict,
+            key: PackageInfo.KEY_SECURITY_CAPS )
+        securityCaps = SecurityCaps().fromJsonDict(dict: securityCapsDict)
+
+        
+        return self
+       
     }
     
+    func fromJsonString( jsonFormattedString : String ) -> PackageInfo? {
+        if( jsonFormattedString.isEmpty ){
+            return nil
+        }
+        else{
+            let jsonUtils = JsonUtils()
+            
+            let dict = jsonUtils.jsonFormattedStringToDict(
+                jsonFormattedString )
+            
+            return fromJsonDict(dict: dict!)
+        }
+        
+        return self
+    }
     func toJsonDict() -> Dictionary<String,Any> {
         // Build a dictionary,
         var dict = [String: Any]()
@@ -80,13 +146,12 @@ class PackageInfo {
             dictionary containing a frame */
         // An array of dictionaries.
         // https://stackoverflow.com/questions/37776334/parse-//json-without-key-in-swift
-        var frameInfoDictList = [Dictionary<String,Any>]()
+        var frameInfoDictArray = [Dictionary<String,Any>]()
         for frameData in fullFrameInfoList! {
-            frameInfoDictList.append(frameData.toJsonDict() )
+            frameInfoDictArray.append(frameData.toJsonDict() )
         }
-        
         jsonUtils.putArray(dict: &dict, key:PackageInfo.KEY_FRAME_INFO,
-            val: frameInfoDictList)
+            val: frameInfoDictArray)
         
         jsonUtils.putDict( dict: &dict, key: PackageInfo.KEY_FRAME_INFO_ID_CARD,
             val: (frameInfoIDCard?.toJsonDict())! )
@@ -105,6 +170,13 @@ class PackageInfo {
         
         return dict
         
+    }
+    
+    
+    
+    func toJsonString() -> String {
+        let jsonUtils = JsonUtils()
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
     }
     
     

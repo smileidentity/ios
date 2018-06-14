@@ -24,6 +24,8 @@ class FullFrameInfo {
     var smileValue      :   Double = 0.0
     var fileName        :   String = ""
     
+    init(){}
+    
     init( smileValue    : Double,
           fileName      : String,
           dateTime      : String ){
@@ -43,7 +45,28 @@ class FullFrameInfo {
         self.imageLength = String( imageLength )
     }
     
-      
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> FullFrameInfo? {
+        let jsonUtils = JsonUtils()
+        dateTime = jsonUtils.getString(dict:dict,
+                                       key: FullFrameInfo.KEY_DATE_TIME )!
+        
+        fileName = jsonUtils.getString(dict:dict,
+                                       key: FullFrameInfo.KEY_FILENAME )!
+        
+        imageLength = jsonUtils.getString(dict:dict,
+                                          key: FullFrameInfo.KEY_IMAGE_LENGTH )!
+        
+        imageWidth = jsonUtils.getString(dict:dict,
+                                         key: FullFrameInfo.KEY_IMAGE_WIDTH )!
+        
+        orientation = jsonUtils.getInt(dict:dict,
+                                       key: FullFrameInfo.KEY_ORIENTATION )!
+        
+        smileValue = jsonUtils.getDouble(dict:dict,
+                                         key: FullFrameInfo.KEY_SMILE_VALUE )!
+
+       }
+    
     func fromJsonString( jsonFormattedString : String ) -> FullFrameInfo? {
         if( jsonFormattedString.isEmpty ){
             return nil
@@ -53,30 +76,15 @@ class FullFrameInfo {
             
             let dict = jsonUtils.jsonFormattedStringToDict(
                 jsonFormattedString )
-            
-            dateTime = jsonUtils.getString(dict:dict!,
-                key: FullFrameInfo.KEY_DATE_TIME )!
-            
-            fileName = jsonUtils.getString(dict:dict!,
-                key: FullFrameInfo.KEY_FILENAME )!
-            
-            imageLength = jsonUtils.getString(dict:dict!,
-                key: FullFrameInfo.KEY_IMAGE_LENGTH )!
-            
-            imageWidth = jsonUtils.getString(dict:dict!,
-                key: FullFrameInfo.KEY_IMAGE_WIDTH )!
-
-            orientation = jsonUtils.getInt(dict:dict!,
-                key: FullFrameInfo.KEY_ORIENTATION )!
-
-            smileValue = jsonUtils.getDouble(dict:dict!,
-                key: FullFrameInfo.KEY_SMILE_VALUE )!
-
+            return fromJsonDict( dict: dict! )
             
         }
         
         return self
     }
+    
+    
+
     
     func toJsonDict() -> Dictionary<String,Any> {
         
@@ -104,7 +112,10 @@ class FullFrameInfo {
     }
     
     
-
+    func toJsonString() -> String {
+        let jsonUtils = JsonUtils()
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
+    }
     
     
 }
