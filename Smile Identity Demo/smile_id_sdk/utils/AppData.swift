@@ -94,8 +94,6 @@ class AppData {
     
     let KEY_ID_TAKEN                : String =  "com.smileidentity.libsmileid.utils.KEY_ID_TAKEN"
     
-    let KEY_CURRENT_JOB_TYPE        : String = "com.smileidentity.libsmileid.utils.KEY_CURRENT_JOB_TYPE";
-    
     func remove ( _ key : String ){
         let userDefaults = getUserDefaults()
         userDefaults.removeObject(forKey: key)
@@ -365,14 +363,13 @@ class AppData {
         return getBool(KEY_ID_TAKEN)!
     }
     
-    func getCurrentJobType() -> Int {
-        return getInt(KEY_CURRENT_JOB_TYPE)!
+    func removeUserId() {
+        remove(KEY_USER_ID)
     }
     
-    func setCurrentJobType( currentJobType : Int ) {
-        setInt( KEY_CURRENT_JOB_TYPE, val : currentJobType);
+    func removeLastEnrolledJobId() {
+        remove(KEY_LAST_ENROLL_JOB_ID)
     }
-
     
     func isSIFolderCleared() -> Bool {
         return getBool(KEY_SI_FOLDER_CLEARED )!

@@ -110,7 +110,7 @@ class NetRequest {
                            authUrl : String,
                            jobStatusUrl : String,
                            jobType : Int,
-                           isAuthenticationMode : Bool) throws -> AuthSmileResponse {
+                           isAuthenticationMode : Bool) throws /*-> AuthSmileResponse?*/ {
         
         let response : AuthSmileResponse?
         let appData = AppData()
@@ -144,6 +144,7 @@ class NetRequest {
                 throw new SIDException("Auth " + statusResponse.getError());
             }
  
+ 
     }
     else {
         // Enroll mode
@@ -155,9 +156,10 @@ class NetRequest {
         }
 
     }
- */
-    
-        return response!;
+ 
+ 
+        return response
+  */
     }
     
     func logError( request : AuthSmileRequestJson,
@@ -303,7 +305,7 @@ class NetRequest {
             appData.setLastEnrollJobId(lastEnrollJobId: jobId )
         }
         
-        let lambdaRequestJson = LamdaRequestJson(
+        let lambdaRequestJson = LambdaRequestJson(
             phoneNumber: phoneNumber,
             referenceId: referenceId,
             deviceId: deviceId,

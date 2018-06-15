@@ -91,6 +91,7 @@ class UserInfoJson{
         countryName = jsonUtils.getString(dict:dict,
                                         key: UserInfoJson.KEY_JSON_COUNTRY_NAME )!
 
+        return self
      }
     
     func fromJsonString( jsonFormattedString : String ) -> UserInfoJson? {

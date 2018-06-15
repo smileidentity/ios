@@ -247,7 +247,7 @@ class CaptureConfig {
         useEmoticon = jsonUtils.getBool(dict:dict,
                                         key: CaptureConfig.KEY_USE_EMOTICON )!
 
-        
+        return self
         
         
     }

@@ -25,7 +25,7 @@ class SecurityCaps {
         RSACapable = jsonUtils.getBool(dict:dict,
                                        key: SecurityCaps.KEY_RSA_CAPABLE)!
 
-        
+        return self
     }
     
     func fromJsonString( jsonFormattedString : String ) -> SecurityCaps? {

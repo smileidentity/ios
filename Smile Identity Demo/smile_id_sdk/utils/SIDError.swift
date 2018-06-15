@@ -38,6 +38,7 @@ enum SIDError : Error {
     case ERROR_UNKNOWN
     case UNABLE_TO_SUBMIT_TRY_AGAIN
     case TAG_NOT_FOUND
+    case NETWORK_DATA_NOT_VALID
     
     case custom(errMsg: String)
     
@@ -128,6 +129,9 @@ extension SIDError {
             
         case .TAG_NOT_FOUND:
              return NSLocalizedString("tag_not_found", comment: "")
+            
+        case .NETWORK_DATA_NOT_VALID:
+            return NSLocalizedString("Network data not valid", comment: "")
             
         case .ERROR_UNKNOWN:
              return NSLocalizedString("error_unknown", comment: "")

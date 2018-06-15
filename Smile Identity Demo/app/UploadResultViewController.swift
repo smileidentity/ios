@@ -18,13 +18,16 @@ class UploadResultViewController:
      
     @IBAction func onClickUploadNowButton(_ sender: Any) {
         // check if network is available then start the upload
-        
-        let sidNetworkUtils = SIDNetworkUtils()
-        if( sidNetworkUtils.isConnected() ){
-            startActivityIndicator()
-            /* TODO implement this
-            sidNetworkRequest.submit()
-             */
+        do {
+            let sidNetworkUtils = SIDNetworkUtils()
+            if( sidNetworkUtils.isConnected() ){
+                startActivityIndicator()
+                try sidNetworkRequest?.submit( sidConfig: sidConfig )
+            }
+        }
+        catch {
+            let logger = SILog()
+            logger.SIPrint(logOutput: "UploadResultViewController : An error occurred while trying to upload" )
         }
     }
     
@@ -68,11 +71,11 @@ class UploadResultViewController:
         sidNetData.sidPort = SIDNetUrl.SID_PORT
         sidConfig.sidNetworkRequest = SIDNetworkRequest()
         sidConfig.sidNetData = sidNetData
-        sidConfig.retryOnfailure = getRetryOnFailurePolicy()
+        sidConfig.retryOnFailurePolicy = getRetryOnFailurePolicy()
         
-        let geoInfos = GeoInfos()
-        sidConfig.geoInfos = geoInfos
-        
+        // TODO - make geoinfos be a singleton, and update geolocation dynamically
+        // note that geoinfos is not used from sidconfig in the android code.
+        // it is recreated in
         if( isEnrollMode ){
             sidConfig.isEnrollMode = true
             sidConfig.useIdCard = hasId

@@ -46,6 +46,8 @@ class GeoInfos {
         
         lastUpdate = jsonUtils.getString(dict:dict,
                                          key: GeoInfos.KEY_LAST_UPDATE )!
+        
+        return self
     }
     
     func fromJsonString( jsonFormattedString : String ) -> GeoInfos? {

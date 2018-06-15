@@ -87,6 +87,8 @@ class PartnerParams: Codable {
             }
             
         } // for
+        
+        return self
     }
     
     

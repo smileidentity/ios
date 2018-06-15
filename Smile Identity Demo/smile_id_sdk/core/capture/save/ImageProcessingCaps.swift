@@ -35,6 +35,8 @@ class ImageProcessingCaps {
         
         rotate_images = jsonUtils.getBool(dict:dict,
             key: ImageProcessingCaps.KEY_ROTATE_IMAGES )!
+        
+        return self
 
     }
     

@@ -65,6 +65,7 @@ class FullFrameInfo {
         smileValue = jsonUtils.getDouble(dict:dict,
                                          key: FullFrameInfo.KEY_SMILE_VALUE )!
 
+        return self
        }
     
     func fromJsonString( jsonFormattedString : String ) -> FullFrameInfo? {

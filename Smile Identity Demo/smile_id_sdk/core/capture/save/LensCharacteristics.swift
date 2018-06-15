@@ -146,6 +146,8 @@ class LensCharacteristics {
         let sWhiteBalanceMode = jsonUtils.getString(dict:dict,
                                                     key: LensCharacteristics.KEY_WHITE_BALANCE )!
         whiteBalanceMode = whiteBalanceModeFromString(sWhiteBalanceMode: sWhiteBalanceMode )
+        
+        return self
 
     }
     

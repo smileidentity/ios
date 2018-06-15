@@ -36,6 +36,7 @@ class PreviewSize {
         height = jsonUtils.getInt(dict:dict,
                                   key: PreviewSize.KEY_HEIGHT )!
         
+        return self
         
     }
     

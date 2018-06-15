@@ -9,16 +9,16 @@
 import Foundation
 
 public class SIDConfig {
-    var retryOnfailure  : RetryOnFailurePolicy?
-    var sidNetData      : SIDNetData?
-    var isEnrollMode    : Bool?
-    var tag             = SIDReferenceId.NO_TAG
+    var retryOnFailurePolicy    : RetryOnFailurePolicy?
+    var sidNetData              : SIDNetData?
+    var isEnrollMode            : Bool = false
+    var tag                     = SIDReferenceId.NO_TAG
  
-    var sidNetworkRequest = SIDNetworkRequest()
-    var useIdCard       : Bool = false
-    var jobType         : Int = -1
-    var geoInfos        : GeoInfos?
-   
+    var sidNetworkRequest       = SIDNetworkRequest()
+    var useIdCard               : Bool = false
+  
+    var jobType                 : Int = -1
+    
     func setRefId( tag : String ) {
         let appData = AppData()
         appData.setRefID(refID: appData.createReferenceId(tag: tag));

@@ -93,6 +93,7 @@ class SIDDeviceCameraInfos {
         selfieExists = jsonUtils.getBool(dict:dict,
                                          key: SIDDeviceCameraInfos.KEY_SELFIE_CAMERA_EXISTS )!
         
+        return self
         
      }
     
