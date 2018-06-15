@@ -49,42 +49,40 @@ class BaseSaveService : BaseService {
         
     }
     
-    // TODO implement read info.json
     
-    func readSavedMetadataAsString() -> String? {
-        var json : String?
+ 
+    
+    func readMetadata() -> String? {
+        var jsMetaData : String?
+        
         let siFileManager = SIFileFileManager()
-        let metaDataFullFilePath = siFileManager.getMetaFullFilePath(referenceId: referenceId!)
-        if( siFileManager.fileExists(fullFilePath: metaDataFullFilePath) ){
-            return json
+        let metaFileURL = siFileManager.getMetaFilePathAsURL(referenceId:  referenceId! )
+        do {
+            if( siFileManager.fileExists(fullFilePath: metaFileURL.path) ){
+                 jsMetaData = try String(contentsOf: metaFileURL, encoding: .utf8)
+            }
         }
-        else{
-            return nil
-        }
-    }
-    
-    func readSavedMetadata() -> MetaData? {
-        var metaData : MetaData?
-        // read info.json and create metaData from the content
-        let json = readSavedMetadata()
-        if( json != nil ){
-            metaData.fromJsonString()
-        }
-        else{
-            return nil
+        catch {
+            let logger = SILog()
+            logger.SIPrint(logOutput: "An error occurred reading the metafile.")
         }
         
-        return metaData
-   
-        
-        
+        return jsMetaData
     }
     
     
-    
-  
-    
-  
-
+    func writeMetaData( metaData : MetaData ) {
+        let siFileManager = SIFileFileManager()
+        let metaFileURL = siFileManager.getMetaFilePathAsURL(referenceId:  referenceId! )
+        do {
+            let jsMetaData = metaData.toJsonString()
+            try jsMetaData.write(to: metaFileURL, atomically: false, encoding: .utf8)
+        }
+        catch {
+            let logger = SILog()
+            logger.SIPrint(logOutput: "An error occurred writing the metafile.")
+        }
+       
+    }
     
 }

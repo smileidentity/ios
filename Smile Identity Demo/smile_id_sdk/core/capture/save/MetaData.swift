@@ -18,25 +18,17 @@ class MetaData {
     
     static let KEY_PACKAGE_INFORMATION      :
         String = "package_information"
-    static let KEY_SERVER_INFO              :
-        String = "server_information"
     static let KEY_MISC_INFORMATION         :
         String = "misc_information"
-    static let KEY_ID_INFORMATION           :
+    static let KEY_SERVER_INFO              :
+        String = "server_information"
+    static let KEY_USER_ID_INFORMATION      :
         String = "id_info"
 
-    
-    var lambdaResponse                      : UploadDataResponse?
-    
-    // Android code is using the sidMetaData as singleton.
-    // Here, we are passing it in.
-    var sidMetaData                         : SIDMetadata?
-    
-    var jsDictPackageInformation                = [String : String] ()
-    var jsDictMisc                              = [String : String] ()
-    
-    let jsonUtils                           = JsonUtils()
-    
+    var packageInfo                         : PackageInfo?
+    var lambaRequest                        : LambdaRequestJson?
+    var serverInfo                          : String?
+    var sidUserIdInfo                       : SIDUserIdInfo?
     
     func fromJsonString( jsonString : String ) -> MetaData? {
         if( jsonString.isEmpty ){
@@ -47,13 +39,19 @@ class MetaData {
             let dict = jsonUtils.jsonFormattedStringToDict( jsonString )
 
             let packageInfoDict = jsonUtils.getDict(dict: dict!, key: MetaData.KEY_PACKAGE_INFORMATION )
+            packageInfo = PackageInfo().fromJsonDict(dict: packageInfoDict)
             
+            let lambaRequestDict = jsonUtils.getDict(dict: dict!, key: MetaData.KEY_MISC_INFORMATION )
+            lambaRequest = LambdaRequestJson().fromJsonDict(dict: lambaRequestDict)
             
- 
+            serverInfo = jsonUtils.getString(dict: dict!, key: MetaData.KEY_SERVER_INFO )
+            
+            let sidUserIdInfoDict = jsonUtils.getDict(dict: dict!, key: MetaData.KEY_USER_ID_INFORMATION )
+            sidUserIdInfo = SIDUserIdInfo().fromJsonDict(dict: sidUserIdInfoDict)
+            
+            return self
             
         }
-        
-        return self
     }
   
     
@@ -64,26 +62,27 @@ class MetaData {
         let jsonUtils = JsonUtils()
         
         jsonUtils.putDict( dict: &dict, key: MetaData.KEY_PACKAGE_INFORMATION,
-            val: jsDictPackageInformation )
+            val: ( packageInfo!.toJsonDict()) )
         
         jsonUtils.putDict( dict: &dict, key: MetaData.KEY_MISC_INFORMATION,
-                           val: jsDictMisc )
+                           val: ( lambaRequest!.toJsonDict()) )
         
         jsonUtils.putString( dict: &dict, key: MetaData.KEY_SERVER_INFO,
-                             val: (lambdaResponse?.rawJsonString)! )
+                             val: serverInfo! )
         
-        jsonUtils.putDict( dict: &dict, key: MetaData.KEY_ID_INFORMATION,
-                           val: (sidMetaData?.sidUserIdInfo.toJsonDict(useAdditionalProps: false))! )
+        jsonUtils.putDict( dict: &dict, key: MetaData.KEY_USER_ID_INFORMATION,
+                           val: sidUserIdInfo!.toJsonDict(useAdditionalProps: false) )
         
         return dict
     }
     
     func toJsonString() -> String {
-  
+        let jsonUtils = JsonUtils()
         return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
-
     }
-     
-
+    
+    
+ 
+    
     
 }

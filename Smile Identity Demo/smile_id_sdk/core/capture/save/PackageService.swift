@@ -41,14 +41,22 @@ class PackageService : BaseSaveService {
                 AppData().setPackageInformation(
                     packageInformation: jsPackageInfo!)
                 
+            }
+            else{
+                let jsMetaData = readMetadata()
+                let metaData = MetaData().fromJsonString(jsonString: jsMetaData! )
+                let packageInfo = metaData?.packageInfo
+                jsPackageInfo = packageInfo?.toJsonString()
+            }
+            
+            if( jsPackageInfo != nil ){
                 let uploadService = UploadService()
                 uploadService.start(coreRequestData: coreRequestData, jsMetaData: jsPackageInfo!);
             }
-            else{
-                let metaData = readSavedMetadata()
-                let packageInfo = metaData.packageInfo
-                jsPackageInfo = packageInfo.fromJsonString()
+            else {
+                throw SIDError.DATA_PACKAGING_FAILED
             }
+
         } // do
         catch SIDError.TAG_NOT_FOUND {
             // TODO
@@ -67,12 +75,12 @@ class PackageService : BaseSaveService {
             throw SIDError.NO_IMAGE_FOUND
         }
        
-        var captureConfig = initCaptureConfig(sidNetData: sidNetData )
+        let captureConfig = initCaptureConfig(sidNetData: sidNetData )
         
-        var packageInfo = try createCapturedImagesPackageInfo( isMaxFrameTimeout: isMaxFrameTimeout(), captureConfig : captureConfig )
+        let packageInfo = try createCapturedImagesPackageInfo( isMaxFrameTimeout: isMaxFrameTimeout(), captureConfig : captureConfig )
         
         if (packageInfo != nil) {
-            jsPackageInfo = packageInfo.fromJsonString()
+            jsPackageInfo = packageInfo?.toJsonString()
         }
         return jsPackageInfo
     }
@@ -85,8 +93,10 @@ class PackageService : BaseSaveService {
     func saveCapturedData( tag : String,
                            sidNetData : SIDNetData ) throws {
         
-        var metaData = readSavedMetadata()
-        var packageInfo = metaData.packageInfo
+        let jsMetaData = readMetadata()
+        let metaData = MetaData().fromJsonString(jsonString: jsMetaData! )
+        
+        var packageInfo = metaData?.packageInfo
   
         if( packageInfo == nil ){
             clearMetadata();
@@ -98,16 +108,14 @@ class PackageService : BaseSaveService {
             
             try packageInfo = createCapturedImagesPackageInfo( isMaxFrameTimeout: isMaxFrameTimeout(), captureConfig : captureConfig )
             
-            metaData.packageInfo = packageInfo
+            metaData?.packageInfo = packageInfo
             writeMetaData( metaData: metaData! )
         }
         
     }
     
     
-    func writeMetaData( metaData : MetaData ) {
-        JsonUtils().jsonWrite(getMetaFullFilename(referenceID), new Gson().toJson(metaData));
-    }
+  
     
     
   
@@ -185,18 +193,19 @@ class PackageService : BaseSaveService {
 
         captureConfig.imageProcessingCaps =  ImageProcessingCaps()
    
-            captureConfig.idCardType = AppData().getSelectedIdType(defaultSelectedIdType: IdType.EMPTY)!
-            
-            packageInfo.referenceId = referenceId
-            packageInfo.apiVersion = APIVersion()
-            packageInfo.securityCaps = SecurityCaps()
-            packageInfo.frameInfo = fullFrameInfoArr
-            packageInfo.frameInfoPreviewFull = fullFrameInfoPreview
-            packageInfo.frameInfoIDCard = fullFrameInfoIDCard
-            packageInfo.captureConfig = captureConfig
-            packageInfo.isMaxFrameTimeout = isMaxFrameTimeout
+        captureConfig.idCardType = AppData().getSelectedIdType(defaultSelectedIdType: IdType.EMPTY)!
+        
+        packageInfo.referenceId = referenceId
+        packageInfo.apiVersion = APIVersion()
+        packageInfo.securityCaps = SecurityCaps()
+        packageInfo.fullFrameInfoList = fullFrameInfoArr
+        packageInfo.frameInfoPreviewFull = fullFrameInfoPreview
+        packageInfo.frameInfoIDCard = fullFrameInfoIDCard
+        packageInfo.captureConfig = captureConfig
+        packageInfo.isMaxFrameTimeout = isMaxFrameTimeout
 
             
+        return packageInfo
             
     } // createCapturedImagesPackageInfo
     

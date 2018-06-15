@@ -87,6 +87,11 @@ class SIFileFileManager{
         return infoPath
     }
     
+    func getMetaFilePathAsURL( referenceId : String ) -> URL{
+         return URL( fileURLWithPath: getMetaFullFilePath(
+            referenceId: referenceId ) )
+    }
+    
     func getZipSourceDirURL( referenceId : String ) -> URL {
         return URL(fileURLWithPath: createAndGetFolderPath() )
     }
