@@ -30,11 +30,16 @@ class APIVersion {
         let jsonUtils = JsonUtils()
         
         minorVersion = jsonUtils.getInt(dict:dict,
-                                        key: APIVersion.KEY_MIN_VERSION )!
+            key: APIVersion.KEY_MIN_VERSION,
+            defaultVal: 0 )
+        
         majorVersion = jsonUtils.getInt(dict:dict,
-                                        key: APIVersion.KEY_MAJOR_VERSION )!
+            key: APIVersion.KEY_MAJOR_VERSION,
+            defaultVal: 0 )
+        
         buildNumber = jsonUtils.getInt( dict:dict,
-                                        key: APIVersion.KEY_BUILD_NUMBER )!
+            key: APIVersion.KEY_BUILD_NUMBER,
+            defaultVal: 0 )
         
         return self
     }

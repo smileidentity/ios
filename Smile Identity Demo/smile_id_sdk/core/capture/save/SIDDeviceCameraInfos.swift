@@ -63,35 +63,49 @@ class SIDDeviceCameraInfos {
     
     func fromJsonDict( dict : Dictionary<String,Any> ) -> SIDDeviceCameraInfos? {
         let jsonUtils = JsonUtils()
+        
         availableImageFormat = jsonUtils.getString(dict:dict,
-                                                   key: SIDDeviceCameraInfos.KEY_AVAILABLE_IMAGE_FORMAT )!
+            key: SIDDeviceCameraInfos.KEY_AVAILABLE_IMAGE_FORMAT,
+            defaultVal : "jpg" )
+            
         model = jsonUtils.getString(dict:dict,
-                                    key: SIDDeviceCameraInfos.KEY_CAMERA_MODEL )!
+            key: SIDDeviceCameraInfos.KEY_CAMERA_MODEL,
+            defaultVal: "" )
+        
         colorDepth = jsonUtils.getInt(dict:dict,
-                                      key: SIDDeviceCameraInfos.KEY_COLOR_DEPTH )!
+            key: SIDDeviceCameraInfos.KEY_COLOR_DEPTH,
+            defaultVal : 0 )
+        
         devicePortraitHorizontalResolution = jsonUtils.getInt(dict:dict,
-                                                              key: SIDDeviceCameraInfos.KEY_DEVICE_PORTRAIT_HORIZONTAL_RESOLUTION )!
+            key: SIDDeviceCameraInfos.KEY_DEVICE_PORTRAIT_HORIZONTAL_RESOLUTION,
+            defaultVal : 0 )
         
         devicePortraitVerticalResolution = jsonUtils.getInt(dict:dict,
-                                                            key: SIDDeviceCameraInfos.KEY_DEVICE_PORTRAIT_VERTICAL_RESOLUTION )!
+            key: SIDDeviceCameraInfos.KEY_DEVICE_PORTRAIT_VERTICAL_RESOLUTION,
+            defaultVal : 0 )
         
         maxFPS = jsonUtils.getInt(dict:dict,
-                                  key: SIDDeviceCameraInfos.KEY_MAX_FPS )!
+            key: SIDDeviceCameraInfos.KEY_MAX_FPS,
+            defaultVal : 0 )
         
         maxImageMemory = jsonUtils.getInt(dict:dict,
-                                          key: SIDDeviceCameraInfos.KEY_MAX_IMAGE_MEMORY )!
+            key: SIDDeviceCameraInfos.KEY_MAX_IMAGE_MEMORY,
+            defaultVal : 0 )
         
-        
+        /* An array of dictionaries */
         var previewSizeList = [Dictionary<String,Any>]()
+        let defaultArr = [Any]()
         previewSizeList = jsonUtils.getArray(dict:dict,
-                                             key: SIDDeviceCameraInfos.KEY_PREVIEW_SIZE_LIST )! as! [Dictionary<String, Any>]
+            key: SIDDeviceCameraInfos.KEY_PREVIEW_SIZE_LIST,
+            defaultVal : defaultArr ) as! [Dictionary<String, Any>]
         
         let previewDict = previewSizeList[0]
         previewSize.width = previewDict[PreviewSize.KEY_WIDTH] as! Int
         previewSize.height = previewDict[PreviewSize.KEY_HEIGHT] as! Int
         
         selfieExists = jsonUtils.getBool(dict:dict,
-                                         key: SIDDeviceCameraInfos.KEY_SELFIE_CAMERA_EXISTS )!
+            key: SIDDeviceCameraInfos.KEY_SELFIE_CAMERA_EXISTS,
+            defaultVal : false )
         
         return self
         
@@ -109,8 +123,7 @@ class SIDDeviceCameraInfos {
             return fromJsonDict( dict: dict! )
             
         }
-        
-        return self
+ 
     }
     
     

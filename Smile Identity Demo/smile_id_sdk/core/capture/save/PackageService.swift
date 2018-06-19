@@ -11,7 +11,7 @@ import Foundation
 class PackageService : BaseSaveService {
 
 
-    func packAndSend(  coreRequestData : CoreRequestData ) {
+    func packAndSend( coreRequestData : CoreRequestData ) {
         let appData = AppData()
         if (!appData.isIdTaken()) {
             SIFileFileManager().deleteIDCardImage(referenceID: referenceId!);

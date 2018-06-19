@@ -15,7 +15,7 @@ class CoreRequestData {
     var tag                     : String?
     var requestNewToken         : Bool?
     var retry                   : Bool?
-    var isAuthenticationMode    : Bool?
+    var isEnrollMode            : Bool?
     var sidNetData              : SIDNetData?
     var jobType                 : Int?
     

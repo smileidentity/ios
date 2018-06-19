@@ -48,22 +48,28 @@ class FullFrameInfo {
     func fromJsonDict( dict : Dictionary<String,Any> ) -> FullFrameInfo? {
         let jsonUtils = JsonUtils()
         dateTime = jsonUtils.getString(dict:dict,
-                                       key: FullFrameInfo.KEY_DATE_TIME )!
+            key: FullFrameInfo.KEY_DATE_TIME,
+            defaultVal : "" )
         
         fileName = jsonUtils.getString(dict:dict,
-                                       key: FullFrameInfo.KEY_FILENAME )!
+            key: FullFrameInfo.KEY_FILENAME,
+            defaultVal : "" )
         
         imageLength = jsonUtils.getString(dict:dict,
-                                          key: FullFrameInfo.KEY_IMAGE_LENGTH )!
+            key: FullFrameInfo.KEY_IMAGE_LENGTH,
+            defaultVal : "" )
         
         imageWidth = jsonUtils.getString(dict:dict,
-                                         key: FullFrameInfo.KEY_IMAGE_WIDTH )!
+            key: FullFrameInfo.KEY_IMAGE_WIDTH,
+            defaultVal: "" )
         
         orientation = jsonUtils.getInt(dict:dict,
-                                       key: FullFrameInfo.KEY_ORIENTATION )!
+            key: FullFrameInfo.KEY_ORIENTATION,
+            defaultVal: 0 )
         
         smileValue = jsonUtils.getDouble(dict:dict,
-                                         key: FullFrameInfo.KEY_SMILE_VALUE )!
+            key: FullFrameInfo.KEY_SMILE_VALUE,
+            defaultVal : 0.0 )
 
         return self
        }

@@ -49,7 +49,20 @@ class JsonUtils {
        
     }
     
+  
     
+    func getDict( dict:[String : Any],
+                  key : String,
+                  defaultVal : Dictionary<String,Any>) -> Dictionary<String,Any> {
+        
+        let val = dict[key]
+        if( val == nil ){
+            return defaultVal
+        }
+        else{
+            return jsonFormattedStringToDict( val! as! String )!
+        }
+    }
     
     func putDict( dict : inout [String : Any],
                   key : String,
@@ -57,18 +70,18 @@ class JsonUtils {
         dict[key] = dictToJsonFormattedString( dict: val )
     }
     
-    func getDict( dict:[String : Any],
-                  key : String ) -> Dictionary<String,Any> {
-        let jsonString =  dict[key]
-        return jsonFormattedStringToDict( jsonString as! String )!
-    }
     
     
-    
-    /* If key does not exist, then Dictionary always returns nil */
-    func getString( dict : [String : Any],
-                    key : String ) -> String? {
-        return dict[key] as? String
+     func getString( dict        : [String : Any],
+                    key         : String,
+                    defaultVal  : String ) -> String {
+        let val = dict[key]
+        if( val == nil ){    /* If key does not exist, then Dictionary always returns nil */
+            return defaultVal
+        }
+        else{
+            return val! as! String
+        }
     }
     
     func putString( dict :  inout [String : Any],
@@ -77,14 +90,15 @@ class JsonUtils {
         dict[key] = val
     }
     
-    func getInt( dict : [String : Any],
-                 key : String ) -> Int? {
-        let defaultVal : Int = 0
-        if let val = dict[key]{
-            return val as? Int
+    func getInt( dict       : [String : Any],
+                 key        : String,
+                 defaultVal : Int ) -> Int {
+        let val = dict[key] 
+        if( val == nil ) {
+            return defaultVal
         }
         else{
-            return defaultVal
+            return val! as! Int
         }
     }
     func putInt( dict :  inout [String : Any],
@@ -94,14 +108,16 @@ class JsonUtils {
     }
     
     
-    func getFloat( dict : [String : Any],
-                 key : String ) -> Float? {
-        let defaultVal : Float = 0.0
-        if let val = dict[key]{
-            return val as? Float
+    func getFloat( dict     : [String : Any],
+                 key        : String,
+                 defaultVal : Float ) -> Float {
+       
+        let val = dict[key]
+        if ( val == nil ) {
+            return defaultVal
         }
         else{
-            return defaultVal
+            return val! as! Float
         }
     }
     func putFloat( dict :  inout [String : Any],
@@ -112,14 +128,15 @@ class JsonUtils {
     
     
     
-    func getDouble( dict : [String : Any],
-                   key : String ) -> Double? {
-        let defaultVal : Double = 0.0
-        if let val = dict[key]{
-            return val as? Double
+    func getDouble( dict        : [String : Any],
+                   key          : String,
+                   defaultVal   : Double ) -> Double {
+        let val = dict[key]
+        if( val == nil ){
+            return defaultVal
         }
         else{
-            return defaultVal
+            return val! as! Double
         }
     }
     func putDouble( dict :  inout [String : Any],
@@ -130,13 +147,14 @@ class JsonUtils {
 
     
     func getInt64( dict : [String : Any],
-                   key : String ) -> Int64? {
-        let defaultVal : Int64 = 0
-        if let val = dict[key]{
-            return val as? Int64
+                   key : String,
+                   defaultVal : Int64 ) -> Int64 {
+        let val = dict[key]
+        if( val == nil ){
+            return defaultVal
         }
         else{
-            return defaultVal
+            return val! as! Int64
         }
     }
     func putInt64( dict :  inout [String : Any],
@@ -145,14 +163,15 @@ class JsonUtils {
         dict[key] = val
     }
     
-    func getBool( dict : [String : Any],
-                  key : String ) -> Bool? {
-        let defaultVal = false
-        if let val = dict[key]{
-            return val as? Bool
+    func getBool( dict          : [String : Any],
+                  key           : String,
+                  defaultVal    : Bool ) -> Bool {
+        let val = dict[key]
+        if( val == nil ){
+            return defaultVal
         }
         else{
-            return defaultVal
+            return val! as! Bool
         }
     }
     func putBool( dict :  inout [String : Any],
@@ -161,14 +180,15 @@ class JsonUtils {
         dict[key] = val
     }
     
-    func getArray( dict : [String : Any],
-                   key : String ) -> [Any]? {
-        let defaultVal = [Any]()
-        if let val = dict[key]{
-            return val as? [Any]
+    func getArray( dict         : [String : Any],
+                   key          : String,
+                   defaultVal   : [Any] ) -> [Any] {
+        let val = dict[key]
+        if ( val == nil ){
+            return defaultVal
         }
         else {
-            return defaultVal
+            return val! as! [Any]
         }
     }
     

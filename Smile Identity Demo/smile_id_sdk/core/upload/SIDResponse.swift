@@ -11,6 +11,6 @@ import Foundation
 class SIDResponse {
     var partnerParams   : PartnerParams?
     var success         : Bool?
-    var confidenceValue : Int?
+    var confidenceValue : Float?
       
 }

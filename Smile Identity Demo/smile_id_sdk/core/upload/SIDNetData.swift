@@ -18,4 +18,14 @@ class SIDNetData {
     var sidAddress  : String = ""
     var sidPort     : String = ""
     
+    func insertPartnerId( partnerId : String ) -> String {
+        if( jobStatusUrl.isEmpty ){
+            return ""
+        }
+        else{
+            return jobStatusUrl.replacingOccurrences(of: "#", with: partnerId, options: .literal, range: nil)
+        }
+    }
+    
+ 
 }

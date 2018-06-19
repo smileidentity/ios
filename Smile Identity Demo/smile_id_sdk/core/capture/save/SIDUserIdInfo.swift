@@ -104,7 +104,8 @@ class SIDUserIdInfo {
             }
             else if( key == SIDUserIdInfo.ENTERED ){
                 let sEntered = jsonUtils.getString(dict:dict,
-                        key: SIDUserIdInfo.ENTERED )!
+                        key: SIDUserIdInfo.ENTERED,
+                        defaultVal : "false" )
                 
                 if( sEntered == "true" ){
                     currentHash = toString()

@@ -21,9 +21,12 @@ class SecurityCaps {
         let jsonUtils = JsonUtils()
         
         AESCapable = jsonUtils.getBool(dict:dict,
-                                       key: SecurityCaps.KEY_AES_CAPABLE )!
+                                       key: SecurityCaps.KEY_AES_CAPABLE,
+                                       defaultVal : false )
+        
         RSACapable = jsonUtils.getBool(dict:dict,
-                                       key: SecurityCaps.KEY_RSA_CAPABLE)!
+                                       key: SecurityCaps.KEY_RSA_CAPABLE,
+                                       defaultVal: false )
 
         return self
     }

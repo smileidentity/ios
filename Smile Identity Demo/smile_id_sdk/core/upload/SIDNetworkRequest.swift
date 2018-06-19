@@ -10,6 +10,10 @@ import Foundation
 
 class SIDNetworkRequest {
     
+    static let ONE_MIN_MS           : Int64 = 60 * 1000       // 1 minutes in ms
+    static let MAX_RETRY_TIME_MS    : Int64 = ONE_MIN_MS * 15 // 15 minutes in ms
+    static let PARTNER_ID           : String = "023";
+    
     /* Default value of optionals is nil */
     
     var delegate                : SIDNetworkRequestDelegate?
@@ -21,9 +25,11 @@ class SIDNetworkRequest {
     var sidNetData              : SIDNetData?
     var isEnrollMode            : Bool = false
     var startTimeMS             : Int64?
-    
+    var requiredPassedTimeMS    : Int64 = 60 * 1000 // 1 minute in milliseconds
+   
     var geoInfos                : GeoInfos = GeoInfos()
-    var jsGeoInfos              : String?
+    var requestNewToken         : Bool = false
+    var retry                   : Bool = false
     
     func setDelegate( delegate : SIDNetworkRequestDelegate){
         self.delegate = delegate
@@ -37,6 +43,10 @@ class SIDNetworkRequest {
         }
         
         tag = sidConfig.tag
+        if( !checkTagExists(tag: tag! )){
+            return
+        }
+        
         if( sidConfig.retryOnFailurePolicy != nil ){
             retryOnFailurePolicy = sidConfig.retryOnFailurePolicy!
         }
@@ -72,15 +82,39 @@ class SIDNetworkRequest {
         */
         
         setUserData( partnerParams: partnerParams, isEnrollMode: isEnrollMode )
-        jsGeoInfos = geoInfos.toJsonString()
-        
-        
-        
-        
         
     }
     
     
+    
+    func startPackageService(   packageService : PackageService,
+                                sidNetData : SIDNetData,
+                                isEnrollMode : Bool ){
+        
+        let authUrl = sidNetData.insertPartnerId(partnerId: SIDNetworkRequest.PARTNER_ID)
+        sidNetData.authUrl = authUrl
+        checkAndUpdateRetryFlag();
+        let coreRequest = createCoreRequestData(sidNetData: sidNetData,
+                                                isEnrollMode: isEnrollMode )
+        packageService.packAndSend(coreRequestData: coreRequest)
+    }
+    
+    
+    func checkTagExists( tag : String ) -> Bool {
+        
+        let appData = AppData()
+        let tags = appData.getTags()
+        if( !tags.contains(tag)){
+            
+            // TODO : wire this
+            // onError( SIDError.TAG_NOT_FOUND )
+            return false
+        }
+        else{
+            return true
+        }
+
+    }
     
     
     func setUserData( partnerParams : PartnerParams?,
@@ -108,8 +142,118 @@ class SIDNetworkRequest {
     }
 
     
+    // called from SIDConfig build -> save logic.
+    func saveDataForLaterUse( tag : String, smileIdNetData : SIDNetData ) {
+        do {
+            let packageService = PackageService()
+            try packageService.saveCapturedData(tag: tag, sidNetData: smileIdNetData)
+        }
+        catch let error as SIDError {
+            // TODO wire this onError( error )
+        }
+        catch {
+            // TODO wire this onError( error )
+        }
+        
+    }
     
     
+    func checkAndUpdateRetryFlag() {
+        requestNewToken = false;
+        
+        let nowMS = Int64(NSDate().timeIntervalSince1970 * 1000)
+        let deltaTimeMS = nowMS - startTimeMS!
+        if( ( deltaTimeMS > requiredPassedTimeMS ) &&
+            ( deltaTimeMS <= SIDNetworkRequest.MAX_RETRY_TIME_MS ) ) {
+            retry = true
+        }
+        else {
+            retry = false
+        }
+        
+        if( deltaTimeMS > SIDNetworkRequest.MAX_RETRY_TIME_MS ){
+            startTimeMS = Int64(NSDate().timeIntervalSince1970 * 1000)
+            requestNewToken = true
+        }
+    }
+    
+ 
+    
+    func createCoreRequestData( sidNetData : SIDNetData,
+                                isEnrollMode : Bool ) -> CoreRequestData {
+        let coreRequestData = CoreRequestData()
+        coreRequestData.sidNetData = sidNetData
+        coreRequestData.geoInfoJson = geoInfos.toJsonString()
+        coreRequestData.partnerParams = partnerParams
+        coreRequestData.tag = tag
+        coreRequestData.requestNewToken = requestNewToken
+        coreRequestData.retry = retry
+        coreRequestData.jobType = jobType
+        coreRequestData.isEnrollMode = isEnrollMode
+        return coreRequestData;
+    }
+    
+    
+    // Listeners
+    
+    func onUploadFinished(  isSuccess       : Bool,
+                            confidenceValue : Float,
+                            partnerParams   : PartnerParams,
+                            retry           : Bool,
+                            sidError        : SIDError ){
+        
+        self.partnerParams = partnerParams
+        self.retry = retry
+ 
+        // TODO wire this
+        delegate!.onComplete()
+        
+        let sidResponse = SIDResponse()
+        sidResponse.partnerParams = partnerParams
+        sidResponse.success = isSuccess
+        sidResponse.confidenceValue = confidenceValue
+        if( isSuccess ){
+            sidResponse.success = true
+            if( isEnrollMode ){
+                delegate!.onEnrolled(response: sidResponse )
+            }
+            else{
+                delegate!.onAuthenticated(response: sidResponse)
+            }
+            
+            // TODO cancel thread
+        }
+        else {
+            if( isEnrollMode ){
+                delegate!.onEnrolled(response: sidResponse )
+            }
+            
+            // TODO wire this
+            delegate!.onError(errMsg: sidError.message)
+            
+            if( isUnableToVerifyError( sidError: sidError ) &&
+                !isEnrollMode ) {
+                delegate!.onAuthenticated(response: sidResponse)
+            }
+            else{
+                // TODO wire retry
+            }
+            
+        }
+    }
+    
+    
+    func isUnableToVerifyError( sidError : SIDError ) -> Bool {
+        
+        switch sidError {
+            case SIDError.UNABLE_TO_VERIFY:
+                return true
+            default :
+                return false
+        }
+    }
+    
+ 
     
 
 }

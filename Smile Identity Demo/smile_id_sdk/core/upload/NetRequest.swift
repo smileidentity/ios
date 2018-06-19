@@ -45,17 +45,76 @@ class NetRequest {
     
     
     
+    
+    func executeAuthSmile( partnerUrl : String,
+                           authUrl : String,
+                           jobStatusUrl : String,
+                           jobType : Int,
+                           isEnrollMode: Bool) throws /*-> AuthSmileResponse?*/ {
+        
+        let response : AuthSmileResponse?
+        let appData = AppData()
+
+        let userId = appData.getUserId( defaultUserId: "" )
+        let isIdPresent = appData.getIsIDPresent(defaultIsIDPresent: false);
+  
+        let authSmileRequest = AuthSmileRequestJson(
+            jobType: jobType,
+            userId:userId!,
+            isIdPresent:isIdPresent,
+            isEnrollMode: isEnrollMode)
+        
+        let jobRequest = authSmileRequest.toJsonString()
+        
+        if (isEnrollMode) {
+            // Enroll mode
+            doHttpPost(target: AuthSmileResponse(),
+                       serverUrl: partnerUrl + authUrl,
+                       json: jobRequest) { (jsonResponse) -> Void in
+                        
+                        self.logError( request: authSmileRequest, response: jsonResponse as! AuthSmileResponse, isEnroll: true )
+            }
+ 
+        } // isEnroll Mode
+        else {
+            /*
+            // Authentication mode
+            let statusResponse = uploadJobStatus(partnerUrl: partnerUrl, jobStatusUrl: jobStatusUrl, isAuthenticationMode: true);
+            if (statusResponse != nil && statusResponse.jobComplete) {
+                
+                doHttpPost(target: AuthSmileResponse(),
+                           serverUrl: partnerUrl + authUrl,
+                           json: jobRequest) { (jsonResponse) -> Void in
+                            
+                            self.logError( request: authSmileRequest, response: jsonResponse as! AuthSmileResponse, isEnroll: false )
+                }
+                
+                
+            }
+                
+            else if ( !statusResponse.error.isEmpty ) {
+                throw new SIDException("Auth " + statusResponse.getError());
+            }
+             */
+        }
+ 
+ 
+        return response
+  
+    }
+    
+    
+    
     /*
-     Perform Http Post reques
+     Perform Http Post request
      Inputs :
-     serverUrl   : The url where the data is posted
-     target      : The JsonResponse object into which the http response is stored.
-     json           : The json data that is posted
+        serverUrl   : The url where the data is posted
+        json        : The json data that is posted
+        completion  : The completion handler that is called after the http post request is finished.   The json formatted response string is returned to the completion handler.
      */
-    func doHttpPost( target     : JsonResponse,
-                     serverUrl  : String,
+    func doHttpPost( serverUrl  : String,
                      json       : String,
-                     completion: @escaping (JsonResponse?) -> () ) {
+                     completion: @escaping (String?) -> () ) {
         let url = URL(string: serverUrl)!
         
         let uploadData = json.data(using: .utf8)!
@@ -90,9 +149,9 @@ class NetRequest {
                     if let mimeType = response.mimeType,
                         mimeType == "application/json",
                         let data = data,
-                        let responseJson = String(data: data,
+                        let jsResponse = String(data: data,
                                                   encoding: .utf8) {
-                        completion(target.fromJsonString(jsonFormattedString: responseJson))
+                        completion(jsResponse)
                         return
                     }
                     
@@ -104,81 +163,10 @@ class NetRequest {
         
     }
     
+    
 
     
-    func executeAuthSmile( partnerUrl : String,
-                           authUrl : String,
-                           jobStatusUrl : String,
-                           jobType : Int,
-                           isAuthenticationMode : Bool) throws /*-> AuthSmileResponse?*/ {
-        
-        let response : AuthSmileResponse?
-        let appData = AppData()
-
-        let userId = appData.getUserId( defaultUserId: "" )
-        let isIdPresent = appData.getIsIDPresent(defaultIsIDPresent: false);
-  
-        let authSmileRequest = AuthSmileRequestJson(
-            jobType: jobType,
-            userId:userId!,
-            isIdPresent:isIdPresent,
-            isAuthenticationMode: isAuthenticationMode)
-        
-        let jobRequest = authSmileRequest.toJsonString()
-        /*
-        if (isAuthenticationMode) {
-            let statusResponse = uploadJobStatus(partnerUrl: partnerUrl, jobStatusUrl: jobStatusUrl, isAuthenticationMode: true);
-            if (statusResponse != nil && statusResponse.isJobComplete()) {
-                
-                doHttpPost(target: AuthSmileResponse(),
-                           serverUrl: partnerUrl + authUrl,
-                           json: jobRequest) { (jsonResponse) -> Void in
-         
-                            self.logError( request: authSmileRequest, response: jsonResponse as! AuthSmileResponse, isEnroll: false )
-                }
-
-  
-            }
-                
-            else if ( !statusResponse.error.isEmpty ) {
-                throw new SIDException("Auth " + statusResponse.getError());
-            }
  
- 
-    }
-    else {
-        // Enroll mode
-        doHttpPost(target: AuthSmileResponse(),
-                   serverUrl: partnerUrl + authUrl,
-                   json: jobRequest) { (jsonResponse) -> Void in
-                    
-                    self.logError( request: authSmileRequest, response: jsonResponse as! AuthSmileResponse, isEnroll: true )
-        }
-
-    }
- 
- 
-        return response
-  */
-    }
-    
-    func logError( request : AuthSmileRequestJson,
-                   response : AuthSmileResponse,
-                   isEnroll : Bool ) {
-        var logOutput : String?
-        if( isEnroll ){
-            logOutput = "executeAuthSmile enroll response:--"
-        }
-        else{
-            logOutput = "executeAuthSmile auth response:--"
-        }
-        
-        logOutput = logOutput! + (response.getRawJsonString()) + " request:" + request.toJsonString()
-        
-        logger.SIPrint(logOutput: logOutput!)
-    }
-    
-    
   
     
     
@@ -237,24 +225,23 @@ class NetRequest {
         }
   
         
-        doHttpPost(target: StatusResponse(),
-                   serverUrl: self.uploadJobStatusPartnerUrl! + self.uploadJobStatusUrl!,
-                   json: self.uploadJobStatusJsonStr!) { (jsonResponse) -> Void in
+        doHttpPost(serverUrl: self.uploadJobStatusPartnerUrl! + self.uploadJobStatusUrl!,
+                   json: self.uploadJobStatusJsonStr!) { (jsResponse) -> Void in
                     
-            if (jsonResponse != nil) {
+            if (jsResponse != nil) {
+                let statusResponse = StatusResponse().fromJsonString(jsonFormattedString: jsResponse!)
+                if( statusResponse != nil ){
                     
-                let statusResponse = jsonResponse as! StatusResponse
+                    let logOutput = "uploadJobStatus response:--" + (statusResponse!.rawJsonString) + " request:" + self.uploadJobStatusJsonStr!
+                        self.logger.SIPrint(logOutput: logOutput);
                     
-                let logOutput = "uploadJobStatus response:--" + (jsonResponse?.rawJsonString)! + " request:" + self.uploadJobStatusJsonStr!
-                    self.logger.SIPrint(logOutput: logOutput);
-                
-                    if (statusResponse.isJobComplete() ) {
+                    if( statusResponse!.isJobComplete() ) {
                         /* success */
                         let msg = "Total attempts to check job completion : " + String(self.attempt)
                         self.notifyUploadJobStatusMsg( msg: msg )
                         self.stopUploadJobStatusTimer()
                     }
-                    else if ( !statusResponse.error!.isEmpty ) {
+                    else if( !statusResponse!.error.isEmpty ) {
                         /* failure.
                          job is not complete,
                          and there is an error.
@@ -262,8 +249,9 @@ class NetRequest {
                         self.stopUploadJobStatusTimer()
                         self.notifyUploadJobStatus(statusResponse: statusResponse)
                     }
-                        
+                    
                     self.attempt = self.attempt + 1
+                }
             }
         }
                     
@@ -283,40 +271,7 @@ class NetRequest {
     
   
 
-    
-    func buildLambdaRequest( phoneNumber : String,
-                             referenceId : String,
-                             deviceId : String,
-                             authResponse : AuthSmileResponse,
-                             partnerParams : PartnerParams,
-                             retry : Bool,
-                             isVerify : Bool ) -> String {
-        
-        let appData = AppData()
-        let jobId = authResponse.partnerParams.jobId
-        let smileClientId = authResponse.smileClientId!
-        appData.setSmileClientId(smileClientId:smileClientId )
-        
-        if( isVerify ){
-            appData.setJobId(jobId: jobId )
-         }
-        else {
-            appData.setUserId( userId: authResponse.partnerParams.userId )
-            appData.setLastEnrollJobId(lastEnrollJobId: jobId )
-        }
-        
-        let lambdaRequestJson = LambdaRequestJson(
-            phoneNumber: phoneNumber,
-            referenceId: referenceId,
-            deviceId: deviceId,
-            authResponse: authResponse,
-            partnerParams: partnerParams,
-            retry: retry,
-            smileClientId: smileClientId)
-        
-        return lambdaRequestJson.toJsonString()
-        
-    }
+  
     
     func transmitToServer( jsLambdaRequest  : String,
                            lambdaUrl        : String,
@@ -391,7 +346,23 @@ class NetRequest {
         
     }
     
-
+    func logError( request : AuthSmileRequestJson,
+                   response : AuthSmileResponse,
+                   isEnroll : Bool ) {
+        var logOutput : String?
+        if( isEnroll ){
+            logOutput = "executeAuthSmile enroll response:--"
+        }
+        else{
+            logOutput = "executeAuthSmile auth response:--"
+        }
+        
+        logOutput = logOutput! + (response.getRawJsonString()) + " request:" + request.toJsonString()
+        
+        logger.SIPrint(logOutput: logOutput!)
+    }
+    
+    
     
     func cancel() {
         isCancelled = true

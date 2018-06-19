@@ -8,7 +8,7 @@
 
 import Foundation
 
-class UploadDataResponse : JsonResponse {
+class UploadDataResponse {
     
     static let KEY_UPLOAD_URL           : String    = "upload_url"
     static let KEY_SMILE_JOB_ID         : String    = "smile_job_id"
@@ -21,8 +21,13 @@ class UploadDataResponse : JsonResponse {
     var additionalProperties        = [String : String] ()
     let jsonUtils       = JsonUtils()
     
+    var rawJsonString   : String = "";
+    
+    func getRawJsonString() -> String { return rawJsonString }
+
+    
     /* Initialize from json string */
-    override func fromJsonString( jsonFormattedString : String ) -> UploadDataResponse? {
+    func fromJsonString( jsonFormattedString : String ) -> UploadDataResponse? {
         if( jsonFormattedString.isEmpty ){
             return nil
         }
@@ -30,9 +35,16 @@ class UploadDataResponse : JsonResponse {
             rawJsonString = jsonFormattedString
             let dict = jsonUtils.jsonFormattedStringToDict( jsonFormattedString )
             
-            uploadUrl = jsonUtils.getString(dict: dict!, key: UploadDataResponse.KEY_UPLOAD_URL )!
-            smileJobId = jsonUtils.getString(dict: dict!, key: UploadDataResponse.KEY_SMILE_JOB_ID )!
-            refId = jsonUtils.getString(dict: dict!, key: UploadDataResponse.KEY_REF_ID )!
+            uploadUrl = jsonUtils.getString(dict: dict!,
+                        key: UploadDataResponse.KEY_UPLOAD_URL,
+                        defaultVal: "" )
+
+            smileJobId = jsonUtils.getString(dict: dict!,
+                key: UploadDataResponse.KEY_SMILE_JOB_ID,
+                defaultVal: "" )
+            
+            refId = jsonUtils.getString(dict: dict!, key: UploadDataResponse.KEY_REF_ID,
+                defaultVal: "" )
             
         }
         

@@ -30,22 +30,28 @@ class GeoInfos {
     func fromJsonDict( dict : Dictionary<String,Any> ) -> GeoInfos? {
         let jsonUtils = JsonUtils()
         geoPermissionGranted = jsonUtils.getBool(dict:dict,
-                                        key: GeoInfos.KEY_GEO_PERMISSION_GRANTED )!
+                                        key: GeoInfos.KEY_GEO_PERMISSION_GRANTED,
+                                        defaultVal : false )
         
         latitude = jsonUtils.getDouble(dict:dict,
-                                       key: GeoInfos.KEY_LATITUDE )!
+                                    key: GeoInfos.KEY_LATITUDE,
+                                    defaultVal : 0.0)
         
         longitude = jsonUtils.getDouble(dict:dict,
-                                        key: GeoInfos.KEY_LONGITUDE )!
+                                        key: GeoInfos.KEY_LONGITUDE,
+                                        defaultVal : 0.0 )
         
         altitude = jsonUtils.getDouble(dict:dict,
-                                       key: GeoInfos.KEY_ALTITUDE )!
+                                       key: GeoInfos.KEY_ALTITUDE,
+                                       defaultVal : 0.0 )
         
         accuracy = jsonUtils.getDouble(dict:dict,
-                                       key: GeoInfos.KEY_ACCURACY )!
+                                       key: GeoInfos.KEY_ACCURACY,
+                                       defaultVal : 0.0 )
         
         lastUpdate = jsonUtils.getString(dict:dict,
-                                         key: GeoInfos.KEY_LAST_UPDATE )!
+                                         key: GeoInfos.KEY_LAST_UPDATE,
+                                         defaultVal : "")
         
         return self
     }
@@ -63,7 +69,7 @@ class GeoInfos {
  
         }
         
-        return self
+       
     }
     
     

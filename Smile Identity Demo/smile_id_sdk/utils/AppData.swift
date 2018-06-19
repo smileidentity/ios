@@ -388,7 +388,7 @@ class AppData {
     }
     
     
-    func setAuthSmileResponse( response : JsonResponse? ) {
+    func setAuthSmileResponse( response : AuthSmileResponse? ) {
         if( response != nil ){
             setString(KEY_JOB_RESPONSE, val: (response?.getRawJsonString())!)
         }
@@ -397,8 +397,10 @@ class AppData {
         }
     }
     
-    func getAuthSmileResponse( target : JsonResponse, key : String ) -> JsonResponse?{
-        return target.fromJsonString(jsonFormattedString: getString(key,defaultVal: nil)!);
+ 
+    
+    func getAuthSmileResponse( defaultVal : String? ) -> String? {
+        return getString( KEY_JOB_RESPONSE, defaultVal:defaultVal  )!
     }
     
     func clearJobResponse() {

@@ -57,26 +57,33 @@ class PackageInfo {
     func fromJsonDict( dict : Dictionary<String,Any> ) -> PackageInfo? {
         let jsonUtils = JsonUtils()
         
+        let defaultDict = [String:Any]()
         let sidDeviceCameraInfosBackDict = jsonUtils.getDict(dict:dict,
-                                                             key: PackageInfo.KEY_SID_DEVICE_CAMERA_INFOS_BACK )
+            key: PackageInfo.KEY_SID_DEVICE_CAMERA_INFOS_BACK,
+            defaultVal:defaultDict )
         sidDeviceCameraInfosBack = SIDDeviceCameraInfos().fromJsonDict(dict: sidDeviceCameraInfosBackDict)
         
         let sidDeviceCameraInfosFrontDict = jsonUtils.getDict(dict:dict,
-                                                              key: PackageInfo.KEY_SID_DEVICE_CAMERA_INFOS_FRONT )
+            key: PackageInfo.KEY_SID_DEVICE_CAMERA_INFOS_FRONT,
+            defaultVal:defaultDict )
+        
         sidDeviceCameraInfosFront = SIDDeviceCameraInfos().fromJsonDict(dict: sidDeviceCameraInfosFrontDict)
         
         let apiVersionDict = jsonUtils.getDict(dict:dict,
-                                               key: PackageInfo.KEY_API_VERSION )
+            key: PackageInfo.KEY_API_VERSION,
+            defaultVal:defaultDict )
         apiVersion = APIVersion().fromJsonDict(dict: apiVersionDict)
         
         let captureConfigDict = jsonUtils.getDict(dict:dict,
-                                                  key: PackageInfo.KEY_CAPTURE_CONFIG )
+            key: PackageInfo.KEY_CAPTURE_CONFIG,
+            defaultVal:defaultDict )
         captureConfig = CaptureConfig().fromJsonDict(dict: captureConfigDict)
         
         /* An array of dictionaries */
         var frameInfoDictArray = [Dictionary<String,Any>]()
         frameInfoDictArray =  jsonUtils.getArray(dict:dict,
-                                                 key: PackageInfo.KEY_FRAME_INFO ) as! [Dictionary<String, Any>]
+            key: PackageInfo.KEY_FRAME_INFO,
+            defaultVal : frameInfoDictArray ) as! [Dictionary<String, Any>]
         
         fullFrameInfoList = [FullFrameInfo]()
         for frameInfoDict in frameInfoDictArray {
@@ -86,21 +93,26 @@ class PackageInfo {
         
         
         let frameInfoIdCardDict = jsonUtils.getDict(dict:dict,
-                                                    key: PackageInfo.KEY_FRAME_INFO_ID_CARD )
+            key: PackageInfo.KEY_FRAME_INFO_ID_CARD,
+            defaultVal:defaultDict )
         frameInfoIDCard = FullFrameInfo().fromJsonDict(dict: frameInfoIdCardDict)
         
         let frameInfoPreviewFullDict = jsonUtils.getDict(dict:dict,
-                                                         key: PackageInfo.KEY_FRAME_INFO_PREVIEW_FULL )
+            key: PackageInfo.KEY_FRAME_INFO_PREVIEW_FULL,
+            defaultVal:defaultDict )
         frameInfoPreviewFull = FullFrameInfo().fromJsonDict(dict: frameInfoPreviewFullDict)
         
         isMaxFrameTimeout = jsonUtils.getBool(dict:dict,
-                                              key: PackageInfo.KEY_IS_MAX_FRAME_TIMEOUT )
+            key: PackageInfo.KEY_IS_MAX_FRAME_TIMEOUT,
+            defaultVal:false )
         
         referenceId = jsonUtils.getString(dict:dict,
-                                          key: PackageInfo.KEY_REFERENCE_ID )
+            key: PackageInfo.KEY_REFERENCE_ID,
+            defaultVal : "" )
         
         let securityCapsDict = jsonUtils.getDict(dict:dict,
-                                                 key: PackageInfo.KEY_SECURITY_CAPS )
+            key: PackageInfo.KEY_SECURITY_CAPS,
+            defaultVal:defaultDict )
         securityCaps = SecurityCaps().fromJsonDict(dict: securityCapsDict)
         
         

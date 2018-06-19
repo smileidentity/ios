@@ -25,16 +25,19 @@ class ImageProcessingCaps {
     func fromJsonDict( dict : Dictionary<String,Any> ) -> ImageProcessingCaps? {
         let jsonUtils = JsonUtils()
         debug_rotate_after_crop = jsonUtils.getBool(dict:dict,
-            key: ImageProcessingCaps.KEY_DEBUG_AFTER_CROP )!
+            key: ImageProcessingCaps.KEY_DEBUG_AFTER_CROP,
+            defaultVal: false )
         
         detectBlurryImage = jsonUtils.getBool(dict:dict,
-            key: ImageProcessingCaps.KEY_DETECT_BLURRY_IMAGE )!
-        
+            key: ImageProcessingCaps.KEY_DETECT_BLURRY_IMAGE,
+            defaultVal: false )
         detectLowLight = jsonUtils.getBool(dict:dict,
-            key: ImageProcessingCaps.KEY_DETECT_LOW_LIGHT )!
+            key: ImageProcessingCaps.KEY_DETECT_LOW_LIGHT,
+            defaultVal: false )
         
         rotate_images = jsonUtils.getBool(dict:dict,
-            key: ImageProcessingCaps.KEY_ROTATE_IMAGES )!
+            key: ImageProcessingCaps.KEY_ROTATE_IMAGES,
+            defaultVal : false )
         
         return self
 

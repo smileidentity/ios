@@ -31,10 +31,12 @@ class PreviewSize {
         let jsonUtils = JsonUtils()
         
         width = jsonUtils.getInt(dict:dict,
-                                 key: PreviewSize.KEY_WIDTH )!
+                                 key: PreviewSize.KEY_WIDTH,
+                                 defaultVal : 0 )
         
         height = jsonUtils.getInt(dict:dict,
-                                  key: PreviewSize.KEY_HEIGHT )!
+                                  key: PreviewSize.KEY_HEIGHT,
+                                  defaultVal : 0 )
         
         return self
         
@@ -52,8 +54,7 @@ class PreviewSize {
             return fromJsonDict( dict: dict! )
             
         }
-        
-        return self
+ 
     }
     
     

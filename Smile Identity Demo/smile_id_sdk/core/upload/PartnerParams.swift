@@ -102,11 +102,10 @@ class PartnerParams: Codable {
             let dict = jsonUtils.jsonFormattedStringToDict(
                 jsonFormattedString )
             
-            fromJsonDict(dict: dict!)
+            return fromJsonDict(dict: dict!)
             
         }
-        
-        return self
+   
     }
     
     

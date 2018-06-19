@@ -62,34 +62,45 @@ class UserInfoJson{
         let jsonUtils = JsonUtils()
         
         isVerifyProcess = jsonUtils.getBool(dict:dict,
-                                        key: UserInfoJson.KEY_JSON_VERIFIED )!
+            key: UserInfoJson.KEY_JSON_VERIFIED,
+            defaultVal : false )
         
         userName = jsonUtils.getString(dict:dict,
-                                       key: UserInfoJson.KEY_JSON_NAME )!
+            key: UserInfoJson.KEY_JSON_NAME,
+            defaultVal : "" )
         
         fbUserId = jsonUtils.getString(dict:dict,
-                                       key: UserInfoJson.KEY_JSON_FB_USER_ID )!
+            key: UserInfoJson.KEY_JSON_FB_USER_ID,
+            defaultVal : "" )
         
         fbUserFirstName = jsonUtils.getString(dict:dict,
-                                        key: UserInfoJson.KEY_JSON_FIRST_NAME )!
+            key: UserInfoJson.KEY_JSON_FIRST_NAME,
+            defaultVal : "" )
+            
         
         fbUserLastName = jsonUtils.getString(dict:dict,
-                                        key: UserInfoJson.KEY_JSON_LAST_NAME )!
+            key: UserInfoJson.KEY_JSON_LAST_NAME,
+            defaultVal : "" )
         
         fbUserGender = jsonUtils.getString(dict:dict,
-                                        key: UserInfoJson.KEY_JSON_GENDER )!
+            key: UserInfoJson.KEY_JSON_GENDER,
+            defaultVal : "" )
         
         fbUserEmail = jsonUtils.getString(dict:dict,
-                                        key: UserInfoJson.KEY_JSON_EMAIL )!
+            key: UserInfoJson.KEY_JSON_EMAIL,
+            defaultVal : "" )
         
         fbUserPhoneNumber = jsonUtils.getString(dict:dict,
-                                        key: UserInfoJson.KEY_JSON_PHONE )!
+            key: UserInfoJson.KEY_JSON_PHONE,
+            defaultVal : "" )
         
         countryCode = jsonUtils.getString(dict:dict,
-                                        key: UserInfoJson.KEY_JSON_COUNTRY_CODE )!
+            key: UserInfoJson.KEY_JSON_COUNTRY_CODE,
+            defaultVal : "" )
         
         countryName = jsonUtils.getString(dict:dict,
-                                        key: UserInfoJson.KEY_JSON_COUNTRY_NAME )!
+            key: UserInfoJson.KEY_JSON_COUNTRY_NAME,
+            defaultVal : "" )
 
         return self
      }

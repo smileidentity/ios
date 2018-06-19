@@ -98,16 +98,20 @@ class LensCharacteristics {
         let jsonUtils = JsonUtils()
         
         flashMode = jsonUtils.getString(dict:dict,
-                                        key: LensCharacteristics.KEY_FLASH_MODE )!
+            key: LensCharacteristics.KEY_FLASH_MODE,
+            defaultVal : "" )
         
         focalLength = jsonUtils.getFloat(dict:dict,
-                                         key: LensCharacteristics.KEY_FOCAL_LENGTH )!
+            key: LensCharacteristics.KEY_FOCAL_LENGTH,
+            defaultVal : 0.0 )
         
         // Read array of arrays ( Ported from Android code this way,
         // in order to maintain compatibility with the format
         // var jsFpsRangeArray = [Any]()
+
         var jsFpsRangeArray = jsonUtils.getArray(dict:dict,
-            key: LensCharacteristics.KEY_FPS_RANGE )!
+            key: LensCharacteristics.KEY_FPS_RANGE,
+            defaultVal: [Any]() )
         
         // var fpsRangeArray = [Any]()
         var fpsRangeArray = [jsFpsRangeArray[0]]
@@ -117,34 +121,44 @@ class LensCharacteristics {
         
         
         horizontalViewAngle = jsonUtils.getFloat(dict:dict,
-                                                 key: LensCharacteristics.KEY_HORIZONTAL_VIEW_ANGLE )!
+            key: LensCharacteristics.KEY_HORIZONTAL_VIEW_ANGLE,
+            defaultVal : 0.0 )
         
         verticalViewAngle = jsonUtils.getFloat(dict:dict,
-                                               key: LensCharacteristics.KEY_VERTICAL_VIEW_ANGLE )!
+            key: LensCharacteristics.KEY_VERTICAL_VIEW_ANGLE,
+            defaultVal : 0.0 )
         
         jpegQuality = jsonUtils.getInt(dict:dict,
-                                       key: LensCharacteristics.KEY_JPEG_QUALITY )!
+            key: LensCharacteristics.KEY_JPEG_QUALITY,
+            defaultVal : 0 )
         
         jpegThumbnailQuality = jsonUtils.getInt(dict:dict,
-                                                key: LensCharacteristics.KEY_JPEG_THUMBNAIL_QUALITY )!
+            key: LensCharacteristics.KEY_JPEG_THUMBNAIL_QUALITY,
+            defaultVal : 0 )
         
         maxFPS = jsonUtils.getInt(dict:dict,
-                                  key: LensCharacteristics.KEY_MAX_FPS )!
+            key: LensCharacteristics.KEY_MAX_FPS,
+            defaultVal : 0 )
         
         minFPS = jsonUtils.getInt(dict:dict,
-                                  key: LensCharacteristics.KEY_MIN_FPS )!
+            key: LensCharacteristics.KEY_MIN_FPS,
+            defaultVal : 0 )
         
         devicePortraitHorizontalResolution = jsonUtils.getInt(dict:dict,
-                                                              key: LensCharacteristics.KEY_MAX_PREVIEW_WIDTH )!
+            key: LensCharacteristics.KEY_MAX_PREVIEW_WIDTH,
+            defaultVal : 0 )
         
         devicePortraitVerticalResolution = jsonUtils.getInt(dict:dict,
-                                                            key: LensCharacteristics.KEY_MAX_PREVIEW_HEIGHT )!
+            key: LensCharacteristics.KEY_MAX_PREVIEW_HEIGHT,
+            defaultVal : 0 )
         
         maxZoom = jsonUtils.getInt(dict:dict,
-                                   key: LensCharacteristics.KEY_MAX_ZOOM )!
+            key: LensCharacteristics.KEY_MAX_ZOOM,
+            defaultVal : 0 )
         
         let sWhiteBalanceMode = jsonUtils.getString(dict:dict,
-                                                    key: LensCharacteristics.KEY_WHITE_BALANCE )!
+            key: LensCharacteristics.KEY_WHITE_BALANCE,
+            defaultVal : "auto" )
         whiteBalanceMode = whiteBalanceModeFromString(sWhiteBalanceMode: sWhiteBalanceMode )
         
         return self
@@ -163,8 +177,7 @@ class LensCharacteristics {
             return fromJsonDict( dict: dict! )
             
         }
-        
-        return self
+       
     }
     
     

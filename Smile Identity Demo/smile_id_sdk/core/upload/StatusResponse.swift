@@ -8,7 +8,7 @@
 
 import Foundation
 
-class StatusResponse : JsonResponse {
+class StatusResponse {
     
     static let KEY_SUCCESS          : String     = "success"
     static let KEY_ERROR            : String     = "error"
@@ -45,7 +45,12 @@ class StatusResponse : JsonResponse {
     var additionalProperties        = [String : String] ()
     
     let jsonUtils       = JsonUtils()
+  
+    var rawJsonString   : String = "";
+    
+    func getRawJsonString() -> String { return rawJsonString }
 
+    
     func isJobComplete() -> Bool {
         if( jobComplete == "true" ){
             return true
@@ -65,7 +70,7 @@ class StatusResponse : JsonResponse {
     }
     
     /* Initialize from json string */
-    override func fromJsonString( jsonFormattedString : String ) -> StatusResponse? {
+    func fromJsonString( jsonFormattedString : String ) -> StatusResponse? {
         if( jsonFormattedString.isEmpty ){
             return nil
         }
@@ -81,14 +86,30 @@ class StatusResponse : JsonResponse {
     }
     
     func setStatusDataResponse( dict : [String : Any] ){
-        error = jsonUtils.getString(dict:dict, key:StatusResponse.KEY_ERROR )
-        success = jsonUtils.getBool( dict:dict, key:StatusResponse.KEY_SUCCESS )
-        timestamp = jsonUtils.getInt64(dict:dict, key: StatusResponse.KEY_TIMESTAMP )
-        signature = jsonUtils.getString( dict:dict, key: StatusResponse.KEY_SIGNATURE )
-        jobComplete = jsonUtils.getString( dict:dict, key: StatusResponse.KEY_JOB_COMPLETE )
-        jobSuccess = jsonUtils.getString( dict:dict, key: StatusResponse.KEY_JOB_SUCCESS )
-        errors = jsonUtils.getArray(dict: dict, key: StatusResponse.KEY_ERRORS ) as! [String]
-        userErrors = jsonUtils.getArray(dict: dict, key: StatusResponse.KEY_USER_ERRORS) as! [String]
+        error = jsonUtils.getString(dict:dict,
+                                    key:StatusResponse.KEY_ERROR,
+                                    defaultVal: "false" )
+        success = jsonUtils.getBool( dict:dict,
+                                     key:StatusResponse.KEY_SUCCESS,
+                                     defaultVal: false)
+        timestamp = jsonUtils.getInt64( dict:dict,
+                                        key: StatusResponse.KEY_TIMESTAMP,
+                                        defaultVal: 0 )
+        signature = jsonUtils.getString(    dict:dict,
+                                            key: StatusResponse.KEY_SIGNATURE,
+                                            defaultVal: "" )
+        jobComplete = jsonUtils.getString(  dict:dict,
+                                            key: StatusResponse.KEY_JOB_COMPLETE,
+                                            defaultVal: "false")
+        jobSuccess = jsonUtils.getString( dict:dict,
+                                          key: StatusResponse.KEY_JOB_SUCCESS,
+                                          defaultVal:"false")
+        errors = jsonUtils.getArray(dict: dict,
+                                    key: StatusResponse.KEY_ERRORS,
+                                    defaultVal: [Any]() ) as! [String]
+        userErrors = jsonUtils.getArray(dict: dict, key:
+            StatusResponse.KEY_USER_ERRORS,
+               defaultVal: [Any]() ) as! [String]
 
     }
     
@@ -97,19 +118,27 @@ class StatusResponse : JsonResponse {
         if let jsonResultString = dict[StatusResponse.KEY_RESULT] {
             let resultDict = jsonResultString as! [String : Any]
             self.result.resultText = jsonUtils.getString(
-                dict: resultDict, key: StatusResponse.KEY_RESULT_TEXT )!
+                dict: resultDict, key: StatusResponse.KEY_RESULT_TEXT,
+                defaultVal : "" )
             self.result.resultType = jsonUtils.getString(
-                dict:resultDict, key: StatusResponse.KEY_RESULT_TYPE)!
+                dict:resultDict, key: StatusResponse.KEY_RESULT_TYPE,
+                defaultVal : "" )
             self.result.smileJobID = jsonUtils.getString(
-                dict:resultDict, key: StatusResponse.KEY_SMILE_JOB_ID )!
+                dict:resultDict,
+                key: StatusResponse.KEY_SMILE_JOB_ID,
+                defaultVal : "")
             self.result.jSONVersion = jsonUtils.getString(
-                dict:resultDict, key: StatusResponse.KEY_JSON_VERSION )!
+                dict:resultDict, key: StatusResponse.KEY_JSON_VERSION,
+                defaultVal : "")
             self.result.isFinalResult = jsonUtils.getString(
-                dict:resultDict, key: StatusResponse.KEY_IS_FINAL_RESULT )!
+                dict:resultDict, key: StatusResponse.KEY_IS_FINAL_RESULT,
+                defaultVal : "")
             self.result.confidenceValue = jsonUtils.getString(
-                dict:resultDict, key: StatusResponse.KEY_CONFIDENCE_VALUE )!
+                dict:resultDict, key: StatusResponse.KEY_CONFIDENCE_VALUE,
+                defaultVal : "")
             self.result.isMachineResult = jsonUtils.getString(
-                dict:resultDict, key: StatusResponse.KEY_MACHINE_RESULT )!
+                dict:resultDict, key: StatusResponse.KEY_MACHINE_RESULT,
+                defaultVal : "")
         }
     }
     
@@ -117,9 +146,14 @@ class StatusResponse : JsonResponse {
     func setPartnerParamsValues( dict : [String : Any] ) {
         if let jsonParterParamsString = dict[StatusResponse.KEY_PARTNER_PARAMS] {
             let partnerParamsDict = jsonParterParamsString as! [String : Any]
-            result.partnerParams.userId = jsonUtils.getString(dict: partnerParamsDict, key: PartnerParams.USER_ID )!
-            result.partnerParams.jobId = jsonUtils.getString(dict: partnerParamsDict, key: PartnerParams.JOB_ID )!
-            result.partnerParams.jobType = jsonUtils.getInt(dict: partnerParamsDict, key: PartnerParams.JOB_TYPE )!
+            result.partnerParams.userId = jsonUtils.getString(dict: partnerParamsDict, key: PartnerParams.USER_ID,
+                defaultVal : "" )
+            result.partnerParams.jobId = jsonUtils.getString(dict: partnerParamsDict,
+                key: PartnerParams.JOB_ID,
+                defaultVal : "")
+            result.partnerParams.jobType = jsonUtils.getInt(dict: partnerParamsDict,
+                key: PartnerParams.JOB_TYPE,
+                defaultVal : 0 )
         }
     }
     

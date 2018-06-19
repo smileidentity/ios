@@ -8,7 +8,7 @@
 
 import Foundation
 
-class AuthSmileResponse : JsonResponse {
+class AuthSmileResponse {
     
     static let KEY_SUCCESS         : String    = "success"
     static let KEY_TIMESTAMP       : String    = "timestamp"
@@ -35,9 +35,13 @@ class AuthSmileResponse : JsonResponse {
     var additionalProperties        = [String : String] ()
     
     let jsonUtils       = JsonUtils()
+    var rawJsonString   : String = "";
+    
+    func getRawJsonString() -> String { return rawJsonString }
+
    
     /* Initialize from json string */
-    override func fromJsonString( jsonFormattedString : String ) -> AuthSmileResponse? {
+    func fromJsonString( jsonFormattedString : String ) -> AuthSmileResponse? {
         if( jsonFormattedString.isEmpty ){
             return nil
         }
@@ -54,20 +58,42 @@ class AuthSmileResponse : JsonResponse {
     func setPartnerParamsValues( dict : [String : Any] ) {
         if let jsonParterParamsString = dict[AuthSmileResponse.KEY_PARTNER_PARAMS] {
             let partnerParamsDict = jsonParterParamsString as! [String : Any]
-                partnerParams.userId = jsonUtils.getString(dict: partnerParamsDict, key: PartnerParams.USER_ID )!
-                partnerParams.jobId = jsonUtils.getString(dict: partnerParamsDict, key: PartnerParams.JOB_ID )!
-                partnerParams.jobType = jsonUtils.getInt(dict: partnerParamsDict, key: PartnerParams.JOB_TYPE)!
+                partnerParams.userId = jsonUtils.getString(dict: partnerParamsDict, key: PartnerParams.USER_ID,
+                    defaultVal : "" )
+                partnerParams.jobId = jsonUtils.getString(dict: partnerParamsDict,
+                    key: PartnerParams.JOB_ID,
+                    defaultVal: "" )
+                partnerParams.jobType = jsonUtils.getInt(dict: partnerParamsDict,
+                    key: PartnerParams.JOB_TYPE,
+                    defaultVal: -1 )
          }
     }
     
     func setJobResponseValues( dict : [String : Any] ){
-        success = jsonUtils.getBool(dict: dict, key: AuthSmileResponse.KEY_SUCCESS )
-        timestamp = jsonUtils.getInt64(dict:dict, key: AuthSmileResponse.KEY_TIMESTAMP )
-        secKey = jsonUtils.getString(dict:dict, key: AuthSmileResponse.KEY_SEC)
-        callbackUrl = jsonUtils.getString(dict:dict,key: AuthSmileResponse.KEY_CALLBACK_URL )
-        smileClientId = jsonUtils.getString(dict:dict,key: AuthSmileResponse.KEY_SMILE_CLIENT_ID )
-        errors = jsonUtils.getArray(dict: dict, key: AuthSmileResponse.KEY_ERRORS ) as! [String]
-        userErrors = jsonUtils.getArray(dict: dict, key: AuthSmileResponse.KEY_USER_ERRORS ) as! [String]
+        success = jsonUtils.getBool(dict: dict,
+            key: AuthSmileResponse.KEY_SUCCESS,
+            defaultVal : false
+        )
+        
+        timestamp = jsonUtils.getInt64(dict:dict, key: AuthSmileResponse.KEY_TIMESTAMP,
+            defaultVal: 0 )
+        
+        secKey = jsonUtils.getString(dict:dict,
+            key: AuthSmileResponse.KEY_SEC,
+            defaultVal: "" )
+        
+        callbackUrl = jsonUtils.getString(dict:dict,key: AuthSmileResponse.KEY_CALLBACK_URL,
+            defaultVal : "" )
+        
+        smileClientId = jsonUtils.getString(dict:dict,key: AuthSmileResponse.KEY_SMILE_CLIENT_ID,
+            defaultVal: "" )
+        
+        errors = jsonUtils.getArray(dict: dict,
+            key: AuthSmileResponse.KEY_ERRORS,
+            defaultVal : [Any]() ) as! [String]
+        
+        userErrors = jsonUtils.getArray(dict: dict, key: AuthSmileResponse.KEY_USER_ERRORS,
+            defaultVal : [Any]()) as! [String]
 
     }
     

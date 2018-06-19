@@ -20,17 +20,17 @@ class AuthSmileRequestJson {
     var userId              : String
     
     var jobType             : Int?
-    var isAuthenticationMode: Bool = false
+    var isEnrollMode        : Bool = true
 
     
     init (      jobType : Int,
                 userId : String,
                 isIdPresent : Bool,
-                isAuthenticationMode : Bool ) {
+                isEnrollMode : Bool ) {
         self.jobType = jobType;
         self.isIdPresent = isIdPresent;
         self.userId = userId;
-        self.isAuthenticationMode = isAuthenticationMode;
+        self.isEnrollMode = isEnrollMode;
 
     }
     
@@ -38,24 +38,40 @@ class AuthSmileRequestJson {
         let jsonUtils = JsonUtils()
         var dict = [String: Any]()
         
-        dict[AuthSmileRequestJson.KEY_JSON_AUTH_TOKEN] = "1"
-        if( isAuthenticationMode ){
-            dict[AuthSmileRequestJson.KEY_JSON_ENROLLMENT] = false
-            dict[AuthSmileRequestJson.KEY_JSON_ID_PRESENT] = false
-            dict[AuthSmileRequestJson.KEY_JSON_USER_ID] = userId
+        jsonUtils.putString( dict: &dict,
+            key: AuthSmileRequestJson.KEY_JSON_AUTH_TOKEN,
+            val: "1" )
+        jsonUtils.putBool( dict: &dict,
+                           key: AuthSmileRequestJson.KEY_JSON_ENROLLMENT,
+                           val: isEnrollMode )
+        if( isEnrollMode ){
+
+            jsonUtils.putBool( dict: &dict,
+                               key: AuthSmileRequestJson.KEY_JSON_ID_PRESENT,
+                               val: isIdPresent! )
         }
         else{
-            dict[AuthSmileRequestJson.KEY_JSON_ENROLLMENT] = true
-            dict[AuthSmileRequestJson.KEY_JSON_ID_PRESENT] = isIdPresent
-            dict[AuthSmileRequestJson.KEY_JSON_USER_ID] = "UNKNOWN"
+            jsonUtils.putBool( dict: &dict,
+                               key: AuthSmileRequestJson.KEY_JSON_ID_PRESENT,
+                               val: false )
+            jsonUtils.putString( dict: &dict,
+                                 key: AuthSmileRequestJson.KEY_JSON_USER_ID,
+                                 val: userId )
 
+   
         }
         if( jobType! > 0 ) {
-            dict[AuthSmileRequestJson.KEY_JSON_JOB_TYPE] = String(jobType!)
+            jsonUtils.putString( dict: &dict,
+                                 key: AuthSmileRequestJson.KEY_JSON_JOB_TYPE,
+                                 val: String(jobType!) )
+
         }
         
-        dict[AuthSmileRequestJson.KEY_JSON_TIMESTAMP] = Int64(NSDate().timeIntervalSince1970 * 1000)
-        
+        jsonUtils.putInt64( dict: &dict,
+                             key: AuthSmileRequestJson.KEY_JSON_TIMESTAMP,
+                             val: Int64(NSDate().timeIntervalSince1970 * 1000 )
+        )
+
         
         return jsonUtils.dictToJsonFormattedString( dict : dict )
     }

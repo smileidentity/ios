@@ -38,15 +38,23 @@ class MetaData {
             let jsonUtils = JsonUtils()
             let dict = jsonUtils.jsonFormattedStringToDict( jsonString )
 
-            let packageInfoDict = jsonUtils.getDict(dict: dict!, key: MetaData.KEY_PACKAGE_INFORMATION )
+            let packageInfoDict = jsonUtils.getDict(dict: dict!,
+                key: MetaData.KEY_PACKAGE_INFORMATION,
+                defaultVal:  [String:Any]() )
             packageInfo = PackageInfo().fromJsonDict(dict: packageInfoDict)
             
-            let lambaRequestDict = jsonUtils.getDict(dict: dict!, key: MetaData.KEY_MISC_INFORMATION )
+            let lambaRequestDict = jsonUtils.getDict(dict: dict!, key: MetaData.KEY_MISC_INFORMATION,
+                defaultVal:  [String:Any]() )
             lambaRequest = LambdaRequestJson().fromJsonDict(dict: lambaRequestDict)
             
-            serverInfo = jsonUtils.getString(dict: dict!, key: MetaData.KEY_SERVER_INFO )
+            serverInfo = jsonUtils.getString(dict: dict!,
+                key: MetaData.KEY_SERVER_INFO,
+                defaultVal : "" )
             
-            let sidUserIdInfoDict = jsonUtils.getDict(dict: dict!, key: MetaData.KEY_USER_ID_INFORMATION )
+            let sidUserIdInfoDict = jsonUtils.getDict(dict: dict!,
+                key: MetaData.KEY_USER_ID_INFORMATION,
+                defaultVal:  [String:Any]() )
+                
             sidUserIdInfo = SIDUserIdInfo().fromJsonDict(dict: sidUserIdInfoDict)
             
             return self
