@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-class UploadService {
+class UploadService : NetRequestDelegate {
+    
     var referenceId : String?
     
     var isCancelled : Bool = false // TODO wire cancelled functionality
@@ -67,10 +68,7 @@ class UploadService {
         catch {
             
         }
-        
     }
-    
-    
     
     
     func buildLambdaRequest( phoneNumber : String,
@@ -112,6 +110,38 @@ class UploadService {
         // Apple does not allow this.  The app will be rejected.
         return "(000)000-0000"
     }
+    
+    
+    /**************************************************
+     Callbacks from NetRequest
+    **************************************************/
+    
+    func onUpdateJobStatus( msg : String ){
+        // TODO : Pass msg back to UI.
+    }
+    
+    
+    func onExecuteAuthSmileComplete( authSmileResponse : AuthSmileResponse ){
+        
+    }
+    
+    
+    // Could use a completion handler just as well as a delegate for this one,
+    // but for consistancy, will use a delegate.
+    // This is because the uploadJobStatus uses a delegate, because it is
+    // using a timer, so can't return objects in a completion handler
+    func onTransmitToServerComplete( uploadDataResponse : UploadDataResponse ){
+        
+    }
+    
+    func onUploadComplete( statusCode : Int ){
+        
+    }
+    
+    func onUploadJobStatusComplete( statusResponse : StatusResponse ){
+        
+    }
+
     
     
     
