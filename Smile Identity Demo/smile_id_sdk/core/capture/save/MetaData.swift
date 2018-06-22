@@ -26,9 +26,25 @@ class MetaData {
         String = "id_info"
 
     var packageInfo                         : PackageInfo?
-    var lambaRequest                        : LambdaRequestJson?
+    
+    // lambda request goes into the misc info block
+    var miscInfo                            : MiscInfo?
+    
+    // lambda Response goes into the serverInfo block
     var serverInfo                          : String?
+    
     var sidUserIdInfo                       : SIDUserIdInfo?
+    
+    init( packageInfo       : PackageInfo,
+          miscInfo          : MiscInfo,
+          serverInfo        : String,
+          sidUserIdInfo     : SIDUserIdInfo
+        ){
+        self.packageInfo = packageInfo
+        self.miscInfo = miscInfo
+        self.serverInfo = serverInfo
+        self.sidUserIdInfo = sidUserIdInfo
+    }
     
     func fromJsonString( jsonString : String ) -> MetaData? {
         if( jsonString.isEmpty ){
@@ -43,9 +59,9 @@ class MetaData {
                 defaultVal:  [String:Any]() )
             packageInfo = PackageInfo().fromJsonDict(dict: packageInfoDict)
             
-            let lambaRequestDict = jsonUtils.getDict(dict: dict!, key: MetaData.KEY_MISC_INFORMATION,
+            let miscInfoDict = jsonUtils.getDict(dict: dict!, key: MetaData.KEY_MISC_INFORMATION,
                 defaultVal:  [String:Any]() )
-            lambaRequest = LambdaRequestJson().fromJsonDict(dict: lambaRequestDict)
+            miscInfo = MiscInfo().fromJsonDict(dict: miscInfoDict)
             
             serverInfo = jsonUtils.getString(dict: dict!,
                 key: MetaData.KEY_SERVER_INFO,
@@ -73,7 +89,7 @@ class MetaData {
             val: ( packageInfo!.toJsonDict()) )
         
         jsonUtils.putDict( dict: &dict, key: MetaData.KEY_MISC_INFORMATION,
-                           val: ( lambaRequest!.toJsonDict()) )
+                           val: ( miscInfo!.toJsonDict()) )
         
         jsonUtils.putString( dict: &dict, key: MetaData.KEY_SERVER_INFO,
                              val: serverInfo! )

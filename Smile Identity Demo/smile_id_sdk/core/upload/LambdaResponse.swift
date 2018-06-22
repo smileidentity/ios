@@ -8,7 +8,7 @@
 
 import Foundation
 
-class UploadDataResponse {
+class LambdaResponse {
     
     static let KEY_UPLOAD_URL           : String    = "upload_url"
     static let KEY_SMILE_JOB_ID         : String    = "smile_job_id"
@@ -27,7 +27,7 @@ class UploadDataResponse {
 
     
     /* Initialize from json string */
-    func fromJsonString( jsonFormattedString : String ) -> UploadDataResponse? {
+    func fromJsonString( jsonFormattedString : String ) -> LambdaResponse? {
         if( jsonFormattedString.isEmpty ){
             return nil
         }
@@ -36,14 +36,14 @@ class UploadDataResponse {
             let dict = jsonUtils.jsonFormattedStringToDict( jsonFormattedString )
             
             uploadUrl = jsonUtils.getString(dict: dict!,
-                        key: UploadDataResponse.KEY_UPLOAD_URL,
+                        key: LambdaResponse.KEY_UPLOAD_URL,
                         defaultVal: "" )
 
             smileJobId = jsonUtils.getString(dict: dict!,
-                key: UploadDataResponse.KEY_SMILE_JOB_ID,
+                key: LambdaResponse.KEY_SMILE_JOB_ID,
                 defaultVal: "" )
             
-            refId = jsonUtils.getString(dict: dict!, key: UploadDataResponse.KEY_REF_ID,
+            refId = jsonUtils.getString(dict: dict!, key: LambdaResponse.KEY_REF_ID,
                 defaultVal: "" )
             
         }

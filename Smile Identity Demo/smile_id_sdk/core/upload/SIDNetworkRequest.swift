@@ -183,7 +183,7 @@ class SIDNetworkRequest {
                                 isEnrollMode : Bool ) -> CoreRequestData {
         let coreRequestData = CoreRequestData()
         coreRequestData.sidNetData = sidNetData
-        coreRequestData.geoInfoJson = geoInfos.toJsonString()
+        coreRequestData.geoInfos = geoInfos
         coreRequestData.partnerParams = partnerParams
         coreRequestData.tag = tag
         coreRequestData.requestNewToken = requestNewToken

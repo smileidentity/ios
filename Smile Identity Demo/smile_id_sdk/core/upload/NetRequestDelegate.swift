@@ -14,17 +14,17 @@ protocol NetRequestDelegate {
     // func onUploadProgress( progress : Int )
     func onUpdateJobStatus( msg : String )
     
-    func onExecuteAuthSmileComplete( authSmileResponse : AuthSmileResponse )
+    func onPostAuthSmileComplete( authSmileResponse : AuthSmileResponse? )
     
     // Could use a completion handler just as well as a delegate for this one,
     // but for consistancy, will use a delegate.
     // This is because the uploadJobStatus uses a delegate, because it is
     // using a timer, so can't return objects in a completion handler
-    func onTransmitToServerComplete( uploadDataResponse : UploadDataResponse )
+    func onPostLambdaComplete( lambdaResponse : LambdaResponse? )
     
     func onUploadComplete( statusCode : Int )
     
-    func onUploadJobStatusComplete( statusResponse : StatusResponse )
+    func onUploadJobStatusComplete( statusResponse : StatusResponse? )
     
     // Android code would throw errors, here we will use a delegate,
     // and the delegate will handle it.

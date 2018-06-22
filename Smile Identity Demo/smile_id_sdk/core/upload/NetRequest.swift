@@ -21,6 +21,7 @@ class NetRequest {
     static let JOB_STATUS_REQUEST_SLEEP     : Double    = 0.2       // 200 ms
     static let MAX_INPUT_BUFFER_SIZE        : Int       = 8192
     static let HTTP_BAD_REQUEST             : Int       = 400
+    static let HTTP_STATUS_CODE_OK          : Int       = 200
     static let UPLOAD_JOB_STATUS_RETRY_TIMEOUT_SEC
                                             : Double       = 45.0    // Seconds
     static let UPLOAD_JOB_STATUS_MAX_ATTEMPTS
@@ -46,6 +47,12 @@ class NetRequest {
     var isExecuteAuthSmile                  : Bool?
     var jsAuthSmileRequest                  : String?
     
+    init( netRequestDelegate : NetRequestDelegate ){
+        self.netRequestDelegate = netRequestDelegate
+    }
+    
+  
+    
     /* Local callback for when uploadJobStatus is called from executeAuthSmile.
         Android code shows uploadJobStatus being called both from this class,
         from executeAuthSmile, and also from UploadService.   For now,
@@ -53,18 +60,7 @@ class NetRequest {
     func onUploadJobStatusComplete( statusResponse : StatusResponse ){
         isExecuteAuthSmile = false
         if( statusResponse.isJobComplete() ) {
-            
-            doHttpPost( serverUrl: authSmileRequestUrl!,
-                        json: jsAuthSmileRequest!) {
-                            /*  This is the completion handler that is called
-                             from doHttpPost's uploadTask completion handler */
-                            (jsResponse) -> Void in
-                            if( jsResponse != nil ){
-                                let authSmileResponse = AuthSmileResponse().fromJsonString(
-                                    jsonFormattedString: jsResponse! )
-                                self.netRequestDelegate?.onExecuteAuthSmileComplete(authSmileResponse: authSmileResponse!)
-                            }
-            }
+            postAuthSmile()
         }
         else if ( !(statusResponse.error?.isEmpty)! ) {
             let sidError = SIDError.UNABLE_TO_SUBMIT_COULD_NOT_AUTH
@@ -73,7 +69,28 @@ class NetRequest {
         
     }
     
-    func executeAuthSmile( partnerUrl : String,
+    
+    /* called internally from this class only */
+    func postAuthSmile() {
+        doHttpPost( serverUrl: authSmileRequestUrl!,
+                    json: jsAuthSmileRequest!) {
+                        /*  This is the completion handler that is called
+                         from doHttpPost's uploadTask completion handler */
+                        (jsResponse) -> Void in
+                        if( jsResponse != nil ){
+                            let authSmileResponse = AuthSmileResponse().fromJsonString(
+                                jsonFormattedString: jsResponse! )
+                            self.netRequestDelegate?.onPostAuthSmileComplete(authSmileResponse: authSmileResponse!)
+                        }
+                        else{
+                               self.netRequestDelegate?.onPostAuthSmileComplete(
+                                    authSmileResponse: nil)
+                        }
+        }
+    }
+    
+    /* called externally */
+    func postAuthSmile( partnerUrl : String,
                            authUrl : String,
                            jobStatusUrl : String,
                            jobType : Int,
@@ -82,7 +99,7 @@ class NetRequest {
         let appData = AppData()
  
         let userId = appData.getUserId( defaultUserId: "" )
-        let isIdPresent = appData.getIsIDPresent(defaultIsIDPresent: false);
+        let isIdPresent = appData.getIsIDPresent(defaultVal: false);
   
         let authSmileRequest = AuthSmileRequestJson(
             jobType: jobType,
@@ -94,17 +111,8 @@ class NetRequest {
         
         if (isEnrollMode) {
             // Enroll mode
-            doHttpPost( serverUrl: authSmileRequestUrl!,
-                        json: jsAuthSmileRequest!) {
-                            /*  This is the completion handler that is called
-                             from doHttpPost's uploadTask completion handler */
-                            (jsResponse) -> Void in
-                            if( jsResponse != nil ){
-                                let authSmileResponse = AuthSmileResponse().fromJsonString(
-                                    jsonFormattedString: jsResponse! )
-                                self.netRequestDelegate?.onExecuteAuthSmileComplete(authSmileResponse: authSmileResponse!)
-                            }
-            }
+            postAuthSmile()
+        
         } // isEnroll Mode
         else {
             // uploadJobStatus is called from here, and also from UploadService.
@@ -113,13 +121,35 @@ class NetRequest {
         }
     }
     
-    
+    /*
+     Upload json lambda request.
+     Returns an UploadDataResponse object in the completion hander.
+     Android code called this function 'transmitToServer'
+     */
+    func postLambda( jsLambdaRequest  : String,
+                    lambdaUrl        : String ) {
+        doHttpPost( serverUrl: lambdaUrl,
+                    json: jsLambdaRequest ) {
+                        /*  This is the completion handler that is called
+                         from doHttpPost's uploadTask completion handler */
+                        (jsResponse) -> Void in
+                        if( jsResponse != nil ){
+                            let lambdaResponse = LambdaResponse().fromJsonString(
+                                jsonFormattedString: jsResponse! )
+                            self.netRequestDelegate?.onPostLambdaComplete(lambdaResponse: lambdaResponse! )
+                        }
+                        else{
+                            self.netRequestDelegate?.onPostLambdaComplete(
+                                lambdaResponse: nil )
+                        }
+        }
+    }
   
     
     
     func uploadJobStatus( partnerUrl: String,
                           jobStatusUrl : String,
-                          isAuthenticationMode : Bool ) {
+                          isEnrollMode : Bool ) {
         
         let appData = AppData()
         
@@ -128,7 +158,7 @@ class NetRequest {
             smileClientId: appData.getSmileClientId( defaultSmileClientId: "" )!,
             lastEnrolledJobId: appData.getLastEnrollJobId( defaultLastEnrollJobId: "" )!,
             jobId: appData.getJobId(defaultJobId: "")!,
-            isAuthenticationMode: isAuthenticationMode)
+            isAuthenticationMode: !isEnrollMode)
         
         uploadJobStatusJsonStr = uploadJobStatusJson.toJsonString()
         uploadJobStatusAttemptNum = 0
@@ -229,26 +259,7 @@ class NetRequest {
     
  
     
-    /*
-        Upload json lambda request.
-        Returns an UploadDataResponse object in the completion hander.
-    */
-    func transmitToServer( jsLambdaRequest  : String,
-                           lambdaUrl        : String ) {
-        
-        doHttpPost( serverUrl: lambdaUrl,
-                    json: jsLambdaRequest) {
-                        /*  This is the completion handler that is called
-                            from doHttpPost's uploadTask completion handler */
-                      
-                        (jsResponse) -> Void in
-                        if( jsResponse != nil ){
-                            let uploadDataResponse = UploadDataResponse().fromJsonString(
-                                jsonFormattedString: jsResponse! )
-                            self.netRequestDelegate?.onTransmitToServerComplete(uploadDataResponse: uploadDataResponse! )
-                        }
-        }
-    }
+
     
     /*
      Perform Http Post request
@@ -269,7 +280,7 @@ class NetRequest {
         request.timeoutInterval = TimeInterval(NetRequest.HTTP_TIMEOUT)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+
         let task = URLSession.shared.uploadTask(
             with: request,
             from: uploadData ) { data, response, error in
@@ -309,16 +320,16 @@ class NetRequest {
     
     
     
-    /* Upload a file using the given url.
+    /* Upload a file using the given fileUrlStr.
      Return the status code as an Int, using a completion handler.
      Called from UploadService for uploading the zip file.
      */
-    func upload(fileUrl : URL,
-                serverUrl : String ) throws {
+    func upload( fileUrl        : URL,
+                 serverUrlStr   : String ) {
         
-        let url = URL(string: serverUrl)!
-        var request = URLRequest(url: url)
+        let serverUrl = URL(string: serverUrlStr)!
         
+        var request = URLRequest(url: serverUrl)
         request.timeoutInterval = TimeInterval(NetRequest.HTTP_TIMEOUT)
         request.httpMethod = "PUT"
         request.setValue("application/zip", forHTTPHeaderField: "Content-Type")
@@ -332,29 +343,12 @@ class NetRequest {
                 }
                 
                 if let response = response as? HTTPURLResponse{
-                    /* TODO - caller needs to get the statusCode from this.
-                     so implement a completion handler for the caller, because this is async.
-                     
-                     See : https://grokswift.com/completion-handlers-in-swift/
-                     https://stackoverflow.com/questions/47258733/how-to-return-an-object-from-a-method-that-contains-a-datatask
-                     
-                     
-                     Usage :
-                     let netRequest = NetRequest()
-                     netRequest.upload(fileUrl: myFileUrl,
-                     serverUrl: myServerUrl ) {
-                     statusCode in
-                     if let statusCode = statusCode {
-                     print(statusCode)
-                     }
-                     }
-                     
-                     */
-                    
+                  
                     let statusCode = response.statusCode
                     self.netRequestDelegate?.onUploadComplete(statusCode: statusCode )
                     return
                 }
+                
                 /*
                  if let mimeType = response.mimeType,
                  mimeType == "application/json",

@@ -74,6 +74,7 @@ class AppData {
     let KEY_FB_USER_GENDER      : String =
         "fbGender"
     
+    /* Android port - key says "fbPhoneNo", but it's used for email */
     let KEY_FB_USER_EMAIL       : String =
         "fbPhoneNo"
     
@@ -108,7 +109,6 @@ class AppData {
     }
 
     func getString( _ key : String, defaultVal : String? ) -> String? {
-        
         var val : String?
         if let testVal = getUserDefaults().string(forKey: key){
             val = testVal
@@ -126,9 +126,15 @@ class AppData {
     }
     
     
-    func getStringSet( key : String ) -> Set<String> {
+    func getStringSet( key : String ) -> Set<String>? {
         let userDefaults = getUserDefaults()
-        return userDefaults.object(forKey: key )! as! Set<String>
+        let stringSet = userDefaults.object(forKey: key )
+        if( stringSet == nil ){
+            return nil
+        }
+        else{
+            return stringSet! as? Set<String>
+        }
     }
 
     
@@ -140,8 +146,16 @@ class AppData {
     
     
     /* If key does not exist, returns 0. */
-    func getInt( _ key : String ) -> Int? {
-        return getUserDefaults().integer(forKey: key )
+    func getInt( key : String, defaultVal : Int ) -> Int {
+        let userDefaults = getUserDefaults()
+        let tmp = userDefaults.object( forKey: key )
+        if( tmp != nil ){
+            return userDefaults.integer(forKey: key )
+        }
+        else{
+            return defaultVal
+        }
+        
     }
     
     func setInt( _ key : String, val : Int ){
@@ -151,8 +165,16 @@ class AppData {
     }
     
     /* If the key doesn't exist, returns false */
-    func getBool( _ key : String ) -> Bool? {
-        return getUserDefaults().bool(forKey: key )
+    func getBool( key : String, defaultVal : Bool ) -> Bool {
+        let userDefaults = getUserDefaults()
+        let tmp = userDefaults.object( forKey: key )
+        if( tmp != nil ){
+            return userDefaults.bool(forKey: key )
+        }
+        else{
+            return defaultVal
+        }
+        
     }
     
     func setBool( _ key : String, val : Bool ){
@@ -202,16 +224,16 @@ class AppData {
         setString(KEY_COUNTRY_NAME, val : countryName);
     }
     
-    func getCountryName( defaultCountryName : String ) -> String? {
-        return getString(KEY_COUNTRY_NAME, defaultVal : defaultCountryName)
+    func getCountryName( defaultCountryName : String ) -> String {
+        return getString(KEY_COUNTRY_NAME, defaultVal : defaultCountryName)!
     }
     
     func setCountryCode( countryCode : String ) {
         setString(KEY_COUNTRY_CODE, val : countryCode);
     }
     
-    func getCountryCode( defaultCountryCode : String ) -> String? {
-        return getString(KEY_COUNTRY_CODE, defaultVal : defaultCountryCode)
+    func getCountryCode( defaultCountryCode : String ) -> String {
+        return getString(KEY_COUNTRY_CODE, defaultVal : defaultCountryCode)!
     }
     
     func setUserCountryLocation( userCountryLocation : String ) {
@@ -242,33 +264,35 @@ class AppData {
         setString(KEY_USER_PHONE_NUMBER, val : userPhoneNumber);
     }
     
-    func getUserPhoneNumber( defaultUserPhoneNumber : String ) -> String? {
-        return getString(KEY_USER_PHONE_NUMBER, defaultVal : defaultUserPhoneNumber)
+    func getUserPhoneNumber( defaultUserPhoneNumber : String ) -> String {
+        return getString(KEY_USER_PHONE_NUMBER, defaultVal : defaultUserPhoneNumber)!
     }
     
     func setUserName( userName : String ) {
         setString(KEY_USER_NAME, val : userName);
     }
     
-    func getUserName( defaultUserName : String ) -> String? {
-        return getString(KEY_USER_NAME, defaultVal : defaultUserName)
+    func getUserName( defaultUserName : String ) -> String {
+        return getString(KEY_USER_NAME, defaultVal : defaultUserName)!
     }
     
     func setIsVerifyProcess( isVerifyProcess : Bool ) {
         setBool(KEY_IS_VERIFY_PROCESS, val : isVerifyProcess);
     }
     
-    func getIsVerifyProcess( defaultIsVerifyProcess : Bool ) -> Bool? {
-        return getBool(KEY_IS_VERIFY_PROCESS )
+    func getIsVerifyProcess( defaultVal : Bool ) -> Bool? {
+        return getBool(key: KEY_IS_VERIFY_PROCESS,
+                       defaultVal: defaultVal )
     }
 
     func setIsEnrollmentCompleted( isEnrollmentCompleted : Bool ) {
         setBool( KEY_IS_ENROLLMENT_COMPLETED, val : isEnrollmentCompleted);
     }
     
-    func getIsEnrollmentCompleted( defaultIsEnrollmentCompleted : Bool ) ->
+    func getIsEnrollmentCompleted( defaultVal : Bool ) ->
         Bool {
-        return getBool(KEY_IS_ENROLLMENT_COMPLETED )!
+            return getBool(key: KEY_IS_ENROLLMENT_COMPLETED,
+                       defaultVal: defaultVal )
     }
 
     func setLastEnrollJobId( lastEnrollJobId : String ) {
@@ -292,24 +316,24 @@ class AppData {
         setString(KEY_FB_USER_ID, val : fbUserId);
     }
     
-    func getFBUserId( defaultFbUserId : String ) -> String? {
-        return getString(KEY_FB_USER_ID, defaultVal : defaultFbUserId)
+    func getFBUserId( defaultFbUserId : String ) -> String {
+        return getString(KEY_FB_USER_ID, defaultVal : defaultFbUserId)!
     }
     
     func setFBUserFirstName( fbUserFirstName : String ) {
-        setString(KEY_FB_USER_FIRST_NAME, val : fbUserFirstName);
+        setString(KEY_FB_USER_FIRST_NAME, val : fbUserFirstName)
     }
     
-    func getFBUserFirstName( defaultFbUserFirstName : String ) -> String? {
-        return getString(KEY_FB_USER_FIRST_NAME, defaultVal : defaultFbUserFirstName)
+    func getFBUserFirstName( defaultFbUserFirstName : String ) -> String {
+        return getString(KEY_FB_USER_FIRST_NAME, defaultVal : defaultFbUserFirstName)!
     }
     
     func setFBUserLastName( fbUserLastName : String ) {
         setString(KEY_FB_USER_LAST_NAME, val : fbUserLastName)
     }
     
-    func getFBUserLastName( defaultFbUserLastName : String) -> String? {
-        return getString(KEY_FB_USER_LAST_NAME, defaultVal : defaultFbUserLastName)
+    func getFBUserLastName( defaultFbUserLastName : String) -> String {
+        return getString(KEY_FB_USER_LAST_NAME, defaultVal : defaultFbUserLastName)!
     }
     
     func setFBUserGender( fbUserGender : String ) {
@@ -321,21 +345,23 @@ class AppData {
         setString(KEY_FB_USER_EMAIL, val : fbUserEmail);
     }
     
-    func getFBUserEmail( defaultFbUserEmail : String) -> String? {
-        return getString(KEY_FB_USER_EMAIL, defaultVal : defaultFbUserEmail)
+    func getFBUserEmail( defaultFbUserEmail : String) -> String {
+        return getString(KEY_FB_USER_EMAIL, defaultVal : defaultFbUserEmail)!
     }
     
     func setIsFBLoggedIn( isFbLoggedIn : Bool ) {
         setBool(KEY_IS_FB_LOGGED_IN, val : isFbLoggedIn);
     }
     
-    func getIsFBLoggedIn( defaultIsFbLoggedIn : Bool ) -> Bool {
-        return getBool(KEY_IS_FB_LOGGED_IN )!
+    func getIsFBLoggedIn( defaultVal : Bool ) -> Bool {
+        return getBool( key: KEY_IS_FB_LOGGED_IN,
+                        defaultVal : defaultVal )
     }
 
     
-    func getFBUserGender( defaultFbUserGender : String ) -> String?{
-        return getString(KEY_FB_USER_GENDER, defaultVal :defaultFbUserGender)
+    func getFBUserGender( defaultVal : String ) -> String{
+        return getString( KEY_FB_USER_GENDER,
+                          defaultVal : defaultVal )!
     }
     
     
@@ -343,24 +369,26 @@ class AppData {
         setBool( KEY_IS_OPT_LOGGED_IN, val : isOptLoggedIn )
     }
     
-    func getIsOptLoggedIn( defaultIsOptLoggedIn : Bool ) -> Bool {
-        return getBool( KEY_IS_OPT_LOGGED_IN )!
+    func getIsOptLoggedIn( defaultVal : Bool ) -> Bool {
+        return getBool( key: KEY_IS_OPT_LOGGED_IN,
+                        defaultVal: defaultVal )
     }
     
     func setIsIDPresent( isIDPresent : Bool ) {
         setBool( KEY_IS_ID_PRESENT, val : isIDPresent );
     }
     
-    func getIsIDPresent( defaultIsIDPresent : Bool ) -> Bool {
-        return getBool( KEY_IS_ID_PRESENT )!
+    func getIsIDPresent( defaultVal : Bool ) -> Bool {
+        return getBool( key: KEY_IS_ID_PRESENT,
+                        defaultVal: defaultVal)
     }
 
     func setIdTaken( idTaken : Bool ) {
         setBool( KEY_ID_TAKEN, val : idTaken);
     }
     
-    func isIdTaken() -> Bool {
-        return getBool(KEY_ID_TAKEN)!
+    func isIdTaken( defaultVal : Bool ) -> Bool {
+        return getBool(key: KEY_ID_TAKEN, defaultVal: defaultVal )
     }
     
     func removeUserId() {
@@ -371,8 +399,9 @@ class AppData {
         remove(KEY_LAST_ENROLL_JOB_ID)
     }
     
-    func isSIFolderCleared() -> Bool {
-        return getBool(KEY_SI_FOLDER_CLEARED )!
+    func isSIFolderCleared( defaultVal : Bool ) -> Bool {
+        return getBool(key : KEY_SI_FOLDER_CLEARED,
+        defaultVal: defaultVal )
     }
     
     func setSIFolderCleared( cleared : Bool ){
@@ -406,10 +435,13 @@ class AppData {
     func clearJobResponse() {
         remove(KEY_JOB_RESPONSE)
     }
+    func removeJobResponse() {
+        remove(KEY_JOB_RESPONSE);
+    }
 
     
-    func getTags() -> Set<String> {
-        return getStringSet(key: KEY_TAG_LIST);
+    func getTags() -> Set<String>? {
+        return getStringSet(key: KEY_TAG_LIST )
     }
     func setTags( tags : Set<String> ) {
         setStringSet( key: KEY_TAG_LIST, val:tags )
@@ -419,8 +451,11 @@ class AppData {
         remove(KEY_USER_TAG);
   
         var tags = getTags()
-        tags.remove(tag)
-        setTags( tags: tags )
+        if( tags != nil ){
+            tags!.remove(tag)
+            setTags( tags: tags! )
+        }
+        
     }
     
     func getCurrentTag( defaultTag : String ) -> String? {
@@ -433,8 +468,10 @@ class AppData {
         
         // Remove current tag from list
         var tags = getTags()
-        tags.remove(currentTag!)
-        setTags( tags: tags )
+        if( tags != nil ){
+            tags!.remove(currentTag!)
+            setTags( tags: tags! )
+        }
     
     }
     
@@ -444,8 +481,15 @@ class AppData {
         
         // Add tag to list
         var tags = getTags()
-        tags.insert(tag)
-        setTags( tags: tags )
+        if( tags != nil ){
+            tags!.insert(tag)
+         }
+        else {
+            tags = Set<String>()
+            tags!.insert(tag)
+        }
+        setTags( tags: tags! )
+        
     }
     
     // Increase tag no of reference id for next capture process

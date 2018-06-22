@@ -51,38 +51,5 @@ class BaseSaveService : BaseService {
     
     
  
-    
-    func readMetadata() -> String? {
-        var jsMetaData : String?
-        
-        let siFileManager = SIFileFileManager()
-        let metaFileURL = siFileManager.getMetaFilePathAsURL(referenceId:  referenceId! )
-        do {
-            if( siFileManager.fileExists(fullFilePath: metaFileURL.path) ){
-                 jsMetaData = try String(contentsOf: metaFileURL, encoding: .utf8)
-            }
-        }
-        catch {
-            let logger = SILog()
-            logger.SIPrint(logOutput: "An error occurred reading the metafile.")
-        }
-        
-        return jsMetaData
-    }
-    
-    
-    func writeMetaData( metaData : MetaData ) {
-        let siFileManager = SIFileFileManager()
-        let metaFileURL = siFileManager.getMetaFilePathAsURL(referenceId:  referenceId! )
-        do {
-            let jsMetaData = metaData.toJsonString()
-            try jsMetaData.write(to: metaFileURL, atomically: false, encoding: .utf8)
-        }
-        catch {
-            let logger = SILog()
-            logger.SIPrint(logOutput: "An error occurred writing the metafile.")
-        }
-       
-    }
-    
+  
 }

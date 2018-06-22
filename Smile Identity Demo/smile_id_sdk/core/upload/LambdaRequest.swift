@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class LambdaRequestJson {
+class LambdaRequest {
     static let KEY_JSON_SMILE_CLIENT_ID     : String    = "smile_client_id"
     static let KEY_CAMERA_NAME              : String    = "camera_name"
     static let KEY_SEC                      : String    = "sec_key"
@@ -29,7 +29,7 @@ class LambdaRequestJson {
     
     
     
-    
+    /* These values are sent to the server */
     var secKey              : String?
     var phoneNumber         : String?
     var referenceId         : String?
@@ -45,6 +45,11 @@ class LambdaRequestJson {
     var systemVersion       : String?
     var cameraMake          : String?
     var callbackURL         : String?
+    
+    /* userInfoJson and geoInfos are not built into the request,
+        but they are added in when building the info.json file.
+        Ported from Android code to maintain compatibility
+    */
     var userInfoJson        : UserInfoJson?
     var geoInfos            : GeoInfos?
     
@@ -73,14 +78,14 @@ class LambdaRequestJson {
 
     }
     
-    func fromJsonDict( dict : Dictionary<String,Any> ) -> LambdaRequestJson? {
+    func fromJsonDict( dict : Dictionary<String,Any> ) -> LambdaRequest? {
         let jsonUtils = JsonUtils()
         secKey = jsonUtils.getString(dict:dict,
-            key: LambdaRequestJson.KEY_SEC,
+            key: LambdaRequest.KEY_SEC,
             defaultVal: "" )
         
         let sRetry = jsonUtils.getString(dict:dict,
-            key: LambdaRequestJson.KEY_RETRY,
+            key: LambdaRequest.KEY_RETRY,
             defaultVal: "false" )
         
         if( sRetry == "true" ){
@@ -90,37 +95,37 @@ class LambdaRequestJson {
             retry = false
         }
         
-        let partnerParamsDict = jsonUtils.getDict( dict: dict, key: LambdaRequestJson.KEY_PARTNER_PARAMS,
+        let partnerParamsDict = jsonUtils.getDict( dict: dict, key: LambdaRequest.KEY_PARTNER_PARAMS,
             defaultVal : [String:Any]() )
         partnerParams = PartnerParams().fromJsonDict(dict: partnerParamsDict)
         
-        timestamp = jsonUtils.getInt64( dict: dict, key: LambdaRequestJson.KEY_TIMESTAMP,
+        timestamp = jsonUtils.getInt64( dict: dict, key: LambdaRequest.KEY_TIMESTAMP,
             defaultVal: 0 )
         
-        let phoneModelDict = jsonUtils.getDict( dict: dict, key: LambdaRequestJson.KEY_MODEL_PARAMETERS,
+        let phoneModelDict = jsonUtils.getDict( dict: dict, key: LambdaRequest.KEY_MODEL_PARAMETERS,
             defaultVal: [String:Any]() )
         
-        cameraModel = jsonUtils.getString( dict: phoneModelDict, key: LambdaRequestJson.KEY_CAMERA_NAME,
+        cameraModel = jsonUtils.getString( dict: phoneModelDict, key: LambdaRequest.KEY_CAMERA_NAME,
             defaultVal: "" )
         
         filename = jsonUtils.getString( dict: dict,
-            key: LambdaRequestJson.KEY_FILE_NAME,
+            key: LambdaRequest.KEY_FILE_NAME,
             defaultVal: "" )
         
         smileClientId = jsonUtils.getString( dict: dict,
-            key: LambdaRequestJson.KEY_JSON_SMILE_CLIENT_ID,
+            key: LambdaRequest.KEY_JSON_SMILE_CLIENT_ID,
             defaultVal: "" )
         
         callbackURL = jsonUtils.getString( dict: dict,
-            key: LambdaRequestJson.KEY_CALLBACK_URL,
+            key: LambdaRequest.KEY_CALLBACK_URL,
             defaultVal: "" )
         
         deviceId = jsonUtils.getString( dict: dict,
-            key: LambdaRequestJson.KEY_IMEI,
+            key: LambdaRequest.KEY_IMEI,
             defaultVal: "" )
         
         let tmpPhoneNumber = jsonUtils.getString( dict: dict,
-            key: LambdaRequestJson.KEY_PHONE_NUM,
+            key: LambdaRequest.KEY_PHONE_NUM,
             defaultVal: "" )
         
         if( !tmpPhoneNumber.isEmpty ){
@@ -128,29 +133,29 @@ class LambdaRequestJson {
         }
         
         cameraMake = jsonUtils.getString( dict: dict,
-            key: LambdaRequestJson.KEY_PHONE_MAKE,
+            key: LambdaRequest.KEY_PHONE_MAKE,
             defaultVal: "" )
         
         cameraModel = jsonUtils.getString( dict: dict,
-            key: LambdaRequestJson.KEY_PHONE_MODEL,
+            key: LambdaRequest.KEY_PHONE_MODEL,
             defaultVal: "" )
         
         cameraModel = jsonUtils.getString( dict: dict,
-            key: LambdaRequestJson.KEY_PHONE_MODEL,
+            key: LambdaRequest.KEY_PHONE_MODEL,
             defaultVal: "" )
         
         systemVersion = jsonUtils.getString( dict: dict,
-            key: LambdaRequestJson.KEY_PHONE_OS_VERSION,
+            key: LambdaRequest.KEY_PHONE_OS_VERSION,
             defaultVal: "" )
         
         
         let userInfoJsonDict = jsonUtils.getDict( dict: dict,
-            key: LambdaRequestJson.KEY_USER_DATA,
+            key: LambdaRequest.KEY_USER_DATA,
             defaultVal: [String:Any]() )
         userInfoJson = UserInfoJson().fromJsonDict( dict: userInfoJsonDict )
         
         let geoInfosDict = jsonUtils.getDict( dict: dict,
-            key: LambdaRequestJson.KEY_GEO_LOCATION,
+            key: LambdaRequest.KEY_GEO_LOCATION,
             defaultVal : [String:Any]())
         geoInfos = GeoInfos().fromJsonDict( dict: geoInfosDict )
         
@@ -158,7 +163,7 @@ class LambdaRequestJson {
         
    }
     
-    func fromJsonString( jsonFormattedString : String ) -> LambdaRequestJson? {
+    func fromJsonString( jsonFormattedString : String ) -> LambdaRequest? {
         if( jsonFormattedString.isEmpty ){
             return nil
         }
@@ -191,44 +196,44 @@ class LambdaRequestJson {
                                          key: AuthSmileResponse.KEY_SEC,
                                          defaultVal: "" )
         // Put the secKey into the lambda request dictionary
-        jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_SEC,
+        jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_SEC,
                              val: secKey )
         
         // Put the retry value as a string for compatibility purposes.
-        jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_RETRY,
+        jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_RETRY,
                              val:  String(retry!) )
         
         // Get the partner params dictionary out of the authResponseDict
         var authResponsePartnerParamsDict = [String: String]()
         authResponsePartnerParamsDict = authResponseDict![AuthSmileResponse.KEY_PARTNER_PARAMS]  as! [String : String]
-        jsonUtils.putDict( dict: &dict, key: LambdaRequestJson.KEY_PARTNER_PARAMS,
+        jsonUtils.putDict( dict: &dict, key: LambdaRequest.KEY_PARTNER_PARAMS,
                            val:  authResponsePartnerParamsDict )
         
-        jsonUtils.putInt64( dict: &dict,key: LambdaRequestJson.KEY_TIMESTAMP,
+        jsonUtils.putInt64( dict: &dict,key: LambdaRequest.KEY_TIMESTAMP,
                             val: authResponseDict?[AuthSmileResponse.KEY_TIMESTAMP] as! Int64 )
         
         var phoneModelDict = [String: Any]()
-        jsonUtils.putString( dict: &phoneModelDict, key: LambdaRequestJson.KEY_CAMERA_NAME,
+        jsonUtils.putString( dict: &phoneModelDict, key: LambdaRequest.KEY_CAMERA_NAME,
                              val: cameraModel! )
-        jsonUtils.putDict( dict: &dict, key: LambdaRequestJson.KEY_MODEL_PARAMETERS,
+        jsonUtils.putDict( dict: &dict, key: LambdaRequest.KEY_MODEL_PARAMETERS,
                            val:  phoneModelDict )
         
-        jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_FILE_NAME,
+        jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_FILE_NAME,
                              val: filename! )
-        jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_JSON_SMILE_CLIENT_ID,
+        jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_JSON_SMILE_CLIENT_ID,
                              val: smileClientId! )
-        jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_CALLBACK_URL,
+        jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_CALLBACK_URL,
                              val: authResponseDict?[AuthSmileResponse.KEY_CALLBACK_URL]! as! String )
-        jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_IMEI,
+        jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_IMEI,
                              val: deviceId! )
         
         
         if( phoneNumber != nil ){
-            jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_PHONE_NUM,
+            jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_PHONE_NUM,
                                  val: phoneNumber! )
         }
         
-        jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_PHONE_MAKE,
+        jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_PHONE_MAKE,
                              val:cameraMake! )
         
         
@@ -236,16 +241,16 @@ class LambdaRequestJson {
         // are porting the Android code, so need to keep the format
         // the same for now.
         
-        jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_PHONE_MODEL,
+        jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_PHONE_MODEL,
                              val:cameraModel!)
         
-        jsonUtils.putString( dict: &dict, key: LambdaRequestJson.KEY_PHONE_OS_VERSION,
+        jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_PHONE_OS_VERSION,
                              val:systemVersion!)
         
-        jsonUtils.putDict( dict: &dict, key: LambdaRequestJson.KEY_USER_DATA,
+        jsonUtils.putDict( dict: &dict, key: LambdaRequest.KEY_USER_DATA,
                            val:(userInfoJson?.toJsonDict())! )
         
-        jsonUtils.putDict( dict: &dict, key: LambdaRequestJson.KEY_GEO_LOCATION,
+        jsonUtils.putDict( dict: &dict, key: LambdaRequest.KEY_GEO_LOCATION,
                            val:(geoInfos?.toJsonDict())! )
 
         return dict

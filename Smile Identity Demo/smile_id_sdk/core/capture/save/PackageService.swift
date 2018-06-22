@@ -50,7 +50,7 @@ class PackageService : BaseSaveService {
             }
             
             if( jsPackageInfo != nil ){
-                let uploadService = UploadService()
+                let uploadService = UploadService(uploadServiceDelegate: self)
                 uploadService.start(coreRequestData: coreRequestData, jsMetaData: jsPackageInfo!);
             }
             else {

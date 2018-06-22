@@ -10,7 +10,7 @@ import Foundation
 
 class CoreRequestData {
     
-    var geoInfoJson             : String?
+    var geoInfos                : GeoInfos?
     var partnerParams           : PartnerParams?
     var tag                     : String?
     var requestNewToken         : Bool?
