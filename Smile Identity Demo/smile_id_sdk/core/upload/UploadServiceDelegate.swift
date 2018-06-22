@@ -14,5 +14,12 @@ import Foundation
 protocol UploadServiceDelegate {
     func onStartJobStatus()
     func onEndJobStatus()
+    /* if successfull, sidError param will be SIDError.SUCCESS,
+        if failed, sidError param will contain the error */
+    func onServiceFinished( sidError : SIDError,
+                            confidenceValue : Float,
+                            retry : Bool,
+                            partnerParams : PartnerParams? )
+    func onUpdateJobStatus( msg : String )
     func onError( sidError : SIDError )
 }

@@ -40,6 +40,9 @@ enum SIDError : Error {
     case TAG_NOT_FOUND
     case NETWORK_DATA_NOT_VALID
     
+    // In Android code, in UploadService, the error code was set to -1 for this case
+    case UNABLE_TO_ENROLL_OR_AUTH
+    
     case custom(errMsg: String)
     
 }

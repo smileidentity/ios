@@ -15,7 +15,7 @@ class UploadService : BaseService, NetRequestDelegate {
     var isCancelled : Bool = false
 
     var uploadServiceDelegate                   : UploadServiceDelegate?
-    
+    var confidenceValue                         : Float = 0.0
     var jobComplete                             : Bool = false
     var sidNetData                              : SIDNetData?
     var partnerParams                           : PartnerParams?
@@ -36,7 +36,7 @@ class UploadService : BaseService, NetRequestDelegate {
         isCancelled = true
         netRequest?.cancel()
     }
-    
+
     func start( coreRequestData     : CoreRequestData,
                 packageInfo         : PackageInfo ){
         
@@ -225,14 +225,20 @@ class UploadService : BaseService, NetRequestDelegate {
         uploadJobStatus()
     }
     
+
+
+    
+    
+  
+  
     // Step 5 Upload job status
     func uploadJobStatus() {
         if( !(isEnrollMode!) ){
             uploadServiceDelegate?.onStartJobStatus()
         }
         netRequest!.uploadJobStatus(partnerUrl: (sidNetData?.partnerUrl)!,
-                            jobStatusUrl: (sidNetData?.jobStatusUrl)!,
-                            isEnrollMode: isEnrollMode!);
+                                    jobStatusUrl: (sidNetData?.jobStatusUrl)!,
+                                    isEnrollMode: isEnrollMode!);
         
     }
     
@@ -245,68 +251,95 @@ class UploadService : BaseService, NetRequestDelegate {
         }
     }
     
-    func broadcastJobStatusResponse( statusResponse : StatusResponse,
-                                     errMsg         : String ) {
-        if (statusResponse.isJobComplete()) {
-            if( statusResponse.isJobSuccess() ) {
-                broadcastSuccess(statusResponse.result.getPartnerParams
-                clearMetadata();
-                deleteMetaFolder(referenceID);
+    
+    
+    func onUploadJobStatusCompleteIsEnroll( statusResponse: StatusResponse? ){
+        if( statusResponse == nil ){
+            return
+        }
+      
+        let resultText = statusResponse!.result.resultText
+     
+        if( statusResponse!.isJobComplete() ) &&
+            (statusResponse!.isJobSuccess() ) {
+                /* success */
+                confidenceValue = statusResponse!.result.getConfidenceValue()
+
+                uploadServiceDelegate!.onServiceFinished(
+                    sidError: SIDError.SUCCESS,
+                    confidenceValue: confidenceValue,
+                    retry: false,
+                    partnerParams: statusResponse!.result.partnerParams )
+                
+                 deleteMetaFolder(referenceId: referenceId!);
+        }
+        else {
+            if (resultText.isEmpty) {
+                deleteMetaFolder(referenceId:referenceId!)
+                uploadServiceDelegate!.onServiceFinished(
+                    sidError: SIDError.ENROLL_FAILED,
+                    confidenceValue: confidenceValue,
+                    retry: false,
+                    partnerParams: nil)
+            } else {
+                // Android code was also throwing an exception which
+                // was handled by broadcasting another onFailure.  So
+                // there were two broadcasts
+                
+                if( resultText == "Job type requires an ID Card image." ){
+                     deleteMetaFolder(referenceId: referenceId!)
+                }
+                uploadServiceDelegate!.onServiceFinished(
+                    sidError: SIDError.custom(errMsg: resultText),
+                    confidenceValue: confidenceValue,
+                    retry: false,
+                    partnerParams: nil )
             }
-            
-        } else {
-            uploadServiceDelegate?.onError(
-                sidError: SIDError.custom(errMsg: errMsg ) )
         }
-        
+        clearMetadata()
     }
     
-    func onUploadJobStatusCompleteIsEnroll(
-        statusResponse: StatusResponse? ){
-        if (statusResponse != nil ) {
-            // Android code sets confidence value before checking isJobComplete first for enroll
-            
-            let confidenceValue = statusResponse!.result.confidenceValue
-            broadcastJobStatusResponse(statusResponse: statusResponse!,
-                errMsg: statusResponse!.result.resultText )
- 
-            
-        }
-    }
     
- 
     func onUploadJobStatusCompleteAuthenticated(
         statusResponse: StatusResponse? ){
         if( isCancelled ){
-             onError( sidError: SIDError.FAILED_JOB_STATUS_CANCELLED_OR_TIMEOUT)
+            onError( sidError: SIDError.FAILED_JOB_STATUS_CANCELLED_OR_TIMEOUT)
+            return
+        }
+        if (statusResponse == nil) {
+            return
+        }
+        
+        if( statusResponse!.isJobComplete() ) &&
+            (statusResponse!.isJobSuccess() ) {
+                /* success */
+                confidenceValue = statusResponse!.result.getConfidenceValue()
+                
+                uploadServiceDelegate!.onServiceFinished(
+                    sidError: SIDError.SUCCESS,
+                    confidenceValue: confidenceValue,
+                    retry: false,
+                    partnerParams: statusResponse!.result.partnerParams )
+                 deleteMetaFolder(referenceId: referenceId!)
         }
         else{
-            if (statusResponse != nil ) {
-                
-                if( statusResponse!.isJobComplete() ) {
-                    // Android code sets confidenceValue after checking isJobComplete for auth
-                    let confidenceValue = statusResponse!.result.confidenceValue
-                }
-                
-                broadcastJobStatusResponse(statusResponse: statusResponse!,
-                    errMsg: SIDError.FAILED_JOB_STATUS_CANCELLED_OR_TIMEOUT.message )
-                
-                
-            }
-            else{
-                
-            }
+            deleteMetaFolder(referenceId:referenceId!)
+            uploadServiceDelegate!.onServiceFinished(
+                sidError: SIDError.UNABLE_TO_VERIFY,
+                confidenceValue: confidenceValue,
+                retry: false,
+                partnerParams: nil)
         }
-    }
     
+    
+        clearMetadata()
+    }
     
     
     func onUpdateJobStatus( msg : String ){
-        // TODO : Pass msg back to UI.
+        uploadServiceDelegate?.onUpdateJobStatus( msg: msg )
     }
     
-    
-
     
     func onError( sidError : SIDError ){
         uploadServiceDelegate?.onError( sidError: sidError )
@@ -335,9 +368,9 @@ class UploadService : BaseService, NetRequestDelegate {
     }
     
     
-     func buildInfoJson( lambdaRequest : LambdaRequest,
+    func buildInfoJson( lambdaRequest : LambdaRequest,
                         lambdaResponse : LambdaResponse ) -> MetaData {
- 
+        
         let appData = AppData()
         let userInfoJson = UserInfoJson(
             isVerifyProcess: appData.getIsVerifyProcess(defaultVal: false)!,
@@ -353,8 +386,8 @@ class UploadService : BaseService, NetRequestDelegate {
         
         
         let miscInfo = MiscInfo(lambdaRequest: lambdaRequest,
-                                    userInfoJson: userInfoJson,
-                                    geoInfos: geoInfos!)
+                                userInfoJson: userInfoJson,
+                                geoInfos: geoInfos!)
         let serverInfo = lambdaResponse.rawJsonString
         
         // Ported from Android code.  SIDUserIdInfo's fields are all empty
@@ -373,17 +406,7 @@ class UploadService : BaseService, NetRequestDelegate {
     }
     
     
-
-    
-    
-  
-  
-    
-    
-    
-    
-    
-
+ 
     
     
     

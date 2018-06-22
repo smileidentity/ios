@@ -29,15 +29,15 @@ class Result {
         }
     }
     
-    func getConfidenceValue() -> Double {
+    func getConfidenceValue() -> Float {
         
         if( confidenceValue.isEmpty ){
             return 0.0
         }
         
-        let dRetVal = Double(confidenceValue)
-        if( dRetVal != nil ){
-            return dRetVal!
+        let fRetVal = Float(confidenceValue)
+        if( fRetVal != nil ){
+            return fRetVal!
         }
         else{
             return 0.0
