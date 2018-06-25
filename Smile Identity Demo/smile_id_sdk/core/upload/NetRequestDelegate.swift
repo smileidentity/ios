@@ -11,7 +11,8 @@ import Foundation
 protocol NetRequestDelegate {
     // In android, this was used to track progress when uploading zip.
     // In iOS, the upload is done in one chunk
-    // func onUploadProgress( progress : Int )
+    func onUpdateJobProgress( progress : Int )
+
     func onUpdateJobStatus( msg : String )
     
     func onPostAuthSmileComplete( authSmileResponse : AuthSmileResponse? )

@@ -10,10 +10,13 @@ import Foundation
 
 class PackageService : BaseSaveService {
 
+    var packageServiceDelegate                  : PackageServiceDelegate?
 
-    func packAndSend( coreRequestData : CoreRequestData ) {
+    func packAndSend( coreRequestData : CoreRequestData,
+                      packageServiceDelegate : PackageServiceDelegate ) {
+        self.packageServiceDelegate = packageServiceDelegate
         let appData = AppData()
-        if (!appData.isIdTaken()) {
+        if (!appData.isIdTaken(defaultVal: false)) {
             SIFileFileManager().deleteIDCardImage(referenceID: referenceId!);
         }
         appData.setIdTaken(idTaken: false)
@@ -24,7 +27,7 @@ class PackageService : BaseSaveService {
     func sendRequest( coreRequestData : CoreRequestData ) {
         do {
             // Save the Facebook image to a file, if it exists
-            var jsPackageInfo : String?
+            var packageInfo : PackageInfo?
             
             let fbUserImage = SmileIDSingleton.sharedInstance.fbUserImage
             if( fbUserImage != nil ) {
@@ -32,44 +35,42 @@ class PackageService : BaseSaveService {
             }
             
             if( coreRequestData.tag?.isEmpty )!{
-                try jsPackageInfo = getPackageInfoJson(
+                packageInfo = try getPackageInfoJson(
                     sidNetData: coreRequestData.sidNetData!)
-                if( jsPackageInfo == nil ){
+                
+                if( packageInfo == nil ){
                     throw SIDError.DATA_PACKAGING_FAILED
                 }
-                
+
                 AppData().setPackageInformation(
-                    packageInformation: jsPackageInfo!)
+                    packageInformation: (packageInfo!.toJsonString()))
                 
             }
             else{
                 let jsMetaData = readMetadata()
                 let metaData = MetaData().fromJsonString(jsonString: jsMetaData! )
-                let packageInfo = metaData?.packageInfo
-                jsPackageInfo = packageInfo?.toJsonString()
-            }
+                packageInfo = metaData?.packageInfo
+             }
             
-            if( jsPackageInfo != nil ){
-                let uploadService = UploadService(uploadServiceDelegate: self)
-                uploadService.start(coreRequestData: coreRequestData, jsMetaData: jsPackageInfo!);
-            }
-            else {
-                throw SIDError.DATA_PACKAGING_FAILED
-            }
+            packageServiceDelegate!.onPackagingComplete(packageInfo:  packageInfo!, coreRequestData: coreRequestData )
+ 
 
         } // do
+
+        /*
         catch SIDError.TAG_NOT_FOUND {
-            // TODO
+           packageServiceDelegate!.onPackagingError( SIDError.DATA_PACKAGING_FAILED )
         }
+        */
         catch{
-            
+            packageServiceDelegate!.onPackagingError( sidError: SIDError.DATA_PACKAGING_FAILED )
         }
         
     }
     
     
-    func getPackageInfoJson( sidNetData : SIDNetData ) throws -> String? {
-        var jsPackageInfo : String?
+    func getPackageInfoJson( sidNetData : SIDNetData ) throws -> PackageInfo? {
+       
         let capturedImagesManager = SmileIDSingleton.sharedInstance.capturedImagesManager
         if( !capturedImagesManager.hasSelfies() ){
             throw SIDError.NO_IMAGE_FOUND
@@ -79,16 +80,12 @@ class PackageService : BaseSaveService {
         
         let packageInfo = try createCapturedImagesPackageInfo( isMaxFrameTimeout: isMaxFrameTimeout(), captureConfig : captureConfig )
         
-        if (packageInfo != nil) {
-            jsPackageInfo = packageInfo?.toJsonString()
-        }
-        return jsPackageInfo
+      
+        return packageInfo
     }
     
     /*
      Save the captured data for later use.
-     TODO : Possibly remove this code.
-     Don't remove the info.json until the upload is successfull.
      */
     func saveCapturedData( tag : String,
                            sidNetData : SIDNetData ) throws {
@@ -116,14 +113,6 @@ class PackageService : BaseSaveService {
     
     
   
-    
-    
-  
-    
-    
-    
-    
-
     
     
     func createCapturedImagesPackageInfo(

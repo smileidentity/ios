@@ -56,7 +56,7 @@ class ImageProcessingCaps {
             
         }
         
-        return self
+
     }
     
 

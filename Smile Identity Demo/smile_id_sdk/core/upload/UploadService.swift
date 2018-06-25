@@ -181,7 +181,7 @@ class UploadService : BaseService, NetRequestDelegate {
     func onPostLambdaComplete( lambdaResponse : LambdaResponse? ){
         
         if (lambdaResponse == nil) {
-            uploadServiceDelegate!.onError( sidError: SIDError.PREVIOUS_ENROLL_FAILED )
+            onError( sidError: SIDError.PREVIOUS_ENROLL_FAILED )
         }
         else{
             // Step 3 : Upload meta data info.json file
@@ -203,6 +203,11 @@ class UploadService : BaseService, NetRequestDelegate {
          BaseService.   This class extends BaseService */
         let destinationZipFileURL = doZip()
         
+        if( destinationZipFileURL == nil ){
+            onError( sidError: SIDError.UNABLE_TO_SUBMIT_COULD_NOT_CREATE_ZIP )
+            return
+        }
+        
         /* Upload the zip file */
         let uploadUrlStr = lambdaResponse.uploadUrl
         if( !isUploadUrlValid( uploadUrl: uploadUrlStr )){
@@ -211,7 +216,7 @@ class UploadService : BaseService, NetRequestDelegate {
         }
         
         
-        netRequest?.upload(fileUrl: destinationZipFileURL,
+        netRequest?.upload(fileUrl: destinationZipFileURL!,
                            serverUrlStr: uploadUrlStr)
     }
     
@@ -265,10 +270,10 @@ class UploadService : BaseService, NetRequestDelegate {
                 /* success */
                 confidenceValue = statusResponse!.result.getConfidenceValue()
 
-                uploadServiceDelegate!.onServiceFinished(
+                uploadServiceDelegate!.onUpdateServiceComplete(
                     sidError: SIDError.SUCCESS,
                     confidenceValue: confidenceValue,
-                    retry: false,
+                    retryFlag: false,
                     partnerParams: statusResponse!.result.partnerParams )
                 
                  deleteMetaFolder(referenceId: referenceId!);
@@ -276,10 +281,10 @@ class UploadService : BaseService, NetRequestDelegate {
         else {
             if (resultText.isEmpty) {
                 deleteMetaFolder(referenceId:referenceId!)
-                uploadServiceDelegate!.onServiceFinished(
+                uploadServiceDelegate!.onUpdateServiceComplete(
                     sidError: SIDError.ENROLL_FAILED,
                     confidenceValue: confidenceValue,
-                    retry: false,
+                    retryFlag: false,
                     partnerParams: nil)
             } else {
                 // Android code was also throwing an exception which
@@ -289,10 +294,10 @@ class UploadService : BaseService, NetRequestDelegate {
                 if( resultText == "Job type requires an ID Card image." ){
                      deleteMetaFolder(referenceId: referenceId!)
                 }
-                uploadServiceDelegate!.onServiceFinished(
+                uploadServiceDelegate!.onUpdateServiceComplete(
                     sidError: SIDError.custom(errMsg: resultText),
                     confidenceValue: confidenceValue,
-                    retry: false,
+                    retryFlag: false,
                     partnerParams: nil )
             }
         }
@@ -315,19 +320,19 @@ class UploadService : BaseService, NetRequestDelegate {
                 /* success */
                 confidenceValue = statusResponse!.result.getConfidenceValue()
                 
-                uploadServiceDelegate!.onServiceFinished(
+                uploadServiceDelegate!.onUpdateServiceComplete(
                     sidError: SIDError.SUCCESS,
                     confidenceValue: confidenceValue,
-                    retry: false,
+                    retryFlag: false,
                     partnerParams: statusResponse!.result.partnerParams )
                  deleteMetaFolder(referenceId: referenceId!)
         }
         else{
             deleteMetaFolder(referenceId:referenceId!)
-            uploadServiceDelegate!.onServiceFinished(
+            uploadServiceDelegate!.onUpdateServiceComplete(
                 sidError: SIDError.UNABLE_TO_VERIFY,
                 confidenceValue: confidenceValue,
-                retry: false,
+                retryFlag: false,
                 partnerParams: nil)
         }
     
@@ -340,9 +345,15 @@ class UploadService : BaseService, NetRequestDelegate {
         uploadServiceDelegate?.onUpdateJobStatus( msg: msg )
     }
     
-    
+    func onUpdateJobProgress( progress : Int ){
+        uploadServiceDelegate?.onUpdateJobProgress( progress: progress )
+    }
+
     func onError( sidError : SIDError ){
-        uploadServiceDelegate?.onError( sidError: sidError )
+        uploadServiceDelegate?.onUpdateError( sidError: sidError,
+                                              confidenceValue : confidenceValue,
+                                              retryFlag : false,
+                                              partnerParams : partnerParams )
     }
     
     
@@ -399,7 +410,7 @@ class UploadService : BaseService, NetRequestDelegate {
         return metaData
     }
     
-    func doZip() -> URL {
+    func doZip() -> URL? {
         let siFileManager = SIFileFileManager()
         let destinationZipFileURL = siFileManager.zipIt(referenceId:referenceId!)
         return destinationZipFileURL

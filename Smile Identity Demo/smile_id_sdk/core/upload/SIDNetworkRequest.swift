@@ -8,7 +8,9 @@
 
 import Foundation
 
-class SIDNetworkRequest {
+class SIDNetworkRequest : PackageServiceDelegate,
+UploadServiceDelegate {
+ 
     
     static let ONE_MIN_MS           : Int64 = 60 * 1000       // 1 minutes in ms
     static let MAX_RETRY_TIME_MS    : Int64 = ONE_MIN_MS * 15 // 15 minutes in ms
@@ -30,12 +32,24 @@ class SIDNetworkRequest {
     var geoInfos                : GeoInfos = GeoInfos()
     var requestNewToken         : Bool = false
     var retry                   : Bool = false
+    var uploadService           : UploadService?
     
     func setDelegate( delegate : SIDNetworkRequestDelegate){
         self.delegate = delegate
     }
     
     func initialize() {}
+    
+    
+    func userCancelled() {
+        // Android code treats user cancelled logic different
+        // than cancelRetries.  So, iOS will do the same - if user
+        // cancels we do not call cancelRetries.
+        // cancelRetries()
+        if( uploadService != nil ){
+            uploadService!.cancel()
+        }
+    }
     
     func submit( sidConfig : SIDConfig ) throws {
         if( sidConfig.sidNetData == nil ){
@@ -54,11 +68,7 @@ class SIDNetworkRequest {
         partnerParams = PartnerParams()
         jobType = sidConfig.jobType
         
-        coreSubmit( sidConfig: sidConfig )
-        
-    }
-    
-    func coreSubmit( sidConfig : SIDConfig ) {
+  
         currentRetryCount = retryOnFailurePolicy.getMaxRetryCount()
         sidNetData = sidConfig.sidNetData
         isEnrollMode = sidConfig.isEnrollMode
@@ -68,21 +78,44 @@ class SIDNetworkRequest {
         
         /* appData set/get Current job type is not used in the Android code.
          It is set but never read.
-      
-        
-        Note that the AppData method setCurrentJobType does not use the jobType as it is set
-            in sidConfig.
- 
-        if( isEnrollMode )!{
-            appData.setCurrentJobType(currentJobType: 1)
-        }
-        else{
-            appData.setCurrentJobType(currentJobType: 0)
-        }
-        */
+         
+         
+         Note that the AppData method setCurrentJobType does not
+         use the jobType as it is set in sidConfig.
+         
+         if( isEnrollMode )!{
+         appData.setCurrentJobType(currentJobType: 1)
+         }
+         else{
+         appData.setCurrentJobType(currentJobType: 0)
+         }
+         */
         
         setUserData( partnerParams: partnerParams, isEnrollMode: isEnrollMode )
         
+        
+        // This will start the process of packaging and uploading.
+        doSubmit()
+    }
+    
+
+    
+    func doSubmit() {
+        
+        if( currentRetryCount! < 0 ){
+            return
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            // Start the package service.
+            // When the PackageService is done, the onPackagingComplete callback
+            // is called.   onPackagingComplete starts the UploadService
+            self.startPackageService( packageService: PackageService(),
+                                      sidNetData: self.sidNetData!,
+                                      isEnrollMode : self.isEnrollMode )
+        }
+        currentRetryCount = currentRetryCount! - 1
+  
     }
     
     
@@ -96,7 +129,8 @@ class SIDNetworkRequest {
         checkAndUpdateRetryFlag();
         let coreRequest = createCoreRequestData(sidNetData: sidNetData,
                                                 isEnrollMode: isEnrollMode )
-        packageService.packAndSend(coreRequestData: coreRequest)
+        packageService.packAndSend(coreRequestData: coreRequest,
+                                   packageServiceDelegate: self )
     }
     
     
@@ -104,10 +138,13 @@ class SIDNetworkRequest {
         
         let appData = AppData()
         let tags = appData.getTags()
-        if( !tags.contains(tag)){
-            
-            // TODO : wire this
-            // onError( SIDError.TAG_NOT_FOUND )
+        if( tags == nil ){
+            delegate?.onError( sidError: SIDError.TAG_NOT_FOUND )
+            return false
+        }
+        let containsTag = tags!.contains(tag)
+        if( !containsTag ){
+            delegate?.onError( sidError: SIDError.TAG_NOT_FOUND )
             return false
         }
         else{
@@ -136,9 +173,6 @@ class SIDNetworkRequest {
                 }
             }
         }
-        
-   
-    
     }
 
     
@@ -148,11 +182,12 @@ class SIDNetworkRequest {
             let packageService = PackageService()
             try packageService.saveCapturedData(tag: tag, sidNetData: smileIdNetData)
         }
-        catch let error as SIDError {
-            // TODO wire this onError( error )
+        catch let sidError as SIDError {
+             delegate?.onError(sidError: sidError )
         }
         catch {
-            // TODO wire this onError( error )
+            let logger = SILog()
+            logger.SIPrint(logOutput: "An error occurred while saving data for later use")
         }
         
     }
@@ -195,65 +230,133 @@ class SIDNetworkRequest {
     
     
     // Listeners
-    
-    func onUploadFinished(  isSuccess       : Bool,
-                            confidenceValue : Float,
-                            partnerParams   : PartnerParams,
-                            retry           : Bool,
-                            sidError        : SIDError ){
-        
-        self.partnerParams = partnerParams
-        self.retry = retry
  
-        // TODO wire this
-        delegate!.onComplete()
+    
+    
+ 
+    
+    /*
+        PackageServiceDelegate callbacks
+    */
+    func onPackagingComplete( packageInfo : PackageInfo,
+                              coreRequestData : CoreRequestData ){
+        uploadService = UploadService(uploadServiceDelegate: self)
+        uploadService!.start(coreRequestData: coreRequestData, packageInfo: packageInfo);
         
-        let sidResponse = SIDResponse()
-        sidResponse.partnerParams = partnerParams
-        sidResponse.success = isSuccess
-        sidResponse.confidenceValue = confidenceValue
-        if( isSuccess ){
-            sidResponse.success = true
-            if( isEnrollMode ){
-                delegate!.onEnrolled(response: sidResponse )
-            }
-            else{
-                delegate!.onAuthenticated(response: sidResponse)
-            }
-            
-            // TODO cancel thread
-        }
-        else {
-            if( isEnrollMode ){
-                delegate!.onEnrolled(response: sidResponse )
-            }
-            
-            // TODO wire this
-            delegate!.onError(errMsg: sidError.message)
-            
-            if( isUnableToVerifyError( sidError: sidError ) &&
-                !isEnrollMode ) {
-                delegate!.onAuthenticated(response: sidResponse)
-            }
-            else{
-                // TODO wire retry
-            }
-            
+    }
+    
+    func onPackagingError( sidError : SIDError ){
+        DispatchQueue.main.async {
+            self.delegate!.onError(sidError: sidError )
         }
     }
     
+    /*
+     UploadServiceDelegate callbacks.
+     
+     The submit logic is done in the background,
+     so any callbacks to the ui delegate should be done in the foreground.
+     That is way the callbacks are wrapped in DispatchQueue.main.async
+     */
     
-    func isUnableToVerifyError( sidError : SIDError ) -> Bool {
-        
-        switch sidError {
-            case SIDError.UNABLE_TO_VERIFY:
-                return true
-            default :
-                return false
+    func onStartJobStatus(){
+        DispatchQueue.main.async {
+            self.delegate!.onStartJobStatus()
+        }
+    }
+    func onEndJobStatus() {
+        DispatchQueue.main.async {
+            self.delegate!.onEndJobStatus()
         }
     }
     
  
+    func onUpdateJobStatus(msg: String) {
+        DispatchQueue.main.async {
+            self.delegate!.onUpdateJobStatus( msg: msg )
+        }
+    }
+    
+    func onUpdateJobProgress(progress: Int) {
+        DispatchQueue.main.async {
+            self.delegate!.onUpdateJobProgress( progress: progress )
+        }
+    }
+    
+    
+    func onUpdateError( sidError : SIDError,
+                        confidenceValue : Float,
+                        retryFlag : Bool,
+                        partnerParams : PartnerParams? ){
+        DispatchQueue.main.async {
+            self.delegate?.onComplete()
+        }
+        
+        let sidResponse = SIDResponse( partnerParams:partnerParams!,
+                                        success: false,
+                                        confidenceValue: confidenceValue )
+        DispatchQueue.main.async {
+            self.delegate?.onError( sidError: sidError )
+        }
+        
+        if( isEnrollMode ){
+            DispatchQueue.main.async {
+                self.delegate?.onEnrolled( sidResponse: sidResponse )
+            }
+        }
+        else{
+            switch( sidError ){
+                case SIDError.UNABLE_TO_VERIFY :
+                    DispatchQueue.main.async {
+                        self.delegate?.onAuthenticated( sidResponse: sidResponse )
+                    }
+                    cancelRetries()
+                    break;
+                
+                default :
+                    doSubmit()
+            } // switch
+        }  // else
+        
+    }
+    
+    
+    func onUpdateServiceComplete(sidError: SIDError,
+                                 confidenceValue: Float,
+                                 retryFlag: Bool,
+                                 partnerParams: PartnerParams?) {
+        DispatchQueue.main.async {
+            self.delegate?.onComplete()
+        }
+        
+        let sidResponse = SIDResponse( partnerParams:partnerParams!,
+                                       success: false,
+                                       confidenceValue: confidenceValue )
+        if( isEnrollMode ){
+            DispatchQueue.main.async {
+                self.delegate?.onAuthenticated(sidResponse: sidResponse )
+            }
+        }
+        else{
+            DispatchQueue.main.async {
+               self.delegate?.onEnrolled(sidResponse: sidResponse )
+            }
+        }
+ 
+        cancelRetries();
+
+    }
+    
+      
+  
+    
+    func cancelRetries() {
+        // cancel retries
+    }
+    
+  
+
+
     
 
 }

@@ -27,7 +27,7 @@ class SmileIDViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Nothing is passed through for the SIDAuthUsingSavedDataSegue
-        print( "segue.identifier = ", segue.identifier )
+        // print( "segue.identifier = ", segue.identifier )
         if( segue.identifier == "SIDAuthUsingSavedDataSegue" ){
             
             let uploadResultViewController = segue.destination as! UploadResultViewController

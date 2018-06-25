@@ -258,20 +258,22 @@ class SIFileFileManager{
     /* appendTagFolderName() has not been ported from Android code, because it is not used */
    
 
-    func zipIt( referenceId : String ) -> URL {
+    func zipIt( referenceId : String ) -> URL? {
+        var destinationZipFileURL : URL?
         do{
             
             let sourceDirURL = getZipSourceDirURL(referenceId: referenceId)
-            let destinationZipFileURL = getZipDestFileURL(referenceId: referenceId )
+            destinationZipFileURL = getZipDestFileURL(referenceId: referenceId )
             
             let fileManager = FileManager()
-            try fileManager.zipItem(at: sourceDirURL, to: destinationZipFileURL)
-            
-            return destinationZipFileURL
+            try fileManager.zipItem(at: sourceDirURL, to: destinationZipFileURL!)
+
         }
         catch {
             print("SIFileManager : zipIt() : An error occurred : \(error).")
         }
+        
+        return destinationZipFileURL
     }
     
     

@@ -9,8 +9,16 @@
 import Foundation
 
 class SIDResponse {
-    var partnerParams   : PartnerParams?
-    var success         : Bool?
-    var confidenceValue : Float?
-      
+    var partnerParams       : PartnerParams?
+    var success             : Bool?
+    var confidenceValue     : Float?
+    
+    init( partnerParams     : PartnerParams,
+          success           : Bool,
+          confidenceValue   : Float ) {
+        self.partnerParams      = partnerParams
+        self.success            = success
+        self.confidenceValue    = confidenceValue
+        
+    }
 }

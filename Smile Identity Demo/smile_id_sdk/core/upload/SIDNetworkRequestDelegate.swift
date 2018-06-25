@@ -9,10 +9,17 @@
 import Foundation
 
 protocol SIDNetworkRequestDelegate {
+    
+    func onStartJobStatus()
+    func onEndJobStatus()
+    func onUpdateJobProgress( progress : Int )
+    func onUpdateJobStatus( msg : String )
+
+    func onAuthenticated( sidResponse : SIDResponse )
+    func onEnrolled( sidResponse : SIDResponse )
     func onComplete()
-    func onError( errMsg : String )
-    func onUpdate( progress : Int )
-    func onAuthenticated( response : SIDResponse )
-    func onEnrolled( response : SIDResponse )
+    func onError( sidError : SIDError  )
+
+    
 }
 

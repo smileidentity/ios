@@ -25,9 +25,9 @@ class SaveSelfieImagesService : BaseSaveService {
             self.doSave()
             
             /*  Not necessary to notify the ui thread when this is done
-                DispatchQueue.main.async {
-                }
-            */
+             DispatchQueue.main.async {
+             }
+             */
         }
     }
     

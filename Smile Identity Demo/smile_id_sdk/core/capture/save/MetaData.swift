@@ -35,6 +35,8 @@ class MetaData {
     
     var sidUserIdInfo                       : SIDUserIdInfo?
     
+    init() {}
+    
     init( packageInfo       : PackageInfo,
           miscInfo          : MiscInfo,
           serverInfo        : String,

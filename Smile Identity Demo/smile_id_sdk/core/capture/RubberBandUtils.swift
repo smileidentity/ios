@@ -68,8 +68,9 @@ class RubberBandUtils {
         // get the number of current frames
         nextFrame = currentFrameList.count - 1;
         rulesArray.append(rules)
-        rubberBand(currentFrames: &currentFrameList,
-                   totalNumFrames: totalNumFrames);
+        // top level rubberBandResult is not used
+        _ = rubberBand(currentFrames: &currentFrameList,
+                   totalNumFrames: totalNumFrames)
         return currentFrameList
     }
     

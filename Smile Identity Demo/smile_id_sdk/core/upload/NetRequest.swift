@@ -69,7 +69,7 @@ class NetRequest {
         
     }
     
-    
+
     /* called internally from this class only */
     func postAuthSmile() {
         doHttpPost( serverUrl: authSmileRequestUrl!,
@@ -100,7 +100,7 @@ class NetRequest {
         
         let userId = appData.getUserId( defaultUserId: "" )
         let isIdPresent = appData.getIsIDPresent(defaultVal: false)
-        
+
         let authSmileRequest = AuthSmileRequestJson(
             jobType: jobType,
             userId:userId!,
@@ -248,7 +248,7 @@ class NetRequest {
         }
         
     }
-    
+
     
     func stopUploadJobStatusTimer() {
         if uploadJobStatusTimer != nil {

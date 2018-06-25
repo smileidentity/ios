@@ -27,10 +27,7 @@ public class SIDConfig {
     func save() {
         let appData = AppData()
         appData.setTag(tag: tag);
-        
-        /* TODO - implment this function
-        sidNetworkRequest.saveDataForLaterUse(tag, sidNetData);
-         */
+        sidNetworkRequest.saveDataForLaterUse(tag: tag, smileIdNetData: sidNetData!);
     }
     
     func updateIDPresent() {

@@ -378,7 +378,7 @@ class CaptureConfig {
             
         }
         
-        return self
+
     }
     
     

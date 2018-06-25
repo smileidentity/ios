@@ -106,10 +106,10 @@ class UploadResultViewController:
     
     
     func showToast( toastView   : UIView,
-                    toastMsg    : UILabel,
+                    lblToast    : UILabel,
                     msg         : String ){
         toastView.isHidden = false
-        toastMsg.text = msg
+        lblToast.text = msg
         _ = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(hideToast), userInfo: nil, repeats: false)
         
     }
@@ -133,69 +133,77 @@ class UploadResultViewController:
         
     }
     
+
+    
     /*
      SIDNetworkRequestDelegate calls
-     */
+    */
     func onComplete() {
         stopActivityIndicator()
+        if( isEnrollMode ){
+            showToast(toastView: toastView,
+                      lblToast: lblToast,
+                      msg: "Job Complete" )
+        }
     }
     
-    func onError( errMsg : String ){
+    
+    func onError(sidError: SIDError) {
         stopActivityIndicator()
-        
         showToast(toastView: toastView,
-                  toastMsg: lblToast,
-                  msg: errMsg )
+                  lblToast: lblToast,
+                  msg: sidError.message )
     }
     
-    func onUpdate( progress : Int ) {}
     
-    func onAuthenticated( response : SIDResponse ) {
-        
-        var lblResultText : String?
-        var lblConfidenceText : String?
-        var color : UIColor?
-        
-        lblConfidenceText = String( response.confidenceValue! )
-        if( response.success )!{
-            color = UIColor.green
-            lblResultText = "VERIFIED"
-        }
-        else{
-            color = UIColor.red
-            lblResultText = "NOT VERIFIED"
-        }
-        updateUI( color: color!, resultText: lblResultText!, confidenceText: lblConfidenceText! )
-    }
-    
-    func onEnrolled( response : SIDResponse ) {
-        var lblResultText : String?
-        var lblConfidenceText : String?
-        var color : UIColor?
-        lblConfidenceText = String( response.confidenceValue! )
-        
-        if( response.success )!{
-            color = UIColor.green
-            lblResultText = "ENROLLED SUCCESSFULLY"
-        }
-        else{
-            color = UIColor.red
-            lblResultText = "ENROLL FAILED"
-        }
-        updateUI( color: color!, resultText: lblResultText!, confidenceText: lblConfidenceText! )
-        
-    }
-    
-    func updateUI( color : UIColor,
-                   resultText : String,
-                   confidenceText : String ){
+    func updateUI( resultText : String, confidenceText : String, color : UIColor ) {
         stopActivityIndicator()
-
         lblResult.textColor = color
         lblResult.text = resultText
         lblConfidenceLevel.text = "Confidence value " + confidenceText + "%"
+    }
+    
+    func onAuthenticated( sidResponse : SIDResponse ) {
+    
+        var resultText : String?
+        var confidenceText : String?
+        var color : UIColor?
+        
+        confidenceText = String( sidResponse.confidenceValue! )
+        if( sidResponse.success )!{
+            color = UIColor.green
+            resultText = "VERIFIED"
+        }
+        else{
+            color = UIColor.red
+            resultText = "NOT VERIFIED"
+        }
+        updateUI(resultText: resultText!, confidenceText: confidenceText!, color: color! )
+  
+    }
+    
+    func onEnrolled( sidResponse : SIDResponse ) {
+        var resultText : String?
+
+        var color : UIColor?
+        let confidenceText = String( sidResponse.confidenceValue! )
+        
+        if( sidResponse.success )!{
+            color = UIColor.green
+            resultText = "ENROLLED SUCCESSFULLY"
+        }
+        else{
+            color = UIColor.red
+            resultText = "ENROLL FAILED"
+        }
+        updateUI(resultText: resultText!, confidenceText: confidenceText, color : color! )
         
     }
+    
+    // Android code does not do anything in these functions.
+    func onStartJobStatus() {}
+    func onEndJobStatus() {}
+    func onUpdateJobProgress( progress : Int ) {}
+    func onUpdateJobStatus( msg : String ) {}
  
-
 }
