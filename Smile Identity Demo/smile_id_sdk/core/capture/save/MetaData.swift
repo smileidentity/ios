@@ -87,17 +87,25 @@ class MetaData {
         
         let jsonUtils = JsonUtils()
         
-        jsonUtils.putDict( dict: &dict, key: MetaData.KEY_PACKAGE_INFORMATION,
-            val: ( packageInfo!.toJsonDict()) )
+        if( packageInfo != nil ){
+            jsonUtils.putDict( dict: &dict, key: MetaData.KEY_PACKAGE_INFORMATION,
+                val: ( packageInfo!.toJsonDict()) )
+        }
         
-        jsonUtils.putDict( dict: &dict, key: MetaData.KEY_MISC_INFORMATION,
+        if( miscInfo != nil ){
+            jsonUtils.putDict( dict: &dict, key: MetaData.KEY_MISC_INFORMATION,
                            val: ( miscInfo!.toJsonDict()) )
+        }
         
-        jsonUtils.putString( dict: &dict, key: MetaData.KEY_SERVER_INFO,
-                             val: serverInfo! )
+        if( serverInfo != nil ){
+            jsonUtils.putString( dict: &dict, key: MetaData.KEY_SERVER_INFO,
+                                 val: serverInfo! )
+        }
         
-        jsonUtils.putDict( dict: &dict, key: MetaData.KEY_USER_ID_INFORMATION,
+        if( sidUserIdInfo != nil ){
+            jsonUtils.putDict( dict: &dict, key: MetaData.KEY_USER_ID_INFORMATION,
                            val: sidUserIdInfo!.toJsonDict(useAdditionalProps: false) )
+        }
         
         return dict
     }

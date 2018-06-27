@@ -42,8 +42,8 @@ class Test {
         print( "Test error message : ", SIDError.getErrorMessage(errorCode:  SIDError.COULD_NOT_INITIALIZE_CAMERA ))
         */
         
-        let siFileFileManager = SIFileFileManager()
-        siFileFileManager.deletePreviewFrames(referenceID: "000000")
+        let siFileFileManager = SIFileManager()
+        siFileFileManager.deletePreviewFrames(referenceId: "000000")
         
     }
     

@@ -217,9 +217,6 @@ class CaptureConfig {
                         key: CaptureConfig.KEY_ID_CARD_TYPE,
                         defaultVal: CaptureConfig.DEFAULT_ID_CARD_TYPE )
         
-        idCardType = jsonUtils.getString(dict:dict,
-                        key: CaptureConfig.KEY_IMAGE_FORMAT,
-                        defaultVal:"" )
         
         imageFormat = jsonUtils.getInt(dict:dict,
                     key: CaptureConfig.KEY_IMAGE_FORMAT,

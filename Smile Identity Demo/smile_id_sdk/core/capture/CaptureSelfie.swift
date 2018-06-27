@@ -16,6 +16,7 @@ class CaptureSelfie :
     FaceStateChangedDelegate,
     ProcessFrameDelegate {
 
+    var referenceId           : String?
     var captureSelfieDelegate : CaptureSelfieDelegate?
     
     var lblPrompt: UILabel?
@@ -45,9 +46,16 @@ class CaptureSelfie :
                 lblPrompt : UILabel,
                 previewView : VideoPreviewView ){
         
+        
         self.captureSelfieDelegate = captureSelfieDelegate
         self.lblPrompt = lblPrompt
         self.previewView = previewView
+        
+        let appData = AppData()
+        appData.clearAll()
+        referenceId = appData.createReferenceId(tag: SmileIDSingleton.USER_TAG )
+        appData.setRefID(refID: referenceId!)
+        
         pictureTaken = false
     
         framesList = [FrameData]()
@@ -68,14 +76,13 @@ class CaptureSelfie :
             
             return
         }
+      
         
-        let cmMinTime = device.activeVideoMinFrameDuration
-        SmileIDSingleton.sharedInstance.minFPS = Int(1 / ( cmMinTime.value / Int64(cmMinTime.timescale )))
+    SmileIDSingleton.sharedInstance.lensCharacteristicsFront.maxFPS = Int(device.activeFormat.videoSupportedFrameRateRanges[0].maxFrameRate)
         
-        let cmMaxTime = device.activeVideoMaxFrameDuration
-        SmileIDSingleton.sharedInstance.maxFPS = Int(1 / ( cmMaxTime.value / Int64(cmMaxTime.timescale )))
-       
-        SmileIDSingleton.sharedInstance.whiteBalanceMode = device.whiteBalanceMode
+    SmileIDSingleton.sharedInstance.lensCharacteristicsFront.minFPS = Int(device.activeFormat.videoSupportedFrameRateRanges[0].minFrameRate)
+    SmileIDSingleton.sharedInstance.lensCharacteristicsFront.whiteBalanceMode = device.whiteBalanceMode
+        
         SmileIDSingleton.sharedInstance.selfieCameraExists = true
         
         // Setup input
@@ -197,7 +204,9 @@ class CaptureSelfie :
                        from connection: AVCaptureConnection)
     {
         /*for kCVPixelFormatType_32BGRA */
-        
+
+
+
         DispatchQueue(label: "faceDetection").async {
             self.processImage(sampleBuffer: sampleBuffer);
         }
@@ -254,9 +263,9 @@ class CaptureSelfie :
                     cropRect:&cropRect)
                 
                  let width = imageUtils.getCVImageBufferWidth( pixelBuffer:pixelBuffer )
-                SmileIDSingleton.sharedInstance.devicePortraitHorizontalResolution = width
+                SmileIDSingleton.sharedInstance.lensCharacteristicsFront.devicePortraitHorizontalResolution = width
                 let height = imageUtils.getCVImageBufferHeight( pixelBuffer:pixelBuffer )
-                SmileIDSingleton.sharedInstance.devicePortraitVerticalResolution = height
+                SmileIDSingleton.sharedInstance.lensCharacteristicsFront.devicePortraitVerticalResolution = height
                 
                 /*
                 // TEST
@@ -425,8 +434,7 @@ class CaptureSelfie :
                 
             }
             logger.SIPrint(logOutput: "save Frames")
-            
-            saveFrames(referenceId: SIDReferenceId.DEFAULT_REFERENCE_ID, responseCode: responseCode, rotation: rotation)
+            saveFrames(referenceId:referenceId!, responseCode: responseCode, rotation: rotation)
             
             
         }
@@ -439,9 +447,6 @@ class CaptureSelfie :
             SmileIDSingleton.sharedInstance.framesList = framesList
             SmileIDSingleton.sharedInstance.previewFrame = previewFrame
             
-            
-            /* TODO start save service
-            */
             
             // In Android code, this onComplete causes the caller to
             // call onPause in the activity, which calls camera stop
@@ -459,8 +464,7 @@ class CaptureSelfie :
     func startSaveService( referenceId : String,
                            responseCode : Int ){
         
-        /* TODO - put this in background
-        */
+   
         
         let saveSelfieImagesService = SaveSelfieImagesService( referenceId: referenceId, responseCode: responseCode)
         

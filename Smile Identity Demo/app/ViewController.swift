@@ -15,9 +15,10 @@ class ViewController: UIViewController {
         AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
         
         
-        // TEST
+        /* TEST
         let test = Test()
         test.test()
+        */
  
          
      

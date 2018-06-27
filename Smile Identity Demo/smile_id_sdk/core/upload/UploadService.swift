@@ -28,7 +28,11 @@ class UploadService : BaseService, NetRequestDelegate {
     var lambdaRequest                           : LambdaRequest?
     var packageInfo                             : PackageInfo?
     
-    init( uploadServiceDelegate : UploadServiceDelegate ){
+    
+    init( uploadServiceDelegate : UploadServiceDelegate,
+          referenceId : String ){
+        super.init()
+        super.referenceId = referenceId
         self.uploadServiceDelegate = uploadServiceDelegate
     }
     
@@ -73,7 +77,7 @@ class UploadService : BaseService, NetRequestDelegate {
             authSmileResponse = AuthSmileResponse().fromJsonString( jsonFormattedString: sAuthResponse! )
         }
         
-        if( requestNewToken! || authSmileResponse != nil ){
+        if( requestNewToken! || authSmileResponse == nil ){
             /* Get a new authSmileResponse */
             netRequest?.postAuthSmile(
                 partnerUrl: sidNetData!.partnerUrl,
@@ -411,7 +415,7 @@ class UploadService : BaseService, NetRequestDelegate {
     }
     
     func doZip() -> URL? {
-        let siFileManager = SIFileFileManager()
+        let siFileManager = SIFileManager()
         let destinationZipFileURL = siFileManager.zipIt(referenceId:referenceId!)
         return destinationZipFileURL
     }

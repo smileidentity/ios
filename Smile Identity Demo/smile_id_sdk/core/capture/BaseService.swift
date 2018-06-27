@@ -12,24 +12,19 @@ class BaseService {
     
     var referenceId : String?
     
-    init() {
-        let appData = AppData()
-        referenceId = appData.getRefID(defaultRefID: SIDReferenceId.DEFAULT_REFERENCE_ID);
-        
-    }
+    init() {}
     
     
     func deleteMetaFolder( referenceId : String ) {
         let appData = AppData()
         appData.removeTag(tag: referenceId)
         
-        let siFileManager = SIFileFileManager()
+        let siFileManager = SIFileManager()
         siFileManager.deleteMetaFolder(referenceId: referenceId)
     }
     
     
     func clearMetadata()  {
-        SmileIDSingleton.sharedInstance.idCardFrame = nil
         let appData = AppData()
         appData.clearJobResponse()
         appData.removeCurrentTag();
@@ -42,7 +37,7 @@ class BaseService {
     func readMetadata() -> String? {
         var jsMetaData : String?
         
-        let siFileManager = SIFileFileManager()
+        let siFileManager = SIFileManager()
         let metaFileURL = siFileManager.getMetaFilePathAsURL(referenceId:  referenceId! )
         do {
             if( siFileManager.fileExists(fullFilePath: metaFileURL.path) ){
@@ -59,7 +54,7 @@ class BaseService {
     
     
     func writeMetaData( metaData : MetaData ) {
-        let siFileManager = SIFileFileManager()
+        let siFileManager = SIFileManager()
         let metaFileURL = siFileManager.getMetaFilePathAsURL(referenceId:  referenceId! )
         do {
             let jsMetaData = metaData.toJsonString()

@@ -23,7 +23,7 @@ class SmileIDSingleton {
     static let FB_USER_FRAME_NAME = "SID_FBUser.jpg"; // FB Use
     
     // ported from Misc class in the Android project
-    static let USER_TAG =  "USER_TAG_3"
+    static let USER_TAG =  "USER_TAG_2"
     
     var selfieImageUI   : Data?
     var framesList      : [FrameData] = []
@@ -33,19 +33,20 @@ class SmileIDSingleton {
     var fbUserImage     : Data?
     
     /* camera settings */
+ 
+    var selfieCameraExists                  : Bool = false
+ 
+    
+    
     var lensCharacteristicsFront            = LensCharacteristics()
     var lensCharacteristicsBack             = LensCharacteristics()
-    var selfieCameraExists                  : Bool = false
-    var devicePortraitHorizontalResolution  : Int = 0
-    var devicePortraitVerticalResolution    : Int = 0
-    var minFPS                              : Int = 0
-    var maxFPS                              : Int = 0
-    var whiteBalanceMode                     = AVCaptureDevice.WhiteBalanceMode.autoWhiteBalance
     
+
     let capturedImagesManager   = CapturedImagesManager()
    
     func setFramesList( framesList : [FrameData]){self.framesList = framesList}
     func getFramesList() -> [FrameData] { return self.framesList }
+
     
  
     

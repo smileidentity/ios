@@ -120,25 +120,27 @@ class AppData {
     }
     
     func setString( _ key : String, val : String ){
+        print( "AppData : setString() : key = " + key + ", val = " + val  )
         let userDefaults = getUserDefaults()
         userDefaults.set(val, forKey: key )
         userDefaults.synchronize()
     }
     
     
-    func getStringSet( key : String ) -> Set<String>? {
+    func getStringArr( key : String ) -> Array<String>? {
         let userDefaults = getUserDefaults()
-        let stringSet = userDefaults.object(forKey: key )
-        if( stringSet == nil ){
+        let stringArr = userDefaults.object(forKey: key )
+        if( stringArr == nil ){
             return nil
         }
         else{
-            return stringSet! as? Set<String>
+            return stringArr! as? Array<String>
         }
     }
 
     
-    func setStringSet( key : String, val : Set<String> ) {
+    func setStringArr( key : String, val : Array<String> ) {
+        print( "setStringArr")
         let userDefaults = getUserDefaults()
         userDefaults.set(val, forKey: key)
         userDefaults.synchronize()
@@ -208,9 +210,7 @@ class AppData {
         setString( KEY_REFERENCE_ID, val: refID)
     }
     
-    func getRefID( defaultRefID : String ) -> String? {
-        return getString(KEY_REFERENCE_ID, defaultVal : defaultRefID)
-    }
+  
     
     func setSelectedIdType( selectedIdType : String ) {
         setString(KEY_SELECTED_ID_TYPE, val : selectedIdType)
@@ -429,7 +429,7 @@ class AppData {
  
     
     func getAuthSmileResponse( defaultVal : String? ) -> String? {
-        return getString( KEY_JOB_RESPONSE, defaultVal:defaultVal  )!
+        return getString( KEY_JOB_RESPONSE, defaultVal:defaultVal  )
     }
     
     func clearJobResponse() {
@@ -440,20 +440,27 @@ class AppData {
     }
 
     
-    func getTags() -> Set<String>? {
-        return getStringSet(key: KEY_TAG_LIST )
+    func getTags() -> Array<String>? {
+        return getStringArr(key: KEY_TAG_LIST )
     }
-    func setTags( tags : Set<String> ) {
-        setStringSet( key: KEY_TAG_LIST, val:tags )
+    func setTags( tags : Array<String> ) {
+        print( "setTags")
+        setStringArr( key: KEY_TAG_LIST, val:tags )
     }
     
     func removeTag( tag : String ){
         remove(KEY_USER_TAG);
   
-        var tags = getTags()
-        if( tags != nil ){
-            tags!.remove(tag)
-            setTags( tags: tags! )
+        var tagsArr = getTags()
+        if( tagsArr != nil ){
+            
+            var tagsSet = Set( tagsArr! )
+            
+            tagsSet.remove(tag)
+            tagsArr = Array(tagsSet)
+            setTags( tags: tagsArr! )
+            
+ 
         }
         
     }
@@ -463,33 +470,55 @@ class AppData {
     }
     func removeCurrentTag() {
         // remove current tag
+        print( "removeCurrentTag")
         let currentTag = getCurrentTag( defaultTag: SIDReferenceId.NO_TAG )
+        print( "removeCurrentTag = " + currentTag! )
         remove(KEY_USER_TAG);
         
         // Remove current tag from list
-        var tags = getTags()
-        if( tags != nil ){
-            tags!.remove(currentTag!)
-            setTags( tags: tags! )
+        var tagsArr = getTags()
+        if( tagsArr != nil ){
+            var tagsSet = Set( tagsArr! )
+            print( "tagsArr != nil.  count = " + String(tagsArr!.count ) )
+            tagsSet.remove(currentTag!)
+            tagsArr = Array(tagsSet)
+            print( "after removing : count = " + String(tagsArr!.count ) )
+            setTags( tags: tagsArr! )
         }
+        
+        print( "end removeCurrentTag" )
     
     }
     
     func setTag( tag : String ) {
         // update tag
+        print( "setTag 1" )
         setString(KEY_USER_TAG, val: tag)
+        print ("setTag 2")
         
         // Add tag to list
-        var tags = getTags()
-        if( tags != nil ){
-            tags!.insert(tag)
+        var tagsArr = getTags()
+        
+        
+        // Convert to set
+        
+        if( tagsArr != nil ){
+            print( "tagsArr != nil setTag 3")
+            // convert to set, to make sure there are no duplicates
+            var tagsSet = Set( tagsArr! )
+            tagsSet.insert(tag)
+            // convert back to array
+            tagsArr = Array(tagsSet)
          }
         else {
-            tags = Set<String>()
-            tags!.insert(tag)
+            print( "tags = nil setTag 4")
+            tagsArr = Array<String>()
+            tagsArr!.append(tag)
         }
-        setTags( tags: tags! )
+        print( "setTag 5, tags length = ", tagsArr?.count )
+        setTags( tags: tagsArr! )
         
+        print( "setTag 6")
     }
     
     // Increase tag no of reference id for next capture process

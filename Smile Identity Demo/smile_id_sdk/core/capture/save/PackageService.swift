@@ -11,13 +11,20 @@ import Foundation
 class PackageService : BaseSaveService {
 
     var packageServiceDelegate                  : PackageServiceDelegate?
-
+    
+    init( referenceId : String ){
+        super.init()
+        super.referenceId = referenceId
+    }
+    
     func packAndSend( coreRequestData : CoreRequestData,
                       packageServiceDelegate : PackageServiceDelegate ) {
         self.packageServiceDelegate = packageServiceDelegate
+        
+           
         let appData = AppData()
         if (!appData.isIdTaken(defaultVal: false)) {
-            SIFileFileManager().deleteIDCardImage(referenceID: referenceId!);
+            SIFileManager().deleteIDCardImage(referenceId: referenceId!);
         }
         appData.setIdTaken(idTaken: false)
         sendRequest(coreRequestData: coreRequestData)
@@ -91,28 +98,66 @@ class PackageService : BaseSaveService {
                            sidNetData : SIDNetData ) throws {
         
         let jsMetaData = readMetadata()
-        let metaData = MetaData().fromJsonString(jsonString: jsMetaData! )
+        let capturedImagesManager = SmileIDSingleton.sharedInstance.capturedImagesManager
+        try checkMetaDataValid( tag: tag, capturedImagesManager: capturedImagesManager, jsMetaData: jsMetaData )
+        var metaData : MetaData?
+        if( jsMetaData == nil ){
+            metaData = MetaData()
+            let packageInfo = createPackageInfo(tag: tag, sidNetData: sidNetData)
+            if( packageInfo != nil ){
+                metaData!.packageInfo = packageInfo
+            }
+        }
+        else{
+            metaData = MetaData().fromJsonString(jsonString: jsMetaData! )
+            if( metaData?.packageInfo == nil ){
+                 metaData?.packageInfo = createPackageInfo(tag: tag, sidNetData: sidNetData)
+            }
+            else if( metaData?.packageInfo?.referenceId == "" ){
+                // packageInfo is not nil, but it is uninitialized
+                metaData?.packageInfo = createPackageInfo(tag: tag, sidNetData: sidNetData)
+            }
+        }
         
-        var packageInfo = metaData?.packageInfo
+        writeMetaData( metaData: metaData! )
   
-        if( packageInfo == nil ){
-            clearMetadata();
-            deleteMetaFolder(referenceId: SIDReferenceId.DEFAULT_REFERENCE_ID + tag);
-        }
+     
         
-        if (packageInfo == nil ) {
-            let captureConfig = initCaptureConfig(sidNetData: sidNetData );
-            
-            try packageInfo = createCapturedImagesPackageInfo( isMaxFrameTimeout: isMaxFrameTimeout(), captureConfig : captureConfig )
-            
-            metaData?.packageInfo = packageInfo
-            writeMetaData( metaData: metaData! )
-        }
+  
         
     }
     
+    func createPackageInfo( tag : String, sidNetData : SIDNetData )  -> PackageInfo? {
+        var packageInfo : PackageInfo?
+        do{
+            clearMetadata();
+           
+            let captureConfig = initCaptureConfig(sidNetData: sidNetData );
+            
+            packageInfo = try createCapturedImagesPackageInfo( isMaxFrameTimeout: isMaxFrameTimeout(), captureConfig : captureConfig )
+            
+            
+        }
+        catch {
+            print( "CreatePackageInfo : An error occurred ")
+            packageServiceDelegate?.onPackagingError(sidError: SIDError.DATA_PACKAGING_FAILED )
+        }
+        
+        return packageInfo
+    }
     
-  
+    
+    func checkMetaDataValid( tag : String,
+                             capturedImagesManager : CapturedImagesManager?,
+                             jsMetaData : String?
+                             ) throws {
+        if( capturedImagesManager == nil && jsMetaData == nil ){
+            clearMetadata();
+            deleteMetaFolder(referenceId: SIDReferenceId.DEFAULT_REFERENCE_ID + tag)
+            throw SIDError.TAG_NOT_FOUND
+        }
+        
+    }
     
     
     func createCapturedImagesPackageInfo(
@@ -130,7 +175,7 @@ class PackageService : BaseSaveService {
         }
             
         let packageInfo = PackageInfo()
-        let siFileManager = SIFileFileManager()
+        let siFileManager = SIFileManager()
         
         let allCapturedImages = capturedImagesManager.getAllCapturedImages()
         
@@ -158,7 +203,9 @@ class PackageService : BaseSaveService {
                 let sidDeviceCameraInfosBack =  SIDDeviceCameraInfos(
                     lensCharacteristics: SmileIDSingleton.sharedInstance.lensCharacteristicsBack,
                     isFront: false);
+ 
                 packageInfo.sidDeviceCameraInfosBack = sidDeviceCameraInfosBack
+    
             }
             else{
                 /* selfie frames */
@@ -173,6 +220,7 @@ class PackageService : BaseSaveService {
                 lensCharacteristics: SmileIDSingleton.sharedInstance.lensCharacteristicsFront,
                 isFront: true);
             packageInfo.sidDeviceCameraInfosFront = sidDeviceCameraInfosFront
+            
         }
             
         if( fullFrameInfoArr.count == 0 ||

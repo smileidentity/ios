@@ -33,8 +33,8 @@ class SaveSelfieImagesService : BaseSaveService {
     
     
     func doSave() {
-        let siFileManager = SIFileFileManager()
-        siFileManager.deletePreviewFrames(referenceID: referenceId!)
+        let siFileManager = SIFileManager()
+        siFileManager.deletePreviewFrames(referenceId: referenceId!)
         SmileIDSingleton.sharedInstance.capturedImagesManager.referenceID = referenceId
         SmileIDSingleton.sharedInstance.capturedImagesManager.numImagesCaptured = SmileIDSingleton.sharedInstance.framesList.count
         SmileIDSingleton.sharedInstance.capturedImagesManager.captureSelfieResponseCode = responseCode

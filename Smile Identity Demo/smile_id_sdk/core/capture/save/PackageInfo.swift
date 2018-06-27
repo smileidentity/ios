@@ -133,7 +133,7 @@ class PackageInfo {
             return fromJsonDict(dict: dict!)
         }
         
-        return self
+
     }
     func toJsonDict() -> Dictionary<String,Any> {
         // Build a dictionary,

@@ -32,10 +32,10 @@ class SIDDeviceCameraInfos {
     var availableImageFormat                : String = "jpg"
     var model                               : String = UIDevice.current.model
     var colorDepth                          : Int = 0
-    var devicePortraitHorizontalResolution  : Int = SmileIDSingleton.sharedInstance.devicePortraitHorizontalResolution
-    var devicePortraitVerticalResolution    : Int = SmileIDSingleton.sharedInstance.devicePortraitVerticalResolution
+    var devicePortraitHorizontalResolution  : Int = SmileIDSingleton.sharedInstance.lensCharacteristicsFront.devicePortraitHorizontalResolution
+    var devicePortraitVerticalResolution    : Int = SmileIDSingleton.sharedInstance.lensCharacteristicsFront.devicePortraitVerticalResolution
     var maxFPS                              : Int =
-        SmileIDSingleton.sharedInstance.maxFPS
+        SmileIDSingleton.sharedInstance.lensCharacteristicsFront.maxFPS
     var maxImageMemory                      : Int = 0
     var previewSize                         = PreviewSize()
     
@@ -53,7 +53,7 @@ class SIDDeviceCameraInfos {
         self.isFront = isFront
         self.lensCharacteristics = lensCharacteristics
         
-        let siFileManager = SIFileFileManager()
+        let siFileManager = SIFileManager()
         self.maxImageMemory = Int(truncatingIfNeeded: siFileManager.getFreeDiskspace()!)
         
         previewSize = PreviewSize( width:devicePortraitHorizontalResolution,
@@ -98,10 +98,16 @@ class SIDDeviceCameraInfos {
         previewSizeList = jsonUtils.getArray(dict:dict,
             key: SIDDeviceCameraInfos.KEY_PREVIEW_SIZE_LIST,
             defaultVal : defaultArr ) as! [Dictionary<String, Any>]
+        if( previewSizeList.count > 0 ){
         
         let previewDict = previewSizeList[0]
         previewSize.width = previewDict[PreviewSize.KEY_WIDTH] as! Int
         previewSize.height = previewDict[PreviewSize.KEY_HEIGHT] as! Int
+        }
+        else{
+            previewSize.width = 0
+            previewSize.height = 0
+        }
         
         selfieExists = jsonUtils.getBool(dict:dict,
             key: SIDDeviceCameraInfos.KEY_SELFIE_CAMERA_EXISTS,

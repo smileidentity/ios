@@ -9,14 +9,14 @@
 import Foundation
 import ZIPFoundation
 
-class SIFileFileManager{
+class SIFileManager{
     
     static let SI_FOLDER_NAME : String = "sid.jobs.SI";
     
     func getSmileIDDir() -> URL {
         let documentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
 
-        let sidDir = documentDirURL.appendingPathComponent(SIFileFileManager.SI_FOLDER_NAME)
+        let sidDir = documentDirURL.appendingPathComponent(SIFileManager.SI_FOLDER_NAME)
         return sidDir
     
     }
@@ -29,13 +29,13 @@ class SIFileFileManager{
         return filePath
     }
     
-    func getRefIDDir() -> String {
-        return getSmileIDDir().appendingPathComponent("referenceID").path
+    func getRefIdDir(referenceId : String ) -> String {
+        return getSmileIDDir().appendingPathComponent(referenceId).path
     }
     
     /* Returns Reference ID subdirectory */
-    func createAndGetFolderPath() -> String {
-        var refIDDir : String?
+    func createAndGetFolderPath( referenceId : String ) -> String {
+        var refIdDir : String?
         do {
             let fileManager = FileManager.default
             
@@ -44,9 +44,9 @@ class SIFileFileManager{
                 fileManager.createFile(atPath: noMediaFilePath, contents: nil, attributes: nil)
             }
             
-            refIDDir = getRefIDDir()
-            if !fileManager.fileExists(atPath: refIDDir!) {
-                try fileManager.createDirectory(atPath: refIDDir!,
+            refIdDir = getRefIdDir(referenceId: referenceId)
+            if !fileManager.fileExists(atPath: refIdDir!) {
+                try fileManager.createDirectory(atPath: refIdDir!,
                                     withIntermediateDirectories: true, attributes: nil)
             }
         }
@@ -54,7 +54,7 @@ class SIFileFileManager{
             print("SIFileManager : createAndGetFolderPath() : An error occurred : \(error).")
         }
 
-        return refIDDir!
+        return refIdDir!
     }
     
     func createJson( referenceId : String ) -> Bool {
@@ -62,8 +62,8 @@ class SIFileFileManager{
     
         let fileManager = FileManager.default
         
-        let refIDDirURL = URL(fileURLWithPath: createAndGetFolderPath() )
-        let infoPath = refIDDirURL.appendingPathComponent("info.json").path
+        let refIdDirURL = URL(fileURLWithPath: createAndGetFolderPath( referenceId: referenceId ) )
+        let infoPath = refIdDirURL.appendingPathComponent("info.json").path
         created = fileManager.createFile(atPath: infoPath, contents: nil, attributes: nil)
         
         return created
@@ -72,17 +72,23 @@ class SIFileFileManager{
     
     func fileExists( fullFilePath : String ) -> Bool {
         let fileManager = FileManager.default
-        return fileManager.fileExists(atPath: fullFilePath )
+        let url = URL(fileURLWithPath:fullFilePath)
+        
+        let fileExists = fileManager.fileExists(atPath: (url.path) )
+        
+      
+        print( "fileExists = " + String( fileExists ) + ", fullFilePath = ", fullFilePath )
+        return fileExists
     }
     
     func getFullFilePath( referenceId : String, filename : String ) -> String {
-        let refIDDirURL = URL(fileURLWithPath: createAndGetFolderPath() )
+        let refIDDirURL = URL(fileURLWithPath: createAndGetFolderPath( referenceId : referenceId) )
         let fullFilename = refIDDirURL.appendingPathComponent(filename).path
         return fullFilename
     }
     
     func getMetaFullFilePath( referenceId : String ) -> String {
-        let refIDDirURL = URL(fileURLWithPath: createAndGetFolderPath() )
+        let refIDDirURL = URL(fileURLWithPath: createAndGetFolderPath( referenceId : referenceId ) )
         let infoPath = refIDDirURL.appendingPathComponent("info.json").path
         return infoPath
     }
@@ -93,12 +99,12 @@ class SIFileFileManager{
     }
     
     func getZipSourceDirURL( referenceId : String ) -> URL {
-        return URL(fileURLWithPath: createAndGetFolderPath() )
+        return URL(fileURLWithPath: createAndGetFolderPath( referenceId : referenceId ) )
     }
     
     func getZipDestFileURL( referenceId : String ) -> URL {
         let refIDDirURL =
-            URL( fileURLWithPath: createAndGetFolderPath() )
+            URL( fileURLWithPath: createAndGetFolderPath( referenceId : referenceId ) )
         return refIDDirURL.appendingPathComponent(referenceId + ".zip")
 
     }
@@ -107,27 +113,27 @@ class SIFileFileManager{
     func deleteMetaFolder( referenceId : String ) {
         let fileManager = FileManager.default
         do{
-            let refIDPath = createAndGetFolderPath()
+            let refIdPath = createAndGetFolderPath( referenceId : referenceId)
             
-            if !fileManager.fileExists(atPath: refIDPath ) {
+            if !fileManager.fileExists(atPath: refIdPath ) {
                 return
             }
             
-            let refIDDirURL = URL(fileURLWithPath: refIDPath )
-            let idCardImagePath = refIDDirURL.appendingPathComponent(SmileIDSingleton.ID_CARD_FRAME_NAME).path
+            let refIdDirURL = URL(fileURLWithPath: refIdPath )
+            let idCardImagePath = refIdDirURL.appendingPathComponent(SmileIDSingleton.ID_CARD_FRAME_NAME).path
             if fileManager.fileExists(atPath: idCardImagePath ) {
                 try fileManager.removeItem(atPath: idCardImagePath)
             }
             
             // list all contents in the directory.  Can be files or subdirectories.
-            let contentlist = try fileManager.contentsOfDirectory(atPath: refIDPath)
+            let contentlist = try fileManager.contentsOfDirectory(atPath: refIdPath)
             let logger = SILog()
             logger.SIPrint(logOutput:"Zip content and  Number of ready frames:" + String(contentlist.count) )
             
             var fullPath : String?
             
             for item in contentlist {
-                fullPath = refIDDirURL.appendingPathComponent(item).path
+                fullPath = refIdDirURL.appendingPathComponent(item).path
                 try fileManager.removeItem(atPath: fullPath!)
             }
         }
@@ -142,16 +148,16 @@ class SIFileFileManager{
     func deleteSelfieImages( referenceId : String ) {
         let fileManager = FileManager.default
         do{
-            let refIDPath = createAndGetFolderPath()
+            let refIdPath = createAndGetFolderPath( referenceId : referenceId )
             
-            if !fileManager.fileExists(atPath: refIDPath ) {
+            if !fileManager.fileExists(atPath: refIdPath ) {
                 return
             }
             
-            let refIDDirURL = URL(fileURLWithPath: refIDPath )
+            let refIDDirURL = URL(fileURLWithPath: refIdPath )
            
             // list all contents in the directory.  Can be files or subdirectories.
-            let contentlist = try fileManager.contentsOfDirectory(atPath: refIDPath)
+            let contentlist = try fileManager.contentsOfDirectory(atPath: refIdPath)
             let logger = SILog()
             logger.SIPrint(logOutput:"Zip content and  Number of ready frames:" + String(contentlist.count) )
             
@@ -211,13 +217,13 @@ class SIFileFileManager{
     }
     
     
-    func deleteIDCardImage( referenceID : String ) {
+    func deleteIDCardImage( referenceId : String ) {
         do{
             let fileManager = FileManager.default
-            let refIDPath = createAndGetFolderPath()
+            let refIdPath = createAndGetFolderPath( referenceId : referenceId)
             
-            let refIDDirURL = URL(fileURLWithPath: refIDPath )
-            let idCardImagePath = refIDDirURL.appendingPathComponent(SmileIDSingleton.ID_CARD_FRAME_NAME).path
+            let refIdDirURL = URL(fileURLWithPath: refIdPath )
+            let idCardImagePath = refIdDirURL.appendingPathComponent(SmileIDSingleton.ID_CARD_FRAME_NAME).path
             if fileManager.fileExists(atPath: idCardImagePath ) {
                 try fileManager.removeItem(atPath: idCardImagePath)
             }
@@ -229,11 +235,11 @@ class SIFileFileManager{
     
     
     
-    func deletePreviewFrames( referenceID : String ) {
+    func deletePreviewFrames( referenceId : String ) {
         
         do{
             let fileManager = FileManager.default
-            let refIDPath = createAndGetFolderPath()
+            let refIDPath = createAndGetFolderPath( referenceId : referenceId )
             let refIDDirURL = URL(fileURLWithPath: refIDPath )
             let previewImagePath = refIDDirURL.appendingPathComponent(SmileIDSingleton.PREVIEW_FRAME_NAME).path
             if fileManager.fileExists(atPath: previewImagePath ) {

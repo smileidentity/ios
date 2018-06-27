@@ -37,10 +37,28 @@ class BaseSaveService : BaseService {
                            referenceId  : String,
                            filename     : String ) {
         do {
-            let siFileManager = SIFileFileManager()
+            let siFileManager = SIFileManager()
             let fullFilePath = siFileManager.getFullFilePath(referenceId: referenceId, filename: filename)
 
+            let url = URL(fileURLWithPath:fullFilePath)
             try data.write( to: URL(fileURLWithPath:fullFilePath) )
+            
+            
+            
+            // TEST
+            let fileManager = FileManager.default
+            // let url = URL(string: fullFilePath)
+            
+            // This returns true
+            var fileExists = fileManager.fileExists(atPath: (url.path) )
+            print( "fileExists = " + String( fileExists ) )
+   
+            // this returns true
+            fileExists = siFileManager.fileExists( fullFilePath: fullFilePath )
+            print( "fileExists = " + String( fileExists ) +
+            ", fullFilePath = " + fullFilePath)
+            
+     
         } catch {
             let logger = SILog()
             logger.SIPrint(logOutput: "BaseSaveService : writeImageToFile() : An error occurred writing to file " + filename )

@@ -34,11 +34,15 @@ UploadServiceDelegate {
     var retry                   : Bool = false
     var uploadService           : UploadService?
     
+    var referenceId             : String?
+    
     func setDelegate( delegate : SIDNetworkRequestDelegate){
         self.delegate = delegate
+        
     }
     
-    func initialize() {}
+    func initialize() {
+    }
     
     
     func userCancelled() {
@@ -52,6 +56,10 @@ UploadServiceDelegate {
     }
     
     func submit( sidConfig : SIDConfig ) throws {
+        
+        let appData = AppData()
+        referenceId = appData.createReferenceId(tag: SmileIDSingleton.USER_TAG )
+        
         if( sidConfig.sidNetData == nil ){
             throw SIDError.NETWORK_DATA_NOT_VALID
         }
@@ -73,7 +81,6 @@ UploadServiceDelegate {
         sidNetData = sidConfig.sidNetData
         isEnrollMode = sidConfig.isEnrollMode
         startTimeMS = Int64(NSDate().timeIntervalSince1970 * 1000)
-        let appData = AppData()
         appData.clearJobResponse()
         
         /* appData set/get Current job type is not used in the Android code.
@@ -110,9 +117,11 @@ UploadServiceDelegate {
             // Start the package service.
             // When the PackageService is done, the onPackagingComplete callback
             // is called.   onPackagingComplete starts the UploadService
-            self.startPackageService( packageService: PackageService(),
-                                      sidNetData: self.sidNetData!,
-                                      isEnrollMode : self.isEnrollMode )
+            
+  
+            self.startPackageService( packageService:       PackageService(referenceId:self.referenceId!),
+                  sidNetData: self.sidNetData!,
+                  isEnrollMode : self.isEnrollMode )
         }
         currentRetryCount = currentRetryCount! - 1
   
@@ -179,7 +188,11 @@ UploadServiceDelegate {
     // called from SIDConfig build -> save logic.
     func saveDataForLaterUse( tag : String, smileIdNetData : SIDNetData ) {
         do {
-            let packageService = PackageService()
+
+            let appData = AppData()
+            referenceId = appData.createReferenceId(tag: SmileIDSingleton.USER_TAG )
+            
+            let packageService = PackageService( referenceId: referenceId! )
             try packageService.saveCapturedData(tag: tag, sidNetData: smileIdNetData)
         }
         catch let sidError as SIDError {
@@ -240,7 +253,7 @@ UploadServiceDelegate {
     */
     func onPackagingComplete( packageInfo : PackageInfo,
                               coreRequestData : CoreRequestData ){
-        uploadService = UploadService(uploadServiceDelegate: self)
+        uploadService = UploadService(uploadServiceDelegate: self, referenceId: referenceId!)
         uploadService!.start(coreRequestData: coreRequestData, packageInfo: packageInfo);
         
     }

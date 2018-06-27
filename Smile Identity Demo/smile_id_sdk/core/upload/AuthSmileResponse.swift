@@ -11,6 +11,7 @@ import Foundation
 class AuthSmileResponse {
     
     static let KEY_SUCCESS         : String    = "success"
+    static let KEY_ERROR           : String    = "error"
     static let KEY_TIMESTAMP       : String    = "timestamp"
     static let KEY_SEC             : String    = "sec_key"
     static let KEY_CALLBACK_URL    : String    = "callback_url"
@@ -20,8 +21,9 @@ class AuthSmileResponse {
     static let KEY_PARTNER_PARAMS  : String    = "partner_params"
     
     var success         : Bool?
-    var errors          = [String]()
+    var errors          = [Bool]()
     var userErrors      = [String]()
+    var error           : String?
     
     /* TimeInterval is an alias for Double */
     // var timestamp       : TimeInterval?
@@ -90,10 +92,13 @@ class AuthSmileResponse {
         
         errors = jsonUtils.getArray(dict: dict,
             key: AuthSmileResponse.KEY_ERRORS,
-            defaultVal : [Any]() ) as! [String]
+            defaultVal : [Any]() ) as! [Bool]
         
         userErrors = jsonUtils.getArray(dict: dict, key: AuthSmileResponse.KEY_USER_ERRORS,
             defaultVal : [Any]()) as! [String]
+
+        error = jsonUtils.getString(dict:dict,key: AuthSmileResponse.KEY_ERROR,
+            defaultVal: "" )
 
     }
     

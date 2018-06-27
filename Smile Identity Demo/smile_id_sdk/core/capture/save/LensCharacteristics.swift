@@ -56,11 +56,16 @@ class LensCharacteristics {
    
     var fpsRange                = FPSRange(min: 0, max:0)
     
-    var maxFPS                  : Int = SmileIDSingleton.sharedInstance.maxFPS
-    var minFPS                  : Int = SmileIDSingleton.sharedInstance.minFPS
-    var devicePortraitHorizontalResolution :Int =  SmileIDSingleton.sharedInstance.devicePortraitHorizontalResolution
-    var devicePortraitVerticalResolution : Int = SmileIDSingleton.sharedInstance.devicePortraitVerticalResolution
-    var whiteBalanceMode        : AVCaptureDevice.WhiteBalanceMode     = SmileIDSingleton.sharedInstance.whiteBalanceMode
+    
+    var devicePortraitHorizontalResolution  : Int = 0
+    var devicePortraitVerticalResolution    : Int = 0
+    var minFPS                              : Int = 0
+    var maxFPS                              : Int = 0
+    var whiteBalanceMode                     = AVCaptureDevice.WhiteBalanceMode.autoWhiteBalance
+
+    
+    
+  
     
     /*
     init (
@@ -114,10 +119,18 @@ class LensCharacteristics {
             defaultVal: [Any]() )
         
         // var fpsRangeArray = [Any]()
-        var fpsRangeArray = [jsFpsRangeArray[0]]
+       
+        if( jsFpsRangeArray.count > 0 ){
+            var fpsRangeArray = [jsFpsRangeArray[0]]
+            fpsRange = FPSRange( min:fpsRangeArray[0] as! Int,
+                                 max:fpsRangeArray[1] as! Int)
+        }
+        else{
+            fpsRange = FPSRange( min:0,
+                                 max:0 )
+        }
         
-        fpsRange = FPSRange( min:fpsRangeArray[0] as! Int,
-                             max:fpsRangeArray[1] as! Int)
+
         
         
         horizontalViewAngle = jsonUtils.getFloat(dict:dict,
@@ -201,8 +214,8 @@ class LensCharacteristics {
         // Create an array of arrays for the fps ranges.
         // First, create one FPSRange object.
         let fpsRange = FPSRange( min:
-            SmileIDSingleton.sharedInstance.minFPS,
-                                 max:SmileIDSingleton.sharedInstance.maxFPS )
+            minFPS,
+            max:maxFPS )
         // Each FPSRange goes into an array, where [0] = min, and [1] = max
         var fpsRangeArray = [Any]()
         fpsRangeArray[0] = fpsRange.min

@@ -15,6 +15,7 @@ class CaptureIDCard :
     AVCapturePhotoCaptureDelegate,
     IDCardTouchDelegate {
     
+    var referenceId : String?
     var captureIDCardDelegate : CaptureIDCardDelegate?
     var handleTouchDelegate : CaptureSelfieDelegate?
     
@@ -32,9 +33,16 @@ class CaptureIDCard :
     func setup( captureIDCardDelegate : CaptureIDCardDelegate,
         previewView : CaptureIDCardVideoPreview ) {
         
+        
+
         self.captureIDCardDelegate = captureIDCardDelegate
         self.previewView = previewView
-        self.previewView?.setupTouchRecognizer(idCardTouchDelegate: self)
+    self.previewView?.setupTouchRecognizer(idCardTouchDelegate: self)
+        
+        let appData = AppData()
+        referenceId = appData.createReferenceId(tag: SmileIDSingleton.USER_TAG )
+        appData.setRefID(refID: referenceId!)
+        
         
         
         // Setup session
@@ -223,7 +231,7 @@ class CaptureIDCard :
         
         
         SmileIDSingleton.sharedInstance.idCardFrame = idCardFrame
- 
+        startSaveIdCardService(referenceId: referenceId!)
         
         captureIDCardDelegate?.onComplete( previewUIImage: UIImage(data: jpgData! )! )
         
@@ -251,10 +259,8 @@ class CaptureIDCard :
     
     
     func startSaveIdCardService( referenceId : String ){
-        
-        /* TODO - put this in background
-         */
-        
+
+   
         let saveIdCardImageService = SaveIdCardImageService( referenceId: referenceId )
         
         saveIdCardImageService.start()
