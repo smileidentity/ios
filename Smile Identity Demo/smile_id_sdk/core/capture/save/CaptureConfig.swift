@@ -82,7 +82,12 @@ class CaptureConfig {
     static let DEFAULT_IMAGE_FORMAT         = 4
     static let DEFAULT_CAPTURE_FULL_IMAGE   = false
     static let DEFAULT_IS_FRONT_FACING_CAMERA = true
-    static let DEFAULT_LAMBDA_ADDRESS       = "https://3eydmgh10d.execute-api.us-west-2.amazonaws.com/test/upload"
+    
+    static let DEFAULT_LAMBDA_ADDRESS       = "https://iniyutux78.execute-api.us-west-2.amazonaws.com/dev01/upload"
+    
+    /* static let DEFAULT_LAMBDA_ADDRESS       = "https://3eydmgh10d.execute-api.us-west-2.amazonaws.com/test/upload"
+    */
+    
     static let DEFAULT_PARTNER_ADDRESS      = "https://test-smileid.herokuapp.com/"
     static let DEFAULT_PARTNER_PORT         = "8080"
     static let DEFAULT_SID_ADDRESS          = "smileidentity"

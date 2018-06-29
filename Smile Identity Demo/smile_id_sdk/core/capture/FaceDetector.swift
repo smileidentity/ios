@@ -161,7 +161,7 @@ class FaceDetector {
                         startFrameNumMoveCloser = 0
                     }
                 } // DO_MOVE_CLOSER
-                else if( frameNum >= CaptureConfigConstants.NUM_FRAMES_TO_CAPTURE ){
+                else if( frameNum >= CaptureConfig.DEFAULT_NUM_IMAGES_TO_CAPTURE ){
                     // last frame.   Tell user to smile, per Android code.
                     print( "Last frame SMILE : frameNum = ", frameNum)
                     currentFaceState = FaceDetectorConstants.DO_SMILE

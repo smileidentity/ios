@@ -142,8 +142,8 @@ class ImageUtils {
         let origHeight = uiImage.size.height
         
         var needsScaling : Bool = false
-        if( origWidth > CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN ) ||
-            origHeight > CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN ) ){
+        if( origWidth > CGFloat(CaptureConfig.DEFAULT_SCALING_MIN_DIM ) ||
+            origHeight > CGFloat(CaptureConfig.DEFAULT_SCALING_MIN_DIM ) ){
             needsScaling = true
         }
         
@@ -160,12 +160,12 @@ class ImageUtils {
         
         if( origWidth > origHeight ){
             aspectRatio = origHeight/origWidth
-            scaledWidth = CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN)
+            scaledWidth = CGFloat(CaptureConfig.DEFAULT_SCALING_MIN_DIM)
             scaledHeight = scaledWidth! * aspectRatio!
         }
         else {
             aspectRatio = origWidth/origHeight
-            scaledHeight = CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN)
+            scaledHeight = CGFloat(CaptureConfig.DEFAULT_SCALING_MIN_DIM)
             scaledWidth = scaledHeight! * aspectRatio!
         }
         
@@ -187,8 +187,8 @@ class ImageUtils {
         let origHeight = uiImage.size.height
         
         var needsScaling : Bool = false
-        if( origWidth > CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN ) ||
-            origHeight > CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN ) ){
+        if( origWidth > CGFloat(CaptureConfig.DEFAULT_SCALING_MIN_DIM ) ||
+            origHeight > CGFloat(CaptureConfig.DEFAULT_SCALING_MIN_DIM ) ){
             needsScaling = true
         }
         
@@ -205,12 +205,12 @@ class ImageUtils {
         
         if( origWidth > origHeight ){
             aspectRatio = origHeight/origWidth
-            scaledWidth = CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN)
+            scaledWidth = CGFloat(CaptureConfig.DEFAULT_SCALING_MIN_DIM)
             scaledHeight = scaledWidth! * aspectRatio!
         }
         else {
             aspectRatio = origWidth/origHeight
-            scaledHeight = CGFloat(CaptureConfigConstants.DEFAULT_SCALING_MIN_DIMEN)
+            scaledHeight = CGFloat(CaptureConfig.DEFAULT_SCALING_MIN_DIM)
             scaledWidth = scaledHeight! * aspectRatio!
         }
         

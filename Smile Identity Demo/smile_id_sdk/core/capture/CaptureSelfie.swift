@@ -220,7 +220,7 @@ class CaptureSelfie :
         switch( faceState ){
         case FaceDetectorConstants.DO_MOVE_CLOSER :
             DispatchQueue.main.async {
-                self.lblPrompt?.text = "Move Closer"
+                self.lblPrompt?.text = CaptureConfig.DEFAULT_TOAST_MOVE_CLOSER
             }
         case FaceDetectorConstants.CAPTURING :
             DispatchQueue.main.async {
@@ -229,11 +229,11 @@ class CaptureSelfie :
             
         case FaceDetectorConstants.DO_SMILE :
             DispatchQueue.main.async {
-                self.lblPrompt?.text = "Smile"
+                self.lblPrompt?.text = CaptureConfig.DEFAULT_TOAST_SMILE
             }
         default : // FaceDetectorConstants.NO_FACE_FOUND
             DispatchQueue.main.async {
-                self.lblPrompt?.text = "Put your face inside Oval"
+                self.lblPrompt?.text = CaptureConfig.DEFAULT_TOAST_FACE_IN_OVAL
             }
             
         } // switch
@@ -274,7 +274,7 @@ class CaptureSelfie :
                 */
                 
                 
-                if( frameNum! > CaptureConfigConstants.NUM_FRAMES_TO_CAPTURE ){
+                if( frameNum! > CaptureConfig.DEFAULT_NUM_IMAGES_TO_CAPTURE ){
                     //print( "show smile and take pic" )
                     if( faceDetector?.hasSmile() )!{
                         
@@ -286,7 +286,7 @@ class CaptureSelfie :
                                         rotation: 0)
                     }
                     else{
-                        if( frameNum! > CaptureConfigConstants.MAX_FRAMES ){
+                        if( frameNum! > CaptureConfig.DEFAULT_MAX_FRAME_TIMEOUT ){
                             // Take picture for selfie ui preview,
                             // and also save this frame as the full size preview to send to the server.
                             takePicture( pixelBuffer : pixelBuffer,
@@ -345,11 +345,11 @@ class CaptureSelfie :
         
         frameNum = frameNum! + 1
         
-        if( framesList.count >= CaptureConfigConstants.NUM_FRAMES_TO_CAPTURE){
+        if( framesList.count >= CaptureConfig.DEFAULT_NUM_IMAGES_TO_CAPTURE ){
             let rubberBandUtils = RubberBandUtils()
             let indexToReplace =  rubberBandUtils.getIndexToReplace(
                     framesList: framesList,
-                    numImagesToCapture: CaptureConfigConstants.NUM_FRAMES_TO_CAPTURE,
+                    numImagesToCapture: CaptureConfig.DEFAULT_NUM_IMAGES_TO_CAPTURE,
                     frameNum: frameNum!);
             if( indexToReplace != -1 ){
                 //print( "CameraSource : frameNum = ", String(frameNum!), " calling RubberBandUtils getIndexToReplace = ", indexToReplace );
@@ -442,7 +442,7 @@ class CaptureSelfie :
     
     
     func saveFrames( referenceId : String, responseCode : Int, rotation : Int ) {
-        if( framesList.count >= CaptureConfigConstants.NUM_FRAMES_TO_CAPTURE){
+        if( framesList.count >= CaptureConfig.DEFAULT_NUM_IMAGES_TO_CAPTURE){
             SmileIDSingleton.sharedInstance.selfieImageUI = currentSelfieBytes
             SmileIDSingleton.sharedInstance.framesList = framesList
             SmileIDSingleton.sharedInstance.previewFrame = previewFrame
