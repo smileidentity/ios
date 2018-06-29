@@ -86,7 +86,6 @@ class UploadService : BaseService, NetRequestDelegate {
                 jobType: jobType!,
                 isEnrollMode: isEnrollMode! )
             
-            appData.setAuthSmileResponse(response: authSmileResponse);
         }
         else{
             // Skip to step 2
@@ -104,6 +103,11 @@ class UploadService : BaseService, NetRequestDelegate {
     func onPostAuthSmileComplete( authSmileResponse : AuthSmileResponse? ){
         uploadServiceDelegate?.onEndJobStatus()
         if( authSmileResponse != nil && !isCancelled ){
+            
+            // Save response in appData
+            let appData = AppData()
+            appData.setAuthSmileResponse(response: authSmileResponse);
+            
             // Go to step 2
             postLambda( authSmileResponse: authSmileResponse! )
         }
@@ -130,7 +134,7 @@ class UploadService : BaseService, NetRequestDelegate {
         let appData = AppData()
         appData.setAuthSmileResponse(response: authSmileResponse)
         
-        let jsLambdaRequest = buildLambdaRequest(
+        let lambdaRequest = buildLambdaRequest(
             phoneNumber: getPhoneNumber(), // Apple does not support this
             referenceId: referenceId!,
             deviceId: UIDevice.current.identifierForVendor!.uuidString,
@@ -139,7 +143,7 @@ class UploadService : BaseService, NetRequestDelegate {
             retry: retry!,
             isEnrollMode: isEnrollMode!)
         
-        netRequest!.postLambda(jsLambdaRequest: jsLambdaRequest,
+        netRequest!.postLambda(lambdaRequest: lambdaRequest,
                               lambdaUrl : sidNetData!.lambdaUrl )
             
             
@@ -153,7 +157,7 @@ class UploadService : BaseService, NetRequestDelegate {
                              authResponse : AuthSmileResponse,
                              partnerParams : PartnerParams,
                              retry : Bool,
-                             isEnrollMode : Bool ) -> String {
+                             isEnrollMode : Bool ) -> LambdaRequest {
         
         let appData = AppData()
         let jobId = authResponse.partnerParams.jobId
@@ -177,7 +181,7 @@ class UploadService : BaseService, NetRequestDelegate {
             retry: retry,
             smileClientId: smileClientId)
         
-        return lambdaRequest!.toJsonString()
+        return lambdaRequest!
         
     }
     
