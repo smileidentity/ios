@@ -8,7 +8,7 @@
 
 import Foundation
 
-class AuthSmileRequestJson {
+class AuthSmileRequest {
     static let KEY_JSON_AUTH_TOKEN : String = "auth_token"
     static let KEY_JSON_ENROLLMENT : String = "enrollment"
     static let KEY_JSON_ID_PRESENT : String = "id_present"
@@ -34,46 +34,58 @@ class AuthSmileRequestJson {
 
     }
     
-    func toJsonString() -> String {
+    func toJsonDict() -> Dictionary<String,Any> {
+        
         let jsonUtils = JsonUtils()
         var dict = [String: Any]()
         
         jsonUtils.putString( dict: &dict,
-            key: AuthSmileRequestJson.KEY_JSON_AUTH_TOKEN,
-            val: "1" )
+                             key: AuthSmileRequest.KEY_JSON_AUTH_TOKEN,
+                             val: "1" )
         jsonUtils.putBool( dict: &dict,
-                           key: AuthSmileRequestJson.KEY_JSON_ENROLLMENT,
+                           key: AuthSmileRequest.KEY_JSON_ENROLLMENT,
                            val: isEnrollMode )
         if( isEnrollMode ){
-
+            
             jsonUtils.putBool( dict: &dict,
-                               key: AuthSmileRequestJson.KEY_JSON_ID_PRESENT,
+                               key: AuthSmileRequest.KEY_JSON_ID_PRESENT,
                                val: isIdPresent! )
+            jsonUtils.putString( dict: &dict,
+                                 key: AuthSmileRequest.KEY_JSON_USER_ID,
+                                 val: "UNKNOWN" )
         }
         else{
             jsonUtils.putBool( dict: &dict,
-                               key: AuthSmileRequestJson.KEY_JSON_ID_PRESENT,
+                               key: AuthSmileRequest.KEY_JSON_ID_PRESENT,
                                val: false )
             jsonUtils.putString( dict: &dict,
-                                 key: AuthSmileRequestJson.KEY_JSON_USER_ID,
+                                 key: AuthSmileRequest.KEY_JSON_USER_ID,
                                  val: userId )
-
-   
+            
+            
         }
         if( jobType! > 0 ) {
             jsonUtils.putString( dict: &dict,
-                                 key: AuthSmileRequestJson.KEY_JSON_JOB_TYPE,
+                                 key: AuthSmileRequest.KEY_JSON_JOB_TYPE,
                                  val: String(jobType!) )
-
+            
         }
         
         jsonUtils.putInt64( dict: &dict,
-                             key: AuthSmileRequestJson.KEY_JSON_TIMESTAMP,
-                             val: Int64(NSDate().timeIntervalSince1970 * 1000 )
+                            key: AuthSmileRequest.KEY_JSON_TIMESTAMP,
+                            val: Int64(NSDate().timeIntervalSince1970 * 1000 )
         )
-
         
-        return jsonUtils.dictToJsonFormattedString( dict : dict )
+        
+        return dict
+    }
+    
+ 
+    
+    
+    func toJsonString() -> String {
+        let jsonUtils = JsonUtils()
+        return jsonUtils.dictToJsonFormattedString( dict : toJsonDict() )
     }
     
 }
