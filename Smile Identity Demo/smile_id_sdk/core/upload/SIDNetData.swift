@@ -10,6 +10,8 @@ import Foundation
 
 class SIDNetData {
     
+    let PARTNER_ID = "023";
+    
     var authUrl     : String = ""
     var partnerUrl  : String = ""
     var partnerPort : String = ""
@@ -18,14 +20,17 @@ class SIDNetData {
     var sidAddress  : String = ""
     var sidPort     : String = ""
     
-    func insertPartnerId( partnerId : String ) -> String {
-        if( jobStatusUrl.isEmpty ){
+    func insertPartnerId( urlString : String ) -> String {
+        if( urlString.isEmpty ){
             return ""
         }
         else{
-            return jobStatusUrl.replacingOccurrences(of: "#", with: partnerId, options: .literal, range: nil)
+            return urlString.replacingOccurrences(of: "#", with: PARTNER_ID, options: .literal, range: nil)
         }
     }
+    
+    
+  
     
  
 }

@@ -133,8 +133,10 @@ UploadServiceDelegate {
                                 sidNetData : SIDNetData,
                                 isEnrollMode : Bool ){
         
-        let authUrl = sidNetData.insertPartnerId(partnerId: SIDNetworkRequest.PARTNER_ID)
+        let authUrl = sidNetData.insertPartnerId(urlString: sidNetData.authUrl)
         sidNetData.authUrl = authUrl
+        let jobStatusUrl = sidNetData.insertPartnerId(urlString: sidNetData.jobStatusUrl)
+        sidNetData.jobStatusUrl = jobStatusUrl
         checkAndUpdateRetryFlag();
         let coreRequest = createCoreRequestData(sidNetData: sidNetData,
                                                 isEnrollMode: isEnrollMode )
