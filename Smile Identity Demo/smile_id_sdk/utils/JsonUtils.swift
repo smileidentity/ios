@@ -60,14 +60,16 @@ class JsonUtils {
             return defaultVal
         }
         else{
-            return jsonFormattedStringToDict( val! as! String )!
+            // return jsonFormattedStringToDict( val! as! String )!
+            return val as! Dictionary<String,Any>
         }
     }
     
     func putDict( dict : inout [String : Any],
                   key : String,
                   val : Dictionary<String,Any> ){
-        dict[key] = dictToJsonFormattedString( dict: val )
+        //dict[key] = dictToJsonFormattedString( dict: val )
+        dict[key] = val
     }
     
     

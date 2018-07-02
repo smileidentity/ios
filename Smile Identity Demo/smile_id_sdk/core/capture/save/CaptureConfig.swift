@@ -227,14 +227,14 @@ class CaptureConfig {
                     key: CaptureConfig.KEY_IMAGE_FORMAT,
                     defaultVal: CaptureConfig.DEFAULT_IMAGE_FORMAT )
         
-        let sImageProcessingCaps =
-            jsonUtils.getString(dict:dict,
+        let imageProcessingCapsDict =
+            jsonUtils.getDict(dict:dict,
             key: CaptureConfig.KEY_IMAGE_PROCESSING_CAPS,
-            defaultVal : "" )
+            defaultVal : Dictionary<String,Any>() )
         imageProcessingCaps = ImageProcessingCaps()
-        if( !sImageProcessingCaps.isEmpty ){
-            imageProcessingCaps = imageProcessingCaps.fromJsonString(jsonFormattedString: sImageProcessingCaps )!
-        }
+        
+        imageProcessingCaps = imageProcessingCaps.fromJsonDict(dict: imageProcessingCapsDict )!
+        
         
         isCaptureFullImage = jsonUtils.getBool(dict:dict,
             key: CaptureConfig.KEY_IS_CAPTURE_FULL_IMAGE,

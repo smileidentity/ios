@@ -44,7 +44,7 @@ class NetRequest {
     var uploadJobStatusUrl                  : String?
     
     var authSmileRequestUrl                 : String?
-    var isExecuteAuthSmile                  : Bool?
+    var isExecuteAuthSmile                  : Bool = false
     var jsAuthSmileRequest                  : String?
     var authSmileRequest                    : AuthSmileRequest?
     
@@ -159,22 +159,39 @@ class NetRequest {
             smileClientId: appData.getSmileClientId( defaultSmileClientId: "" )!,
             lastEnrolledJobId: appData.getLastEnrollJobId( defaultLastEnrollJobId: "" )!,
             jobId: appData.getJobId(defaultJobId: "")!,
-            isEnrollMode: !isEnrollMode)
+            isEnrollMode: isEnrollMode)
         
         uploadJobStatusAttemptNum = 0
         uploadJobStatusStartTime = Date().timeIntervalSince1970
         uploadJobStatusPartnerUrl = partnerUrl
         uploadJobStatusUrl = jobStatusUrl
         
+        
+        // TEST for now upload once to check upload request/response.
+        // next add timer, for offline mode.
+        
+        scheduledUploadJobStatus()
+        
+        /*  This won't work in a background queue.
         if uploadJobStatusTimer == nil {
-            uploadJobStatusTimer = Timer.scheduledTimer(timeInterval: NetRequest.JOB_STATUS_REQUEST_SLEEP,
-                                                        target: self,
-                                                        selector:#selector(self.scheduledUploadJobStatus),
-                                                        userInfo: nil,
-                                                        repeats: true)
+            uploadJobStatusTimer = Timer.scheduledTimer(timeInterval:
+                NetRequest.JOB_STATUS_REQUEST_SLEEP,
+                // 1.0,
+                target: self,
+                selector:#selector(self.scheduledUploadJobStatus),
+                userInfo: nil,
+                repeats: true)
         }
+ */
         
+        /*  This won't work in a background queue.
+        uploadJobStatusTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(action), userInfo: nil, repeats: true)
+         */
         
+    }
+    
+    @objc func action() {
+        print("timer fired")
     }
     
     
@@ -206,6 +223,7 @@ class NetRequest {
                    jsDict: (self.uploadJobStatus?.toJsonDict())!) { (jsResponse) -> Void in
                     
                     if (jsResponse != nil) {
+                        
                         let statusResponse = StatusResponse().fromJsonString(jsonFormattedString: jsResponse!)
                         if( statusResponse != nil ){
                             
@@ -217,7 +235,7 @@ class NetRequest {
                                 let msg = "Total attempts to check job completion : " + String(self.uploadJobStatusAttemptNum)
                                 self.netRequestDelegate?.onUpdateJobStatus( msg: msg )
                                 self.stopUploadJobStatusTimer()
-                                if( !self.isExecuteAuthSmile! ){
+                                if( !self.isExecuteAuthSmile ){
                                     self.netRequestDelegate?.onUploadJobStatusComplete( statusResponse: statusResponse! )
                                 }
                                 else{
@@ -232,7 +250,7 @@ class NetRequest {
                                  Notify with the error, and stop trying. */
                                 self.stopUploadJobStatusTimer()
                                 
-                                if( !self.isExecuteAuthSmile! ){
+                                if( !self.isExecuteAuthSmile ){
                                     self.netRequestDelegate?.onUploadJobStatusComplete( statusResponse: statusResponse! )
                                 }
                                 else{
@@ -263,6 +281,11 @@ class NetRequest {
                      jsDict     : Dictionary<String,Any>,
                      completion: @escaping (String?) -> () ) {
         let url = URL(string: serverUrl)!
+        
+        
+        // TEST - for debugging
+        let jsonUtils = JsonUtils()
+        print( "doHttpPost : request json = " + jsonUtils.dictToJsonFormattedString(dict: jsDict ) )
         
         var request = URLRequest(url: url)
         
@@ -303,6 +326,9 @@ class NetRequest {
                     if (statusCode == NetRequest.HTTP_BAD_REQUEST ) {
                         // TODO - Caller will check for nil,
                         // and return  SIDError.UNABLE_TO_SUBMIT_TRY_AGAIN
+                        let jsResponse = String(data: data!,
+                                                encoding: .utf8)
+                        print( "post status code = " + String(statusCode) + ", response = " + jsResponse! )
                         completion(nil)
                         return
                         // throw SIDError.UNABLE_TO_SUBMIT_TRY_AGAIN
@@ -341,6 +367,8 @@ class NetRequest {
         request.httpMethod = "PUT"
         request.setValue("application/zip", forHTTPHeaderField: "Content-Type")
         
+        
+        
         let task = URLSession.shared.uploadTask(
             with: request,
             fromFile : fileUrl ) { data, response, error in
@@ -374,7 +402,19 @@ class NetRequest {
     
     
     
-    
+    func logFilesize( url : URL ){
+        var size: Any?
+        do {
+            size = try FileManager.default.attributesOfItem(atPath: url.path)[FileAttributeKey.size]
+            let fileSize = size as? Int
+            
+            print( "filesize = " + String( fileSize! ) )
+        } catch (let error) {
+            print("File size error: \(error)")
+           
+        }
+  
+    }
     
     func logError( request : AuthSmileRequest,
                    response : AuthSmileResponse,

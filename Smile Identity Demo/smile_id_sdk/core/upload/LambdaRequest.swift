@@ -192,12 +192,12 @@ class LambdaRequest {
         // Get the auth response dictionary from the rawJsonString
         let authResponseDict = jsonUtils.jsonFormattedStringToDict( rawJsonString! )
         // Get the sec_key out of the authResponseDict
-        let secKey = jsonUtils.getString(dict:authResponseDict!,
+        secKey = jsonUtils.getString(dict:authResponseDict!,
                                          key: AuthSmileResponse.KEY_SEC,
                                          defaultVal: "" )
         // Put the secKey into the lambda request dictionary
         jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_SEC,
-                             val: secKey )
+                             val: secKey! )
         
         // Put the retry value as a string for compatibility purposes.
         jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_RETRY,
@@ -212,14 +212,13 @@ class LambdaRequest {
  */
         
         let authResponsePartnerParamsDict = authResponseDict![AuthSmileResponse.KEY_PARTNER_PARAMS] as! Dictionary<String,Any>
-        
-        
+        partnerParams = partnerParams?.fromJsonDict(dict: authResponsePartnerParamsDict )
         jsonUtils.putDict( dict: &dict, key: LambdaRequest.KEY_PARTNER_PARAMS,
                            val:  authResponsePartnerParamsDict )
         
-        let timeStamp = jsonUtils.getInt64(dict: authResponseDict!, key: AuthSmileResponse.KEY_TIMESTAMP, defaultVal: 0)
+        timestamp = jsonUtils.getInt64(dict: authResponseDict!, key: AuthSmileResponse.KEY_TIMESTAMP, defaultVal: 0)
         jsonUtils.putInt64( dict: &dict,key: LambdaRequest.KEY_TIMESTAMP,
-                            val: timeStamp )
+                            val: timestamp! )
         
         var phoneModelDict = [String: Any]()
         jsonUtils.putString( dict: &phoneModelDict, key: LambdaRequest.KEY_CAMERA_NAME,
@@ -232,9 +231,10 @@ class LambdaRequest {
         jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_JSON_SMILE_CLIENT_ID,
                              val: smileClientId! )
         
-        let callBackUrl = jsonUtils.getString(dict:authResponseDict!, key: AuthSmileResponse.KEY_CALLBACK_URL,  defaultVal: "" )
+        callbackURL = jsonUtils.getString(dict:authResponseDict!, key: AuthSmileResponse.KEY_CALLBACK_URL,  defaultVal: "" )
+        
         jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_CALLBACK_URL,
-                             val: callBackUrl )
+                             val: callbackURL! )
         jsonUtils.putString( dict: &dict, key: LambdaRequest.KEY_IMEI,
                              val: deviceId! )
         

@@ -31,8 +31,10 @@ class UploadJobStatus {
           isEnrollMode : Bool ){
         
         self.userId = userId;
+        
         self.smileClientId = smileClientId;
         self.lastEnrolledJobId = lastEnrolledJobId;
+        self.jobId = jobId
         self.isEnrollMode = isEnrollMode
         
    

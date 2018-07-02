@@ -30,9 +30,10 @@ class StatusResponse {
     static let KEY_MACHINE_RESULT   : String    = "IsMachineResult"
     
     var success         : Bool?
-    var errors          = [String]()
+    var errors          = [Bool]()
     var userErrors      = [String]()
-    
+    var error           : String?
+
     /* TimeInterval is an alias for Double */
     // var timestamp       : TimeInterval?
     var timestamp       : Int64?  // server returns int64 utc
@@ -41,7 +42,6 @@ class StatusResponse {
     var jobComplete     : String?
     var jobSuccess      : String?
     var result          =  Result();
-    var error           : String?
     var additionalProperties        = [String : String] ()
     
     let jsonUtils       = JsonUtils()
@@ -92,9 +92,6 @@ class StatusResponse {
         success = jsonUtils.getBool( dict:dict,
                                      key:StatusResponse.KEY_SUCCESS,
                                      defaultVal: false)
-        timestamp = jsonUtils.getInt64( dict:dict,
-                                        key: StatusResponse.KEY_TIMESTAMP,
-                                        defaultVal: 0 )
         signature = jsonUtils.getString(    dict:dict,
                                             key: StatusResponse.KEY_SIGNATURE,
                                             defaultVal: "" )
@@ -105,11 +102,11 @@ class StatusResponse {
                                           key: StatusResponse.KEY_JOB_SUCCESS,
                                           defaultVal:"false")
         errors = jsonUtils.getArray(dict: dict,
-                                    key: StatusResponse.KEY_ERRORS,
-                                    defaultVal: [Any]() ) as! [String]
-        userErrors = jsonUtils.getArray(dict: dict, key:
-            StatusResponse.KEY_USER_ERRORS,
-               defaultVal: [Any]() ) as! [String]
+                                    key: AuthSmileResponse.KEY_ERRORS,
+                                    defaultVal : [Any]() ) as! [Bool]
+        
+        userErrors = jsonUtils.getArray(dict: dict, key: AuthSmileResponse.KEY_USER_ERRORS,
+                                        defaultVal : [Any]()) as! [String]
 
     }
     

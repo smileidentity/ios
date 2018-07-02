@@ -203,9 +203,14 @@ class UploadService : BaseService, NetRequestDelegate {
         /* Create the metaData info.json file */
         let appData = AppData()
         appData.removeJobResponse()
+
+        
         let metaData = buildInfoJson(lambdaRequest: lambdaRequest!,
                                      lambdaResponse: lambdaResponse )
         writeMetaData( metaData: metaData )
+        
+        let siFileManager = SIFileManager()
+        siFileManager.deleteZIP(referenceId: referenceId!)
         
         /* Zip the directory for referenceId.  referenceId is defined
          BaseService.   This class extends BaseService */
