@@ -100,7 +100,9 @@ class MetaData {
         if( serverInfo != nil ){
             jsonUtils.putString( dict: &dict, key: MetaData.KEY_SERVER_INFO,
                                  val: serverInfo! )
+            
         }
+       
         
         if( sidUserIdInfo != nil ){
             jsonUtils.putDict( dict: &dict, key: MetaData.KEY_USER_ID_INFORMATION,

@@ -13,7 +13,7 @@ class SIDResponse {
     var success             : Bool?
     var confidenceValue     : Float?
     
-    init( partnerParams     : PartnerParams,
+    init( partnerParams     : PartnerParams?,
           success           : Bool,
           confidenceValue   : Float ) {
         self.partnerParams      = partnerParams

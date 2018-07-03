@@ -344,17 +344,17 @@ UploadServiceDelegate {
             self.delegate?.onComplete()
         }
         
-        let sidResponse = SIDResponse( partnerParams:partnerParams!,
+        let sidResponse = SIDResponse( partnerParams:partnerParams,
                                        success: false,
                                        confidenceValue: confidenceValue )
         if( isEnrollMode ){
             DispatchQueue.main.async {
-                self.delegate?.onAuthenticated(sidResponse: sidResponse )
+                 self.delegate?.onEnrolled(sidResponse: sidResponse )
             }
         }
         else{
             DispatchQueue.main.async {
-               self.delegate?.onEnrolled(sidResponse: sidResponse )
+                self.delegate?.onAuthenticated(sidResponse: sidResponse )
             }
         }
  

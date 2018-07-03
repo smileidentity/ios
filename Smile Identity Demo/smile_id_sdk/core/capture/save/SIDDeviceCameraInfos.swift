@@ -26,6 +26,8 @@ class SIDDeviceCameraInfos {
         "previewSizeList"
     static let KEY_SELFIE_CAMERA_EXISTS         : String =
         "selfieCameraExists"
+    static let KEY_LENS_CHARACTERISTICS         : String =
+        "lensCharacteristics"
     
     static let FPS_VALUE                    = 1000
     
@@ -113,6 +115,9 @@ class SIDDeviceCameraInfos {
             key: SIDDeviceCameraInfos.KEY_SELFIE_CAMERA_EXISTS,
             defaultVal : false )
         
+        let lensCharacteristicsDict = jsonUtils.getDict(dict: dict, key: SIDDeviceCameraInfos.KEY_LENS_CHARACTERISTICS, defaultVal: Dictionary<String,Any>())
+        lensCharacteristics = LensCharacteristics().fromJsonDict(dict: lensCharacteristicsDict )!
+        
         return self
         
      }
@@ -179,6 +184,10 @@ class SIDDeviceCameraInfos {
         
         jsonUtils.putBool(dict: &dict, key:SIDDeviceCameraInfos.KEY_SELFIE_CAMERA_EXISTS,
             val:selfieExists)
+        
+        let lensCharacteristicsDict = lensCharacteristics.toJsonDict()
+        jsonUtils.putDict( dict: &dict, key: SIDDeviceCameraInfos.KEY_LENS_CHARACTERISTICS,
+                           val: lensCharacteristicsDict )
         
         return dict
         

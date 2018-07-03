@@ -118,12 +118,15 @@ class LensCharacteristics {
             key: LensCharacteristics.KEY_FPS_RANGE,
             defaultVal: [Any]() )
         
-        // var fpsRangeArray = [Any]()
-       
+        var fpsRangeArray = [NSNumber]()
+        
         if( jsFpsRangeArray.count > 0 ){
-            var fpsRangeArray = [jsFpsRangeArray[0]]
-            fpsRange = FPSRange( min:fpsRangeArray[0] as! Int,
-                                 max:fpsRangeArray[1] as! Int)
+            fpsRangeArray = jsFpsRangeArray[0] as! [NSNumber]
+            let min = Int(truncating: fpsRangeArray[0])
+            let max = Int(truncating: fpsRangeArray[1])
+            fpsRange = FPSRange( min:min,
+                                 max:max)
+            
         }
         else{
             fpsRange = FPSRange( min:0,
@@ -218,13 +221,13 @@ class LensCharacteristics {
             max:maxFPS )
         // Each FPSRange goes into an array, where [0] = min, and [1] = max
         var fpsRangeArray = [Any]()
-        fpsRangeArray[0] = fpsRange.min
-        fpsRangeArray[1] = fpsRange.max
+        fpsRangeArray.append(fpsRange.min)
+        fpsRangeArray.append(fpsRange.max)
         
         // Now create an array of fpsRanges.
         // In this case there is only one.
         var jsFpsRangeArray = [Any]()
-        jsFpsRangeArray[0] = fpsRangeArray
+        jsFpsRangeArray.append(fpsRangeArray)
         
         // Now put jsFpsRangeArray in the dictionary
         jsonUtils.putArray(dict: &dict, key: LensCharacteristics.KEY_FPS_RANGE, val:jsFpsRangeArray)

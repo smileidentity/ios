@@ -292,7 +292,7 @@ class UploadService : BaseService, NetRequestDelegate {
                  deleteMetaFolder(referenceId: referenceId!);
         }
         else {
-            if (resultText.isEmpty) {
+             if (resultText.isEmpty) {
                 deleteMetaFolder(referenceId:referenceId!)
                 uploadServiceDelegate!.onUpdateServiceComplete(
                     sidError: SIDError.ENROLL_FAILED,

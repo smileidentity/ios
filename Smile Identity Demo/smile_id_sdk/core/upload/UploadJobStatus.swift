@@ -65,15 +65,15 @@ class UploadJobStatus {
 
         if( isEnrollMode! ){
             jsonUtils.putString( dict: &dict,
-                                 key: UploadJobStatus.KEY_JSON_JOB_ID,
-                                 val: jobId! )
+                            key: UploadJobStatus.KEY_JSON_JOB_ID,
+                            val: lastEnrolledJobId! )
         }
         else{
-            // authentication mode
             jsonUtils.putString( dict: &dict,
                                  key: UploadJobStatus.KEY_JSON_JOB_ID,
-                                 val: lastEnrolledJobId! )
-
+                                 val: jobId! )
+            
+  
         }
         
         return dict

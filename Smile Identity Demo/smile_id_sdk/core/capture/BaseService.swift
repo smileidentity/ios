@@ -58,6 +58,7 @@ class BaseService {
         let metaFileURL = siFileManager.getMetaFilePathAsURL(referenceId:  referenceId! )
         do {
             let jsMetaData = metaData.toJsonString()
+            print( "metadata = " + jsMetaData )
             try jsMetaData.write(to: metaFileURL, atomically: false, encoding: .utf8)
         }
         catch {
