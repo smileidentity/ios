@@ -100,7 +100,7 @@ class PackageService : BaseSaveService {
         
         
         let jsMetaData = readMetadata()
-        print( "saveCapturedData : readMetaData() : jsMetaData = " + jsMetaData! )
+        
         let capturedImagesManager = SmileIDSingleton.sharedInstance.capturedImagesManager
         try checkMetaDataValid( tag: tag, capturedImagesManager: capturedImagesManager, jsMetaData: jsMetaData )
         var metaData : MetaData?

@@ -29,6 +29,7 @@ class SmileIDSingleton {
     var framesList      : [FrameData] = []
     var previewFrame    : FrameData?
     var idCardFrame     : FrameData?
+    var geoInfos        = GeoInfos()
     
     var fbUserImage     : Data?
     

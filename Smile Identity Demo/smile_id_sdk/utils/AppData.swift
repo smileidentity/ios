@@ -94,7 +94,7 @@ class AppData {
     let KEY_PACKAGE_INFORMATION     : String = "com.smileidentity.libsmileid.utils.KEY_SI_PACKAGE_INFORMATION"
     
     let KEY_ID_TAKEN                : String =  "com.smileidentity.libsmileid.utils.KEY_ID_TAKEN"
-    
+     
     func remove ( _ key : String ){
         let userDefaults = getUserDefaults()
         userDefaults.removeObject(forKey: key)
@@ -146,8 +146,6 @@ class AppData {
         userDefaults.synchronize()
     }
     
-    
-    /* If key does not exist, returns 0. */
     func getInt( key : String, defaultVal : Int ) -> Int {
         let userDefaults = getUserDefaults()
         let tmp = userDefaults.object( forKey: key )
@@ -157,7 +155,6 @@ class AppData {
         else{
             return defaultVal
         }
-        
     }
     
     func setInt( _ key : String, val : Int ){
@@ -166,7 +163,25 @@ class AppData {
         userDefaults.synchronize()
     }
     
-    /* If the key doesn't exist, returns false */
+    
+     func getDouble( key : String, defaultVal : Double ) -> Double {
+        let userDefaults = getUserDefaults()
+        let tmp = userDefaults.object( forKey: key )
+        if( tmp != nil ){
+            return userDefaults.double( forKey: key )
+        }
+        else{
+            return defaultVal
+        }
+    }
+    
+    func setDouble( _ key : String, val : Double ){
+        let userDefaults = getUserDefaults()
+        getUserDefaults().set(val, forKey: key )
+        userDefaults.synchronize()
+    }
+    
+
     func getBool( key : String, defaultVal : Bool ) -> Bool {
         let userDefaults = getUserDefaults()
         let tmp = userDefaults.object( forKey: key )
@@ -438,7 +453,8 @@ class AppData {
     func removeJobResponse() {
         remove(KEY_JOB_RESPONSE);
     }
-
+    
+ 
     
     func getTags() -> Array<String>? {
         return getStringArr(key: KEY_TAG_LIST )
@@ -492,18 +508,14 @@ class AppData {
     
     func setTag( tag : String ) {
         // update tag
-        print( "setTag 1" )
         setString(KEY_USER_TAG, val: tag)
-        print ("setTag 2")
         
         // Add tag to list
         var tagsArr = getTags()
         
         
         // Convert to set
-        
         if( tagsArr != nil ){
-            print( "tagsArr != nil setTag 3")
             // convert to set, to make sure there are no duplicates
             var tagsSet = Set( tagsArr! )
             tagsSet.insert(tag)
@@ -511,14 +523,11 @@ class AppData {
             tagsArr = Array(tagsSet)
          }
         else {
-            print( "tags = nil setTag 4")
             tagsArr = Array<String>()
             tagsArr!.append(tag)
         }
-        print( "setTag 5, tags length = ", tagsArr?.count )
         setTags( tags: tagsArr! )
         
-        print( "setTag 6")
     }
     
     // Increase tag no of reference id for next capture process

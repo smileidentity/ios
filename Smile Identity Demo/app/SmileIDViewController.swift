@@ -7,18 +7,25 @@
 //
 
 import UIKit
+import MapKit
 
-class SmileIDViewController: UIViewController {
+class SmileIDViewController: UIViewController, CLLocationManagerDelegate {
   
+    var locationManager         : CLLocationManager!
+    var currentLocation         : CLLocation?
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        // locationManager.requestAlwaysAuthorization()
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
 
-        // Do any additional setup after loading the view.
-        /* TODO
-                Check permissions,
-                init GeoInfo
-            */
     }
+ 
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -72,6 +79,26 @@ class SmileIDViewController: UIViewController {
     }
     
     
+    
+    // Callback for when location changes
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        locationManager.stopUpdatingLocation()
+        currentLocation = locations[0]
+        let appData = AppData()
+        // TEST for debugging
+        let latitude = (currentLocation?.coordinate.latitude)!
+        let longitude = (currentLocation?.coordinate.longitude)!
+        let altitude = (currentLocation?.altitude)!
+        let time = DateTimeUtils().getCurrentDateTime()
+        print( "lat = " + String( latitude ) )
+        print( "lng = " + String( longitude ) )
+        print( "alt = " +  String( altitude ) )
+        print( "time = " + String( time ) )
+ 
+
+        SmileIDSingleton.sharedInstance.geoInfos = GeoInfos(latitude: latitude, longitude: longitude, altitude: altitude, accuracy: kCLLocationAccuracyBest, lastUpdate: time)
+     }
  
 
 }

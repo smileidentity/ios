@@ -50,8 +50,9 @@ class LambdaRequest {
         but they are added in when building the info.json file.
         Ported from Android code to maintain compatibility
     */
-    var userInfoJson        : UserInfoJson?
     var geoInfos            : GeoInfos?
+    
+    var userInfoJson        : UserInfoJson?
     
     let jsonUtils           = JsonUtils()
     
@@ -75,7 +76,7 @@ class LambdaRequest {
         self.cameraModel = UIDevice.current.model
         self.systemVersion = UIDevice.current.systemVersion
         self.cameraMake = "Apple"
-
+ 
     }
     
     func fromJsonDict( dict : Dictionary<String,Any> ) -> LambdaRequest? {

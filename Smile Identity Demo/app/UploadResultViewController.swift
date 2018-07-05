@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class UploadResultViewController:
     UIViewController,
     SIDNetworkRequestDelegate {
@@ -49,13 +50,16 @@ class UploadResultViewController:
     var sidNetworkRequest : SIDNetworkRequest?
     
     var sidConfig = SIDConfig()
-    
+    var geoInfos                : GeoInfos?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        super.viewDidLoad()
+      
         toastView.isHidden = true
         stopActivityIndicator()
+        
+          
         sidNetworkRequest = SIDNetworkRequest()
         sidNetworkRequest?.setDelegate(delegate: self)
         sidNetworkRequest?.initialize()
@@ -73,9 +77,6 @@ class UploadResultViewController:
         sidConfig.sidNetData = sidNetData
         sidConfig.retryOnFailurePolicy = getRetryOnFailurePolicy()
         
-        // TODO - make geoinfos be a singleton, and update geolocation dynamically
-        // note that geoinfos is not used from sidconfig in the android code.
-        // it is recreated in
         if( isEnrollMode ){
             sidConfig.isEnrollMode = true
             sidConfig.useIdCard = hasId
@@ -103,6 +104,8 @@ class UploadResultViewController:
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+ 
     
     
     func showToast( toastView   : UIView,
@@ -132,6 +135,10 @@ class UploadResultViewController:
         }
         
     }
+    
+    
+  
+    
     
 
     

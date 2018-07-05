@@ -170,6 +170,9 @@ class NetRequest {
         // TEST for now upload once to check upload request/response.
         // next add timer, for offline mode.
         
+        
+
+        
         scheduledUploadJobStatus()
         
         /*  This won't work in a background queue.

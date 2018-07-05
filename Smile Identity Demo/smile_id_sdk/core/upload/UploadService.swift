@@ -141,7 +141,8 @@ class UploadService : BaseService, NetRequestDelegate {
             authResponse: authSmileResponse,
             partnerParams: partnerParams!,
             retry: retry!,
-            isEnrollMode: isEnrollMode!)
+            isEnrollMode: isEnrollMode!,
+            geoInfos : geoInfos! )
         
         netRequest!.postLambda(lambdaRequest: lambdaRequest,
                               lambdaUrl : sidNetData!.lambdaUrl )
@@ -157,7 +158,8 @@ class UploadService : BaseService, NetRequestDelegate {
                              authResponse : AuthSmileResponse,
                              partnerParams : PartnerParams,
                              retry : Bool,
-                             isEnrollMode : Bool ) -> LambdaRequest {
+                             isEnrollMode : Bool,
+                             geoInfos : GeoInfos ) -> LambdaRequest {
         
         let appData = AppData()
         let jobId = authResponse.partnerParams.jobId
@@ -179,7 +181,7 @@ class UploadService : BaseService, NetRequestDelegate {
             authResponse: authResponse,
             partnerParams: partnerParams,
             retry: retry,
-            smileClientId: smileClientId)
+            smileClientId: smileClientId )
         
         return lambdaRequest!
         

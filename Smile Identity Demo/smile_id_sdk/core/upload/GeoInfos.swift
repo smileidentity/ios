@@ -17,6 +17,7 @@ class GeoInfos {
     static let KEY_ALTITUDE         : String = "altitude"
     static let KEY_ACCURACY         : String = "accuracy"
     static let KEY_LAST_UPDATE      : String = "lastUpdate"
+    static let EPSILON              = 0.0000001
     
     var geoPermissionGranted    : Bool = false;
     var latitude                : Double = 0.0;
@@ -26,6 +27,26 @@ class GeoInfos {
     var lastUpdate              : String = "";
     
     init() {}
+    
+    init( latitude      : Double,
+          longitude     : Double,
+          altitude      : Double,
+          accuracy      : Double,
+          lastUpdate    : String ) {
+    
+        self.latitude = latitude
+        if( !isEqual( val1: latitude, val2: 0.0 )){
+            self.longitude = longitude
+            self.altitude = altitude
+            self.accuracy = accuracy
+            self.lastUpdate = lastUpdate
+            self.geoPermissionGranted = true
+        }
+        
+    }
+    func isEqual( val1 : Double, val2 : Double ) -> Bool {
+        return abs(val1 - val2) <= GeoInfos.EPSILON
+    }
     
     func fromJsonDict( dict : Dictionary<String,Any> ) -> GeoInfos? {
         let jsonUtils = JsonUtils()

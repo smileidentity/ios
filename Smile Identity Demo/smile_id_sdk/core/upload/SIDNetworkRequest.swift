@@ -29,7 +29,7 @@ UploadServiceDelegate {
     var startTimeMS             : Int64?
     var requiredPassedTimeMS    : Int64 = 60 * 1000 // 1 minute in milliseconds
    
-    var geoInfos                : GeoInfos = GeoInfos()
+    var geoInfos                : GeoInfos?
     var requestNewToken         : Bool = false
     var retry                   : Bool = false
     var uploadService           : UploadService?
@@ -42,6 +42,7 @@ UploadServiceDelegate {
     }
     
     func initialize() {
+        self.geoInfos = SmileIDSingleton.sharedInstance.geoInfos
     }
     
     
@@ -56,10 +57,11 @@ UploadServiceDelegate {
     }
     
     func submit( sidConfig : SIDConfig ) throws {
-        
+
         let appData = AppData()
-        referenceId = appData.createReferenceId(tag: SmileIDSingleton.USER_TAG )
         
+        
+        referenceId = appData.createReferenceId(tag: SmileIDSingleton.USER_TAG )
         if( sidConfig.sidNetData == nil ){
             throw SIDError.NETWORK_DATA_NOT_VALID
         }
@@ -81,6 +83,7 @@ UploadServiceDelegate {
         sidNetData = sidConfig.sidNetData
         isEnrollMode = sidConfig.isEnrollMode
         startTimeMS = Int64(NSDate().timeIntervalSince1970 * 1000)
+        
         appData.clearJobResponse()
         
         /* appData set/get Current job type is not used in the Android code.
@@ -112,6 +115,8 @@ UploadServiceDelegate {
         if( currentRetryCount! < 0 ){
             return
         }
+        
+        
         
         DispatchQueue.global(qos: .userInitiated).async {
             // Start the package service.
