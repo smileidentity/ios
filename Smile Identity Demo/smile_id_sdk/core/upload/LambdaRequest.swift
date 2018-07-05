@@ -155,10 +155,8 @@ class LambdaRequest {
             defaultVal: [String:Any]() )
         userInfoJson = UserInfoJson().fromJsonDict( dict: userInfoJsonDict )
         
-        let geoInfosDict = jsonUtils.getDict( dict: dict,
-            key: LambdaRequest.KEY_GEO_LOCATION,
-            defaultVal : [String:Any]())
-        geoInfos = GeoInfos().fromJsonDict( dict: geoInfosDict )
+        /* GeoInfos are not in the lambda request when it is sent to the server.
+            They are only put into the metadata file */
         
         return self
         
@@ -272,12 +270,10 @@ class LambdaRequest {
             jsonUtils.putDict( dict: &dict, key: LambdaRequest.KEY_GEO_LOCATION,
                            val:(geoInfos?.toJsonDict())! )
         }
-        else{
-            jsonUtils.putDict( dict: &dict, key: LambdaRequest.KEY_GEO_LOCATION,
-                               val: [String: Any]())
-            
-        }
-
+ 
+        /* GeoInfos are not in the lambda request when it is sent to the server.
+         They are only put into the metadata file */
+        
         return dict
     }
     
