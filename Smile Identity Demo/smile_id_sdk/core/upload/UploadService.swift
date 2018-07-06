@@ -285,7 +285,7 @@ class UploadService : BaseService, NetRequestDelegate {
                 /* success */
                 confidenceValue = statusResponse!.result.getConfidenceValue()
 
-                uploadServiceDelegate!.onUpdateServiceComplete(
+                uploadServiceDelegate!.onUploadServiceComplete(
                     sidError: SIDError.SUCCESS,
                     confidenceValue: confidenceValue,
                     retryFlag: false,
@@ -296,7 +296,7 @@ class UploadService : BaseService, NetRequestDelegate {
         else {
              if (resultText.isEmpty) {
                 deleteMetaFolder(referenceId:referenceId!)
-                uploadServiceDelegate!.onUpdateServiceComplete(
+                uploadServiceDelegate!.onUploadServiceComplete(
                     sidError: SIDError.ENROLL_FAILED,
                     confidenceValue: confidenceValue,
                     retryFlag: false,
@@ -309,7 +309,7 @@ class UploadService : BaseService, NetRequestDelegate {
                 if( resultText == "Job type requires an ID Card image." ){
                      deleteMetaFolder(referenceId: referenceId!)
                 }
-                uploadServiceDelegate!.onUpdateServiceComplete(
+                uploadServiceDelegate!.onUploadServiceComplete(
                     sidError: SIDError.custom(errMsg: resultText),
                     confidenceValue: confidenceValue,
                     retryFlag: false,
@@ -335,7 +335,7 @@ class UploadService : BaseService, NetRequestDelegate {
                 /* success */
                 confidenceValue = statusResponse!.result.getConfidenceValue()
                 
-                uploadServiceDelegate!.onUpdateServiceComplete(
+                uploadServiceDelegate!.onUploadServiceComplete(
                     sidError: SIDError.SUCCESS,
                     confidenceValue: confidenceValue,
                     retryFlag: false,
@@ -344,7 +344,7 @@ class UploadService : BaseService, NetRequestDelegate {
         }
         else{
             deleteMetaFolder(referenceId:referenceId!)
-            uploadServiceDelegate!.onUpdateServiceComplete(
+            uploadServiceDelegate!.onUploadServiceComplete(
                 sidError: SIDError.UNABLE_TO_VERIFY,
                 confidenceValue: confidenceValue,
                 retryFlag: false,
@@ -365,7 +365,7 @@ class UploadService : BaseService, NetRequestDelegate {
     }
 
     func onError( sidError : SIDError ){
-        uploadServiceDelegate?.onUpdateError( sidError: sidError,
+        uploadServiceDelegate?.onUploadServiceComplete( sidError: sidError,
                                               confidenceValue : confidenceValue,
                                               retryFlag : false,
                                               partnerParams : partnerParams )

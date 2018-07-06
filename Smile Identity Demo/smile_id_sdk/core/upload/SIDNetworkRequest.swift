@@ -14,7 +14,10 @@ UploadServiceDelegate {
     
     static let ONE_MIN_MS           : Int64 = 60 * 1000       // 1 minutes in ms
     static let MAX_RETRY_TIME_MS    : Int64 = ONE_MIN_MS * 15 // 15 minutes in ms
-    static let PARTNER_ID           : String = "023";
+    static let DEFAULT_DELAY        : Double = 0.1            // 100 MS
+    
+    
+    static let PARTNER_ID           : String = "003";
     
     /* Default value of optionals is nil */
     
@@ -48,8 +51,8 @@ UploadServiceDelegate {
     
     func userCancelled() {
         // Android code treats user cancelled logic different
-        // than cancelRetries.  So, iOS will do the same - if user
-        // cancels we do not call cancelRetries.
+        // than cancelRetries. cancelRetries is for cancelling the upload retries.
+        // So, iOS will do the same - if user cancels we do not call cancelRetries.
         // cancelRetries()
         if( uploadService != nil ){
             uploadService!.cancel()
@@ -105,17 +108,15 @@ UploadServiceDelegate {
         
         
         // This will start the process of packaging and uploading.
-        doSubmit()
+        doSubmit( delay: SIDNetworkRequest.DEFAULT_DELAY )
     }
-    
 
     
-    func doSubmit() {
+    func doSubmit( delay : Double ) {
         
         if( currentRetryCount! < 0 ){
             return
         }
-        
         
         
         DispatchQueue.global(qos: .userInitiated).async {
@@ -213,6 +214,11 @@ UploadServiceDelegate {
     }
     
     
+    /*
+     This is an Android port - retry flag does not appear to be used accept to
+     pass through to the lambda request.   It is hardcoded to false when it is
+     passed back in onUploadServiceComplete.
+    */
     func checkAndUpdateRetryFlag() {
         requestNewToken = false;
         
@@ -304,44 +310,10 @@ UploadServiceDelegate {
     }
     
     
-    func onUpdateError( sidError : SIDError,
-                        confidenceValue : Float,
-                        retryFlag : Bool,
-                        partnerParams : PartnerParams? ){
-        DispatchQueue.main.async {
-            self.delegate?.onComplete()
-        }
-        
-        let sidResponse = SIDResponse( partnerParams:partnerParams!,
-                                        success: false,
-                                        confidenceValue: confidenceValue )
-        DispatchQueue.main.async {
-            self.delegate?.onError( sidError: sidError )
-        }
-        
-        if( isEnrollMode ){
-            DispatchQueue.main.async {
-                self.delegate?.onEnrolled( sidResponse: sidResponse )
-            }
-        }
-        else{
-            switch( sidError ){
-                case SIDError.UNABLE_TO_VERIFY :
-                    DispatchQueue.main.async {
-                        self.delegate?.onAuthenticated( sidResponse: sidResponse )
-                    }
-                    cancelRetries()
-                    break;
-                
-                default :
-                    doSubmit()
-            } // switch
-        }  // else
-        
-    }
+
     
     
-    func onUpdateServiceComplete(sidError: SIDError,
+    func onUploadServiceComplete(sidError: SIDError,
                                  confidenceValue: Float,
                                  retryFlag: Bool,
                                  partnerParams: PartnerParams?) {
@@ -349,21 +321,52 @@ UploadServiceDelegate {
             self.delegate?.onComplete()
         }
         
+        let success = isSuccess( sidError: sidError )
+        retry = retryFlag
+  
+        
         let sidResponse = SIDResponse( partnerParams:partnerParams,
-                                       success: false,
+                                       success: success,
                                        confidenceValue: confidenceValue )
-        if( isEnrollMode ){
-            DispatchQueue.main.async {
-                 self.delegate?.onEnrolled(sidResponse: sidResponse )
+        
+        if( success ){
+            if( isEnrollMode ){
+                DispatchQueue.main.async {
+                    self.delegate?.onEnrolled(sidResponse: sidResponse )
+                }
             }
+            else{
+                DispatchQueue.main.async {
+                    self.delegate?.onAuthenticated(sidResponse: sidResponse )
+                }
+            }
+            
+            cancelRetries();
+            
         }
         else{
-            DispatchQueue.main.async {
-                self.delegate?.onAuthenticated(sidResponse: sidResponse )
+            if( isEnrollMode ){
+                DispatchQueue.main.async {
+                    self.delegate?.onEnrolled(sidResponse: sidResponse )
+                }
+            }
+            else{
+                self.delegate?.onError( sidError: sidError )
+                if( unableToVerify(sidError: sidError ) ){
+                    DispatchQueue.main.async {
+                        self.delegate?.onAuthenticated(sidResponse: sidResponse )
+                    }
+                    cancelRetries()
+                }
+                else{
+                    // cancel the uploadjobstatus
+                    uploadService!.cancel()
+                
+                    doSubmit( delay: Double( retryOnFailurePolicy.maxRetryTimeoutSec) )
+                }
             }
         }
  
-        cancelRetries();
 
     }
     
@@ -372,6 +375,25 @@ UploadServiceDelegate {
     
     func cancelRetries() {
         // cancel retries
+    }
+    
+    
+    
+    func isSuccess( sidError : SIDError ) -> Bool {
+        switch( sidError ){
+        case SIDError.SUCCESS :
+            return true
+        default :
+            return false
+        } // switch
+    }
+    func unableToVerify( sidError : SIDError ) -> Bool {
+        switch( sidError ){
+        case SIDError.UNABLE_TO_VERIFY :
+            return true
+        default :
+            return false
+        } // switch
     }
     
   

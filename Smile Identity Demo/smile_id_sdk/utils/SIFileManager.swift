@@ -103,9 +103,10 @@ class SIFileManager{
     }
     
     func getZipDestFileURL( referenceId : String ) -> URL {
-        let refIDDirURL =
-            URL( fileURLWithPath: createAndGetFolderPath( referenceId : referenceId ) )
-        return refIDDirURL.appendingPathComponent(referenceId + ".zip")
+        //let refIDDirURL =
+        //     URL( fileURLWithPath: createAndGetFolderPath( referenceId : referenceId ) )
+        let url = getSmileIDDir()
+        return url.appendingPathComponent(referenceId + ".zip")
 
     }
     
@@ -269,10 +270,11 @@ class SIFileManager{
         do{
             
             let sourceDirURL = getZipSourceDirURL(referenceId: referenceId)
+            
             destinationZipFileURL = getZipDestFileURL(referenceId: referenceId )
             
             let fileManager = FileManager()
-            try fileManager.zipItem(at: sourceDirURL, to: destinationZipFileURL!)
+            try fileManager.zipItem(at: sourceDirURL, to: destinationZipFileURL!, shouldKeepParent: false)
 
         }
         catch {

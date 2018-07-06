@@ -211,6 +211,8 @@ class UploadResultViewController:
     func onStartJobStatus() {}
     func onEndJobStatus() {}
     func onUpdateJobProgress( progress : Int ) {}
-    func onUpdateJobStatus( msg : String ) {}
+    func onUpdateJobStatus( msg : String ) {
+        print( msg )
+    }
  
 }

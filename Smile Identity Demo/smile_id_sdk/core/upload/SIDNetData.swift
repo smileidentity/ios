@@ -10,7 +10,7 @@ import Foundation
 
 class SIDNetData {
     
-    let PARTNER_ID = "023";
+    let PARTNER_ID = "003";
     
     var authUrl     : String = ""
     var partnerUrl  : String = ""

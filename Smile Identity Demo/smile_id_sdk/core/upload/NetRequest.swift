@@ -30,23 +30,24 @@ class NetRequest {
     // iOS is in seconds
     static let HTTP_TIMEOUT                 : Int       = 120;
     
+    // User cancelled
     var isCancelled                         : Bool      = false
     
     var netRequestDelegate                  : NetRequestDelegate?
     let logger                              = SILog()
     
     
-    var uploadJobStatusAttemptNum           : Int       = 0
-    var uploadJobStatusTimer                : Timer?
-    var uploadJobStatusStartTime            : Double    = 0.0
     var uploadJobStatus                     : UploadJobStatus?
-    var uploadJobStatusPartnerUrl           : String?
-    var uploadJobStatusUrl                  : String?
-    
+   
     var authSmileRequestUrl                 : String?
     var isExecuteAuthSmile                  : Bool = false
     var jsAuthSmileRequest                  : String?
     var authSmileRequest                    : AuthSmileRequest?
+    
+    var uploadJobStatusUrl                  : String?
+    var uploadJobStatusAttemptNum           : Int = 0
+    var uploadJobStatusStartTime            : Double = 0.0
+    
     
     init( netRequestDelegate : NetRequestDelegate ){
         self.netRequestDelegate = netRequestDelegate
@@ -163,57 +164,31 @@ class NetRequest {
         
         uploadJobStatusAttemptNum = 0
         uploadJobStatusStartTime = Date().timeIntervalSince1970
-        uploadJobStatusPartnerUrl = partnerUrl
-        uploadJobStatusUrl = jobStatusUrl
+        uploadJobStatusUrl = partnerUrl + jobStatusUrl
         
+        doUploadJobStatus()
         
-        // TEST for now upload once to check upload request/response.
-        // next add timer, for offline mode.
-        
-        
-
-        
-        scheduledUploadJobStatus()
-        
-        /*  This won't work in a background queue.
-        if uploadJobStatusTimer == nil {
-            uploadJobStatusTimer = Timer.scheduledTimer(timeInterval:
-                NetRequest.JOB_STATUS_REQUEST_SLEEP,
-                // 1.0,
-                target: self,
-                selector:#selector(self.scheduledUploadJobStatus),
-                userInfo: nil,
-                repeats: true)
-        }
- */
-        
-        /*  This won't work in a background queue.
-        uploadJobStatusTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(action), userInfo: nil, repeats: true)
-         */
-        
-    }
-    
-    @objc func action() {
-        print("timer fired")
-    }
+    } // func uploadJobStatus
     
     
-    /* Called from a timer, so we are using @objc */
-    @objc func scheduledUploadJobStatus() {
-        
-        let networkingUtils = SIDNetworkUtils()
+    func doUploadJobStatus() {
         let currentTimeSec =  Date().timeIntervalSince1970
         var timedOut = false
+        let networkingUtils = SIDNetworkUtils()
+        
+        var done = false
+        
         if( ( currentTimeSec - uploadJobStatusStartTime ) >= NetRequest.UPLOAD_JOB_STATUS_RETRY_TIMEOUT_SEC ){
             timedOut = true
+            done = true
         }
         
         if( isCancelled || timedOut || uploadJobStatusAttemptNum > NetRequest.UPLOAD_JOB_STATUS_MAX_ATTEMPTS ){
-            stopUploadJobStatusTimer()
-            return
+            done = true
         }
         
         
+        print( "uploadJobStatusAttemptNum = " + String( uploadJobStatusAttemptNum ) )
         if( uploadJobStatusAttemptNum % 10 == 0 ) &&
             ( uploadJobStatusAttemptNum != 0 ){
             let msg = "Inside while loop Attempt No : " + String(uploadJobStatusAttemptNum) +
@@ -222,7 +197,7 @@ class NetRequest {
             netRequestDelegate?.onUpdateJobStatus( msg: msg )
         }
         
-        doHttpPost(serverUrl: self.uploadJobStatusPartnerUrl! + self.uploadJobStatusUrl!,
+        doHttpPost(serverUrl: uploadJobStatusUrl!,
                    jsDict: (self.uploadJobStatus?.toJsonDict())!) { (jsResponse) -> Void in
                     
                     if (jsResponse != nil) {
@@ -237,21 +212,6 @@ class NetRequest {
                                 /* success */
                                 let msg = "Total attempts to check job completion : " + String(self.uploadJobStatusAttemptNum)
                                 self.netRequestDelegate?.onUpdateJobStatus( msg: msg )
-                                self.stopUploadJobStatusTimer()
-                                if( !self.isExecuteAuthSmile ){
-                                    self.netRequestDelegate?.onUploadJobStatusComplete( statusResponse: statusResponse! )
-                                }
-                                else{
-                                    // Local callback - from android port
-                                    self.onUploadJobStatusComplete( statusResponse: statusResponse! )
-                                }
-                            }
-                            else if( !statusResponse!.error!.isEmpty ) {
-                                /* failure.
-                                 job is not complete,
-                                 and there is an error.
-                                 Notify with the error, and stop trying. */
-                                self.stopUploadJobStatusTimer()
                                 
                                 if( !self.isExecuteAuthSmile ){
                                     self.netRequestDelegate?.onUploadJobStatusComplete( statusResponse: statusResponse! )
@@ -260,23 +220,48 @@ class NetRequest {
                                     // Local callback - from android port
                                     self.onUploadJobStatusComplete( statusResponse: statusResponse! )
                                 }
+                                
+                                done = true
+                                
+                            }
+                            else if( !statusResponse!.error!.isEmpty ) {
+                                /* failure.
+                                 job is not complete,
+                                 and there is an error.
+                                 Notify with the error, and stop trying. */
+                                
+                                
+                                if( !self.isExecuteAuthSmile ){
+                                    self.netRequestDelegate?.onUploadJobStatusComplete( statusResponse: statusResponse! )
+                                }
+                                else{
+                                    // Local callback - from android port
+                                    self.onUploadJobStatusComplete( statusResponse: statusResponse! )
+                                }
+                                
+                                done = true
                             }
                             
-                            self.uploadJobStatusAttemptNum =
-                                self.uploadJobStatusAttemptNum + 1
-                        }
+                            
+                        } // if statusResponse != nil
+                    } // if jsResponse != nil
+                    
+                    
+                    if( !done ){
+                        self.uploadJobStatusAttemptNum = self.uploadJobStatusAttemptNum + 1
+                        sleep(4)
+                        
+                        // Do it again
+                        self.doUploadJobStatus()
                     }
-        }
+                    
+        } // doHttpPost completion
+        
+   
         
     }
-
     
-    func stopUploadJobStatusTimer() {
-        if uploadJobStatusTimer != nil {
-            uploadJobStatusTimer?.invalidate()
-            uploadJobStatusTimer = nil
-        }
-    }
+
     
     
     
@@ -349,7 +334,7 @@ class NetRequest {
     }
     
  
-    
+    // User cancelled
     func cancel() {
         isCancelled = true
     }

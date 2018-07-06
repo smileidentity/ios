@@ -16,14 +16,11 @@ protocol UploadServiceDelegate {
     func onEndJobStatus()
     /* if successfull, sidError param will be SIDError.SUCCESS,
         if failed, sidError param will contain the error */
-    func onUpdateServiceComplete( sidError : SIDError,
+    func onUploadServiceComplete( sidError : SIDError,
                             confidenceValue : Float,
                             retryFlag : Bool,
                             partnerParams : PartnerParams? )
     func onUpdateJobStatus( msg : String )
     func onUpdateJobProgress( progress : Int )
-    func onUpdateError( sidError : SIDError,
-                        confidenceValue : Float,
-                        retryFlag : Bool,
-                        partnerParams : PartnerParams? )
+
 }
