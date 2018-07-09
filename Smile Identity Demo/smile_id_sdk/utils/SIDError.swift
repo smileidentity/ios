@@ -39,6 +39,7 @@ enum SIDError : Error {
     case UNABLE_TO_SUBMIT_TRY_AGAIN
     case TAG_NOT_FOUND
     case NETWORK_DATA_NOT_VALID
+    case NO_NETWORK_CONNECTION
     
     // In Android code, in UploadService, the error code was set to -1 for this case
     case UNABLE_TO_ENROLL_OR_AUTH

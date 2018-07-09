@@ -20,6 +20,7 @@ protocol UploadServiceDelegate {
                             confidenceValue : Float,
                             retryFlag : Bool,
                             partnerParams : PartnerParams? )
+ 
     func onUpdateJobStatus( msg : String )
     func onUpdateJobProgress( progress : Int )
 

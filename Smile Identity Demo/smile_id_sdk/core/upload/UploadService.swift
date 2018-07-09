@@ -253,6 +253,7 @@ class UploadService : BaseService, NetRequestDelegate {
   
     // Step 5 Upload job status
     func uploadJobStatus() {
+        
         if( !(isEnrollMode!) ){
             uploadServiceDelegate?.onStartJobStatus()
         }
@@ -319,6 +320,13 @@ class UploadService : BaseService, NetRequestDelegate {
         clearMetadata()
     }
     
+    func onUploadJobStatusNoNetworkConnection() {
+        uploadServiceDelegate!.onUploadServiceComplete(
+            sidError: SIDError.FAILED_JOB_STATUS_CANCELLED_OR_TIMEOUT,
+            confidenceValue: 0.0,
+            retryFlag: false,
+            partnerParams: nil)
+    }
     
     func onUploadJobStatusCompleteAuthenticated(
         statusResponse: StatusResponse? ){
@@ -326,9 +334,12 @@ class UploadService : BaseService, NetRequestDelegate {
             onError( sidError: SIDError.FAILED_JOB_STATUS_CANCELLED_OR_TIMEOUT)
             return
         }
+        
         if (statusResponse == nil) {
             return
         }
+        
+        
         
         if( statusResponse!.isJobComplete() ) &&
             (statusResponse!.isJobSuccess() ) {
@@ -431,7 +442,8 @@ class UploadService : BaseService, NetRequestDelegate {
         return destinationZipFileURL
     }
     
-    
+  
+  
  
     
     

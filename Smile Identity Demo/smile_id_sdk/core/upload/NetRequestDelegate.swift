@@ -27,6 +27,8 @@ protocol NetRequestDelegate {
     
     func onUploadJobStatusComplete( statusResponse : StatusResponse? )
     
+    func onUploadJobStatusNoNetworkConnection()
+    
     // Android code would throw errors, here we will use a delegate,
     // and the delegate will handle it.
     func onError( sidError : SIDError )

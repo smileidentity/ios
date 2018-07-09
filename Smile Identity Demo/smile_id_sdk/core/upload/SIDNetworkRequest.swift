@@ -351,7 +351,12 @@ UploadServiceDelegate {
                 }
             }
             else{
-                self.delegate?.onError( sidError: sidError )
+                
+                DispatchQueue.main.async {
+                    self.delegate?.onError( sidError: sidError )
+                }
+                
+               
                 if( unableToVerify(sidError: sidError ) ){
                     DispatchQueue.main.async {
                         self.delegate?.onAuthenticated(sidResponse: sidResponse )

@@ -97,6 +97,8 @@ class NetRequest {
                         jobStatusUrl : String,
                         jobType : Int,
                         isEnrollMode: Bool ) {
+        
+        
         authSmileRequestUrl = partnerUrl + authUrl
         let appData = AppData()
         
@@ -119,7 +121,7 @@ class NetRequest {
         else {
             // uploadJobStatus is called from here, and also from UploadService.
             isExecuteAuthSmile = true
-            uploadJobStatus(partnerUrl: partnerUrl, jobStatusUrl: jobStatusUrl, isEnrollMode: !isEnrollMode )
+            uploadJobStatus(partnerUrl: partnerUrl, jobStatusUrl: jobStatusUrl, isEnrollMode: isEnrollMode )
         }
     }
     
@@ -166,12 +168,20 @@ class NetRequest {
         uploadJobStatusStartTime = Date().timeIntervalSince1970
         uploadJobStatusUrl = partnerUrl + jobStatusUrl
         
-        doUploadJobStatus()
+        doUploadJobStatus(isEnrollMode: isEnrollMode)
         
     } // func uploadJobStatus
     
     
-    func doUploadJobStatus() {
+    func doUploadJobStatus( isEnrollMode : Bool ) {
+        if( !isEnrollMode ){
+            if( !isNetworkConnected() ) {
+                // No http timeout error is firing,
+                // so we are checking network connection here.
+                self.netRequestDelegate?.onUploadJobStatusNoNetworkConnection()
+            }
+        }
+        
         let currentTimeSec =  Date().timeIntervalSince1970
         var timedOut = false
         let networkingUtils = SIDNetworkUtils()
@@ -252,7 +262,7 @@ class NetRequest {
                         sleep(4)
                         
                         // Do it again
-                        self.doUploadJobStatus()
+                        self.doUploadJobStatus(isEnrollMode: isEnrollMode)
                     }
                     
         } // doHttpPost completion
@@ -419,6 +429,17 @@ class NetRequest {
         
         logger.SIPrint(logOutput: logOutput!)
     }
+    
+    
+    func isNetworkConnected() -> Bool {
+        if( !SIDNetworkUtils().isConnected() ){
+             return false
+        }
+        else{
+            return true
+        }
+    }
+    
     
     
     
