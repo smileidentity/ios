@@ -284,7 +284,25 @@ class SIFileManager{
         return destinationZipFileURL
     }
     
-    
+    func getFileSize( filePath : String ) -> UInt64 {
+        var fileSize : UInt64 = 0
+        
+        do {
+            //return [FileAttributeKey : Any]
+            let attr = try FileManager.default.attributesOfItem(atPath: filePath)
+            fileSize = attr[FileAttributeKey.size] as! UInt64
+            
+            //if you convert to NSDictionary, you can get file size old way as well.
+            let dict = attr as NSDictionary
+            fileSize = dict.fileSize()
+            
+        
+        } catch {
+            print("Error: \(error)")
+        }
+        
+        return fileSize
+    }
     func getFreeDiskspace() -> Int64? {
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         if let dictionary = try? FileManager.default.attributesOfFileSystem(forPath: paths.last!) {

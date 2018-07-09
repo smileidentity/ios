@@ -43,8 +43,6 @@ class BaseSaveService : BaseService {
             let url = URL(fileURLWithPath:fullFilePath)
             try data.write( to: URL(fileURLWithPath:fullFilePath) )
             
-            
-            
             // TEST
             let fileManager = FileManager.default
             // let url = URL(string: fullFilePath)
@@ -57,6 +55,10 @@ class BaseSaveService : BaseService {
             fileExists = siFileManager.fileExists( fullFilePath: fullFilePath )
             print( "fileExists = " + String( fileExists ) +
             ", fullFilePath = " + fullFilePath)
+            
+            
+            var fileSize = siFileManager.getFileSize( filePath: fullFilePath )
+            print( "fileSize = " + String( fileSize ) )
             
      
         } catch {

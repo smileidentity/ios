@@ -51,17 +51,28 @@ class ImageUtils {
      */
     func getJPGData( pixelBuffer : CVImageBuffer, doScale : Bool ) -> Data? {
         
-        var cgImage = getCGImage(pixelBuffer: pixelBuffer )
+        let cgImage = getCGImage(pixelBuffer: pixelBuffer )
     
         
-        var uiImage = UIImage( cgImage:cgImage!, scale: 1, orientation:.leftMirrored)
+        let uiImage = UIImage( cgImage:cgImage!, scale: 1, orientation:.leftMirrored)
         
+
         // check size of image, and scale if necessary
+        /*
         if( doScale ){
             uiImage = scaleImage( uiImage: uiImage )
         }
+         */
+        
+        let newUiImage = scalePreviewImage(uiImage: uiImage )
+        let heightInPoints = newUiImage.size.height
+        let heightInPixels = heightInPoints * newUiImage.scale
+        
+        let widthInPoints = newUiImage.size.width
+        let widthInPixels = widthInPoints * newUiImage.scale
+
    
-        return UIImageJPEGRepresentation( uiImage, 100.0 )
+        return UIImageJPEGRepresentation( newUiImage, 100.0 )
     }
     
     /*
@@ -71,6 +82,7 @@ class ImageUtils {
         cropRect : CGRect ) -> Data? {
         let croppedImage = uiImage.cgImage?.cropping(to: cropRect)
         let uiImage = UIImage( cgImage:croppedImage!, scale: 1, orientation:.leftMirrored)
+        
         return UIImageJPEGRepresentation( uiImage, 100.0 )
 
     }
@@ -113,17 +125,34 @@ class ImageUtils {
         
         let cropWidth = newHalf * 2
         let cropHeight = newHalf * 2
+        /* Currently cropWidth and cropHeight are ~ 392. */
+        
         cropRect = CGRect( x:left, y:top, width:cropWidth, height:cropHeight )
         
         let cgImage = getCGImage(pixelBuffer: pixelBuffer )
         
         let croppedImage = cgImage?.cropping(to: cropRect)
         
-        let uiImage = UIImage( cgImage:croppedImage!, scale: 1, orientation:.leftMirrored)
+        /* Now that we have a square from the middle of the image, we need
+         to scale it so that it is not such a large file.
+         We want the resulting image to be about 150x150 px */
         
+        // let scale = 150.0/cropWidth
+        let scale = CGFloat( 1.0 )
         
-        return UIImageJPEGRepresentation( uiImage, 100.0 )
+        // let scale = CGFloat(1.0)
+        print( "cropwidth = " + String( Float(cropWidth )) )
         
+        let uiImage = UIImage( cgImage:croppedImage!, scale: scale, orientation:.leftMirrored)
+        
+        let newUiImage = scaleImage( uiImage: uiImage )
+
+        let heightInPoints = newUiImage.size.height
+        let heightInPixels = heightInPoints * newUiImage.scale
+        
+        let widthInPoints = newUiImage.size.width
+        let widthInPixels = widthInPoints * newUiImage.scale
+        return UIImageJPEGRepresentation( newUiImage, 100.0 )
         
         /* .leftMirrored makes the uiImage display in the same orientation as the video  preview, which is portrait.
          */
@@ -133,7 +162,30 @@ class ImageUtils {
         //let orientation = uiImage.imageOrientation
     }
     
-    func scaleImage( uiImage: UIImage ) -> UIImage {
+    func scalePreviewImage ( uiImage : UIImage ) -> UIImage {
+        let newSize = CGSize(width: 480.0, height: 640.0)
+        
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        
+        let image = renderer.image { (context) in
+            uiImage.draw(in: CGRect(origin: CGPoint(x: 0, y: 0), size: newSize))
+        }
+        return image
+    }
+    
+    func scaleImage ( uiImage : UIImage ) -> UIImage {
+        let newSize = CGSize(width: 150.0, height: 150.0)
+        
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        
+        let image = renderer.image { (context) in
+            uiImage.draw(in: CGRect(origin: CGPoint(x: 0, y: 0), size: newSize))
+        }
+        return image
+    }
+    
+    
+    func scaleImage2( uiImage: UIImage ) -> UIImage {
         let hasAlpha = false
         let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
         
@@ -228,8 +280,7 @@ class ImageUtils {
     }
     
     
-    
-    
+ 
     
     
     
