@@ -46,10 +46,14 @@ class CaptureSelfie :
                 lblPrompt : UILabel,
                 previewView : VideoPreviewView ){
         
+         
         
         self.captureSelfieDelegate = captureSelfieDelegate
         self.lblPrompt = lblPrompt
         self.previewView = previewView
+        
+        
+
         
         let appData = AppData()
         appData.clearAll()
@@ -256,17 +260,16 @@ class CaptureSelfie :
             default : // FaceDetectorConstants.FRAME_STATE_CAPTURING
                 
                 // convert to jpg
-                var cropRect = CGRect(x:0,y:0,width:0,height:0)
+                var imageRect = CGRect(x:0,y:0,width:0,height:0)
+              
                 let imageUtils = ImageUtils()
                 let JPGData = imageUtils.getJPGData(pixelBuffer: pixelBuffer,
                     faceRect:faceRect,
-                    cropRect:&cropRect)
-                
-                 let width = imageUtils.getCVImageBufferWidth( pixelBuffer:pixelBuffer )
-                SmileIDSingleton.sharedInstance.lensCharacteristicsFront.devicePortraitHorizontalResolution = width
-                let height = imageUtils.getCVImageBufferHeight( pixelBuffer:pixelBuffer )
-                SmileIDSingleton.sharedInstance.lensCharacteristicsFront.devicePortraitVerticalResolution = height
-                
+                    imageRect:&imageRect)
+            SmileIDSingleton.sharedInstance.lensCharacteristicsFront.devicePortraitHorizontalResolution = imageUtils.getCVImageBufferWidth( pixelBuffer:pixelBuffer )
+
+            SmileIDSingleton.sharedInstance.lensCharacteristicsFront.devicePortraitVerticalResolution = imageUtils.getCVImageBufferHeight( pixelBuffer:pixelBuffer )
+            
                 /*
                 // TEST
                 let uiImage = UIImage( data:JPGData! )
@@ -300,7 +303,7 @@ class CaptureSelfie :
 
                 loadRubberBandFrames(frameBytes:JPGData!,
                                      hasSmile:hasSmile,
-                                     cropRect: cropRect)
+                                     imageRect: imageRect)
                 
             
             
@@ -311,7 +314,7 @@ class CaptureSelfie :
     
     func loadRubberBandFrames( frameBytes : Data,
                                hasSmile : Bool,
-                               cropRect : CGRect ) {
+                               imageRect : CGRect ) {
         let exif = 0
         logger.SIPrint(logOutput: "loadRubberBandFrames")
         /* Android supports smile probability.  iOS supports only
@@ -324,10 +327,10 @@ class CaptureSelfie :
         let dateTimeUtils = DateTimeUtils()
         let formattedDate = dateTimeUtils.getCurrentDateTime();
         
-        let left = Int(cropRect.origin.x)
-        let top = Int(cropRect.origin.y)
-        let width = Int( cropRect.width )
-        let height = Int( cropRect.height )
+        let left = Int(imageRect.origin.x)
+        let top = Int(imageRect.origin.y)
+        let width = Int( imageRect.width )
+        let height = Int( imageRect.height )
         let right = left + width
         let bottom = top + height
         let frameData = FrameData( frameNum: frameNum!,
@@ -382,13 +385,23 @@ class CaptureSelfie :
             let dateTimeUtils = DateTimeUtils()
             let formattedDate = dateTimeUtils.getCurrentDateTime();
             let imageUtils = ImageUtils()
-            let width = imageUtils.getCVImageBufferWidth( pixelBuffer:pixelBuffer )
-            let height = imageUtils.getCVImageBufferHeight( pixelBuffer:pixelBuffer )
+            //let width = imageUtils.getCVImageBufferWidth( pixelBuffer:pixelBuffer )
+            //let height = imageUtils.getCVImageBufferHeight( pixelBuffer:pixelBuffer )
             logger.SIPrint(logOutput: "getJPGData for preview" )
-           
-            let jpgData = imageUtils.getJPGData(
+            var imageRect = CGRect(x:0,y:0,width:0,height:0)
+            
+            let jpgData = imageUtils.getPreviewJPGData(
                 pixelBuffer: pixelBuffer,
-                doScale: false )
+                doScale: false,
+                imageRect : &imageRect )
+            
+            
+            let left = Int(imageRect.origin.x)
+            let top = Int(imageRect.origin.y)
+            let width = Int( imageRect.width )
+            let height = Int( imageRect.height )
+            let right = left + width
+            let bottom = top + height
             
             // Save the full size frame to send to the server
             // Note that on Android, it is not compressed to JPG.
@@ -398,29 +411,25 @@ class CaptureSelfie :
                                       dateTime: formattedDate,
                                       left: 0,
                                       top: 0,
-                                      right: width,
-                                      bottom: height,
+                                      right: right,
+                                      bottom: bottom,
                                       width: width,
                                       height: height,
                                       exif: 0)
             
             // TEST
+            /*
             self.currentSelfieBytes = imageUtils.getJPGData(
                 pixelBuffer: pixelBuffer,
                 doScale: true )
+            */
             
             
             DispatchQueue.main.async {
                 // Get the uncropped, scaled jpg from the frame to display in the ui
                 // Needs to be done on main thread because of the uiImage scaling
-                self.logger.SIPrint(logOutput: "Main thread get currentSelfieBytes" )
-
-                self.logger.SIPrint(logOutput: ("before getcurrentSelfieBytes "))
-                self.currentSelfieBytes = imageUtils.getJPGData(
-                    pixelBuffer: pixelBuffer,
-                    doScale: true )
-                self.logger.SIPrint(logOutput: ("after getcurrentSelfieBytes "))
-                
+  
+                self.currentSelfieBytes = jpgData
                 self.logger.SIPrint(logOutput: "calling onComplete")
                 self.captureSelfieDelegate?.onComplete( previewUIImage:UIImage( data:self.currentSelfieBytes! )! )
                 

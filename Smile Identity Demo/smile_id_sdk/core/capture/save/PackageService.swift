@@ -96,9 +96,7 @@ class PackageService : BaseSaveService {
      */
     func saveCapturedData( tag : String,
                            sidNetData : SIDNetData ) throws {
-        
-        
-        
+         
         let jsMetaData = readMetadata()
         
         let capturedImagesManager = SmileIDSingleton.sharedInstance.capturedImagesManager

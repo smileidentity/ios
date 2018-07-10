@@ -12,6 +12,12 @@ import UIKit
 class ImageUtils {
     var logger                  : SILog = SILog()
     
+    static let FRAME_WIDTH              = CGFloat( 150.0 )
+    static let FRAME_HEIGHT             = CGFloat( 150.0 )
+    static let PREVIEW_WIDTH            = CGFloat( 480.0 )
+    static let PREVIEW_HEIGHT           = CGFloat( 640.0 )
+    static let ID_CARD_WIDTH            = CGFloat( 900.0 )
+    
     func getCVImageBufferWidth( pixelBuffer: CVImageBuffer ) -> Int {
         CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
         let width = CVPixelBufferGetWidth(pixelBuffer)
@@ -47,15 +53,24 @@ class ImageUtils {
     
     
     /* Get JPGData, no cropping.  Used for the selfie preview.
-     Will scale the image to DEFAULT_SCALING_MIN_DIMEN if necessary
+     Will scale the image to DEFAULT_SCALING_MIN_DIMEN if necessary.
+     Currently doScale is unused.
      */
-    func getJPGData( pixelBuffer : CVImageBuffer, doScale : Bool ) -> Data? {
+    func getPreviewJPGData( pixelBuffer : CVImageBuffer, doScale : Bool,
+                     imageRect : inout CGRect ) -> Data? {
         
         let cgImage = getCGImage(pixelBuffer: pixelBuffer )
     
         
         let uiImage = UIImage( cgImage:cgImage!, scale: 1, orientation:.leftMirrored)
-        
+        let heightInPoints = uiImage.size.height
+        let heightInPixels = heightInPoints * uiImage.scale
+        let widthInPoints = uiImage.size.width
+        let widthInPixels = widthInPoints * uiImage.scale
+        let aspectRatio = widthInPoints / heightInPoints
+ 
+        let newHeight = ImageUtils.PREVIEW_HEIGHT
+        let newWidth = newHeight * aspectRatio
 
         // check size of image, and scale if necessary
         /*
@@ -64,26 +79,45 @@ class ImageUtils {
         }
          */
         
-        let newUiImage = scalePreviewImage(uiImage: uiImage )
-        let heightInPoints = newUiImage.size.height
-        let heightInPixels = heightInPoints * newUiImage.scale
+        let newUiImage = scaleImage(uiImage: uiImage, newWidth: newWidth, newHeight: newHeight )
+        let newHeightInPoints = newUiImage.size.height
+        let newHeightInPixels = newHeightInPoints * newUiImage.scale
         
-        let widthInPoints = newUiImage.size.width
-        let widthInPixels = widthInPoints * newUiImage.scale
+        let newWidthInPoints = newUiImage.size.width
+        let newWidthInPixels = newWidthInPoints * newUiImage.scale
 
-   
+        imageRect = CGRect( x:0.0, y:0.0, width:newWidthInPoints, height:newHeightInPoints )
+        
         return UIImageJPEGRepresentation( newUiImage, 100.0 )
     }
     
     /*
         ID Card.  Crop to crop rect and compress to jpg
     */
-    func getJPGData( uiImage : UIImage,
-        cropRect : CGRect ) -> Data? {
+    func getIDCardJPGData( uiImage : UIImage,
+        cropRect : CGRect,
+        imageRect : inout CGRect ) -> Data? {
         let croppedImage = uiImage.cgImage?.cropping(to: cropRect)
         let uiImage = UIImage( cgImage:croppedImage!, scale: 1, orientation:.leftMirrored)
+         let heightInPoints = uiImage.size.height
+        let heightInPixels = heightInPoints * uiImage.scale
+        let widthInPoints = uiImage.size.width
+        let widthInPixels = widthInPoints * uiImage.scale
+        let aspectRatio = heightInPoints / widthInPoints
         
-        return UIImageJPEGRepresentation( uiImage, 100.0 )
+        
+        let newWidth = ImageUtils.ID_CARD_WIDTH
+        let newHeight = newWidth * aspectRatio
+        let newUiImage = scaleImage(uiImage: uiImage, newWidth: newWidth, newHeight: newHeight )
+        let newHeightInPoints = newUiImage.size.height
+        let newHeightInPixels = newHeightInPoints * newUiImage.scale
+        
+        let newWidthInPoints = newUiImage.size.width
+        let newWidthInPixels = newWidthInPoints * newUiImage.scale
+        
+        imageRect = CGRect( x:0.0, y:0.0, width:newWidthInPoints, height:newHeightInPoints )
+        
+        return UIImageJPEGRepresentation( newUiImage, 100.0 )
 
     }
     
@@ -91,7 +125,7 @@ class ImageUtils {
     /* Get JPGData, with cropping.  Used for rubberband frames */
     func getJPGData( pixelBuffer : CVImageBuffer,
                      faceRect : CGRect,
-                     cropRect : inout CGRect ) -> Data? {
+                     imageRect : inout CGRect ) -> Data? {
         
         
         /* faceRect contains the face.
@@ -127,7 +161,7 @@ class ImageUtils {
         let cropHeight = newHalf * 2
         /* Currently cropWidth and cropHeight are ~ 392. */
         
-        cropRect = CGRect( x:left, y:top, width:cropWidth, height:cropHeight )
+        let cropRect = CGRect( x:left, y:top, width:cropWidth, height:cropHeight )
         
         let cgImage = getCGImage(pixelBuffer: pixelBuffer )
         
@@ -145,13 +179,16 @@ class ImageUtils {
         
         let uiImage = UIImage( cgImage:croppedImage!, scale: scale, orientation:.leftMirrored)
         
-        let newUiImage = scaleImage( uiImage: uiImage )
+        let newUiImage = scaleImage( uiImage: uiImage, newWidth : ImageUtils.FRAME_WIDTH, newHeight : ImageUtils.FRAME_HEIGHT )
 
         let heightInPoints = newUiImage.size.height
         let heightInPixels = heightInPoints * newUiImage.scale
         
         let widthInPoints = newUiImage.size.width
         let widthInPixels = widthInPoints * newUiImage.scale
+        
+        imageRect = CGRect( x:0.0, y:0.0, width:widthInPoints, height:heightInPoints )
+        
         return UIImageJPEGRepresentation( newUiImage, 100.0 )
         
         /* .leftMirrored makes the uiImage display in the same orientation as the video  preview, which is portrait.
@@ -162,19 +199,10 @@ class ImageUtils {
         //let orientation = uiImage.imageOrientation
     }
     
-    func scalePreviewImage ( uiImage : UIImage ) -> UIImage {
-        let newSize = CGSize(width: 480.0, height: 640.0)
-        
-        let renderer = UIGraphicsImageRenderer(size: newSize)
-        
-        let image = renderer.image { (context) in
-            uiImage.draw(in: CGRect(origin: CGPoint(x: 0, y: 0), size: newSize))
-        }
-        return image
-    }
+
     
-    func scaleImage ( uiImage : UIImage ) -> UIImage {
-        let newSize = CGSize(width: 150.0, height: 150.0)
+    func scaleImage ( uiImage : UIImage, newWidth : CGFloat, newHeight : CGFloat ) -> UIImage {
+        let newSize = CGSize(width: newWidth, height: newHeight)
         
         let renderer = UIGraphicsImageRenderer(size: newSize)
         

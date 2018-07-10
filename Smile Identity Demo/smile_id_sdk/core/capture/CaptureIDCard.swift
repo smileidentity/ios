@@ -204,7 +204,8 @@ class CaptureIDCard :
         let imageUtils = ImageUtils()
         
         // Convert to jpg and save
-        let jpgData = imageUtils.getJPGData( uiImage: uiImageFull, cropRect:cropRect )
+        var imageRect = CGRect(x:0,y:0,width:0,height:0)
+        let jpgData = imageUtils.getIDCardJPGData( uiImage: uiImageFull, cropRect:cropRect, imageRect : &imageRect )
         let croppedUIImage = UIImage(data: jpgData! )
         
         /*
@@ -215,16 +216,24 @@ class CaptureIDCard :
         
         let dateTimeUtils = DateTimeUtils()
         let formattedDate = dateTimeUtils.getCurrentDateTime();
+     
+        let frameLeft = Int(imageRect.origin.x)
+        let frameTop = Int(imageRect.origin.y)
+        let frameWidth =  Int( imageRect.width )
+        let frameHeight = Int( imageRect.height )
+        let frameRight = Int( frameLeft + frameWidth)
+        let frameBottom = Int(frameTop + frameHeight)
+        
         let idCardFrame = FrameData( frameNum: 0,
                                   frameBytes: jpgData!,
                                   smileValue: 0.0,
                                   dateTime: formattedDate,
-                                  left: Int(left),
-                                  top: Int(top),
-                                  right: Int(width),
-                                  bottom: Int(height),
-                                  width: Int(width),
-                                  height: Int(height),
+                                  left: frameLeft,
+                                  top: frameTop,
+                                  right: frameRight,
+                                  bottom: frameBottom,
+                                  width: frameWidth,
+                                  height: frameHeight,
                                   exif: 0)
 
         
