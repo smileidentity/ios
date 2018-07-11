@@ -29,6 +29,8 @@ UploadServiceDelegate {
     var currentRetryCount       : Int?
     var sidNetData              : SIDNetData?
     var isEnrollMode            : Bool = false
+    var hasId                   : Bool = false
+    
     var startTimeMS             : Int64?
     var requiredPassedTimeMS    : Int64 = 60 * 1000 // 1 minute in milliseconds
    
@@ -85,6 +87,7 @@ UploadServiceDelegate {
         currentRetryCount = retryOnFailurePolicy.getMaxRetryCount()
         sidNetData = sidConfig.sidNetData
         isEnrollMode = sidConfig.isEnrollMode
+        hasId = sidConfig.useIdCard
         startTimeMS = Int64(NSDate().timeIntervalSince1970 * 1000)
         
         appData.clearJobResponse()

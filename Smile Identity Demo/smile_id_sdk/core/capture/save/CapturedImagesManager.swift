@@ -19,6 +19,7 @@ class CapturedImagesManager {
     
     var selfieCapturedImages        = [CapturedImage]()
     var idCardCapturedImage         : CapturedImage?
+    var hasPreviewImage             : Bool = false
 
     
     func getAllCapturedImages() -> [CapturedImage]{

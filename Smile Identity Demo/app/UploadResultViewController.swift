@@ -23,6 +23,7 @@ class UploadResultViewController:
             let sidNetworkUtils = SIDNetworkUtils()
             if( sidNetworkUtils.isConnected() ){
                 startActivityIndicator()
+                let sidConfig = createConfig()
                 try sidNetworkRequest?.submit( sidConfig: sidConfig )
             }
         }
@@ -49,8 +50,7 @@ class UploadResultViewController:
     
     var sidNetworkRequest : SIDNetworkRequest?
     
-    var sidConfig = SIDConfig()
-    var geoInfos                : GeoInfos?
+    var geoInfos           : GeoInfos?
 
     
     override func viewDidLoad() {
@@ -58,12 +58,16 @@ class UploadResultViewController:
       
         toastView.isHidden = true
         stopActivityIndicator()
+  
+    }
+    
+    func createConfig() -> SIDConfig {
         
-          
+        let sidConfig = SIDConfig()
+        
         sidNetworkRequest = SIDNetworkRequest()
         sidNetworkRequest?.setDelegate(delegate: self)
         sidNetworkRequest?.initialize()
-        
         
         let sidNetData = SIDNetData();
         sidNetData.authUrl = SIDNetUrl.AUTH_URL
@@ -87,10 +91,10 @@ class UploadResultViewController:
         }
         
         sidConfig.build(tag: SmileIDSingleton.USER_TAG)
-
+        
+        
+        return sidConfig
     }
-    
-    
    
     
     func getRetryOnFailurePolicy() -> RetryOnFailurePolicy {
@@ -99,14 +103,10 @@ class UploadResultViewController:
         return options;
     }
 
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
- 
-    
     
     func showToast( toastView   : UIView,
                     lblToast    : UILabel,
@@ -136,11 +136,6 @@ class UploadResultViewController:
         
     }
     
-    
-  
-    
-    
-
     
     /*
      SIDNetworkRequestDelegate calls

@@ -88,7 +88,7 @@ class SelfieViewController: UIViewController,
                 segue.destination as! UploadResultViewController
             uploadResultViewController.isEnrollMode = true
             // use258 is not used with enroll mode
-            uploadResultViewController.hasId = true;
+            uploadResultViewController.hasId = hasId!
 
         }
         

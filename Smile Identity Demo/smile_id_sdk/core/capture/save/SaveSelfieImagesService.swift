@@ -65,6 +65,7 @@ class SaveSelfieImagesService : BaseSaveService {
         /* Note that Android code also appends preview image in the capturedImagesManager.selfieCapturedImages.
          */
         SmileIDSingleton.sharedInstance.capturedImagesManager.selfieCapturedImages.append( capturedImage )
+            SmileIDSingleton.sharedInstance.capturedImagesManager.hasPreviewImage = true
         
         
         /* reclaim space */
