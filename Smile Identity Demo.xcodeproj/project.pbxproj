@@ -283,7 +283,6 @@
 		A04A3E4920B471CA00D083EB /* app */ = {
 			isa = PBXGroup;
 			children = (
-				A0DAD1CD20B61ACD001D7CAD /* geoloc */,
 				A0DAD1C820B618D8001D7CAD /* sidNet */,
 				A04A3E5420B4740600D083EB /* SelfieViewController.swift */,
 				A04A3E4D20B472F600D083EB /* CardIDViewController.swift */,
@@ -404,13 +403,6 @@
 				A0DAD1C920B61924001D7CAD /* SIDNetUrl.swift */,
 			);
 			path = sidNet;
-			sourceTree = "<group>";
-		};
-		A0DAD1CD20B61ACD001D7CAD /* geoloc */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = geoloc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
