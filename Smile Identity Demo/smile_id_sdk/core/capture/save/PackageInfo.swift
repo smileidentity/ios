@@ -141,8 +141,12 @@ class PackageInfo {
         
         let jsonUtils = JsonUtils()
         
-        jsonUtils.putDict( dict: &dict, key: PackageInfo.KEY_SID_DEVICE_CAMERA_INFOS_BACK,
-                           val: (sidDeviceCameraInfosBack?.toJsonDict())! )
+        // sidDeviceCameraInfosBack is nil if not doing id card capture.
+        // id card capture uses the back camera
+        if( sidDeviceCameraInfosBack != nil ){
+            jsonUtils.putDict( dict: &dict, key: PackageInfo.KEY_SID_DEVICE_CAMERA_INFOS_BACK,
+                               val: (sidDeviceCameraInfosBack!.toJsonDict()) )
+        }
         
         jsonUtils.putDict( dict: &dict, key: PackageInfo.KEY_SID_DEVICE_CAMERA_INFOS_FRONT,
                            val: (sidDeviceCameraInfosFront?.toJsonDict())! )
@@ -165,8 +169,10 @@ class PackageInfo {
         jsonUtils.putArray(dict: &dict, key:PackageInfo.KEY_FRAME_INFO,
                            val: frameInfoDictArray)
         
-        jsonUtils.putDict( dict: &dict, key: PackageInfo.KEY_FRAME_INFO_ID_CARD,
-                           val: (frameInfoIDCard?.toJsonDict())! )
+        if( frameInfoIDCard != nil ){
+            jsonUtils.putDict( dict: &dict, key: PackageInfo.KEY_FRAME_INFO_ID_CARD,
+                               val: (frameInfoIDCard!.toJsonDict()) )
+        }
         
         jsonUtils.putDict( dict: &dict, key: PackageInfo.KEY_FRAME_INFO_PREVIEW_FULL,
                            val: (frameInfoPreviewFull?.toJsonDict())! )
