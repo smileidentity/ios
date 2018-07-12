@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3Xv-U8-wT3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3Xv-U8-wT3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -48,35 +48,35 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sRg-rN-DVN">
-                                <rect key="frame" x="83" y="188" width="209" height="30"/>
+                                <rect key="frame" x="96" y="188" width="183" height="30"/>
                                 <state key="normal" title="ENROLL"/>
                                 <connections>
                                     <segue destination="1Ww-VX-8iu" kind="show" identifier="SIDEnrollSegue" id="EQF-2z-UsJ"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EKn-jo-5Lx">
-                                <rect key="frame" x="83" y="237" width="209" height="30"/>
+                                <rect key="frame" x="96" y="237" width="183" height="30"/>
                                 <state key="normal" title="ENROLL WITHOUT ID"/>
                                 <connections>
                                     <segue destination="1Ww-VX-8iu" kind="show" identifier="SIDEnrollNoIDSegue" id="4PC-Ht-T2I"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qVo-DZ-BYH">
-                                <rect key="frame" x="83" y="339" width="209" height="30"/>
+                                <rect key="frame" x="96" y="339" width="183" height="30"/>
                                 <state key="normal" title="AUTH"/>
                                 <connections>
                                     <segue destination="1Ww-VX-8iu" kind="show" identifier="SIDAuthSegue" id="dcv-vt-iP5"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qPF-nq-pTl">
-                                <rect key="frame" x="83" y="390" width="209" height="30"/>
+                                <rect key="frame" x="96" y="390" width="183" height="30"/>
                                 <state key="normal" title="AUTH 258"/>
                                 <connections>
                                     <segue destination="1Ww-VX-8iu" kind="show" identifier="SIDAuth258Segue" id="bxw-9y-C3K"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8be-97-R20">
-                                <rect key="frame" x="83" y="442" width="209" height="30"/>
+                                <rect key="frame" x="96" y="442" width="183" height="30"/>
                                 <state key="normal" title="AUTH USING SAVED DATA"/>
                                 <connections>
                                     <segue destination="XTm-GG-YEe" kind="show" identifier="SIDAuthUsingSavedDataSegue" id="L6k-r2-k3o"/>
@@ -85,21 +85,20 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="sRg-rN-DVN" firstAttribute="leading" secondItem="fS2-ow-gSh" secondAttribute="leading" constant="83" id="78O-6o-cHT"/>
-                            <constraint firstItem="sRg-rN-DVN" firstAttribute="leading" secondItem="EKn-jo-5Lx" secondAttribute="leading" id="8St-iK-2qO"/>
+                            <constraint firstItem="sRg-rN-DVN" firstAttribute="trailing" secondItem="EKn-jo-5Lx" secondAttribute="trailing" id="4VH-gy-UMQ"/>
+                            <constraint firstItem="qVo-DZ-BYH" firstAttribute="trailing" secondItem="qPF-nq-pTl" secondAttribute="trailing" id="9m4-SN-uOt"/>
                             <constraint firstItem="EKn-jo-5Lx" firstAttribute="top" secondItem="sRg-rN-DVN" secondAttribute="bottom" constant="19" id="CCH-22-KL9"/>
                             <constraint firstItem="qPF-nq-pTl" firstAttribute="top" secondItem="qVo-DZ-BYH" secondAttribute="bottom" constant="21" id="HxW-WV-gQp"/>
-                            <constraint firstItem="qVo-DZ-BYH" firstAttribute="trailing" secondItem="qPF-nq-pTl" secondAttribute="trailing" id="NDL-fz-97y"/>
+                            <constraint firstItem="qPF-nq-pTl" firstAttribute="leading" secondItem="8be-97-R20" secondAttribute="leading" id="Jnf-Nv-saW"/>
+                            <constraint firstItem="EKn-jo-5Lx" firstAttribute="leading" secondItem="qVo-DZ-BYH" secondAttribute="leading" id="LCa-a0-PR1"/>
                             <constraint firstItem="qVo-DZ-BYH" firstAttribute="top" secondItem="EKn-jo-5Lx" secondAttribute="bottom" constant="72" id="SMF-vl-FeS"/>
-                            <constraint firstItem="EKn-jo-5Lx" firstAttribute="leading" secondItem="qVo-DZ-BYH" secondAttribute="leading" id="X3A-Jr-Alo"/>
+                            <constraint firstItem="qVo-DZ-BYH" firstAttribute="leading" secondItem="qPF-nq-pTl" secondAttribute="leading" id="a8p-16-vGw"/>
                             <constraint firstItem="8be-97-R20" firstAttribute="top" secondItem="qPF-nq-pTl" secondAttribute="bottom" constant="22" id="aNG-g4-cYm"/>
-                            <constraint firstItem="qPF-nq-pTl" firstAttribute="leading" secondItem="8be-97-R20" secondAttribute="leading" id="dfA-GU-y4c"/>
-                            <constraint firstItem="qVo-DZ-BYH" firstAttribute="leading" secondItem="qPF-nq-pTl" secondAttribute="leading" id="e4Y-E0-bBR"/>
-                            <constraint firstItem="EKn-jo-5Lx" firstAttribute="trailing" secondItem="qVo-DZ-BYH" secondAttribute="trailing" id="eBI-ah-HtB"/>
-                            <constraint firstItem="sRg-rN-DVN" firstAttribute="trailing" secondItem="EKn-jo-5Lx" secondAttribute="trailing" id="g6S-T0-U9f"/>
+                            <constraint firstItem="8be-97-R20" firstAttribute="centerX" secondItem="JKr-ki-yps" secondAttribute="centerX" id="bup-zx-6Y7"/>
+                            <constraint firstItem="qPF-nq-pTl" firstAttribute="trailing" secondItem="8be-97-R20" secondAttribute="trailing" id="ebr-NS-C96"/>
+                            <constraint firstItem="sRg-rN-DVN" firstAttribute="leading" secondItem="EKn-jo-5Lx" secondAttribute="leading" id="gor-ac-VUp"/>
                             <constraint firstItem="sRg-rN-DVN" firstAttribute="top" secondItem="fS2-ow-gSh" secondAttribute="top" constant="124" id="ihT-ZG-wF1"/>
-                            <constraint firstItem="qPF-nq-pTl" firstAttribute="trailing" secondItem="8be-97-R20" secondAttribute="trailing" id="ji7-33-QQw"/>
-                            <constraint firstItem="sRg-rN-DVN" firstAttribute="centerX" secondItem="JKr-ki-yps" secondAttribute="centerX" id="olY-vo-2a6"/>
+                            <constraint firstItem="EKn-jo-5Lx" firstAttribute="trailing" secondItem="qVo-DZ-BYH" secondAttribute="trailing" id="zoM-ce-yra"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="fS2-ow-gSh"/>
                     </view>
@@ -257,10 +256,11 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wAZ-R9-BWL" userLabel="btnNo">
-                                        <rect key="frame" x="20" y="563" width="60" height="30"/>
+                                        <rect key="frame" x="20" y="559" width="60" height="34"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="60" id="oV8-ak-9je"/>
                                         </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <state key="normal" title="NO">
                                             <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
@@ -269,10 +269,11 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RtT-4O-eNe" userLabel="btnYes">
-                                        <rect key="frame" x="295" y="563" width="60" height="30"/>
+                                        <rect key="frame" x="295" y="559" width="60" height="34"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="60" id="chx-EA-fIn"/>
                                         </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <state key="normal" title="YES"/>
                                         <connections>
                                             <action selector="onClickYesButton:" destination="P4O-ya-5yP" eventType="touchUpInside" id="3ak-E4-dmc"/>
@@ -431,8 +432,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="2Dz-SS-xZ7"/>
-        <segue reference="EQF-2z-UsJ"/>
-        <segue reference="XpM-Tm-coR"/>
+        <segue reference="XFC-gw-gJb"/>
+        <segue reference="bxw-9y-C3K"/>
+        <segue reference="L6k-r2-k3o"/>
     </inferredMetricsTieBreakers>
 </document>
