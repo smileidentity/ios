@@ -11,5 +11,5 @@ import UIKit
 
 protocol CaptureIDCardDelegate {
     func onComplete( previewUIImage : UIImage )
-    func onError( errorCode : Int )
+    func onError( sidError : SIDError )
 }

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 protocol CaptureSelfieDelegate {
-    func onTestDisplayImage( uiImage : UIImage )
+    // func onTestDisplayImage( uiImage : UIImage )
     func onComplete( previewUIImage : UIImage )
     func onError( sidError : SIDError )
 }

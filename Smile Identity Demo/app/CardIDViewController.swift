@@ -85,7 +85,7 @@ class CardIDViewController: UIViewController,
         
     }
         
-    func onError( errorCode : Int ){
+    func onError( sidError : SIDError ){
     }
     
     

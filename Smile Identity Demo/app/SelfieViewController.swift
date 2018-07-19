@@ -100,12 +100,14 @@ class SelfieViewController: UIViewController,
     /*
         Capture Selfie Delegate callbacks
     */
+    /*
     func onTestDisplayImage( uiImage : UIImage ){
         DispatchQueue.main.async {
             self.view.bringSubview(toFront: self.testImageView)
             self.testImageView.image = uiImage
         }
     }
+    */
     
     func onError( sidError : SIDError ){
         let toastUtils = ToastUtils()

@@ -258,10 +258,10 @@
 			children = (
 				A005DC7520C85F88002817F7 /* save */,
 				A0A2B9D720D1DFCA0047115E /* PreviewSize.swift */,
-				A005DC7620C85FF3002817F7 /* FullFrameInfo.swift */,
 				A03860B720B47C4200C7264C /* CaptureIDCardDelegate.swift */,
 				A03860B520B47C4200C7264C /* CaptureIDCardVideoPreview.swift */,
 				A03860BE20B47C4200C7264C /* CaptureIDCard.swift */,
+				A005DC7620C85FF3002817F7 /* FullFrameInfo.swift */,
 				A03860B820B47C4200C7264C /* CaptureSelfie.swift */,
 				A03860BD20B47C4200C7264C /* CaptureSelfieDelegate.swift */,
 				A03860B420B47C4200C7264C /* FaceDetector.swift */,

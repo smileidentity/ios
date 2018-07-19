@@ -16,7 +16,9 @@ class UploadResultViewController:
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var lblResult: UILabel!
     @IBOutlet weak var lblConfidenceLevel: UILabel!
-     
+    
+    static let MAX_RETRY_TIMEOUT_SEC : Int = 15
+    
     @IBAction func onClickUploadNowButton(_ sender: Any) {
         // check if network is available then start the upload
         do {
@@ -99,7 +101,7 @@ class UploadResultViewController:
     
     func getRetryOnFailurePolicy() -> RetryOnFailurePolicy {
         let options = RetryOnFailurePolicy();
-        options.maxRetryTimeoutSec = 15
+        options.maxRetryTimeoutSec = UploadResultViewController.MAX_RETRY_TIMEOUT_SEC
         return options;
     }
 
