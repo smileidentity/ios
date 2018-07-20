@@ -238,7 +238,9 @@ class CaptureIDCard :
 
         
         
-        
+        let appData = AppData()
+        appData.setIdTaken(idTaken: true )
+        appData.setIsIDPresent( isIDPresent: true )
         SmileIDSingleton.sharedInstance.idCardFrame = idCardFrame
         startSaveIdCardService(referenceId: referenceId!)
         

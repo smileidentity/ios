@@ -88,7 +88,7 @@ class StatusResponse {
     func setStatusDataResponse( dict : [String : Any] ){
         error = jsonUtils.getString(dict:dict,
                                     key:StatusResponse.KEY_ERROR,
-                                    defaultVal: "false" )
+                                    defaultVal: "" )
         success = jsonUtils.getBool( dict:dict,
                                      key:StatusResponse.KEY_SUCCESS,
                                      defaultVal: false)
@@ -97,10 +97,10 @@ class StatusResponse {
                                             defaultVal: "" )
         jobComplete = jsonUtils.getString(  dict:dict,
                                             key: StatusResponse.KEY_JOB_COMPLETE,
-                                            defaultVal: "false")
+                                            defaultVal: "")
         jobSuccess = jsonUtils.getString( dict:dict,
                                           key: StatusResponse.KEY_JOB_SUCCESS,
-                                          defaultVal:"false")
+                                          defaultVal:"")
         errors = jsonUtils.getArray(dict: dict,
                                     key: AuthSmileResponse.KEY_ERRORS,
                                     defaultVal : [Any]() ) as! [Bool]

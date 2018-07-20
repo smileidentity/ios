@@ -273,6 +273,13 @@ class UploadService : BaseService, NetRequestDelegate {
     }
     
     
+    func onUploadJobStatusNoNetworkConnection() {
+        uploadServiceDelegate!.onUploadServiceComplete(
+            sidError: SIDError.FAILED_JOB_STATUS_CANCELLED_OR_TIMEOUT,
+            confidenceValue: 0.0,
+            retryFlag: false,
+            partnerParams: nil)
+    }
     
     func onUploadJobStatusCompleteIsEnroll( statusResponse: StatusResponse? ){
         if( statusResponse == nil ){
@@ -281,52 +288,53 @@ class UploadService : BaseService, NetRequestDelegate {
       
         let resultText = statusResponse!.result.resultText
      
-        if( statusResponse!.isJobComplete() ) &&
-            (statusResponse!.isJobSuccess() ) {
+        if( statusResponse!.isJobComplete() ) {
+            if( (statusResponse!.isJobSuccess() ) ){
                 /* success */
                 confidenceValue = statusResponse!.result.getConfidenceValue()
-
+                
                 uploadServiceDelegate!.onUploadServiceComplete(
                     sidError: SIDError.SUCCESS,
                     confidenceValue: confidenceValue,
                     retryFlag: false,
                     partnerParams: statusResponse!.result.partnerParams )
                 
-                 deleteMetaFolder(referenceId: referenceId!);
-        }
-        else {
-             if (resultText.isEmpty) {
-                deleteMetaFolder(referenceId:referenceId!)
-                uploadServiceDelegate!.onUploadServiceComplete(
-                    sidError: SIDError.ENROLL_FAILED,
-                    confidenceValue: confidenceValue,
-                    retryFlag: false,
-                    partnerParams: nil)
-            } else {
-                // Android code was also throwing an exception which
-                // was handled by broadcasting another onFailure.  So
-                // there were two broadcasts
-                
-                if( resultText == "Job type requires an ID Card image." ){
-                     deleteMetaFolder(referenceId: referenceId!)
-                }
-                uploadServiceDelegate!.onUploadServiceComplete(
-                    sidError: SIDError.custom(errMsg: resultText),
-                    confidenceValue: confidenceValue,
-                    retryFlag: false,
-                    partnerParams: nil )
+                deleteMetaFolder(referenceId: referenceId!);
             }
+            else{
+                processEnrollFailure(resultText: resultText )
+            }
+        }
+        else{
+            processEnrollFailure(resultText: resultText )
         }
         clearMetadata()
     }
     
-    func onUploadJobStatusNoNetworkConnection() {
-        uploadServiceDelegate!.onUploadServiceComplete(
-            sidError: SIDError.FAILED_JOB_STATUS_CANCELLED_OR_TIMEOUT,
-            confidenceValue: 0.0,
-            retryFlag: false,
-            partnerParams: nil)
+    func processEnrollFailure( resultText : String ) {
+        if (resultText.isEmpty) {
+            deleteMetaFolder(referenceId:referenceId!)
+            uploadServiceDelegate!.onUploadServiceComplete(
+                sidError: SIDError.ENROLL_FAILED,
+                confidenceValue: confidenceValue,
+                retryFlag: false,
+                partnerParams: nil)
+        } else {
+            // Android code was also throwing an exception which
+            // was handled by broadcasting another onFailure.  So
+            // there were two broadcasts
+            
+            if( resultText == "Job type requires an ID Card image." ){
+                deleteMetaFolder(referenceId: referenceId!)
+            }
+            uploadServiceDelegate!.onUploadServiceComplete(
+                sidError: SIDError.custom(errMsg: resultText),
+                confidenceValue: confidenceValue,
+                retryFlag: false,
+                partnerParams: nil )
+        }
     }
+
     
     func onUploadJobStatusCompleteAuthenticated(
         statusResponse: StatusResponse? ){
@@ -340,9 +348,8 @@ class UploadService : BaseService, NetRequestDelegate {
         }
         
         
-        
-        if( statusResponse!.isJobComplete() ) &&
-            (statusResponse!.isJobSuccess() ) {
+        if( statusResponse!.isJobComplete() ){
+            if ( statusResponse!.isJobSuccess() ) {
                 /* success */
                 confidenceValue = statusResponse!.result.getConfidenceValue()
                 
@@ -351,21 +358,28 @@ class UploadService : BaseService, NetRequestDelegate {
                     confidenceValue: confidenceValue,
                     retryFlag: false,
                     partnerParams: statusResponse!.result.partnerParams )
-                 deleteMetaFolder(referenceId: referenceId!)
+                deleteMetaFolder(referenceId: referenceId!)
+            }
+            else{
+                processAuthFailure()
+            }
         }
         else{
-            deleteMetaFolder(referenceId:referenceId!)
-            uploadServiceDelegate!.onUploadServiceComplete(
-                sidError: SIDError.UNABLE_TO_VERIFY,
-                confidenceValue: confidenceValue,
-                retryFlag: false,
-                partnerParams: nil)
+            processAuthFailure()
         }
-    
-    
+        
         clearMetadata()
     }
+   
     
+    func processAuthFailure() {
+        deleteMetaFolder(referenceId:referenceId!)
+        uploadServiceDelegate!.onUploadServiceComplete(
+            sidError: SIDError.UNABLE_TO_VERIFY,
+            confidenceValue: confidenceValue,
+            retryFlag: false,
+            partnerParams: nil)
+    }
     
     func onUpdateJobStatus( msg : String ){
         uploadServiceDelegate?.onUpdateJobStatus( msg: msg )

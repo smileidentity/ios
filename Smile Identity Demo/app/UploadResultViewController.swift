@@ -13,6 +13,8 @@ class UploadResultViewController:
     UIViewController,
     SIDNetworkRequestDelegate {
 
+    @IBOutlet weak var lblAlert: UILabel!
+    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var lblResult: UILabel!
     @IBOutlet weak var lblConfidenceLevel: UILabel!
@@ -58,8 +60,17 @@ class UploadResultViewController:
     override func viewDidLoad() {
         super.viewDidLoad()
       
-        toastView.isHidden = true
+        lblAlert.text = ""
         stopActivityIndicator()
+        
+        // TEST
+        /*
+        let sidResponse = SIDResponse( partnerParams:PartnerParams(),
+                                       success: true,
+                                       confidenceValue: 1.0 )
+        onEnrolled( sidResponse: sidResponse )
+         */
+        
   
     }
     
@@ -110,17 +121,18 @@ class UploadResultViewController:
         // Dispose of any resources that can be recreated.
     }
     
-    func showToast( toastView   : UIView,
-                    lblToast    : UILabel,
+    func showToast(
                     msg         : String ){
-        toastView.isHidden = false
-        lblToast.text = msg
-        _ = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(hideToast), userInfo: nil, repeats: false)
+ 
+        lblAlert.text = msg
+    
+
+        _ = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(hideToast), userInfo: nil, repeats: false)
         
     }
     
     @objc func hideToast(){
-        toastView?.isHidden = true
+          lblAlert.text = ""
     }
     
     func startActivityIndicator() {
@@ -145,18 +157,14 @@ class UploadResultViewController:
     func onComplete() {
         stopActivityIndicator()
         if( isEnrollMode ){
-            showToast(toastView: toastView,
-                      lblToast: lblToast,
-                      msg: "Job Complete" )
+            showToast( msg: "Job Complete" )
         }
     }
     
     
     func onError(sidError: SIDError) {
         stopActivityIndicator()
-        showToast(toastView: toastView,
-                  lblToast: lblToast,
-                  msg: sidError.message )
+        showToast( msg: sidError.message )
     }
     
     
@@ -201,6 +209,12 @@ class UploadResultViewController:
             resultText = "ENROLL FAILED"
         }
         updateUI(resultText: resultText!, confidenceText: confidenceText, color : color! )
+        
+        
+        
+        // TEST
+        showToast( msg: "TEST" )
+        
         
     }
     

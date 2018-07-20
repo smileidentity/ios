@@ -18,7 +18,7 @@ UploadServiceDelegate {
     
     
     static let PARTNER_ID           : String = "003";
-    
+
     /* Default value of optionals is nil */
     
     var delegate                : SIDNetworkRequestDelegate?
@@ -353,26 +353,25 @@ UploadServiceDelegate {
                     self.delegate?.onEnrolled(sidResponse: sidResponse )
                 }
             }
-            else{
+  
                 
-                DispatchQueue.main.async {
-                    self.delegate?.onError( sidError: sidError )
-                }
-                
-               
-                if( unableToVerify(sidError: sidError ) ){
-                    DispatchQueue.main.async {
-                        self.delegate?.onAuthenticated(sidResponse: sidResponse )
-                    }
-                    cancelRetries()
-                }
-                else{
-                    // cancel the uploadjobstatus
-                    uploadService!.cancel()
-                
-                    doSubmit( delay: Double( retryOnFailurePolicy.maxRetryTimeoutSec) )
-                }
+            DispatchQueue.main.async {
+                self.delegate?.onError( sidError: sidError )
             }
+            
+            if( unableToVerify(sidError: sidError ) ){
+                DispatchQueue.main.async {
+                    self.delegate?.onAuthenticated(sidResponse: sidResponse )
+                }
+                cancelRetries()
+            }
+            else{
+                // cancel the uploadjobstatus
+                uploadService!.cancel()
+            
+                doSubmit( delay: Double( retryOnFailurePolicy.maxRetryTimeoutSec) )
+            }
+            
         }
  
 
