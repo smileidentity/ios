@@ -62,16 +62,8 @@ class UploadResultViewController:
       
         lblAlert.text = ""
         stopActivityIndicator()
+   
         
-        // TEST
-        /*
-        let sidResponse = SIDResponse( partnerParams:PartnerParams(),
-                                       success: true,
-                                       confidenceValue: 1.0 )
-        onEnrolled( sidResponse: sidResponse )
-         */
-        
-  
     }
     
     func createConfig() -> SIDConfig {
@@ -100,7 +92,13 @@ class UploadResultViewController:
         }
         else{
             sidConfig.isEnrollMode = false
-            sidConfig.jobType = 258
+            if( use258 ){
+                sidConfig.jobType = 258
+            }
+            else{
+                sidConfig.jobType = -1
+            }
+            
         }
         
         sidConfig.build(tag: SmileIDSingleton.USER_TAG)
@@ -209,12 +207,6 @@ class UploadResultViewController:
             resultText = "ENROLL FAILED"
         }
         updateUI(resultText: resultText!, confidenceText: confidenceText, color : color! )
-        
-        
-        
-        // TEST
-        showToast( msg: "TEST" )
-        
         
     }
     

@@ -254,12 +254,15 @@ class UploadService : BaseService, NetRequestDelegate {
     // Step 5 Upload job status
     func uploadJobStatus() {
         
+        var useLastEnrollJobId = true
         if( !(isEnrollMode!) ){
             uploadServiceDelegate?.onStartJobStatus()
+            useLastEnrollJobId = false
         }
         netRequest!.uploadJobStatus(partnerUrl: (sidNetData?.partnerUrl)!,
                                     jobStatusUrl: (sidNetData?.jobStatusUrl)!,
-                                    isEnrollMode: isEnrollMode!);
+                                    isEnrollMode: isEnrollMode!,
+                                    useLastEnrollJobId : useLastEnrollJobId );
         
     }
     

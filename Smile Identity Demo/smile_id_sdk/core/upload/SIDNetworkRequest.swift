@@ -189,7 +189,7 @@ UploadServiceDelegate {
                 if( (!userId!.isEmpty) &&
                     (!jobId!.isEmpty) ){
                     appData.setUserId(userId: userId!)
-                    appData.setJobId(jobId: jobId!)
+                    appData.setLastEnrollJobId(lastEnrollJobId: jobId!)
                 }
             }
         }

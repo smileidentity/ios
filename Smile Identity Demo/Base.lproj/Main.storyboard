@@ -165,6 +165,7 @@
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="rLd-b9-Prd" id="WP2-ji-xih"/>
+                        <outlet property="lblAlert" destination="ghs-zY-MEM" id="XC7-op-bIB"/>
                         <outlet property="lblConfidenceLevel" destination="47P-pl-HqU" id="Jjq-U1-cra"/>
                         <outlet property="lblResult" destination="i61-vS-eOf" id="x9B-ok-7kS"/>
                     </connections>
@@ -333,7 +334,6 @@
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RHZ-Qq-V1C" userLabel="lblConfidenceLevel">
                                 <rect key="frame" x="0.0" y="264" width="375" height="0.0"/>
-                                <color key="backgroundColor" red="0.94901960780000005" green="0.3921568627" blue="0.42745098040000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>

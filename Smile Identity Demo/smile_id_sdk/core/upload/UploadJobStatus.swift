@@ -20,7 +20,7 @@ class UploadJobStatus {
     var smileClientId               : String?
     var lastEnrolledJobId           : String?
     var jobId                       : String?
-    var isEnrollMode                : Bool?
+    var useLastEnrollJobId                : Bool?
     
     let jsonUtils                   = JsonUtils()
     
@@ -28,14 +28,14 @@ class UploadJobStatus {
           smileClientId : String,
           lastEnrolledJobId : String,
           jobId : String,
-          isEnrollMode : Bool ){
+          useLastEnrollJobId : Bool ){
         
         self.userId = userId;
         
         self.smileClientId = smileClientId;
         self.lastEnrolledJobId = lastEnrolledJobId;
         self.jobId = jobId
-        self.isEnrollMode = isEnrollMode
+        self.useLastEnrollJobId = useLastEnrollJobId
         
    
     }
@@ -63,7 +63,7 @@ class UploadJobStatus {
                              key: UploadJobStatus.KEY_JSON_TIMESTAMP,
                              val: Int64(NSDate().timeIntervalSince1970 * 1000) )
 
-        if( isEnrollMode! ){
+        if( useLastEnrollJobId! ){
             jsonUtils.putString( dict: &dict,
                             key: UploadJobStatus.KEY_JSON_JOB_ID,
                             val: lastEnrolledJobId! )

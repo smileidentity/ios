@@ -56,7 +56,7 @@ class CaptureSelfie :
 
         
         let appData = AppData()
-        appData.clearAll()
+
         referenceId = appData.createReferenceId(tag: SmileIDSingleton.USER_TAG )
         appData.setRefID(refID: referenceId!)
         

@@ -121,7 +121,10 @@ class NetRequest {
         else {
             // uploadJobStatus is called from here, and also from UploadService.
             isExecuteAuthSmile = true
-            uploadJobStatus(partnerUrl: partnerUrl, jobStatusUrl: jobStatusUrl, isEnrollMode: isEnrollMode )
+            uploadJobStatus(partnerUrl: partnerUrl,
+                            jobStatusUrl: jobStatusUrl,
+                            isEnrollMode: isEnrollMode,
+                            useLastEnrollJobId: true)
         }
     }
     
@@ -153,7 +156,8 @@ class NetRequest {
     
     func uploadJobStatus( partnerUrl: String,
                           jobStatusUrl : String,
-                          isEnrollMode : Bool ) {
+                          isEnrollMode : Bool,
+                          useLastEnrollJobId : Bool ) {
         
         let appData = AppData()
         
@@ -162,7 +166,7 @@ class NetRequest {
             smileClientId: appData.getSmileClientId( defaultSmileClientId: "" )!,
             lastEnrolledJobId: appData.getLastEnrollJobId( defaultLastEnrollJobId: "" )!,
             jobId: appData.getJobId(defaultJobId: "")!,
-            isEnrollMode: isEnrollMode)
+            useLastEnrollJobId: useLastEnrollJobId )
         
         uploadJobStatusAttemptNum = 0
         uploadJobStatusStartTime = Date().timeIntervalSince1970
@@ -246,7 +250,7 @@ class NetRequest {
                                 }
                                 else{
                                     // Local callback - from android port
-                                    self.onUploadJobStatusComplete( statusResponse: statusResponse! )
+                                self.onUploadJobStatusComplete( statusResponse: statusResponse! )
                                 }
                                 
                                 done = true
