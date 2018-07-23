@@ -200,7 +200,7 @@ class CaptureSelfie :
     func captureOutput(_ output: AVCaptureOutput,
                        didDrop sampleBuffer: CMSampleBuffer,
                        from connection: AVCaptureConnection){
-        print( "captureOutput : dropped frame");
+        // print( "captureOutput : dropped frame");
     }
     
     func captureOutput(_ output: AVCaptureOutput,
@@ -209,7 +209,7 @@ class CaptureSelfie :
     {
         /*for kCVPixelFormatType_32BGRA */
 
-
+        // print( "Selfie : captureOutput didOutput" )
 
         DispatchQueue(label: "faceDetection").async {
             self.processImage(sampleBuffer: sampleBuffer);

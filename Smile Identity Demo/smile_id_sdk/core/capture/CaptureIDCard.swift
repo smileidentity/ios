@@ -119,21 +119,21 @@ class CaptureIDCard :
     // Monitoring Capture Progress
     func photoOutput(_ output: AVCapturePhotoOutput,
                      willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings){
-        print( "photoOutput : willBeginCaptureFor" );
+        // print( "photoOutput : willBeginCaptureFor" );
     }
     
     func photoOutput(_: AVCapturePhotoOutput, willCapturePhotoFor: AVCaptureResolvedPhotoSettings){
-        print( "photoOutput : willCapturePhotoFor" );
+        // print( "photoOutput : willCapturePhotoFor" );
     }
     
     func photoOutput(_: AVCapturePhotoOutput, didCapturePhotoFor: AVCaptureResolvedPhotoSettings){
-        print( "photoOutput : didCapturePhotoFor" );
+        // print( "photoOutput : didCapturePhotoFor" );
     }
     
     func photoOutput(_ captureOutput: AVCapturePhotoOutput,
                      didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings,
                      error: Error?) {
-        print( "photoOutput : didCapturePhotoFor" );
+        // print( "photoOutput : didCapturePhotoFor" );
         guard error == nil else {
             print("Error capture process: \(error ?? "An error occurred capturing the photo" as! Error)")
             return
@@ -144,7 +144,7 @@ class CaptureIDCard :
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         
-        print( "photoOutput : didFinishProcessingPhoto" );
+        // print( "photoOutput : didFinishProcessingPhoto" );
         // Check if there is any error in capturing
         guard error == nil else {
             print("Fail to capture photo: \(String(describing: error))")
@@ -171,11 +171,12 @@ class CaptureIDCard :
         
        
         // translate mask dimensions */
-        
+        /*
         print( "uiImage width = ", uiImageFull.size.width )
         print( "uiImage height = ", uiImageFull.size.height )
         print( "preview width = ", previewView!.bounds.width )
         print( "preview height = ", previewView!.bounds.height )
+        */
         
         // uiImageFull height is greater than width.
         // which is opposite what the preview is.
@@ -199,7 +200,7 @@ class CaptureIDCard :
         
         // uiimage to crop is portrait so switch
         let cropRect = CGRect( x:left, y:top, width:width, height:height)
-        print( "cropRect = ", cropRect )
+        // print( "cropRect = ", cropRect )
         
         let imageUtils = ImageUtils()
         
