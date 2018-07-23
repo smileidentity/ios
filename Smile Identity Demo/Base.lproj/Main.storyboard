@@ -128,14 +128,17 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ghs-zY-MEM" userLabel="lblAlert">
-                                <rect key="frame" x="187.5" y="314" width="0.0" height="0.0"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ghs-zY-MEM" userLabel="lblAlert">
+                                <rect key="frame" x="20" y="314" width="335" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="w7x-33-kct"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qgq-86-JHR" userLabel="btnUploadNow">
-                                <rect key="frame" x="127" y="364" width="120" height="28"/>
+                                <rect key="frame" x="127" y="464" width="120" height="28"/>
                                 <inset key="contentEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
                                 <state key="normal" title="UPLOAD NOW"/>
                                 <connections>
@@ -154,10 +157,12 @@
                             <constraint firstItem="qgq-86-JHR" firstAttribute="top" secondItem="ghs-zY-MEM" secondAttribute="bottom" constant="50" id="BWQ-ev-q4u"/>
                             <constraint firstItem="47P-pl-HqU" firstAttribute="leading" secondItem="Dk2-43-di1" secondAttribute="leading" id="E4j-Gf-bRW"/>
                             <constraint firstItem="47P-pl-HqU" firstAttribute="top" secondItem="i61-vS-eOf" secondAttribute="bottom" constant="100" id="Mw4-ba-hTC"/>
+                            <constraint firstItem="ghs-zY-MEM" firstAttribute="leading" secondItem="Dk2-43-di1" secondAttribute="leading" constant="20" id="cNS-sC-tNm"/>
                             <constraint firstItem="rLd-b9-Prd" firstAttribute="top" secondItem="Dk2-43-di1" secondAttribute="top" constant="50" id="dTb-Do-uz1"/>
                             <constraint firstItem="ghs-zY-MEM" firstAttribute="centerX" secondItem="vVf-hc-vri" secondAttribute="centerX" id="eHI-EO-Uw6"/>
                             <constraint firstItem="Dk2-43-di1" firstAttribute="trailing" secondItem="i61-vS-eOf" secondAttribute="trailing" id="fE5-jf-XNr"/>
                             <constraint firstItem="qgq-86-JHR" firstAttribute="centerX" secondItem="vVf-hc-vri" secondAttribute="centerX" id="kbK-6Y-fpD"/>
+                            <constraint firstItem="Dk2-43-di1" firstAttribute="trailing" secondItem="ghs-zY-MEM" secondAttribute="trailing" constant="20" id="r8y-Ux-ob7"/>
                             <constraint firstItem="ghs-zY-MEM" firstAttribute="top" secondItem="47P-pl-HqU" secondAttribute="bottom" constant="50" id="xw3-ny-s8A"/>
                             <constraint firstItem="i61-vS-eOf" firstAttribute="leading" secondItem="Dk2-43-di1" secondAttribute="leading" id="zJS-QQ-nFv"/>
                         </constraints>
@@ -338,14 +343,18 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uIb-pT-KFJ" userLabel="lblAlert">
-                                <rect key="frame" x="188" y="314" width="0.0" height="0.0"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uIb-pT-KFJ" userLabel="lblAlert">
+                                <rect key="frame" x="20" y="314" width="335" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="MNf-Gp-aJk"/>
+                                </constraints>
+                                <string key="text">adfadsfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfsdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sgC-cr-ntN" userLabel="btnUploadNow">
-                                <rect key="frame" x="128" y="364" width="120" height="28"/>
+                                <rect key="frame" x="128" y="464" width="120" height="28"/>
                                 <inset key="contentEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
                                 <state key="normal" title="UPLOAD NOW"/>
                                 <connections>
@@ -367,7 +376,9 @@
                             <constraint firstItem="uIb-pT-KFJ" firstAttribute="centerX" secondItem="y0A-Iv-5wK" secondAttribute="centerX" id="a8u-Zo-Dwf"/>
                             <constraint firstItem="RHZ-Qq-V1C" firstAttribute="leading" secondItem="fnb-NK-sWR" secondAttribute="leading" id="dCR-LX-lVd"/>
                             <constraint firstItem="RHZ-Qq-V1C" firstAttribute="top" secondItem="MAi-UZ-T4e" secondAttribute="bottom" constant="100" id="riU-pc-gQf"/>
+                            <constraint firstItem="fnb-NK-sWR" firstAttribute="trailing" secondItem="uIb-pT-KFJ" secondAttribute="trailing" constant="20" id="sFc-Cu-WqM"/>
                             <constraint firstItem="fnb-NK-sWR" firstAttribute="trailing" secondItem="RHZ-Qq-V1C" secondAttribute="trailing" id="tUo-RZ-dAF"/>
+                            <constraint firstItem="uIb-pT-KFJ" firstAttribute="leading" secondItem="fnb-NK-sWR" secondAttribute="leading" constant="20" id="tuy-YU-vyG"/>
                             <constraint firstItem="sgC-cr-ntN" firstAttribute="top" secondItem="uIb-pT-KFJ" secondAttribute="bottom" constant="50" id="vaT-hH-UtQ"/>
                             <constraint firstItem="O7W-6Q-1cL" firstAttribute="centerX" secondItem="y0A-Iv-5wK" secondAttribute="centerX" id="xqk-vc-Obu"/>
                         </constraints>
