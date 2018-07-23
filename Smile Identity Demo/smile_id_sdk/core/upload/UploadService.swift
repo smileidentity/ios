@@ -361,7 +361,8 @@ class UploadService : BaseService, NetRequestDelegate {
                     confidenceValue: confidenceValue,
                     retryFlag: false,
                     partnerParams: statusResponse!.result.partnerParams )
-                deleteMetaFolder(referenceId: referenceId!)
+                // TEST if we want to test auth with saved data, then we can't delete this.
+                // deleteMetaFolder(referenceId: referenceId!)
             }
             else{
                 processAuthFailure()
