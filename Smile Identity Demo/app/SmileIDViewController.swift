@@ -11,9 +11,17 @@ import MapKit
 
 class SmileIDViewController: UIViewController, CLLocationManagerDelegate {
   
+    /* This defines the "unwindToSmileID" unwind segue */
+    @IBAction func unwindToSmileID( _sender:UIStoryboardSegue ){
+        print( "unwindToSmileID" )
+    }
+    
     var locationManager         : CLLocationManager!
     var currentLocation         : CLLocation?
 
+   
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()

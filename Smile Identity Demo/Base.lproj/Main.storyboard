@@ -148,6 +148,11 @@
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="rLd-b9-Prd">
                                 <rect key="frame" x="177" y="114" width="20" height="20"/>
                             </activityIndicatorView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pVh-pq-0t7">
+                                <rect key="frame" x="164" y="569" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -173,9 +178,11 @@
                         <outlet property="lblAlert" destination="ghs-zY-MEM" id="XC7-op-bIB"/>
                         <outlet property="lblConfidenceLevel" destination="47P-pl-HqU" id="Jjq-U1-cra"/>
                         <outlet property="lblResult" destination="i61-vS-eOf" id="x9B-ok-7kS"/>
+                        <segue destination="cff-NL-4IU" kind="unwind" identifier="unwindToSmileID" unwindAction="unwindToSmileIDWith_sender:" id="cXz-o3-diu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ows-v8-ieu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="cff-NL-4IU" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2552.8000000000002" y="502.39880059970017"/>
         </scene>
@@ -317,9 +324,11 @@
                         <outlet property="capturedImageView" destination="NN0-yj-7p3" id="t8f-eX-V0N"/>
                         <outlet property="previewView" destination="suZ-7b-PXE" id="dRO-7I-lrM"/>
                         <segue destination="VXx-ZU-WMv" kind="show" identifier="CardIDToEnrollResultSegue" id="XFC-gw-gJb"/>
+                        <segue destination="Xo8-If-4P0" kind="unwind" identifier="unwindToSmileID" unwindAction="unwindToSmileIDWith_sender:" id="gzd-hJ-oDv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="34z-U6-c9y" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Xo8-If-4P0" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="3765.5999999999999" y="-252.32383808095955"/>
         </scene>
@@ -343,12 +352,11 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uIb-pT-KFJ" userLabel="lblAlert">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uIb-pT-KFJ" userLabel="lblAlert">
                                 <rect key="frame" x="20" y="314" width="335" height="100"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="MNf-Gp-aJk"/>
                                 </constraints>
-                                <string key="text">adfadsfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfsdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -389,9 +397,11 @@
                         <outlet property="lblAlert" destination="uIb-pT-KFJ" id="dd5-6i-0Bu"/>
                         <outlet property="lblConfidenceLevel" destination="RHZ-Qq-V1C" id="9oh-V1-mJ6"/>
                         <outlet property="lblResult" destination="MAi-UZ-T4e" id="m2e-yN-4Ev"/>
+                        <segue destination="urf-Vx-RJ6" kind="unwind" identifier="unwindToSmileID" unwindAction="unwindToSmileIDWith_sender:" id="aZL-Xp-ied"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nKr-BX-C52" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="urf-Vx-RJ6" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="3372" y="502.39880059970017"/>
         </scene>

@@ -57,6 +57,20 @@ class UploadResultViewController:
     var geoInfos           : GeoInfos?
 
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated )
+        
+        /* Unwind segue */
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.backButtonPressed(sender:)))
+    }
+    
+    @objc func backButtonPressed(sender:UIButton) {
+        print( "backButtonPressed")
+        /* The "unwindToSmileID" segue is defined in SmileIDViewController */
+        self.performSegue(withIdentifier: "unwindToSmileID", sender: self)
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
       
@@ -65,6 +79,7 @@ class UploadResultViewController:
    
         
     }
+    
     
     func createConfig() -> SIDConfig {
         

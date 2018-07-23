@@ -68,20 +68,11 @@ class SelfieViewController: UIViewController,
 
         /* SelfieToCardIDSegue and SelfieToEnrollResultSegue */
         if( segue.identifier == "SelfieToAuthResultSegue" ) {
-            /* Pops this view controller but it temporarily shows SmileIDViewController before going
-             to AuthResultViewController.
-             Also, AuthResultViewController does not show the Navigation Controller
-             navigationController?.popViewController(animated: false)
-             As a workaround, may have to send this as a delegate.
-             When the Back is pressed on AuthResult, then pop this one.
-             */
-            // navigationController?.popViewController(animated: false)
-            
             let uploadResultViewController = segue.destination as! UploadResultViewController
             uploadResultViewController.isEnrollMode = false
             uploadResultViewController.use258 = use258!;
             // hasId is not used with authMode
-        }
+         }
         else if ( segue.identifier == "SelfieToEnrollResultSegue" ){
             // Enroll mode
             let uploadResultViewController =
@@ -89,11 +80,13 @@ class SelfieViewController: UIViewController,
             uploadResultViewController.isEnrollMode = true
             // use258 is not used with enroll mode
             uploadResultViewController.hasId = hasId!
+             
 
         }
+
         
         // The only other segue is to the card id controller,
-        // so no values are passe through in this case.
+        // so no values are passed through in this case.
         
     }
     

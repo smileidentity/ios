@@ -37,6 +37,9 @@ class CardIDViewController: UIViewController,
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        /* Unwind segue */
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.backButtonPressed(sender:)))
+        
         captureIDCard = CaptureIDCard()
         captureIDCard?.setup(captureIDCardDelegate: self,
                              previewView: previewView)
@@ -49,6 +52,13 @@ class CardIDViewController: UIViewController,
         logger.SIPrint( logOutput: "id card end viewWillAppear" )
 
     }
+    
+    @objc func backButtonPressed(sender:UIButton) {
+        print( "backButtonPressed")
+        /* The "unwindToSmileID" segue is defined in SmileIDViewController */
+        self.performSegue(withIdentifier: "unwindToSmileID", sender: self)
+    }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
