@@ -24,9 +24,10 @@ UploadServiceDelegate {
     var delegate                : SIDNetworkRequestDelegate?
     var tag                     : String?
     var retryOnFailurePolicy    = RetryOnFailurePolicy()
+    var maxRetryCount           : Int?
+    var currentRetry            : Int = 0
     var partnerParams           : PartnerParams?
     var jobType                 : Int = -1
-    var currentRetryCount       : Int?
     var sidNetData              : SIDNetData?
     var isEnrollMode            : Bool = false
     var hasId                   : Bool = false
@@ -48,6 +49,7 @@ UploadServiceDelegate {
     
     func initialize() {
         self.geoInfos = SmileIDSingleton.sharedInstance.geoInfos
+        currentRetry = 0
     }
     
     
@@ -78,13 +80,16 @@ UploadServiceDelegate {
         
         if( sidConfig.retryOnFailurePolicy != nil ){
             retryOnFailurePolicy = sidConfig.retryOnFailurePolicy!
+            maxRetryCount = retryOnFailurePolicy.getMaxRetryCount()
+        }
+        else{
+            maxRetryCount = 50
         }
         
         partnerParams = PartnerParams()
         jobType = sidConfig.jobType
         
   
-        currentRetryCount = retryOnFailurePolicy.getMaxRetryCount()
         sidNetData = sidConfig.sidNetData
         isEnrollMode = sidConfig.isEnrollMode
         hasId = sidConfig.useIdCard
@@ -111,13 +116,14 @@ UploadServiceDelegate {
         
         
         // This will start the process of packaging and uploading.
+        currentRetry = 0
         doSubmit( delay: SIDNetworkRequest.DEFAULT_DELAY )
     }
 
     
     func doSubmit( delay : Double ) {
         
-        if( currentRetryCount! < 0 ){
+        if( currentRetry < 0 ){
             return
         }
         
@@ -132,7 +138,7 @@ UploadServiceDelegate {
                   sidNetData: self.sidNetData!,
                   isEnrollMode : self.isEnrollMode )
         }
-        currentRetryCount = currentRetryCount! - 1
+  
   
     }
     
@@ -369,7 +375,10 @@ UploadServiceDelegate {
                 // cancel the uploadjobstatus
                 uploadService!.cancel()
             
-                doSubmit( delay: Double( retryOnFailurePolicy.maxRetryTimeoutSec) )
+                if( currentRetry < maxRetryCount! ){
+                    currentRetry = currentRetry + 1
+                    doSubmit( delay: Double( retryOnFailurePolicy.maxRetryTimeoutSec) )
+                }
             }
             
         }

@@ -119,12 +119,10 @@ class UploadResultViewController:
         // Dispose of any resources that can be recreated.
     }
     
-    func showToast(
-                    msg         : String ){
+    func showToast( msg         : String ){
  
         lblAlert.text = msg
-    
-
+ 
         _ = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(hideToast), userInfo: nil, repeats: false)
         
     }
