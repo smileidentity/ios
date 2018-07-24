@@ -13,7 +13,7 @@ class SmileIDViewController: UIViewController, CLLocationManagerDelegate {
   
     /* This defines the "unwindToSmileID" unwind segue */
     @IBAction func unwindToSmileID( _sender:UIStoryboardSegue ){
-        print( "unwindToSmileID" )
+        // print( "unwindToSmileID" )
     }
     
     var locationManager         : CLLocationManager!
@@ -42,7 +42,6 @@ class SmileIDViewController: UIViewController, CLLocationManagerDelegate {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Nothing is passed through for the SIDAuthUsingSavedDataSegue
-        // print( "segue.identifier = ", segue.identifier )
         if( segue.identifier == "SIDAuthUsingSavedDataSegue" ){
             
             let uploadResultViewController = segue.destination as! UploadResultViewController
@@ -93,16 +92,12 @@ class SmileIDViewController: UIViewController, CLLocationManagerDelegate {
         
         locationManager.stopUpdatingLocation()
         currentLocation = locations[0]
-        let appData = AppData()
         // TEST for debugging
         let latitude = (currentLocation?.coordinate.latitude)!
         let longitude = (currentLocation?.coordinate.longitude)!
         let altitude = (currentLocation?.altitude)!
         let time = DateTimeUtils().getCurrentDateTime()
-        print( "lat = " + String( latitude ) )
-        print( "lng = " + String( longitude ) )
-        print( "alt = " +  String( altitude ) )
-        print( "time = " + String( time ) )
+
  
 
         SmileIDSingleton.sharedInstance.geoInfos = GeoInfos(latitude: latitude, longitude: longitude, altitude: altitude, accuracy: kCLLocationAccuracyBest, lastUpdate: time)

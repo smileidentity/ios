@@ -140,7 +140,7 @@ class PackageService : BaseSaveService {
             
         }
         catch {
-            print( "CreatePackageInfo : An error occurred ")
+            self.logger.SIPrint( logOutput: "CreatePackageInfo : An error occurred ")
             packageServiceDelegate?.onPackagingError(sidError: SIDError.DATA_PACKAGING_FAILED )
         }
         

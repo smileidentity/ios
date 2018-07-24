@@ -72,7 +72,7 @@ class CaptureSelfie :
         // let device = AVCaptureDevice.default(for: AVMediaType.video)
         guard let device = AVCaptureDevice.default(AVCaptureDevice.DeviceType.builtInWideAngleCamera, for: .video, position: .front) else{
                 SmileIDSingleton.sharedInstance.selfieCameraExists = false
-                print( "No front camera available" )
+                logger.SIPrint(logOutput: "No front camera available" )
                 captureSelfieDelegate.onError(sidError:
                 SIDError.NO_FRONT_FACING_CAMERA_AVAILABLE)
             
@@ -98,7 +98,7 @@ class CaptureSelfie :
         } catch let error1 as NSError {
             error = error1
             input = nil
-            print(error!.localizedDescription)
+            logger.SIPrint(logOutput: error!.localizedDescription)
         }
         
         // Add input
@@ -200,7 +200,7 @@ class CaptureSelfie :
     func captureOutput(_ output: AVCaptureOutput,
                        didDrop sampleBuffer: CMSampleBuffer,
                        from connection: AVCaptureConnection){
-        // print( "captureOutput : dropped frame");
+        // logger.SIPrint(logOutput:  "captureOutput : dropped frame");
     }
     
     func captureOutput(_ output: AVCaptureOutput,
@@ -209,7 +209,7 @@ class CaptureSelfie :
     {
         /*for kCVPixelFormatType_32BGRA */
 
-        // print( "Selfie : captureOutput didOutput" )
+        // logger.SIPrint(logOutput:  "Selfie : captureOutput didOutput" )
 
         DispatchQueue(label: "faceDetection").async {
             self.processImage(sampleBuffer: sampleBuffer);
@@ -220,7 +220,7 @@ class CaptureSelfie :
     
     
     func onFaceStateChanged( faceState : Int ) {
-        // print( "updatePrompt : faceState = ", faceState )
+        // logger.SIPrint(logOutput:  "updatePrompt : faceState = ", faceState )
         switch( faceState ){
         case FaceDetectorConstants.DO_MOVE_CLOSER :
             DispatchQueue.main.async {
@@ -278,7 +278,7 @@ class CaptureSelfie :
                 
                 
                 if( frameNum! > CaptureConfig.DEFAULT_NUM_IMAGES_TO_CAPTURE ){
-                    //print( "show smile and take pic" )
+                    //logger.SIPrint(logOutput: "show smile and take pic" )
                     if( faceDetector?.hasSmile() )!{
                         
                         // Take picture for selfie ui preview,
@@ -344,7 +344,7 @@ class CaptureSelfie :
                                    width: width,
                                    height: height,
                                    exif: exif)
-        // print( "frameData = ", frameData.toString() )
+        // logger.SIPrint(logOutput:  "frameData = ", frameData.toString() )
         
         frameNum = frameNum! + 1
         
@@ -355,7 +355,7 @@ class CaptureSelfie :
                     numImagesToCapture: CaptureConfig.DEFAULT_NUM_IMAGES_TO_CAPTURE,
                     frameNum: frameNum!);
             if( indexToReplace != -1 ){
-                //print( "CameraSource : frameNum = ", String(frameNum!), " calling RubberBandUtils getIndexToReplace = ", indexToReplace );
+                //logger.SIPrint(logOutput:  "CameraSource : frameNum = ", String(frameNum!), " calling RubberBandUtils getIndexToReplace = ", indexToReplace );
                 
                 framesList[indexToReplace] = frameData
             }

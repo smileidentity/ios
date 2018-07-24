@@ -10,6 +10,8 @@ import Foundation
 
 class BaseSaveService : BaseService {
     
+    let logger                              = SILog()
+    
     func saveFrameData( frame : FrameData,
                         filename : String,
                         orientation : Int,
@@ -49,16 +51,16 @@ class BaseSaveService : BaseService {
             
             // This returns true
             var fileExists = fileManager.fileExists(atPath: (url.path) )
-            print( "fileExists = " + String( fileExists ) )
+            self.logger.SIPrint( logOutput: "fileExists = " + String( fileExists ) )
    
             // this returns true
             fileExists = siFileManager.fileExists( fullFilePath: fullFilePath )
-            print( "fileExists = " + String( fileExists ) +
+            self.logger.SIPrint( logOutput: "fileExists = " + String( fileExists ) +
             ", fullFilePath = " + fullFilePath)
             
             
             var fileSize = siFileManager.getFileSize( filePath: fullFilePath )
-            print( "fileSize = " + String( fileSize ) )
+            self.logger.SIPrint( logOutput:  "fileSize = " + String( fileSize ) )
             
      
         } catch {

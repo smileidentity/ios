@@ -49,6 +49,7 @@ class NetRequest {
     var uploadJobStatusStartTime            : Double = 0.0
     
     
+    
     init( netRequestDelegate : NetRequestDelegate ){
         self.netRequestDelegate = netRequestDelegate
     }
@@ -202,7 +203,7 @@ class NetRequest {
         }
         
         
-        print( "uploadJobStatusAttemptNum = " + String( uploadJobStatusAttemptNum ) )
+        self.logger.SIPrint( logOutput: "uploadJobStatusAttemptNum = " + String( uploadJobStatusAttemptNum ) )
         if( uploadJobStatusAttemptNum % 10 == 0 ) &&
             ( uploadJobStatusAttemptNum != 0 ){
             let msg = "Inside while loop Attempt No : " + String(uploadJobStatusAttemptNum) +
@@ -287,7 +288,7 @@ class NetRequest {
         
         // TEST - for debugging
         let jsonUtils = JsonUtils()
-        print( "doHttpPost : request json = " + jsonUtils.dictToJsonFormattedString(dict: jsDict ) )
+        self.logger.SIPrint( logOutput: "doHttpPost : request json = " + jsonUtils.dictToJsonFormattedString(dict: jsDict ) )
         
         var request = URLRequest(url: url)
         
@@ -301,10 +302,10 @@ class NetRequest {
             
             
             
-            print( "post data = " + String(data: request.httpBody!, encoding: .utf8)! )
+            self.logger.SIPrint( logOutput: "post data = " + String(data: request.httpBody!, encoding: .utf8)! )
             
         } catch let error {
-            print(error.localizedDescription)
+            self.logger.SIPrint( logOutput: error.localizedDescription)
         }
         
         request.timeoutInterval = TimeInterval(NetRequest.HTTP_TIMEOUT)
@@ -330,7 +331,7 @@ class NetRequest {
                         // and return  SIDError.UNABLE_TO_SUBMIT_TRY_AGAIN
                         let jsResponse = String(data: data!,
                                                 encoding: .utf8)
-                        print( "post status code = " + String(statusCode) + ", response = " + jsResponse! )
+                        self.logger.SIPrint( logOutput: "post status code = " + String(statusCode) + ", response = " + jsResponse! )
                         completion(nil)
                         return
                         // throw SIDError.UNABLE_TO_SUBMIT_TRY_AGAIN
@@ -391,7 +392,7 @@ class NetRequest {
                  mimeType == "application/json",
                  let data = data,
                  let dataString = String(data: data, encoding: .utf8) {
-                 print ("got data: \(dataString)")
+                 self.logger.SIPrint( logOutput: "got data: \(dataString)")
                  }
                  */
         }
@@ -410,9 +411,9 @@ class NetRequest {
             size = try FileManager.default.attributesOfItem(atPath: url.path)[FileAttributeKey.size]
             let fileSize = size as? Int
             
-            print( "filesize = " + String( fileSize! ) )
+            self.logger.SIPrint( logOutput: "filesize = " + String( fileSize! ) )
         } catch (let error) {
-            print("File size error: \(error)")
+            self.logger.SIPrint( logOutput: "File size error: \(error)")
            
         }
   
@@ -443,6 +444,8 @@ class NetRequest {
             return true
         }
     }
+    
+
     
     
     

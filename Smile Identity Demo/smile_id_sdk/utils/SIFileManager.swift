@@ -11,6 +11,8 @@ import ZIPFoundation
 
 class SIFileManager{
     
+    let logger = SILog()
+    
     static let SI_FOLDER_NAME : String = "sid.jobs.SI";
     
     func getSmileIDDir() -> URL {
@@ -51,7 +53,7 @@ class SIFileManager{
             }
         }
         catch {
-            print("SIFileManager : createAndGetFolderPath() : An error occurred : \(error).")
+            logger.SIPrint(logOutput: "SIFileManager : createAndGetFolderPath() : An error occurred : \(error).")
         }
 
         return refIdDir!
@@ -77,7 +79,7 @@ class SIFileManager{
         let fileExists = fileManager.fileExists(atPath: (url.path) )
         
       
-        print( "fileExists = " + String( fileExists ) + ", fullFilePath = ", fullFilePath )
+        logger.SIPrint(logOutput:  "fileExists = " + String( fileExists ) + ", fullFilePath = " + fullFilePath )
         return fileExists
     }
     
@@ -139,7 +141,7 @@ class SIFileManager{
             }
         }
         catch {
-            print("SIFileManager : deleteSelfieImages() : An error occurred : \(error).")
+            logger.SIPrint(logOutput: "SIFileManager : deleteSelfieImages() : An error occurred : \(error).")
         }
             
     }
@@ -170,7 +172,7 @@ class SIFileManager{
             }
         }
         catch {
-            print("SIFileManager : deleteSelfieImages() : An error occurred : \(error).")
+            logger.SIPrint(logOutput: "SIFileManager : deleteSelfieImages() : An error occurred : \(error).")
         }
         
     }
@@ -196,7 +198,7 @@ class SIFileManager{
             }
         }
         catch {
-            print("SIFileManager : deleteSIFolder() : An error occurred : \(error).")
+            logger.SIPrint(logOutput: "SIFileManager : deleteSIFolder() : An error occurred : \(error).")
         }
     }
     
@@ -212,7 +214,7 @@ class SIFileManager{
         
         }
         catch {
-            print("SIFileManager : deleteZIP() : An error occurred : \(error).")
+            logger.SIPrint(logOutput: "SIFileManager : deleteZIP() : An error occurred : \(error).")
         }
         
     }
@@ -230,7 +232,7 @@ class SIFileManager{
             }
         }
         catch {
-            print("SIFileManager : deleteIDCardImage() : An error occurred : \(error).")
+            logger.SIPrint(logOutput: "SIFileManager : deleteIDCardImage() : An error occurred : \(error).")
         }
     }
     
@@ -258,7 +260,7 @@ class SIFileManager{
     
         }
         catch {
-            print("SIFileManager : deletePreviewFrames() : An error occurred : \(error).")
+            logger.SIPrint(logOutput: "SIFileManager : deletePreviewFrames() : An error occurred : \(error).")
         }
     }
     
@@ -278,7 +280,7 @@ class SIFileManager{
 
         }
         catch {
-            print("SIFileManager : zipIt() : An error occurred : \(error).")
+            logger.SIPrint(logOutput: "SIFileManager : zipIt() : An error occurred : \(error).")
         }
         
         return destinationZipFileURL
@@ -298,7 +300,7 @@ class SIFileManager{
             
         
         } catch {
-            print("Error: \(error)")
+            logger.SIPrint(logOutput: "Error: \(error)")
         }
         
         return fileSize
@@ -310,7 +312,7 @@ class SIFileManager{
                 return freeSize.int64Value
             }
         }else{
-            print("SIFileManager : getFreeDiskspace() : Error Obtaining System Memory Info:")
+            logger.SIPrint(logOutput: "SIFileManager : getFreeDiskspace() : Error Obtaining System Memory Info:")
         }
         return nil
     }

@@ -120,7 +120,6 @@ class AppData {
     }
     
     func setString( _ key : String, val : String ){
-        print( "AppData : setString() : key = " + key + ", val = " + val  )
         let userDefaults = getUserDefaults()
         userDefaults.set(val, forKey: key )
         userDefaults.synchronize()
@@ -140,7 +139,6 @@ class AppData {
 
     
     func setStringArr( key : String, val : Array<String> ) {
-        print( "setStringArr")
         let userDefaults = getUserDefaults()
         userDefaults.set(val, forKey: key)
         userDefaults.synchronize()
@@ -460,7 +458,6 @@ class AppData {
         return getStringArr(key: KEY_TAG_LIST )
     }
     func setTags( tags : Array<String> ) {
-        print( "setTags")
         setStringArr( key: KEY_TAG_LIST, val:tags )
     }
     
@@ -486,23 +483,17 @@ class AppData {
     }
     func removeCurrentTag() {
         // remove current tag
-        print( "removeCurrentTag")
         let currentTag = getCurrentTag( defaultTag: SIDReferenceId.NO_TAG )
-        print( "removeCurrentTag = " + currentTag! )
         remove(KEY_USER_TAG);
         
         // Remove current tag from list
         var tagsArr = getTags()
         if( tagsArr != nil ){
             var tagsSet = Set( tagsArr! )
-            print( "tagsArr != nil.  count = " + String(tagsArr!.count ) )
             tagsSet.remove(currentTag!)
             tagsArr = Array(tagsSet)
-            print( "after removing : count = " + String(tagsArr!.count ) )
             setTags( tags: tagsArr! )
         }
-        
-        print( "end removeCurrentTag" )
     
     }
     

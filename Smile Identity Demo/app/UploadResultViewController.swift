@@ -65,7 +65,6 @@ class UploadResultViewController:
     }
     
     @objc func backButtonPressed(sender:UIButton) {
-        print( "backButtonPressed")
         /* The "unwindToSmileID" segue is defined in SmileIDViewController */
         self.performSegue(withIdentifier: "unwindToSmileID", sender: self)
     }
@@ -228,7 +227,10 @@ class UploadResultViewController:
     func onEndJobStatus() {}
     func onUpdateJobProgress( progress : Int ) {}
     func onUpdateJobStatus( msg : String ) {
-        print( msg )
+        /*
+        let siLogger = SILogger()
+        siLogger.SIPrint( msg )
+        */
     }
  
 }

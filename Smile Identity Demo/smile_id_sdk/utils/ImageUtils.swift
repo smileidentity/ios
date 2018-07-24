@@ -175,7 +175,6 @@ class ImageUtils {
         let scale = CGFloat( 1.0 )
         
         // let scale = CGFloat(1.0)
-        print( "cropwidth = " + String( Float(cropWidth )) )
         
         let uiImage = UIImage( cgImage:croppedImage!, scale: scale, orientation:.leftMirrored)
         

@@ -54,7 +54,7 @@ class CardIDViewController: UIViewController,
     }
     
     @objc func backButtonPressed(sender:UIButton) {
-        print( "backButtonPressed")
+
         /* The "unwindToSmileID" segue is defined in SmileIDViewController */
         self.performSegue(withIdentifier: "unwindToSmileID", sender: self)
     }
@@ -78,7 +78,7 @@ class CardIDViewController: UIViewController,
     
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        print( "prepare for segue" );
+
         if( segue.identifier == "CardIDToEnrollResultSegue" ){
             // Enroll mode, so  hasId is true and auth mode is false
             let uploadResultViewController =

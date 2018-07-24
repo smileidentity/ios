@@ -28,7 +28,7 @@ class CaptureIDCard :
     var photoSampleBuffer: CMSampleBuffer?
     var previewPhotoSampleBuffer: CMSampleBuffer?
     var idCardOverlay : IDCardOverlay?
-  
+    let logger                              = SILog()
     
     func setup( captureIDCardDelegate : CaptureIDCardDelegate,
         previewView : CaptureIDCardVideoPreview ) {
@@ -60,7 +60,8 @@ class CaptureIDCard :
         } catch let error1 as NSError {
             error = error1
             input = nil
-            print(error!.localizedDescription)
+           
+            logger.SIPrint( logOutput: error!.localizedDescription)
         }
         
         // Add input
@@ -119,23 +120,23 @@ class CaptureIDCard :
     // Monitoring Capture Progress
     func photoOutput(_ output: AVCapturePhotoOutput,
                      willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings){
-        // print( "photoOutput : willBeginCaptureFor" );
+        //logger.SIPrint( logOutput:"photoOutput : willBeginCaptureFor" );
     }
     
     func photoOutput(_: AVCapturePhotoOutput, willCapturePhotoFor: AVCaptureResolvedPhotoSettings){
-        // print( "photoOutput : willCapturePhotoFor" );
+        // logger.SIPrint( logOutput:"photoOutput : willCapturePhotoFor" );
     }
     
     func photoOutput(_: AVCapturePhotoOutput, didCapturePhotoFor: AVCaptureResolvedPhotoSettings){
-        // print( "photoOutput : didCapturePhotoFor" );
+        // logger.SIPrint( logOutput:"photoOutput : didCapturePhotoFor" );
     }
     
     func photoOutput(_ captureOutput: AVCapturePhotoOutput,
                      didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings,
                      error: Error?) {
-        // print( "photoOutput : didCapturePhotoFor" );
+        // logger.SIPrint( logOutput:"photoOutput : didCapturePhotoFor" );
         guard error == nil else {
-            print("Error capture process: \(error ?? "An error occurred capturing the photo" as! Error)")
+           logger.SIPrint( logOutput:"Error capture process: \(error ?? "An error occurred capturing the photo" as! Error)")
             return
         }
     }
@@ -144,22 +145,22 @@ class CaptureIDCard :
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         
-        // print( "photoOutput : didFinishProcessingPhoto" );
+        // logger.SIPrint( logOutput:"photoOutput : didFinishProcessingPhoto" );
         // Check if there is any error in capturing
         guard error == nil else {
-            print("Fail to capture photo: \(String(describing: error))")
+            logger.SIPrint( logOutput:"Fail to capture photo: \(String(describing: error))")
             return
         }
         
         // Check if the pixel buffer could be converted to image data
         guard let imageData = photo.fileDataRepresentation() else {
-            print("Fail to convert pixel buffer")
+            logger.SIPrint( logOutput:"Fail to convert pixel buffer")
             return
         }
         
         // Check if UIImage could be initialized with image data
         guard let uiImageFull = UIImage.init(data: imageData , scale: 1.0) else {
-            print("Fail to convert image data to UIImage")
+            logger.SIPrint( logOutput:"Fail to convert image data to UIImage")
             return
         }
         
@@ -172,10 +173,10 @@ class CaptureIDCard :
        
         // translate mask dimensions */
         /*
-        print( "uiImage width = ", uiImageFull.size.width )
-        print( "uiImage height = ", uiImageFull.size.height )
-        print( "preview width = ", previewView!.bounds.width )
-        print( "preview height = ", previewView!.bounds.height )
+        logger.SIPrint( logOutput:"uiImage width = ", uiImageFull.size.width )
+        logger.SIPrint( logOutput: "uiImage height = ", uiImageFull.size.height )
+        logger.SIPrint( logOutput:"preview width = ", previewView!.bounds.width )
+        logger.SIPrint( logOutput:"preview height = ", previewView!.bounds.height )
         */
         
         // uiImageFull height is greater than width.
@@ -210,8 +211,8 @@ class CaptureIDCard :
         let croppedUIImage = UIImage(data: jpgData! )
         
         /*
-        print( "croppedUIImage width = ", croppedUIImage?.size.width )
-        print( "croppedUIImage height = ", croppedUIImage?.size.height )
+        logger.SIPrint( logOutput:"croppedUIImage width = ", croppedUIImage?.size.width )
+        logger.SIPrint( logOutput: "croppedUIImage height = ", croppedUIImage?.size.height )
         */
         captureIDCardDelegate?.onComplete( previewUIImage: croppedUIImage! )
         

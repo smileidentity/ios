@@ -27,6 +27,7 @@ class FaceDetector {
     var frameNum                    : Int?
     var faceDetector                : CIDetector?
     var scaledFaceRect              : CGRect?
+    let logger                      = SILog()
 
     
     func hasFace() -> Bool {
@@ -89,7 +90,7 @@ class FaceDetector {
         if( bHasFace == true ){
             if detectorFace!.hasSmile {
                 bHasSmile = true
-                // print("Has smile")
+                // logger.SIPrint(logOutput: "Has smile")
             }
             // Check if face is inside the oval
             let faceRect = detectorFace!.bounds
@@ -121,11 +122,11 @@ class FaceDetector {
             
             
             /*
-             print( "face bounds = faceLeft = ", faceLeft, ", faceRight = ", faceRight, ", faceTop = ", faceTop, ", faceBottom = ", faceBottom )
+             logger.SIPrint(logOutput:  "face bounds = faceLeft = ", faceLeft, ", faceRight = ", faceRight, ", faceTop = ", faceTop, ", faceBottom = ", faceBottom )
              
-             print( "previewRect = ", previewRect )
-             print( "clapRect = ", clapRect )
-             print( "scaledFaceRect = ", scaledFaceRect )
+             logger.SIPrint(logOutput:  "previewRect = ", previewRect )
+             logger.SIPrint(logOutput:  "clapRect = ", clapRect )
+             logger.SIPrint(logOutput:  "scaledFaceRect = ", scaledFaceRect )
              */
             
             
@@ -134,12 +135,12 @@ class FaceDetector {
             let topOk = faceTop > ( ovalRect.origin.y + FaceDetectorConstants.FACE_MARGIN )
             let bottomOk = faceBottom < ( ovalRect.origin.y + ovalRect.height ) - FaceDetectorConstants.FACE_MARGIN
             
-            // print( "leftOk = ", leftOk, ", rightOk = ", rightOk," topOk = ", topOk, ",bottomOk = ", bottomOk )
+            // logger.SIPrint(logOutput:  "leftOk = ", leftOk, ", rightOk = ", rightOk," topOk = ", topOk, ",bottomOk = ", bottomOk )
             
             if( leftOk && rightOk && topOk && bottomOk ) {
                 // This frame has a face
                 bHasFace = true
-                //print( "hasFace" )
+                //logger.SIPrint(logOutput:  "hasFace" )
                 
                 /* if the face is too small, then tell the user
                 // to move closer.
@@ -154,7 +155,7 @@ class FaceDetector {
                     startFrameNumMoveCloser = startFrameNumMoveCloser + 1;
 
                      if (startFrameNumMoveCloser >= consecutiveFrames) {
-                        //print( "DO_MOVE_CLOSER : consecutiveFrames reached.  Changing state. ")
+                        //logger.SIPrint(logOutput:  "DO_MOVE_CLOSER : consecutiveFrames reached.  Changing state. ")
                         currentFaceState = FaceDetectorConstants.DO_MOVE_CLOSER;
                         faceStateChangedDelegate.onFaceStateChanged(faceState:currentFaceState)
                         
@@ -163,7 +164,7 @@ class FaceDetector {
                 } // DO_MOVE_CLOSER
                 else if( frameNum >= CaptureConfig.DEFAULT_NUM_IMAGES_TO_CAPTURE ){
                     // last frame.   Tell user to smile, per Android code.
-                    print( "Last frame SMILE : frameNum = ", frameNum)
+                    // logger.SIPrint(logOutput:  "Last frame SMILE : frameNum = ", frameNum)
                     currentFaceState = FaceDetectorConstants.DO_SMILE
                     startFrameNumSmile = 0;
                     startFrameNumMoveCloser = 0;
@@ -190,7 +191,7 @@ class FaceDetector {
                 }
             }
             else {
-                // print( "face detector face found, but face not within oval margins" )
+                // logger.SIPrint(logOutput:  "face detector face found, but face not within oval margins" )
                 // No face detected within the oval
                 currentFaceState = FaceDetectorConstants.NO_FACE_FOUND;
                 faceStateChangedDelegate.onFaceStateChanged(faceState:currentFaceState)
@@ -201,7 +202,7 @@ class FaceDetector {
         } // if detectorFaceFound
         else {
             // no detectorFaceFound
-            //print( "Face detector No face found" )
+            //logger.SIPrint(logOutput:  "Face detector No face found" )
             currentFaceState = FaceDetectorConstants.NO_FACE_FOUND;
 
             faceStateChangedDelegate.onFaceStateChanged(faceState:currentFaceState)
