@@ -64,9 +64,9 @@ class ImageUtils {
         
         let uiImage = UIImage( cgImage:cgImage!, scale: 1, orientation:.leftMirrored)
         let heightInPoints = uiImage.size.height
-        let heightInPixels = heightInPoints * uiImage.scale
+        // let heightInPixels = heightInPoints * uiImage.scale
         let widthInPoints = uiImage.size.width
-        let widthInPixels = widthInPoints * uiImage.scale
+        // let widthInPixels = widthInPoints * uiImage.scale
         let aspectRatio = widthInPoints / heightInPoints
  
         let newHeight = ImageUtils.PREVIEW_HEIGHT
@@ -81,10 +81,10 @@ class ImageUtils {
         
         let newUiImage = scaleImage(uiImage: uiImage, newWidth: newWidth, newHeight: newHeight )
         let newHeightInPoints = newUiImage.size.height
-        let newHeightInPixels = newHeightInPoints * newUiImage.scale
+        //let newHeightInPixels = newHeightInPoints * newUiImage.scale
         
         let newWidthInPoints = newUiImage.size.width
-        let newWidthInPixels = newWidthInPoints * newUiImage.scale
+        //let newWidthInPixels = newWidthInPoints * newUiImage.scale
 
         imageRect = CGRect( x:0.0, y:0.0, width:newWidthInPoints, height:newHeightInPoints )
         
@@ -100,9 +100,9 @@ class ImageUtils {
         let croppedImage = uiImage.cgImage?.cropping(to: cropRect)
         let uiImage = UIImage( cgImage:croppedImage!, scale: 1, orientation:.leftMirrored)
          let heightInPoints = uiImage.size.height
-        let heightInPixels = heightInPoints * uiImage.scale
+        //let heightInPixels = heightInPoints * uiImage.scale
         let widthInPoints = uiImage.size.width
-        let widthInPixels = widthInPoints * uiImage.scale
+        //let widthInPixels = widthInPoints * uiImage.scale
         let aspectRatio = heightInPoints / widthInPoints
         
         
@@ -110,10 +110,10 @@ class ImageUtils {
         let newHeight = newWidth * aspectRatio
         let newUiImage = scaleImage(uiImage: uiImage, newWidth: newWidth, newHeight: newHeight )
         let newHeightInPoints = newUiImage.size.height
-        let newHeightInPixels = newHeightInPoints * newUiImage.scale
+        //let newHeightInPixels = newHeightInPoints * newUiImage.scale
         
         let newWidthInPoints = newUiImage.size.width
-        let newWidthInPixels = newWidthInPoints * newUiImage.scale
+        //let newWidthInPixels = newWidthInPoints * newUiImage.scale
         
         imageRect = CGRect( x:0.0, y:0.0, width:newWidthInPoints, height:newHeightInPoints )
         
@@ -181,10 +181,10 @@ class ImageUtils {
         let newUiImage = scaleImage( uiImage: uiImage, newWidth : ImageUtils.FRAME_WIDTH, newHeight : ImageUtils.FRAME_HEIGHT )
 
         let heightInPoints = newUiImage.size.height
-        let heightInPixels = heightInPoints * newUiImage.scale
+        //let heightInPixels = heightInPoints * newUiImage.scale
         
         let widthInPoints = newUiImage.size.width
-        let widthInPixels = widthInPoints * newUiImage.scale
+        //let widthInPixels = widthInPoints * newUiImage.scale
         
         imageRect = CGRect( x:0.0, y:0.0, width:widthInPoints, height:heightInPoints )
         

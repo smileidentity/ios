@@ -117,8 +117,7 @@ class UserInfoJson{
             
             return fromJsonDict(dict: dict!)
         }
-        
-        return self
+  
     }
     
     

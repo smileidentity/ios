@@ -43,8 +43,7 @@ class SecurityCaps {
             return fromJsonDict( dict: dict! )
             
         }
-        
-        return self
+  
     }
     
    

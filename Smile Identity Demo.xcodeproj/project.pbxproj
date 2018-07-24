@@ -240,6 +240,7 @@
 		A03860A820B47A5800C7264C /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				A00EF87F20AC91E700C5280F /* SILog.swift */,
 				A06FFDD120C6471A008EA7AB /* SIFileManager.swift */,
 				A01B33CE20C58B7C00BDDCD2 /* SIDNetworkUtils.swift */,
 				A03860A920B47AAC00C7264C /* AudioUtils.swift */,
@@ -380,7 +381,6 @@
 				A092D600208FE11800F24315 /* AppDelegate.swift */,
 				A092D60C208FE11900F24315 /* LaunchScreen.storyboard */,
 				A092D60F208FE11900F24315 /* Info.plist */,
-				A00EF87F20AC91E700C5280F /* SILog.swift */,
 				A00EF87D20AC7FCD00C5280F /* photo_shutter.mp3 */,
 				A092D607208FE11800F24315 /* Smile_Identity_Demo.xcdatamodeld */,
 			);

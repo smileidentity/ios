@@ -30,6 +30,9 @@ class UploadResultViewController:
                 let sidConfig = createConfig()
                 try sidNetworkRequest?.submit( sidConfig: sidConfig )
             }
+            else{
+                showToast( msg: "No internet connection" )
+            }
         }
         catch {
             let logger = SILog()

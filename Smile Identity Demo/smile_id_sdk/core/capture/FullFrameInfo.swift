@@ -86,8 +86,7 @@ class FullFrameInfo {
             return fromJsonDict( dict: dict! )
             
         }
-        
-        return self
+ 
     }
     
     
