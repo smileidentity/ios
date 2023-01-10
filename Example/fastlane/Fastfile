@@ -1,0 +1,15 @@
+default_platform(:ios)
+
+platform :ios do
+
+desc "Run unit tests"
+  lane :unit_tests do
+    clear_derived_data
+    scan(
+    project: "SmileIdentity.xcodeproj",
+    scheme: "SmileIdentityTests",
+	  derived_data_path: "temp",
+      	clean: true
+      )
+    end
+  end
