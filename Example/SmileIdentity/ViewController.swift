@@ -1,24 +1,13 @@
-//
-//  ViewController.swift
-//  SmileIdentity
-//
-//  Created by JubrilO on 12/14/2022.
-//  Copyright (c) 2022 JubrilO. All rights reserved.
-//
-
 import UIKit
+import SwiftUI
+import SmileIdentity
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        let cameraVC = UIHostingController(rootView: SelfieCaptureView())
+        navigationController?.present(cameraVC, animated: true)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
 }
 
