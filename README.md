@@ -22,7 +22,7 @@ pod 'SmileIdentity'
 
 ## Author
 
-JubrilO, jubrylola@gmail.com
+Smile Identity
 
 ## License
 
