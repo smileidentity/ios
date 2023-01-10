@@ -41,20 +41,20 @@ final class SelfieCaptureViewModel: ObservableObject {
             calculateDetectedFaceValidity()
         }
     }
-    
+
     @Published private(set) var faceDetectedState: FaceDetectionState
     @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel> {
         didSet {
             processUpdatedFaceGeometry()
         }
     }
-    
+
     @Published private(set) var faceQualityState: FaceObservation<FaceQualityModel> {
         didSet {
             processUpdatedFaceQuality()
         }
     }
-    
+
     init() {
         faceDetectedState = .noFaceDetected
         isAcceptableRoll = false
@@ -62,12 +62,12 @@ final class SelfieCaptureViewModel: ObservableObject {
         isAcceptableYaw = false
         isAcceptableBounds = .unknown
         isAcceptableQuality = false
-        
+
         hasDetectedValidFace = false
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
     }
-    
+
     func perform(action: SelfieCaptureViewModelAction) {
         switch action {
         case .noFaceDetected:
@@ -76,7 +76,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             break
         }
     }
-    
+
     func processUpdatedFaceGeometry() {
         switch faceGeometryState {
         case .faceNotFound:
@@ -89,7 +89,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             let roll = faceGeometryModel.roll.doubleValue
             let pitch = faceGeometryModel.pitch.doubleValue
             let yaw = faceGeometryModel.yaw.doubleValue
-            
+
             updateAcceptableBounds(using: boundingBox)
             updateAcceptableRollPitchYaw(using: roll, pitch: pitch, yaw: yaw)
         }
@@ -103,7 +103,7 @@ extension SelfieCaptureViewModel {
         isAcceptableYaw = false
         isAcceptableBounds = .unknown
     }
-    
+
     func calculateDetectedFaceValidity() {
         hasDetectedValidFace =
         isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
@@ -112,7 +112,7 @@ extension SelfieCaptureViewModel {
         isAcceptableYaw &&
         isAcceptableQuality
     }
-    
+
     func updateAcceptableBounds(using boundingBox: CGRect) {
         // First, check face is roughly the same size as the layout guide
         if boundingBox.width > 1.2 * faceLayoutGuideFrame.width {
@@ -130,13 +130,13 @@ extension SelfieCaptureViewModel {
             }
         }
     }
-    
+
     func updateAcceptableRollPitchYaw(using roll: Double, pitch: Double, yaw: Double) {
         isAcceptableRoll = (roll > 1.2 && roll < 1.6)
         isAcceptablePitch = abs(CGFloat(pitch)) < 0.2
         isAcceptableYaw = abs(CGFloat(yaw)) < 0.15
     }
-    
+
     func processUpdatedFaceQuality() {
         switch faceQualityState {
         case .faceNotFound:
