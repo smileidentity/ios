@@ -83,7 +83,7 @@ extension FaceDetector {
     }
     
     func detectedSegmentationRequest(request: VNRequest, error: Error?) {
-        // remove backfround
+    //TODO: remove backfround isolating only the face
         guard let model = model,
               let results = request.results as? [VNPixelBufferObservation],
               let result = results.first,
