@@ -7,7 +7,6 @@ class FaceDetector {
     weak var model: SelfieCaptureViewModel?
     var currentFrameBuffer: CVImageBuffer?
 
-
     func detect(imageBuffer: CVImageBuffer) {
         
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler: detectedFaceQualityRequest)
@@ -19,7 +18,7 @@ class FaceDetector {
         } else {
             detectCaptureQualityRequest.revision = VNDetectFaceCaptureQualityRequestRevision1
         }
-        
+
         if #available(iOS 15.0, *) {
             let detectSegmentationRequest = VNGeneratePersonSegmentationRequest(completionHandler: detectedSegmentationRequest)
             detectSegmentationRequest.qualityLevel = .balanced
@@ -33,7 +32,7 @@ class FaceDetector {
         runSequenceHandler(with: [detectFaceRectanglesRequest, detectCaptureQualityRequest],
                            imageBuffer: imageBuffer)
     }
-    
+
     func detectSmile(imageBuffer: CVImageBuffer) {
         let image = CIImage(cvImageBuffer: imageBuffer)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
@@ -45,7 +44,7 @@ class FaceDetector {
             }
         }
     }
-    
+
     func runSequenceHandler(with requests: [VNRequest],
                             imageBuffer: CVImageBuffer) {
         do {
@@ -66,7 +65,7 @@ extension FaceDetector {
             return
         }
     }
-    
+
     func detectedFaceQualityRequest(request: VNRequest, error: Error?) {
         guard let model = model else {
             return
@@ -77,11 +76,11 @@ extension FaceDetector {
             model.perform(action: .noFaceDetected)
             return
         }
-        
+
         let faceQualityModel = FaceQualityModel(quality: result.faceCaptureQuality ?? 0)
         model.perform(action: .faceQualityObservationDetected(faceQualityModel))
     }
-    
+
     func detectedSegmentationRequest(request: VNRequest, error: Error?) {
     //TODO: remove backfround isolating only the face
         guard let model = model,

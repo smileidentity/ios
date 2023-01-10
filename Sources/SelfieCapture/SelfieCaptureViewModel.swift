@@ -4,7 +4,7 @@ import UIKit
 enum SelfieCaptureViewModelAction {
     // View setup and configuration actions
     case windowSizeDetected(CGRect)
-    
+
     // Face detection actions
     case noFaceDetected
     case faceObservationDetected(FaceGeometryModel)
