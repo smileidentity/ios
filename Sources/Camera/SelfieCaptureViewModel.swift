@@ -34,7 +34,9 @@ final class SelfieCaptureViewModel: ObservableObject {
     
     @Published private(set) var hasDetectedValidFace: Bool {
         didSet {
-            captureImage()
+            if hasDetectedValidFace{
+                captureImage()
+            }
         }
     }
     @Published private(set) var isAcceptableRoll: Bool {
@@ -59,12 +61,12 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     @Published private(set) var faceDetectionState: FaceDetectionState
-    @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel> {
+    @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel, ErrorWrapper> {
         didSet {
             processUpdatedFaceGeometry()
         }
     }
-    @Published private(set) var faceQualityState: FaceObservation<FaceQualityModel> {
+    @Published private(set) var faceQualityState: FaceObservation<FaceQualityModel, ErrorWrapper> {
         didSet {
             processUpdatedFaceQuality()
         }
@@ -175,10 +177,11 @@ final class SelfieCaptureViewModel: ObservableObject {
         switch faceGeometryState {
         case .faceNotFound:
             invalidateFaceGeometryState()
-        case .errored(let error):
-            print(error.localizedDescription)
+        case .errored(let errorWrapper):
+            print(errorWrapper.error.localizedDescription)
             invalidateFaceGeometryState()
         case .faceFound(let faceGeometryModel):
+            print("Face found")
             let boundingBox = faceGeometryModel.boundingBox
             let roll = faceGeometryModel.roll.doubleValue
             let yaw = faceGeometryModel.yaw.doubleValue
@@ -228,8 +231,8 @@ extension SelfieCaptureViewModel {
         switch faceQualityState {
         case .faceNotFound:
             isAcceptableQuality = false
-        case .errored(let error):
-            print(error.localizedDescription)
+        case .errored(let errorWrapper):
+            print(errorWrapper.error.localizedDescription)
             isAcceptableQuality = false
         case .faceFound(let faceQualityModel):
             if faceQualityModel.quality < 0.3 {
