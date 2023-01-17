@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Combine
 
 enum SelfieCaptureViewModelAction {
     // View setup and configuration actions
@@ -7,21 +8,36 @@ enum SelfieCaptureViewModelAction {
 
     // Face detection actions
     case noFaceDetected
+    case multipleFacesDetected
     case faceObservationDetected(FaceGeometryModel)
     case faceQualityObservationDetected(FaceQualityModel)
 }
 
 final class SelfieCaptureViewModel: ObservableObject {
-    //TODO: Dynamically calculate the layout framee
-    var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
-    
-    @Published private(set) var hasDetectedValidFace: Bool
-    @Published private(set) var isAcceptableRoll: Bool {
+    var faceLayoutGuideFrame = CGRect.zero
+    var viewDelegate: FaceDetectorDelegate? {
         didSet {
-            calculateDetectedFaceValidity()
+            faceDetector.viewDelegate = viewDelegate
         }
     }
-    @Published private(set) var isAcceptablePitch: Bool {
+    private var frameManager = FrameManager.shared
+    private var faceDetector = FaceDetector()
+    private var subscribers = Set<AnyCancellable>()
+    private let numberOfLivenessImages = 7
+    private let livenessImageSize = CGSize(width: 256, height: 256)
+    private let selfieImageSize = CGSize(width: 320, height: 320)
+    private var currentBuffer: CVPixelBuffer?
+    private var livenessImages = [Data]()
+    private var lastCaptureTime: Int64 = 0
+    private var interCaptureDelay = 350
+    
+    
+    @Published private(set) var hasDetectedValidFace: Bool {
+        didSet {
+            captureImage()
+        }
+    }
+    @Published private(set) var isAcceptableRoll: Bool {
         didSet {
             calculateDetectedFaceValidity()
         }
@@ -48,7 +64,6 @@ final class SelfieCaptureViewModel: ObservableObject {
             processUpdatedFaceGeometry()
         }
     }
-
     @Published private(set) var faceQualityState: FaceObservation<FaceQualityModel> {
         didSet {
             processUpdatedFaceQuality()
@@ -58,7 +73,6 @@ final class SelfieCaptureViewModel: ObservableObject {
     init() {
         faceDetectedState = .noFaceDetected
         isAcceptableRoll = false
-        isAcceptablePitch = false
         isAcceptableYaw = false
         isAcceptableBounds = .unknown
         isAcceptableQuality = false
@@ -66,14 +80,102 @@ final class SelfieCaptureViewModel: ObservableObject {
         hasDetectedValidFace = false
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
+        faceDetector.model = self
+        setupSubscriptions()
+    }
+
+    private func setupSubscriptions() {
+        frameManager.$sampleBuffer
+            .receive(on: DispatchQueue.global())
+            .compactMap { return $0 }
+            .sink {
+                self.faceDetector.detect(imageBuffer: $0)
+                self.currentBuffer = $0
+            }
+            .store(in: &subscribers)
     }
 
     func perform(action: SelfieCaptureViewModelAction) {
         switch action {
         case .noFaceDetected:
-            print("")
+            publishNoFaceObserved()
+        case .multipleFacesDetected:
+            publishMultipleFacesDetected()
+        case .faceObservationDetected(let faceGeometry):
+            publishFaceObservation(faceGeometry)
+        case .faceQualityObservationDetected(let faceQualityModel):
+            publishFaceQualityObservation(faceQualityModel)
         default:
             break
+        }
+    }
+    
+    private func captureImage() {
+        guard let currentBuffer = currentBuffer, hasDetectedValidFace == true, livenessImages.count < numberOfLivenessImages + 1  else {
+            return
+        }
+        guard case let .faceFound(face) = faceGeometryState else {
+            return
+        }
+        while (livenessImages.count < numberOfLivenessImages) && ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
+            guard let image = captureJPGImage(from: currentBuffer, with: livenessImageSize, and: face, isGreyScale: true) else {
+                return
+            }
+            livenessImages.append(image)
+            lastCaptureTime = Date().millisecondsSince1970
+            saveLivenessImage(data: image)
+        }
+        
+        if (livenessImages.count == numberOfLivenessImages) && ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
+            publishSmileFrameState()
+            if faceDetector.detectSmile(imageBuffer: currentBuffer) {
+                guard let image = captureJPGImage(from: currentBuffer, with: selfieImageSize, and: face, isGreyScale: false) else {
+                    return
+                }
+                livenessImages.append(image)
+                lastCaptureTime = Date().millisecondsSince1970
+                saveLivenessImage(data: image)
+            }
+        }
+    }
+    
+    func saveLivenessImage(data: Data) {
+        if let photo = UIImage(data: data) {
+            UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
+        }
+    }
+
+    private func publishMultipleFacesDetected() {
+        DispatchQueue.main.async { [self] in
+            faceDetectedState = .multipleFacesDetected
+        }
+    }
+    
+    private func publishSmileFrameState() {
+        DispatchQueue.main.async { [self] in
+            faceDetectedState = .finalFrame
+        }
+    }
+
+    private func publishNoFaceObserved() {
+        DispatchQueue.main.async { [self] in
+            faceDetectedState = .noFaceDetected
+            faceGeometryState = .faceNotFound
+            faceQualityState = .faceNotFound
+        }
+    }
+
+    private func publishFaceObservation(_ faceGeometryModel: FaceGeometryModel) {
+        DispatchQueue.main.async { [self] in
+            faceDetectedState = .faceDetected
+            faceGeometryState = .faceFound(faceGeometryModel)
+        }
+    }
+
+    private func publishFaceQualityObservation(_ faceQualityModel: FaceQualityModel) {
+        DispatchQueue.main.async { [self] in
+            faceDetectedState = .faceDetected
+            faceQualityState = .faceFound(faceQualityModel)
         }
     }
 
@@ -87,11 +189,9 @@ final class SelfieCaptureViewModel: ObservableObject {
         case .faceFound(let faceGeometryModel):
             let boundingBox = faceGeometryModel.boundingBox
             let roll = faceGeometryModel.roll.doubleValue
-            let pitch = faceGeometryModel.pitch.doubleValue
             let yaw = faceGeometryModel.yaw.doubleValue
-
             updateAcceptableBounds(using: boundingBox)
-            updateAcceptableRollPitchYaw(using: roll, pitch: pitch, yaw: yaw)
+            updateAcceptableRollYaw(using: roll, yaw: yaw)
         }
     }
 }
@@ -99,7 +199,6 @@ final class SelfieCaptureViewModel: ObservableObject {
 extension SelfieCaptureViewModel {
     func invalidateFaceGeometryState() {
         isAcceptableRoll = false
-        isAcceptablePitch = false
         isAcceptableYaw = false
         isAcceptableBounds = .unknown
     }
@@ -108,19 +207,16 @@ extension SelfieCaptureViewModel {
         hasDetectedValidFace =
         isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
         isAcceptableRoll &&
-        isAcceptablePitch &&
         isAcceptableYaw &&
         isAcceptableQuality
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
-        // First, check face is roughly the same size as the layout guide
-        if boundingBox.width > 1.2 * faceLayoutGuideFrame.width {
+        if boundingBox.width > 0.7 * faceLayoutGuideFrame.width {
             isAcceptableBounds = .detectedFaceTooLarge
-        } else if boundingBox.width * 1.2 < faceLayoutGuideFrame.width {
+        } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {
             isAcceptableBounds = .detectedFaceTooSmall
         } else {
-            // Next, check face is roughly centered in the frame
             if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 50 {
                 isAcceptableBounds = .detectedFaceOffCentre
             } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 50 {
@@ -131,9 +227,8 @@ extension SelfieCaptureViewModel {
         }
     }
 
-    func updateAcceptableRollPitchYaw(using roll: Double, pitch: Double, yaw: Double) {
-        isAcceptableRoll = (roll > 1.2 && roll < 1.6)
-        isAcceptablePitch = abs(CGFloat(pitch)) < 0.2
+    func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
+        isAcceptableRoll = abs(roll) < 0.5
         isAcceptableYaw = abs(CGFloat(yaw)) < 0.15
     }
 
@@ -145,7 +240,7 @@ extension SelfieCaptureViewModel {
             print(error.localizedDescription)
             isAcceptableQuality = false
         case .faceFound(let faceQualityModel):
-            if faceQualityModel.quality < 0.2 {
+            if faceQualityModel.quality < 0.3 {
                 isAcceptableQuality = false
             }
             isAcceptableQuality = true
