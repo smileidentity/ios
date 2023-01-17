@@ -1,6 +1,7 @@
 import Foundation
 
 enum FaceDetectionState {
+    case sceneUnstable
     case finalFrame
     case multipleFacesDetected
     case faceDetected

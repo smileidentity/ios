@@ -5,10 +5,12 @@ import CoreImage
 class FaceDetector {
     var sequenceHandler = VNSequenceRequestHandler()
     weak var model: SelfieCaptureViewModel?
-    var currentFrameBuffer: CVImageBuffer?
     var viewDelegate: FaceDetectorDelegate?
+    private let maximumHistoryLength = 15
+    private var transpositionHistoryPoints: [CGPoint] = [ ]
+    private var previousPixelBuffer: CVPixelBuffer?
     
-    func detect(imageBuffer: CVImageBuffer) {
+    func detectFaces(imageBuffer: CVImageBuffer) {
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler: detectedFaceQualityRequest)
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
         //Use most recent models or fallback to older versions
@@ -30,6 +32,57 @@ class FaceDetector {
                            imageBuffer: imageBuffer)
     }
     
+    func isSceneStable() -> Bool {
+        if transpositionHistoryPoints.count == maximumHistoryLength {
+            // Calculate the moving average.
+            var movingAverage: CGPoint = CGPoint.zero
+            for currentPoint in transpositionHistoryPoints {
+                movingAverage.x += currentPoint.x
+                movingAverage.y += currentPoint.y
+            }
+            let distance = abs(movingAverage.x) + abs(movingAverage.y)
+            if distance < 20 {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func detect(pixelBuffer: CVPixelBuffer) {
+        guard let previousBuffer = previousPixelBuffer else {
+            previousPixelBuffer = pixelBuffer
+            self.resetTranspositionHistory()
+            return
+        }
+        let registrationRequest = VNTranslationalImageRegistrationRequest(targetedCVPixelBuffer: pixelBuffer)
+        runSequenceHandler(with: [registrationRequest], imageBuffer: previousBuffer)
+        
+        previousPixelBuffer = pixelBuffer
+        if let results = registrationRequest.results {
+            if let alignmentObservation = results.first {
+                let alignmentTransform = alignmentObservation.alignmentTransform
+                self.recordTransposition(CGPoint(x: alignmentTransform.tx, y: alignmentTransform.ty))
+            }
+        }
+        
+        if isSceneStable() {
+            detectFaces(imageBuffer: pixelBuffer)
+        } else {
+            
+        }
+    }
+    
+    func recordTransposition(_ point: CGPoint) {
+        transpositionHistoryPoints.append(point)
+        if transpositionHistoryPoints.count > maximumHistoryLength {
+            transpositionHistoryPoints.removeFirst()
+        }
+    }
+
+    func resetTranspositionHistory() {
+        transpositionHistoryPoints.removeAll()
+    }
+
     func detectSmile(imageBuffer: CVImageBuffer) -> Bool {
         let image = CIImage(cvImageBuffer: imageBuffer)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
@@ -72,7 +125,7 @@ extension FaceDetector {
             return
         }
         guard let result = results.first else {
-             model?.perform(action: .noFaceDetected)
+            model?.perform(action: .noFaceDetected)
             return
         }
         let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)

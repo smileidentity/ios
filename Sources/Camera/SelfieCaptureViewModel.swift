@@ -3,9 +3,9 @@ import UIKit
 import Combine
 
 enum SelfieCaptureViewModelAction {
-    // View setup and configuration actions
-    case windowSizeDetected(CGRect)
 
+    //scene stabilization action
+    case sceneUnstable
     // Face detection actions
     case noFaceDetected
     case multipleFacesDetected
@@ -58,7 +58,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    @Published private(set) var faceDetectedState: FaceDetectionState
+    @Published private(set) var faceDetectionState: FaceDetectionState
     @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel> {
         didSet {
             processUpdatedFaceGeometry()
@@ -71,7 +71,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     init() {
-        faceDetectedState = .noFaceDetected
+        faceDetectionState = .noFaceDetected
         isAcceptableRoll = false
         isAcceptableYaw = false
         isAcceptableBounds = .unknown
@@ -89,7 +89,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             .receive(on: DispatchQueue.global())
             .compactMap { return $0 }
             .sink {
-                self.faceDetector.detect(imageBuffer: $0)
+                self.faceDetector.detect(pixelBuffer: $0)
                 self.currentBuffer = $0
             }
             .store(in: &subscribers)
@@ -97,16 +97,16 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     func perform(action: SelfieCaptureViewModelAction) {
         switch action {
+        case .sceneUnstable:
+            publishUnstableSceneObserved()
         case .noFaceDetected:
             publishNoFaceObserved()
         case .multipleFacesDetected:
-            publishMultipleFacesDetected()
+            publishFaceObservation(.multipleFacesDetected)
         case .faceObservationDetected(let faceGeometry):
-            publishFaceObservation(faceGeometry)
+            publishFaceObservation(.faceDetected, faceGeometryModel: faceGeometry)
         case .faceQualityObservationDetected(let faceQualityModel):
-            publishFaceQualityObservation(faceQualityModel)
-        default:
-            break
+            publishFaceObservation(.faceDetected, faceQualityModel: faceQualityModel)
         }
     }
     
@@ -127,7 +127,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
         
         if (livenessImages.count == numberOfLivenessImages) && ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
-            publishSmileFrameState()
+            publishFaceObservation(.finalFrame)
             if faceDetector.detectSmile(imageBuffer: currentBuffer) {
                 guard let image = captureJPGImage(from: currentBuffer, with: selfieImageSize, and: face, isGreyScale: false) else {
                     return
@@ -145,37 +145,29 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    private func publishMultipleFacesDetected() {
+    private func publishUnstableSceneObserved() {
         DispatchQueue.main.async { [self] in
-            faceDetectedState = .multipleFacesDetected
-        }
-    }
-    
-    private func publishSmileFrameState() {
-        DispatchQueue.main.async { [self] in
-            faceDetectedState = .finalFrame
+            faceDetectionState = .sceneUnstable
         }
     }
 
     private func publishNoFaceObserved() {
         DispatchQueue.main.async { [self] in
-            faceDetectedState = .noFaceDetected
+            faceDetectionState = .noFaceDetected
             faceGeometryState = .faceNotFound
             faceQualityState = .faceNotFound
         }
     }
 
-    private func publishFaceObservation(_ faceGeometryModel: FaceGeometryModel) {
+    private func publishFaceObservation(_ faceDetectionState: FaceDetectionState, faceGeometryModel: FaceGeometryModel? = nil, faceQualityModel: FaceQualityModel? = nil) {
         DispatchQueue.main.async { [self] in
-            faceDetectedState = .faceDetected
-            faceGeometryState = .faceFound(faceGeometryModel)
-        }
-    }
-
-    private func publishFaceQualityObservation(_ faceQualityModel: FaceQualityModel) {
-        DispatchQueue.main.async { [self] in
-            faceDetectedState = .faceDetected
-            faceQualityState = .faceFound(faceQualityModel)
+            self.faceDetectionState = faceDetectionState
+            if let faceGeometryModel = faceGeometryModel {
+                faceGeometryState = .faceFound(faceGeometryModel)
+            }
+            if let faceQualityModel = faceQualityModel {
+                faceQualityState = .faceFound(faceQualityModel)
+            }
         }
     }
 
