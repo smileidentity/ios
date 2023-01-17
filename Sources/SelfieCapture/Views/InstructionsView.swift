@@ -10,7 +10,9 @@ struct InstructionsView: View {
 
 extension InstructionsView {
     func faceDetectionState() -> String {
-        switch model.faceDetectedState {
+        switch model.faceDetectionState {
+        case .sceneUnstable:
+            return "Please keep your hands steady"
         case .faceDetectionErrored:
             return "An unexpected error occurred"
         case .noFaceDetected:
