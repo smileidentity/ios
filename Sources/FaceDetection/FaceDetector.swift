@@ -7,9 +7,9 @@ class FaceDetector {
     weak var model: SelfieCaptureViewModel?
     var viewDelegate: FaceDetectorDelegate?
     private let maximumHistoryLength = 15
-    private var transpositionHistoryPoints: [CGPoint] = [ ]
+    private var transpositionHistoryPoints = [CGPoint]()
     private var previousPixelBuffer: CVPixelBuffer?
-    
+
     func detectFaces(imageBuffer: CVImageBuffer) {
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler: detectedFaceQualityRequest)
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
@@ -31,7 +31,7 @@ class FaceDetector {
         runSequenceHandler(with: [detectFaceRectanglesRequest, detectCaptureQualityRequest],
                            imageBuffer: imageBuffer)
     }
-    
+
     func isSceneStable() -> Bool {
         if transpositionHistoryPoints.count == maximumHistoryLength {
             // Calculate the moving average.
@@ -47,7 +47,7 @@ class FaceDetector {
         }
         return false
     }
-    
+
     func detect(pixelBuffer: CVPixelBuffer) {
         guard let previousBuffer = previousPixelBuffer else {
             previousPixelBuffer = pixelBuffer
@@ -64,14 +64,14 @@ class FaceDetector {
                 self.recordTransposition(CGPoint(x: alignmentTransform.tx, y: alignmentTransform.ty))
             }
         }
-        
+
         if isSceneStable() {
             detectFaces(imageBuffer: pixelBuffer)
         } else {
-            
+            model?.perform(action: .sceneUnstable)
         }
     }
-    
+
     func recordTransposition(_ point: CGPoint) {
         transpositionHistoryPoints.append(point)
         if transpositionHistoryPoints.count > maximumHistoryLength {
@@ -100,7 +100,7 @@ class FaceDetector {
         }
         return false
     }
-    
+
     func runSequenceHandler(with requests: [VNRequest],
                             imageBuffer: CVImageBuffer) {
         do {
@@ -119,7 +119,7 @@ extension FaceDetector {
             model?.perform(action: .noFaceDetected)
             return
         }
-        
+
         if results.count > 1 {
             model?.perform(action: .multipleFacesDetected)
             return
@@ -129,7 +129,7 @@ extension FaceDetector {
             return
         }
         let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
-        
+
         let faceObservationModel = FaceGeometryModel(
             boundingBox: convertedBoundingBox,
             roll: result.roll ?? 0,

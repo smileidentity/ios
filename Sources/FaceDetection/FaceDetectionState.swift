@@ -1,6 +1,6 @@
 import Foundation
 
-enum FaceDetectionState {
+enum FaceDetectionState: Equatable {
     case sceneUnstable
     case finalFrame
     case multipleFacesDetected
@@ -9,10 +9,10 @@ enum FaceDetectionState {
     case faceDetectionErrored
 }
 
-enum FaceObservation<T> {
+enum FaceObservation<T: Equatable, E: Equatable>: Equatable{
     case faceFound(T)
     case faceNotFound
-    case errored(Error)
+    case errored(E)
 }
 
 enum FaceBoundsState {
@@ -21,4 +21,12 @@ enum FaceBoundsState {
     case detectedFaceTooLarge
     case detectedFaceOffCentre
     case detectedFaceAppropriateSizeAndPosition
+}
+
+struct ErrorWrapper: Equatable {
+    let error: Error
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        String(reflecting: lhs.error) == String(reflecting: rhs.error)
+    }
 }

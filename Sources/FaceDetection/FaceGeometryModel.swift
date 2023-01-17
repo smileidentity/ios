@@ -1,11 +1,11 @@
 import Foundation
 
-struct FaceGeometryModel {
+struct FaceGeometryModel: Equatable {
     let boundingBox: CGRect
     let roll: NSNumber
     let yaw: NSNumber
 }
 
-struct FaceQualityModel {
+struct FaceQualityModel: Equatable {
     let quality: Float
 }
