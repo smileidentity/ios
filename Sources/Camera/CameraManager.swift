@@ -99,12 +99,14 @@ class CameraManager: ObservableObject {
             [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
 
           let videoConnection = videoOutput.connection(with: .video)
-          videoConnection?.videoOrientation = .portrait
+            videoConnection?.videoOrientation = .portrait
+            videoConnection?.isVideoMirrored = true
         } else {
           set(error: .cannotAddOutput)
           status = .failed
           return
         }
+        
         status = .configured
     }
 

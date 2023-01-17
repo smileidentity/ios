@@ -1,29 +1,19 @@
 import SwiftUI
+import AVFoundation
+import Vision
 
-struct CameraFrameView: View {
-    var image: CGImage?
-    let test = "Test"
-    private let label = Text("Video feed")
-
-    var body: some View {
-        if let image {
-            GeometryReader { geometry in
-                Image(image, scale: 1.0, orientation: .upMirrored, label: label)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: geometry.size.width,
-                           height: geometry.size.height,
-                           alignment: .center)
-                    .clipped()
-            }
-        } else {
-            Color.black
-        }
-    }
+protocol FaceDetectorDelegate {
+    func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect
 }
 
-struct FrameView_Previews: PreviewProvider {
-    static var previews: some View {
-        CameraFrameView()
+struct CameraView: UIViewControllerRepresentable {
+  typealias UIViewType = PreviewView
+    let preview = PreviewView()
+    @StateObject private var model = ContentViewModel()
+    
+    func makeUIViewController(context: Context) -> PreviewView {
+        return preview
     }
+    
+    func updateUIViewController(_ uiViewController: PreviewView, context: Context) { }
 }

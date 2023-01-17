@@ -1,6 +1,8 @@
 import Foundation
 
 enum FaceDetectionState {
+    case finalFrame
+    case multipleFacesDetected
     case faceDetected
     case noFaceDetected
     case faceDetectionErrored
