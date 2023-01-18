@@ -9,7 +9,7 @@ enum FaceDetectionState: Equatable {
     case faceDetectionErrored
 }
 
-enum FaceObservation<T: Equatable, E: Equatable>: Equatable{
+enum FaceObservation<T: Equatable, E: Equatable>: Equatable {
     case faceFound(T)
     case faceNotFound
     case errored(E)

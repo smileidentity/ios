@@ -106,7 +106,7 @@ class CameraManager: ObservableObject {
           status = .failed
           return
         }
-        
+
         status = .configured
     }
 

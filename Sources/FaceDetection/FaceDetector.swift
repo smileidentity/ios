@@ -13,13 +13,13 @@ class FaceDetector {
     func detectFaces(imageBuffer: CVImageBuffer) {
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler: detectedFaceQualityRequest)
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
-        //Use most recent models or fallback to older versions
+        // Use most recent models or fallback to older versions
         if #available(iOS 14.0, *) {
             detectCaptureQualityRequest.revision = VNDetectFaceCaptureQualityRequestRevision2
         } else {
             detectCaptureQualityRequest.revision = VNDetectFaceCaptureQualityRequestRevision1
         }
-        
+
         if #available(iOS 15.0, *) {
             detectFaceRectanglesRequest.revision = VNDetectFaceRectanglesRequestRevision3
             runSequenceHandler(with: [detectFaceRectanglesRequest, detectCaptureQualityRequest],
@@ -56,7 +56,7 @@ class FaceDetector {
         }
         let registrationRequest = VNTranslationalImageRegistrationRequest(targetedCVPixelBuffer: pixelBuffer)
         runSequenceHandler(with: [registrationRequest], imageBuffer: previousBuffer)
-        
+
         previousPixelBuffer = pixelBuffer
         if let results = registrationRequest.results {
             if let alignmentObservation = results.first {
@@ -115,7 +115,7 @@ class FaceDetector {
 
 extension FaceDetector {
     func detectedFaceRectangles(request: VNRequest, error: Error?) {
-        guard let results = request.results as? [VNFaceObservation] , let viewDelegate = viewDelegate else {
+        guard let results = request.results as? [VNFaceObservation], let viewDelegate = viewDelegate else {
             model?.perform(action: .noFaceDetected)
             return
         }
@@ -137,18 +137,18 @@ extension FaceDetector {
         )
         model?.perform(action: .faceObservationDetected(faceObservationModel))
     }
-    
+
     func detectedFaceQualityRequest(request: VNRequest, error: Error?) {
         guard let model = model else {
             return
         }
-        
+
         guard let results = request.results as? [VNFaceObservation],
               let result = results.first else {
             model.perform(action: .noFaceDetected)
             return
         }
-        
+
         let faceQualityModel = FaceQualityModel(quality: result.faceCaptureQuality ?? 0)
         model.perform(action: .faceQualityObservationDetected(faceQualityModel))
     }

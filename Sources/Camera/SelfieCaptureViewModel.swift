@@ -4,7 +4,7 @@ import Combine
 
 enum SelfieCaptureViewModelAction {
 
-    //scene stabilization action
+    // scene stabilization action
     case sceneUnstable
     // Face detection actions
     case noFaceDetected
@@ -30,11 +30,10 @@ final class SelfieCaptureViewModel: ObservableObject {
     private var livenessImages = [Data]()
     private var lastCaptureTime: Int64 = 0
     private var interCaptureDelay = 350
-    
-    
+
     @Published private(set) var hasDetectedValidFace: Bool {
         didSet {
-            if hasDetectedValidFace{
+            if hasDetectedValidFace {
                 captureImage()
             }
         }
@@ -111,7 +110,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             publishFaceObservation(.faceDetected, faceQualityModel: faceQualityModel)
         }
     }
-    
+
     private func captureImage() {
         guard let currentBuffer = currentBuffer, hasDetectedValidFace == true, livenessImages.count < numberOfLivenessImages + 1  else {
             return
@@ -120,18 +119,24 @@ final class SelfieCaptureViewModel: ObservableObject {
             return
         }
         while (livenessImages.count < numberOfLivenessImages) && ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
-            guard let image = captureJPGImage(from: currentBuffer, with: livenessImageSize, and: face, isGreyScale: true) else {
+            guard let image = captureJPGImage(from: currentBuffer,
+                                              with: livenessImageSize,
+                                              and: face,
+                                              isGreyScale: true) else {
                 return
             }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
             saveLivenessImage(data: image)
         }
-        
+
         if (livenessImages.count == numberOfLivenessImages) && ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             publishFaceObservation(.finalFrame)
             if faceDetector.detectSmile(imageBuffer: currentBuffer) {
-                guard let image = captureJPGImage(from: currentBuffer, with: selfieImageSize, and: face, isGreyScale: false) else {
+                guard let image = captureJPGImage(from: currentBuffer,
+                                                  with: selfieImageSize,
+                                                  and: face,
+                                                  isGreyScale: false) else {
                     return
                 }
                 livenessImages.append(image)
@@ -140,7 +145,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             }
         }
     }
-    
+
     func saveLivenessImage(data: Data) {
         if let photo = UIImage(data: data) {
             UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
@@ -161,7 +166,9 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    private func publishFaceObservation(_ faceDetectionState: FaceDetectionState, faceGeometryModel: FaceGeometryModel? = nil, faceQualityModel: FaceQualityModel? = nil) {
+    private func publishFaceObservation(_ faceDetectionState: FaceDetectionState,
+                                        faceGeometryModel: FaceGeometryModel? = nil,
+                                        faceQualityModel: FaceQualityModel? = nil) {
         DispatchQueue.main.async { [self] in
             self.faceDetectionState = faceDetectionState
             if let faceGeometryModel = faceGeometryModel {
