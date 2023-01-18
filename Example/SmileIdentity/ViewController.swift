@@ -10,4 +10,3 @@ class ViewController: UIViewController {
         navigationController?.present(cameraVC, animated: true)
     }
 }
-

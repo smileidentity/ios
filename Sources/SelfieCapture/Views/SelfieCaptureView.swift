@@ -4,14 +4,14 @@ import Combine
 public struct SelfieCaptureView: View {
     @StateObject private var viewModel = SelfieCaptureViewModel()
     let camera = CameraView()
-    
+
     private var dividerWidth = UIScreen.main.bounds.width - 40
     public init() {}
     public var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 14) {
                 VStack(spacing: 20) {
-                    ZStack{
+                    ZStack {
                         camera
                             .clipShape(Ellipse())
                             .onAppear {
@@ -43,16 +43,15 @@ public struct SelfieCaptureView: View {
     }
 }
 
-//struct SelfieCaptureView_Previews: PreviewProvider {
+// struct SelfieCaptureView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        SelfieCaptureView()
 //    }
-//}
-
+// }
 
 struct FaceBoundingBoxView: View {
     @ObservedObject private(set) var model: SelfieCaptureViewModel
-    
+
     var body: some View {
         switch model.faceGeometryState {
         case .faceNotFound:
@@ -72,8 +71,8 @@ struct FaceBoundingBoxView: View {
     }
 }
 
-//struct FaceBoundingBoxView_Previews: PreviewProvider {
+// struct FaceBoundingBoxView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        FaceBoundingBoxView(model: SelfieCaptureViewModel())
 //    }
-//}
+// }

@@ -11,7 +11,10 @@ extension Date {
     }
 }
 
-func captureJPGImage(from buffer: CVPixelBuffer, with size: CGSize, and faceGeometry: FaceGeometryModel, isGreyScale: Bool) -> Data? {
+func captureJPGImage(from buffer: CVPixelBuffer,
+                     with size: CGSize,
+                     and faceGeometry: FaceGeometryModel,
+                     isGreyScale: Bool) -> Data? {
     CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
     defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)}
     guard let resizedBuffer = resizePixelBuffer(buffer, size: size) else {
@@ -19,7 +22,6 @@ func captureJPGImage(from buffer: CVPixelBuffer, with size: CGSize, and faceGeom
     }
     return cvImageBufferToJPG(imageBuffer: resizedBuffer, isGreyScale: isGreyScale)
 }
-
 
 func cvImageBufferToJPG(imageBuffer: CVImageBuffer, isGreyScale: Bool) -> Data? {
     var ciImage = CIImage(cvPixelBuffer: imageBuffer)
@@ -34,7 +36,7 @@ func cvImageBufferToJPG(imageBuffer: CVImageBuffer, isGreyScale: Bool) -> Data? 
     return jpegData
 }
 
-fileprivate func metalCompatiblityAttributes() -> [String: Any] {
+private func metalCompatiblityAttributes() -> [String: Any] {
   let attributes: [String: Any] = [
     String(kCVPixelBufferMetalCompatibilityKey): true,
     String(kCVPixelBufferOpenGLCompatibilityKey): true,
@@ -164,14 +166,13 @@ public func resizePixelBuffer(_ srcPixelBuffer: CVPixelBuffer,
   return dstPixelBuffer
 }
 
-
 /**
   Resizes a CVPixelBuffer to a new width and height.
   This allocates a new destination pixel buffer that is Metal-compatible.
 */
 public func resizePixelBuffer(_ pixelBuffer: CVPixelBuffer,
                               size: CGSize) -> CVPixelBuffer? {
-    
+
         let imageWidth = CGFloat(CVPixelBufferGetWidth(pixelBuffer))
         let imageHeight = CGFloat(CVPixelBufferGetHeight(pixelBuffer))
   return resizePixelBuffer(pixelBuffer, cropX: 0, cropY: 0,

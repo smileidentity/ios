@@ -14,7 +14,7 @@ class PreviewView: UIViewController {
     var layedOutSubviews = false
     var previewLayer: AVCaptureVideoPreviewLayer?
     private let cameraManager = CameraManager.shared
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if layedOutSubviews == false {
@@ -22,7 +22,7 @@ class PreviewView: UIViewController {
             layedOutSubviews = true
         }
     }
-    
+
     func configurePreviewLayer() {
         previewLayer = AVCaptureVideoPreviewLayer(session: cameraManager.session)
         previewLayer?.videoGravity = .resizeAspectFill
@@ -37,14 +37,12 @@ extension PreviewView: FaceDetectorDelegate {
       guard let previewLayer = previewLayer else {
         return CGRect.zero
       }
-        let t = CGAffineTransform(translationX: 0.5, y: 0.5)
+        let transform = CGAffineTransform(translationX: 0.5, y: 0.5)
                     .rotated(by: CGFloat.pi / 2)
                     .translatedBy(x: -0.5, y: -0.5)
                     .translatedBy(x: 1.0, y: 0)
                     .scaledBy(x: -1, y: 1)
-        let box = rect.applying(t)
+        let box = rect.applying(transform)
       return previewLayer.layerRectConverted(fromMetadataOutputRect: box)
     }
 }
-
-
