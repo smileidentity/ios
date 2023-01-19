@@ -19,9 +19,10 @@ public struct SelfieCaptureView: View {
                         camera
                             .clipShape(Ellipse())
                             .onAppear {
-                                viewModel.faceLayoutGuideFrame = CGRect(origin: .zero,
-                                                                        size: CGSize(width: geometry.size.width * 0.7,
-                                                                                     height: geometry.size.width * 0.7 / (3/3.5)))
+                                viewModel.faceLayoutGuideFrame =
+                                CGRect(origin: .zero,
+                                       size: CGSize(width: geometry.size.width * 0.7,
+                                                    height: geometry.size.width * 0.7 / (3/3.5)))
                                 viewModel.viewDelegate = camera.preview
                             }
                         Ellipse()

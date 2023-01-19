@@ -21,10 +21,10 @@ class ImageUtils {
     ///   - isGreyScale: A boolean flag, if true returns a greyscaled image
     /// - Returns: An optional JPG image data returned from the cropping and resizing operation
     class func captureFace(from buffer: CVPixelBuffer,
-                               faceGeometry: FaceGeometryModel,
-                               finalSize: CGSize,
-                               screenImageSize: CGSize,
-                               isGreyScale: Bool) -> Data? {
+                           faceGeometry: FaceGeometryModel,
+                           finalSize: CGSize,
+                           screenImageSize: CGSize,
+                           isGreyScale: Bool) -> Data? {
 
         CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)}
@@ -46,7 +46,6 @@ class ImageUtils {
                                    width: faceCropWidthAndHeight,
                                    height: faceCropWidthAndHeight)
 
-
         // scale down the original buffer to match the size of whats displayed on screen
         guard let scaledDownBuffer = resizePixelBuffer(buffer, size: trueImageSize) else { return nil }
 
@@ -58,9 +57,9 @@ class ImageUtils {
         }
 
         // crop face from the buffer returned in the above operation
-        guard let croppedFaceBuffer = resizePixelBuffer(clippedBuffer, cropFrame: faceCropFrame, scaleSize: finalSize) else {
-            return nil
-        }
+        guard let croppedFaceBuffer = resizePixelBuffer(clippedBuffer,
+                                                        cropFrame: faceCropFrame,
+                                                        scaleSize: finalSize) else { return nil }
 
         // convert the cropped face buffer to JPG
         return cvImageBufferToJPG(imageBuffer: croppedFaceBuffer, isGreyScale: isGreyScale)

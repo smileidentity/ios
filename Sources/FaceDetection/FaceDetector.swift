@@ -85,7 +85,7 @@ class FaceDetector {
 
     func detectSmile(imageBuffer: CVImageBuffer) -> Bool {
         let image = CIImage(cvImageBuffer: imageBuffer)
-        let options: [String : Any] = [CIDetectorAccuracy: CIDetectorAccuracyHigh, CIDetectorSmile: true]
+        let options: [String : Any] = [CIDetectorAccuracy : CIDetectorAccuracyHigh, CIDetectorSmile : true]
         let smileDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: options)!
         let faces = smileDetector.features(in: image)
         print("Face count \(faces.count)")

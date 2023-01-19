@@ -36,7 +36,9 @@ final class SelfieCaptureViewModelTests: XCTestCase {
         let viewModel = SelfieCaptureViewModel()
         viewModel.perform(action: .noFaceDetected)
         let expectation = XCTestExpectation()
-        Publishers.CombineLatest3(viewModel.$faceDetectionState, viewModel.$faceGeometryState, viewModel.$faceQualityState)
+        Publishers.CombineLatest3(viewModel.$faceDetectionState,
+                                  viewModel.$faceGeometryState,
+                                  viewModel.$faceQualityState)
             .dropFirst()
             .sink { values in
                 XCTAssertEqual(values.0, .noFaceDetected)
@@ -66,7 +68,12 @@ final class SelfieCaptureViewModelTests: XCTestCase {
         let frameLayout = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
         let viewModel = SelfieCaptureViewModel()
         viewModel.faceLayoutGuideFrame = frameLayout
-        let faceGeometryModel = FaceGeometryModel(boundingBox: CGRect(origin: .zero, size: CGSize(width: 0.5*frameLayout.size.width, height: 0.5*frameLayout.size.width)), roll: 0.4, yaw: 0.1)
+        let boundingRect = CGRect(origin: .zero,
+                                  size: CGSize(width: 0.5*frameLayout.size.width,
+                                               height: 0.5*frameLayout.size.width))
+        let faceGeometryModel = FaceGeometryModel(boundingBox: boundingRect,
+                                                  roll: 0.4,
+                                                  yaw: 0.1)
         viewModel.perform(action: .faceObservationDetected(faceGeometryModel))
         let expectation = XCTestExpectation()
         Publishers.CombineLatest(viewModel.$faceDetectionState, viewModel.$faceGeometryState)
