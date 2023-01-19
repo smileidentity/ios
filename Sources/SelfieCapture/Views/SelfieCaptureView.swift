@@ -4,9 +4,13 @@ import Combine
 public struct SelfieCaptureView: View {
     @StateObject private var viewModel = SelfieCaptureViewModel()
     let camera = CameraView()
-
+    private weak var captureResult: SmartSelfieResult?
     private var dividerWidth = UIScreen.main.bounds.width - 40
-    public init() {}
+    public init(delegate: SmartSelfieResult) {
+        self.viewModel.captureResultDelegate = delegate
+    }
+
+    // TO-DO: Clean up selfie capture view. Make UI Configurable
     public var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 14) {
