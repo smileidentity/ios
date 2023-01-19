@@ -30,6 +30,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     private var livenessImages = [Data]()
     private var lastCaptureTime: Int64 = 0
     private var interCaptureDelay = 350
+    weak var captureResultDelegate: SmartSelfieResult?
 
     @Published private(set) var hasDetectedValidFace: Bool {
         didSet {
@@ -135,14 +136,15 @@ final class SelfieCaptureViewModel: ObservableObject {
             ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             publishFaceObservation(.finalFrame)
             if faceDetector.detectSmile(imageBuffer: currentBuffer) {
-                guard let image = ImageUtils.captureFace(from: currentBuffer,
+                guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
                                               faceGeometry: faceGeometry,
                                               finalSize: selfieImageSize,
                                               screenImageSize: faceLayoutGuideFrame.size,
                                               isGreyScale: false) else { return }
-                livenessImages.append(image)
                 lastCaptureTime = Date().millisecondsSince1970
-                saveLivenessImage(data: image)
+                captureResultDelegate?.didSucceed(selfieImage: selfieImage,
+                                                  livenessImages: livenessImages)
+                saveLivenessImage(data: selfieImage)
             }
         }
     }
@@ -189,7 +191,6 @@ final class SelfieCaptureViewModel: ObservableObject {
             print(errorWrapper.error.localizedDescription)
             invalidateFaceGeometryState()
         case .faceFound(let faceGeometryModel):
-            print("Face found")
             let boundingBox = faceGeometryModel.boundingBox
             let roll = faceGeometryModel.roll.doubleValue
             let yaw = faceGeometryModel.yaw.doubleValue
