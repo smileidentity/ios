@@ -10,11 +10,10 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "SmileIdentity",
-            targets: ["SmileIdentity"]),
+            targets: ["SmileIdentity"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -22,9 +21,10 @@ let package = Package(
         .target(
             name: "SmileIdentity",
             dependencies: [],
-            path: "Sources"),
+            path: "Sources"
+        ),
         .testTarget(
             name: "SmileIdentityTests",
-            dependencies: ["SmileIdentity"]),
+            dependencies: ["SmileIdentity"])
     ]
 )

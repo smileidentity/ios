@@ -15,6 +15,6 @@ class ViewController: UIViewController, SmartSelfieResult {
     }
 
     func didError(error: Error) {
-        
+
     }
 }

@@ -2,7 +2,7 @@ import SwiftUI
 import AVFoundation
 import Vision
 
-protocol FaceDetectorDelegate {
+protocol FaceDetectorDelegate: AnyObject {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect
 }
 
