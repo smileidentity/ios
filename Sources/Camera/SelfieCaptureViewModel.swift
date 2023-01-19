@@ -112,33 +112,34 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     private func captureImage() {
-        guard let currentBuffer = currentBuffer, hasDetectedValidFace == true, livenessImages.count < numberOfLivenessImages + 1  else {
+        guard let currentBuffer = currentBuffer, hasDetectedValidFace == true,
+                livenessImages.count < numberOfLivenessImages + 1  else {
             return
         }
-        guard case let .faceFound(face) = faceGeometryState else {
+        guard case let .faceFound(faceGeometry) = faceGeometryState else {
             return
         }
-        while (livenessImages.count < numberOfLivenessImages) && ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
-            guard let image = captureJPGImage(from: currentBuffer,
-                                              with: livenessImageSize,
-                                              and: face,
-                                              isGreyScale: true) else {
-                return
-            }
+        while (livenessImages.count < numberOfLivenessImages) &&
+                ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
+            guard let image = ImageUtils.captureFace(from: currentBuffer,
+                                                     faceGeometry: faceGeometry,
+                                                     finalSize: livenessImageSize,
+                                                     screenImageSize: faceLayoutGuideFrame.size,
+                                                     isGreyScale: true) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
             saveLivenessImage(data: image)
         }
 
-        if (livenessImages.count == numberOfLivenessImages) && ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
+        if (livenessImages.count == numberOfLivenessImages) &&
+            ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             publishFaceObservation(.finalFrame)
             if faceDetector.detectSmile(imageBuffer: currentBuffer) {
-                guard let image = captureJPGImage(from: currentBuffer,
-                                                  with: selfieImageSize,
-                                                  and: face,
-                                                  isGreyScale: false) else {
-                    return
-                }
+                guard let image = ImageUtils.captureFace(from: currentBuffer,
+                                              faceGeometry: faceGeometry,
+                                              finalSize: selfieImageSize,
+                                              screenImageSize: faceLayoutGuideFrame.size,
+                                              isGreyScale: false) else { return }
                 livenessImages.append(image)
                 lastCaptureTime = Date().millisecondsSince1970
                 saveLivenessImage(data: image)
