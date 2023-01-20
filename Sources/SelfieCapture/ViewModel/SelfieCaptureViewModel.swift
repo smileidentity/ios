@@ -141,8 +141,7 @@ final class SelfieCaptureViewModel: ObservableObject {
 
         if (livenessImages.count == numberOfLivenessImages) &&
             ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) &&
-            selfieImage == nil 
-        {
+            selfieImage == nil {
             publishFaceObservation(.finalFrame)
             guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
                                                            faceGeometry: faceGeometry,
