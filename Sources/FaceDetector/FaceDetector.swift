@@ -83,24 +83,6 @@ class FaceDetector {
         transpositionHistoryPoints.removeAll()
     }
 
-    func detectSmile(imageBuffer: CVImageBuffer) -> Bool {
-        let image = CIImage(cvImageBuffer: imageBuffer)
-        let options: [String: Any] = [CIDetectorAccuracy: CIDetectorAccuracyHigh, CIDetectorSmile: true]
-        let smileDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: options)!
-        let faces = smileDetector.features(in: image, options: options)
-        print("Face count \(faces.count)")
-        if let face = faces.first as? CIFaceFeature {
-            if face.leftEyeClosed {
-                print("left eye closed")
-            }
-            if face.hasSmile {
-                print("is smilling")
-                return true
-            }
-        }
-        return false
-    }
-
     func runSequenceHandler(with requests: [VNRequest],
                             imageBuffer: CVImageBuffer) {
         do {
