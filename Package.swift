@@ -21,7 +21,8 @@ let package = Package(
         .target(
             name: "SmileIdentity",
             dependencies: [],
-            path: "Sources"
+            path: "Sources",
+	        resources: [.process("Resources")]
         ),
         .testTarget(
             name: "SmileIdentityTests",
