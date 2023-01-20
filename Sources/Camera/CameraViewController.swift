@@ -1,10 +1,3 @@
-//
-//  CameraViewController.swift
-//  
-//
-//  Created by Jubril Olambiwonnu on 12/01/2023.
-//
-
 import UIKit
 import Vision
 import AVFoundation
