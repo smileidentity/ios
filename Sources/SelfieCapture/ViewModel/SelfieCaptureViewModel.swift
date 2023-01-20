@@ -27,7 +27,11 @@ final class SelfieCaptureViewModel: ObservableObject {
     private let livenessImageSize = CGSize(width: 256, height: 256)
     private let selfieImageSize = CGSize(width: 320, height: 320)
     private var currentBuffer: CVPixelBuffer?
-    private var selfieImage: Data?
+    private var selfieImage: Data? {
+        didSet {
+            updateProgress()
+        }
+    }
     private var livenessImages = [Data]() {
         didSet {
             updateProgress()
