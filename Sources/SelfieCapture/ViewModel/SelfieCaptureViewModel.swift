@@ -27,10 +27,17 @@ final class SelfieCaptureViewModel: ObservableObject {
     private let livenessImageSize = CGSize(width: 256, height: 256)
     private let selfieImageSize = CGSize(width: 320, height: 320)
     private var currentBuffer: CVPixelBuffer?
-    private var livenessImages = [Data]()
+    private var selfieImage: Data?
+    private var livenessImages = [Data]() {
+        didSet {
+            updateProgress()
+        }
+    }
     private var lastCaptureTime: Int64 = 0
     private var interCaptureDelay = 350
     weak var captureResultDelegate: SmartSelfieResult?
+
+    @Published var progress: CGFloat = 0
 
     @Published private(set) var hasDetectedValidFace: Bool {
         didSet {
@@ -114,7 +121,7 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     private func captureImage() {
         guard let currentBuffer = currentBuffer, hasDetectedValidFace == true,
-                livenessImages.count < numberOfLivenessImages + 1  else {
+              livenessImages.count < numberOfLivenessImages + 1  else {
             return
         }
         guard case let .faceFound(faceGeometry) = faceGeometryState else {
@@ -133,19 +140,20 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&
-            ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
+            ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) &&
+            selfieImage == nil 
+        {
             publishFaceObservation(.finalFrame)
-            if faceDetector.detectSmile(imageBuffer: currentBuffer) {
-                guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
-                                              faceGeometry: faceGeometry,
-                                              finalSize: selfieImageSize,
-                                              screenImageSize: faceLayoutGuideFrame.size,
-                                              isGreyScale: false) else { return }
-                lastCaptureTime = Date().millisecondsSince1970
-                captureResultDelegate?.didSucceed(selfieImage: selfieImage,
-                                                  livenessImages: livenessImages)
-                saveLivenessImage(data: selfieImage)
-            }
+            guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
+                                                           faceGeometry: faceGeometry,
+                                                           finalSize: selfieImageSize,
+                                                           screenImageSize: faceLayoutGuideFrame.size,
+                                                           isGreyScale: false) else { return }
+            lastCaptureTime = Date().millisecondsSince1970
+            self.selfieImage = selfieImage
+            captureResultDelegate?.didSucceed(selfieImage: selfieImage,
+                                              livenessImages: livenessImages)
+            saveLivenessImage(data: selfieImage)
         }
     }
 
@@ -166,6 +174,13 @@ final class SelfieCaptureViewModel: ObservableObject {
             faceDetectionState = .noFaceDetected
             faceGeometryState = .faceNotFound
             faceQualityState = .faceNotFound
+        }
+    }
+
+    private func updateProgress() {
+        DispatchQueue.main.async { [self] in
+            let selfieImageCount = selfieImage == nil ? 0 : 1
+            progress = CGFloat(livenessImages.count+selfieImageCount)/CGFloat(numberOfLivenessImages+1)
         }
     }
 
