@@ -6,8 +6,11 @@ public struct SelfieCaptureView: View {
     let camera = CameraView()
     private weak var captureResult: SmartSelfieResult?
     private var dividerWidth = UIScreen.main.bounds.width - 40
+    private weak var delegate: SmartSelfieResult?
+    private init() {}
     public init(delegate: SmartSelfieResult) {
-        self.viewModel.captureResultDelegate = delegate
+        self.init()
+        self.delegate = delegate
     }
 
     // TO-DO: Clean up selfie capture view. Make UI Configurable
@@ -19,6 +22,7 @@ public struct SelfieCaptureView: View {
                     camera
                         .clipShape(Ellipse())
                         .onAppear {
+                            viewModel.captureResultDelegate = delegate
                             viewModel.faceLayoutGuideFrame =
                             CGRect(origin: .zero,
                                    size: ovalSize)

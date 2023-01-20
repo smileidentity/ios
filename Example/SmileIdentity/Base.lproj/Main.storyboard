@@ -7,7 +7,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Products-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="SmileIdentity_Example" customModuleProvider="target" sceneMemberID="viewController">
@@ -19,24 +19,48 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Test Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7fR-8K-Uls">
-                                <rect key="frame" x="148.5" y="323" width="78" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LUi-vZ-Lcw">
+                                <rect key="frame" x="32" y="60" width="120" height="120"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SmartSelfie" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="02Y-j6-rLv">
+                                        <rect key="frame" x="16" y="49.5" width="88" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z2X-tS-KHd">
+                                        <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="   "/>
+                                        <connections>
+                                            <action selector="onSmartSelfieTap:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="z46-ph-OEC"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.93725490196078431" green="0.95294117647058818" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="02Y-j6-rLv" firstAttribute="centerY" secondItem="LUi-vZ-Lcw" secondAttribute="centerY" id="HCW-lK-ZfF"/>
+                                    <constraint firstAttribute="height" constant="120" id="XvZ-Sl-de1"/>
+                                    <constraint firstAttribute="bottom" secondItem="z2X-tS-KHd" secondAttribute="bottom" id="Y6K-Lx-AOM"/>
+                                    <constraint firstItem="z2X-tS-KHd" firstAttribute="top" secondItem="LUi-vZ-Lcw" secondAttribute="top" id="bbS-u8-byn"/>
+                                    <constraint firstItem="z2X-tS-KHd" firstAttribute="leading" secondItem="LUi-vZ-Lcw" secondAttribute="leading" id="iAd-fh-3N8"/>
+                                    <constraint firstAttribute="trailing" secondItem="z2X-tS-KHd" secondAttribute="trailing" id="mGl-Ik-bsg"/>
+                                    <constraint firstAttribute="width" constant="120" id="p2o-O3-3Up"/>
+                                    <constraint firstItem="02Y-j6-rLv" firstAttribute="centerX" secondItem="LUi-vZ-Lcw" secondAttribute="centerX" id="vWf-SB-f6G"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="7fR-8K-Uls" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="Hat-Sf-xKy"/>
-                            <constraint firstItem="7fR-8K-Uls" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="hE6-20-ns1"/>
+                            <constraint firstItem="LUi-vZ-Lcw" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="16" id="h6g-2g-DH5"/>
+                            <constraint firstItem="LUi-vZ-Lcw" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="16" id="lOl-Qx-Rl1"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="N1F-9A-aPb"/>
+                    <navigationItem key="navigationItem" title="Products" id="N1F-9A-aPb"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="140" y="0.0"/>
+            <point key="canvasLocation" x="140" y="-0.44977511244377816"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="XYf-XY-ua7">
