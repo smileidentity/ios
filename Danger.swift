@@ -1,8 +1,3 @@
-//
-//  Danger.swift
-//  
-//
-
 // swiftlint:disable all
 import Danger
 
