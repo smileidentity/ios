@@ -36,7 +36,7 @@ jobs:
 
      - name: Run tests
        run: |
-         cd Example
+         cd example
          bundle exec fastlane unit_tests
        env:
          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
