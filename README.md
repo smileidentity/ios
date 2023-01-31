@@ -1,29 +1,19 @@
-# SmileIdentity
+# Smile Identity iOS SDK
 
-[![CI Status](https://img.shields.io/travis/JubrilO/SmileIdentity.svg?style=flat)](https://travis-ci.org/JubrilO/SmileIdentity)
-[![Version](https://img.shields.io/cocoapods/v/SmileIdentity.svg?style=flat)](https://cocoapods.org/pods/SmileIdentity)
-[![License](https://img.shields.io/cocoapods/l/SmileIdentity.svg?style=flat)](https://cocoapods.org/pods/SmileIdentity)
-[![Platform](https://img.shields.io/cocoapods/p/SmileIdentity.svg?style=flat)](https://cocoapods.org/pods/SmileIdentity)
+## Overview
 
-## Example
+This repo contains all the code required to run the Smile Identity SDK. The project folder structure is described below.
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+- `Example` - A sample app that demonstrates the SDKs features
+- `Sources`- Contains all UI, CV and networking source code
+- `Tests`- Unit tests for the SDK business logic 
 
 ## Requirements
 
-## Installation
+- iOS 13 or higher
+- Xcode 14 or higher
 
-SmileIdentity is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
 
-```ruby
-pod 'SmileIdentity'
-```
+## Local Setup
 
-## Author
-
-JubrilO, jubrylola@gmail.com
-
-## License
-
-SmileIdentity is available under the MIT license. See the LICENSE file for more info.
+Clone the repo, checkout the `feature/seflie-capture`branch, navigate to the Example folder and open the `SmileIdentity.xcodeproj` file. Select the `SmileIdentity-Example` scheme and run on your device.

@@ -1,0 +1,16 @@
+PODS:
+  - SmileIdentity (0.1.0)
+
+DEPENDENCIES:
+  - SmileIdentity (from `../`)
+
+EXTERNAL SOURCES:
+  SmileIdentity:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  SmileIdentity: 1db6b2b2b30cde3a17be15eac22de5d061ff71df
+
+PODFILE CHECKSUM: 5d7bc766fb33394aa25e762de4c03a150141d59a
+
+COCOAPODS: 1.11.3
