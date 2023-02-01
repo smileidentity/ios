@@ -30,4 +30,3 @@ class DependencyContainerTests: BaseTestCase {
 private class TestClass: TestProtocol {}
 private class TestClass2: TestProtocol {}
 private protocol TestProtocol {}
-
