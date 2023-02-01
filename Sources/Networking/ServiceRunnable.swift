@@ -43,7 +43,6 @@ extension ServiceRunnable {
         .eraseToAnyPublisher()
     }
 
-
     private func createRestRequest(path: PathType,
                                    method: RestMethod,
                                    queryParameters: [HTTPQueryParameters]? = nil) -> AnyPublisher<RestRequest, Error> {

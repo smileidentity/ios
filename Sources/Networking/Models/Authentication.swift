@@ -12,7 +12,6 @@ struct AuthenticationRequest: Codable {
     var authToken = SmileIdentity.instance.config?.authToken ?? ""
 }
 
-
 struct AuthenticationResponse: Decodable {
     var success: Bool
     var signature: String
