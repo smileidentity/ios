@@ -26,6 +26,8 @@ let package = Package(
         ),
         .testTarget(
             name: "SmileIdentityTests",
-            dependencies: ["SmileIdentity"])
+            dependencies: ["SmileIdentity"],
+            path: "Tests"
+        )
     ]
 )
