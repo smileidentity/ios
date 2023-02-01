@@ -1,8 +1,8 @@
 import Foundation
 
-@propertyWrapper public struct Injected<DependencyType> {
+@propertyWrapper struct Injected<DependencyType> {
 
-    public var wrappedValue: DependencyType {
+    var wrappedValue: DependencyType {
         return instance
     }
 
