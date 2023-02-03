@@ -8,7 +8,7 @@ class URLSessionRestServiceClientTests: BaseTestCase {
     var mockServiceHeaderProvider: MockServiceHeaderProvider!
     var mockSessionPublisher: MockURLSessionPublisher!
     var serviceUnderTest: URLSessionRestServiceClient!
-    
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         mockServiceHeaderProvider = MockServiceHeaderProvider()
@@ -98,12 +98,10 @@ class URLSessionRestServiceClientTests: BaseTestCase {
             XCTAssert(error is APIError)
         }
     }
-    
-}
 
+}
 
 struct TestResponse: Codable {
     var status: Bool
     var message: String
 }
-
