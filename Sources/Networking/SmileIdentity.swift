@@ -1,6 +1,10 @@
 import Foundation
 
 public class SmileIdentity {
+    @Injected var service: SmileIdentityService
+    public var api: SmileIdentityService {
+        return service
+    }
     internal static var instance = SmileIdentity()
     private init() {}
     internal var apiKey: String?
