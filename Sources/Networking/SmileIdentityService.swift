@@ -5,7 +5,7 @@ protocol SmileIdentityServiceable {
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error>
 }
 
-class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
+public class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
     @Injected var serviceClient: RestServiceClient
     typealias PathType = String
 
