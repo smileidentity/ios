@@ -1,12 +1,14 @@
 import Foundation
 
 public class SmileIdentity {
-    @Injected var service: SmileIdentityService
-    public var api: SmileIdentityService {
-        return service
+    public static var api: SmileIdentityServiceable {
+        return instance.se
     }
     internal static var instance = SmileIdentity()
-    private init() {}
+    private init() {
+        let container = DependencyContainer.shared
+        container.register(SmileIdentityServiceable.self) {SmileIdentityService.init()}
+    }
     internal var apiKey: String?
     internal var config: Config?
     internal var useSandbox = false
