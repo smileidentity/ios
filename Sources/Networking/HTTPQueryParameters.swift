@@ -9,7 +9,7 @@ public struct HTTPQueryParameters: Equatable {
         self.value = values
     }
 
-    public init (key: String, value: String) {
+    public init(key: String, value: String) {
         self.key = key
         self.value = [value]
     }
