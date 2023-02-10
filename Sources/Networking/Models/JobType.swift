@@ -1,5 +1,5 @@
 import Foundation
 
-enum JobType: String, Codable {
+public enum JobType: String, Codable {
     case smartSelfieEnrollment = "4"
 }
