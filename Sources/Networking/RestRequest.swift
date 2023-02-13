@@ -10,7 +10,7 @@ struct RestRequest: Equatable {
     init(url: URL,
          method: RestMethod,
          headers: [HTTPHeader]? = nil,
-         queryParameters: [HTTPQueryParameters]? = nil ) {
+         queryParameters: [HTTPQueryParameters]? = nil) {
         self.url = url
         self.method = method
         self.headers = headers
