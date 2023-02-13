@@ -4,12 +4,12 @@ public struct HTTPQueryParameters: Equatable {
     public var key: String
     public var value: [String]
 
-    public init( key: String, values: [String]) {
+    public init(key: String, values: [String]) {
         self.key = key
         self.value = values
     }
 
-    public init (key: String, value: String) {
+    public init(key: String, value: String) {
         self.key = key
         self.value = [value]
     }
