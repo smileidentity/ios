@@ -1,3 +1,4 @@
+// swiftlint:disable force_cast
 import Foundation
 import Combine
 
@@ -86,3 +87,4 @@ extension ServiceRunnable {
         }
     }
 }
+// swiftlint:enable force_cast

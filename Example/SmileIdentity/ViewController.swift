@@ -1,3 +1,4 @@
+// swiftlint:disable force_cast
 import UIKit
 import SwiftUI
 import Combine
@@ -46,3 +47,4 @@ class ViewController: UIViewController, SmartSelfieResult {
 
     }
 }
+// swiftlint:enable force_cast
