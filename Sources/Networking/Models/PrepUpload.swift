@@ -8,7 +8,7 @@ public struct PrepUploadRequest: Codable {
     var partnerId = SmileIdentity.config!.partnerId
     var sourceSdk = "iOS"
     // TO-DO: Fetch version dynamically
-    var sourceSDKVersion = "0.1.0"
+    var sourceSdkVersion = "0.1.0"
     var timestamp = String(Date().millisecondsSince1970)
     var signature = ""
 
