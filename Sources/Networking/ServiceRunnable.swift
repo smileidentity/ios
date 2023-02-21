@@ -1,4 +1,3 @@
-// swiftlint:disable force_cast
 import Foundation
 import Combine
 
@@ -23,9 +22,9 @@ extension ServiceRunnable {
 
     var baseURL: URL? {
         if SmileIdentity.useSandbox {
-            return URL(string: SmileIdentity.config!.testLambdaUrl)
+            return URL(string: SmileIdentity.config.testLambdaUrl)
         }
-        return URL(string: SmileIdentity.config!.prodLambdaUrl)
+        return URL(string: SmileIdentity.config.prodLambdaUrl)
 
     }
 
@@ -87,4 +86,3 @@ extension ServiceRunnable {
         }
     }
 }
-// swiftlint:enable force_cast

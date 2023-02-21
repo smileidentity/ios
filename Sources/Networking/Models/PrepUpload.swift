@@ -1,11 +1,10 @@
-// swiftlint:disable force_cast
 import Foundation
 
 public struct PrepUploadRequest: Codable {
     var filename: String
     var partnerParams: PartnerParams
     var callbackUrl: String?
-    var partnerId = SmileIdentity.config!.partnerId
+    var partnerId = SmileIdentity.config.partnerId
     var sourceSdk = "iOS"
     // TO-DO: Fetch version dynamically
     var sourceSdkVersion = "0.1.0"
@@ -31,4 +30,3 @@ public struct PrepUploadResponse: Codable {
     var smileJobId: String
     var cameraConfig: String?
 }
-// swiftlint:enable force_cast

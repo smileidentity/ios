@@ -1,4 +1,3 @@
-// swiftlint:disable force_cast
 import Foundation
 
 public struct AuthenticationRequest: Codable {
@@ -9,8 +8,8 @@ public struct AuthenticationRequest: Codable {
     var userId: String?
     internal var signature = true
     internal var production = !SmileIdentity.useSandbox
-    internal var partnerId = SmileIdentity.config!.partnerId
-    internal var authToken = SmileIdentity.config!.authToken
+    internal var partnerId = SmileIdentity.config.partnerId
+    internal var authToken = SmileIdentity.config.authToken
 
     enum CodingKeys: String, CodingKey {
         case jobType = "job_type"
@@ -46,4 +45,3 @@ public struct AuthenticationResponse: Decodable {
         case timestamp
     }
 }
-// swiftlint:enable force_cast
