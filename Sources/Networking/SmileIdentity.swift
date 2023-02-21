@@ -2,9 +2,9 @@ import Foundation
 import UIKit
 
 public class SmileIdentity {
-    @Injected var injectedapi: SmileIdentityServiceable
+    @Injected var injectedApi: SmileIdentityServiceable
     public static var api: SmileIdentityServiceable {
-        return SmileIdentity.instance.injectedapi
+        return SmileIdentity.instance.injectedApi
     }
     internal static let instance: SmileIdentity = {
         let container = DependencyContainer.shared

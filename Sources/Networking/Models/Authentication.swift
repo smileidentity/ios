@@ -2,7 +2,7 @@
 import Foundation
 
 public struct AuthenticationRequest: Codable {
-    var jobType: String
+    var jobType: JobType
     var enrollment: Bool
     var updateEnrolledImage: Bool?
     var jobId: String?
@@ -27,11 +27,11 @@ public struct AuthenticationRequest: Codable {
 
 public extension AuthenticationRequest {
     init(jobType: JobType, enrollment: Bool, updateEnrolledImage: Bool, jobId: String, userId: String) {
-        self.init(jobType: jobType.rawValue, enrollment: enrollment, updateEnrolledImage: updateEnrolledImage, jobId: jobId, userId: userId, signature: true)
+        self.init(jobType: jobType, enrollment: enrollment, updateEnrolledImage: updateEnrolledImage, jobId: jobId, userId: userId, signature: true)
     }
 
     init(jobType: JobType, enrollment: Bool, userId: String) {
-        self.init(jobType: jobType.rawValue, enrollment: enrollment, updateEnrolledImage: nil, jobId: nil, userId: userId, signature: true)
+        self.init(jobType: jobType, enrollment: enrollment, updateEnrolledImage: nil, jobId: nil, userId: userId, signature: true)
     }
 }
 

@@ -25,6 +25,7 @@ class ImageUtils {
                            finalSize: CGSize,
                            screenImageSize: CGSize,
                            isGreyScale: Bool) -> Data? {
+        guard !faceGeometry.boundingBox.isNaN else { return nil }
 
         CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)}
@@ -122,6 +123,7 @@ class ImageUtils {
                                          scaleSize: CGSize) {
         let scaleWidth = Int(scaleSize.width)
         let scaleHeight = Int(scaleSize.height)
+        //TO-DO: Check is NAN
         let cropX = Int(cropFrame.origin.x)
         let cropY = Int(cropFrame.origin.y)
         let cropWidth = Int(cropFrame.size.width)

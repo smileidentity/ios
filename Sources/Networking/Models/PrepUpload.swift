@@ -18,7 +18,7 @@ public struct PrepUploadRequest: Codable {
         case callbackUrl = "callback_url"
         case partnerId = "smile_client_id"
         case sourceSdk = "source_sdk"
-        case sourceSDKVersion = "source_sdk_version"
+        case sourceSdkVersion = "source_sdk_version"
         case timestamp
         case signature
     }
