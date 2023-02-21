@@ -1,3 +1,4 @@
+// swiftlint:disable force_cast
 import Foundation
 
 public struct PrepUploadRequest: Codable {
@@ -30,3 +31,4 @@ public struct PrepUploadResponse: Codable {
     var smileJobId: String
     var cameraConfig: String?
 }
+// swiftlint:enable force_cast

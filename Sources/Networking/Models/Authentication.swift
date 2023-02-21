@@ -1,3 +1,4 @@
+// swiftlint:disable force_cast
 import Foundation
 
 public struct AuthenticationRequest: Codable {
@@ -45,3 +46,4 @@ public struct AuthenticationResponse: Decodable {
         case timestamp
     }
 }
+// swiftlint:enable force_cast
