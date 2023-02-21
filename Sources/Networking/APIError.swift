@@ -1,6 +1,6 @@
 import Foundation
 
-enum APIError: Error {
+public enum APIError: Error {
     case encode(EncodingError)
     case request(URLError)
     case decode(DecodingError)
@@ -10,14 +10,14 @@ enum APIError: Error {
 
 extension APIError: CustomStringConvertible {
 
-    var description: String {
+    public var description: String {
         switch self {
         case .encode(let error):
-            return String(describing: error)
+            return String(describing: error.localizedDescription)
         case .request(let error):
-            return String(describing: error)
+            return String(describing: error.localizedDescription)
         case .decode(let error):
-            return String(describing: error)
+            return String(describing: error.localizedDescription)
         case .unknown(let message):
             return message
         case .httpStatus(_, let data):

@@ -1,29 +1,25 @@
 import Foundation
+import UIKit
 
 public class SmileIdentity {
+    @Injected var injectedapi: SmileIdentityServiceable
     public static var api: SmileIdentityServiceable {
-        return instance.se
+        return SmileIdentity.instance.injectedapi
     }
-    internal static var instance = SmileIdentity()
-    private init() {
+    internal static let instance: SmileIdentity = {
         let container = DependencyContainer.shared
         container.register(SmileIdentityServiceable.self) {SmileIdentityService.init()}
-    }
-    internal var apiKey: String?
-    internal var config: Config?
-    internal var useSandbox = false
+        container.register(RestServiceClient.self) {URLSessionRestServiceClient.init()}
+        container.register(ServiceHeaderProvider.self) {DefaultServiceHeaderProvider.init()}
+        let instance = SmileIdentity()
+        return instance
+    }()
+    private init() {}
+    internal static var config: Config?
+    internal static var useSandbox = true
 
-    public class func initialize(apiKey: String, config: URL, useSandbox: Bool = false) throws {
-        let decoder = JSONDecoder()
-        do {
-            let data = try Data(contentsOf: config)
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let decodedConfig = try decoder.decode(Config.self, from: data)
-            instance.config = decodedConfig
-            instance.apiKey = apiKey
-            instance.useSandbox = useSandbox
-        } catch {
-            throw error
-        }
+    public class func initialize(config: Config, useSandbox: Bool = true) {
+        self.config = config
+        self.useSandbox = useSandbox
     }
 }

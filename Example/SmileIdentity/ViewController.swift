@@ -29,13 +29,15 @@ class ViewController: UIViewController, SmartSelfieResult {
     }
 
     func authenticateUser() {
-        let request = AuthenticationRequest(jobType: .smartSelfieEnrollment, enrollment: true, updateEnrolledImage: true, jobId: "uru", userId: "" )
+        let request = AuthenticationRequest(jobType: .smartSelfieEnrollment, enrollment: true, userId: "45839" )
         cancellable = SmileIdentity.api.authenticate(request: request)
             .sink(receiveCompletion: { completion in
                 if case let .failure(error) = completion {
-                    print(error.localizedDescription)
+                    print("failure")
+                    print((error as! APIError).description)
                 }
             }, receiveValue: { response in
+                print("Success!")
                 print(response.success)
             })
     }
