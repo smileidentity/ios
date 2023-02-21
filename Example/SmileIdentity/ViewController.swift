@@ -1,4 +1,3 @@
-// swiftlint:disable force_cast
 import UIKit
 import SwiftUI
 import Combine
@@ -15,7 +14,6 @@ class ViewController: UIViewController, SmartSelfieResult {
     @IBAction func onSmartSelfieTap(_ sender: Any) {
         cameraVC = UIHostingController(rootView: SelfieCaptureView(delegate: self))
         navigationController?.present(cameraVC!, animated: true)
-        authenticateUser()
     }
 
     func didSucceed(selfieImage: Data, livenessImages: [Data]) {
@@ -29,22 +27,7 @@ class ViewController: UIViewController, SmartSelfieResult {
         })
     }
 
-    func authenticateUser() {
-        let request = AuthenticationRequest(jobType: .smartSelfieEnrollment, enrollment: true, userId: "45839" )
-        cancellable = SmileIdentity.api.authenticate(request: request)
-            .sink(receiveCompletion: { completion in
-                if case let .failure(error) = completion {
-                    print("failure")
-                    print((error as! APIError).description)
-                }
-            }, receiveValue: { response in
-                print("Success!")
-                print(response.success)
-            })
-    }
-
     func didError(error: Error) {
 
     }
 }
-// swiftlint:enable force_cast
