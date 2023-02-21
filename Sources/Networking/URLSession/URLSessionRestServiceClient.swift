@@ -3,6 +3,7 @@ import Combine
 
 class URLSessionRestServiceClient: NSObject, RestServiceClient {
     let session: URLSessionPublisher
+    let decoder = JSONDecoder()
 
     public init(session: URLSessionPublisher = URLSession.shared) {
         self.session = session
@@ -10,9 +11,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
 
     func send<T: Decodable>(request: RestRequest) -> AnyPublisher<T, Error> {
         do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let urlRequest = try request.getURLRequest()
+         let urlRequest = try request.getURLRequest()
             return session.send(request: urlRequest)
                 .tryMap(checkStatusCode)
                 .decode(type: T.self, decoder: decoder)
