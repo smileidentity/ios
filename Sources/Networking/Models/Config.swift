@@ -23,14 +23,3 @@ public extension Config {
         self.testLambdaUrl = decodedConfig.testLambdaUrl
     }
 }
-
-internal extension Config {
-    init() {
-        authToken = ""
-        partnerId = ""
-        prodUrl = ""
-        testUrl = ""
-        prodLambdaUrl = ""
-        testLambdaUrl = ""
-    }
-}

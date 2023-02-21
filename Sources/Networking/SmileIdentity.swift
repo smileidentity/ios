@@ -15,7 +15,7 @@ public class SmileIdentity {
         return instance
     }()
     private init() {}
-    internal static var config = Config()
+    internal static var config: Config!
     internal static var useSandbox = true
 
     public class func initialize(config: Config, useSandbox: Bool = true) {
