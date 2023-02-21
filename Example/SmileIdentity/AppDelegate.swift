@@ -9,8 +9,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions
                      launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let config = Bundle.main.url(forResource: "smile_config", withExtension: "json")
-        try? SmileIdentity.initialize(apiKey: "test api key", config: config!)
+        let configUrl = Bundle.main.url(forResource: "smile_config", withExtension: "json")
+        do {
+            let config = try Config(url: configUrl!)
+            SmileIdentity.initialize(config: config)
+        } catch {
+            print(error.localizedDescription)
+        }
         return true
     }
 }

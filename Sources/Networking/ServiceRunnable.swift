@@ -21,10 +21,10 @@ protocol ServiceRunnable {
 extension ServiceRunnable {
 
     var baseURL: URL? {
-        if SmileIdentity.instance.useSandbox {
-            return URL(string: SmileIdentity.instance.config?.testLambdaURL ?? "")
+        if SmileIdentity.useSandbox {
+            return URL(string: SmileIdentity.config!.testLambdaUrl)
         }
-        return URL(string: SmileIdentity.instance.config?.prodLambdaURL ?? "")
+        return URL(string: SmileIdentity.config!.prodLambdaUrl)
 
     }
 
