@@ -31,6 +31,11 @@ extension APIError: CustomStringConvertible {
 }
 
 private struct HTTPErrorResponse: Decodable {
-    // TO-DO: Get shape of error response sent by smile
     var message: String
+    var code: Int
+
+    enum CodingKeys: String, CodingKey {
+        case message = "error"
+        case code
+    }
 }
