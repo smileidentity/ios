@@ -25,6 +25,7 @@ class ImageUtils {
                            finalSize: CGSize,
                            screenImageSize: CGSize,
                            isGreyScale: Bool) -> Data? {
+        guard !faceGeometry.boundingBox.isNaN else { return nil }
 
         CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)}
