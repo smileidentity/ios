@@ -106,7 +106,7 @@ extension FaceDetector {
             model?.perform(action: .multipleFacesDetected)
             return
         }
-        guard let result = results.first else {
+        guard let result = results.first, !result.boundingBox.isNaN else {
             model?.perform(action: .noFaceDetected)
             return
         }
@@ -133,5 +133,11 @@ extension FaceDetector {
 
         let faceQualityModel = FaceQualityModel(quality: result.faceCaptureQuality ?? 0)
         model.perform(action: .faceQualityObservationDetected(faceQualityModel))
+    }
+}
+
+extension CGRect {
+    var isNaN: Bool {
+        return origin.x.isNaN || origin.y.isNaN || size.width.isNaN || size.height.isNaN
     }
 }

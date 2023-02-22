@@ -1,9 +1,15 @@
 import UIKit
 import SwiftUI
+import Combine
 import SmileIdentity
 
 class ViewController: UIViewController, SmartSelfieResult {
     var cameraVC: UIViewController?
+    var cancellable: AnyCancellable?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
 
     @IBAction func onSmartSelfieTap(_ sender: Any) {
         cameraVC = UIHostingController(rootView: SelfieCaptureView(delegate: self))
