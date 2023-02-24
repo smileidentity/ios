@@ -3,7 +3,9 @@ import Combine
 
 public protocol SmileIdentityServiceable {
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error>
-    func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error>}
+    func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error>
+    func upload(url: URL, request: UploadRequest)
+}
 
 public class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
     @Injected var serviceClient: RestServiceClient
