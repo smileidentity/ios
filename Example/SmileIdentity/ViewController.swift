@@ -12,7 +12,8 @@ class ViewController: UIViewController, SmartSelfieResult {
     }
 
     @IBAction func onSmartSelfieTap(_ sender: Any) {
-        cameraVC = UIHostingController(rootView: SelfieCaptureView(delegate: self))
+        let selfieView = SmileIdentity.smartSelfieRegistrationScreen(delegate: self)
+        cameraVC = UIHostingController(rootView: selfieView)
         navigationController?.present(cameraVC!, animated: true)
     }
 

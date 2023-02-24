@@ -11,7 +11,7 @@ class LocalStorage {
         return documentDirectory.appendingPathComponent(defaultFolderName)
     }
 
-    static func saveImageJpg(livenessImages: [Data], previewImage: Data, to folder: String) throws {
+    static func saveImageJpg(livenessImages: [Data], previewImage: Data, to folder: String) throws -> URL {
         let destinationFolder = defaultDirectory.appendingPathComponent(folder)
         for (index,livenessImage) in livenessImages.enumerated() {
             let fileName = "\(livenessImagePrefix)\(index).jpg"
@@ -21,10 +21,11 @@ class LocalStorage {
         let previewImageName = "PreviewImage.jpg"
         let previewImageURL = destinationFolder.appendingPathComponent(previewImageName)
         try previewImage.write(to: previewImageURL)
+        return destinationFolder
     }
 
-    static func zipFolder(foldeUrl: URL, destinationUrl: URL) throws -> URL {
-        return try Zip.quickZipFiles([foldeUrl], fileName: "archive")
+    static func zipFolder(folderUrl: URL) throws -> URL {
+        return try Zip.quickZipFiles([folderUrl], fileName: "archive")
     }
 
     static func deleteFolder(folderURL: URL) {
