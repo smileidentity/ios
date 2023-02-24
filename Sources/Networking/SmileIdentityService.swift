@@ -18,4 +18,8 @@ public class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
     public func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error> {
         return post(to: "upload", with: request)
     }
+
+    public func upload(url: URL, request: UploadRequest) {
+        
+    }
 }

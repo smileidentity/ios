@@ -14,6 +14,8 @@ enum SelfieCaptureViewModelAction {
 }
 
 final class SelfieCaptureViewModel: ObservableObject {
+    var userId: String
+    var sessionId: String
     var faceLayoutGuideFrame = CGRect.zero
     var viewDelegate: FaceDetectorDelegate? {
         didSet {
@@ -83,7 +85,9 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    init() {
+    init(userId: String, sessionId: String) {
+        self.userId = userId
+        self.sessionId = sessionId
         faceDetectionState = .noFaceDetected
         isAcceptableRoll = false
         isAcceptableYaw = false
@@ -140,7 +144,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                      isGreyScale: true) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
-            saveLivenessImage(data: image)
+            //saveLivenessImage(data: image)
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&
@@ -156,7 +160,12 @@ final class SelfieCaptureViewModel: ObservableObject {
             self.selfieImage = selfieImage
             captureResultDelegate?.didSucceed(selfieImage: selfieImage,
                                               livenessImages: livenessImages)
-            saveLivenessImage(data: selfieImage)
+            guard let destinationFolder = try? LocalStorage.saveImageJpg(livenessImages: livenessImages, previewImage: selfieImage, to: sessionId) else { return }
+
+            guard let zipUrl = try? LocalStorage.zipFolder(folderUrl: destinationFolder) else {
+                return
+            }
+            //saveLivenessImage(data: selfieImage)
         }
     }
 

@@ -22,4 +22,9 @@ public class SmileIdentity {
         self.config = config
         self.useSandbox = useSandbox
     }
+
+    public class func smartSelfieRegistrationScreen(userID: String = UUID().uuidString, sessionID: String = "SID_Session", delegate: SmartSelfieResult) -> SelfieCaptureView {
+        let viewModel = SelfieCaptureViewModel(userId: userID, sessionId: sessionID)
+        return  SelfieCaptureView(viewModel: viewModel, delegate: delegate)
+    }
 }
