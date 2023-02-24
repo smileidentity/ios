@@ -1,7 +1,7 @@
 import Foundation
 
 public struct PrepUploadRequest: Codable {
-    var filename: String
+    var filename: String = "archive.zip"
     var partnerParams: PartnerParams
     var callbackUrl: String?
     var partnerId = SmileIdentity.config.partnerId

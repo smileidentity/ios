@@ -20,6 +20,6 @@ public class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
     }
 
     public func upload(url: URL, request: UploadRequest) {
-        
+
     }
 }

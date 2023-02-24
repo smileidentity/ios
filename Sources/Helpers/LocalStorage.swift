@@ -13,7 +13,7 @@ class LocalStorage {
 
     static func saveImageJpg(livenessImages: [Data], previewImage: Data, to folder: String) throws -> URL {
         let destinationFolder = defaultDirectory.appendingPathComponent(folder)
-        for (index,livenessImage) in livenessImages.enumerated() {
+        for (index, livenessImage) in livenessImages.enumerated() {
             let fileName = "\(livenessImagePrefix)\(index).jpg"
             let fileURL = destinationFolder.appendingPathComponent(fileName)
             try livenessImage.write(to: fileURL)
