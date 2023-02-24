@@ -1,15 +1,20 @@
 import Foundation
 
-struct UploadRequest {
+public struct UploadRequest: Codable {
     var images: [UploadImageInfo]
+    var packageInfo: UploadPackageInfo
 }
 
-struct UploadImageInfo {
+public struct UploadImageInfo: Codable {
     var imageTypeId: ImageType
     var image: String
 }
 
-enum ImageType: String {
+public struct UploadPackageInfo: Codable {
+    var imageTypeId: ImageType
+}
+
+public enum ImageType: String, Codable {
     case selfiePngOrJpgFile = "0"
     case idCardPngOrJpgFile = "1"
     case selfiePngOrJpgBase64 = "2"
