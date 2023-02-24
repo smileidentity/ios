@@ -38,10 +38,12 @@ public struct AuthenticationResponse: Decodable {
     public var success: Bool
     public var signature: String
     public var timestamp: String
+    public var partnerParams: PartnerParams
 
     enum CodingKeys: String, CodingKey {
         case success
         case signature
         case timestamp
+        case partnerParams = "partner_params"
     }
 }

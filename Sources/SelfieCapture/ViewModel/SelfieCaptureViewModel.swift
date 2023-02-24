@@ -16,6 +16,7 @@ enum SelfieCaptureViewModelAction {
 final class SelfieCaptureViewModel: ObservableObject {
     var userId: String
     var sessionId: String
+    var isEnroll: Bool
     var faceLayoutGuideFrame = CGRect.zero
     var viewDelegate: FaceDetectorDelegate? {
         didSet {
@@ -85,9 +86,10 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    init(userId: String, sessionId: String) {
+    init(userId: String, sessionId: String, isEnroll: Bool) {
         self.userId = userId
         self.sessionId = sessionId
+        self.isEnroll = isEnroll
         faceDetectionState = .noFaceDetected
         isAcceptableRoll = false
         isAcceptableYaw = false
@@ -144,7 +146,6 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                      isGreyScale: true) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
-            //saveLivenessImage(data: image)
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&
@@ -160,13 +161,32 @@ final class SelfieCaptureViewModel: ObservableObject {
             self.selfieImage = selfieImage
             captureResultDelegate?.didSucceed(selfieImage: selfieImage,
                                               livenessImages: livenessImages)
-            guard let destinationFolder = try? LocalStorage.saveImageJpg(livenessImages: livenessImages, previewImage: selfieImage, to: sessionId) else { return }
 
-            guard let zipUrl = try? LocalStorage.zipFolder(folderUrl: destinationFolder) else {
-                return
+            do {
+                let destinationFolder = try LocalStorage.saveImageJpg(livenessImages: livenessImages, previewImage: selfieImage, to: sessionId)
+                let zipUrl = try LocalStorage.zipFolder(folderUrl: destinationFolder)
+                submit(zip: zipUrl)
+            } catch {
+                captureResultDelegate?.didError(error: error)
             }
-            //saveLivenessImage(data: selfieImage)
         }
+    }
+
+    func submit(zip: URL) {
+        var jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
+        let authRequest = AuthenticationRequest(jobType: jobType, enrollment: isEnroll, userId: userId)
+        SmileIdentity.api.authenticate(request: authRequest)
+            .compactMap(prepUpload)
+    }
+
+    private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
+        let prepUploadRequest = PrepUploadRequest(partnerParams: authResponse.partnerParams, timestamp: authResponse.timestamp, signature: authResponse.signature)
+        return SmileIdentity.api.prepUpload(request: prepUploadRequest)
+            .eraseToAnyPublisher()
+    }
+
+    private func upload(_ prepUploadRequest: PrepUploadRequest, uploadRequest: UploadRequest) {
+
     }
 
     func saveLivenessImage(data: Data) {
