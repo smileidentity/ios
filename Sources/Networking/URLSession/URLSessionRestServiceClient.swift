@@ -22,6 +22,25 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
+    func send(request: RestRequest) -> AnyPublisher<Bool, Error> {
+        do {
+            let urlRequest = try request.getURLRequest()
+            return session.send(request: urlRequest)
+                .tryMap(checkSuccess)
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+    }
+
+    private func checkSuccess(_ element: URLSession.DataTaskPublisher.Output) throws -> Bool {
+        guard let httpResponse = element.response as? HTTPURLResponse,
+              httpResponse.isSuccess else {
+            throw APIError.httpStatus((element.response as? HTTPURLResponse)?.statusCode ?? 500, element.data)
+        }
+        return true
+    }
+
     private func mapToAPIError(_ error: Error) -> APIError {
         if let decodingError = error as? DecodingError {
             return .decode(decodingError)
