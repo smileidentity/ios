@@ -16,6 +16,12 @@ protocol ServiceRunnable {
     /// - Parameters:
     ///   - path: Endpoint to execute the POST call.
     func post<T: Decodable>(to path: PathType) -> AnyPublisher<T, Error>
+
+    /// PUT service call to a particular path with a body.
+    /// - Parameters:
+    ///   - path: Endpoint to execute the PUT call.
+    ///   - body: The contents of the body of the request.
+    func put<T: Decodable>(to path: PathType, with body: Data) -> AnyPublisher<T, Error>
 }
 
 extension ServiceRunnable {
@@ -39,6 +45,14 @@ extension ServiceRunnable {
     func post<T: Decodable>(to path: PathType) -> AnyPublisher<T, Error> {
         return createRestRequest(path: path,
                                  method: .post)
+        .flatMap(serviceClient.send)
+        .eraseToAnyPublisher()
+    }
+
+    func put<T: Decodable>(to path: PathType, with body: Data) -> AnyPublisher<T, Error> {
+        return createRestRequest(path: path,
+                                 method: .put,
+                                 body: body)
         .flatMap(serviceClient.send)
         .eraseToAnyPublisher()
     }
