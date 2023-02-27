@@ -165,28 +165,31 @@ final class SelfieCaptureViewModel: ObservableObject {
             do {
                 let destinationFolder = try LocalStorage.saveImageJpg(livenessImages: livenessImages, previewImage: selfieImage, to: sessionId)
                 let zipUrl = try LocalStorage.zipFolder(folderUrl: destinationFolder)
-                submit(zip: zipUrl)
+                let zipData = try Data(contentsOf: zipUrl)
+                let _ = submit(zip: zipData)
             } catch {
                 captureResultDelegate?.didError(error: error)
             }
         }
     }
 
-    func submit(zip: URL) {
-        var jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
+    func submit(zip: Data) -> AnyPublisher<Bool, Error> {
+        let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
         let authRequest = AuthenticationRequest(jobType: jobType, enrollment: isEnroll, userId: userId)
-        SmileIdentity.api.authenticate(request: authRequest)
-            .compactMap(prepUpload)
+
+        return SmileIdentity.api.authenticate(request: authRequest)
+            .flatMap(prepUpload)
+            .flatMap{[self] in upload($0, zip: zip)}
+            .eraseToAnyPublisher()
     }
 
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
         let prepUploadRequest = PrepUploadRequest(partnerParams: authResponse.partnerParams, timestamp: authResponse.timestamp, signature: authResponse.signature)
         return SmileIdentity.api.prepUpload(request: prepUploadRequest)
-            .eraseToAnyPublisher()
     }
 
-    private func upload(_ prepUploadRequest: PrepUploadRequest, uploadRequest: UploadRequest) {
-
+    private func upload(_ prepUploadResponse: PrepUploadResponse, zip: Data) -> AnyPublisher<Bool,Error> {
+        return SmileIdentity.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
     }
 
     func saveLivenessImage(data: Data) {
