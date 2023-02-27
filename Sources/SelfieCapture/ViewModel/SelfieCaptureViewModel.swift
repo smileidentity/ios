@@ -163,7 +163,9 @@ final class SelfieCaptureViewModel: ObservableObject {
                                               livenessImages: livenessImages)
 
             do {
-                let destinationFolder = try LocalStorage.saveImageJpg(livenessImages: livenessImages, previewImage: selfieImage, to: sessionId)
+                let destinationFolder = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
+                                                                      previewImage: selfieImage,
+                                                                      to: sessionId)
                 let zipUrl = try LocalStorage.zipFolder(folderUrl: destinationFolder)
                 let zipData = try Data(contentsOf: zipUrl)
                 let _ = submit(zip: zipData)
