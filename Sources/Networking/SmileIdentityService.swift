@@ -4,7 +4,7 @@ import Combine
 public protocol SmileIdentityServiceable {
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error>
     func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error>
-    func upload(url: URL, request: UploadRequest)
+    func upload(zip: Data, to url: URL) -> AnyPublisher<Bool, Error>
 }
 
 public class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
@@ -19,7 +19,7 @@ public class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
         return post(to: "upload", with: request)
     }
 
-    public func upload(url: URL, request: UploadRequest) {
-
+    public func upload(zip: Data, to url: URL) -> AnyPublisher<Bool, Error> {
+        return put(to: url.absoluteString, with: zip)
     }
 }
