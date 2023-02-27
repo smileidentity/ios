@@ -11,7 +11,19 @@ public struct UploadImageInfo: Codable {
 }
 
 public struct UploadPackageInfo: Codable {
-    var imageTypeId: ImageType
+    var apiVersion = ApiVersion()
+    var versionNames = VersionNames()
+}
+
+public struct ApiVersion: Codable {
+    var buildNumber = 2
+    var majorVersion = 2
+    var minorVersion = 1
+}
+
+public struct VersionNames: Codable {
+    var version = "3.0.0"
+    var SdkType = "iOS"
 }
 
 public enum ImageType: String, Codable {
