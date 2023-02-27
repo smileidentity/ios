@@ -17,6 +17,19 @@ struct RestRequest: Equatable {
         self.queryParameters = queryParameters
     }
 
+    init(url: URL,
+         method: RestMethod,
+         headers: [HTTPHeader]? = nil,
+         queryParameters: [HTTPQueryParameters]? = nil,
+         body: Data
+    ) {
+        self.url = url
+        self.method = method
+        self.headers = headers
+        self.queryParameters = queryParameters
+        self.body = body
+    }
+
     init<T: Encodable>(url: URL,
                        method: RestMethod,
                        headers: [HTTPHeader]? = nil,
