@@ -52,7 +52,7 @@ class URLSessionRestServiceClientTests: BaseTestCase {
     func testGetURLRequestSetsCorrectHeaders() throws {
         let expectedURL = URL(string: "https://example.com")!
         let expectedHeaders: [HTTPHeader] = [HTTPHeader(name: "Header", value: "Value")]
-        let request = RestRequest(url: expectedURL, method: .get)
+        let request = RestRequest(url: expectedURL, method: .get, headers: expectedHeaders)
         mockServiceHeaderProvider.expectedHeaders = expectedHeaders
         let urlRequest = try request.getURLRequest()
         XCTAssertEqual(urlRequest.allHTTPHeaderFields!, expectedHeaders.toDictionary())
