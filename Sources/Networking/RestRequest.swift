@@ -54,6 +54,13 @@ extension RestRequest {
         return urlRequest
     }
 
+    func getUploadRequest() throws -> URLRequest {
+        var urlRequest = URLRequest(url: url)
+        urlRequest.allHTTPHeaderFields = headers?.toDictionary()
+        urlRequest.httpMethod = method.httpMethod
+        return urlRequest
+    }
+
     private func buildURL(with url: URL) throws -> URL {
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         components?.queryItems = queryParameters?.flatMap { queryParam in
