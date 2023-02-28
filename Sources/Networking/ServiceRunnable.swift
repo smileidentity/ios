@@ -57,7 +57,7 @@ extension ServiceRunnable {
                                      method: RestMethod,
                                      headers: [HTTPHeader]? = nil,
                                      uploadData: Data,
-                                     queryParameters: [HTTPQueryParameters]? = nil) -> AnyPublisher<RestRequest, Error> {
+                                    queryParameters: [HTTPQueryParameters]? = nil) -> AnyPublisher<RestRequest, Error> {
         guard let url = URL(string: url) else {
             return Fail(error: URLError(.badURL))
                 .eraseToAnyPublisher()
