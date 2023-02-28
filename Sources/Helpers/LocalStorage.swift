@@ -17,32 +17,38 @@ class LocalStorage {
         return documentDirectory.appendingPathComponent(defaultFolderName)
     }
 
-    static func saveImageJpg(livenessImages: [Data], previewImage: Data, to folder: String) throws -> URL {
+    static func saveImageJpg(livenessImages: [Data], previewImage: Data, to folder: String) throws -> [URL] {
         try createDefaultDirectory()
         let destinationFolder = defaultDirectory.appendingPathComponent(folder)
+        var urls = [URL]()
         try createDirectory(at: destinationFolder, overwrite: false)
         var imageInfoArray = try livenessImages.enumerated().map({ [self] index, imageData in
             let fileName = "\(livenessImagePrefix)\(index).jpg"
-            try write(imageData, to: destinationFolder.appendingPathComponent(fileName))
+            let url =  try write(imageData, to: destinationFolder.appendingPathComponent(fileName))
+            urls.append(url)
             return imageData.asLivenessImageInfo
         })
-        try write(previewImage, to: destinationFolder.appendingPathComponent(previewImageName))
+        let previewUrl = try write(previewImage, to: destinationFolder.appendingPathComponent(previewImageName))
+        urls.append(previewUrl)
         imageInfoArray.append(previewImage.asSelfieImageInfo)
         let jsonData = try jsonEncoder.encode(UploadRequest(images: imageInfoArray))
-        try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
-        return destinationFolder
+        let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
+        urls.append(jsonUrl)
+        return urls
     }
 
     private static func createDefaultDirectory() throws {
         try createDirectory(at: defaultDirectory, overwrite: false)
     }
 
-    static func write(_ data: Data, to url: URL) throws {
+    static func write(_ data: Data, to url: URL) throws -> URL {
         if !fileManager.fileExists(atPath: url.relativePath) {
             try data.write(to: url)
+            return url
         } else {
             try fileManager.removeItem(atPath: url.relativePath)
             try data.write(to: url)
+            return url
         }
     }
 
@@ -57,8 +63,8 @@ class LocalStorage {
         }
     }
 
-    static func zipFolder(folderUrl: URL) throws -> URL {
-        return try Zip.quickZipFiles([folderUrl], fileName: "archive")
+    static func zipFiles(at urls: [URL]) throws -> URL {
+        return try Zip.quickZipFiles(urls, fileName: "archive")
     }
 
     static func delete(at url: URL) throws {
