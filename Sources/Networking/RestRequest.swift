@@ -36,7 +36,6 @@ struct RestRequest: Equatable {
                        queryParameters: [HTTPQueryParameters]? = nil,
                        body: T) throws {
         let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
         self.url = url
         self.method = method
         self.headers = headers
@@ -47,8 +46,6 @@ struct RestRequest: Equatable {
 
 extension RestRequest {
     func getURLRequest() throws -> URLRequest {
-        let headerProvider = DependencyAutoResolver.resolve(ServiceHeaderProvider.self)
-        let headers = headerProvider.provide(request: self)
         let fullURL = try buildURL(with: url)
         var urlRequest = URLRequest(url: fullURL)
         urlRequest.allHTTPHeaderFields = headers?.toDictionary()
