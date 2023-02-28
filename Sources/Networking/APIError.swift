@@ -8,9 +8,8 @@ public enum APIError: Error {
     case httpStatus(Int, Data)
 }
 
-extension APIError: CustomStringConvertible {
-
-    public var description: String {
+extension APIError: LocalizedError {
+    public var errorDescription: String? {
         switch self {
         case .encode(let error):
             return String(describing: error.localizedDescription)
@@ -20,11 +19,11 @@ extension APIError: CustomStringConvertible {
             return String(describing: error.localizedDescription)
         case .unknown(let message):
             return message
-        case .httpStatus(_, let data):
+        case .httpStatus(let code, let data):
             guard let response = try? JSONDecoder().decode(HTTPErrorResponse.self, from: data) else {
+                print("Error code is \(code)")
                 return String(describing: data)
             }
-
             return response.message
         }
     }
@@ -32,7 +31,7 @@ extension APIError: CustomStringConvertible {
 
 private struct HTTPErrorResponse: Decodable {
     var message: String
-    var code: Int
+    var code: String
 
     enum CodingKeys: String, CodingKey {
         case message = "error"
