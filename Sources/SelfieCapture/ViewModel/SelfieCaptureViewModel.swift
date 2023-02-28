@@ -159,39 +159,57 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                            isGreyScale: false) else { return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
-            captureResultDelegate?.didSucceed(selfieImage: selfieImage,
-                                              livenessImages: livenessImages)
-
             do {
-                let destinationFolder = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
+                let fileUrls = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
                                                                       previewImage: selfieImage,
                                                                       to: sessionId)
-                let zipUrl = try LocalStorage.zipFolder(folderUrl: destinationFolder)
+                let zipUrl = try LocalStorage.zipFiles(at: fileUrls)
+                print(zipUrl.relativePath)
                 let zipData = try Data(contentsOf: zipUrl)
-                let _ = submit(zip: zipData)
+                submit(zip: zipData).sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        self.captureResultDelegate?.didError(error: error)
+                    default:
+                        break
+                    }
+                }, receiveValue: { [self] response in
+                    handleUploadResponse(response)
+                }).store(in: &subscribers)
             } catch {
                 captureResultDelegate?.didError(error: error)
             }
         }
     }
 
-    func submit(zip: Data) -> AnyPublisher<Bool, Error> {
+    func submit(zip: Data) -> AnyPublisher<UploadResponse, Error> {
         let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
         let authRequest = AuthenticationRequest(jobType: jobType, enrollment: isEnroll, userId: userId)
 
         return SmileIdentity.api.authenticate(request: authRequest)
             .flatMap(prepUpload)
-            .flatMap{[self] in upload($0, zip: zip)}
+            .flatMap {[self] in upload($0, zip: zip)}
             .eraseToAnyPublisher()
     }
 
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
-        let prepUploadRequest = PrepUploadRequest(partnerParams: authResponse.partnerParams, timestamp: authResponse.timestamp, signature: authResponse.signature)
+        let prepUploadRequest = PrepUploadRequest(partnerParams: authResponse.partnerParams,
+                                                  timestamp: authResponse.timestamp,
+                                                  signature: authResponse.signature)
         return SmileIdentity.api.prepUpload(request: prepUploadRequest)
     }
 
-    private func upload(_ prepUploadResponse: PrepUploadResponse, zip: Data) -> AnyPublisher<Bool,Error> {
+    private func upload(_ prepUploadResponse: PrepUploadResponse, zip: Data) -> AnyPublisher<UploadResponse, Error> {
         return SmileIdentity.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
+    }
+
+    private func handleUploadResponse(_ response: UploadResponse) {
+        switch response {
+        case .response:
+            print("Completion")
+        case .progress(let percetage):
+            print("Percentage progress \(progress)")
+        }
     }
 
     func saveLivenessImage(data: Data) {
