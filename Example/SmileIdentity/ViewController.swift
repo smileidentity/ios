@@ -3,7 +3,7 @@ import SwiftUI
 import Combine
 import SmileIdentity
 
-class ViewController: UIViewController, SmartSelfieResult {
+class ViewController: UIViewController, SmartSelfieResultDelegate {
     var cameraVC: UIViewController?
     var cancellable: AnyCancellable?
 
@@ -29,6 +29,6 @@ class ViewController: UIViewController, SmartSelfieResult {
     }
 
     func didError(error: Error) {
-
+        print("Error - \(error.localizedDescription)")
     }
 }

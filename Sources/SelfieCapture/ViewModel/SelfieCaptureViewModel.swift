@@ -42,7 +42,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
     private var lastCaptureTime: Int64 = 0
     private var interCaptureDelay = 350
-    weak var captureResultDelegate: SmartSelfieResult?
+    weak var captureResultDelegate: SmartSelfieResultDelegate?
 
     @Published var progress: CGFloat = 0
 
@@ -164,7 +164,6 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                                       previewImage: selfieImage,
                                                                       to: sessionId)
                 let zipUrl = try LocalStorage.zipFiles(at: fileUrls)
-                print(zipUrl.relativePath)
                 let zipData = try Data(contentsOf: zipUrl)
                 submit(zip: zipData).sink(receiveCompletion: { completion in
                     switch completion {

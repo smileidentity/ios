@@ -1,11 +1,11 @@
 import Foundation
 
 public struct PrepUploadRequest: Codable {
-    var filename: String = "archive.zip"
+    var filename: String = "upload.zip"
     var partnerParams: PartnerParams
-    var callbackUrl: String? = "https://example.com"
+    var callbackUrl: String? = ""
     var partnerId = SmileIdentity.config.partnerId
-    var sourceSdk = "iOS"
+    var sourceSdk = "IOS"
     // TO-DO: Fetch version dynamically
     var sourceSdkVersion = "0.1.0"
     var timestamp = String(Date().millisecondsSince1970)
