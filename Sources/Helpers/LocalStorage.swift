@@ -1,4 +1,3 @@
-// swiftlint:disable force_try
 import Foundation
 import Zip
 
@@ -10,16 +9,18 @@ class LocalStorage {
     private static let jsonEncoder = JSONEncoder()
 
     static var defaultDirectory: URL {
-        let documentDirectory = try! FileManager.default.url(for: .documentDirectory,
-                                                             in: .userDomainMask,
-                                                             appropriateFor: nil,
-                                                             create: true)
-        return documentDirectory.appendingPathComponent(defaultFolderName)
+        get throws {
+            let documentDirectory = try FileManager.default.url(for: .documentDirectory,
+                                                                in: .userDomainMask,
+                                                                appropriateFor: nil,
+                                                                create: true)
+            return documentDirectory.appendingPathComponent(defaultFolderName)
+        }
     }
 
     static func saveImageJpg(livenessImages: [Data], previewImage: Data, to folder: String) throws -> [URL] {
         try createDefaultDirectory()
-        let destinationFolder = defaultDirectory.appendingPathComponent(folder)
+        let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         var urls = [URL]()
         try createDirectory(at: destinationFolder, overwrite: false)
         var imageInfoArray = try livenessImages.enumerated().map({ [self] index, imageData in
@@ -64,7 +65,7 @@ class LocalStorage {
     }
 
     static func zipFiles(at urls: [URL]) throws -> URL {
-        return try Zip.quickZipFiles(urls, fileName: "archive")
+        return try Zip.quickZipFiles(urls, fileName: "upload")
     }
 
     static func delete(at url: URL) throws {
@@ -74,7 +75,7 @@ class LocalStorage {
     }
 
     static func deleteAll() throws {
-        if fileManager.fileExists(atPath: defaultDirectory.relativePath) {
+        if fileManager.fileExists(atPath: try defaultDirectory.relativePath) {
             try fileManager.removeItem(atPath: defaultDirectory.relativePath)
         }
     }

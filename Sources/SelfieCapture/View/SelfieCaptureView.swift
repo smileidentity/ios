@@ -4,11 +4,10 @@ import Combine
 public struct SelfieCaptureView: View {
     @ObservedObject private var viewModel: SelfieCaptureViewModel
     let camera = CameraView()
-    private weak var captureResult: SmartSelfieResult?
     private var dividerWidth = UIScreen.main.bounds.width - 40
-    private weak var delegate: SmartSelfieResult?
+    private weak var delegate: SmartSelfieResultDelegate?
 
-    init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResult) {
+    init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
         self.viewModel = viewModel
         self.delegate = delegate
     }

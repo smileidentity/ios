@@ -25,14 +25,14 @@ public class SmileIdentity {
 
     public class func smartSelfieRegistrationScreen(userId: String = UUID().uuidString,
                                                     sessionId: String = "SID_Session",
-                                                    delegate: SmartSelfieResult) -> SelfieCaptureView {
+                                                    delegate: SmartSelfieResultDelegate) -> SelfieCaptureView {
         let viewModel = SelfieCaptureViewModel(userId: userId, sessionId: sessionId, isEnroll: true)
         return  SelfieCaptureView(viewModel: viewModel, delegate: delegate)
     }
 
     public class func smartSelfieAuthenticatonScreen(userId: String,
                                                      sessionId: String = "SID_ Session",
-                                                     delegate: SmartSelfieResult) -> SelfieCaptureView {
+                                                     delegate: SmartSelfieResultDelegate) -> SelfieCaptureView {
         let viewModel = SelfieCaptureViewModel(userId: userId, sessionId: sessionId, isEnroll: false)
         return SelfieCaptureView(viewModel: viewModel, delegate: delegate)
     }
