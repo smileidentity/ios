@@ -165,30 +165,30 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                                       to: sessionId)
                 let zipUrl = try LocalStorage.zipFiles(at: fileUrls)
                 let zipData = try Data(contentsOf: zipUrl)
-                submit(zip: zipData).sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .failure(let error):
-                        self.captureResultDelegate?.didError(error: error)
-                    default:
-                        break
-                    }
-                }, receiveValue: { [self] response in
-                    handleUploadResponse(response)
-                }).store(in: &subscribers)
+                submit(zip: zipData)
             } catch {
                 captureResultDelegate?.didError(error: error)
             }
         }
     }
 
-    func submit(zip: Data) -> AnyPublisher<UploadResponse, Error> {
+    func submit(zip: Data) {
         let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
         let authRequest = AuthenticationRequest(jobType: jobType, enrollment: isEnroll, userId: userId)
 
-        return SmileIdentity.api.authenticate(request: authRequest)
+        SmileIdentity.api.authenticate(request: authRequest)
             .flatMap(prepUpload)
-            .flatMap {[self] in upload($0, zip: zip)}
-            .eraseToAnyPublisher()
+            .flatMap ({[self] in upload($0, zip: zip)})
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    self.captureResultDelegate?.didError(error: error)
+                default:
+                    break
+                }
+            }, receiveValue: { [self] response in
+                handleUploadResponse(response)
+            }).store(in: &subscribers)
     }
 
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
@@ -205,9 +205,10 @@ final class SelfieCaptureViewModel: ObservableObject {
     private func handleUploadResponse(_ response: UploadResponse) {
         switch response {
         case .response:
-            print("Completion")
-        case .progress(let percetage):
-            print("Percentage progress \(progress)")
+            captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
+                                              livenessImages: livenessImages)
+        default:
+            break
         }
     }
 
