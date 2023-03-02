@@ -3,8 +3,23 @@ import Combine
 @testable import SmileIdentity
 
 final class SelfieCaptureViewModelTests: XCTestCase {
-
+    let mockDependency = DependencyContainer()
+    let mockService = MockSmileIdentityService()
+    let mockResult = MockResultDelegate()
     var subscribers = Set<AnyCancellable>()
+
+    override func setUpWithError() throws {
+        let config = Config(partnerId: "id",
+                            authToken: "token",
+                            prodUrl: "url", testUrl: "url",
+                            prodLambdaUrl: "url",
+                            testLambdaUrl: "url")
+        SmileIdentity.initialize(config: config)
+        DependencyAutoResolver.set(resolver: mockDependency)
+        mockDependency.register(SmileIdentityServiceable.self, creation: {
+            self.mockService
+        })
+    }
 
     func testPublishedValuesAreExpectedValuesAtInit() {
         let viewModel = SelfieCaptureViewModel(userId: "testuserid", sessionId: "randomSession", isEnroll: true)
@@ -83,5 +98,29 @@ final class SelfieCaptureViewModelTests: XCTestCase {
                 expectation.fulfill()
             }.store(in: &subscribers)
         wait(for: [expectation], timeout: 1)
+    }
+
+    func testSubmitFunctionPublishesExpectedValuesOnSuccess() {
+        let viewModel = SelfieCaptureViewModel(userId: "testuserid",
+                                               sessionId: "randomSession",
+                                               isEnroll: true)
+        MockHelper.shouldFail = false
+        let expectection = XCTestExpectation()
+        mockResult.successExpectation = expectection
+        viewModel.captureResultDelegate = mockResult
+        viewModel.submit(zip: Data())
+        wait(for: [expectection], timeout: 1)
+    }
+
+    func testSubmitFunctionPublishesErrorOnFailure() {
+        let viewModel = SelfieCaptureViewModel(userId: "testuserid",
+                                               sessionId: "randomSession",
+                                               isEnroll: true)
+        MockHelper.shouldFail = true
+        let expectection = XCTestExpectation()
+        mockResult.failureExpection = expectection
+        viewModel.captureResultDelegate = mockResult
+        viewModel.submit(zip: Data())
+        wait(for: [expectection], timeout: 1)
     }
 }
