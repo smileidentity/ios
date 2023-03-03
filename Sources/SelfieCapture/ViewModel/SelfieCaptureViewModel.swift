@@ -167,7 +167,9 @@ final class SelfieCaptureViewModel: ObservableObject {
                 let zipData = try Data(contentsOf: zipUrl)
                 submit(zip: zipData)
             } catch {
-                captureResultDelegate?.didError(error: error)
+                DispatchQueue.main.async { [self] in
+                    captureResultDelegate?.didError(error: error)
+                }
             }
         }
     }

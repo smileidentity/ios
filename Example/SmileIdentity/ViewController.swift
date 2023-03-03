@@ -21,7 +21,7 @@ class ViewController: UIViewController, SmartSelfieResultDelegate {
         cameraVC?.dismiss(animated: true, completion: {
             let ac =
             UIAlertController(title: "Selfie Capture Complete",
-                              message: "Check your camera roll for the captured images",
+                              message: "The Job has been submited. Check your Portal for the status of the job",
                               preferredStyle: .alert)
             ac.addAction(.init(title: "Okay", style: .default))
             self.navigationController?.present(ac, animated: true)
