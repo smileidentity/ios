@@ -106,7 +106,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
                                                isEnroll: true)
         MockHelper.shouldFail = false
         let expectation = XCTestExpectation()
-        mockResult.successExpectation = expectection
+        mockResult.successExpectation = expectation
         viewModel.captureResultDelegate = mockResult
         viewModel.submit(zip: Data())
         wait(for: [expectation], timeout: 1)
@@ -118,7 +118,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
                                                isEnroll: true)
         MockHelper.shouldFail = true
         let expectation = XCTestExpectation()
-        mockResult.failureExpection = expectection
+        mockResult.failureExpection = expectation
         viewModel.captureResultDelegate = mockResult
         viewModel.submit(zip: Data())
         wait(for: [expectation], timeout: 1)
