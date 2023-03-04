@@ -105,11 +105,11 @@ final class SelfieCaptureViewModelTests: XCTestCase {
                                                sessionId: "randomSession",
                                                isEnroll: true)
         MockHelper.shouldFail = false
-        let expectection = XCTestExpectation()
+        let expectation = XCTestExpectation()
         mockResult.successExpectation = expectection
         viewModel.captureResultDelegate = mockResult
         viewModel.submit(zip: Data())
-        wait(for: [expectection], timeout: 1)
+        wait(for: [expectation], timeout: 1)
     }
 
     func testSubmitFunctionPublishesErrorOnFailure() {
@@ -117,10 +117,10 @@ final class SelfieCaptureViewModelTests: XCTestCase {
                                                sessionId: "randomSession",
                                                isEnroll: true)
         MockHelper.shouldFail = true
-        let expectection = XCTestExpectation()
+        let expectation = XCTestExpectation()
         mockResult.failureExpection = expectection
         viewModel.captureResultDelegate = mockResult
         viewModel.submit(zip: Data())
-        wait(for: [expectection], timeout: 1)
+        wait(for: [expectation], timeout: 1)
     }
 }
