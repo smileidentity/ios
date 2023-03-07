@@ -1,6 +1,6 @@
 import Foundation
 
-struct JobStatusRequest: Codable {
+public struct JobStatusRequest: Codable {
     var userId: String
     var jobId: String
     var includeImageLinks: Bool
@@ -20,7 +20,7 @@ struct JobStatusRequest: Codable {
     }
 }
 
-struct JobStatusResponse {
+public struct JobStatusResponse: Codable {
     var timestamp: String
     var jobComplete: Bool
     var jobSuccess: Bool
@@ -119,7 +119,7 @@ enum ActionResult: String, Codable {
     case issuerUnavailable = "Issuer Unavailable"
 }
 
-struct ImageLinks {
+struct ImageLinks: Codable {
     var selfieImageUrl: String?
     var error: String?
 
@@ -128,4 +128,3 @@ struct ImageLinks {
         case error
     }
 }
-
