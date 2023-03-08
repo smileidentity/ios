@@ -1,7 +1,7 @@
 import Foundation
 
 /// The result of a selfie capture session
-public protocol SmartSelfieResult: AnyObject {
+public protocol SmartSelfieResultDelegate: AnyObject {
     /// This function is called as a result of a successful selfie capture
     /// - Parameters:
     ///   - selfieImage: A colour selfie image

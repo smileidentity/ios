@@ -14,6 +14,9 @@ enum SelfieCaptureViewModelAction {
 }
 
 final class SelfieCaptureViewModel: ObservableObject {
+    var userId: String
+    var sessionId: String
+    var isEnroll: Bool
     var faceLayoutGuideFrame = CGRect.zero
     var viewDelegate: FaceDetectorDelegate? {
         didSet {
@@ -39,7 +42,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
     private var lastCaptureTime: Int64 = 0
     private var interCaptureDelay = 350
-    weak var captureResultDelegate: SmartSelfieResult?
+    weak var captureResultDelegate: SmartSelfieResultDelegate?
 
     @Published var progress: CGFloat = 0
 
@@ -83,7 +86,10 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    init() {
+    init(userId: String, sessionId: String, isEnroll: Bool) {
+        self.userId = userId
+        self.sessionId = sessionId
+        self.isEnroll = isEnroll
         faceDetectionState = .noFaceDetected
         isAcceptableRoll = false
         isAcceptableYaw = false
@@ -140,7 +146,6 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                      isGreyScale: true) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
-            saveLivenessImage(data: image)
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&
@@ -154,9 +159,62 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                            isGreyScale: false) else { return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
-            captureResultDelegate?.didSucceed(selfieImage: selfieImage,
+            do {
+                let fileUrls = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
+                                                                      previewImage: selfieImage,
+                                                                      to: sessionId)
+                let zipUrl = try LocalStorage.zipFiles(at: fileUrls)
+                let zipData = try Data(contentsOf: zipUrl)
+                submit(zip: zipData)
+            } catch {
+                DispatchQueue.main.async { [self] in
+                    captureResultDelegate?.didError(error: error)
+                }
+            }
+        }
+    }
+
+    func submit(zip: Data) {
+        let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
+        let authRequest = AuthenticationRequest(jobType: jobType, enrollment: isEnroll, userId: userId)
+
+        SmileIdentity.api.authenticate(request: authRequest)
+            .flatMap(prepUpload)
+            .flatMap ({[self] in upload($0, zip: zip)})
+            .sink(receiveCompletion: {completion in
+                switch completion {
+                case .failure(let error):
+                    DispatchQueue.main.async { [self] in
+                        captureResultDelegate?.didError(error: error)
+                    }
+                default:
+                    break
+                }
+            }, receiveValue: { response in
+                DispatchQueue.main.async { [self] in
+                    handleUploadResponse(response)
+                }
+            }).store(in: &subscribers)
+    }
+
+    private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
+        let prepUploadRequest = PrepUploadRequest(partnerParams: authResponse.partnerParams,
+                                                  timestamp: authResponse.timestamp,
+                                                  signature: authResponse.signature)
+        return SmileIdentity.api.prepUpload(request: prepUploadRequest)
+    }
+
+    private func upload(_ prepUploadResponse: PrepUploadResponse, zip: Data) -> AnyPublisher<UploadResponse, Error> {
+        return SmileIdentity.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
+    }
+
+    private func handleUploadResponse(_ response: UploadResponse) {
+        switch response {
+        case .response:
+            captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
                                               livenessImages: livenessImages)
-            saveLivenessImage(data: selfieImage)
+        default:
+            break
         }
     }
 

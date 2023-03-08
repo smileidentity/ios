@@ -12,11 +12,14 @@ protocol ServiceRunnable {
     ///   - body: The contents of the body of the request.
     func post<T: Encodable, U: Decodable>(to path: PathType, with body: T) -> AnyPublisher<U, Error>
 
-    /// POST service call to a particular path without a body.
+    /// PUT service call to a particular path with a body.
     /// - Parameters:
-    ///   - path: Endpoint to execute the POST call.
-    func post<T: Decodable>(to path: PathType) -> AnyPublisher<T, Error>
-}
+    ///   - data: Data to be uploaded
+    ///   - url: Endpoint to upload to
+    ///   - restMethod: The rest method to be used (PUT, POST etc )
+    func upload(data: Data,
+                to url: String,
+                with restMethod: RestMethod) -> AnyPublisher<UploadResponse, Error>}
 
 extension ServiceRunnable {
 
@@ -31,33 +34,42 @@ extension ServiceRunnable {
     func post<T: Encodable, U: Decodable>(to path: PathType, with body: T) -> AnyPublisher<U, Error> {
         return createRestRequest(path: path,
                                  method: .post,
-                                 body: body)
+                                 headers: [.contentType(value: "application/json")],
+                                 body: body
+        )
         .flatMap(serviceClient.send)
         .eraseToAnyPublisher()
     }
 
-    func post<T: Decodable>(to path: PathType) -> AnyPublisher<T, Error> {
-        return createRestRequest(path: path,
-                                 method: .post)
-        .flatMap(serviceClient.send)
+    func upload(data: Data,
+                to url: String,
+                with restMethod: RestMethod) -> AnyPublisher<UploadResponse, Error> {
+        return createUploadRequest(url: url,
+                                   method: restMethod,
+                                   headers: [.contentType(value: "application/zip")],
+                                   uploadData: data
+        )
+        .flatMap({ return serviceClient.upload(request: $0)})
         .eraseToAnyPublisher()
     }
 
-    private func createRestRequest(path: PathType,
-                                   method: RestMethod,
-                                   queryParameters: [HTTPQueryParameters]? = nil) -> AnyPublisher<RestRequest, Error> {
-        let path = String(describing: path)
-        guard let url = baseURL?.appendingPathComponent(path) else {
+    private func createUploadRequest(url: String,
+                                     method: RestMethod,
+                                     headers: [HTTPHeader]? = nil,
+                                     uploadData: Data,
+                                    queryParameters: [HTTPQueryParameters]? = nil) -> AnyPublisher<RestRequest, Error> {
+        guard let url = URL(string: url) else {
             return Fail(error: URLError(.badURL))
                 .eraseToAnyPublisher()
         }
-
         let request = RestRequest(url: url,
                                   method: method,
-                                  queryParameters: queryParameters)
+                                  headers: headers,
+                                  body: uploadData)
         return Just(request)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
+
     }
 
     private func createRestRequest<T: Encodable>(path: PathType,
