@@ -2,14 +2,13 @@ import SwiftUI
 import Combine
 
 public struct SelfieCaptureView: View {
-    @StateObject private var viewModel = SelfieCaptureViewModel()
+    @ObservedObject private var viewModel: SelfieCaptureViewModel
     let camera = CameraView()
-    private weak var captureResult: SmartSelfieResult?
     private var dividerWidth = UIScreen.main.bounds.width - 40
-    private weak var delegate: SmartSelfieResult?
-    private init() {}
-    public init(delegate: SmartSelfieResult) {
-        self.init()
+    private weak var delegate: SmartSelfieResultDelegate?
+
+    init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
+        self.viewModel = viewModel
         self.delegate = delegate
     }
 

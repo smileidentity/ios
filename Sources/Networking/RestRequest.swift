@@ -17,13 +17,25 @@ struct RestRequest: Equatable {
         self.queryParameters = queryParameters
     }
 
+    init(url: URL,
+         method: RestMethod,
+         headers: [HTTPHeader]? = nil,
+         queryParameters: [HTTPQueryParameters]? = nil,
+         body: Data
+    ) {
+        self.url = url
+        self.method = method
+        self.headers = headers
+        self.queryParameters = queryParameters
+        self.body = body
+    }
+
     init<T: Encodable>(url: URL,
                        method: RestMethod,
                        headers: [HTTPHeader]? = nil,
                        queryParameters: [HTTPQueryParameters]? = nil,
                        body: T) throws {
         let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
         self.url = url
         self.method = method
         self.headers = headers
@@ -34,13 +46,18 @@ struct RestRequest: Equatable {
 
 extension RestRequest {
     func getURLRequest() throws -> URLRequest {
-        let headerProvider = DependencyAutoResolver.resolve(ServiceHeaderProvider.self)
-        let headers = headerProvider.provide(request: self)
         let fullURL = try buildURL(with: url)
         var urlRequest = URLRequest(url: fullURL)
         urlRequest.allHTTPHeaderFields = headers?.toDictionary()
         urlRequest.httpMethod = method.httpMethod
         urlRequest.httpBody = body
+        return urlRequest
+    }
+
+    func getUploadRequest() throws -> URLRequest {
+        var urlRequest = URLRequest(url: url)
+        urlRequest.allHTTPHeaderFields = headers?.toDictionary()
+        urlRequest.httpMethod = method.httpMethod
         return urlRequest
     }
 

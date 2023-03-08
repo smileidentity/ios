@@ -1,18 +1,18 @@
 import Foundation
 
 public struct PrepUploadRequest: Codable {
-    var filename: String
+    var filename: String = "upload.zip"
     var partnerParams: PartnerParams
-    var callbackUrl: String?
+    var callbackUrl: String? = ""
     var partnerId = SmileIdentity.config.partnerId
-    var sourceSdk = "iOS"
+    var sourceSdk = "IOS"
     // TO-DO: Fetch version dynamically
     var sourceSdkVersion = "0.1.0"
     var timestamp = String(Date().millisecondsSince1970)
     var signature = ""
 
     enum CodingKeys: String, CodingKey {
-        case filename
+        case filename = "file_name"
         case partnerParams = "partner_params"
         case callbackUrl = "callback_url"
         case partnerId = "smile_client_id"
@@ -24,9 +24,17 @@ public struct PrepUploadRequest: Codable {
 }
 
 public struct PrepUploadResponse: Codable {
-    var code: Int
+    var code: String
     var refId: String
     var uploadUrl: String
     var smileJobId: String
     var cameraConfig: String?
+
+    enum CodingKeys: String, CodingKey {
+        case code
+        case refId = "ref_id"
+        case uploadUrl = "upload_url"
+        case smileJobId = "smile_job_id"
+        case cameraConfig = "camera_config"
+    }
 }

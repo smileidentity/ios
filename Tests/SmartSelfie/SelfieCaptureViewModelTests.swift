@@ -3,11 +3,26 @@ import Combine
 @testable import SmileIdentity
 
 final class SelfieCaptureViewModelTests: XCTestCase {
-
+    let mockDependency = DependencyContainer()
+    let mockService = MockSmileIdentityService()
+    let mockResult = MockResultDelegate()
     var subscribers = Set<AnyCancellable>()
 
+    override func setUpWithError() throws {
+        let config = Config(partnerId: "id",
+                            authToken: "token",
+                            prodUrl: "url", testUrl: "url",
+                            prodLambdaUrl: "url",
+                            testLambdaUrl: "url")
+        SmileIdentity.initialize(config: config)
+        DependencyAutoResolver.set(resolver: mockDependency)
+        mockDependency.register(SmileIdentityServiceable.self, creation: {
+            self.mockService
+        })
+    }
+
     func testPublishedValuesAreExpectedValuesAtInit() {
-        let viewModel = SelfieCaptureViewModel()
+        let viewModel = SelfieCaptureViewModel(userId: "testuserid", sessionId: "randomSession", isEnroll: true)
         XCTAssertFalse(viewModel.isAcceptableRoll)
         XCTAssertFalse(viewModel.isAcceptableYaw)
         XCTAssertFalse(viewModel.isAcceptableQuality)
@@ -19,7 +34,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     }
 
     func testPerfomActionWhenSceneIsUnstablePublishesExpectedValues() throws {
-        let viewModel = SelfieCaptureViewModel()
+        let viewModel = SelfieCaptureViewModel(userId: "testuserid", sessionId: "randomSession", isEnroll: true)
         viewModel.perform(action: .sceneUnstable)
         let expectation = XCTestExpectation()
         viewModel.$faceDetectionState
@@ -33,7 +48,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     }
 
     func testPerformActionWhenNoFaceIsDectectedPublishesExpectedValues() throws {
-        let viewModel = SelfieCaptureViewModel()
+        let viewModel = SelfieCaptureViewModel(userId: "testuserid", sessionId: "randomSession", isEnroll: true)
         viewModel.perform(action: .noFaceDetected)
         let expectation = XCTestExpectation()
         Publishers.CombineLatest3(viewModel.$faceDetectionState,
@@ -52,7 +67,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     }
 
     func testPerfomActionWhenMultipleFacesDetectedPublishesExpectedValues() throws {
-        let viewModel = SelfieCaptureViewModel()
+        let viewModel = SelfieCaptureViewModel(userId: "testuserid", sessionId: "randomSession", isEnroll: true)
         viewModel.perform(action: .multipleFacesDetected)
         let expectation = XCTestExpectation()
         viewModel.$faceDetectionState
@@ -66,7 +81,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
 
     func testPerformActionWhenFaceDectedPublishesExpectedValues() throws {
         let frameLayout = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
-        let viewModel = SelfieCaptureViewModel()
+        let viewModel = SelfieCaptureViewModel(userId: "testuserid", sessionId: "randomSession", isEnroll: true)
         viewModel.faceLayoutGuideFrame = frameLayout
         let boundingRect = CGRect(origin: .zero,
                                   size: CGSize(width: 0.5*frameLayout.size.width,
@@ -82,6 +97,30 @@ final class SelfieCaptureViewModelTests: XCTestCase {
                 XCTAssertEqual(values.0, .faceDetected)
                 expectation.fulfill()
             }.store(in: &subscribers)
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testSubmitFunctionPublishesExpectedValuesOnSuccess() {
+        let viewModel = SelfieCaptureViewModel(userId: "testuserid",
+                                               sessionId: "randomSession",
+                                               isEnroll: true)
+        MockHelper.shouldFail = false
+        let expectation = XCTestExpectation()
+        mockResult.successExpectation = expectation
+        viewModel.captureResultDelegate = mockResult
+        viewModel.submit(zip: Data())
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testSubmitFunctionPublishesErrorOnFailure() {
+        let viewModel = SelfieCaptureViewModel(userId: "testuserid",
+                                               sessionId: "randomSession",
+                                               isEnroll: true)
+        MockHelper.shouldFail = true
+        let expectation = XCTestExpectation()
+        mockResult.failureExpection = expectation
+        viewModel.captureResultDelegate = mockResult
+        viewModel.submit(zip: Data())
         wait(for: [expectation], timeout: 1)
     }
 }

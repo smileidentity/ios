@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import XCTest
 @testable import SmileIdentity
 
 class MockServiceHeaderProvider: ServiceHeaderProvider {
@@ -19,3 +20,66 @@ class MockURLSessionPublisher: URLSessionPublisher {
             .eraseToAnyPublisher()
     }
 }
+
+class MockSmileIdentityService: SmileIdentityServiceable {
+
+    func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error> {
+        let params = PartnerParams(jobId: "jobid",
+                                   userId: "userid",
+                                   jobType: .enhancedKyc)
+        let response = AuthenticationResponse(success: true,
+                                              signature: "sig",
+                                              timestamp: "time",
+                                              partnerParams: params)
+        if MockHelper.shouldFail {
+            return Fail(error: APIError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error> {
+        let response = PrepUploadResponse(code: "code",
+                                          refId: "refid",
+                                          uploadUrl: "",
+                                          smileJobId: "8950")
+        if MockHelper.shouldFail {
+            return Fail(error: APIError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    func upload(zip: Data = Data(), to url: String = "") -> AnyPublisher<UploadResponse, Error> {
+        let response = UploadResponse.response(data: Data())
+        if MockHelper.shouldFail {
+            return Fail(error: APIError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+}
+
+class MockResultDelegate: SmartSelfieResultDelegate {
+    var successExpectation: XCTestExpectation?
+    var failureExpection: XCTestExpectation?
+
+    func didSucceed(selfieImage: Data, livenessImages: [Data]) {
+        successExpectation?.fulfill()
+    }
+
+    func didError(error: Error) {
+        failureExpection?.fulfill()
+    }
+}
+
+class MockHelper {
+    static var shouldFail = false
+}
+
