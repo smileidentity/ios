@@ -9,4 +9,3 @@ struct Constants {
         static let smileEmblem = "SmileEmblem"
     }
 }
-

@@ -17,6 +17,7 @@ struct SmartSelfieInstructionsView: View {
                     .foregroundColor(.tertiaryA)
                     .lineSpacing(1.3)
             }
+            .padding(.bottom, 47)
             VStack(alignment: .leading, spacing: 30) {
                 makeInstruction(title: "Instructions.GoodLight",
                                 body: "Instructions.GoodLightBody",
@@ -28,17 +29,15 @@ struct SmartSelfieInstructionsView: View {
                                 body: "Instructions.RemoveObstructionsBody",
                                 image: Constants.ImageName.face)
             }
-            .padding(.top, 47)
-
             VStack(spacing: 18) {
                 SmileButton(title: "Instructions.Action", clicked: {
 
                 })
                 Image(Constants.ImageName.smileEmblem, bundle: .module)
-            }.padding(.top, 50)
-
+            }.padding(.top, 80)
+            Spacer()
         }
-        .padding(EdgeInsets(top: 50,
+        .padding(EdgeInsets(top: 40,
                             leading: 24,
                             bottom: 0,
                             trailing: 24))
@@ -52,6 +51,7 @@ struct SmartSelfieInstructionsView: View {
                     .font(.h4)
                     .foregroundColor(.digitalBlue)
                 Text(body, bundle: .module)
+                    .multilineTextAlignment(.leading)
                     .font(.h5)
                     .foregroundColor(.tertiaryA)
                     .lineSpacing(1.3)
