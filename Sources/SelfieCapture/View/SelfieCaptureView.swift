@@ -40,8 +40,6 @@ public struct SelfieCaptureView: View {
                     Text("Put your face inside the oval frame and wait until it turns blue.")
                         .font(.system(size: 12))
                 }.frame(maxWidth: 250)
-                Spacer()
-                Image("SmileEmblem", bundle: .module)
             }.padding(.top, 90)
                 .frame(width: geometry.size.width,
                        height: geometry.size.height)
@@ -74,4 +72,20 @@ struct ProgressView: View {
         }
     }
 
+}
+
+struct SelfieCaptureView_Previews: PreviewProvider {
+    static var previews: some View {
+        SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString, sessionId: UUID().uuidString, isEnroll: false), delegate: DummyDelegate())
+    }
+}
+
+class DummyDelegate: SmartSelfieResultDelegate {
+    func didSucceed(selfieImage: Data, livenessImages: [Data]) {
+
+    }
+
+    func didError(error: Error) {
+
+    }
 }
