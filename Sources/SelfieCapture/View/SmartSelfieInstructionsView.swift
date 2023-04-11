@@ -6,52 +6,52 @@ struct SmartSelfieInstructionsView: View {
             Image(Constants.ImageName.instructionsHeader, bundle: .module)
                 .padding(.bottom, 27)
             VStack(spacing: 32) {
-                Text(Constants.Copy.instructionsHeader)
+                Text("Instructions.Header", bundle: .module)
                     .multilineTextAlignment(.center)
                     .font(.h1)
                     .foregroundColor(.digitalBlue)
                     .lineSpacing(0.98)
-                Text(Constants.Copy.instuctionsCallout)
+                Text("Instructions.Callout", bundle: .module)
                     .multilineTextAlignment(.center)
                     .font(.h5)
                     .foregroundColor(.tertiaryA)
                     .lineSpacing(1.3)
             }
+            .padding(.bottom, 47)
             VStack(alignment: .leading, spacing: 30) {
-                makeInstruction(title: Constants.Copy.goodLight,
-                                body: Constants.Copy.goodLightBody,
+                makeInstruction(title: "Instructions.GoodLight",
+                                body: "Instructions.GoodLightBody",
                                 image: Constants.ImageName.light)
-                makeInstruction(title: Constants.Copy.clearImage,
-                                body: Constants.Copy.clearImageBody,
+                makeInstruction(title: "Instructions.ClearImage",
+                                body: "Instructions.ClearImageBody",
                                 image: Constants.ImageName.clearImage)
-                makeInstruction(title: Constants.Copy.removeObstructions,
-                                body: Constants.Copy.removeObstructionsBody,
+                makeInstruction(title: "Instructions.RemoveObstructions",
+                                body: "Instructions.RemoveObstructionsBody",
                                 image: Constants.ImageName.face)
             }
-            .padding(.top, 47)
-
             VStack(spacing: 18) {
-                SmileButton(title: Constants.Copy.ready, clicked: {
+                SmileButton(title: "Instructions.Action", clicked: {
 
                 })
                 Image(Constants.ImageName.smileEmblem, bundle: .module)
-            }.padding(.top, 50)
-
+            }.padding(.top, 80)
+            Spacer()
         }
-        .padding(EdgeInsets(top: 50,
+        .padding(EdgeInsets(top: 40,
                             leading: 24,
                             bottom: 0,
                             trailing: 24))
     }
 
-    func makeInstruction(title: String, body: String, image: String) -> some View {
+    func makeInstruction(title: LocalizedStringKey, body: LocalizedStringKey, image: String) -> some View {
         return HStack(spacing: 16) {
             Image(image, bundle: .module)
-            VStack(alignment: .leading, spacing: 7){
-                Text(title)
+            VStack(alignment: .leading, spacing: 7) {
+                Text(title, bundle: .module)
                     .font(.h4)
                     .foregroundColor(.digitalBlue)
-                Text(body)
+                Text(body, bundle: .module)
+                    .multilineTextAlignment(.leading)
                     .font(.h5)
                     .foregroundColor(.tertiaryA)
                     .lineSpacing(1.3)
@@ -63,6 +63,7 @@ struct SmartSelfieInstructionsView: View {
 struct SmartSelfieInstructionsView_Previews: PreviewProvider {
     static var previews: some View {
         SmartSelfieInstructionsView()
+            .environment(\.locale, Locale(identifier: "en"))
             .loadCustomFonts()
     }
 }
