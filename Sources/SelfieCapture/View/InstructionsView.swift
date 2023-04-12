@@ -4,7 +4,8 @@ struct InstructionsView: View {
     @ObservedObject private(set) var model: SelfieCaptureViewModel
     var body: some View {
         Text(faceDetectionState())
-            .font(.system(size: 16))
+            .foregroundColor(.digitalBlue)
+            .font(.h4)
     }
 }
 
