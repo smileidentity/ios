@@ -4,7 +4,6 @@ import Combine
 public struct SelfieCaptureView: View {
     @ObservedObject private var viewModel: SelfieCaptureViewModel
     let camera = CameraView()
-    private var dividerWidth = UIScreen.main.bounds.width - 40
     private weak var delegate: SmartSelfieResultDelegate?
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
@@ -16,62 +15,25 @@ public struct SelfieCaptureView: View {
     public var body: some View {
         GeometryReader { geometry in
             let ovalSize = ovalSize(from: geometry)
-            VStack(spacing: 20) {
-                ZStack {
-                    camera
-                        .clipShape(Ellipse())
-                        .onAppear {
-                            viewModel.captureResultDelegate = delegate
-                            viewModel.faceLayoutGuideFrame =
-                            CGRect(origin: .zero,
-                                   size: ovalSize)
-                            viewModel.viewDelegate = camera.preview
-                        }
-                    ProgressView(model: viewModel)
-                }
-                .frame(width: ovalSize.width,
-                       height: ovalSize.height)
-                InstructionsView(model: viewModel)
-                Divider()
-                    .frame(width: dividerWidth)
-                HStack {
-                    Image(systemName: "info.circle.fill")
-                        .frame(width: 32, height: 32)
-                    Text("Put your face inside the oval frame and wait until it turns blue.")
-                        .font(.system(size: 12))
-                }.frame(maxWidth: 250)
-            }.padding(.top, 90)
-                .frame(width: geometry.size.width,
-                       height: geometry.size.height)
+            ZStack {
+                camera
+                    .onAppear {
+                        viewModel.captureResultDelegate = delegate
+                        viewModel.faceLayoutGuideFrame =
+                        CGRect(origin: .zero,
+                               size: ovalSize)
+                        viewModel.viewDelegate = camera.preview
+                    }
 
-        }
+                FaceOverlayView(model: viewModel)
+            }
+        }.edgesIgnoringSafeArea(.all)
     }
 
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {
         return CGSize(width: geometry.size.width * 0.7,
                       height: geometry.size.width * 0.7 / (3/3.5))
     }
-}
-
-struct ProgressView: View {
-    @ObservedObject private(set) var model: SelfieCaptureViewModel
-    let emptyStateColor = Color(red: 0.94, green: 0.95, blue: 0.98)
-    let fillCollor = Color(red: 0.09, green: 0.639, blue: 0.863)
-
-    var body: some View {
-        ZStack {
-            Ellipse()
-                .stroke(emptyStateColor,
-                        lineWidth: 10)
-            Ellipse()
-                .trim(from: 0, to: model.progress)
-                .stroke(fillCollor, style: StrokeStyle(
-                    lineWidth: 10,
-                    lineCap: .round))
-                .animation(.easeOut, value: model.progress)
-        }
-    }
-
 }
 
 struct SelfieCaptureView_Previews: PreviewProvider {
@@ -81,11 +43,6 @@ struct SelfieCaptureView_Previews: PreviewProvider {
 }
 
 class DummyDelegate: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: Data, livenessImages: [Data]) {
-
-    }
-
-    func didError(error: Error) {
-
-    }
+    func didSucceed(selfieImage: Data, livenessImages: [Data]) {}
+    func didError(error: Error) {}
 }
