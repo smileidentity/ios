@@ -24,8 +24,8 @@ struct CustomFont {
         guard let fontURL = bundle.url(forResource: fontName, withExtension: fontExtension),
               let fontDataProvider = CGDataProvider(url: fontURL as CFURL),
               let font = CGFont(fontDataProvider) else {
-            fatalError("Couldn't create font from data")
-        }
+                  fatalError("Couldn't create font from data")
+              }
 
         var error: Unmanaged<CFError>?
 
