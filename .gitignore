@@ -17,6 +17,7 @@ xcuserdata/
 DerivedData
 *.hmap
 *.ipa
+smile_config.json
 
 # Bundler
 .bundle
