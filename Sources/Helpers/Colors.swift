@@ -3,6 +3,8 @@ import SwiftUI
 extension Color {
     static let digitalBlue = Color(hex: "#001096")
     static let tertiaryA = Color(hex: "#9394AB")
+    static let successGreen = Color(hex: "#2CC05C")
+    static let digitalBlueOpacity40 = digitalBlue.opacity(0.4)
 }
 
 extension Color {

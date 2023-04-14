@@ -21,6 +21,7 @@ public class SmileIdentity {
     public class func initialize(config: Config, useSandbox: Bool = true) {
         self.config = config
         self.useSandbox = useSandbox
+        CustomFont.registerFonts()
     }
 
     public class func smartSelfieRegistrationScreen(userId: String = UUID().uuidString,
