@@ -31,7 +31,7 @@ desc "Release to TestFlight"
 
     slack_notifications(
       displayMessage: "Deployed Smile Identity sample app to TestFlight. :fire: ",
-      slackChannel: "#")
+      slackChannel: "#deploys")
   end
 
   private_lane :release_build do
@@ -67,6 +67,10 @@ desc "Release to TestFlight"
       workspace: "SmileIdentity.xcodeproj",
       scheme: "SmileIdentity-Example",
       export_method: "app-store"
+    )
+
+    increment_version_number(
+      bump_type: "patch"
     )
   end
 
