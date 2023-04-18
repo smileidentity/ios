@@ -28,10 +28,6 @@ desc "Release to TestFlight"
       distribute_external: false,
       notify_external_testers: false,
     )
-
-    slack_notifications(
-      displayMessage: "Deployed Smile Identity sample app to TestFlight. :fire: ",
-      slackChannel: "#deploys")
   end
 
   private_lane :release_build do
@@ -73,31 +69,4 @@ desc "Release to TestFlight"
       bump_type: "patch"
     )
   end
-
-  private_lane :slack_notifications do |values|
-    displayMessage  = values[:displayMessage]
-    slackChannel  = values[:slackChannel]
-    puts displayMessage
-    puts slackChannel
-    post_to_slack(
-      api_token: ENV['MOBILE_SLACK_BOT_TOKEN'],
-      message: displayMessage,
-      channel: slackChannel, 
-      success: true,  
-      payload: { 
-        "Build Date" => Time.new.to_s,
-        "Built by" => "Github Actions"
-      },
-      default_payloads: [
-        :git_branch,
-        :lane,
-        :git_author,
-        :test_result,
-        :last_git_commit_hash,
-        :last_git_commit_message],
-        attachment_properties: { 
-        thumb_url: "https://fastlane.tools/assets/img/fastlane_icon.png"
-      }
-    )
-    end
 end
