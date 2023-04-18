@@ -1,0 +1,67 @@
+name: Build Sample App
+on:
+  workflow_dispatch:
+    inputs:
+      smile_config:
+        description: 'The contents of the smile_config.json file (default: Partner 002)'
+        required: false
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup environment
+        run: bundle install
+     
+      - name: Select Xcode Version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+         xcode-version: latest-stable
+
+      - name: Write Smile Config
+        id: write_smile_config
+        # Mask the config so it doesn't show up in the logs
+        run: |
+          INPUT_SMILE_CONFIG=$(jq -r '.inputs.smile_config // empty' $GITHUB_EVENT_PATH)
+          echo "::add-mask::$INPUT_SMILE_CONFIG"
+          if [ -n "$INPUT_SMILE_CONFIG" ]; then
+            SMILE_CONFIG="$INPUT_SMILE_CONFIG"
+          else
+            SMILE_CONFIG="$SMILE_CONFIG_PARTNER_002"
+          fi
+          echo "$SMILE_CONFIG" > smile_config.json
+          PARTNER_ID=$(jq -r '.partner_id' smile_config.json)
+          echo "partner_id=$PARTNER_ID" >> $GITHUB_OUTPUT
+        env:
+          SMILE_CONFIG_PARTNER_002: ${{ secrets.SMILE_CONFIG_PARTNER_002 }}
+    
+      - name: Add Smile Config to Xcode Project
+        run: ruby add_smile_config.rb
+
+      - name: Build and Deploy App to 🔥 TestFlight 🚀
+        run: bundle exec fastlane testflight
+        env:
+          MOBILE_SLACK_BOT_TOKEN: ${{ secrets.MOBILE_SLACK_BOT_TOKEN }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
+
+
+      - name: Send Slack Notification
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "partner_id": "${{ steps.write_smile_config.outputs.partner_id }}",
+              "branch": "${{ github.ref }}",
+              "commit_sha": "${{ github.sha }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL}}
+
+
