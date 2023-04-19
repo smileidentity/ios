@@ -17,11 +17,16 @@ public class SmileIdentity {
     private init() {}
     internal static var config: Config!
     internal static var useSandbox = true
+    internal static var theme: Theme = DefaultTheme()
 
     public class func initialize(config: Config, useSandbox: Bool = true) {
         self.config = config
         self.useSandbox = useSandbox
         CustomFont.registerFonts()
+    }
+
+    public class func apply(_ theme: Theme) {
+        self.theme = theme
     }
 
     public class func smartSelfieRegistrationScreen(userId: String = UUID().uuidString,
