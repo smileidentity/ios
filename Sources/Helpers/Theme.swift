@@ -1,7 +1,7 @@
 import SwiftUI
 
 public protocol SmileIdTheme {
-    //Colors
+    // Colors
     var onDark: Color { get }
     var onLight: Color { get }
     var backgroundDark: Color { get }
@@ -13,7 +13,7 @@ public protocol SmileIdTheme {
     var error: Color { get }
     var tertiary: Color { get }
 
-    //Fonts
+    // Fonts
     var h1: Font { get }
     var h4: Font { get }
     var h5: Font { get }
@@ -22,7 +22,7 @@ public protocol SmileIdTheme {
 }
 
 public extension SmileIdTheme {
-    //Not in brand hand book
+    // Not in brand hand book
     var onDark: Color {
         Color(hex: "#F6EDE4")
     }
@@ -31,7 +31,7 @@ public extension SmileIdTheme {
         Color(hex: "#2D2B2A")
     }
 
-    //Not in brand handbook
+    // Not in brand handbook
     var backgroundDark: Color {
         Color(hex: "#C0C0A5")
     }
@@ -44,7 +44,7 @@ public extension SmileIdTheme {
         Color(hex: "#F9F0E7")
     }
 
-    //Not in brand handbook
+    // Not in brand handbook
     var backgroundLight: Color {
         Color(hex: "#E2DCD5")
     }
