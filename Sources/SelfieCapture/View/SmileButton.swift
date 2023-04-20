@@ -2,15 +2,15 @@ import SwiftUI
 
 struct SmileButton: View {
     var title: LocalizedStringKey
-    var titleColor = Color.white
-    var backgroundColor: Color = .digitalBlue
+    var titleColor = SmileIdentity.theme.onDark
+    var backgroundColor: Color = SmileIdentity.theme.accent
     var inactiveColour: Color?
     var clicked: (() -> Void)
     var body: some View {
         Button(action: clicked) {
             Text(title, bundle: .module)
                 .padding(14)
-                .font(Font.button)
+                .font(SmileIdentity.theme.button)
                 .frame(maxWidth: .infinity)
         }
         .foregroundColor(titleColor)
