@@ -8,13 +8,13 @@ struct SmartSelfieInstructionsView: View {
             VStack(spacing: 32) {
                 Text("Instructions.Header", bundle: .module)
                     .multilineTextAlignment(.center)
-                    .font(.h1)
-                    .foregroundColor(.digitalBlue)
+                    .font(SmileIdentity.theme.h1)
+                    .foregroundColor(SmileIdentity.theme.accent)
                     .lineSpacing(0.98)
                 Text("Instructions.Callout", bundle: .module)
                     .multilineTextAlignment(.center)
-                    .font(.h5)
-                    .foregroundColor(.tertiaryA)
+                    .font(SmileIdentity.theme.h5)
+                    .foregroundColor(SmileIdentity.theme.tertiary)
                     .lineSpacing(1.3)
             }
             .padding(.bottom, 47)
@@ -48,12 +48,12 @@ struct SmartSelfieInstructionsView: View {
             Image(image, bundle: .module)
             VStack(alignment: .leading, spacing: 7) {
                 Text(title, bundle: .module)
-                    .font(.h4)
-                    .foregroundColor(.digitalBlue)
+                    .font(SmileIdentity.theme.h4)
+                    .foregroundColor(SmileIdentity.theme.accent)
                 Text(body, bundle: .module)
                     .multilineTextAlignment(.leading)
-                    .font(.h5)
-                    .foregroundColor(.tertiaryA)
+                    .font(SmileIdentity.theme.h5)
+                    .foregroundColor(SmileIdentity.theme.tertiary)
                     .lineSpacing(1.3)
             }
         }
