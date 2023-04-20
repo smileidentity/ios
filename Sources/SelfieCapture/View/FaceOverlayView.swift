@@ -19,13 +19,13 @@ struct FaceOverlayView: View {
 
                         )
                         .overlay(FaceShape()
-                            .stroke(Color.digitalBlueOpacity40,
+                            .stroke(SmileIdentity.theme.accent.opacity(0.4),
                                     lineWidth: 10)
                                 .frame(width: geometry.size.width*0.6,
                                        height: geometry.size.width*0.6/0.7))
                         .overlay(FaceShape()
                             .trim(from: 0, to: model.progress)
-                            .stroke(Color.successGreen, style: StrokeStyle(
+                            .stroke(SmileIdentity.theme.success, style: StrokeStyle(
                                 lineWidth: 10,
                                 lineCap: .round))
                                 .frame(width: geometry.size.width*0.6,
