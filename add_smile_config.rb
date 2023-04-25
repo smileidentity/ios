@@ -10,7 +10,7 @@ smile_config_reference = main_group.new_file('smile_config.json')
 
 #set target membership
 target = project.targets.find { |t| t.name == 'SmileIdentity_Example' }
-smile_config_reference.set_target_membership(target)
+target.source_build_phase.add_file_reference(smile_config_reference)
 
 #copy to referenced directory
 source_file_path = 'smile_config.json'
