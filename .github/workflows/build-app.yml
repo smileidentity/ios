@@ -43,7 +43,6 @@ jobs:
       - name: Build and Deploy App to 🔥 TestFlight 🚀
         run: bundle exec fastlane testflight
         env:
-          MOBILE_SLACK_BOT_TOKEN: ${{ secrets.MOBILE_SLACK_BOT_TOKEN }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
           ISSUER_ID: ${{ secrets.ISSUER_ID }}
