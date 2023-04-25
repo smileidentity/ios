@@ -41,7 +41,9 @@ jobs:
         run: ruby add_smile_config.rb
 
       - name: Build and Deploy App to 🔥 TestFlight 🚀
-        run: bundle exec fastlane testflight
+        run: |
+          cd example
+          bundle exec fastlane testflight
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
