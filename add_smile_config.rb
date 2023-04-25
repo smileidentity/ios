@@ -5,7 +5,7 @@ project_path = 'Example/SmileIdentity.xcodeproj'
 project = Xcodeproj::Project.open(project_path)
 
 #create file reference
-main_group = project.groups.find { |group| group.display_name == 'SmileIdentity' }
+main_group = project.groups.find { |group| group.display_name == 'Example' }
 smile_config_reference = main_group.new_file('smile_config.json')
 
 #set target membership
