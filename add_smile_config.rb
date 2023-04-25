@@ -9,7 +9,7 @@ main_group = project.groups.find { |group| group.display_name == 'Example' }
 smile_config_reference = main_group.new_file('smile_config.json')
 
 #set target membership
-target = project.targets.find { |t| t.name == 'SmileIdentity-Example' }
+target = project.targets.find { |t| t.name == 'SmileIdentity_Example' }
 smile_config_reference.set_target_membership(target)
 
 #copy to referenced directory
