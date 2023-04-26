@@ -1,12 +1,5 @@
 import SwiftUI
 
-extension Font {
-    static let button = Font.custom(Epilogue.bold.rawValue, size: 20)
-    static let h1 = Font.custom(Epilogue.bold.rawValue, size: 32)
-    static let h4 = Font.custom(Epilogue.bold.rawValue, size: 16)
-    static let h5 = Font.custom(Epilogue.medium.rawValue, size: 12)
-}
-
 enum Epilogue: String, CaseIterable {
     case bold = "Epilogue-Bold"
     case medium = "Epilogue-Medium"
