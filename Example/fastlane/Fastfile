@@ -13,13 +13,14 @@ desc "Run unit tests"
   end
 
 desc "Release to TestFlight"
-  lane :testflight do
+  lane :releaseapp do
     release_build
 
     api_key = app_store_connect_api_key(
       key_id: ENV["KEY_ID"],
       issuer_id: ENV["ISSUER_ID"],
       key_content: ENV["APPSTORE_CONNECT_PRIVATE_KEY"],
+      is_key_content_base64: true,
       duration: 1200
     )
 
@@ -37,6 +38,7 @@ desc "Release to TestFlight"
       key_id: ENV["KEY_ID"],
       issuer_id: ENV["ISSUER_ID"],
       key_content: ENV["APPSTORE_CONNECT_PRIVATE_KEY"],
+      is_key_content_base64: true,
       duration: 1200
     )
     
@@ -60,13 +62,11 @@ desc "Release to TestFlight"
   
     build_app(
       use_system_scm: true,
-      workspace: "SmileIdentity.xcodeproj",
+      project: "SmileIdentity.xcodeproj",
       scheme: "SmileIdentity-Example",
       export_method: "app-store"
     )
 
-    increment_version_number(
-      bump_type: "patch"
-    )
+    increment_build_number
   end
 end
