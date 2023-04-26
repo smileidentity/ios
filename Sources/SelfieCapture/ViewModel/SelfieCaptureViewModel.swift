@@ -18,6 +18,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     var sessionId: String
     var isEnroll: Bool
     var faceLayoutGuideFrame = CGRect.zero
+    var viewFinderSize = CGSize.zero
     var viewDelegate: FaceDetectorDelegate? {
         didSet {
             faceDetector.viewDelegate = viewDelegate
@@ -142,7 +143,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             guard let image = ImageUtils.captureFace(from: currentBuffer,
                                                      faceGeometry: faceGeometry,
                                                      finalSize: livenessImageSize,
-                                                     screenImageSize: faceLayoutGuideFrame.size,
+                                                     screenImageSize: viewFinderSize,
                                                      isGreyScale: true) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
@@ -155,7 +156,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
                                                            faceGeometry: faceGeometry,
                                                            finalSize: selfieImageSize,
-                                                           screenImageSize: faceLayoutGuideFrame.size,
+                                                           screenImageSize: viewFinderSize,
                                                            isGreyScale: false) else { return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
@@ -165,7 +166,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                                       to: sessionId)
                 let zipUrl = try LocalStorage.zipFiles(at: fileUrls)
                 let zipData = try Data(contentsOf: zipUrl)
-                submit(zip: zipData)
+                //submit(zip: zipData)
             } catch {
                 DispatchQueue.main.async { [self] in
                     captureResultDelegate?.didError(error: error)
@@ -297,9 +298,9 @@ extension SelfieCaptureViewModel {
         } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {
             isAcceptableBounds = .detectedFaceTooSmall
         } else {
-            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 50 {
+            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) < 0 {
                 isAcceptableBounds = .detectedFaceOffCentre
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 50 {
+            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) < 0 {
                 isAcceptableBounds = .detectedFaceOffCentre
             } else {
                 isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
