@@ -20,6 +20,7 @@ desc "Release to TestFlight"
       key_id: ENV["KEY_ID"],
       issuer_id: ENV["ISSUER_ID"],
       key_content: ENV["APPSTORE_CONNECT_PRIVATE_KEY"],
+      is_key_content_base64: true,
       duration: 1200
     )
 
