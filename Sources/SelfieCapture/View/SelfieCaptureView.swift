@@ -23,16 +23,18 @@ public struct SelfieCaptureView: View {
                         CGRect(origin: .zero,
                                size: ovalSize)
                         viewModel.viewDelegate = camera.preview
+                        viewModel.viewFinderSize = geometry.size
                     }
 
                 FaceOverlayView(model: viewModel)
+                FaceBoundingBoxView(model: viewModel)
             }
         }.edgesIgnoringSafeArea(.all)
     }
 
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {
-        return CGSize(width: geometry.size.width * 0.7,
-                      height: geometry.size.width * 0.7 / (3/3.5))
+        return CGSize(width: geometry.size.width * 0.6,
+                      height: geometry.size.width * 0.6 / 0.7)
     }
 }
 
@@ -45,4 +47,35 @@ struct SelfieCaptureView_Previews: PreviewProvider {
 class DummyDelegate: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: Data, livenessImages: [Data]) {}
     func didError(error: Error) {}
+}
+
+
+import SwiftUI
+
+struct FaceBoundingBoxView: View {
+    @ObservedObject private(set) var model: SelfieCaptureViewModel
+
+    var body: some View {
+        switch model.faceGeometryState {
+        case .faceNotFound:
+            Rectangle().fill(Color.red)
+        case .faceFound(let faceGeometryModel):
+            Rectangle()
+                .path(in: CGRect(
+                    x: faceGeometryModel.boundingBox.origin.x,
+                    y: faceGeometryModel.boundingBox.origin.y,
+                    width: faceGeometryModel.boundingBox.width,
+                    height: faceGeometryModel.boundingBox.height
+                ))
+                .stroke(Color.yellow, lineWidth: 2.0)
+        case .errored:
+            Rectangle().fill(Color.red)
+        }
+    }
+}
+
+struct FaceBoundingBoxView_Previews: PreviewProvider {
+    static var previews: some View {
+        FaceBoundingBoxView(model: SelfieCaptureViewModel(userId: "", sessionId: "", isEnroll: true))
+    }
 }
