@@ -164,10 +164,10 @@ class ImageUtils {
                                       width: vImagePixelCount(scaleWidth),
                                       rowBytes: dstBytesPerRow)
 
-        let error = vImageScale_ARGB8888(&srcBuffer, &dstBuffer, nil, vImage_Flags(0))
-        if error != kvImageNoError {
-            print("Error:", error)
-        }
+//        let error = vImageScale_ARGB8888(&srcBuffer, &dstBuffer, nil, vImage_Flags(0))
+//        if error != kvImageNoError {
+//            print("Error:", error)
+//        }
     }
 
     /**
