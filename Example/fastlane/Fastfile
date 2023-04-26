@@ -61,7 +61,7 @@ desc "Release to TestFlight"
   
     build_app(
       use_system_scm: true,
-      workspace: "SmileIdentity.xcodeproj",
+      project: "SmileIdentity.xcodeproj",
       scheme: "SmileIdentity-Example",
       export_method: "app-store"
     )
