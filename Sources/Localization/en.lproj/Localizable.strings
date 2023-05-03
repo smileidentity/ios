@@ -18,6 +18,6 @@
 "Instructions.UnknownError" = "We cannot take your photo right now";
 "Instructions.MultipleFaces" = "Please ensure only one face is in the oval";
 "Instructions.Smile" = "Please smile for the camera";
-"Instructions.Capturing" = "Capturing…"
+"Instructions.Capturing" = "Capturing…";
 "Instructions.Start" = "Put your face inside the oval frame and wait until it turns green";
 "Instructions.Unstable" = "Put your face inside the oval frame and wait until it turns green";
