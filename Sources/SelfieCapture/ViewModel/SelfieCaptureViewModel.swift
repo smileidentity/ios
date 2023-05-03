@@ -166,7 +166,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                                       to: sessionId)
                 let zipUrl = try LocalStorage.zipFiles(at: fileUrls)
                 let zipData = try Data(contentsOf: zipUrl)
-                //submit(zip: zipData)
+                submit(zip: zipData)
             } catch {
                 DispatchQueue.main.async { [self] in
                     captureResultDelegate?.didError(error: error)
@@ -196,6 +196,11 @@ final class SelfieCaptureViewModel: ObservableObject {
                     handleUploadResponse(response)
                 }
             }).store(in: &subscribers)
+    }
+
+    func resetCapture() {
+        livenessImages = []
+        selfieImage = nil
     }
 
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
@@ -293,15 +298,17 @@ extension SelfieCaptureViewModel {
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
-        if boundingBox.width > 0.7 * faceLayoutGuideFrame.width {
+        if boundingBox.width > 0.9 * faceLayoutGuideFrame.width {
             isAcceptableBounds = .detectedFaceTooLarge
         } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {
             isAcceptableBounds = .detectedFaceTooSmall
         } else {
-            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) < 0 {
+            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
                 isAcceptableBounds = .detectedFaceOffCentre
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) < 0 {
+                resetCapture()
+            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 170 {
                 isAcceptableBounds = .detectedFaceOffCentre
+                resetCapture()
             } else {
                 isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
             }
