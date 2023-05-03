@@ -141,7 +141,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         while (livenessImages.count < numberOfLivenessImages) &&
                 ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             guard let image = ImageUtils.captureFace(from: currentBuffer,
-                                                     faceGeometry: faceGeometry,
+                                                     faceGeometry: faceGeometry, padding: 95,
                                                      finalSize: livenessImageSize,
                                                      screenImageSize: viewFinderSize,
                                                      isGreyScale: true) else { return }
@@ -154,7 +154,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             selfieImage == nil {
             publishFaceObservation(.finalFrame)
             guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
-                                                           faceGeometry: faceGeometry,
+                                                           faceGeometry: faceGeometry, padding: 200,
                                                            finalSize: selfieImageSize,
                                                            screenImageSize: viewFinderSize,
                                                            isGreyScale: false) else { return }
