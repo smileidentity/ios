@@ -15,13 +15,14 @@ class ImageUtils {
     /// Converts a buffer to JPG cropping the  face and returning the result of this operation
     /// - Parameters:
     ///   - buffer: An input pixel buffer
-    ///   - faceGeometry: A FaceGeometry object containing the frame of a detected face in the screens coordinate system
+    ///   - faceGeometry: A FaceGeometry object containing the frame of a detected face in the views coordinate system
     ///   - finalSize: Final size of the cropped image
     ///   - screenImageSize: Size of the view the camera feed is displayed
     ///   - isGreyScale: A boolean flag, if true returns a greyscaled image
     /// - Returns: An optional JPG image data returned from the cropping and resizing operation
     class func captureFace(from buffer: CVPixelBuffer,
                            faceGeometry: FaceGeometryModel,
+                           padding: CGFloat,
                            finalSize: CGSize,
                            screenImageSize: CGSize,
                            isGreyScale: Bool) -> Data? {
@@ -30,18 +31,14 @@ class ImageUtils {
         CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)}
 
-        let padding: CGFloat = 60
         let faceCropWidthAndHeight = max(faceGeometry.boundingBox.size.height + padding,
                                          faceGeometry.boundingBox.size.width + padding)
-        let cropY = faceGeometry.boundingBox.origin.y - (padding/2)
+        let cropY = faceGeometry.boundingBox.origin.y - padding
         let cropX = faceGeometry.boundingBox.origin.x - (padding/2)
         let cameraAspectRatio = CGFloat(CVPixelBufferGetWidth(buffer))/CGFloat(CVPixelBufferGetHeight(buffer))
         let imageHeight = screenImageSize.width/cameraAspectRatio
         let trueImageSize = CGSize(width: screenImageSize.width, height: imageHeight)
-        let displayImageCropFrame = CGRect(x: 0,
-                                           y: (trueImageSize.height - screenImageSize.height)/2,
-                                           width: screenImageSize.width,
-                                           height: screenImageSize.height)
+
         let faceCropFrame = CGRect(x: cropX,
                                    y: cropY,
                                    width: faceCropWidthAndHeight,
@@ -50,15 +47,9 @@ class ImageUtils {
         // scale down the original buffer to match the size of whats displayed on screen
         guard let scaledDownBuffer = resizePixelBuffer(buffer, size: trueImageSize) else { return nil }
 
-        // clip the parts of the buffer that aren't displayed on screen
-        guard let clippedBuffer = resizePixelBuffer(scaledDownBuffer,
-                                                    cropFrame: displayImageCropFrame,
-                                                    scaleSize: screenImageSize) else {
-            return nil
-        }
 
         // crop face from the buffer returned in the above operation
-        guard let croppedFaceBuffer = resizePixelBuffer(clippedBuffer,
+        guard let croppedFaceBuffer = resizePixelBuffer(scaledDownBuffer,
                                                         cropFrame: faceCropFrame,
                                                         scaleSize: finalSize) else { return nil }
 
@@ -164,10 +155,10 @@ class ImageUtils {
                                       width: vImagePixelCount(scaleWidth),
                                       rowBytes: dstBytesPerRow)
 
-//        let error = vImageScale_ARGB8888(&srcBuffer, &dstBuffer, nil, vImage_Flags(0))
-//        if error != kvImageNoError {
-//            print("Error:", error)
-//        }
+        let error = vImageScale_ARGB8888(&srcBuffer, &dstBuffer, nil, vImage_Flags(0))
+        if error != kvImageNoError {
+            print("Error:", error)
+        }
     }
 
     /**
