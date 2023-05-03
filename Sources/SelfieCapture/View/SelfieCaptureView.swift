@@ -26,7 +26,6 @@ public struct SelfieCaptureView: View {
                     }
 
                 FaceOverlayView(model: viewModel)
-                FaceBoundingBoxView(model: viewModel)
             }
         }.edgesIgnoringSafeArea(.all)
     }
