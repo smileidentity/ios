@@ -8,8 +8,8 @@ class PreviewView: UIViewController {
     var previewLayer: AVCaptureVideoPreviewLayer?
     private let cameraManager = CameraManager.shared
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         if layedOutSubviews == false {
             configurePreviewLayer()
             layedOutSubviews = true
@@ -30,12 +30,18 @@ extension PreviewView: FaceDetectorDelegate {
       guard let previewLayer = previewLayer else {
         return CGRect.zero
       }
-        let transform = CGAffineTransform(translationX: 0.5, y: 0.5)
-                    .rotated(by: CGFloat.pi / 2)
-                    .translatedBy(x: -0.5, y: -0.5)
-                    .translatedBy(x: 1.0, y: 0)
-                    .scaledBy(x: -1, y: 1)
-        let box = rect.applying(transform)
-      return previewLayer.layerRectConverted(fromMetadataOutputRect: box)
+
+        let normalizedRect = CGRect(x: rect.origin.y,
+                                    y: rect.origin.x,
+                                    width: rect.height,
+                                    height: rect.width)
+        let transformedRect = previewLayer.layerRectConverted(fromMetadataOutputRect: normalizedRect)
+
+        let mirroredRect = CGRect(x: previewLayer.bounds.width - transformedRect.origin.x - transformedRect.width,
+                                  y: previewLayer.bounds.height - transformedRect.origin.y - transformedRect.height,
+                                  width: transformedRect.width,
+                                  height: transformedRect.height)
+        return mirroredRect
+
     }
 }
