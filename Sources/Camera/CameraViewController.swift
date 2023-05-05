@@ -28,19 +28,21 @@ class PreviewView: UIViewController {
 extension PreviewView: FaceDetectorDelegate {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
       guard let previewLayer = previewLayer else {
-        return CGRect.zero
+          return .zero
       }
 
         let normalizedRect = CGRect(x: rect.origin.y,
                                     y: rect.origin.x,
                                     width: rect.height,
                                     height: rect.width)
+
         let transformedRect = previewLayer.layerRectConverted(fromMetadataOutputRect: normalizedRect)
 
         let mirroredRect = CGRect(x: previewLayer.bounds.width - transformedRect.origin.x - transformedRect.width,
                                   y: previewLayer.bounds.height - transformedRect.origin.y - transformedRect.height,
                                   width: transformedRect.width,
                                   height: transformedRect.height)
+
         return mirroredRect
 
     }

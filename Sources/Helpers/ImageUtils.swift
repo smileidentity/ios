@@ -4,6 +4,7 @@ import UIKit
 import VideoToolbox
 import Accelerate
 import Vision
+import MobileCoreServices
 
 extension Date {
     var millisecondsSince1970: Int64 {
@@ -30,48 +31,70 @@ class ImageUtils {
 
         CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)}
-
-        let faceCropWidthAndHeight = max(faceGeometry.boundingBox.size.height + padding,
-                                         faceGeometry.boundingBox.size.width + padding)
-        let cropY = faceGeometry.boundingBox.origin.y - padding
-        let cropX = faceGeometry.boundingBox.origin.x - (padding/2)
         let cameraAspectRatio = CGFloat(CVPixelBufferGetWidth(buffer))/CGFloat(CVPixelBufferGetHeight(buffer))
-        let imageHeight = screenImageSize.width/cameraAspectRatio
-        let trueImageSize = CGSize(width: screenImageSize.width, height: imageHeight)
+        let imagewidth = screenImageSize.height * cameraAspectRatio
+        let trueImageSize = CGSize(width: imagewidth, height: screenImageSize.height)
 
-        let faceCropFrame = CGRect(x: cropX,
-                                   y: cropY,
-                                   width: faceCropWidthAndHeight,
-                                   height: faceCropWidthAndHeight)
+        // ratio of the true image width to displayed image width
+        let cutoffregion: CGFloat = max(imagewidth,screenImageSize.width) / min(imagewidth,screenImageSize.width)
 
         // scale down the original buffer to match the size of whats displayed on screen
         guard let scaledDownBuffer = resizePixelBuffer(buffer, size: trueImageSize) else { return nil }
 
 
-        // crop face from the buffer returned in the above operation
-        guard let croppedFaceBuffer = resizePixelBuffer(scaledDownBuffer,
-                                                        cropFrame: faceCropFrame,
-                                                        scaleSize: finalSize) else { return nil }
+        // calculate crop rect
+        let cropRect = CGRect(x: faceGeometry.boundingBox.origin.x * cutoffregion,
+                              y: faceGeometry.boundingBox.origin.y,
+                              width: faceGeometry.boundingBox.width,
+                              height: faceGeometry.boundingBox.height)
+        let finalrect = isGreyScale ?  increaseRect(rect: cropRect, byPercentage: 0.6) : increaseRect(rect: cropRect,
+                                                                                                      byPercentage: 1)
 
-        // convert the cropped face buffer to JPG
-        return cvImageBufferToJPG(imageBuffer: croppedFaceBuffer, isGreyScale: isGreyScale)
+        // crop face from the buffer returned in the above operation and return jpg
+        return cropFace(scaledDownBuffer,
+                        cropFrame: finalrect,
+                        scaleSize: finalSize,
+                        isGreyScale: isGreyScale)
     }
 
-    /**
-     Converts a pixel buffer to a JPG image with an isGreyScale
-     parameter to apply a grey scale filter to the resulting image.
-     */
-    private class func cvImageBufferToJPG(imageBuffer: CVImageBuffer, isGreyScale: Bool) -> Data? {
-        var ciImage = CIImage(cvPixelBuffer: imageBuffer)
+    private class func increaseRect(rect: CGRect, byPercentage percentage: CGFloat) -> CGRect {
+        let startWidth = CGRectGetWidth(rect)
+        let startHeight = CGRectGetHeight(rect)
+        let adjustmentWidth = (startWidth * percentage) / 2.0
+        let adjustmentHeight = (startHeight * percentage) / 2.0
+        return CGRectInset(rect, -adjustmentWidth, -adjustmentHeight)
+    }
+
+    private class func cropFace(_ buffer: CVPixelBuffer, cropFrame: CGRect, scaleSize: CGSize, isGreyScale: Bool = true) -> Data? {
+        var ciImage = CIImage(cvPixelBuffer: buffer)
         if isGreyScale {
             let greyFilter = CIFilter(name: "CIPhotoEffectNoir")
             greyFilter?.setValue(ciImage, forKey: kCIInputImageKey)
             ciImage = greyFilter?.outputImage ?? ciImage
         }
-        let context = CIContext()
-        let cgImage = context.createCGImage(ciImage, from: ciImage.extent)
-        let jpegData = UIImage(cgImage: cgImage!).jpegData(compressionQuality: 1.0)
-        return jpegData
+        guard let cgImage = convertCIImageToCGImage(ciImage: ciImage) else { return nil }
+        guard let croppedImage = cgImage.cropping(to: cropFrame)?.resize(size: scaleSize) else { return nil }
+        return convertCGImageToJPG(cgImage: croppedImage)
+    }
+
+    private class func convertCGImageToJPG(cgImage: CGImage, compressionQuality: CGFloat = 0.8) -> Data? {
+        let jpgData = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(jpgData, kUTTypeJPEG, 1, nil) else { return nil }
+
+        let options: [String: Any] = [
+            kCGImageDestinationLossyCompressionQuality as String: compressionQuality
+        ]
+
+        CGImageDestinationAddImage(destination, cgImage, options as CFDictionary)
+
+        guard CGImageDestinationFinalize(destination) else { return nil }
+
+        return jpgData as Data
+    }
+
+    private class func convertCIImageToCGImage(ciImage: CIImage) -> CGImage? {
+        let context = CIContext(options: nil)
+        return context.createCGImage(ciImage, from: ciImage.extent)
     }
 
     private class func metalCompatiblityAttributes() -> [String: Any] {
@@ -87,11 +110,6 @@ class ImageUtils {
         return attributes
     }
 
-    /**
-     Creates a pixel buffer of the specified size, and pixel format.
-     - Note: This pixel buffer is backed by an IOSurface and therefore can be
-     turned into a Metal texture.
-     */
     private class func createPixelBuffer(size: CGSize, pixelFormat: OSType) -> CVPixelBuffer? {
         let attributes = metalCompatiblityAttributes() as CFDictionary
         var pixelBuffer: CVPixelBuffer?
@@ -108,65 +126,24 @@ class ImageUtils {
         return pixelBuffer
     }
 
-    private class func resizePixelBuffer(from srcPixelBuffer: CVPixelBuffer,
-                                         to dstPixelBuffer: CVPixelBuffer,
-                                         cropFrame: CGRect,
-                                         scaleSize: CGSize) {
-        let scaleWidth = Int(scaleSize.width)
-        let scaleHeight = Int(scaleSize.height)
-        let cropX = Int(cropFrame.origin.x)
-        let cropY = Int(cropFrame.origin.y)
-        let cropWidth = Int(cropFrame.size.width)
-        let cropHeight = Int(cropFrame.size.height)
-        assert(CVPixelBufferGetWidth(dstPixelBuffer) >= scaleWidth)
-        assert(CVPixelBufferGetHeight(dstPixelBuffer) >= scaleHeight)
+    class func resizePixelBuffer(from srcPixelBuffer: CVPixelBuffer,
+                                 to dstPixelBuffer: CVPixelBuffer,
+                                 cropFrame: CGRect,
+                                 scaleSize: CGSize) {
+        let ciImage = CIImage(cvPixelBuffer: srcPixelBuffer)
 
-        let srcFlags = CVPixelBufferLockFlags.readOnly
-        let dstFlags = CVPixelBufferLockFlags(rawValue: 0)
+        // Create a new CIImage with the specified crop and scale
+        let croppedImage = ciImage.cropped(to: cropFrame)
+        let scaledImage = croppedImage.transformed(by: CGAffineTransform(scaleX: scaleSize.width / croppedImage.extent.width,
+                                                                         y: scaleSize.height / croppedImage.extent.height))
 
-        guard kCVReturnSuccess == CVPixelBufferLockBaseAddress(srcPixelBuffer, srcFlags) else {
-            print("Error: could not lock source pixel buffer")
-            return
-        }
-        defer { CVPixelBufferUnlockBaseAddress(srcPixelBuffer, srcFlags) }
+        // Create a CIContext to render the CIImage to the destination pixel buffer
+        let ciContext = CIContext(options: nil)
 
-        guard kCVReturnSuccess == CVPixelBufferLockBaseAddress(dstPixelBuffer, dstFlags) else {
-            print("Error: could not lock destination pixel buffer")
-            return
-        }
-        defer { CVPixelBufferUnlockBaseAddress(dstPixelBuffer, dstFlags) }
-
-        guard let srcData = CVPixelBufferGetBaseAddress(srcPixelBuffer),
-              let dstData = CVPixelBufferGetBaseAddress(dstPixelBuffer) else {
-            print("Error: could not get pixel buffer base address")
-            return
-        }
-
-        let srcBytesPerRow = CVPixelBufferGetBytesPerRow(srcPixelBuffer)
-        let offset = cropY*srcBytesPerRow + cropX*4
-        var srcBuffer = vImage_Buffer(data: srcData.advanced(by: offset),
-                                      height: vImagePixelCount(cropHeight),
-                                      width: vImagePixelCount(cropWidth),
-                                      rowBytes: srcBytesPerRow)
-
-        let dstBytesPerRow = CVPixelBufferGetBytesPerRow(dstPixelBuffer)
-        var dstBuffer = vImage_Buffer(data: dstData,
-                                      height: vImagePixelCount(scaleHeight),
-                                      width: vImagePixelCount(scaleWidth),
-                                      rowBytes: dstBytesPerRow)
-
-        let error = vImageScale_ARGB8888(&srcBuffer, &dstBuffer, nil, vImage_Flags(0))
-        if error != kvImageNoError {
-            print("Error:", error)
-        }
+        // Render the CIImage to the destination pixel buffer
+        ciContext.render(scaledImage, to: dstPixelBuffer)
     }
 
-    /**
-     Resizes a CVPixelBuffer to a new width and height.
-     This function requires the caller to pass in both the source and destination
-     pixel buffers. The dimensions of destination pixel buffer should be at least
-     `width` x `height` pixels.
-     */
     private class func resizePixelBuffer(from srcPixelBuffer: CVPixelBuffer,
                                          to dstPixelBuffer: CVPixelBuffer,
                                          scaleSize: CGSize) {
@@ -180,10 +157,6 @@ class ImageUtils {
                           scaleSize: scaleSize)
     }
 
-    /**
-     First crops the pixel buffer, then resizes it.
-     This allocates a new destination pixel buffer that is Metal-compatible.
-     */
     private class func resizePixelBuffer(_ srcPixelBuffer: CVPixelBuffer,
                                          cropFrame: CGRect,
                                          scaleSize: CGSize) -> CVPixelBuffer? {
@@ -203,10 +176,6 @@ class ImageUtils {
         return dstPixelBuffer
     }
 
-    /**
-     Resizes a CVPixelBuffer to a new width and height.
-     This allocates a new destination pixel buffer that is Metal-compatible.
-     */
     private class func resizePixelBuffer(_ pixelBuffer: CVPixelBuffer,
                                          size: CGSize) -> CVPixelBuffer? {
         let imageWidth = CGFloat(CVPixelBufferGetWidth(pixelBuffer))
@@ -215,5 +184,24 @@ class ImageUtils {
         return resizePixelBuffer(pixelBuffer,
                                  cropFrame: cropFrame,
                                  scaleSize: size)
+    }
+}
+
+extension CGImage {
+    func resize(size:CGSize) -> CGImage? {
+        let width: Int = Int(size.width)
+        let height: Int = Int(size.height)
+
+        let bytesPerPixel = self.bitsPerPixel / self.bitsPerComponent
+        let destBytesPerRow = width * bytesPerPixel
+
+
+        guard let colorSpace = self.colorSpace else { return nil }
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: self.bitsPerComponent, bytesPerRow: destBytesPerRow, space: colorSpace, bitmapInfo: self.alphaInfo.rawValue) else { return nil }
+
+        context.interpolationQuality = .high
+        context.draw(self, in: CGRect(x: 0, y: 0, width: width, height: height))
+
+        return context.makeImage()
     }
 }
