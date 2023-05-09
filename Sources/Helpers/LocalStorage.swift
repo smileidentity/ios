@@ -42,7 +42,7 @@ class LocalStorage {
     }
 
     private static func filename(for imageType: String) -> String {
-        return "\(imagePrefix)_\(imageType)_\(Date().milliseconds).jpg"
+        return "\(imagePrefix)_\(imageType)_\(Date().millisecondsSince1970).jpg"
     }
 
     static func write(_ data: Data, to url: URL) throws -> URL {
@@ -97,8 +97,8 @@ fileprivate extension Data {
     }
 }
 
-fileprivate extension Date {
-    var milliseconds: Int64 {
+extension Date {
+    var millisecondsSince1970: Int64 {
         return Int64((timeIntervalSince1970 * 1000.0).rounded())
     }
 }
