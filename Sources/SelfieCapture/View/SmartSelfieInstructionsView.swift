@@ -8,12 +8,12 @@ struct SmartSelfieInstructionsView: View {
             VStack(spacing: 32) {
                 Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Header"))
                     .multilineTextAlignment(.center)
-                    .font(SmileIdentity.theme.h1)
+                    .font(SmileIdentity.theme.header1)
                     .foregroundColor(SmileIdentity.theme.accent)
                     .lineSpacing(0.98)
                 Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Callout"))
                     .multilineTextAlignment(.center)
-                    .font(SmileIdentity.theme.h5)
+                    .font(SmileIdentity.theme.header5)
                     .foregroundColor(SmileIdentity.theme.tertiary)
                     .lineSpacing(1.3)
             }
@@ -46,11 +46,11 @@ struct SmartSelfieInstructionsView: View {
             }
             VStack(alignment: .leading, spacing: 7) {
                 Text(SmileIDResourcesHelper.localizedString(for: title.stringKey))
-                    .font(SmileIdentity.theme.h4)
+                    .font(SmileIdentity.theme.header4)
                     .foregroundColor(SmileIdentity.theme.accent)
                 Text(SmileIDResourcesHelper.localizedString(for: body.stringKey))
                     .multilineTextAlignment(.leading)
-                    .font(SmileIdentity.theme.h5)
+                    .font(SmileIdentity.theme.header5)
                     .foregroundColor(SmileIdentity.theme.tertiary)
                     .lineSpacing(1.3)
                     .fixedSize(horizontal: false, vertical: true)
@@ -67,6 +67,6 @@ struct SmartSelfieInstructionsView_Previews: PreviewProvider {
                                                                       showAttribution: true),
                                     delegate: DummyDelegate())
             .environment(\.locale, Locale(identifier: "en"))
-        
+
     }
 }

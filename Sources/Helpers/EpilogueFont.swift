@@ -12,29 +12,28 @@ enum Epilogue: String, CaseIterable {
     case medium = "Epilogue-Medium"
 }
 
-
 public struct EpilogueFont: FontType {
-    
+
     public static func regular(with size: CGFloat) -> Font {
-        //TODO: the project doesn't currently have regular not sure why
+        // TODO: the project doesn't currently have regular not sure why
         return medium(with: SmileIDResourcesHelper.Font.pointSize)
     }
-    
+
     /// Size of font.
     public static var pointSize: CGFloat {
         return SmileIDResourcesHelper.Font.pointSize
     }
-    
+
     /// Medium font.
     public static var medium: Font {
         return medium(with: SmileIDResourcesHelper.Font.pointSize)
     }
-    
+
     /// Bold font.
     public static var bold: Font {
         return bold(with: SmileIDResourcesHelper.Font.pointSize)
     }
-    
+
     /**
      Medium with size font.
      - Parameter with size: A CGFLoat for the font size.
@@ -44,7 +43,7 @@ public struct EpilogueFont: FontType {
         SmileIDResourcesHelper.Font.loadFontIfNeeded(name: Epilogue.medium.rawValue)
         return Font.custom(Epilogue.medium.rawValue, size: size)
     }
-    
+
     /**
      Bold with size font.
      - Parameter with size: A CGFLoat for the font size.
