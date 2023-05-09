@@ -67,23 +67,23 @@ public extension SmileIdTheme {
 
     // TO-DO: Rename fonts when Kwame comes up with a naming convention
     var h1: Font {
-        Font.custom(Epilogue.bold.rawValue, size: 32)
+        EpilogueFont.bold(with: 32)
     }
 
     var h4: Font {
-        Font.custom(Epilogue.bold.rawValue, size: 16)
+        EpilogueFont.bold(with: 16)
     }
 
     var h5: Font {
-        Font.custom(Epilogue.medium.rawValue, size: 12)
+        EpilogueFont.medium(with: 12)
     }
 
     var button: Font {
-        Font.custom(Epilogue.bold.rawValue, size: 20)
+        EpilogueFont.bold(with: 20)
     }
 
     var body: Font {
-        Font.custom(Epilogue.medium.rawValue, size: 14)
+        EpilogueFont.medium(with: 14)
     }
 }
 

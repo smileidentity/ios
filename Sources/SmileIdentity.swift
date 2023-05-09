@@ -22,7 +22,7 @@ public class SmileIdentity {
     public class func initialize(config: Config, useSandbox: Bool = true) {
         self.config = config
         self.useSandbox = useSandbox
-        CustomFont.registerFonts()
+        SmileIDResourcesHelper.registerFonts()
     }
 
     public class func apply(_ theme: SmileIdTheme) {
