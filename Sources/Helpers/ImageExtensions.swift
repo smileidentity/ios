@@ -10,7 +10,7 @@ extension Image {
         }
         self.init(uiImage: image)
 #elseif canImport(AppKit)
-        guard let path = mileIDResourcesHelper.bundle.path(forResource: name, ofType: type),
+        guard let path = SmileIDResourcesHelper.bundle.path(forResource: name, ofType: type),
               let image = NSImage(contentsOfFile: path) else {
             self.init(name)
             return
