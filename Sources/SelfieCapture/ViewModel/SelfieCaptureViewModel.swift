@@ -17,6 +17,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     var userId: String
     var sessionId: String
     var isEnroll: Bool
+    var showAttribution: Bool
     var faceLayoutGuideFrame = CGRect.zero
     var viewFinderSize = CGSize.zero
     var viewDelegate: FaceDetectorDelegate? {
@@ -87,7 +88,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    init(userId: String, sessionId: String, isEnroll: Bool) {
+    init(userId: String, sessionId: String, isEnroll: Bool, showAttribution: Bool = true) {
         self.userId = userId
         self.sessionId = sessionId
         self.isEnroll = isEnroll
@@ -100,6 +101,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         hasDetectedValidFace = false
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
+        self.showAttribution = showAttribution
         faceDetector.model = self
         setupSubscriptions()
     }

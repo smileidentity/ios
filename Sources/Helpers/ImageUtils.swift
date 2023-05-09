@@ -6,11 +6,6 @@ import Accelerate
 import Vision
 import MobileCoreServices
 
-extension Date {
-    var millisecondsSince1970: Int64 {
-        Int64((self.timeIntervalSince1970 * 1000.0).rounded())
-    }
-}
 class ImageUtils {
 
     /// Converts a buffer to JPG cropping the  face and returning the result of this operation

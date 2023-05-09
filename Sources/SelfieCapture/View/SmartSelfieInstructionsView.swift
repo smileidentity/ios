@@ -49,7 +49,10 @@ public struct SmartSelfieInstructionsView: View {
                                                                               clicked: {
                                            goesToDetail = true
                                        })}
-                        Image(Constants.ImageName.smileEmblem, bundle: .module)
+                        if viewModel.showAttribution {
+                            Image(Constants.ImageName.smileEmblem, bundle:
+                                    .module)
+                        }
                     }.padding(.top, 80)
                 }
                 .padding(EdgeInsets(top: 40,
@@ -80,7 +83,7 @@ public struct SmartSelfieInstructionsView: View {
 
 struct SmartSelfieInstructionsView_Previews: PreviewProvider {
     static var previews: some View {
-        SmartSelfieInstructionsView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString, sessionId: UUID().uuidString, isEnroll: false), delegate: DummyDelegate())
+        SmartSelfieInstructionsView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString, sessionId: UUID().uuidString, isEnroll: false, showAttribution: true), delegate: DummyDelegate())
             .environment(\.locale, Locale(identifier: "en"))
             .loadCustomFonts()
     }
