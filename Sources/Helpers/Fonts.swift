@@ -1,11 +1,11 @@
-//import SwiftUI
+// import SwiftUI
 //
-//enum Epilogue: String, CaseIterable {
+// enum Epilogue: String, CaseIterable {
 //    case bold = "Epilogue-Bold"
 //    case medium = "Epilogue-Medium"
-//}
+// }
 //
-//struct CustomFont {
+// struct CustomFont {
 //    public static func registerFonts() {
 //        Epilogue.allCases.forEach {
 //            registerFont(bundle: .module, fontName: $0.rawValue, fontExtension: "ttf")
@@ -24,13 +24,13 @@
 //
 //        CTFontManagerRegisterGraphicsFont(font, &error)
 //    }
-//}
+// }
 //
-//extension View {
+// extension View {
 //    /// Attach this to any Xcode Preview's view to have custom fonts displayed
 //    /// Note: Not needed for the actual app
 //    public func loadCustomFonts() -> some View {
 //        CustomFont.registerFonts()
 //        return self
 //    }
-//}
+// }

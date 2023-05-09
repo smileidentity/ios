@@ -10,9 +10,9 @@ public struct SelfieCaptureView: View {
         self.viewModel = viewModel
         self.delegate = delegate
     }
-    
-    //NB
-    //TODO:only used for previews to remove lint issues
+
+    // NB
+    // TODO:only used for previews to remove lint issues
     fileprivate init(viewModel: SelfieCaptureViewModel) {
         self.viewModel = viewModel
     }
@@ -44,7 +44,9 @@ public struct SelfieCaptureView: View {
 
 struct SelfieCaptureView_Previews: PreviewProvider {
     static var previews: some View {
-        SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString, sessionId: UUID().uuidString, isEnroll: false))
+        SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
+                                                            sessionId: UUID().uuidString,
+                                                            isEnroll: false))
     }
 }
 

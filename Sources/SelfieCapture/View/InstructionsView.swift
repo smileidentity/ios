@@ -6,7 +6,7 @@ struct InstructionsView: View {
         Text(faceDetectionState(), bundle: .module)
             .multilineTextAlignment(.center)
             .foregroundColor(SmileIdentity.theme.accent)
-            .font(SmileIdentity.theme.h4)
+            .font(SmileIdentity.theme.header4)
             .frame(maxWidth: 300)
     }
 }

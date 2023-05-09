@@ -7,7 +7,7 @@ struct SmileButton: View {
     var inactiveColour: Color?
     var clicked: (() -> Void)
     var body: some View {
-        if let titleKey = title.stringKey{
+        if let titleKey = title.stringKey {
             Button(action: clicked) {
                 Text(SmileIDResourcesHelper.localizedString(for: titleKey))
                     .padding(14)
