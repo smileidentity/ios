@@ -17,11 +17,14 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     @IBAction func onSmartSelfieRegistrationTap(_ sender: Any) {
         let smartSelfieAuthenticationView = SmileIdentity.smartSelfieRegistrationScreen(delegate: self)
         cameraVC = UIHostingController(rootView: smartSelfieAuthenticationView)
+        cameraVC?.modalPresentationStyle = .fullScreen
         navigationController?.present(cameraVC!, animated: true)
     }
 
     @IBAction func onSmartSelfieAuthenticationTap(_ sender: Any) {
-        //let smartSelfieRegistrationView = SmileIdentity.smartSelfieAuthenticatonScreen(userId: <#T##String#>, delegate: <#T##SmartSelfieResultDelegate#>)
+        if let userIDController = storyboard?.instantiateViewController(withIdentifier: "UserIDViewController") as? UserIDViewController {
+            navigationController?.pushViewController(userIDController, animated: true)
+        }
     }
 
     func didSucceed(selfieImage: Data, livenessImages: [Data]) {
