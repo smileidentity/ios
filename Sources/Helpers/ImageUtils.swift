@@ -31,11 +31,10 @@ class ImageUtils {
         let trueImageSize = CGSize(width: imagewidth, height: screenImageSize.height)
 
         // ratio of the true image width to displayed image width
-        let cutoffregion: CGFloat = max(imagewidth,screenImageSize.width) / min(imagewidth,screenImageSize.width)
+        let cutoffregion: CGFloat = max(imagewidth, screenImageSize.width) / min(imagewidth, screenImageSize.width)
 
         // scale down the original buffer to match the size of whats displayed on screen
         guard let scaledDownBuffer = resizePixelBuffer(buffer, size: trueImageSize) else { return nil }
-
 
         // calculate crop rect
         let cropRect = CGRect(x: faceGeometry.boundingBox.origin.x * cutoffregion,
@@ -53,14 +52,17 @@ class ImageUtils {
     }
 
     private class func increaseRect(rect: CGRect, byPercentage percentage: CGFloat) -> CGRect {
-        let startWidth = CGRectGetWidth(rect)
-        let startHeight = CGRectGetHeight(rect)
+        let startWidth = rect.width
+        let startHeight = rect.height
         let adjustmentWidth = (startWidth * percentage) / 2.0
         let adjustmentHeight = (startHeight * percentage) / 2.0
-        return CGRectInset(rect, -adjustmentWidth, -adjustmentHeight)
+        return rect.insetBy(dx: -adjustmentWidth, dy: -adjustmentHeight)
     }
 
-    private class func cropFace(_ buffer: CVPixelBuffer, cropFrame: CGRect, scaleSize: CGSize, isGreyScale: Bool = true) -> Data? {
+    private class func cropFace(_ buffer: CVPixelBuffer,
+                                cropFrame: CGRect,
+                                scaleSize: CGSize,
+                                isGreyScale: Bool = true) -> Data? {
         var ciImage = CIImage(cvPixelBuffer: buffer)
         if isGreyScale {
             let greyFilter = CIFilter(name: "CIPhotoEffectNoir")
@@ -129,8 +131,9 @@ class ImageUtils {
 
         // Create a new CIImage with the specified crop and scale
         let croppedImage = ciImage.cropped(to: cropFrame)
-        let scaledImage = croppedImage.transformed(by: CGAffineTransform(scaleX: scaleSize.width / croppedImage.extent.width,
-                                                                         y: scaleSize.height / croppedImage.extent.height))
+        let scaledImage = croppedImage.transformed(by: CGAffineTransform(
+            scaleX: scaleSize.width / croppedImage.extent.width,
+            y: scaleSize.height / croppedImage.extent.height))
 
         // Create a CIContext to render the CIImage to the destination pixel buffer
         let ciContext = CIContext(options: nil)
@@ -183,16 +186,21 @@ class ImageUtils {
 }
 
 extension CGImage {
-    func resize(size:CGSize) -> CGImage? {
+    func resize(size: CGSize) -> CGImage? {
         let width: Int = Int(size.width)
         let height: Int = Int(size.height)
 
         let bytesPerPixel = self.bitsPerPixel / self.bitsPerComponent
         let destBytesPerRow = width * bytesPerPixel
 
-
         guard let colorSpace = self.colorSpace else { return nil }
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: self.bitsPerComponent, bytesPerRow: destBytesPerRow, space: colorSpace, bitmapInfo: self.alphaInfo.rawValue) else { return nil }
+        guard let context = CGContext(data: nil,
+                                      width: width,
+                                      height: height,
+                                      bitsPerComponent: self.bitsPerComponent,
+                                      bytesPerRow: destBytesPerRow,
+                                      space: colorSpace,
+                                      bitmapInfo: self.alphaInfo.rawValue) else { return nil }
 
         context.interpolationQuality = .high
         context.draw(self, in: CGRect(x: 0, y: 0, width: width, height: height))
