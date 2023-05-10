@@ -44,7 +44,9 @@ public struct SmartSelfieInstructionsView: View {
                     }
                     VStack(spacing: 18) {
 
-                        NavigationLink(destination: SelfieCaptureView(viewModel: viewModel, delegate: selfieCaptureDelegate ?? DummyDelegate()),
+                        NavigationLink(destination: SelfieCaptureView(viewModel: viewModel,
+                                                                      delegate: selfieCaptureDelegate ??
+                                                                      DummyDelegate()),
                                        isActive: $goesToDetail) { SmileButton(title: "Instructions.Action",
                                                                               clicked: {
                                            goesToDetail = true
@@ -83,7 +85,11 @@ public struct SmartSelfieInstructionsView: View {
 
 struct SmartSelfieInstructionsView_Previews: PreviewProvider {
     static var previews: some View {
-        SmartSelfieInstructionsView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString, sessionId: UUID().uuidString, isEnroll: false, showAttribution: true), delegate: DummyDelegate())
+        SmartSelfieInstructionsView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
+                                                                      sessionId: UUID().uuidString,
+                                                                      isEnroll: false,
+                                                                      showAttribution: true),
+                                    delegate: DummyDelegate())
             .environment(\.locale, Locale(identifier: "en"))
             .loadCustomFonts()
     }

@@ -183,7 +183,7 @@ final class SelfieCaptureViewModel: ObservableObject {
 
         SmileIdentity.api.authenticate(request: authRequest)
             .flatMap(prepUpload)
-            .flatMap ({[self] in upload($0, zip: zip)})
+            .flatMap({[self] in upload($0, zip: zip)})
             .sink(receiveCompletion: {completion in
                 switch completion {
                 case .failure(let error):
