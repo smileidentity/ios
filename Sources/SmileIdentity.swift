@@ -42,4 +42,8 @@ public class SmileIdentity {
         let viewModel = SelfieCaptureViewModel(userId: userId, sessionId: sessionId, isEnroll: false)
         return SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
     }
+
+    public class func setEnvironment(useSandbox: Bool) {
+        SmileIdentity.useSandbox = useSandbox
+    }
 }
