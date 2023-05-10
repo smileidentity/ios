@@ -11,7 +11,6 @@ public struct SelfieCaptureView: View {
         self.delegate = delegate
     }
 
-    // TO-DO: Clean up selfie capture view. Make UI Configurable
     public var body: some View {
         GeometryReader { geometry in
             let ovalSize = ovalSize(from: geometry)
@@ -23,6 +22,7 @@ public struct SelfieCaptureView: View {
                         CGRect(origin: .zero,
                                size: ovalSize)
                         viewModel.viewDelegate = camera.preview
+                        viewModel.viewFinderSize = geometry.size
                     }
 
                 FaceOverlayView(model: viewModel)
@@ -31,8 +31,8 @@ public struct SelfieCaptureView: View {
     }
 
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {
-        return CGSize(width: geometry.size.width * 0.7,
-                      height: geometry.size.width * 0.7 / (3/3.5))
+        return CGSize(width: geometry.size.width * 0.6,
+                      height: geometry.size.width * 0.6 / 0.7)
     }
 }
 
