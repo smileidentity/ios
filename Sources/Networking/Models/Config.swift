@@ -1,12 +1,12 @@
 import Foundation
 
 public struct Config: Decodable {
-    var partnerId: String
-    var authToken: String
-    var prodUrl: String
-    var testUrl: String
-    var prodLambdaUrl: String
-    var testLambdaUrl: String
+    public var partnerId: String
+    public var authToken: String
+    public var prodUrl: String
+    public var testUrl: String
+    public var prodLambdaUrl: String
+    public var testLambdaUrl: String
 }
 
 public extension Config {
