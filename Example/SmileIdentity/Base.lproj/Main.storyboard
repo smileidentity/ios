@@ -36,6 +36,9 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="164" height="120"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="   "/>
+                                                <connections>
+                                                    <action selector="onSmartSelfieRegistrationTap:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="jXW-eE-gi4"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.93725490199999995" green="0.95294117649999999" blue="0.97647058819999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -65,7 +68,7 @@
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="   "/>
                                                 <connections>
-                                                    <action selector="onSmartSelfieTap:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="z46-ph-OEC"/>
+                                                    <action selector="onSmartSelfieAuthenticationTap:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="ELf-h6-V3u"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -144,10 +147,10 @@
             </objects>
             <point key="canvasLocation" x="-825" y="-143"/>
         </scene>
-        <!--View Controller-->
+        <!--UserID View Controller-->
         <scene sceneID="Lpw-vB-557">
             <objects>
-                <viewController id="fn5-gA-0DC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="UserIDViewController" id="fn5-gA-0DC" customClass="UserIDViewController" customModule="SmileID_Demo" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dE1-bN-bHe"/>
                         <viewControllerLayoutGuide type="bottom" id="f1e-M5-HHl"/>
@@ -174,6 +177,9 @@
                                 <rect key="frame" x="141" y="171" width="93" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Continue"/>
+                                <connections>
+                                    <action selector="onContinueTap:" destination="fn5-gA-0DC" eventType="touchUpInside" id="W3J-H8-4vj"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -188,6 +194,9 @@
                             <constraint firstAttribute="trailingMargin" secondItem="tIL-4Y-Wva" secondAttribute="trailing" id="mGJ-7Y-0M5"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="userIdField" destination="tIL-4Y-Wva" id="RfH-0e-nzf"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QIb-g0-Btw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
