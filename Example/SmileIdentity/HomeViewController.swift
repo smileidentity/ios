@@ -3,18 +3,25 @@ import SwiftUI
 import Combine
 import SmileIdentity
 
-class ViewController: UIViewController, SmartSelfieResultDelegate {
+class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     var cameraVC: UIViewController?
     var cancellable: AnyCancellable?
 
+    @IBOutlet var versionLabel: CopyableLabel!
     override func viewDidLoad() {
         super.viewDidLoad()
+        let partnerID = try! Config(url: Constant.configUrl).partnerId
+        versionLabel.text = "Partner \(partnerID)"
     }
 
-    @IBAction func onSmartSelfieTap(_ sender: Any) {
-        let selfieView = SmileIdentity.smartSelfieRegistrationScreen(delegate: self)
-        cameraVC = UIHostingController(rootView: selfieView)
+    @IBAction func onSmartSelfieRegistrationTap(_ sender: Any) {
+        let smartSelfieAuthenticationView = SmileIdentity.smartSelfieRegistrationScreen(delegate: self)
+        cameraVC = UIHostingController(rootView: smartSelfieAuthenticationView)
         navigationController?.present(cameraVC!, animated: true)
+    }
+
+    @IBAction func onSmartSelfieAuthenticationTap(_ sender: Any) {
+        //let smartSelfieRegistrationView = SmileIdentity.smartSelfieAuthenticatonScreen(userId: <#T##String#>, delegate: <#T##SmartSelfieResultDelegate#>)
     }
 
     func didSucceed(selfieImage: Data, livenessImages: [Data]) {
