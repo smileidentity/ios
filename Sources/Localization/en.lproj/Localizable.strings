@@ -12,3 +12,12 @@
 "Instructions.Header" = "Next, we’ll take a quick selfie";
 "Instructions.Callout" = "We'll use it to verify your Identity. \n Please follow the instructions below.";
 "Instructions.Action" = "I'm Ready";
+"Instructions.UnableToDetectFace" = "Unable to detect face. Please ensure your face is in the oval";
+"Instructions.FaceFar" = "Face is too far. Please move closer";
+"Instructions.FaceClose" = "Face is too close. Please move farther away";
+"Instructions.UnknownError" = "We cannot take your photo right now";
+"Instructions.MultipleFaces" = "Please ensure only one face is in the oval";
+"Instructions.Smile" = "Please smile for the camera";
+"Instructions.Capturing" = "Capturing…";
+"Instructions.Start" = "Put your face inside the oval frame and wait until it turns green";
+"Instructions.Unstable" = "Put your face inside the oval frame and wait until it turns green";

@@ -3,47 +3,50 @@ import SwiftUI
 struct InstructionsView: View {
     @ObservedObject private(set) var model: SelfieCaptureViewModel
     var body: some View {
-        Text(faceDetectionState())
+        Text(faceDetectionState(), bundle: .module)
+            .multilineTextAlignment(.center)
             .foregroundColor(SmileIdentity.theme.accent)
             .font(SmileIdentity.theme.h4)
+            .frame(maxWidth: 300)
     }
 }
 
 extension InstructionsView {
-    func faceDetectionState() -> String {
+    func faceDetectionState() -> LocalizedStringKey {
         switch model.faceDetectionState {
         case .sceneUnstable:
-            return "Please keep your hands steady"
+            return "Instructions.Unstable"
         case .faceDetectionErrored:
-            return "An unexpected error occurred"
+            return "Instructions.UnknownError"
         case .noFaceDetected:
-            return "Please look at the camera"
+            return "Instructions.Start"
         case .faceDetected:
             if model.hasDetectedValidFace {
-                return "Capturing please stay still"
+                return "Instructions.Capturing"
+            } else if !model.isAcceptableRoll
+                        || !model.isAcceptableYaw
+                        || model.isAcceptableBounds == .detectedFaceOffCentre
+                        || !model.isAcceptableQuality {
+                return "Instructions.UnableToDetectFace"
             } else if model.isAcceptableBounds == .detectedFaceTooSmall {
-                return "Please bring your face closer to the camera"
+                return "Instructions.FaceFar"
             } else if model.isAcceptableBounds == .detectedFaceTooLarge {
-                return "Please hold the camera further away from your face"
-            } else if model.isAcceptableBounds == .detectedFaceOffCentre {
-                return "Please center your face in the frame"
-            } else if !model.isAcceptableRoll || !model.isAcceptableYaw {
-                return "Please look straight at the camera"
-            } else if !model.isAcceptableQuality {
-                return "Image quality too low"
+                return "Instructions.FaceClose"
             } else {
-                return "We cannot take your photo right now"
+                return "Instructions.UnknownError"
             }
         case .multipleFacesDetected:
-            return "Please ensure only one face is in the oval"
+            return "Instructions.MultipleFaces"
         case .finalFrame:
-            return "Please smile for the camera"
+            return "Instructions.Smile"
         }
     }
 }
 
 struct InstructionsView_Previews: PreviewProvider {
     static var previews: some View {
-        InstructionsView(model: SelfieCaptureViewModel(userId: UUID().uuidString, sessionId: UUID().uuidString, isEnroll: false))
+        InstructionsView(model: SelfieCaptureViewModel(userId: UUID().uuidString,
+                                                       sessionId: UUID().uuidString,
+                                                       isEnroll: false))
     }
 }

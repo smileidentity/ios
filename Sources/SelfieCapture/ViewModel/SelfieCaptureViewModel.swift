@@ -17,7 +17,9 @@ final class SelfieCaptureViewModel: ObservableObject {
     var userId: String
     var sessionId: String
     var isEnroll: Bool
+    var showAttribution: Bool
     var faceLayoutGuideFrame = CGRect.zero
+    var viewFinderSize = CGSize.zero
     var viewDelegate: FaceDetectorDelegate? {
         didSet {
             faceDetector.viewDelegate = viewDelegate
@@ -86,7 +88,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    init(userId: String, sessionId: String, isEnroll: Bool) {
+    init(userId: String, sessionId: String, isEnroll: Bool, showAttribution: Bool = true) {
         self.userId = userId
         self.sessionId = sessionId
         self.isEnroll = isEnroll
@@ -99,6 +101,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         hasDetectedValidFace = false
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
+        self.showAttribution = showAttribution
         faceDetector.model = self
         setupSubscriptions()
     }
@@ -140,9 +143,9 @@ final class SelfieCaptureViewModel: ObservableObject {
         while (livenessImages.count < numberOfLivenessImages) &&
                 ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             guard let image = ImageUtils.captureFace(from: currentBuffer,
-                                                     faceGeometry: faceGeometry,
+                                                     faceGeometry: faceGeometry, padding: 95,
                                                      finalSize: livenessImageSize,
-                                                     screenImageSize: faceLayoutGuideFrame.size,
+                                                     screenImageSize: viewFinderSize,
                                                      isGreyScale: true) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
@@ -153,9 +156,9 @@ final class SelfieCaptureViewModel: ObservableObject {
             selfieImage == nil {
             publishFaceObservation(.finalFrame)
             guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
-                                                           faceGeometry: faceGeometry,
+                                                           faceGeometry: faceGeometry, padding: 200,
                                                            finalSize: selfieImageSize,
-                                                           screenImageSize: faceLayoutGuideFrame.size,
+                                                           screenImageSize: viewFinderSize,
                                                            isGreyScale: false) else { return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
@@ -180,7 +183,7 @@ final class SelfieCaptureViewModel: ObservableObject {
 
         SmileIdentity.api.authenticate(request: authRequest)
             .flatMap(prepUpload)
-            .flatMap ({[self] in upload($0, zip: zip)})
+            .flatMap({[self] in upload($0, zip: zip)})
             .sink(receiveCompletion: {completion in
                 switch completion {
                 case .failure(let error):
@@ -195,6 +198,11 @@ final class SelfieCaptureViewModel: ObservableObject {
                     handleUploadResponse(response)
                 }
             }).store(in: &subscribers)
+    }
+
+    func resetCapture() {
+        livenessImages = []
+        selfieImage = nil
     }
 
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
@@ -292,15 +300,17 @@ extension SelfieCaptureViewModel {
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
-        if boundingBox.width > 0.7 * faceLayoutGuideFrame.width {
+        if boundingBox.width > 0.9 * faceLayoutGuideFrame.width {
             isAcceptableBounds = .detectedFaceTooLarge
         } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {
             isAcceptableBounds = .detectedFaceTooSmall
         } else {
-            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 50 {
+            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
                 isAcceptableBounds = .detectedFaceOffCentre
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 50 {
+                resetCapture()
+            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 170 {
                 isAcceptableBounds = .detectedFaceOffCentre
+                resetCapture()
             } else {
                 isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
             }
