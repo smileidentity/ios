@@ -23,11 +23,12 @@ extension InstructionsView {
         case .faceDetected:
             if model.hasDetectedValidFace {
                 return "Instructions.Capturing"
-            }
-            else if !model.isAcceptableRoll || !model.isAcceptableYaw || model.isAcceptableBounds == .detectedFaceOffCentre || !model.isAcceptableQuality {
+            } else if !model.isAcceptableRoll
+                        || !model.isAcceptableYaw
+                        || model.isAcceptableBounds == .detectedFaceOffCentre
+                        || !model.isAcceptableQuality {
                 return "Instructions.UnableToDetectFace"
-            }
-            else if model.isAcceptableBounds == .detectedFaceTooSmall {
+            } else if model.isAcceptableBounds == .detectedFaceTooSmall {
                 return "Instructions.FaceFar"
             } else if model.isAcceptableBounds == .detectedFaceTooLarge {
                 return "Instructions.FaceClose"
@@ -44,6 +45,8 @@ extension InstructionsView {
 
 struct InstructionsView_Previews: PreviewProvider {
     static var previews: some View {
-        InstructionsView(model: SelfieCaptureViewModel(userId: UUID().uuidString, sessionId: UUID().uuidString, isEnroll: false))
+        InstructionsView(model: SelfieCaptureViewModel(userId: UUID().uuidString,
+                                                       sessionId: UUID().uuidString,
+                                                       isEnroll: false))
     }
 }
