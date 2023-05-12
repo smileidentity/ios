@@ -12,11 +12,11 @@ extension APIError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .encode(let error):
-            return String(describing: error.localizedDescription)
+            return String(describing: error)
         case .request(let error):
-            return String(describing: error.localizedDescription)
+            return String(describing: error)
         case .decode(let error):
-            return String(describing: error.localizedDescription)
+            return String(describing: error)
         case .unknown(let message):
             return message
         case .httpStatus(let code, let data):

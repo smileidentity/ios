@@ -24,7 +24,7 @@ public struct JobStatusResponse: Codable {
     var timestamp: String
     var jobComplete: Bool
     var jobSuccess: Bool
-    var code: Int
+    var code: String
     var result: JobResult?
     var resultString: String?
     var history: JobResult?
@@ -35,7 +35,7 @@ public struct JobStatusResponse: Codable {
         self.timestamp = try container.decode(String.self, forKey: .timestamp)
         self.jobComplete = try container.decode(Bool.self, forKey: .jobComplete)
         self.jobSuccess = try container.decode(Bool.self, forKey: .jobSuccess)
-        self.code = try container.decode(Int.self, forKey: .code)
+        self.code = try container.decode(String.self, forKey: .code)
         if let result = try? container.decodeIfPresent(JobResult.self, forKey: .result) {
             self.result = result
         }

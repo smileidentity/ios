@@ -239,10 +239,16 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                 timestamp: authResponse.timestamp,
                                                 signature: authResponse.signature)
 
-        let publisher = SmileIdentity.api.getJobStatus(request: jobStatusRequest)
-            .delay(for: .seconds(1), scheduler: RunLoop.main)
-            .retry(10)
-            .first(where: { $0.jobComplete })
+        let publisher = Timer.publish(every: 1.0, on: .main, in: .common)
+            .autoconnect()
+            .setFailureType(to: Error.self)
+            .flatMap { _ in SmileIdentity.api.getJobStatus(request: jobStatusRequest) }
+            .first(where: { response in
+                return response.jobComplete})
+            .timeout(.seconds(10),
+                     scheduler: DispatchQueue.main,
+                     options: nil,
+                     customError: { URLError.timedOut as! any Error })
 
         return publisher.eraseToAnyPublisher()
     }
