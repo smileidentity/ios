@@ -3,7 +3,7 @@ import SwiftUI
 struct InstructionsView: View {
     @ObservedObject private(set) var model: SelfieCaptureViewModel
     var body: some View {
-        Text(faceDetectionState(), bundle: .module)
+        Text(SmileIDResourcesHelper.localizedString(for: faceDetectionState().stringKey))
             .multilineTextAlignment(.center)
             .foregroundColor(SmileIdentity.theme.accent)
             .font(SmileIdentity.theme.header4)

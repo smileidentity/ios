@@ -29,7 +29,7 @@ Smile Identity SDK for selfie capture, identity card verification and Smile KYC 
   s.swift_version = "5.0"
   s.ios.source_files = 'Sources/**/*.swift'
   s.resource_bundles = {
-			'com.smileid.ios.resources' => ['Sources/Resources/Media.xcassets','Sources/Resources/Fonts/*.ttf','Sources/Localization//*.lproj/*.strings'],
+			'SmileIdentity_SmileIdentity' => ['Sources/Resources/Media.xcassets','Sources/Resources/Fonts/*.ttf','Sources/Localization//*.lproj/*.strings'],
 		}
   s.dependency "Zip",'~> 2.1'
 end

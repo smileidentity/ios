@@ -1,23 +1,41 @@
 import SwiftUI
 
-struct SmartSelfieInstructionsView: View {
-    var body: some View {
+public struct SmartSelfieInstructionsView: View {
+
+    private var viewModel : SelfieCaptureViewModel
+    private weak var selfieCaptureDelegate: SmartSelfieResultDelegate?
+    @State private var goesToDetail: Bool = false
+
+    init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
+        self.viewModel = viewModel
+        self.selfieCaptureDelegate = delegate
+    }
+    
+    //Only exists for preview so not accessible out of the file
+    fileprivate init(viewModel: SelfieCaptureViewModel) {
+        self.viewModel = viewModel
+    }
+    public var body: some View {
+        NavigationView {
+            ScrollView {
         VStack {
             Image(uiImage: SmileIDResourcesHelper.InstructionsHeaderIcon)
                 .padding(.bottom, 27)
             VStack(spacing: 32) {
-                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Header"))
+                        Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Header"))
                     .multilineTextAlignment(.center)
-                    .font(SmileIdentity.theme.header1)
+                            .font(SmileIdentity.theme.header1)
                     .foregroundColor(SmileIdentity.theme.accent)
                     .lineSpacing(0.98)
-                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Callout"))
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Callout"))
                     .multilineTextAlignment(.center)
-                    .font(SmileIdentity.theme.header5)
+                            .font(SmileIdentity.theme.header5)
                     .foregroundColor(SmileIdentity.theme.tertiary)
                     .lineSpacing(1.3)
+                            .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.bottom, 47)
+                    .padding(.bottom, 20)
             VStack(alignment: .leading, spacing: 30) {
                 makeInstruction(title: "Instructions.GoodLight",
                                 body: "Instructions.GoodLightBody",
@@ -30,12 +48,24 @@ struct SmartSelfieInstructionsView: View {
                                 image: Constants.ImageName.face)
             }
             VStack(spacing: 18) {
-                SmileButton(title: "Instructions.Action", clicked: {
 
-                })
-                Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                        NavigationLink(destination: SelfieCaptureView(viewModel: viewModel,
+                                                                      delegate: selfieCaptureDelegate ??
+                                                                      DummyDelegate()),
+                                       isActive: $goesToDetail) { SmileButton(title: "Instructions.Action",
+                                                                              clicked: {
+                                           goesToDetail = true
+                                       })}
+                        if viewModel.showAttribution {
+                            Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                        }
             }.padding(.top, 80)
-            Spacer()
+                }
+                .padding(EdgeInsets(top: 40,
+                                    leading: 24,
+                                    bottom: 0,
+                                    trailing: 24))
+            }
         }
     }
 
@@ -64,8 +94,7 @@ struct SmartSelfieInstructionsView_Previews: PreviewProvider {
         SmartSelfieInstructionsView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
                                                                       sessionId: UUID().uuidString,
                                                                       isEnroll: false,
-                                                                      showAttribution: true),
-                                    delegate: DummyDelegate())
+                                                                      showAttribution: true))
             .environment(\.locale, Locale(identifier: "en"))
 
     }
