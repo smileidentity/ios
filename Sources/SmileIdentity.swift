@@ -38,8 +38,8 @@ public class SmileIdentity {
     }
 
     public class func smartSelfieAuthenticationScreen(userId: String,
-                                                     sessionId: String = "SID_ Session",
-                                                     delegate: SmartSelfieResultDelegate)
+                                                      sessionId: String = "SID_ Session",
+                                                      delegate: SmartSelfieResultDelegate)
     -> SmartSelfieInstructionsView {
         let viewModel = SelfieCaptureViewModel(userId: userId, sessionId: sessionId, isEnroll: false)
         return SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)

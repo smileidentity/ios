@@ -253,10 +253,10 @@ final class SelfieCaptureViewModel: ObservableObject {
         return publisher.eraseToAnyPublisher()
     }
 
-
     private func handleUploadResponse(_ response: JobStatusResponse) {
             captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
-                                              livenessImages: livenessImages)
+                                              livenessImages: livenessImages,
+                                              jobStatusResponse: response)
     }
 
     func saveLivenessImage(data: Data) {

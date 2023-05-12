@@ -38,11 +38,14 @@ public struct SelfieCaptureView: View {
 
 struct SelfieCaptureView_Previews: PreviewProvider {
     static var previews: some View {
-        SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString, sessionId: UUID().uuidString, isEnroll: false), delegate: DummyDelegate())
+        SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
+                                                            sessionId: UUID().uuidString,
+                                                            isEnroll: false),
+                          delegate: DummyDelegate())
     }
 }
 
 class DummyDelegate: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: Data, livenessImages: [Data]) {}
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {}
     func didError(error: Error) {}
 }

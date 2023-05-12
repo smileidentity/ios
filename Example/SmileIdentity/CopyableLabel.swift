@@ -3,9 +3,7 @@ import UIKit
 class CopyableLabel: UILabel {
 
     override public var canBecomeFirstResponder: Bool {
-        get {
-            return true
-        }
+        return true
     }
 
     override init(frame: CGRect) {
