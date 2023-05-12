@@ -10,8 +10,8 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     @IBOutlet var versionLabel: CopyableLabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        let partnerID = try! Config(url: Constant.configUrl).partnerId
-        versionLabel.text = "Partner \(partnerID)"
+        let partnerID = try? Config(url: Constant.configUrl).partnerId
+        versionLabel.text = "Partner \(partnerID ?? "")"
     }
 
     @IBAction func onSmartSelfieRegistrationTap(_ sender: Any) {
@@ -22,12 +22,13 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     }
 
     @IBAction func onSmartSelfieAuthenticationTap(_ sender: Any) {
-        if let userIDController = storyboard?.instantiateViewController(withIdentifier: "UserIDViewController") as? UserIDViewController {
+        if let userIDController = storyboard?.instantiateViewController(withIdentifier: "UserIDViewController")
+            as? UserIDViewController {
             navigationController?.pushViewController(userIDController, animated: true)
         }
     }
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data]) {
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
         cameraVC?.dismiss(animated: true, completion: {
             let ac =
             UIAlertController(title: "Selfie Capture Complete",

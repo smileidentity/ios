@@ -1,4 +1,3 @@
-// swiftlint:disable force_cast
 import UIKit
 import SmileIdentity
 
@@ -20,4 +19,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 }
-// swiftlint:enable force_cast

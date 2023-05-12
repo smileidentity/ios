@@ -46,6 +46,13 @@ public struct JobStatusResponse: Codable {
         self.imageLinks = try container.decodeIfPresent(ImageLinks.self, forKey: .imageLinks)
     }
 
+    init(timestamp: String, jobComplete: Bool, jobSuccess: Bool, code: String) {
+        self.timestamp = timestamp
+        self.jobSuccess = jobSuccess
+        self.jobComplete = jobComplete
+        self.code = code
+    }
+
     enum CodingKeys: String, CodingKey {
         case timestamp
         case jobComplete = "job_complete"
