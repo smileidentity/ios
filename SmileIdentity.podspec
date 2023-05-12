@@ -23,17 +23,11 @@ Smile Identity SDK for selfie capture, identity card verification and Smile KYC 
 
   s.homepage         = 'https://docs.smileidentity.com/mobile/ios'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'Smile ID' => 'support@smileidentity.com' }
+  s.author           = { 'Smile ID' => 'mobile@smileidentity.com' }
   s.source           = { :git => 'https://github.com/smileidentity/ios-v2.git', :tag => s.version.to_s }
   s.ios.deployment_target = '13.0'
   s.swift_version = "5.0"
   s.ios.source_files = 'Sources/**/*.swift'
-  # s.resource_bundles = {
-  #   'SmileIdentity_SmileIdentity' => [ # Match the name SPM Generates
-  #      'Sources/Resources/Fonts/*.ttf',
-  #      'Sources/Resources/Media.xcassets'
-  #   ]
-  # }
   s.resource_bundles = {
 			'com.smileid.ios.resources' => ['Sources/Resources/Media.xcassets','Sources/Resources/Fonts/*.ttf','Sources/Localization//*.lproj/*.strings'],
 		}
