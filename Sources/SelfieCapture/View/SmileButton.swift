@@ -13,7 +13,8 @@ struct SmileButton: View {
                     .padding(14)
                     .font(SmileIdentity.theme.button)
                     .frame(maxWidth: .infinity)
-            }.foregroundColor(titleColor)
+        }
+        .foregroundColor(titleColor)
                 .background(backgroundColor)
                 .cornerRadius(15)
                 .frame(maxWidth: .infinity)

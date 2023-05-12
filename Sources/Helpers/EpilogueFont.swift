@@ -9,22 +9,22 @@ public struct EpilogueFont: FontType {
 
     public static func regular(with size: CGFloat) -> Font {
         // TODO: the project doesn't currently have regular not sure why
-        return medium(with: SmileIDResourcesHelper.Font.pointSize)
+        return medium(with: SmileIDResourcesHelper.pointSize)
     }
 
     /// Size of font.
     public static var pointSize: CGFloat {
-        return SmileIDResourcesHelper.Font.pointSize
+        return SmileIDResourcesHelper.pointSize
     }
 
     /// Medium font.
     public static var medium: Font {
-        return medium(with: SmileIDResourcesHelper.Font.pointSize)
+        return medium(with: SmileIDResourcesHelper.pointSize)
     }
 
     /// Bold font.
     public static var bold: Font {
-        return bold(with: SmileIDResourcesHelper.Font.pointSize)
+        return bold(with: SmileIDResourcesHelper.pointSize)
     }
 
     /**
@@ -33,7 +33,7 @@ public struct EpilogueFont: FontType {
      - Returns: A UIFont.
      */
     public static func medium(with size: CGFloat) -> Font {
-        SmileIDResourcesHelper.Font.loadFontIfNeeded(name: Epilogue.medium.rawValue)
+        SmileIDResourcesHelper.loadFontIfNeeded(name: Epilogue.medium.rawValue)
         return Font.custom(Epilogue.medium.rawValue, size: size)
     }
 
@@ -43,7 +43,7 @@ public struct EpilogueFont: FontType {
      - Returns: A UIFont.
      */
     public static func bold(with size: CGFloat) -> Font {
-        SmileIDResourcesHelper.Font.loadFontIfNeeded(name: Epilogue.bold.rawValue)
+        SmileIDResourcesHelper.loadFontIfNeeded(name: Epilogue.bold.rawValue)
         return Font.custom(Epilogue.bold.rawValue, size: size)
     }
 }
