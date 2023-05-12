@@ -182,20 +182,34 @@ final class SelfieCaptureViewModel: ObservableObject {
         let authRequest = AuthenticationRequest(jobType: jobType, enrollment: isEnroll, userId: userId)
 
         SmileIdentity.api.authenticate(request: authRequest)
-            .flatMap(prepUpload)
-            .flatMap({[self] in upload($0, zip: zip)})
+            .flatMap { authResponse in
+                self.prepUpload(authResponse)
+                    .flatMap { prepUploadResponse in
+                        self.upload(prepUploadResponse, zip: zip)
+                            .filter { result in
+                                switch result {
+                                case .response:
+                                    return true
+                                default:
+                                    return false
+                                }
+                            }
+                            .map { _ in authResponse }
+                    }
+            }
+            .flatMap(pollJobStatus)
             .sink(receiveCompletion: {completion in
                 switch completion {
                 case .failure(let error):
-                    DispatchQueue.main.async { [self] in
-                        captureResultDelegate?.didError(error: error)
+                    DispatchQueue.main.async { [weak self] in
+                        self?.captureResultDelegate?.didError(error: error)
                     }
                 default:
                     break
                 }
-            }, receiveValue: { response in
-                DispatchQueue.main.async { [self] in
-                    handleUploadResponse(response)
+            }, receiveValue: { [weak self] response in
+                DispatchQueue.main.async {
+                    self?.handleUploadResponse(response)
                 }
             }).store(in: &subscribers)
     }
@@ -214,16 +228,29 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     private func upload(_ prepUploadResponse: PrepUploadResponse, zip: Data) -> AnyPublisher<UploadResponse, Error> {
         return SmileIdentity.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
+            .eraseToAnyPublisher()
     }
 
-    private func handleUploadResponse(_ response: UploadResponse) {
-        switch response {
-        case .response:
+    private func pollJobStatus(_ authResponse: AuthenticationResponse) -> AnyPublisher<JobStatusResponse, Error> {
+        let jobStatusRequest = JobStatusRequest(userId: authResponse.partnerParams.userId,
+                                                jobId: authResponse.partnerParams.jobId,
+                                                includeImageLinks: false,
+                                                includeHistory: false,
+                                                timestamp: authResponse.timestamp,
+                                                signature: authResponse.signature)
+
+        let publisher = SmileIdentity.api.getJobStatus(request: jobStatusRequest)
+            .delay(for: .seconds(1), scheduler: RunLoop.main)
+            .retry(10)
+            .first(where: { $0.jobComplete })
+
+        return publisher.eraseToAnyPublisher()
+    }
+
+
+    private func handleUploadResponse(_ response: JobStatusResponse) {
             captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
                                               livenessImages: livenessImages)
-        default:
-            break
-        }
     }
 
     func saveLivenessImage(data: Data) {
