@@ -82,4 +82,3 @@ class MockResultDelegate: SmartSelfieResultDelegate {
 class MockHelper {
     static var shouldFail = false
 }
-

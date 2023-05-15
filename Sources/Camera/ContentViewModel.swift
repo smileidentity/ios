@@ -29,9 +29,7 @@ extension CGImage {
     }
 
     var image: CGImage?
-    VTCreateCGImageFromCVPixelBuffer(pixelBuffer,
-                                     options: nil,
-                                     imageOut: &image)
+      VTCreateCGImageFromCVPixelBuffer(pixelBuffer, options: nil, imageOut: &image)
     return image
   }
 }
