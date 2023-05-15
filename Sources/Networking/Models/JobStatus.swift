@@ -77,7 +77,7 @@ public struct JobResult: Codable {
     public var isMachineResult: Bool
 
     enum CodingKeys: String, CodingKey {
-        case source = "Source"public
+        case source = "Source"
         case actions = "Actions"
         case resultCode = "ResultCode"
         case resultText = "ResultText"
