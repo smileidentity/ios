@@ -1,13 +1,13 @@
 import Foundation
 
 public struct JobStatusRequest: Codable {
-    var userId: String
-    var jobId: String
-    var includeImageLinks: Bool
-    var includeHistory: Bool
-    var partnerId: String = SmileIdentity.config.partnerId
-    var timestamp: String
-    var signature: String
+    public var userId: String
+    public var jobId: String
+    public var includeImageLinks: Bool
+    public var includeHistory: Bool
+    public var partnerId: String = SmileIdentity.config.partnerId
+    public var timestamp: String
+    public var signature: String
 
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
@@ -21,14 +21,14 @@ public struct JobStatusRequest: Codable {
 }
 
 public struct JobStatusResponse: Codable {
-    var timestamp: String
-    var jobComplete: Bool
-    var jobSuccess: Bool
-    var code: String
-    var result: JobResult?
-    var resultString: String?
-    var history: JobResult?
-    var imageLinks: ImageLinks?
+    public var timestamp: String
+    public var jobComplete: Bool
+    public var jobSuccess: Bool
+    public var code: String
+    public var result: JobResult?
+    public var resultString: String?
+    public var history: JobResult?
+    public var imageLinks: ImageLinks?
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -64,20 +64,20 @@ public struct JobStatusResponse: Codable {
     }
 }
 
-struct JobResult: Codable {
-    var source: String
-    var actions: Actions
-    var resultCode: Int
-    var resultText: String
-    var resultType: String
-    var smileJobId: String
-    var partnerParams: PartnerParams?
-    var confidence: Double
-    var isFinalResult: Bool
-    var isMachineResult: Bool
+public struct JobResult: Codable {
+    public var source: String
+    public var actions: Actions
+    public var resultCode: Int
+    public var resultText: String
+    public var resultType: String
+    public var smileJobId: String
+    public var partnerParams: PartnerParams?
+    public var confidence: Double
+    public var isFinalResult: Bool
+    public var isMachineResult: Bool
 
     enum CodingKeys: String, CodingKey {
-        case source = "Source"
+        case source = "Source"public
         case actions = "Actions"
         case resultCode = "ResultCode"
         case resultText = "ResultText"
@@ -90,21 +90,21 @@ struct JobResult: Codable {
     }
 }
 
-struct Actions: Codable {
-    var humanReviewCompare: ActionResult
-    var humanReviewLivenessCheck: ActionResult
-    var humanReviewSelfieCheck: ActionResult
-    var humanReviewUpdateSelfie: ActionResult
-    var livenessCheck: ActionResult
-    var selfieCheck: ActionResult
-    var registerSelfie: ActionResult
-    var returnPersonalInfo: ActionResult
-    var selfieProvided: ActionResult
-    var selfieToIdAuthorityCapture: ActionResult
-    var selfieToIdCardCompare: ActionResult
-    var selfieToRegisteredSelfieCompare: ActionResult
-    var updateRegisteredSelfieOnFile: ActionResult
-    var verifyIdNumber: ActionResult
+public struct Actions: Codable {
+    public var humanReviewCompare: ActionResult
+    public var humanReviewLivenessCheck: ActionResult
+    public var humanReviewSelfieCheck: ActionResult
+    public var humanReviewUpdateSelfie: ActionResult
+    public var livenessCheck: ActionResult
+    public var selfieCheck: ActionResult
+    public var registerSelfie: ActionResult
+    public var returnPersonalInfo: ActionResult
+    public var selfieProvided: ActionResult
+    public var selfieToIdAuthorityCapture: ActionResult
+    public var selfieToIdCardCompare: ActionResult
+    public var selfieToRegisteredSelfieCompare: ActionResult
+    public var updateRegisteredSelfieOnFile: ActionResult
+    public var verifyIdNumber: ActionResult
 
     enum CodingKeys: String, CodingKey {
         case humanReviewCompare = "Human_Review_Compare"
@@ -124,7 +124,7 @@ struct Actions: Codable {
     }
 }
 
-enum ActionResult: String, Codable {
+public enum ActionResult: String, Codable {
     case passed = "Passed"
     case completed = "Completed"
     case approved = "Approved"
@@ -142,9 +142,9 @@ enum ActionResult: String, Codable {
     case issuerUnavailable = "Issuer Unavailable"
 }
 
-struct ImageLinks: Codable {
-    var selfieImageUrl: String?
-    var error: String?
+public struct ImageLinks: Codable {
+    public var selfieImageUrl: String?
+    public var error: String?
 
     enum CodingKeys: String, CodingKey {
         case selfieImageUrl = "selfie_image"

@@ -144,6 +144,7 @@
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lib-xY-u0g" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <barButtonItem title="Sandbox" id="FRU-Fb-I8l"/>
             </objects>
             <point key="canvasLocation" x="-825" y="-143"/>
         </scene>
