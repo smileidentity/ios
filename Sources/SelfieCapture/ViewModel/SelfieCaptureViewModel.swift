@@ -248,7 +248,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             .timeout(.seconds(10),
                      scheduler: DispatchQueue.main,
                      options: nil,
-                     customError: { URLError.timedOut as! any Error })
+                     customError: { SmileIDError.jobStatusTimeOut })
 
         return publisher.eraseToAnyPublisher()
     }
