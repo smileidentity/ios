@@ -36,7 +36,6 @@ class MockSmileIdentityService: SmileIdentityServiceable {
         }
     }
 
-
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error> {
         let params = PartnerParams(jobId: "jobid",
                                    userId: "userid",
@@ -96,4 +95,3 @@ class MockResultDelegate: SmartSelfieResultDelegate {
 class MockHelper {
     static var shouldFail = false
 }
-
