@@ -38,9 +38,12 @@ public struct ApiVersion: Codable {
 
 public struct VersionNames: Codable {
     // TO-DO: Dynamically fetch SDK version from Package.swift
-    var version = "3.0.0"
+    public var version = "10.0.0"
     var sdkType = "IOS"
     var sdkBuild = "1"
+
+
+    public init() {}
 
     enum CodingKeys: String, CodingKey {
         case version = "sid_sdk_version"

@@ -6,6 +6,9 @@ public class SmileIdentity {
     public static var api: SmileIdentityServiceable {
         return SmileIdentity.instance.injectedApi
     }
+    public static var configuration: Config {
+        return config
+    }
     internal static let instance: SmileIdentity = {
         let container = DependencyContainer.shared
         container.register(SmileIdentityServiceable.self) {SmileIdentityService.init()}
