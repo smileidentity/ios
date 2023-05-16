@@ -12,8 +12,8 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     @IBOutlet var versionLabel: CopyableLabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        let partnerID = try? Config(url: Constant.configUrl).partnerId
-        versionLabel.text = "Partner \(partnerID ?? "")"
+        let partnerID = SmileIdentity.configuration.partnerId
+        versionLabel.text = "Partner \(partnerID) - Version \(VersionNames().version)"
     }
 
     @IBAction func onSmartSelfieRegistrationTap(_ sender: Any) {
