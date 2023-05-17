@@ -59,6 +59,9 @@ public class SmileIDResourcesHelper {
     public static var InstructionsHeaderIcon = SmileIDResourcesHelper.image("InstructionsHeaderIcon")!
     public static var Light = SmileIDResourcesHelper.image("Light")!
     public static var SmileEmblem = SmileIDResourcesHelper.image("SmileEmblem")!
+    public static var FaceOutline = SmileIDResourcesHelper.image("FaceOutline")!
+    public static var Scan = SmileIDResourcesHelper.image("Scan")!
+    public static var CheckBold = SmileIDResourcesHelper.image("CheckBold")!
 
     /// Size of font.
     public static let pointSize: CGFloat = 16
