@@ -29,10 +29,10 @@ struct SelfieConfirmationView: View {
                             clicked: {})
                 SmileButton(style: .secondary,
                             title: "Confirmation.Retake",
-                            clicked: {presentationMode.wrappedValue.dismiss()})
-            }
+                            clicked: { presentationMode.wrappedValue.dismiss() })
+            }.padding()
         }
-        .padding()
+        .padding(.top, 64)
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 20)
@@ -52,7 +52,7 @@ struct ContentView: View {
                 Text("Show Modal")
             }
             ModalPresenter(isPresented: $showModal) {
-                SelfieConfirmationView(image: UIImage())
+                ErrorView()
             }
         }
     }
