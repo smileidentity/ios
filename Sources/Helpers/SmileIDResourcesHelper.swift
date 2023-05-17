@@ -50,7 +50,7 @@ public class SmileIDResourcesHelper {
 
     /// Get the image by the file name.
     public static func image(_ name: String) -> UIImage? {
-        return UIImage(named: name, in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
+        return UIImage(named: name, in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysOriginal)
     }
 
     /// SmileID images
