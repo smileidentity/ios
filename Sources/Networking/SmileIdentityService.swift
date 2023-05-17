@@ -5,6 +5,7 @@ public protocol SmileIdentityServiceable {
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error>
     func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error>
     func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error>
+    func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error>
 }
 
 public class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
@@ -21,5 +22,9 @@ public class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
 
     public func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error> {
         return upload(data: zip, to: url, with: .put)
+    }
+
+    public func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
+        return post(to: "job_status", with: request)
     }
 }
