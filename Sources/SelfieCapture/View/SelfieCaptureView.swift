@@ -32,6 +32,19 @@ public struct SelfieCaptureView: View {
                     }
 
                 FaceOverlayView(model: viewModel)
+                switch viewModel.processingState {
+                case .confirmation:
+                    ModalPresenter{ SelfieConfirmationView(viewModel: viewModel)}
+                case .inProgress:
+                    ModalPresenter{ ProcessingView() }
+                case .success:
+                    ModalPresenter{ SuccessView() }
+                case .error:
+                    ModalPresenter { ErrorView() }
+                case .none:
+                    Text("")
+                }
+
             }
         }.edgesIgnoringSafeArea(.all)
     }

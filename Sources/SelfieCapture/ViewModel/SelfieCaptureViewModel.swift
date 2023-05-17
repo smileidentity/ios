@@ -13,6 +13,13 @@ enum SelfieCaptureViewModelAction {
     case faceQualityObservationDetected(FaceQualityModel)
 }
 
+enum ProcessingState {
+    case confirmation
+    case inProgress
+    case success
+    case error
+}
+
 final class SelfieCaptureViewModel: ObservableObject {
     var userId: String
     var sessionId: String
@@ -32,7 +39,8 @@ final class SelfieCaptureViewModel: ObservableObject {
     private let livenessImageSize = CGSize(width: 256, height: 256)
     private let selfieImageSize = CGSize(width: 320, height: 320)
     private var currentBuffer: CVPixelBuffer?
-    private var selfieImage: Data? {
+    private var files = [URL]()
+    var selfieImage: Data? {
         didSet {
             updateProgress()
         }
@@ -47,6 +55,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     weak var captureResultDelegate: SmartSelfieResultDelegate?
 
     @Published var progress: CGFloat = 0
+    @Published var processingState: ProcessingState?
 
     @Published private(set) var hasDetectedValidFace: Bool {
         didSet {
@@ -163,21 +172,31 @@ final class SelfieCaptureViewModel: ObservableObject {
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
             do {
-                let fileUrls = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
+                files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
                                                                       previewImage: selfieImage,
                                                                       to: sessionId)
-                let zipUrl = try LocalStorage.zipFiles(at: fileUrls)
-                let zipData = try Data(contentsOf: zipUrl)
-                submit(zip: zipData)
+                processingState = .confirmation
             } catch {
                 DispatchQueue.main.async { [self] in
                     captureResultDelegate?.didError(error: error)
+                    processingState = .error
                 }
             }
         }
     }
 
-    func submit(zip: Data) {
+    func submit() {
+        var zip: Data
+
+        do {
+            let zipUrl = try LocalStorage.zipFiles(at: files)
+            zip = try Data(contentsOf: zipUrl)
+        } catch {
+            captureResultDelegate?.didError(error: error)
+            processingState = .error
+            return
+        }
+
         let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
         let authRequest = AuthenticationRequest(jobType: jobType, enrollment: isEnroll, userId: userId)
 
@@ -203,6 +222,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
                         self?.captureResultDelegate?.didError(error: error)
+                        self?.processingState = .error
                     }
                 default:
                     break
@@ -217,6 +237,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     func resetCapture() {
         livenessImages = []
         selfieImage = nil
+        try? LocalStorage.delete(at: files)
     }
 
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
@@ -257,6 +278,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
                                               livenessImages: livenessImages,
                                               jobStatusResponse: response)
+        processingState = .success
     }
 
     func saveLivenessImage(data: Data) {
@@ -340,10 +362,10 @@ extension SelfieCaptureViewModel {
         } else {
             if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
                 isAcceptableBounds = .detectedFaceOffCentre
-                resetCapture()
+                //resetCapture()
             } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 170 {
                 isAcceptableBounds = .detectedFaceOffCentre
-                resetCapture()
+                //resetCapture()
             } else {
                 isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
             }
