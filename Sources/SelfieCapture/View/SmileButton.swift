@@ -5,6 +5,7 @@ struct SmileButton: View {
     enum Style {
         case primary
         case secondary
+        case destructive
     }
 
     var title: LocalizedStringKey
@@ -38,6 +39,10 @@ struct SmileButton: View {
             titleColor = SmileIdentity.theme.accent
             borderColor = SmileIdentity.theme.accent
             cornerRadius = 15
+        case .destructive:
+            titleColor = SmileIdentity.theme.error.opacity(0.8)
+            backgroundColor = .clear
+            borderColor = .clear
         }
     }
 

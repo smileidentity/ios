@@ -31,3 +31,7 @@
 "Confirmation.SelfieCaptureComplete" = "Selfie Capture Complete";
 "Confirmation.SuccessBody" = "Your selfie was successfully taken. \n You can now proceed.";
 "Confirmation.Continue" = "Continue";
+"Confirmation.Failure" = "Your selfie failed to process";
+"Confirmation.FaulireReason" = "This could be because of image quality \n or internet connectivity.";
+"Confirmation.Retry" = "Retry";
+"Confirmation.Close" = "Close";
