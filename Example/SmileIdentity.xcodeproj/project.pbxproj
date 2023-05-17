@@ -8,12 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
-		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		910D2996296CDE60007FB709 /* SmileIdentity in Frameworks */ = {isa = PBXBuildFile; productRef = 910D2995296CDE60007FB709 /* SmileIdentity */; };
 		910F88E429A3EECA00FA5300 /* smile_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 910F88E329A3EECA00FA5300 /* smile_config.json */; };
+		917F3BFC2A0BC6DF00BCC30E /* UserIDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917F3BFB2A0BC6DF00BCC30E /* UserIDViewController.swift */; };
+		91EF4D642A0BB3CD00C5931E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF4D622A0BB3CD00C5931E /* Constants.swift */; };
+		91EF4D652A0BB3CD00C5931E /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF4D632A0BB3CD00C5931E /* CopyableLabel.swift */; };
+		91EF4D672A0BB3EF00C5931E /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF4D662A0BB3EF00C5931E /* HomeViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,12 +24,15 @@
 		607FACD01AFB9204008FA782 /* SmileID Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SmileID Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		607FACD71AFB9204008FA782 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		910D2993296CDBDB007FB709 /* SmileIdentity */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SmileIdentity; path = ..; sourceTree = "<group>"; };
 		910F88E329A3EECA00FA5300 /* smile_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = smile_config.json; sourceTree = "<group>"; };
+		917F3BFB2A0BC6DF00BCC30E /* UserIDViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserIDViewController.swift; sourceTree = "<group>"; };
+		91EF4D622A0BB3CD00C5931E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		91EF4D632A0BB3CD00C5931E /* CopyableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
+		91EF4D662A0BB3EF00C5931E /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		B59EF594597AD55380C5A36C /* SmileIdentity.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SmileIdentity.podspec; path = ../SmileIdentity.podspec; sourceTree = "<group>"; };
 		BCABDD9E8D9C375D235C9E81 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -65,8 +71,11 @@
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
+				91EF4D662A0BB3EF00C5931E /* HomeViewController.swift */,
+				91EF4D622A0BB3CD00C5931E /* Constants.swift */,
+				917F3BFB2A0BC6DF00BCC30E /* UserIDViewController.swift */,
+				91EF4D632A0BB3CD00C5931E /* CopyableLabel.swift */,
 				910F88E329A3EECA00FA5300 /* smile_config.json */,
-				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -188,7 +197,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				91EF4D672A0BB3EF00C5931E /* HomeViewController.swift in Sources */,
+				91EF4D642A0BB3CD00C5931E /* Constants.swift in Sources */,
+				91EF4D652A0BB3CD00C5931E /* CopyableLabel.swift in Sources */,
+				917F3BFC2A0BC6DF00BCC30E /* UserIDViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

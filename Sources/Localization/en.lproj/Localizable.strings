@@ -21,3 +21,4 @@
 "Instructions.Capturing" = "Capturing…";
 "Instructions.Start" = "Put your face inside the oval frame and wait until it turns green";
 "Instructions.Unstable" = "Put your face inside the oval frame and wait until it turns green";
+"Error.JobStatusTimeOut" = "Job status timed out";

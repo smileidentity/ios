@@ -1,8 +1,8 @@
-// swiftlint:disable force_cast
 import UIKit
 import SmileIdentity
 
 @UIApplicationMain
+
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
@@ -10,9 +10,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions
                      launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let configUrl = Bundle.main.url(forResource: "smile_config", withExtension: "json")
         do {
-            let config = try Config(url: configUrl!)
+            let config = try Config(url: Constant.configUrl)
             SmileIdentity.initialize(config: config)
         } catch {
             print(error.localizedDescription)
@@ -20,4 +19,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 }
-// swiftlint:enable force_cast

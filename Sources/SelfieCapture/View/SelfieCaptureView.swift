@@ -51,6 +51,6 @@ struct SelfieCaptureView_Previews: PreviewProvider {
 }
 
 class DummyDelegate: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: Data, livenessImages: [Data]) {}
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {}
     func didError(error: Error) {}
 }

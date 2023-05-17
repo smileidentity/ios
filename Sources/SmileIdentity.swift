@@ -6,6 +6,9 @@ public class SmileIdentity {
     public static var api: SmileIdentityServiceable {
         return SmileIdentity.instance.injectedApi
     }
+    public static var configuration: Config {
+        return config
+    }
     internal static let instance: SmileIdentity = {
         let container = DependencyContainer.shared
         container.register(SmileIdentityServiceable.self) {SmileIdentityService.init()}
@@ -38,10 +41,14 @@ public class SmileIdentity {
     }
 
     public class func smartSelfieAuthenticationScreen(userId: String,
-                                                     sessionId: String = "SID_ Session",
-                                                     delegate: SmartSelfieResultDelegate)
+                                                      sessionId: String = "SID_ Session",
+                                                      delegate: SmartSelfieResultDelegate)
     -> SmartSelfieInstructionsView {
         let viewModel = SelfieCaptureViewModel(userId: userId, sessionId: sessionId, isEnroll: false)
         return SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
+    }
+
+    public class func setEnvironment(useSandbox: Bool) {
+        SmileIdentity.useSandbox = useSandbox
     }
 }

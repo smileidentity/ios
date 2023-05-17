@@ -22,6 +22,19 @@ class MockURLSessionPublisher: URLSessionPublisher {
 }
 
 class MockSmileIdentityService: SmileIdentityServiceable {
+    func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
+        let response = JobStatusResponse(timestamp: "timestamp",
+                                         jobComplete: true,
+                                         jobSuccess: true,
+                                         code: "2322")
+        if MockHelper.shouldFail {
+            return Fail(error: APIError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
 
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error> {
         let params = PartnerParams(jobId: "jobid",
@@ -70,7 +83,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     var successExpectation: XCTestExpectation?
     var failureExpection: XCTestExpectation?
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data]) {
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
         successExpectation?.fulfill()
     }
 

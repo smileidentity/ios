@@ -109,7 +109,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
         mockResult.successExpectation = expectation
         viewModel.captureResultDelegate = mockResult
         viewModel.submit(zip: Data())
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 3)
     }
 
     func testSubmitFunctionPublishesErrorOnFailure() {
