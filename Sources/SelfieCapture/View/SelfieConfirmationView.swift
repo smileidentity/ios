@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SelfieConfirmationView: View {
     @Environment(\.presentationMode) var presentationMode
-    var image: UIImage
+    @ObservedObject var viewModel: SelfieCaptureViewModel
     var body: some View {
         VStack(spacing: 32) {
             VStack(spacing: 16) {
@@ -18,7 +18,7 @@ struct SelfieConfirmationView: View {
                     .lineSpacing(1.3)
             }
             VStack {
-                Image(uiImage: image)
+                Image(uiImage: UIImage(data: viewModel.selfieImage ?? Data()) ?? UIImage())
                     .cornerRadius(16)
                     .clipped()
             }
@@ -26,10 +26,16 @@ struct SelfieConfirmationView: View {
             VStack {
                 SmileButton(style: .secondary,
                             title: "Confirmation.YesUse",
-                            clicked: {})
+                            clicked: {
+                    viewModel.processingState = .inProgress
+                    viewModel.submit()
+
+                })
                 SmileButton(style: .secondary,
                             title: "Confirmation.Retake",
-                            clicked: { presentationMode.wrappedValue.dismiss() })
+                            clicked: { viewModel.processingState = nil
+                                        viewModel.resetCapture()
+                })
             }.padding()
         }
         .padding(.top, 64)
