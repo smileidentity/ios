@@ -4,7 +4,7 @@ struct SelfieConfirmationView: View {
     @Environment(\.presentationMode) var presentationMode
     var image: UIImage
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 32) {
             VStack(spacing: 16) {
                 Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.GoodSelfie"))
                     .multilineTextAlignment(.center)
@@ -19,6 +19,8 @@ struct SelfieConfirmationView: View {
             }
             VStack {
                 Image(uiImage: image)
+                    .cornerRadius(16)
+                    .clipped()
             }
 
             VStack {
