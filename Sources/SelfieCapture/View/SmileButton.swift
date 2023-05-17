@@ -48,15 +48,15 @@ struct SmileButton: View {
                     .padding(14)
                     .font(SmileIdentity.theme.button)
                     .frame(maxWidth: .infinity)
-        }
-        .foregroundColor(titleColor)
-                .background(backgroundColor)
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(borderColor, lineWidth: 4)
-                )
-                .cornerRadius(cornerRadius)
-                .frame(maxWidth: .infinity)
+            }
+            .foregroundColor(titleColor)
+            .background(backgroundColor)
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(borderColor, lineWidth: 4)
+            )
+            .cornerRadius(cornerRadius)
+            .frame(maxWidth: .infinity)
         }
     }
 }
@@ -66,6 +66,6 @@ struct SmileButton_Previews: PreviewProvider {
         SmileButton(title: "Instructions.Action",
                     backgroundColor: .blue,
                     clicked: {})
-            .environment(\.locale, Locale(identifier: "en"))
+        .environment(\.locale, Locale(identifier: "en"))
     }
 }

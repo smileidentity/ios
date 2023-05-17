@@ -72,7 +72,7 @@ public extension SmileIdTheme {
     }
 
     var header2: Font {
-        return button
+        EpilogueFont.bold(with: 20)
     }
 
     var header4: Font {
@@ -84,7 +84,7 @@ public extension SmileIdTheme {
     }
 
     var button: Font {
-        EpilogueFont.bold(with: 20)
+       return header4
     }
 
     var body: Font {
