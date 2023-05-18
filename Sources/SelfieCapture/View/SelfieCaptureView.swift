@@ -3,18 +3,22 @@ import Combine
 
 public struct SelfieCaptureView: View {
     @ObservedObject private var viewModel: SelfieCaptureViewModel
-    let camera = CameraView()
+    let camera: CameraView
     private weak var delegate: SmartSelfieResultDelegate?
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
         self.viewModel = viewModel
         self.delegate = delegate
+        self.camera = CameraView(frameManager: viewModel.frameManager,
+                                 cameraManager: viewModel.cameraManager)
     }
 
     // NB
     // TODO:only used for previews to remove lint issues
     fileprivate init(viewModel: SelfieCaptureViewModel) {
         self.viewModel = viewModel
+        self.camera = CameraView(frameManager: viewModel.frameManager,
+                                 cameraManager: viewModel.cameraManager)
     }
 
     public var body: some View {

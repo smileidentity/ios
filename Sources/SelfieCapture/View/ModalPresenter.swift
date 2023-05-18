@@ -25,8 +25,7 @@ struct ModalPresenter<ModalContent: View>: View {
                     modalContent
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 20)
-                .transition(AnyTransition.opacity.combined(with: .move(edge: .bottom)))
+                .padding(.bottom, 50)
             }
         }
     }

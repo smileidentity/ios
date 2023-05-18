@@ -11,8 +11,6 @@ class CameraManager: ObservableObject {
         case failed
     }
 
-    static let shared = CameraManager()
-
     @Published var error: CameraError?
     @Environment(\.isPreview) var isPreview
 
@@ -22,7 +20,7 @@ class CameraManager: ObservableObject {
     private let videoOutput = AVCaptureVideoDataOutput()
     private var status = Status.unconfigured
 
-    private init() {
+    init() {
         guard !isPreview else { return }
         configure()
     }

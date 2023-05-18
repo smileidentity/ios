@@ -32,7 +32,8 @@ final class SelfieCaptureViewModel: ObservableObject {
             faceDetector.viewDelegate = viewDelegate
         }
     }
-    private var frameManager = FrameManager.shared
+    let cameraManager = CameraManager()
+    let frameManager: FrameManager
     private var faceDetector = FaceDetector()
     private var subscribers = Set<AnyCancellable>()
     private let numberOfLivenessImages = 7
@@ -110,6 +111,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         hasDetectedValidFace = false
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
+        frameManager = FrameManager(cameraManager: cameraManager)
         self.showAttribution = showAttribution
         faceDetector.model = self
         setupSubscriptions()
