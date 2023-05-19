@@ -72,7 +72,7 @@ public struct SmartSelfieInstructionsView: View {
                 Image(uiImage: SmileIDResourcesHelper.Close)
                     .padding()
             })
-        }
+        }.colorScheme(.light)
     }
 
     func makeInstruction(title: LocalizedStringKey, body: LocalizedStringKey, image: String) -> some View {

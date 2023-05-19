@@ -67,6 +67,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
             case .smartSelfieAuthentication:
                 self.presentAlert(title: "Smart Selfie Authentication Complete",
                                   message: "The user has been authenticated succesfully")
+                self.navigationController?.popViewController(animated: true)
             default:
                 break
             }
