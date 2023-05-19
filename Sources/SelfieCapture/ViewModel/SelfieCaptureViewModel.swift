@@ -36,7 +36,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     let frameManager: FrameManager
     private var faceDetector = FaceDetector()
     private var subscribers = Set<AnyCancellable>()
-    private var facedetectionSubscribers = Set<AnyCancellable>()
+    private var facedetectionSubscribers: AnyCancellable?
     private let numberOfLivenessImages = 7
     private let livenessImageSize = CGSize(width: 256, height: 256)
     private let selfieImageSize = CGSize(width: 320, height: 320)
@@ -61,9 +61,9 @@ final class SelfieCaptureViewModel: ObservableObject {
         didSet {
             switch processingState {
             case .none:
-                setupSubscriptions()
+                setupFaceDetectionSubscriptions()
             case .some:
-                facedetectionSubscribers.removeAll()
+                pauseFaceDetection()
             }
         }
     }
@@ -124,18 +124,22 @@ final class SelfieCaptureViewModel: ObservableObject {
         frameManager = FrameManager(cameraManager: cameraManager)
         self.showAttribution = showAttribution
         faceDetector.model = self
-        setupSubscriptions()
+        setupFaceDetectionSubscriptions()
     }
 
-    private func setupSubscriptions() {
-        frameManager.$sampleBuffer
+    private func setupFaceDetectionSubscriptions() {
+        facedetectionSubscribers = frameManager.$sampleBuffer
             .receive(on: DispatchQueue.global())
             .compactMap { return $0 }
             .sink {
                 self.faceDetector.detect(pixelBuffer: $0)
                 self.currentBuffer = $0
             }
-            .store(in: &facedetectionSubscribers)
+    }
+
+    private func pauseFaceDetection() {
+        facedetectionSubscribers?.cancel() // 3
+        facedetectionSubscribers = nil
     }
 
     func perform(action: SelfieCaptureViewModelAction) {
