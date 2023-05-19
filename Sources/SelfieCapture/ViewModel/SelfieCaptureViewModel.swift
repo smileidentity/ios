@@ -16,8 +16,8 @@ enum SelfieCaptureViewModelAction {
 enum ProcessingState {
     case confirmation
     case inProgress
-    case success
-    case error
+    case success(JobStatusResponse)
+    case error(Error)
 }
 
 final class SelfieCaptureViewModel: ObservableObject {
@@ -55,8 +55,8 @@ final class SelfieCaptureViewModel: ObservableObject {
     private var interCaptureDelay = 350
     weak var captureResultDelegate: SmartSelfieResultDelegate?
 
-    @Published var progress: CGFloat = 0
-    @Published var processingState: ProcessingState?
+    @Published private(set) var progress: CGFloat = 0
+    @Published private(set) var processingState: ProcessingState?
 
     @Published private(set) var hasDetectedValidFace: Bool {
         didSet {
@@ -180,27 +180,28 @@ final class SelfieCaptureViewModel: ObservableObject {
                 processingState = .confirmation
             } catch {
                 DispatchQueue.main.async { [self] in
-                    captureResultDelegate?.didError(error: error)
-                    processingState = .error
+                    processingState = .error(error)
                 }
             }
         }
     }
 
     func submit() {
+        processingState = .inProgress
         var zip: Data
 
         do {
             let zipUrl = try LocalStorage.zipFiles(at: files)
             zip = try Data(contentsOf: zipUrl)
         } catch {
-            captureResultDelegate?.didError(error: error)
-            processingState = .error
+            processingState = .error(error)
             return
         }
 
         let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
-        let authRequest = AuthenticationRequest(jobType: jobType, enrollment: isEnroll, userId: userId)
+        let authRequest = AuthenticationRequest(jobType: jobType,
+                                                enrollment: isEnroll,
+                                                userId: userId)
 
         SmileIdentity.api.authenticate(request: authRequest)
             .flatMap { authResponse in
@@ -223,15 +224,14 @@ final class SelfieCaptureViewModel: ObservableObject {
                 switch completion {
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
-                        self?.captureResultDelegate?.didError(error: error)
-                        self?.processingState = .error
+                        self?.processingState = .error(error)
                     }
                 default:
                     break
                 }
             }, receiveValue: { [weak self] response in
                 DispatchQueue.main.async {
-                    self?.handleUploadResponse(response)
+                    self?.processingState = .success(response)
                 }
             }).store(in: &subscribers)
     }
@@ -240,6 +240,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         livenessImages = []
         selfieImage = nil
         try? LocalStorage.delete(at: files)
+        processingState = nil
     }
 
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
@@ -276,11 +277,24 @@ final class SelfieCaptureViewModel: ObservableObject {
         return publisher.eraseToAnyPublisher()
     }
 
-    private func handleUploadResponse(_ response: JobStatusResponse) {
+    func handleSuccess() {
+        switch processingState {
+        case .success(let response):
             captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
                                               livenessImages: livenessImages,
                                               jobStatusResponse: response)
-        processingState = .success
+        default:
+            break
+        }
+    }
+
+    func handleRetry() {
+        processingState = .inProgress
+        submit()
+    }
+
+    private func handleUploadResponse(_ response: JobStatusResponse) {
+        processingState = .success(response)
     }
 
     func saveLivenessImage(data: Data) {
@@ -364,10 +378,10 @@ extension SelfieCaptureViewModel {
         } else {
             if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
                 isAcceptableBounds = .detectedFaceOffCentre
-                //resetCapture()
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 170 {
+                resetCapture()
+            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 210 {
                 isAcceptableBounds = .detectedFaceOffCentre
-                //resetCapture()
+                resetCapture()
             } else {
                 isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
             }
