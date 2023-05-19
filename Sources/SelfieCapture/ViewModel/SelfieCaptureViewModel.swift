@@ -36,6 +36,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     let frameManager: FrameManager
     private var faceDetector = FaceDetector()
     private var subscribers = Set<AnyCancellable>()
+    private var facedetectionSubscribers = Set<AnyCancellable>()
     private let numberOfLivenessImages = 7
     private let livenessImageSize = CGSize(width: 256, height: 256)
     private let selfieImageSize = CGSize(width: 320, height: 320)
@@ -56,7 +57,16 @@ final class SelfieCaptureViewModel: ObservableObject {
     weak var captureResultDelegate: SmartSelfieResultDelegate?
 
     @Published private(set) var progress: CGFloat = 0
-    @Published private(set) var processingState: ProcessingState?
+    @Published private(set) var processingState: ProcessingState? {
+        didSet {
+            switch processingState {
+            case .none:
+                setupSubscriptions()
+            case .some:
+                facedetectionSubscribers.removeAll()
+            }
+        }
+    }
 
     @Published private(set) var hasDetectedValidFace: Bool {
         didSet {
@@ -125,7 +135,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                 self.faceDetector.detect(pixelBuffer: $0)
                 self.currentBuffer = $0
             }
-            .store(in: &subscribers)
+            .store(in: &facedetectionSubscribers)
     }
 
     func perform(action: SelfieCaptureViewModelAction) {
