@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 
 public struct SelfieCaptureView: View {
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var viewModel: SelfieCaptureViewModel
     let camera: CameraView
     private weak var delegate: SmartSelfieResultDelegate?
@@ -42,15 +43,24 @@ public struct SelfieCaptureView: View {
                 case .inProgress:
                     ModalPresenter{ ProcessingView() }
                 case .success:
-                    ModalPresenter{ SuccessView() }
+                    ModalPresenter{ SuccessView(viewModel: viewModel) }
                 case .error:
-                    ModalPresenter { ErrorView() }
+                    ModalPresenter { ErrorView(viewModel: viewModel) }
                 case .none:
                     Text("")
                 }
 
             }
-        }.edgesIgnoringSafeArea(.all)
+        }
+        .edgesIgnoringSafeArea(.all)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: Button {
+            presentationMode.wrappedValue.dismiss()
+            viewModel.resetCapture()
+        } label: {
+            Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
+                .padding()
+        })
     }
 
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {
