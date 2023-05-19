@@ -2,12 +2,15 @@ import SwiftUI
 
 struct InstructionsView: View {
     @ObservedObject private(set) var model: SelfieCaptureViewModel
+
     var body: some View {
         Text(SmileIDResourcesHelper.localizedString(for: faceDetectionState().stringKey))
             .multilineTextAlignment(.center)
             .foregroundColor(SmileIdentity.theme.accent)
             .font(SmileIdentity.theme.header4)
             .frame(maxWidth: 300)
+            .transition(.slide)
+            .animation(.default)
     }
 }
 
@@ -23,10 +26,7 @@ extension InstructionsView {
         case .faceDetected:
             if model.hasDetectedValidFace {
                 return "Instructions.Capturing"
-            } else if !model.isAcceptableRoll
-                        || !model.isAcceptableYaw
-                        || model.isAcceptableBounds == .detectedFaceOffCentre
-                        || !model.isAcceptableQuality {
+            } else if model.isAcceptableBounds == .detectedFaceOffCentre {
                 return "Instructions.UnableToDetectFace"
             } else if model.isAcceptableBounds == .detectedFaceTooSmall {
                 return "Instructions.FaceFar"

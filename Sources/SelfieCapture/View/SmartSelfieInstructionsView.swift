@@ -65,7 +65,8 @@ public struct SmartSelfieInstructionsView: View {
                                     leading: 24,
                                     bottom: 0,
                                     trailing: 24))
-            }.navigationBarItems(leading: Button {
+            }
+            .navigationBarItems(leading: Button {
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 Image(uiImage: SmileIDResourcesHelper.Close)

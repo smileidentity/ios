@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SuccessView: View {
+    @ObservedObject var viewModel: SelfieCaptureViewModel
+
     var body: some View {
 
         VStack(spacing: 20) {
@@ -21,7 +23,9 @@ struct SuccessView: View {
             .frame(maxWidth: .infinity)
             SmileButton(style: .primary,
                         title: "Confirmation.Continue",
-                        clicked: {})
+                        clicked: {
+                viewModel.handleSuccess()
+            })
         }
         .padding()
         .background(Color.white)
@@ -32,6 +36,9 @@ struct SuccessView: View {
 
 struct SuccessView_Previews: PreviewProvider {
     static var previews: some View {
-        SuccessView()
+        let viewModel = SelfieCaptureViewModel(userId: "",
+                                               sessionId: "",
+                                               isEnroll: true)
+        SuccessView(viewModel: viewModel)
     }
 }

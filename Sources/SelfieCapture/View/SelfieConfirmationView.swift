@@ -27,13 +27,11 @@ struct SelfieConfirmationView: View {
                 SmileButton(style: .secondary,
                             title: "Confirmation.YesUse",
                             clicked: {
-                    viewModel.processingState = .inProgress
                     viewModel.submit()
-
                 })
                 SmileButton(style: .secondary,
                             title: "Confirmation.Retake",
-                            clicked: { viewModel.processingState = nil
+                            clicked: {
                                         viewModel.resetCapture()
                 })
             }.padding()
@@ -42,30 +40,5 @@ struct SelfieConfirmationView: View {
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 20)
-    }
-}
-
-struct ContentView: View {
-    @State private var showModal = false
-
-    var body: some View {
-        ZStack {
-            Button(action: {
-                withAnimation {
-                    showModal.toggle()
-                }
-            }) {
-                Text("Show Modal")
-            }
-            ModalPresenter(isPresented: $showModal) {
-                ErrorView()
-            }
-        }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
     }
 }

@@ -1,5 +1,6 @@
 import SwiftUI
 struct ErrorView: View {
+    @ObservedObject var viewModel: SelfieCaptureViewModel
     var body: some View {
 
         VStack(spacing: 20) {
@@ -21,10 +22,14 @@ struct ErrorView: View {
             VStack(spacing: 5) {
                 SmileButton(style: .primary,
                             title: "Confirmation.Retry",
-                            clicked: {})
+                            clicked: {
+                    viewModel.handleRetry()
+                })
                 SmileButton(style: .destructive,
                             title: "Confirmation.Close",
-                            clicked: {})
+                            clicked: {
+                    viewModel.resetCapture()
+                })
             }
 
         }
@@ -35,8 +40,8 @@ struct ErrorView: View {
     }
 }
 
-struct ErrorView_Previews: PreviewProvider {
-    static var previews: some View {
-        ErrorView()
-    }
-}
+//struct ErrorView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ErrorView()
+//    }
+//}
