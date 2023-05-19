@@ -16,6 +16,16 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
         versionLabel.text = "Partner \(partnerID) - Version \(VersionNames().version)"
     }
 
+    @IBAction func onEnvironmentToggle(_ sender: UIBarButtonItem) {
+        if sender.title!.lowercased() == "sandbox" {
+            SmileIdentity.setEnvironment(useSandbox: false)
+            sender.title = "Production"
+        } else {
+            SmileIdentity.setEnvironment(useSandbox: true)
+            sender.title = "Sandbox"
+        }
+    }
+
     @IBAction func onSmartSelfieRegistrationTap(_ sender: Any) {
         userID = UUID().uuidString
         currentJob = .smartSelfieEnrollment
