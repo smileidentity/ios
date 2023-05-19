@@ -104,7 +104,14 @@
                             <constraint firstItem="zn5-2z-Icb" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="q8a-ma-Eez"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Products" id="N1F-9A-aPb"/>
+                    <navigationItem key="navigationItem" title="Products" id="N1F-9A-aPb">
+                        <barButtonItem key="rightBarButtonItem" title="Sandbox" id="IWd-v9-gbT">
+                            <color key="tintColor" systemColor="systemBrownColor"/>
+                            <connections>
+                                <action selector="onEnvironmentToggle:" destination="vXZ-lx-hvc" id="hJY-Yy-dKK"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="versionLabel" destination="Bmf-Jf-x4A" id="dDu-nm-kjJ"/>
                     </connections>
@@ -207,6 +214,9 @@
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBrownColor">
+            <color red="0.63529411764705879" green="0.51764705882352946" blue="0.36862745098039218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
