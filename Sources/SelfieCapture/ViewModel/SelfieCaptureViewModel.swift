@@ -62,6 +62,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             switch processingState {
             case .none:
                 setupFaceDetectionSubscriptions()
+                cameraManager.resumeSession()
             case .some:
                 pauseFaceDetection()
             }
@@ -140,6 +141,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     private func pauseFaceDetection() {
         facedetectionSubscribers?.cancel() // 3
         facedetectionSubscribers = nil
+        cameraManager.pauseSession()
     }
 
     func perform(action: SelfieCaptureViewModelAction) {

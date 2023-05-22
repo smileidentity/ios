@@ -12,7 +12,7 @@ struct ModalPresenter<ModalContent: View>: View {
     var body: some View {
         ZStack {
             if isPresented {
-                Color.black.opacity(0.65)
+                Color.white
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {
                         withAnimation {
