@@ -28,7 +28,7 @@ struct SuccessView: View {
             })
         }
         .padding()
-        .background(Color.white)
+        .background(SmileIdentity.theme.backgroundMain)
         .cornerRadius(20)
         .shadow(radius: 20)
     }

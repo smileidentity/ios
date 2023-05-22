@@ -12,7 +12,7 @@ struct InfiniteProgressBar: View {
 
     var body: some View {
         RoundedRectangle(cornerRadius: 2)
-            .foregroundColor(SmileIdentity.theme.tertiary)
+            .foregroundColor(SmileIdentity.theme.tertiary.opacity(0.4))
             .frame(height: height)
             .overlay(GeometryReader { geo in
                 overlayRect(in: geo.frame(in: .global))

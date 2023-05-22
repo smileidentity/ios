@@ -34,14 +34,8 @@ struct ErrorView: View {
 
         }
         .padding()
-        .background(Color.white)
+        .background(SmileIdentity.theme.backgroundMain)
         .cornerRadius(20)
         .shadow(radius: 20)
     }
 }
-
-//struct ErrorView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ErrorView()
-//    }
-//}

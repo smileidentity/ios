@@ -61,6 +61,7 @@ public struct SelfieCaptureView: View {
             Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
                 .padding()
         })
+        .background(SmileIdentity.theme.backgroundMain)
     }
 
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {
