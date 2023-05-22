@@ -72,7 +72,8 @@ public struct SmartSelfieInstructionsView: View {
                 Image(uiImage: SmileIDResourcesHelper.Close)
                     .padding()
             })
-        }.colorScheme(.light)
+            .background(SmileIdentity.theme.backgroundMain.edgesIgnoringSafeArea(.all))
+        }
     }
 
     func makeInstruction(title: LocalizedStringKey, body: LocalizedStringKey, image: String) -> some View {

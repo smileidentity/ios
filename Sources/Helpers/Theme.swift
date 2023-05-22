@@ -38,7 +38,7 @@ public extension SmileIdTheme {
     }
 
     var backgroundMain: Color {
-        Color(hex: "#DBDBC4")
+        Color(hex: "#FFFFFF")
     }
 
     var backgroundLightest: Color {
@@ -63,7 +63,7 @@ public extension SmileIdTheme {
     }
 
     var tertiary: Color {
-        Color(hex: "#9394AB")
+        Color(hex: "#2D2B2A)")
     }
 
     // TO-DO: Rename fonts when Kwame comes up with a naming convention
