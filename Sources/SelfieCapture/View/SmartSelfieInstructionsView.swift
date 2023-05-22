@@ -17,61 +17,67 @@ public struct SmartSelfieInstructionsView: View {
     }
     public var body: some View {
         NavigationView {
-            ScrollView {
-                VStack {
-                    Image(uiImage: SmileIDResourcesHelper.InstructionsHeaderIcon)
-                        .padding(.bottom, 27)
-                    VStack(spacing: 32) {
-                        Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Header"))
-                            .multilineTextAlignment(.center)
-                            .font(SmileIdentity.theme.header1)
-                            .foregroundColor(SmileIdentity.theme.accent)
-                            .lineSpacing(0.98)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Callout"))
-                            .multilineTextAlignment(.center)
-                            .font(SmileIdentity.theme.header5)
-                            .foregroundColor(SmileIdentity.theme.tertiary)
-                            .lineSpacing(1.3)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .padding(.bottom, 20)
-                    VStack(alignment: .leading, spacing: 30) {
-                        makeInstruction(title: "Instructions.GoodLight",
-                                        body: "Instructions.GoodLightBody",
-                                        image: Constants.ImageName.light)
-                        makeInstruction(title: "Instructions.ClearImage",
-                                        body: "Instructions.ClearImageBody",
-                                        image: Constants.ImageName.clearImage)
-                        makeInstruction(title: "Instructions.RemoveObstructions",
-                                        body: "Instructions.RemoveObstructionsBody",
-                                        image: Constants.ImageName.face)
-                    }
-                    VStack(spacing: 18) {
-
-                        NavigationLink(destination: SelfieCaptureView(viewModel: viewModel,
-                                                                      delegate: selfieCaptureDelegate ??
-                                                                      DummyDelegate()),
-                                       isActive: $goesToDetail) { SmileButton(title: "Instructions.Action",
-                                                                              clicked: {
-                                           goesToDetail = true
-                                       })}
-                        if viewModel.showAttribution {
-                            Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+            VStack {
+                ScrollView {
+                    VStack {
+                        Image(uiImage: SmileIDResourcesHelper.InstructionsHeaderIcon)
+                            .padding(.bottom, 27)
+                        VStack(spacing: 32) {
+                            Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Header"))
+                                .multilineTextAlignment(.center)
+                                .font(SmileIdentity.theme.header1)
+                                .foregroundColor(SmileIdentity.theme.accent)
+                                .lineSpacing(0.98)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Callout"))
+                                .multilineTextAlignment(.center)
+                                .font(SmileIdentity.theme.header5)
+                                .foregroundColor(SmileIdentity.theme.tertiary)
+                                .lineSpacing(1.3)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
-                    }.padding(.top, 80)
+                        .padding(.bottom, 20)
+                        VStack(alignment: .leading, spacing: 30) {
+                            makeInstruction(title: "Instructions.GoodLight",
+                                            body: "Instructions.GoodLightBody",
+                                            image: Constants.ImageName.light)
+                            makeInstruction(title: "Instructions.ClearImage",
+                                            body: "Instructions.ClearImageBody",
+                                            image: Constants.ImageName.clearImage)
+                            makeInstruction(title: "Instructions.RemoveObstructions",
+                                            body: "Instructions.RemoveObstructionsBody",
+                                            image: Constants.ImageName.face)
+                        }
+                    }
                 }
-                .padding(EdgeInsets(top: 40,
-                                    leading: 24,
-                                    bottom: 0,
-                                    trailing: 24))
+                .navigationBarItems(leading: Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Image(uiImage: SmileIDResourcesHelper.Close)
+                        .padding()
+                })
+                VStack(spacing: 18) {
+
+                    NavigationLink(destination: SelfieCaptureView(viewModel: viewModel,
+                                                                  delegate: selfieCaptureDelegate ??
+                                                                  DummyDelegate()),
+                                   isActive: $goesToDetail) { SmileButton(title: "Instructions.Action",
+                                                                          clicked: {
+                                       goesToDetail = true
+                                   })}
+
+                    // TO-DO: Enable after rebrand has been launched.
+
+                    //                        if viewModel.showAttribution {
+                    //                            Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                    //                        }
+
+                }
             }
-            .navigationBarItems(leading: Button {
-                presentationMode.wrappedValue.dismiss()
-            } label: {
-                Image(uiImage: SmileIDResourcesHelper.Close)
-                    .padding()
-            })
+            .padding(EdgeInsets(top: 0,
+                                leading: 24,
+                                bottom: 24,
+                                trailing: 24))
             .background(SmileIdentity.theme.backgroundMain.edgesIgnoringSafeArea(.all))
         }
     }
