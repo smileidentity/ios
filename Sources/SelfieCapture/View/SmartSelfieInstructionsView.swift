@@ -10,8 +10,8 @@ public struct SmartSelfieInstructionsView: View {
         self.viewModel = viewModel
         self.selfieCaptureDelegate = delegate
     }
-    
-    //Only exists for preview so not accessible out of the file
+
+    // Only exists for preview so not accessible out of the file
     fileprivate init(viewModel: SelfieCaptureViewModel) {
         self.viewModel = viewModel
     }

@@ -16,7 +16,7 @@ public class SmileIDResourcesHelper {
               Bundle.main.resourceURL,
 
               // Bundle should be present here when the package is linked into a framework.
-              Bundle(for: SmileIDResourcesHelper.self).resourceURL,
+              Bundle(for: SmileIDResourcesHelper.self).resourceURL
           ]
 
           let bundleName = "SmileIdentity_SmileIdentity"
@@ -91,7 +91,7 @@ public class SmileIDResourcesHelper {
     public static func italicSystemFont(ofSize size: CGFloat) -> UIFont {
         return UIFont.italicSystemFont(ofSize: size)
     }
-    
+
     /**
      Loads a given font if needed.
      - Parameter fontName: A String font name.
