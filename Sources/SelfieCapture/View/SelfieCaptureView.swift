@@ -39,11 +39,11 @@ public struct SelfieCaptureView: View {
                 FaceOverlayView(model: viewModel)
                 switch viewModel.processingState {
                 case .confirmation:
-                    ModalPresenter{ SelfieConfirmationView(viewModel: viewModel)}
+                    ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
                 case .inProgress:
-                    ModalPresenter{ ProcessingView() }
+                    ModalPresenter { ProcessingView() }
                 case .success:
-                    ModalPresenter{ SuccessView(viewModel: viewModel) }
+                    ModalPresenter { SuccessView(viewModel: viewModel) }
                 case .error:
                     ModalPresenter { ErrorView(viewModel: viewModel) }
                 case .none:
