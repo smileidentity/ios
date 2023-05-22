@@ -116,6 +116,19 @@ class CameraManager: ObservableObject {
         }
     }
 
+    func pauseSession() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.session.stopRunning()
+        }
+    }
+
+    func resumeSession() {
+        guard !session.isRunning else { return }
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.session.startRunning()
+        }
+    }
+
     func stopCaptureSession() {
         session.stopRunning()
 
