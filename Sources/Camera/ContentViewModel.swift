@@ -4,10 +4,11 @@ import VideoToolbox
 
 class ContentViewModel: ObservableObject {
     @Published var frame: CGImage?
-    private let frameManager = FrameManager.shared
+    private let frameManager: FrameManager
     private var subscribers = Set<AnyCancellable>()
 
-    init() {
+    init(frameManager: FrameManager) {
+        self.frameManager = frameManager
         setupSubscriptions()
     }
 

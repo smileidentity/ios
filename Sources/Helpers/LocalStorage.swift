@@ -77,6 +77,14 @@ class LocalStorage {
         }
     }
 
+    static func delete(at urls: [URL]) throws {
+        for url in urls {
+            if fileManager.fileExists(atPath: url.relativePath) {
+                try fileManager.removeItem(atPath: url.relativePath)
+            }
+        }
+    }
+
     static func deleteAll() throws {
         if fileManager.fileExists(atPath: try defaultDirectory.relativePath) {
             try fileManager.removeItem(atPath: defaultDirectory.relativePath)

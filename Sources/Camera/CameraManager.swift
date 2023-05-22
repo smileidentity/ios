@@ -11,8 +11,6 @@ class CameraManager: ObservableObject {
         case failed
     }
 
-    static let shared = CameraManager()
-
     @Published var error: CameraError?
     @Environment(\.isPreview) var isPreview
 
@@ -22,7 +20,7 @@ class CameraManager: ObservableObject {
     private let videoOutput = AVCaptureVideoDataOutput()
     private var status = Status.unconfigured
 
-    private init() {
+    init() {
         guard !isPreview else { return }
         configure()
     }
@@ -110,12 +108,23 @@ class CameraManager: ObservableObject {
         status = .configured
     }
 
-    private func configure() {
+    func configure() {
         checkPermissions()
         sessionQueue.async {
           self.configureCaptureSession()
           self.session.startRunning()
         }
+    }
+
+    func stopCaptureSession() {
+        session.stopRunning()
+
+        if let inputs = session.inputs as? [AVCaptureDeviceInput] {
+            for input in inputs {
+                session.removeInput(input)
+            }
+        }
+        status = .unconfigured
     }
 
     func set(_ delegate: AVCaptureVideoDataOutputSampleBufferDelegate,

@@ -16,6 +16,7 @@ public protocol SmileIdTheme {
     // Fonts
     var header1: Font { get }
     var header4: Font { get }
+    var header2: Font { get }
     var header5: Font { get }
     var button: Font { get }
     var body: Font { get }
@@ -37,7 +38,7 @@ public extension SmileIdTheme {
     }
 
     var backgroundMain: Color {
-        Color(hex: "#DBDBC4")
+        Color(hex: "#FFFFFF")
     }
 
     var backgroundLightest: Color {
@@ -62,12 +63,16 @@ public extension SmileIdTheme {
     }
 
     var tertiary: Color {
-        Color(hex: "#9394AB")
+        Color(hex: "#2D2B2A)")
     }
 
     // TO-DO: Rename fonts when Kwame comes up with a naming convention
     var header1: Font {
         EpilogueFont.bold(with: 32)
+    }
+
+    var header2: Font {
+        EpilogueFont.bold(with: 20)
     }
 
     var header4: Font {
@@ -79,7 +84,7 @@ public extension SmileIdTheme {
     }
 
     var button: Font {
-        EpilogueFont.bold(with: 20)
+       return header4
     }
 
     var body: Font {

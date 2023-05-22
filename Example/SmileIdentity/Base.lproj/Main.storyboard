@@ -11,7 +11,7 @@
         <!--Products-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="HomeViewController" customModule="SmileID_Demo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="vXZ-lx-hvc" customClass="HomeViewController" customModule="Smile_ID" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -29,7 +29,7 @@
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SmartSelfie Registration" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jYb-RJ-sVD">
                                                 <rect key="frame" x="10" y="39.5" width="144" height="41"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="693-Ap-0sU">
@@ -60,7 +60,7 @@
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SmartSelfie Authentication" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="02Y-j6-rLv">
                                                 <rect key="frame" x="10" y="39.5" width="144" height="41"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z2X-tS-KHd">
@@ -104,7 +104,14 @@
                             <constraint firstItem="zn5-2z-Icb" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="q8a-ma-Eez"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Products" id="N1F-9A-aPb"/>
+                    <navigationItem key="navigationItem" title="Products" id="N1F-9A-aPb">
+                        <barButtonItem key="rightBarButtonItem" title="Sandbox" id="IWd-v9-gbT">
+                            <color key="tintColor" systemColor="systemBrownColor"/>
+                            <connections>
+                                <action selector="onEnvironmentToggle:" destination="vXZ-lx-hvc" id="hJY-Yy-dKK"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="versionLabel" destination="Bmf-Jf-x4A" id="dDu-nm-kjJ"/>
                     </connections>
@@ -151,7 +158,7 @@
         <!--UserID View Controller-->
         <scene sceneID="Lpw-vB-557">
             <objects>
-                <viewController storyboardIdentifier="UserIDViewController" id="fn5-gA-0DC" customClass="UserIDViewController" customModule="SmileID_Demo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="UserIDViewController" id="fn5-gA-0DC" customClass="UserIDViewController" customModule="Smile_ID" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dE1-bN-bHe"/>
                         <viewControllerLayoutGuide type="bottom" id="f1e-M5-HHl"/>
@@ -207,6 +214,9 @@
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBrownColor">
+            <color red="0.63529411764705879" green="0.51764705882352946" blue="0.36862745098039218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
