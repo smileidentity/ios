@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct SmartSelfieInstructionsView: View {
-
+    @Environment(\.presentationMode) var presentationMode
     private var viewModel : SelfieCaptureViewModel
     private weak var selfieCaptureDelegate: SmartSelfieResultDelegate?
     @State private var goesToDetail: Bool = false
@@ -10,44 +10,44 @@ public struct SmartSelfieInstructionsView: View {
         self.viewModel = viewModel
         self.selfieCaptureDelegate = delegate
     }
-    
-    //Only exists for preview so not accessible out of the file
+
+    // Only exists for preview so not accessible out of the file
     fileprivate init(viewModel: SelfieCaptureViewModel) {
         self.viewModel = viewModel
     }
     public var body: some View {
         NavigationView {
             ScrollView {
-        VStack {
-            Image(uiImage: SmileIDResourcesHelper.InstructionsHeaderIcon)
-                .padding(.bottom, 27)
-            VStack(spacing: 32) {
+                VStack {
+                    Image(uiImage: SmileIDResourcesHelper.InstructionsHeaderIcon)
+                        .padding(.bottom, 27)
+                    VStack(spacing: 32) {
                         Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Header"))
-                    .multilineTextAlignment(.center)
+                            .multilineTextAlignment(.center)
                             .font(SmileIdentity.theme.header1)
-                    .foregroundColor(SmileIdentity.theme.accent)
-                    .lineSpacing(0.98)
+                            .foregroundColor(SmileIdentity.theme.accent)
+                            .lineSpacing(0.98)
                             .fixedSize(horizontal: false, vertical: true)
                         Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Callout"))
-                    .multilineTextAlignment(.center)
+                            .multilineTextAlignment(.center)
                             .font(SmileIdentity.theme.header5)
-                    .foregroundColor(SmileIdentity.theme.tertiary)
-                    .lineSpacing(1.3)
+                            .foregroundColor(SmileIdentity.theme.tertiary)
+                            .lineSpacing(1.3)
                             .fixedSize(horizontal: false, vertical: true)
-            }
+                    }
                     .padding(.bottom, 20)
-            VStack(alignment: .leading, spacing: 30) {
-                makeInstruction(title: "Instructions.GoodLight",
-                                body: "Instructions.GoodLightBody",
-                                image: Constants.ImageName.light)
-                makeInstruction(title: "Instructions.ClearImage",
-                                body: "Instructions.ClearImageBody",
-                                image: Constants.ImageName.clearImage)
-                makeInstruction(title: "Instructions.RemoveObstructions",
-                                body: "Instructions.RemoveObstructionsBody",
-                                image: Constants.ImageName.face)
-            }
-            VStack(spacing: 18) {
+                    VStack(alignment: .leading, spacing: 30) {
+                        makeInstruction(title: "Instructions.GoodLight",
+                                        body: "Instructions.GoodLightBody",
+                                        image: Constants.ImageName.light)
+                        makeInstruction(title: "Instructions.ClearImage",
+                                        body: "Instructions.ClearImageBody",
+                                        image: Constants.ImageName.clearImage)
+                        makeInstruction(title: "Instructions.RemoveObstructions",
+                                        body: "Instructions.RemoveObstructionsBody",
+                                        image: Constants.ImageName.face)
+                    }
+                    VStack(spacing: 18) {
 
                         NavigationLink(destination: SelfieCaptureView(viewModel: viewModel,
                                                                       delegate: selfieCaptureDelegate ??
@@ -59,13 +59,20 @@ public struct SmartSelfieInstructionsView: View {
                         if viewModel.showAttribution {
                             Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                         }
-            }.padding(.top, 80)
+                    }.padding(.top, 80)
                 }
                 .padding(EdgeInsets(top: 40,
                                     leading: 24,
                                     bottom: 0,
                                     trailing: 24))
             }
+            .navigationBarItems(leading: Button {
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Image(uiImage: SmileIDResourcesHelper.Close)
+                    .padding()
+            })
+            .background(SmileIdentity.theme.backgroundMain.edgesIgnoringSafeArea(.all))
         }
     }
 
@@ -95,7 +102,7 @@ struct SmartSelfieInstructionsView_Previews: PreviewProvider {
                                                                       sessionId: UUID().uuidString,
                                                                       isEnroll: false,
                                                                       showAttribution: true))
-            .environment(\.locale, Locale(identifier: "en"))
+        .environment(\.locale, Locale(identifier: "en"))
 
     }
 }

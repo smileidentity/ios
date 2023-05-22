@@ -2,19 +2,24 @@ import SwiftUI
 import Combine
 
 public struct SelfieCaptureView: View {
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var viewModel: SelfieCaptureViewModel
-    let camera = CameraView()
+    let camera: CameraView
     private weak var delegate: SmartSelfieResultDelegate?
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
         self.viewModel = viewModel
         self.delegate = delegate
+        self.camera = CameraView(frameManager: viewModel.frameManager,
+                                 cameraManager: viewModel.cameraManager)
     }
 
     // NB
     // TODO:only used for previews to remove lint issues
     fileprivate init(viewModel: SelfieCaptureViewModel) {
         self.viewModel = viewModel
+        self.camera = CameraView(frameManager: viewModel.frameManager,
+                                 cameraManager: viewModel.cameraManager)
     }
 
     public var body: some View {
@@ -32,8 +37,31 @@ public struct SelfieCaptureView: View {
                     }
 
                 FaceOverlayView(model: viewModel)
+                switch viewModel.processingState {
+                case .confirmation:
+                    ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
+                case .inProgress:
+                    ModalPresenter { ProcessingView() }
+                case .success:
+                    ModalPresenter { SuccessView(viewModel: viewModel) }
+                case .error:
+                    ModalPresenter { ErrorView(viewModel: viewModel) }
+                case .none:
+                    Text("")
+                }
+
             }
-        }.edgesIgnoringSafeArea(.all)
+        }
+        .edgesIgnoringSafeArea(.all)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: Button {
+            presentationMode.wrappedValue.dismiss()
+            viewModel.resetCapture()
+        } label: {
+            Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
+                .padding()
+        })
+        .background(SmileIdentity.theme.backgroundMain)
     }
 
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {

@@ -6,7 +6,7 @@ class FaceDetector {
     var sequenceHandler = VNSequenceRequestHandler()
     weak var model: SelfieCaptureViewModel?
     var viewDelegate: FaceDetectorDelegate?
-    private let maximumHistoryLength = 15
+    private let maximumHistoryLength = 5
     private var transpositionHistoryPoints = [CGPoint]()
     private var previousPixelBuffer: CVPixelBuffer?
 

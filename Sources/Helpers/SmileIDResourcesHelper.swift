@@ -16,7 +16,7 @@ public class SmileIDResourcesHelper {
               Bundle.main.resourceURL,
 
               // Bundle should be present here when the package is linked into a framework.
-              Bundle(for: SmileIDResourcesHelper.self).resourceURL,
+              Bundle(for: SmileIDResourcesHelper.self).resourceURL
           ]
 
           let bundleName = "SmileIdentity_SmileIdentity"
@@ -50,7 +50,7 @@ public class SmileIDResourcesHelper {
 
     /// Get the image by the file name.
     public static func image(_ name: String) -> UIImage? {
-        return UIImage(named: name, in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
+        return UIImage(named: name, in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysOriginal)
     }
 
     /// SmileID images
@@ -59,6 +59,11 @@ public class SmileIDResourcesHelper {
     public static var InstructionsHeaderIcon = SmileIDResourcesHelper.image("InstructionsHeaderIcon")!
     public static var Light = SmileIDResourcesHelper.image("Light")!
     public static var SmileEmblem = SmileIDResourcesHelper.image("SmileEmblem")!
+    public static var FaceOutline = SmileIDResourcesHelper.image("FaceOutline")!
+    public static var Scan = SmileIDResourcesHelper.image("Scan")!
+    public static var CheckBold = SmileIDResourcesHelper.image("CheckBold")!
+    public static var Close = SmileIDResourcesHelper.image("Close")!
+    public static var ArrowLeft = SmileIDResourcesHelper.image("ArrowLeft")!
 
     /// Size of font.
     public static let pointSize: CGFloat = 16
@@ -86,7 +91,7 @@ public class SmileIDResourcesHelper {
     public static func italicSystemFont(ofSize size: CGFloat) -> UIFont {
         return UIFont.italicSystemFont(ofSize: size)
     }
-    
+
     /**
      Loads a given font if needed.
      - Parameter fontName: A String font name.
