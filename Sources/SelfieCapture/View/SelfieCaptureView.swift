@@ -34,7 +34,7 @@ public struct SelfieCaptureView: View {
                                size: ovalSize)
                         viewModel.viewDelegate = camera.preview
                         viewModel.viewFinderSize = geometry.size
-                    }
+                    }.scaleEffect(1.2, anchor: .top)
 
                 FaceOverlayView(model: viewModel)
                 switch viewModel.processingState {
