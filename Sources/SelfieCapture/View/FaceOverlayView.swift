@@ -35,8 +35,9 @@ struct FaceOverlayView: View {
                                 .animation(.easeOut, value: model.progress)
                         )
                 }.padding(.top, -200)
+                    .scaleEffect(1.2, anchor: .top)
                 InstructionsView(model: model)
-                    .padding(.top, -((faceWidth)/2) - 100)
+                    .padding(.top, -((faceWidth)/2))
 
             }
         }
