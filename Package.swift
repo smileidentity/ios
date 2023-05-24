@@ -12,7 +12,7 @@ let package = Package(
         .library(
             name: "SmileIdentity",
             targets: ["SmileIdentity"]
-        ),
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/marmelroy/Zip", .upToNextMajor(from: "2.1.0")),
@@ -30,6 +30,6 @@ let package = Package(
             name: "SmileIdentityTests",
             dependencies: ["SmileIdentity"],
             path: "Tests"
-        ),
+        )
     ]
 )
