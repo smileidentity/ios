@@ -1,0 +1,127 @@
+name: SDK Build Actions
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-package-macos-12:
+    name: "Build Package"
+    runs-on: macos-12
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode:
+        - '13.2.1' # Swift 5.5
+        - '13.4.1' # Swift 5.6
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+        with:
+          xcode: ${{ matrix.xcode }}
+      - name: Build Package
+        run: bundle exec rake build:package:all
+
+  build-package-macos-13:
+    name: "Build Package"
+    runs-on: macos-13
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode:
+        - '14.2' # Swift 5.7
+        - '14.3' # Swift 5.8
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+        with:
+          xcode: ${{ matrix.xcode }}
+      - name: Build Package
+        run: bundle exec rake build:package:all
+
+  build-example:
+    name: "Build Example App"
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+      - name: Build Example
+        run: bundle exec rake build:example:all
+
+  test-package:
+    name: "Test Package"
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+        with:
+          xcode: '14.3' # Swift 5.8
+      - name: Test Package
+        run: bundle exec rake test:package
+      - name: Process test artifacts
+        if: always()
+        run: bundle exec rake test:process
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: TestArtifacts
+          path: Tests/Artifacts
+
+  build-xcframework:
+    name: "Build XCFramework"
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+        with:
+          # XCFrameworks are forwards-compatible but not backwards-compatible.
+          # The Xcode version we use for this job is that oldest Xcode version that
+          # will be able to use these XCFrameworks and the Smile ID spm package.
+          xcode: '13.2.1' # Swift 5.5.2
+      - name: Build XCFramework
+        run: bundle exec rake build:xcframework
+      - name: Upload XCFramework
+        uses: actions/upload-artifact@v2
+        with:
+          name: BuildProducts
+          # The xcframework is at the path `.build/artifacts/SmileIdentity.zip`.
+          # GitHub always zips the artifacts before uploading, so if we uploaded the .zip
+          # directly then it would actually upload a double-zip (a .zip containing our `SmileIdentity.zip`).
+          # This is confusing especially since macOS Archive Utility automatially unzips both layers at once.
+          # Instead, we upload the entire artifacts folder, resulting in an `XCFramework.zip` that unzips
+          # to an `artifacts` directory containing our `SmileIdentity.zip`.
+          path: .build/artifacts
+
+  cocoapod:
+    name: "Lint CocoaPods podspec"
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+        with:
+          install-mint: false
+      - name: Lint CocoaPod Podspec
+        run: bundle exec rake lint:podspec
+
+  spm:
+    name: "Test Swift Package Manager support"
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+        with:
+          install-mint: true
+      - name: Test Swift Package Manager support
+        run: bundle exec rake test:spm
+
+  swiftlint:
+    name: "Lint Swift"
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup
+      - name: Lint Swift
+        run: bundle exec rake lint:swift
