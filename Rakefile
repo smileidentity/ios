@@ -76,7 +76,7 @@ end
 def xcodebuild(command)
   # Check if the mint tool is installed -- if so, pipe the xcodebuild output through xcbeautify
   `which mint`
-
+  sh 'rm -rf ~/Library/Developer/Xcode/DerivedData/* && echo "Successfully flushed DerivedData"'
   if $?.success?
     sh "set -o pipefail && xcodebuild #{command} | mint run thii/xcbeautify@0.10.2"
   else
