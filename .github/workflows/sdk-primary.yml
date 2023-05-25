@@ -45,6 +45,29 @@ jobs:
     name: "Build Example App"
     runs-on: macos-13
     steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.CI_SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Write Smile Config
+        id: write_smile_config
+        # Mask the config so it doesn't show up in the logs
+        run: |
+          INPUT_SMILE_CONFIG=$(jq -r '.inputs.smile_config // empty' $GITHUB_EVENT_PATH)
+          echo "::add-mask::$INPUT_SMILE_CONFIG"
+          if [ -n "$INPUT_SMILE_CONFIG" ]; then
+            SMILE_CONFIG="$INPUT_SMILE_CONFIG"
+          else
+            SMILE_CONFIG="$SMILE_CONFIG_PARTNER_002"
+          fi
+          echo "$SMILE_CONFIG" > smile_config.json
+          PARTNER_ID=$(jq -r '.partner_id' smile_config.json)
+          echo "partner_id=$PARTNER_ID" >> $GITHUB_OUTPUT
+        env:
+          SMILE_CONFIG_PARTNER_002: ${{ secrets.SMILE_CONFIG_PARTNER_002 }}
+      - name: Add Smile Config to Xcode Project
+        run: ruby add_smile_config.rb
       - uses: actions/checkout@v2
       - uses: ./.github/actions/setup
       - name: Build Example
@@ -77,6 +100,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/setup
         with:
+          install-mint: true
           # XCFrameworks are forwards-compatible but not backwards-compatible.
           # The Xcode version we use for this job is that oldest Xcode version that
           # will be able to use these XCFrameworks and the Smile ID spm package.
