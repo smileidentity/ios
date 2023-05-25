@@ -45,6 +45,10 @@ jobs:
     name: "Build Example App"
     runs-on: macos-13
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup environment
+        run: bundle install
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
