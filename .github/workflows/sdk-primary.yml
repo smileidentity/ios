@@ -10,28 +10,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-package-macos-12:
-    name: "Build Package"
-    runs-on: macos-12
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode:
-        - '13.2.1' # Swift 5.5
-        - '13.4.1' # Swift 5.6
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-        with:
-          xcode: ${{ matrix.xcode }}
-      - name: Build Package
-        run: bundle exec rake build:package:all
 
-  build-package-macos-13:
+  build-package-macos-latest:
     name: "Build Package"
-    runs-on: macos-13
+    runs-on: macos-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         xcode:
         - '14.2' # Swift 5.7
@@ -46,7 +30,7 @@ jobs:
 
   build-example:
     name: "Build Example App"
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -81,7 +65,7 @@ jobs:
 
   test-package:
     name: "Test Package"
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
@@ -101,7 +85,7 @@ jobs:
 
   build-xcframework:
     name: "Build XCFramework"
-    runs-on: macos-12
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
@@ -110,7 +94,7 @@ jobs:
           # XCFrameworks are forwards-compatible but not backwards-compatible.
           # The Xcode version we use for this job is that oldest Xcode version that
           # will be able to use these XCFrameworks and the Smile ID spm package.
-          xcode: '13.2.1' # Swift 5.5.2
+          xcode: '14.2' # Swift 5.7
       - name: Build XCFramework
         run: bundle exec rake build:xcframework
       - name: Upload XCFramework
@@ -127,7 +111,7 @@ jobs:
 
   cocoapod:
     name: "Lint CocoaPods podspec"
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
@@ -138,7 +122,7 @@ jobs:
 
   spm:
     name: "Test Swift Package Manager support"
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
