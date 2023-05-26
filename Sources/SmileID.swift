@@ -1,20 +1,20 @@
 import Foundation
 import UIKit
 
-public class SmileIdentity {
-    @Injected var injectedApi: SmileIdentityServiceable
-    public static var api: SmileIdentityServiceable {
-        return SmileIdentity.instance.injectedApi
+public class SmileID {
+    @Injected var injectedApi: SmileIDServiceable
+    public static var api: SmileIDServiceable {
+        return SmileID.instance.injectedApi
     }
     public static var configuration: Config {
         return config
     }
-    internal static let instance: SmileIdentity = {
+    internal static let instance: SmileID = {
         let container = DependencyContainer.shared
-        container.register(SmileIdentityServiceable.self) {SmileIdentityService.init()}
+        container.register(SmileIDServiceable.self) {SmileIDService.init()}
         container.register(RestServiceClient.self) {URLSessionRestServiceClient.init()}
         container.register(ServiceHeaderProvider.self) {DefaultServiceHeaderProvider.init()}
-        let instance = SmileIdentity()
+        let instance = SmileID()
         return instance
     }()
     private init() {}
@@ -49,6 +49,6 @@ public class SmileIdentity {
     }
 
     public class func setEnvironment(useSandbox: Bool) {
-        SmileIdentity.useSandbox = useSandbox
+        SmileID.useSandbox = useSandbox
     }
 }

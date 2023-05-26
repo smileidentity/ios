@@ -5,7 +5,7 @@ public struct JobStatusRequest: Codable {
     public var jobId: String
     public var includeImageLinks: Bool
     public var includeHistory: Bool
-    public var partnerId: String = SmileIdentity.config.partnerId
+    public var partnerId: String = SmileID.config.partnerId
     public var timestamp: String
     public var signature: String
 

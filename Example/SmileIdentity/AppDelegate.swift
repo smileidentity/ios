@@ -1,5 +1,5 @@
 import UIKit
-import SmileIdentity
+import SmileID
 
 @UIApplicationMain
 
@@ -13,7 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         do {
             let config = try Config(url: Constant.configUrl)
-            SmileIdentity.initialize(config: config)
+            SmileID.initialize(config: config)
         } catch {
             print(error.localizedDescription)
         }

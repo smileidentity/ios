@@ -4,14 +4,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "SmileIdentity",
+    name: "SmileID",
     defaultLocalization: "en",
     platforms: [.iOS(.v13)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "SmileIdentity",
-            targets: ["SmileIdentity"]
+            name: "SmileID",
+            targets: ["SmileID"]
         )
     ],
     dependencies: [
@@ -21,14 +21,14 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "SmileIdentity",
+            name: "SmileID",
             dependencies: ["Zip"],
             path: "Sources",
             resources: [.process("Resources")]
         ),
         .testTarget(
-            name: "SmileIdentityTests",
-            dependencies: ["SmileIdentity"],
+            name: "SmileIDTests",
+            dependencies: ["SmileID"],
             path: "Tests"
         )
     ]
