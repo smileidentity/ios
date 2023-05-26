@@ -82,6 +82,28 @@ jobs:
           name: TestArtifacts
           path: Tests/Artifacts
 
+  cocoapod:
+    name: "Lint CocoaPods podspec"
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+        with:
+          install-mint: false
+      - name: Lint CocoaPod Podspec
+        run: bundle exec rake lint:podspec
+
+  spm:
+    name: "Test Swift Package Manager support"
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+        with:
+          install-mint: true
+      - name: Test Swift Package Manager support
+        run: bundle exec rake test:spm
+
   build-xcframework:
     name: "Build XCFramework"
     runs-on: macos-13
@@ -107,25 +129,3 @@ jobs:
           # Instead, we upload the entire artifacts folder, resulting in an `XCFramework.zip` that unzips
           # to an `artifacts` directory containing our `SmileIdentity.zip`.
           path: .build/artifacts
-
-  cocoapod:
-    name: "Lint CocoaPods podspec"
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-        with:
-          install-mint: false
-      - name: Lint CocoaPod Podspec
-        run: bundle exec rake lint:podspec
-
-  spm:
-    name: "Test Swift Package Manager support"
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-        with:
-          install-mint: true
-      - name: Test Swift Package Manager support
-        run: bundle exec rake test:spm
