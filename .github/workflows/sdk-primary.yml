@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main ]
   pull_request:
-  
   workflow_call:
     inputs:
       version_override:
@@ -16,6 +15,7 @@ on:
         description: 'Whether to automatically bump and commit the version after the release'
         required: true
         default: true
+        
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
