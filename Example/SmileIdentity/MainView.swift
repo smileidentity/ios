@@ -5,7 +5,7 @@ struct MainView: View {
     init() {
         UITabBar.appearance().barTintColor = offWhiteUIColor
         UITabBar.appearance().tintColor = .blue
-        UINavigationBar.appearance().largeTitleTextAttributes = [.font : UIFont(name: "Georgia-Bold", size: 20)!]
+        UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont(name: "Georgia-Bold", size: 30)!]
     }
 
     var body: some View {

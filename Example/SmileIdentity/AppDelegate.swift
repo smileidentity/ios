@@ -1,5 +1,6 @@
 import UIKit
 import SmileID
+import SwiftUI
 
 @UIApplicationMain
 
@@ -17,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             print(error.localizedDescription)
         }
+        window?.rootViewController = UIHostingController(rootView: MainView())
+        window?.makeKeyAndVisible()
         return true
     }
 }
