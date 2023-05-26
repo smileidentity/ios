@@ -147,12 +147,3 @@ jobs:
           install-mint: true
       - name: Test Swift Package Manager support
         run: bundle exec rake test:spm
-
-  swiftlint:
-    name: "Lint Swift"
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-      - name: Lint Swift
-        run: bundle exec rake lint:swift
