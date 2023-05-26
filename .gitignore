@@ -37,3 +37,7 @@ Carthage/Build
 # Pods/
 contents.xcworkspacedata
 IDEWorkspaceChecks.plist
+
+*.xcframework.zip
+Tests/Artifacts/
+.build/
