@@ -17,4 +17,4 @@ concurrency:
 
 jobs:
   run-build-checks:
-   uses: ./.github/workflows/sdk-release.yml
+   uses: ./.github/workflows/sdk-primary.yml
