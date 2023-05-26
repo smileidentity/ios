@@ -1,8 +1,10 @@
 name: Release iOS SDK
+
 on:
   workflow_dispatch:
     inputs:
       version_override:
+        type: string
         description: 'The version to release. If not specified, the version will be inferred'
         required: false
         default: ''
@@ -17,4 +19,7 @@ concurrency:
 
 jobs:
   run-build-checks:
-   uses: ./.github/workflows/sdk-release.yml
+   uses: ./.github/workflows/sdk-primary.yml
+   with:
+    version_override: ${{ inputs.version_override }}
+    bump_version: ${{ inputs.bump_version }}
