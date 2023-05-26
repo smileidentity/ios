@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SuccessView: View {
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: SelfieCaptureViewModel
 
     var body: some View {
@@ -25,6 +26,7 @@ struct SuccessView: View {
                         title: "Confirmation.Continue",
                         clicked: {
                 viewModel.handleSuccess()
+                presentationMode.wrappedValue.dismiss()
             })
         }
         .padding()
