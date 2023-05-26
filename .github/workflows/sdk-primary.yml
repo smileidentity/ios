@@ -13,7 +13,7 @@ jobs:
 
   build-package-macos-latest:
     name: "Build Package"
-    runs-on: macos-latest
+    runs-on: macos-13
     strategy:
       fail-fast: true
       matrix:
@@ -26,7 +26,7 @@ jobs:
         with:
           xcode: ${{ matrix.xcode }}
       - name: Build Package
-        run: bundle exec rake build:package:all
+        run: bundle exec rake bui ld:package:all
 
   build-example:
     name: "Build Example App"
@@ -85,7 +85,7 @@ jobs:
 
   build-xcframework:
     name: "Build XCFramework"
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
