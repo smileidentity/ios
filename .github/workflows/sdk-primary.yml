@@ -68,8 +68,8 @@ jobs:
           else
             SMILE_CONFIG="$SMILE_CONFIG_PARTNER_002"
           fi
-          echo "$SMILE_CONFIG" > smile_config.json
-          PARTNER_ID=$(jq -r '.partner_id' smile_config.json)
+          echo "$SMILE_CONFIG" > Example/SmileIdentity/smile_config.json
+          PARTNER_ID=$(jq -r '.partner_id' Example/SmileIdentity/smile_config.json)
           echo "partner_id=$PARTNER_ID" >> $GITHUB_OUTPUT
         env:
           SMILE_CONFIG_PARTNER_002: ${{ secrets.SMILE_CONFIG_PARTNER_002 }}
