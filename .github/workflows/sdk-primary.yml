@@ -7,6 +7,7 @@ on:
   workflow_call:
     inputs:
       version_override:
+        type: string
         description: 'The version to release. If not specified, the version will be inferred'
         required: false
         default: ''
@@ -15,7 +16,7 @@ on:
         description: 'Whether to automatically bump and commit the version after the release'
         required: true
         default: true
-        
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
