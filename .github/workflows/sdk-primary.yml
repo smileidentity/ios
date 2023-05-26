@@ -134,10 +134,18 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: BuildProducts
-          # The xcframework is at the path `.build/artifacts/SmileIdentity.zip`.
+          # The xcframework is at the path `release/SmileIdentity.zip`.
           # GitHub always zips the artifacts before uploading, so if we uploaded the .zip
           # directly then it would actually upload a double-zip (a .zip containing our `SmileIdentity.zip`).
           # This is confusing especially since macOS Archive Utility automatially unzips both layers at once.
           # Instead, we upload the entire artifacts folder, resulting in an `XCFramework.zip` that unzips
           # to an `artifacts` directory containing our `SmileIdentity.zip`.
-          path: .build/artifacts
+          path: release
+      - name: Upload to AWS    
+        uses: shallwefootball/s3-upload-action@master
+        id: S3
+        with:
+          aws_key_id: ${{secrets.AWS_KEY_ID}}
+          aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: bucketName
+          source_dir: cypress/reports/Result
