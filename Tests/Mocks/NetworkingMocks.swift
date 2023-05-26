@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 import XCTest
-@testable import SmileIdentity
+@testable import SmileID
 
 class MockServiceHeaderProvider: ServiceHeaderProvider {
     var expectedHeaders = [HTTPHeader(name: "", value: "")]
@@ -21,7 +21,7 @@ class MockURLSessionPublisher: URLSessionPublisher {
     }
 }
 
-class MockSmileIdentityService: SmileIdentityServiceable {
+class MockSmileIdentityService: SmileIDServiceable {
     func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
         let response = JobStatusResponse(timestamp: "timestamp",
                                          jobComplete: true,

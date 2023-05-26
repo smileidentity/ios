@@ -219,7 +219,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                 enrollment: isEnroll,
                                                 userId: userId)
 
-        SmileIdentity.api.authenticate(request: authRequest)
+        SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in
                 self.prepUpload(authResponse)
                     .flatMap { prepUploadResponse in
@@ -263,11 +263,11 @@ final class SelfieCaptureViewModel: ObservableObject {
         let prepUploadRequest = PrepUploadRequest(partnerParams: authResponse.partnerParams,
                                                   timestamp: authResponse.timestamp,
                                                   signature: authResponse.signature)
-        return SmileIdentity.api.prepUpload(request: prepUploadRequest)
+        return SmileID.api.prepUpload(request: prepUploadRequest)
     }
 
     private func upload(_ prepUploadResponse: PrepUploadResponse, zip: Data) -> AnyPublisher<UploadResponse, Error> {
-        return SmileIdentity.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
+        return SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
             .eraseToAnyPublisher()
     }
 
@@ -282,7 +282,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         let publisher = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()
             .setFailureType(to: Error.self)
-            .flatMap { _ in SmileIdentity.api.getJobStatus(request: jobStatusRequest) }
+            .flatMap { _ in SmileID.api.getJobStatus(request: jobStatusRequest) }
             .first(where: { response in
                 return response.jobComplete})
             .timeout(.seconds(10),

@@ -6,8 +6,8 @@ struct InstructionsView: View {
     var body: some View {
         Text(SmileIDResourcesHelper.localizedString(for: faceDetectionState().stringKey))
             .multilineTextAlignment(.center)
-            .foregroundColor(SmileIdentity.theme.accent)
-            .font(SmileIdentity.theme.header4)
+            .foregroundColor(SmileID.theme.accent)
+            .font(SmileID.theme.header4)
             .frame(maxWidth: 300)
             .transition(.slide)
             .animation(.default)

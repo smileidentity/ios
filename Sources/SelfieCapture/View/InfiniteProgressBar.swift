@@ -12,7 +12,7 @@ struct InfiniteProgressBar: View {
 
     var body: some View {
         RoundedRectangle(cornerRadius: 2)
-            .foregroundColor(SmileIdentity.theme.tertiary.opacity(0.4))
+            .foregroundColor(SmileID.theme.tertiary.opacity(0.4))
             .frame(height: height)
             .overlay(GeometryReader { geo in
                 overlayRect(in: geo.frame(in: .global))
@@ -23,7 +23,7 @@ struct InfiniteProgressBar: View {
     private func overlayRect(in rect: CGRect) -> some View {
         let width = rect.width * coverPercentage
         return RoundedRectangle(cornerRadius: 2)
-            .foregroundColor(SmileIdentity.theme.accent)
+            .foregroundColor(SmileID.theme.accent)
             .frame(width: width)
             .offset(x: width * offset)
             .onAppear {

@@ -1,7 +1,7 @@
 import UIKit
 import SwiftUI
 import Combine
-import SmileIdentity
+import SmileID
 
 class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     var cameraVC: UIViewController?
@@ -12,16 +12,16 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     @IBOutlet var versionLabel: CopyableLabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        let partnerID = SmileIdentity.configuration.partnerId
+        let partnerID = SmileID.configuration.partnerId
         versionLabel.text = "Partner \(partnerID) - Version \(VersionNames().version)"
     }
 
     @IBAction func onEnvironmentToggle(_ sender: UIBarButtonItem) {
         if sender.title!.lowercased() == "sandbox" {
-            SmileIdentity.setEnvironment(useSandbox: false)
+            SmileID.setEnvironment(useSandbox: false)
             sender.title = "Production"
         } else {
-            SmileIdentity.setEnvironment(useSandbox: true)
+            SmileID.setEnvironment(useSandbox: true)
             sender.title = "Sandbox"
         }
     }
@@ -29,7 +29,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     @IBAction func onSmartSelfieRegistrationTap(_ sender: Any) {
         userID = UUID().uuidString
         currentJob = .smartSelfieEnrollment
-        let smartSelfieRegistrationScreen = SmileIdentity.smartSelfieRegistrationScreen(userId: userID,
+        let smartSelfieRegistrationScreen = SmileID.smartSelfieRegistrationScreen(userId: userID,
                                                                                         delegate: self)
         cameraVC = UIHostingController(rootView: smartSelfieRegistrationScreen)
         cameraVC?.modalPresentationStyle = .fullScreen
@@ -49,7 +49,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     }
 
     func smartSelfieAuthenticationScreen(userID: String) {
-        let smartSelfieAuthenticationScreen = SmileIdentity.smartSelfieAuthenticationScreen(userId: userID,
+        let smartSelfieAuthenticationScreen = SmileID.smartSelfieAuthenticationScreen(userId: userID,
                                                                                             delegate: self)
         cameraVC = UIHostingController(rootView: smartSelfieAuthenticationScreen)
         cameraVC?.modalPresentationStyle = .fullScreen

@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 import Combine
-@testable import SmileIdentity
+@testable import SmileID
 
 class URLSessionRestServiceClientTests: BaseTestCase {
     var mockURL: URL!
