@@ -4,7 +4,10 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-package-macos-12:
@@ -17,7 +20,7 @@ jobs:
         - '13.2.1' # Swift 5.5
         - '13.4.1' # Swift 5.6
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
           xcode: ${{ matrix.xcode }}
@@ -34,7 +37,7 @@ jobs:
         - '14.2' # Swift 5.7
         - '14.3' # Swift 5.8
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
           xcode: ${{ matrix.xcode }}
@@ -46,7 +49,7 @@ jobs:
     runs-on: macos-13
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup environment
         run: bundle install
       - name: Install SSH key
@@ -72,7 +75,7 @@ jobs:
           SMILE_CONFIG_PARTNER_002: ${{ secrets.SMILE_CONFIG_PARTNER_002 }}
       - name: Add Smile Config to Xcode Project
         run: ruby add_smile_config.rb
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - name: Build Example
         run: bundle exec rake build:example:all
@@ -81,7 +84,7 @@ jobs:
     name: "Test Package"
     runs-on: macos-13
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
           xcode: '14.3' # Swift 5.8
@@ -101,7 +104,7 @@ jobs:
     name: "Build XCFramework"
     runs-on: macos-12
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
           install-mint: true
@@ -112,7 +115,7 @@ jobs:
       - name: Build XCFramework
         run: bundle exec rake build:xcframework
       - name: Upload XCFramework
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: BuildProducts
           # The xcframework is at the path `.build/artifacts/SmileIdentity.zip`.
@@ -127,7 +130,7 @@ jobs:
     name: "Lint CocoaPods podspec"
     runs-on: macos-13
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
           install-mint: false
@@ -138,7 +141,7 @@ jobs:
     name: "Test Swift Package Manager support"
     runs-on: macos-13
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
           install-mint: true
@@ -149,7 +152,7 @@ jobs:
     name: "Lint Swift"
     runs-on: macos-13
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - name: Lint Swift
         run: bundle exec rake lint:swift
