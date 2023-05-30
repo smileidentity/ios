@@ -69,7 +69,7 @@ namespace :lint do
 
   desc 'Lints the CocoaPods podspec'
   task :podspec do
-    sh 'pod lib lint SmileIdentity.podspec'
+    sh 'pod lib lint SmileID_DEV.podspec'
   end
 end
   
@@ -77,6 +77,13 @@ namespace :format do
   desc 'Formats swift files'
   task :swift do
     sh 'mint run swiftformat . --swiftversion 5.8'
+  end
+end
+
+namespace :version do
+  desc 'Formats swift files'
+  task :bump_patch do
+    sh 'ruby version_bump_podspec.rb '
   end
 end
   
