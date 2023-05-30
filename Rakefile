@@ -27,10 +27,12 @@ namespace :build do
   desc 'Builds an xcframework for all supported platforms'
   task :xcframework do
     sh 'rm -rf .build/archives'
-    sh 'mint run unsignedapps/swift-create-xcframework'
-    sh 'zip -r --symlinks SmileIdentity.xcframework.zip SmileIdentity.xcframework'
+    sh 'rm -rf release'
+    sh 'mint run unsignedapps/swift-create-xcframework --zip'
     sh 'rm -rf SmileIdentity.xcframework'
-    sh 'swift package compute-checksum SmileIdentity.xcframework.zip'
+    sh 'swift package compute-checksum SmileIdentity.zip'
+    sh 'mkdir release'
+    sh 'mv SmileIdentity.zip SmileIdentity.sha256 release/'
   end
 end
   
