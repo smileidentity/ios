@@ -141,7 +141,8 @@ jobs:
           # Instead, we upload the entire artifacts folder, resulting in an `XCFramework.zip` that unzips
           # to an `artifacts` directory containing our `SmileIdentity.zip`.
           path: release
-      - name: Upload to AWS    
+      - name: Upload to AWS
+        if: ${{ github.event_name == 'workflow_call'}}
         uses: shallwefootball/s3-upload-action@master
         with:
           aws_key_id: ${{secrets.AWS_KEY_ID}}
