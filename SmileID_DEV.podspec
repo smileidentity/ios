@@ -7,7 +7,7 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'SmileID_Dev'
+  s.name             = 'SmileID_DEV'
   s.version          = '0.0.0-prerelease'
   s.summary          = 'The Official Smile Identity iOS SDK.'
 
