@@ -23,6 +23,7 @@ jobs:
       bump_version: ${{ inputs.bump_version }}
   release-ios-sdk:
     name: "Release the iOS SDK"
+    needs: run-build-checks
     runs-on: macos-13
     steps:
       - name: Upload to AWS
