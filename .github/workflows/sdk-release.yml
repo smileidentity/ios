@@ -17,7 +17,8 @@ on:
 jobs:
   run-build-checks:
    uses: ./.github/workflows/sdk-primary.yml
+   secrets: inherit
    with:
     version_override: ${{ inputs.version_override }}
     bump_version: ${{ inputs.bump_version }}
-    secrets: inherit
+   
