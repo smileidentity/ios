@@ -131,7 +131,7 @@ jobs:
         run: bundle exec rake build:xcframework
       - name: Upload release artifact if this is a release path
         uses: actions/upload-artifact@v3
-        if: ${{ github.event_name == 'workflow_call'}} 
+        if: ${{ github.event_name == 'workflow_dispatch'}} 
         with:
           name: release
           path: release
