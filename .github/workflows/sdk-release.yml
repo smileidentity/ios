@@ -39,9 +39,9 @@ jobs:
           aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           aws_bucket: ${{secrets.AWS_BUCKET}}
           source_dir: release
-          destination_dir: ios-releases/${{inputs.version_override}}/
+          destination_dir: ios-releases/${{inputs.version_override}}
+      - uses: actions/checkout@v3
       - name: Push Tag
-        if: ${{ github.event_name == 'workflow_dispatch'}}
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
@@ -51,7 +51,6 @@ jobs:
           tag: v${{inputs.version_override}}
           message: Release v${{inputs.version_override}}
       - name: Update Pod
-        if: ${{ github.event_name == 'workflow_dispatch'}}
         run: pod trunk push SmileID.podspec
         env:
           COCOAPODS_TRUNK_TOKEN: "${{ secrets.COCOAPODS_TRUNK_TOKEN }}"
