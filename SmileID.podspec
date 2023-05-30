@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SmileID'
-  s.version          = '0.0.0-prerelease'
+  s.version          = '0.0.0'
   s.summary          = 'The Official Smile Identity iOS SDK.'
 
 # This description is used to generate tags and improve search results.
@@ -22,15 +22,15 @@ Smile Identity SDK for selfie capture, identity card verification and Smile KYC 
                        DESC
 
   s.homepage         = 'https://docs.smileidentity.com/mobile/ios'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
+  s.license          = 'MIT'
   s.author           = { 'Smile ID' => 'mobile@smileidentity.com' }
-  s.source           = { :http => "https://smile-sdks.s3.us-west-2.amazonaws.com/ios-releases/#{s.version}/SmileID.zip"}
-  s.vendored_frameworks = "SmileID.xcframework"
+  s.source           = { :http => "https://smile-sdks.s3.us-west-2.amazonaws.com/ios-releases/#{s.version}/SmileIdentity.zip"}
+  s.vendored_frameworks = "SmileIdentity.xcframework"
   s.ios.deployment_target = '13.0'
   s.swift_version    = "5.8"
   s.swift_versions   = ["5.7", "5.8"]
   s.resource_bundles = {
-			'SmileIdentity_SmileIdentity' => ['Sources/Resources/Media.xcassets','Sources/Resources/Fonts/*.ttf','Sources/Localization//*.lproj/*.strings'],
+			'SmileID_SmileID' => ['Sources/Resources/Media.xcassets','Sources/Resources/Fonts/*.ttf','Sources/Localization//*.lproj/*.strings'],
 		}
   s.dependency "Zip",'~> 2.1'
 end
