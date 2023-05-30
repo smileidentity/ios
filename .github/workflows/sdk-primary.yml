@@ -88,7 +88,7 @@ jobs:
         run: bundle exec rake test:process
       - name: Upload artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: TestArtifacts
           path: Tests/Artifacts
@@ -129,3 +129,9 @@ jobs:
           xcode: "14.2" # Swift 5.7
       - name: Build XCFramework
         run: bundle exec rake build:xcframework
+      - name: Upload release artifact if this is a release path
+        uses: actions/upload-artifact@v3
+        if: ${{ github.event_name == 'workflow_call'}} 
+        with:
+          name: release
+          path: release

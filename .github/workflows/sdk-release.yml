@@ -26,6 +26,11 @@ jobs:
     needs: run-build-checks
     runs-on: macos-13
     steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: release
+          path: release
       - name: Upload to AWS
         if: ${{ github.event_name == 'workflow_dispatch'}}
         uses: shallwefootball/s3-upload-action@master
