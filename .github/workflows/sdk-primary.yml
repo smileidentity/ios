@@ -163,3 +163,5 @@ jobs:
       - name: Update Pod
         if: ${{ github.event_name == 'workflow_dispatch'}}
         run: pod trunk push SmileID.podspec
+        env:
+          COCOAPODS_TRUNK_TOKEN: '${{ secrets.COCOAPODS_TRUNK_TOKEN }}'
