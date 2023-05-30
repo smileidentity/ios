@@ -11,9 +11,9 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
-		910D2996296CDE60007FB709 /* SmileIdentity in Frameworks */ = {isa = PBXBuildFile; productRef = 910D2995296CDE60007FB709 /* SmileIdentity */; };
 		910F88E429A3EECA00FA5300 /* smile_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 910F88E329A3EECA00FA5300 /* smile_config.json */; };
 		917F3BFC2A0BC6DF00BCC30E /* UserIDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917F3BFB2A0BC6DF00BCC30E /* UserIDViewController.swift */; };
+		91941A662A2103E200FFFB26 /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 91941A652A2103E200FFFB26 /* SmileID */; };
 		91EF4D642A0BB3CD00C5931E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF4D622A0BB3CD00C5931E /* Constants.swift */; };
 		91EF4D652A0BB3CD00C5931E /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF4D632A0BB3CD00C5931E /* CopyableLabel.swift */; };
 		91EF4D672A0BB3EF00C5931E /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF4D662A0BB3EF00C5931E /* HomeViewController.swift */; };
@@ -42,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				910D2996296CDE60007FB709 /* SmileIdentity in Frameworks */,
+				91941A662A2103E200FFFB26 /* SmileID in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,7 +137,7 @@
 			);
 			name = SmileIdentity_Example;
 			packageProductDependencies = (
-				910D2995296CDE60007FB709 /* SmileIdentity */,
+				91941A652A2103E200FFFB26 /* SmileID */,
 			);
 			productName = SmileIdentity;
 			productReference = 607FACD01AFB9204008FA782 /* Smile ID.app */;
@@ -417,9 +417,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		910D2995296CDE60007FB709 /* SmileIdentity */ = {
+		91941A652A2103E200FFFB26 /* SmileID */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = SmileIdentity;
+			productName = SmileID;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

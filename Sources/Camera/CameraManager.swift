@@ -16,7 +16,7 @@ class CameraManager: ObservableObject {
 
     let session = AVCaptureSession()
 
-    private let sessionQueue = DispatchQueue(label: "com.smileidentity.ios")
+    private let sessionQueue = DispatchQueue(label: "com.smileid.ios")
     private let videoOutput = AVCaptureVideoDataOutput()
     private var status = Status.unconfigured
 

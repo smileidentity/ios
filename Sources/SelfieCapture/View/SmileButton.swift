@@ -9,8 +9,8 @@ struct SmileButton: View {
     }
 
     var title: LocalizedStringKey
-    var titleColor = SmileIdentity.theme.onDark
-    var backgroundColor: Color = SmileIdentity.theme.accent
+    var titleColor = SmileID.theme.onDark
+    var backgroundColor: Color = SmileID.theme.accent
     var cornerRadius: CGFloat = 15
     var borderColor = Color.clear
     var inactiveColor: Color?
@@ -18,7 +18,7 @@ struct SmileButton: View {
     var style: Style
 
     init(style: Style = .primary, title: LocalizedStringKey,
-         backgroundColor: Color = SmileIdentity.theme.accent,
+         backgroundColor: Color = SmileID.theme.accent,
          clicked: @escaping (() -> Void)) {
         self.style = style
         self.title = title
@@ -30,17 +30,17 @@ struct SmileButton: View {
     mutating func setup() {
         switch style {
         case .primary:
-            backgroundColor = SmileIdentity.theme.accent
-            titleColor = SmileIdentity.theme.onDark
+            backgroundColor = SmileID.theme.accent
+            titleColor = SmileID.theme.onDark
             borderColor = .clear
             cornerRadius = 60
         case .secondary:
             backgroundColor = .clear
-            titleColor = SmileIdentity.theme.accent
-            borderColor = SmileIdentity.theme.accent
+            titleColor = SmileID.theme.accent
+            borderColor = SmileID.theme.accent
             cornerRadius = 15
         case .destructive:
-            titleColor = SmileIdentity.theme.error.opacity(0.8)
+            titleColor = SmileID.theme.error.opacity(0.8)
             backgroundColor = .clear
             borderColor = .clear
         }
@@ -51,7 +51,7 @@ struct SmileButton: View {
             Button(action: clicked) {
                 Text(SmileIDResourcesHelper.localizedString(for: titleKey))
                     .padding(14)
-                    .font(SmileIdentity.theme.button)
+                    .font(SmileID.theme.button)
                     .frame(maxWidth: .infinity)
             }
             .foregroundColor(titleColor)

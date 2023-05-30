@@ -10,13 +10,13 @@ struct SuccessView: View {
             VStack(spacing: 16) {
                 Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.SelfieCaptureComplete"))
                     .multilineTextAlignment(.center)
-                    .font(SmileIdentity.theme.header4)
-                    .foregroundColor(SmileIdentity.theme.accent)
+                    //.font(SmileID.theme.header4)
+                    .foregroundColor(SmileID.theme.accent)
 
                 Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.SuccessBody"))
                     .multilineTextAlignment(.center)
-                    .font(SmileIdentity.theme.header5)
-                    .foregroundColor(SmileIdentity.theme.tertiary)
+                    //.font(SmileID.theme.header5)
+                    //.foregroundColor(SmileID.theme.tertiary)
                     .lineSpacing(1.3)
             }
             .padding(.bottom, 30)
@@ -28,7 +28,7 @@ struct SuccessView: View {
             })
         }
         .padding()
-        .background(SmileIdentity.theme.backgroundMain)
+        .background(SmileID.theme.backgroundMain)
         .cornerRadius(20)
         .shadow(radius: 20)
     }

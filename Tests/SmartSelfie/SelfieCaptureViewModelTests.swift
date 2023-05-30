@@ -1,6 +1,6 @@
 import XCTest
 import Combine
-@testable import SmileIdentity
+@testable import SmileID
 
 final class SelfieCaptureViewModelTests: XCTestCase {
     let mockDependency = DependencyContainer()
@@ -14,9 +14,9 @@ final class SelfieCaptureViewModelTests: XCTestCase {
                             prodUrl: "url", testUrl: "url",
                             prodLambdaUrl: "url",
                             testLambdaUrl: "url")
-        SmileIdentity.initialize(config: config)
+        SmileID.initialize(config: config)
         DependencyAutoResolver.set(resolver: mockDependency)
-        mockDependency.register(SmileIdentityServiceable.self, creation: {
+        mockDependency.register(SmileIDServiceable.self, creation: {
             self.mockService
         })
     }
