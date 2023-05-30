@@ -2,18 +2,18 @@ name: SDK Build Actions
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
   workflow_call:
     inputs:
       version_override:
         type: string
-        description: 'The version to release. If not specified, the version will be inferred'
+        description: "The version to release. If not specified, the version will be inferred"
         required: false
-        default: ''
+        default: ""
       bump_version:
         type: boolean
-        description: 'Whether to automatically bump and commit the version after the release'
+        description: "Whether to automatically bump and commit the version after the release"
         required: true
         default: true
 
@@ -22,15 +22,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   build-package-macos-latest:
     name: "Build Package"
     runs-on: macos-13
     strategy:
       matrix:
         xcode:
-        - '14.2' # Swift 5.7
-        - '14.3' # Swift 5.8
+          - "14.2" # Swift 5.7
+          - "14.3" # Swift 5.8
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
@@ -81,7 +80,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
-          xcode: '14.3' # Swift 5.8
+          xcode: "14.3" # Swift 5.8
       - name: Test Package
         run: bundle exec rake test:package
       - name: Process test artifacts
@@ -127,41 +126,6 @@ jobs:
           # XCFrameworks are forwards-compatible but not backwards-compatible.
           # The Xcode version we use for this job is that oldest Xcode version that
           # will be able to use these XCFrameworks and the Smile ID spm package.
-          xcode: '14.2' # Swift 5.7
+          xcode: "14.2" # Swift 5.7
       - name: Build XCFramework
         run: bundle exec rake build:xcframework
-      - name: Upload XCFramework
-        uses: actions/upload-artifact@v3
-        with:
-          name: BuildProducts
-          # The xcframework is at the path `release/SmileIdentity.zip`.
-          # GitHub always zips the artifacts before uploading, so if we uploaded the .zip
-          # directly then it would actually upload a double-zip (a .zip containing our `SmileIdentity.zip`).
-          # This is confusing especially since macOS Archive Utility automatially unzips both layers at once.
-          # Instead, we upload the entire artifacts folder, resulting in an `XCFramework.zip` that unzips
-          # to an `artifacts` directory containing our `SmileIdentity.zip`.
-          path: release
-      - name: Upload to AWS
-        if: ${{ github.event_name == 'workflow_dispatch'}}
-        uses: shallwefootball/s3-upload-action@master
-        with:
-          aws_key_id: ${{secrets.AWS_KEY_ID}}
-          aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws_bucket: ${{secrets.AWS_BUCKET}}
-          source_dir: release
-          destination_dir: ios-releases/${{inputs.version_override}}/
-      - name: Push Tag
-        if: ${{ github.event_name == 'workflow_dispatch'}}
-        run: |
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git tag -a "${tag}" -m "${message}"
-          git push origin "${tag}"
-        env:
-          tag: v${{inputs.version_override}}
-          message: Release v${{inputs.version_override}}
-      - name: Update Pod
-        if: ${{ github.event_name == 'workflow_dispatch'}}
-        run: pod trunk push SmileID.podspec
-        env:
-          COCOAPODS_TRUNK_TOKEN: '${{ secrets.COCOAPODS_TRUNK_TOKEN }}'

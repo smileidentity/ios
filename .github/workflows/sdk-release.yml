@@ -5,20 +5,47 @@ on:
     inputs:
       version_override:
         type: string
-        description: 'The version to release. If not specified, the version will be inferred'
+        description: "The version to release. If not specified, the version will be inferred"
         required: false
-        default: ''
+        default: ""
       bump_version:
         type: boolean
-        description: 'Whether to automatically bump and commit the version after the release'
+        description: "Whether to automatically bump and commit the version after the release"
         required: true
         default: true
 
 jobs:
   run-build-checks:
-   uses: ./.github/workflows/sdk-primary.yml
-   secrets: inherit
-   with:
-    version_override: ${{ inputs.version_override }}
-    bump_version: ${{ inputs.bump_version }}
-   
+    uses: ./.github/workflows/sdk-primary.yml
+    secrets: inherit
+    with:
+      version_override: ${{ inputs.version_override }}
+      bump_version: ${{ inputs.bump_version }}
+  release-ios-sdk:
+    name: "Release the iOS SDK"
+    runs-on: macos-13
+    steps:
+      - name: Upload to AWS
+        if: ${{ github.event_name == 'workflow_dispatch'}}
+        uses: shallwefootball/s3-upload-action@master
+        with:
+          aws_key_id: ${{secrets.AWS_KEY_ID}}
+          aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: ${{secrets.AWS_BUCKET}}
+          source_dir: release
+          destination_dir: ios-releases/${{inputs.version_override}}/
+      - name: Push Tag
+        if: ${{ github.event_name == 'workflow_dispatch'}}
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git tag -a "${tag}" -m "${message}"
+          git push origin "${tag}"
+        env:
+          tag: v${{inputs.version_override}}
+          message: Release v${{inputs.version_override}}
+      - name: Update Pod
+        if: ${{ github.event_name == 'workflow_dispatch'}}
+        run: pod trunk push SmileID.podspec
+        env:
+          COCOAPODS_TRUNK_TOKEN: "${{ secrets.COCOAPODS_TRUNK_TOKEN }}"
