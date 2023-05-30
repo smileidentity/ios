@@ -9,7 +9,7 @@ namespace :build do
 
     desc 'Builds the Smile ID package for iOS'
     task :iOS do
-      xcodebuild('build -scheme "SmileIdentity" -destination generic/platform=iOS')
+      xcodebuild('build -scheme "SmileID" -destination generic/platform=iOS')
     end
   end
 
@@ -29,20 +29,25 @@ namespace :build do
     sh 'rm -rf .build/archives'
     sh 'rm -rf release'
     sh 'mint run unsignedapps/swift-create-xcframework --zip'
-    sh 'rm -rf SmileIdentity.xcframework'
-    sh 'swift package compute-checksum SmileIdentity.zip'
+    sh 'rm -rf SmileID.xcframework'
+    sh 'swift package compute-checksum SmileID.zip'
     sh 'mkdir release'
-    sh 'mv SmileIdentity.zip SmileIdentity.sha256 release/'
+    sh 'mv SmileID.zip SmileID.sha256 release/'
   end
 end
   
 namespace :test do
   desc 'Tests the package , processed the test results and tests spm compatibility'
-  task all: ['package', 'process', 'spm']
+  task all: ['package', 'process', 'spm','example']
   desc 'Tests the Smile ID package for iOS'
   task :package do
     sh 'rm -rf Tests/Artifacts'
-    xcodebuild('test  -scheme "SmileIdentity" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)" -resultBundlePath Tests/Artifacts/SmileIdentityTests.xcresult')
+    xcodebuild('test  -scheme "SmileID" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)" -resultBundlePath Tests/Artifacts/SmileIdentityTests.xcresult')
+  end
+
+  desc 'Tests the example app unit tests'
+  task :example do
+    xcodebuild('test -project Example/SmileIdentity.xcodeproj  -scheme "SmileIdentityTests" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)"')
   end
 
   desc 'Processes .xcresult artifacts from the most recent test:package execution'
@@ -52,7 +57,7 @@ namespace :test do
 
   desc 'Tests Swift Package Manager support'
   task :spm do
-    xcodebuild('build -scheme "SmileIdentity" -destination generic/platform=iOS')
+    xcodebuild('build -scheme "SmileID" -destination generic/platform=iOS')
   end
 end
   

@@ -21,13 +21,13 @@ struct FaceOverlayView: View {
 
                         )
                         .overlay(FaceShape()
-                            .stroke(SmileIdentity.theme.accent.opacity(0.4),
+                            .stroke(SmileID.theme.accent.opacity(0.4),
                                     lineWidth: 10)
                                 .frame(width: faceWidth,
                                        height: faceHeight))
                         .overlay(FaceShape()
                             .trim(from: 0, to: model.progress)
-                            .stroke(SmileIdentity.theme.success, style: StrokeStyle(
+                            .stroke(SmileID.theme.success, style: StrokeStyle(
                                 lineWidth: 10,
                                 lineCap: .round))
                                 .frame(width: faceWidth,

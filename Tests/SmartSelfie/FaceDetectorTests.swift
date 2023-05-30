@@ -1,5 +1,5 @@
 import XCTest
-@testable import SmileIdentity
+@testable import SmileID
 
 final class FaceDetectorTests: XCTestCase {
 

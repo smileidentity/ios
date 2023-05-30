@@ -8,13 +8,13 @@ struct SelfieConfirmationView: View {
             VStack(spacing: 16) {
                 Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.GoodSelfie"))
                     .multilineTextAlignment(.center)
-                    .font(SmileIdentity.theme.header2)
-                    .foregroundColor(SmileIdentity.theme.accent)
+                    .font(SmileID.theme.header2)
+                    .foregroundColor(SmileID.theme.accent)
 
                 Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.FaceClear"))
                     .multilineTextAlignment(.center)
-                    .font(SmileIdentity.theme.header5)
-                    .foregroundColor(SmileIdentity.theme.tertiary)
+                    .font(SmileID.theme.header5)
+                    .foregroundColor(SmileID.theme.tertiary)
                     .lineSpacing(1.3)
             }
             VStack {
@@ -37,7 +37,7 @@ struct SelfieConfirmationView: View {
             }.padding()
         }
         .padding(.top, 64)
-        .background(SmileIdentity.theme.backgroundMain)
+        .background(SmileID.theme.backgroundMain)
         .cornerRadius(20)
         .shadow(radius: 20)
     }

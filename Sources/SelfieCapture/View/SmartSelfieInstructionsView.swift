@@ -25,14 +25,14 @@ public struct SmartSelfieInstructionsView: View {
                         VStack(spacing: 32) {
                             Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Header"))
                                 .multilineTextAlignment(.center)
-                                .font(SmileIdentity.theme.header1)
-                                .foregroundColor(SmileIdentity.theme.accent)
+                                .font(SmileID.theme.header1)
+                                .foregroundColor(SmileID.theme.accent)
                                 .lineSpacing(0.98)
                                 .fixedSize(horizontal: false, vertical: true)
                             Text(SmileIDResourcesHelper.localizedString(for: "Instructions.Callout"))
                                 .multilineTextAlignment(.center)
-                                .font(SmileIdentity.theme.header5)
-                                .foregroundColor(SmileIdentity.theme.tertiary)
+                                .font(SmileID.theme.header5)
+                                .foregroundColor(SmileID.theme.tertiary)
                                 .lineSpacing(1.3)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -78,7 +78,7 @@ public struct SmartSelfieInstructionsView: View {
                                 leading: 24,
                                 bottom: 24,
                                 trailing: 24))
-            .background(SmileIdentity.theme.backgroundMain.edgesIgnoringSafeArea(.all))
+            .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
         }
     }
 
@@ -89,12 +89,12 @@ public struct SmartSelfieInstructionsView: View {
             }
             VStack(alignment: .leading, spacing: 7) {
                 Text(SmileIDResourcesHelper.localizedString(for: title.stringKey))
-                    .font(SmileIdentity.theme.header4)
-                    .foregroundColor(SmileIdentity.theme.accent)
+                    .font(SmileID.theme.header4)
+                    .foregroundColor(SmileID.theme.accent)
                 Text(SmileIDResourcesHelper.localizedString(for: body.stringKey))
                     .multilineTextAlignment(.leading)
-                    .font(SmileIdentity.theme.header5)
-                    .foregroundColor(SmileIdentity.theme.tertiary)
+                    .font(SmileID.theme.header5)
+                    .foregroundColor(SmileID.theme.tertiary)
                     .lineSpacing(1.3)
                     .fixedSize(horizontal: false, vertical: true)
             }

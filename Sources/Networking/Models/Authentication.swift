@@ -7,9 +7,9 @@ public struct AuthenticationRequest: Codable {
     var jobId: String?
     var userId: String?
     internal var signature = true
-    internal var production = !SmileIdentity.useSandbox
-    internal var partnerId = SmileIdentity.config.partnerId
-    internal var authToken = SmileIdentity.config.authToken
+    internal var production = !SmileID.useSandbox
+    internal var partnerId = SmileID.config.partnerId
+    internal var authToken = SmileID.config.authToken
 
     enum CodingKeys: String, CodingKey {
         case jobType = "job_type"

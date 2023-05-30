@@ -1,14 +1,14 @@
 import Foundation
 import Combine
 
-public protocol SmileIdentityServiceable {
+public protocol SmileIDServiceable {
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error>
     func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error>
     func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error>
     func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error>
 }
 
-public class SmileIdentityService: SmileIdentityServiceable, ServiceRunnable {
+public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     @Injected var serviceClient: RestServiceClient
     typealias PathType = String
 

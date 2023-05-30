@@ -2,7 +2,7 @@ import AVFoundation
 
 class FrameManager: NSObject, ObservableObject {
      @Published var sampleBuffer: CVPixelBuffer?
-     let videoOutputQueue = DispatchQueue(label: "com.smileidentity.videooutput",
+     let videoOutputQueue = DispatchQueue(label: "com.smileid.videooutput",
                                           qos: .userInitiated,
                                           attributes: [],
                                           autoreleaseFrequency: .workItem)

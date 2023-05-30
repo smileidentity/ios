@@ -4,7 +4,7 @@ public struct PrepUploadRequest: Codable {
     var filename: String = "upload.zip"
     var partnerParams: PartnerParams
     var callbackUrl: String? = ""
-    var partnerId = SmileIdentity.config.partnerId
+    var partnerId = SmileID.config.partnerId
     var sourceSdk = "IOS"
     // TO-DO: Fetch version dynamically
     var sourceSdkVersion = "0.1.0"
