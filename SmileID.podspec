@@ -24,8 +24,8 @@ Smile Identity SDK for selfie capture, identity card verification and Smile KYC 
   s.homepage         = 'https://docs.smileidentity.com/mobile/ios'
   s.license          = 'MIT'
   s.author           = { 'Smile ID' => 'mobile@smileidentity.com' }
-  s.source           = { :http => "https://smile-sdks.s3.us-west-2.amazonaws.com/ios-releases/#{s.version}/SmileIdentity.zip"}
-  s.vendored_frameworks = "SmileIdentity.xcframework"
+  s.source           = { :http => "https://smile-sdks.s3.us-west-2.amazonaws.com/ios-releases/#{s.version}/SmileID.zip"}
+  s.vendored_frameworks = "SmileID.xcframework"
   s.ios.deployment_target = '13.0'
   s.swift_version    = "5.8"
   s.swift_versions   = ["5.7", "5.8"]
