@@ -1,7 +1,6 @@
 import UIKit
 import SmileID
 import SwiftUI
-
 @UIApplicationMain
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
