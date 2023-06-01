@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-import SmileIdentity
+import SmileID
 
 class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
     @Published var product: JobType? {
@@ -36,6 +36,4 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
     func didError(error: Error) {
         
     }
-
-    
 }

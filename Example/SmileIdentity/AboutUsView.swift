@@ -1,5 +1,5 @@
 import SwiftUI
-import SmileIdentity
+import SmileID
 
 struct AboutUsView: View {
 
@@ -36,7 +36,7 @@ struct AboutUsView: View {
                     }
                 })
 
-            }.font(SmileIdentity.theme.body)
+            }.font(SmileID.theme.body)
                 .background(offWhite)
                 .navigationBarTitle("Smile ID", displayMode: .inline)
                 .navigationBarColor(sand)

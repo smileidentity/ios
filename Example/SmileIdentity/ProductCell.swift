@@ -1,5 +1,5 @@
 import SwiftUI
-import SmileIdentity
+import SmileID
 
 struct ProductCell: View {
     var productImage: String
@@ -12,12 +12,12 @@ struct ProductCell: View {
                 .frame(width: 50, height: 50)
             Text(productName)
                 .multilineTextAlignment(.center)
-                .font(SmileIdentity.theme.header4)
+                .font(SmileID.theme.header4)
                 .foregroundColor(offWhite)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: 150)
-        .background(SmileIdentity.theme.accent)
+        .background(SmileID.theme.accent)
         .cornerRadius(6)
     }
 }
