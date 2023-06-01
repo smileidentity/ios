@@ -1,5 +1,5 @@
 import SwiftUI
-import SmileIdentity
+import SmileID
 
 struct HomeView: View {
     var userID = ""
@@ -11,22 +11,22 @@ struct HomeView: View {
         NavigationView {
             VStack(spacing: 20) {
                 Text("Test Our Products")
-                    .font(SmileIdentity.theme.header2)
+                    .font(SmileID.theme.header2)
                 HStack(spacing: 15) {
                     Button(action: {self.viewModel.handleSmartSelfieEnrolmentTap()}) {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nEnrolment")
                     }
 
-                    .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {SmileIdentity.smartSelfieRegistrationScreen(userId: "", delegate: viewModel)})
+                    .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {SmileID.smartSelfieRegistrationScreen(userId: "", delegate: viewModel)})
                     Button(action: {self.viewModel.handleSmartSelfieAuthTap()}) {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nAuthentication")
                     }
-                    .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {SmileIdentity.smartSelfieRegistrationScreen(userId: "", delegate: viewModel)})
+                    .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {SmileID.smartSelfieRegistrationScreen(userId: "", delegate: viewModel)})
                 }
                 Spacer()
             }
             .padding()
-            .navigationBarTitle(Text("Smile ID").font(SmileIdentity.theme.header1), displayMode: .inline)
+            .navigationBarTitle(Text("Smile ID").font(SmileID.theme.header1), displayMode: .inline)
             .background(offWhite.edgesIgnoringSafeArea(.all))
         }
     }
