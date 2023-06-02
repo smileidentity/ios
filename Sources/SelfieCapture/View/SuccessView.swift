@@ -11,13 +11,13 @@ struct SuccessView: View {
             VStack(spacing: 16) {
                 Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.SelfieCaptureComplete"))
                     .multilineTextAlignment(.center)
-                    //.font(SmileID.theme.header4)
+                    .font(SmileID.theme.header4)
                     .foregroundColor(SmileID.theme.accent)
 
                 Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.SuccessBody"))
                     .multilineTextAlignment(.center)
-                    //.font(SmileID.theme.header5)
-                    //.foregroundColor(SmileID.theme.tertiary)
+                    .font(SmileID.theme.header5)
+                    .foregroundColor(SmileID.theme.tertiary)
                     .lineSpacing(1.3)
             }
             .padding(.bottom, 30)
@@ -26,7 +26,6 @@ struct SuccessView: View {
                         title: "Confirmation.Continue",
                         clicked: {
                 viewModel.handleSuccess()
-                presentationMode.wrappedValue.dismiss()
             })
         }
         .padding()

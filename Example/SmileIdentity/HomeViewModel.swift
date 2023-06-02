@@ -20,6 +20,15 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
     }
     @Published var presentSmartSelfieAuth = false
     @Published var presentSmartSelfieEnrolment = false
+    @Published var dismissed = false
+
+    private var userID = ""
+    var returnedUserID = ""
+
+    func generateUserID() -> String {
+        userID = UUID().uuidString
+        return userID
+    }
 
     func handleSmartSelfieEnrolmentTap() {
         self.product = .smartSelfieEnrollment
@@ -30,10 +39,11 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
     }
 
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
+        returnedUserID = userID
 
     }
 
     func didError(error: Error) {
-        
+
     }
 }

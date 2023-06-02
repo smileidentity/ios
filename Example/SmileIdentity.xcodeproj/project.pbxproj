@@ -21,6 +21,9 @@
 		917F3BFC2A0BC6DF00BCC30E /* UserIDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917F3BFB2A0BC6DF00BCC30E /* UserIDViewController.swift */; };
 		91941A662A2103E200FFFB26 /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 91941A652A2103E200FFFB26 /* SmileID */; };
 		91BA87D02A1EF4C000855648 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BA87CF2A1EF4C000855648 /* HomeViewModel.swift */; };
+		91E625F02A28F1F100BEA938 /* EnterUserIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E625EF2A28F1F100BEA938 /* EnterUserIDView.swift */; };
+		91E625F22A29EFA200BEA938 /* SmileTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E625F12A29EFA200BEA938 /* SmileTextField.swift */; };
+		91E625F42A2A041C00BEA938 /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E625F32A2A041C00BEA938 /* ToggleButton.swift */; };
 		91EF4D642A0BB3CD00C5931E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF4D622A0BB3CD00C5931E /* Constants.swift */; };
 		91EF4D652A0BB3CD00C5931E /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF4D632A0BB3CD00C5931E /* CopyableLabel.swift */; };
 		91EF4D672A0BB3EF00C5931E /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF4D662A0BB3EF00C5931E /* HomeViewController.swift */; };
@@ -44,6 +47,9 @@
 		910FA1E22A1E3DA900E8AA27 /* SampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleApp.swift; sourceTree = "<group>"; };
 		917F3BFB2A0BC6DF00BCC30E /* UserIDViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserIDViewController.swift; sourceTree = "<group>"; };
 		91BA87CF2A1EF4C000855648 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		91E625EF2A28F1F100BEA938 /* EnterUserIDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterUserIDView.swift; sourceTree = "<group>"; };
+		91E625F12A29EFA200BEA938 /* SmileTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileTextField.swift; sourceTree = "<group>"; };
+		91E625F32A2A041C00BEA938 /* ToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
 		91EF4D622A0BB3CD00C5931E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		91EF4D632A0BB3CD00C5931E /* CopyableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
 		91EF4D662A0BB3EF00C5931E /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -89,9 +95,12 @@
 				910FA1E22A1E3DA900E8AA27 /* SampleApp.swift */,
 				910FA1DE2A1E2C1A00E8AA27 /* AboutUsView.swift */,
 				910FA1D62A1D965300E8AA27 /* MainView.swift */,
+				91E625EF2A28F1F100BEA938 /* EnterUserIDView.swift */,
 				91EF4D622A0BB3CD00C5931E /* Constants.swift */,
 				910FA1E02A1E2F0A00E8AA27 /* ResourcesView.swift */,
+				91E625F32A2A041C00BEA938 /* ToggleButton.swift */,
 				910FA1DA2A1D9CEF00E8AA27 /* ProductCell.swift */,
+				91E625F12A29EFA200BEA938 /* SmileTextField.swift */,
 				910FA1D82A1D9AAB00E8AA27 /* HomeView.swift */,
 				91BA87CF2A1EF4C000855648 /* HomeViewModel.swift */,
 				917F3BFB2A0BC6DF00BCC30E /* UserIDViewController.swift */,
@@ -219,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				91EF4D672A0BB3EF00C5931E /* HomeViewController.swift in Sources */,
+				91E625F42A2A041C00BEA938 /* ToggleButton.swift in Sources */,
 				910FA1D92A1D9AAB00E8AA27 /* HomeView.swift in Sources */,
 				910FA1D72A1D965300E8AA27 /* MainView.swift in Sources */,
 				91EF4D642A0BB3CD00C5931E /* Constants.swift in Sources */,
@@ -226,8 +236,10 @@
 				91EF4D652A0BB3CD00C5931E /* CopyableLabel.swift in Sources */,
 				910FA1E32A1E3DA900E8AA27 /* SampleApp.swift in Sources */,
 				91BA87D02A1EF4C000855648 /* HomeViewModel.swift in Sources */,
+				91E625F22A29EFA200BEA938 /* SmileTextField.swift in Sources */,
 				910FA1DB2A1D9CEF00E8AA27 /* ProductCell.swift in Sources */,
 				917F3BFC2A0BC6DF00BCC30E /* UserIDViewController.swift in Sources */,
+				91E625F02A28F1F100BEA938 /* EnterUserIDView.swift in Sources */,
 				910FA1DF2A1E2C1A00E8AA27 /* AboutUsView.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
