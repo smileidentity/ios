@@ -12,21 +12,25 @@ struct HomeView: View {
             VStack(spacing: 20) {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
+                    .foregroundColor(.black)
                 HStack(spacing: 15) {
                     Button(action: {self.viewModel.handleSmartSelfieEnrolmentTap()}) {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nEnrolment")
                     }
 
-                    .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {SmileID.smartSelfieRegistrationScreen(userId: "", delegate: viewModel)})
+                    .sheet(isPresented: $viewModel.presentSmartSelfieEnrolment, content: {SmileID.smartSelfieRegistrationScreen(userId: viewModel.generateUserID(), delegate: viewModel)})
                     Button(action: {self.viewModel.handleSmartSelfieAuthTap()}) {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nAuthentication")
                     }
-                    .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {SmileID.smartSelfieRegistrationScreen(userId: "", delegate: viewModel)})
+                    .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
+                        EnterUserIDView(userId: viewModel.returnedUserID, viewModel: UserIDViewModel())
+                    })
                 }
                 Spacer()
             }
             .padding()
             .navigationBarTitle(Text("Smile ID").font(SmileID.theme.header1), displayMode: .inline)
+            .navigationBarItems(trailing: ToggleButton())
             .background(offWhite.edgesIgnoringSafeArea(.all))
         }
     }

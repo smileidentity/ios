@@ -14,19 +14,19 @@ struct AboutUsView: View {
                     Image(systemName: "info.circle.fill")
                     Text("Who we are")
                 }
-                    Button(action: {
-                        if let url = URL(string: "https://www.mylink.com") {
-                            UIApplication.shared.open(url)
-                        }
-                    }, label: {
-                        HStack(spacing: 10) {
-                            Image(systemName: "star.fill")
-                            Text("Visit our website")
-                        }
-                    })
+                Button(action: {
+                    if let url = URL(string: "https://smileidentity.com") {
+                        UIApplication.shared.open(url)
+                    }
+                }, label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "star.fill")
+                        Text("Visit our website")
+                    }
+                })
 
                 Button(action: {
-                    if let url = URL(string: "https://www.mylink.com") {
+                    if let url = URL(string: "https://smileidentity.com/contact-us") {
                         UIApplication.shared.open(url)
                     }
                 }, label: {
@@ -36,10 +36,11 @@ struct AboutUsView: View {
                     }
                 })
 
-            }.font(SmileID.theme.body)
-                .background(offWhite)
-                .navigationBarTitle("Smile ID", displayMode: .inline)
-                .navigationBarColor(sand)
+            }
+            .font(SmileID.theme.body)
+            .background(offWhite)
+            .navigationBarTitle("Smile ID", displayMode: .inline)
+            .navigationBarColor(sand)
         }
     }
 }

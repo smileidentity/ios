@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct SmileButton: View {
+public struct SmileButton: View {
 
-    enum Style {
+    public enum Style {
         case primary
         case secondary
         case destructive
@@ -17,7 +17,7 @@ struct SmileButton: View {
     var clicked: (() -> Void)
     var style: Style
 
-    init(style: Style = .primary, title: LocalizedStringKey,
+    public init(style: Style = .primary, title: LocalizedStringKey,
          backgroundColor: Color = SmileID.theme.accent,
          clicked: @escaping (() -> Void)) {
         self.style = style
@@ -46,7 +46,7 @@ struct SmileButton: View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         if let titleKey = title.stringKey {
             Button(action: clicked) {
                 Text(SmileIDResourcesHelper.localizedString(for: titleKey))

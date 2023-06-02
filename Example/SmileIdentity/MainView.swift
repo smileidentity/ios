@@ -18,17 +18,17 @@ struct MainView: View {
                 }
                 .edgesIgnoringSafeArea(.all)
 
-            AboutUsView()
-                .tabItem {
-                    Image(systemName: "info.circle")
-                    Text("Resources")
-                }
+//            AboutUsView()
+//                .tabItem {
+//                    Image(systemName: "info.circle")
+//                    Text("Resources")
+//                }
 
-            AboutUsView()
-                .tabItem {
-                    Image(systemName: "gearshape.fill")
-                    Text("About us")
-                }
+//            AboutUsView()
+//                .tabItem {
+//                    Image(systemName: "gearshape.fill")
+//                    Text("About us")
+//                }
         }
         .background(offWhite)
         .edgesIgnoringSafeArea(.all)

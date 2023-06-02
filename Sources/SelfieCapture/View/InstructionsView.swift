@@ -33,7 +33,7 @@ extension InstructionsView {
             } else if model.isAcceptableBounds == .detectedFaceTooLarge {
                 return "Instructions.FaceClose"
             } else {
-                return "Instructions.UnknownError"
+                return "Instructions.Capturing"
             }
         case .multipleFacesDetected:
             return "Instructions.MultipleFaces"
