@@ -3,10 +3,8 @@ import SmileID
 
 struct HomeView: View {
     var userID = ""
-    @ObservedObject var viewModel: HomeViewModel
-    init() {
-        viewModel = HomeViewModel()
-    }
+    @ObservedObject var viewModel = HomeViewModel()
+
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -27,6 +25,13 @@ struct HomeView: View {
                     })
                 }
                 Spacer()
+
+            }
+            .toast(isPresented: $viewModel.showToast) {
+                Text(viewModel.toastMessage)
+                    .font(SmileID.theme.body)
+                    .multilineTextAlignment(.center)
+                    .padding()
             }
             .padding()
             .navigationBarTitle(Text("Smile ID").font(SmileID.theme.header1), displayMode: .inline)

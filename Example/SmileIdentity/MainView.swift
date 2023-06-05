@@ -1,10 +1,15 @@
 import SwiftUI
-
+import SmileID
 struct MainView: View {
 
     init() {
         UITabBar.appearance().barTintColor = offWhiteUIColor
-        UITabBar.appearance().tintColor = .blue
+        if #available(iOS 14.0, *) {
+            UITabBar.appearance().tintColor = UIColor(SmileID.theme.accent)
+        } else {
+            // Fallback on earlier versions
+            UITabBar.appearance().tintColor = .blue
+        }
         UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont(name: "Georgia-Bold", size: 30)!]
     }
 
@@ -30,8 +35,9 @@ struct MainView: View {
 //                    Text("About us")
 //                }
         }
-        .background(offWhite)
+        .background(offWhite.edgesIgnoringSafeArea(.all))
         .edgesIgnoringSafeArea(.all)
+        .preferredColorScheme(.light)
     }
 }
 
