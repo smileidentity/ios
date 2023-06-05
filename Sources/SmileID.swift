@@ -20,7 +20,7 @@ public class SmileID {
     private init() {}
     internal static var config: Config!
     internal static var useSandbox = true
-    internal static var theme: SmileIdTheme = DefaultTheme()
+    private (set) public static var theme: SmileIdTheme = DefaultTheme()
 
     public class func initialize(config: Config, useSandbox: Bool = true) {
         self.config = config

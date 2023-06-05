@@ -19,7 +19,7 @@ public class SmileIDResourcesHelper {
               Bundle(for: SmileIDResourcesHelper.self).resourceURL
           ]
 
-          let bundleName = "SmileIdentity_SmileIdentity"
+          let bundleName = "SmileID_SmileID"
 
           for candidate in candidates {
               let bundlePath = candidate?.appendingPathComponent(bundleName + ".bundle")
@@ -60,7 +60,7 @@ public class SmileIDResourcesHelper {
     public static var Light = SmileIDResourcesHelper.image("Light")!
     public static var SmileEmblem = SmileIDResourcesHelper.image("SmileEmblem")!
     public static var FaceOutline = SmileIDResourcesHelper.image("FaceOutline")!
-    public static var Scan = SmileIDResourcesHelper.image("Scan")!
+    public static var Scan = SmileIDResourcesHelper.image("scan")!
     public static var CheckBold = SmileIDResourcesHelper.image("CheckBold")!
     public static var Close = SmileIDResourcesHelper.image("Close")!
     public static var ArrowLeft = SmileIDResourcesHelper.image("ArrowLeft")!

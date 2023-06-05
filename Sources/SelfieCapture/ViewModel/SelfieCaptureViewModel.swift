@@ -13,10 +13,28 @@ enum SelfieCaptureViewModelAction {
     case faceQualityObservationDetected(FaceQualityModel)
 }
 
-enum ProcessingState {
+enum ProcessingState: Equatable {
+    static func == (lhs: ProcessingState, rhs: ProcessingState) -> Bool {
+        switch (lhs, rhs) {
+        case (let .success(response1), let .success(response2)):
+            return response1.timestamp == response2.timestamp
+        case (let .error(error1), let .error(error2)):
+           return error1.localizedDescription == error2.localizedDescription
+        case (.confirmation, .confirmation):
+            return true
+        case (.endFlow, .endFlow):
+            return true
+        case (.inProgress, .inProgress):
+            return true
+        default:
+            return false
+        }
+    }
+
     case confirmation
     case inProgress
     case success(JobStatusResponse)
+    case endFlow
     case error(Error)
 }
 
@@ -240,6 +258,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                 switch completion {
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
+                        print("error is \(error.localizedDescription)")
                         self?.processingState = .error(error)
                     }
                 default:
@@ -296,6 +315,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     func handleSuccess() {
         switch processingState {
         case .success(let response):
+            processingState = .endFlow
             captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
                                               livenessImages: livenessImages,
                                               jobStatusResponse: response)

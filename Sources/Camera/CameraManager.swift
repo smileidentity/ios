@@ -20,11 +20,6 @@ class CameraManager: ObservableObject {
     private let videoOutput = AVCaptureVideoDataOutput()
     private var status = Status.unconfigured
 
-    init() {
-        guard !isPreview else { return }
-        configure()
-    }
-
     private func set(error: CameraError?) {
         DispatchQueue.main.async {
             self.error = error
@@ -109,10 +104,11 @@ class CameraManager: ObservableObject {
     }
 
     func configure() {
-        checkPermissions()
+        self.checkPermissions()
         sessionQueue.async {
           self.configureCaptureSession()
-          self.session.startRunning()
+            guard !self.session.isRunning else { return }
+            self.session.startRunning()
         }
     }
 
