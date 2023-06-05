@@ -29,9 +29,9 @@ struct ProductCell_Previews: PreviewProvider {
     }
 }
 
-let offWhite = Color(hex: "#F9F0E7")
+let offWhite = Color(hex: "#DBDBC4")
 let sand = Color(hex: "#DBDBC4")
-let offWhiteUIColor = UIColor(red: 0.976, green: 0.941, blue: 0.906, alpha: 1)
+let offWhiteUIColor = UIColor(red: 219/256, green: 219/256, blue: 196/256, alpha: 1)
 
 extension Color {
     init(hex: String) {
