@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SuccessView: View {
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: SelfieCaptureViewModel
 
     var body: some View {
@@ -10,13 +11,13 @@ struct SuccessView: View {
             VStack(spacing: 16) {
                 Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.SelfieCaptureComplete"))
                     .multilineTextAlignment(.center)
-                    //.font(SmileID.theme.header4)
+                    .font(SmileID.theme.header4)
                     .foregroundColor(SmileID.theme.accent)
 
                 Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.SuccessBody"))
                     .multilineTextAlignment(.center)
-                    //.font(SmileID.theme.header5)
-                    //.foregroundColor(SmileID.theme.tertiary)
+                    .font(SmileID.theme.header5)
+                    .foregroundColor(SmileID.theme.tertiary)
                     .lineSpacing(1.3)
             }
             .padding(.bottom, 30)

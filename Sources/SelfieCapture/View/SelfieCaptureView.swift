@@ -46,7 +46,7 @@ public struct SelfieCaptureView: View {
                     ModalPresenter { SuccessView(viewModel: viewModel) }
                 case .error:
                     ModalPresenter { ErrorView(viewModel: viewModel) }
-                case .none:
+                default:
                     Text("")
                 }
 
@@ -56,12 +56,18 @@ public struct SelfieCaptureView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: Button {
             presentationMode.wrappedValue.dismiss()
-            viewModel.resetCapture()
         } label: {
             Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
                 .padding()
         })
         .background(SmileID.theme.backgroundMain)
+        .onAppear{
+            viewModel.cameraManager.configure()
+        }
+        .onDisappear{
+            viewModel.cameraManager.stopCaptureSession()
+            viewModel.resetCapture()
+        }
     }
 
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {

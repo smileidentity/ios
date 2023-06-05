@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct SmartSelfieInstructionsView: View {
     @Environment(\.presentationMode) var presentationMode
-    private var viewModel : SelfieCaptureViewModel
+    @ObservedObject private var viewModel : SelfieCaptureViewModel
     private weak var selfieCaptureDelegate: SmartSelfieResultDelegate?
     @State private var goesToDetail: Bool = false
 
@@ -18,6 +18,11 @@ public struct SmartSelfieInstructionsView: View {
     public var body: some View {
         NavigationView {
             VStack {
+                if viewModel.processingState == .endFlow {
+                   let _ = DispatchQueue.main.async {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
                 ScrollView {
                     VStack {
                         Image(uiImage: SmileIDResourcesHelper.InstructionsHeaderIcon)
