@@ -40,7 +40,8 @@ enum ProcessingState: Equatable {
 
 final class SelfieCaptureViewModel: ObservableObject {
     var userId: String
-    var sessionId: String
+    var jobId: String
+    let sessionId = "SID_ Session"
     var isEnroll: Bool
     var showAttribution: Bool
     var faceLayoutGuideFrame = CGRect.zero
@@ -127,10 +128,10 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    init(userId: String, sessionId: String, isEnroll: Bool, showAttribution: Bool = true) {
+    init(userId: String, jobId: String, isEnroll: Bool, showAttribution: Bool = true) {
         self.userId = userId
-        self.sessionId = sessionId
         self.isEnroll = isEnroll
+        self.jobId = jobId
         faceDetectionState = .noFaceDetected
         isAcceptableRoll = false
         isAcceptableYaw = false
@@ -235,7 +236,8 @@ final class SelfieCaptureViewModel: ObservableObject {
         let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
         let authRequest = AuthenticationRequest(jobType: jobType,
                                                 enrollment: isEnroll,
-                                                userId: userId)
+                                                userId: userId,
+                                                jobId: jobId)
 
         SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in

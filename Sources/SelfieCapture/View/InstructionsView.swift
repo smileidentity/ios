@@ -45,8 +45,7 @@ extension InstructionsView {
 
 struct InstructionsView_Previews: PreviewProvider {
     static var previews: some View {
-        InstructionsView(model: SelfieCaptureViewModel(userId: UUID().uuidString,
-                                                       sessionId: UUID().uuidString,
+        InstructionsView(model: SelfieCaptureViewModel(userId: UUID().uuidString, jobId: UUID().uuidString,
                                                        isEnroll: false))
     }
 }
