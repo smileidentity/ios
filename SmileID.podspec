@@ -37,7 +37,7 @@ Pod::Spec.new do |s|
   # dev
   s.source_files = 'SmileID/Classes/**/*'
   s.resource_bundles = {
-    'Resources' => ['SmileID/Assets/Localization/en.lproj','SmileID/Assets/Resources/*.{storyboard,storyboardc,xib,nib,xcassets,json,png,ttf}']
+    'Resources' => ['SmileID/Assets/Resources/*.{storyboard,storyboardc,xib,nib,xcassets,json,png,ttf,lproj}']
   }
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'Tests/*'
