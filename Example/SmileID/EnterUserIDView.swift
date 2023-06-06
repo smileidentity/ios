@@ -54,10 +54,12 @@ class UserIDViewModel: ObservableObject, SmartSelfieResultDelegate {
 
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
         shouldDismiss = true
+        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete")))
     }
 
     func didError(error: Error) {
         shouldDismiss = true
+        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureError")))
     }
 
 

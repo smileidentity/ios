@@ -38,14 +38,6 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
 
     @IBAction func onSmartSelfieAuthenticationTap(_ sender: Any) {
         currentJob = .smartSelfieAuthentication
-        if let userIDController = storyboard?.instantiateViewController(withIdentifier: "UserIDViewController")
-            as? UserIDViewController {
-            userIDController.userID = userID
-            userIDController.handleContinueTap = { [weak self] userid in
-                self?.smartSelfieAuthenticationScreen(userID: userid)
-            }
-            navigationController?.pushViewController(userIDController, animated: true)
-        }
     }
 
     func smartSelfieAuthenticationScreen(userID: String) {

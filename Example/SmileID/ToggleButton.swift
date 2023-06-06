@@ -24,7 +24,7 @@ struct ToggleButton: View {
 }
 
 extension Color {
-    static let amberColor = Color(red: 1.0, green: 0.75, blue: 0.0)
+    static let amberColor = Color(red: 45/255, green: 43/255, blue: 42/255)
 }
 
 
