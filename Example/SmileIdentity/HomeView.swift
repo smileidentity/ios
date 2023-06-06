@@ -16,7 +16,9 @@ struct HomeView: View {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nEnrollment")
                     }
 
-                    .sheet(isPresented: $viewModel.presentSmartSelfieEnrolment, content: {SmileID.smartSelfieRegistrationScreen(userId: viewModel.generateUserID(), delegate: viewModel)})
+                    .sheet(isPresented: $viewModel.presentSmartSelfieEnrolment,
+                           content: {SmileID.smartSelfieRegistrationScreen(userId: viewModel.generateUserID(),
+                                                                           delegate: viewModel)})
                     Button(action: {self.viewModel.handleSmartSelfieAuthTap()}) {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nAuthentication")
                     }
@@ -71,7 +73,7 @@ struct NavigationBarModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        ZStack{
+        ZStack {
             content
             VStack {
                 GeometryReader { geometry in
