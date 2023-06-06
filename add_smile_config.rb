@@ -1,7 +1,7 @@
 require 'xcodeproj'
 require 'fileutils'
 
-project_path = 'Example/SmileIdentity.xcodeproj'
+project_path = 'Example/SmileID.xcodeproj'
 project = Xcodeproj::Project.open(project_path)
 
 #create file reference
@@ -9,7 +9,7 @@ main_group = project.groups.find { |group| group.display_name == 'Example' }
 smile_config_reference = main_group.new_file('smile_config.json')
 
 #set target membership
-target = project.targets.find { |t| t.name == 'SmileIdentity_Example' }
+target = project.targets.find { |t| t.name == 'SmileID_Example' }
 target.source_build_phase.add_file_reference(smile_config_reference)
 
 #copy to referenced directory
