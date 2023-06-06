@@ -1,0 +1,57 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.8 (swiftlang-5.8.0.124.2 clang-1403.0.22.11.100)
+// swift-module-flags: -target arm64-apple-ios9.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name Zip
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Foundation
+import Swift
+@_exported import Zip
+import _Concurrency
+import _StringProcessing
+extension Zip.Zip {
+  public class func quickUnzipFile(_ path: Foundation.URL) throws -> Foundation.URL
+  public class func quickUnzipFile(_ path: Foundation.URL, progress: ((_ progress: Swift.Double) -> ())?) throws -> Foundation.URL
+  public class func quickZipFiles(_ paths: [Foundation.URL], fileName: Swift.String) throws -> Foundation.URL
+  public class func quickZipFiles(_ paths: [Foundation.URL], fileName: Swift.String, progress: ((_ progress: Swift.Double) -> ())?) throws -> Foundation.URL
+}
+public enum ZipError : Swift.Error {
+  case fileNotFound
+  case unzipFail
+  case zipFail
+  public var description: Swift.String {
+    get
+  }
+  public static func == (a: Zip.ZipError, b: Zip.ZipError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum ZipCompression : Swift.Int {
+  case NoCompression
+  case BestSpeed
+  case DefaultCompression
+  case BestCompression
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public struct ArchiveFile {
+  public init(filename: Swift.String, data: Foundation.NSData, modifiedTime: Foundation.Date?)
+}
+public class Zip {
+  public init()
+  public class func unzipFile(_ zipFilePath: Foundation.URL, destination: Foundation.URL, overwrite: Swift.Bool, password: Swift.String?, progress: ((_ progress: Swift.Double) -> ())? = nil, fileOutputHandler: ((_ unzippedFile: Foundation.URL) -> Swift.Void)? = nil) throws
+  public class func zipFiles(paths: [Foundation.URL], zipFilePath: Foundation.URL, password: Swift.String?, compression: Zip.ZipCompression = .DefaultCompression, progress: ((_ progress: Swift.Double) -> ())?) throws
+  public class func zipData(archiveFiles: [Zip.ArchiveFile], zipFilePath: Foundation.URL, password: Swift.String?, compression: Zip.ZipCompression = .DefaultCompression, progress: ((_ progress: Swift.Double) -> ())?) throws
+  public class func addCustomFileExtension(_ fileExtension: Swift.String)
+  public class func removeCustomFileExtension(_ fileExtension: Swift.String)
+  public class func isValidFileExtension(_ fileExtension: Swift.String) -> Swift.Bool
+  @objc deinit
+}
+extension Zip.ZipError : Swift.Equatable {}
+extension Zip.ZipError : Swift.Hashable {}
+extension Zip.ZipCompression : Swift.Equatable {}
+extension Zip.ZipCompression : Swift.Hashable {}
+extension Zip.ZipCompression : Swift.RawRepresentable {}

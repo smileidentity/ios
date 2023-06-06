@@ -1,0 +1,445 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.8 (swiftlang-5.8.0.124.2 clang-1403.0.22.11.100)
+// swift-module-flags: -target arm64-apple-ios13.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SmileID
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import AVFoundation
+import Accelerate
+import Combine
+import CoreImage
+import CoreVideo
+import Foundation
+import MobileCoreServices
+@_exported import SmileID
+import Swift
+import SwiftUI
+import UIKit
+import VideoToolbox
+import Vision
+import Zip
+import _Concurrency
+import _StringProcessing
+public enum APIError : Swift.Error {
+  case encode(Swift.EncodingError)
+  case request(Foundation.URLError)
+  case decode(Swift.DecodingError)
+  case unknown(Swift.String)
+  case httpStatus(Swift.Int, Foundation.Data)
+}
+extension SmileID.APIError : Foundation.LocalizedError {
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+public struct AuthenticationRequest : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension SmileID.AuthenticationRequest {
+  public init(jobType: SmileID.JobType, enrollment: Swift.Bool, updateEnrolledImage: Swift.Bool, jobId: Swift.String, userId: Swift.String)
+  public init(jobType: SmileID.JobType, enrollment: Swift.Bool, userId: Swift.String)
+}
+public struct AuthenticationResponse : Swift.Decodable {
+  public var success: Swift.Bool
+  public var signature: Swift.String
+  public var timestamp: Swift.String
+  public var partnerParams: SmileID.PartnerParams
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct Config : Swift.Decodable {
+  public var partnerId: Swift.String
+  public var authToken: Swift.String
+  public var prodUrl: Swift.String
+  public var testUrl: Swift.String
+  public var prodLambdaUrl: Swift.String
+  public var testLambdaUrl: Swift.String
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension SmileID.Config {
+  public init(url: Foundation.URL) throws
+}
+public struct EpilogueFont : SmileID.FontType {
+  public static func regular(with size: CoreFoundation.CGFloat) -> SwiftUI.Font
+  public static var pointSize: CoreFoundation.CGFloat {
+    get
+  }
+  public static var medium: SwiftUI.Font {
+    get
+  }
+  public static var bold: SwiftUI.Font {
+    get
+  }
+  public static func medium(with size: CoreFoundation.CGFloat) -> SwiftUI.Font
+  public static func bold(with size: CoreFoundation.CGFloat) -> SwiftUI.Font
+}
+public protocol FontType {
+  static func regular(with size: CoreFoundation.CGFloat) -> SwiftUI.Font
+  static func medium(with size: CoreFoundation.CGFloat) -> SwiftUI.Font
+  static func bold(with size: CoreFoundation.CGFloat) -> SwiftUI.Font
+}
+public struct HTTPHeader : Swift.Equatable {
+  public var name: Swift.String
+  public var value: Swift.String
+  public init(name: Swift.String, value: Swift.String)
+  public static func == (a: SmileID.HTTPHeader, b: SmileID.HTTPHeader) -> Swift.Bool
+}
+public struct HTTPQueryParameters : Swift.Equatable {
+  public var key: Swift.String
+  public var value: [Swift.String]
+  public init(key: Swift.String, values: [Swift.String])
+  public init(key: Swift.String, value: Swift.String)
+  public static func == (a: SmileID.HTTPQueryParameters, b: SmileID.HTTPQueryParameters) -> Swift.Bool
+}
+extension Swift.Array : Swift.ExpressibleByDictionaryLiteral where Element == SmileID.HTTPQueryParameters {
+  public init(dictionaryLiteral elements: (Swift.String, [Swift.String])...)
+  public typealias Key = Swift.String
+  public typealias Value = [Swift.String]
+}
+public struct JobStatusRequest : Swift.Codable {
+  public var userId: Swift.String
+  public var jobId: Swift.String
+  public var includeImageLinks: Swift.Bool
+  public var includeHistory: Swift.Bool
+  public var partnerId: Swift.String
+  public var timestamp: Swift.String
+  public var signature: Swift.String
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct JobStatusResponse : Swift.Codable {
+  public var timestamp: Swift.String
+  public var jobComplete: Swift.Bool
+  public var jobSuccess: Swift.Bool
+  public var code: Swift.String
+  public var result: SmileID.JobResult?
+  public var resultString: Swift.String?
+  public var history: SmileID.JobResult?
+  public var imageLinks: SmileID.ImageLinks?
+  public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
+}
+public struct JobResult : Swift.Codable {
+  public var source: Swift.String
+  public var actions: SmileID.Actions
+  public var resultCode: Swift.Int
+  public var resultText: Swift.String
+  public var resultType: Swift.String
+  public var smileJobId: Swift.String
+  public var partnerParams: SmileID.PartnerParams?
+  public var confidence: Swift.Double
+  public var isFinalResult: Swift.Bool
+  public var isMachineResult: Swift.Bool
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct Actions : Swift.Codable {
+  public var humanReviewCompare: SmileID.ActionResult
+  public var humanReviewLivenessCheck: SmileID.ActionResult
+  public var humanReviewSelfieCheck: SmileID.ActionResult
+  public var humanReviewUpdateSelfie: SmileID.ActionResult
+  public var livenessCheck: SmileID.ActionResult
+  public var selfieCheck: SmileID.ActionResult
+  public var registerSelfie: SmileID.ActionResult
+  public var returnPersonalInfo: SmileID.ActionResult
+  public var selfieProvided: SmileID.ActionResult
+  public var selfieToIdAuthorityCapture: SmileID.ActionResult
+  public var selfieToIdCardCompare: SmileID.ActionResult
+  public var selfieToRegisteredSelfieCompare: SmileID.ActionResult
+  public var updateRegisteredSelfieOnFile: SmileID.ActionResult
+  public var verifyIdNumber: SmileID.ActionResult
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum ActionResult : Swift.String, Swift.Codable {
+  case passed
+  case completed
+  case approved
+  case verified
+  case provisionallyApproved
+  case returned
+  case notReturned
+  case failed
+  case rejected
+  case underReview
+  case unableToDetermine
+  case notApplicable
+  case notVerified
+  case notDone
+  case issuerUnavailable
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct ImageLinks : Swift.Codable {
+  public var selfieImageUrl: Swift.String?
+  public var error: Swift.String?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum JobType : Swift.Int, Swift.Codable {
+  case smartSelfieAuthentication
+  case smartSelfieEnrollment
+  case enhancedKyc
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public struct PartnerParams : Swift.Codable {
+  public var jobId: Swift.String
+  public var userId: Swift.String
+  public var jobType: SmileID.JobType
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct PrepUploadRequest : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct PrepUploadResponse : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+@_Concurrency.MainActor(unsafe) public struct SelfieCaptureView : SwiftUI.View {
+  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+    get
+  }
+  public typealias Body = @_opaqueReturnTypeOf("$s7SmileID17SelfieCaptureViewV4bodyQrvp", 0) __
+}
+@_hasMissingDesignatedInitializers public class DefaultServiceHeaderProvider {
+  @objc deinit
+}
+extension SmileID.HTTPHeader {
+  public static func contentType(value: Swift.String) -> SmileID.HTTPHeader
+}
+@_Concurrency.MainActor(unsafe) public struct SmartSelfieInstructionsView : SwiftUI.View {
+  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+    get
+  }
+  public typealias Body = @_opaqueReturnTypeOf("$s7SmileID27SmartSelfieInstructionsViewV4bodyQrvp", 0) __
+}
+public protocol SmartSelfieResultDelegate : AnyObject {
+  func didSucceed(selfieImage: Foundation.Data, livenessImages: [Foundation.Data], jobStatusResponse: SmileID.JobStatusResponse)
+  func didError(error: any Swift.Error)
+}
+public struct SmileButton : SwiftUI.View {
+  public enum Style {
+    case primary
+    case secondary
+    case destructive
+    public static func == (a: SmileID.SmileButton.Style, b: SmileID.SmileButton.Style) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public init(style: SmileID.SmileButton.Style = .primary, title: SwiftUI.LocalizedStringKey, backgroundColor: SwiftUI.Color = SmileID.theme.accent, clicked: @escaping (() -> Swift.Void))
+  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+    get
+  }
+  public typealias Body = @_opaqueReturnTypeOf("$s7SmileID0A6ButtonV4bodyQrvp", 0) __
+}
+@_hasMissingDesignatedInitializers public class SmileID {
+  public static var api: any SmileID.SmileIDServiceable {
+    get
+  }
+  public static var configuration: SmileID.Config {
+    get
+  }
+  public static var theme: any SmileID.SmileIdTheme {
+    get
+  }
+  public class func initialize(config: SmileID.Config, useSandbox: Swift.Bool = true)
+  public class func apply(_ theme: any SmileID.SmileIdTheme)
+  public class func smartSelfieRegistrationScreen(userId: Swift.String = UUID().uuidString, sessionId: Swift.String = "SID_Session", delegate: any SmileID.SmartSelfieResultDelegate) -> SmileID.SmartSelfieInstructionsView
+  public class func smartSelfieAuthenticationScreen(userId: Swift.String, sessionId: Swift.String = "SID_ Session", delegate: any SmileID.SmartSelfieResultDelegate) -> SmileID.SmartSelfieInstructionsView
+  public class func setEnvironment(useSandbox: Swift.Bool)
+  @objc deinit
+}
+public enum SmileIDError : Swift.Error {
+  case jobStatusTimeOut
+  public static func == (a: SmileID.SmileIDError, b: SmileID.SmileIDError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension SmileID.SmileIDError {
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class SmileIDResourcesHelper {
+  public static let bundle: Foundation.Bundle
+  public static func registerFonts()
+  public static func localizedString(for key: Swift.String?, locale: Foundation.Locale = .current) -> Swift.String
+  public static func image(_ name: Swift.String) -> UIKit.UIImage?
+  public static var ClearImage: UIKit.UIImage
+  public static var Face: UIKit.UIImage
+  public static var InstructionsHeaderIcon: UIKit.UIImage
+  public static var Light: UIKit.UIImage
+  public static var SmileEmblem: UIKit.UIImage
+  public static var FaceOutline: UIKit.UIImage
+  public static var Scan: UIKit.UIImage
+  public static var CheckBold: UIKit.UIImage
+  public static var Close: UIKit.UIImage
+  public static var ArrowLeft: UIKit.UIImage
+  public static let pointSize: CoreFoundation.CGFloat
+  public static func systemFont(ofSize size: CoreFoundation.CGFloat) -> UIKit.UIFont
+  public static func boldSystemFont(ofSize size: CoreFoundation.CGFloat) -> UIKit.UIFont
+  public static func italicSystemFont(ofSize size: CoreFoundation.CGFloat) -> UIKit.UIFont
+  @objc deinit
+}
+public protocol SmileIDServiceable {
+  func authenticate(request: SmileID.AuthenticationRequest) -> Combine.AnyPublisher<SmileID.AuthenticationResponse, any Swift.Error>
+  func prepUpload(request: SmileID.PrepUploadRequest) -> Combine.AnyPublisher<SmileID.PrepUploadResponse, any Swift.Error>
+  func upload(zip: Foundation.Data, to url: Swift.String) -> Combine.AnyPublisher<SmileID.UploadResponse, any Swift.Error>
+  func getJobStatus(request: SmileID.JobStatusRequest) -> Combine.AnyPublisher<SmileID.JobStatusResponse, any Swift.Error>
+}
+@_hasMissingDesignatedInitializers public class SmileIDService : SmileID.SmileIDServiceable {
+  public func authenticate(request: SmileID.AuthenticationRequest) -> Combine.AnyPublisher<SmileID.AuthenticationResponse, any Swift.Error>
+  public func prepUpload(request: SmileID.PrepUploadRequest) -> Combine.AnyPublisher<SmileID.PrepUploadResponse, any Swift.Error>
+  public func upload(zip: Foundation.Data, to url: Swift.String) -> Combine.AnyPublisher<SmileID.UploadResponse, any Swift.Error>
+  public func getJobStatus(request: SmileID.JobStatusRequest) -> Combine.AnyPublisher<SmileID.JobStatusResponse, any Swift.Error>
+  @objc deinit
+}
+public protocol SmileIdTheme {
+  var onDark: SwiftUI.Color { get }
+  var onLight: SwiftUI.Color { get }
+  var backgroundDark: SwiftUI.Color { get }
+  var backgroundMain: SwiftUI.Color { get }
+  var backgroundLight: SwiftUI.Color { get }
+  var backgroundLightest: SwiftUI.Color { get }
+  var accent: SwiftUI.Color { get }
+  var success: SwiftUI.Color { get }
+  var error: SwiftUI.Color { get }
+  var tertiary: SwiftUI.Color { get }
+  var header1: SwiftUI.Font { get }
+  var header4: SwiftUI.Font { get }
+  var header2: SwiftUI.Font { get }
+  var header5: SwiftUI.Font { get }
+  var button: SwiftUI.Font { get }
+  var body: SwiftUI.Font { get }
+}
+extension SmileID.SmileIdTheme {
+  public var onDark: SwiftUI.Color {
+    get
+  }
+  public var onLight: SwiftUI.Color {
+    get
+  }
+  public var backgroundDark: SwiftUI.Color {
+    get
+  }
+  public var backgroundMain: SwiftUI.Color {
+    get
+  }
+  public var backgroundLightest: SwiftUI.Color {
+    get
+  }
+  public var backgroundLight: SwiftUI.Color {
+    get
+  }
+  public var success: SwiftUI.Color {
+    get
+  }
+  public var error: SwiftUI.Color {
+    get
+  }
+  public var accent: SwiftUI.Color {
+    get
+  }
+  public var tertiary: SwiftUI.Color {
+    get
+  }
+  public var header1: SwiftUI.Font {
+    get
+  }
+  public var header2: SwiftUI.Font {
+    get
+  }
+  public var header4: SwiftUI.Font {
+    get
+  }
+  public var header5: SwiftUI.Font {
+    get
+  }
+  public var button: SwiftUI.Font {
+    get
+  }
+  public var body: SwiftUI.Font {
+    get
+  }
+}
+public struct UploadRequest : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct UploadImageInfo : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct UploadPackageInfo : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct ApiVersion : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct VersionNames : Swift.Codable {
+  public var version: Swift.String
+  public init()
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum ImageType : Swift.String, Swift.Codable {
+  case selfiePngOrJpgFile
+  case idCardPngOrJpgFile
+  case selfiePngOrJpgBase64
+  case idCardPngOrJpgBase64
+  case livenessPngOrJpgFile
+  case idCardRearPngOrJpgFile
+  case livenessPngOrJpgBase64
+  case idCardRearPngOrJpgBase64
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public protocol URLUploadSessionPublisher {
+  var delegate: SmileID.URLDelegate { get }
+  func upload(request: Foundation.URLRequest, data: Foundation.Data?, _ callback: @escaping (Foundation.Data?, Foundation.URLResponse?, (any Swift.Error)?) -> Swift.Void)
+}
+@objc public class URLDelegate : ObjectiveC.NSObject, Foundation.URLSessionTaskDelegate {
+  public init(subject: Combine.PassthroughSubject<SmileID.UploadResponse, any Swift.Error> = .init())
+  @objc public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didSendBodyData bytesSent: Swift.Int64, totalBytesSent: Swift.Int64, totalBytesExpectedToSend: Swift.Int64)
+  @objc deinit
+}
+final public class URLUploadSessionPublisherImplementation : SmileID.URLUploadSessionPublisher {
+  final public let delegate: SmileID.URLDelegate
+  public init()
+  final public func upload(request: Foundation.URLRequest, data: Foundation.Data?, _ callback: @escaping (Foundation.Data?, Foundation.URLResponse?, (any Swift.Error)?) -> Swift.Void)
+  @objc deinit
+}
+public enum UploadResponse : Swift.Equatable {
+  case progress(percentage: Swift.Double)
+  case response(data: Foundation.Data?)
+  public static func == (a: SmileID.UploadResponse, b: SmileID.UploadResponse) -> Swift.Bool
+}
+extension SmileID.ActionResult : Swift.Equatable {}
+extension SmileID.ActionResult : Swift.Hashable {}
+extension SmileID.ActionResult : Swift.RawRepresentable {}
+extension SmileID.JobType : Swift.Equatable {}
+extension SmileID.JobType : Swift.Hashable {}
+extension SmileID.JobType : Swift.RawRepresentable {}
+extension SmileID.SmileButton.Style : Swift.Equatable {}
+extension SmileID.SmileButton.Style : Swift.Hashable {}
+extension SmileID.SmileIDError : Swift.Equatable {}
+extension SmileID.SmileIDError : Swift.Hashable {}
+extension SmileID.ImageType : Swift.Equatable {}
+extension SmileID.ImageType : Swift.Hashable {}
+extension SmileID.ImageType : Swift.RawRepresentable {}

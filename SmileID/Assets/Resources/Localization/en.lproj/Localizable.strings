@@ -1,0 +1,37 @@
+/* 
+ en.lproj/Localizable.strings
+
+*/
+
+"Instructions.ClearImage" = "Clear Image";
+"Instructions.GoodLightBody" = "Make sure you are in a well-lit environment where your face is clear and visible.";
+"Instructions.ClearImageBody" = "Hold your phone steady so the selfie is clear and sharp. Don’t take blurry images.";
+"Instructions.GoodLight" = "Good Light";
+"Instructions.RemoveObstructions" = "Remove Obstructions";
+"Instructions.RemoveObstructionsBody" = "Remove anything that covers your face, such glasses, masks, hats and scarves";
+"Instructions.Header" = "Next, we’ll take a quick selfie";
+"Instructions.Callout" = "We'll use it to verify your Identity. \n Please follow the instructions below.";
+"Instructions.Action" = "I'm Ready";
+"Instructions.UnableToDetectFace" = "Unable to detect face. Please ensure your face is in the oval";
+"Instructions.FaceFar" = "Face is too far. Please move closer";
+"Instructions.FaceClose" = "Face is too close. Please move farther away";
+"Instructions.UnknownError" = "We cannot take your photo right now";
+"Instructions.MultipleFaces" = "Please ensure only one face is in the oval";
+"Instructions.Smile" = "Please smile for the camera";
+"Instructions.Capturing" = "Capturing…";
+"Instructions.Start" = "Put your face inside the oval frame and wait until it turns green";
+"Instructions.Unstable" = "Put your face inside the oval frame and wait until it turns green";
+"Error.JobStatusTimeOut" = "Job status timed out";
+"Confirmation.GoodSelfie" = "Is this a good quality selfie?";
+"Confirmation.FaceClear" = "Make sure your whole face is \n visible and clear";
+"Confirmation.YesUse" = "Yes, use this";
+"Confirmation.Retake" = "No, retake Selfie";
+"Confirmation.Processing" = "Processing Selfie";
+"Confirmation.Time" = "Just a few more seconds";
+"Confirmation.SelfieCaptureComplete" = "Selfie Capture Complete";
+"Confirmation.SuccessBody" = "Your selfie was successfully taken. \n You can now proceed.";
+"Confirmation.Continue" = "Continue";
+"Confirmation.Failure" = "Your selfie failed to process";
+"Confirmation.FaulireReason" = "This could be because of image quality \n or internet connectivity.";
+"Confirmation.Retry" = "Retry";
+"Confirmation.Close" = "Close";

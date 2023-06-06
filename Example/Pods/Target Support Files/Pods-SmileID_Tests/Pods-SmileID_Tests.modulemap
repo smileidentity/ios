@@ -1,0 +1,6 @@
+framework module Pods_SmileID_Tests {
+  umbrella header "Pods-SmileID_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}
