@@ -32,19 +32,19 @@ public class SmileID {
         self.theme = theme
     }
 
-    public class func smartSelfieRegistrationScreen(userId: String = UUID().uuidString,
-                                                    sessionId: String = "SID_Session",
+    public class func smartSelfieRegistrationScreen(userId: String = "user-\(UUID().uuidString)",
+                                                    jobId: String = "job-\(UUID().uuidString)",
                                                     delegate: SmartSelfieResultDelegate)
     -> SmartSelfieInstructionsView {
-        let viewModel = SelfieCaptureViewModel(userId: userId, sessionId: sessionId, isEnroll: true)
+        let viewModel = SelfieCaptureViewModel(userId: userId, jobId: jobId, isEnroll: true)
         return  SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
     }
 
     public class func smartSelfieAuthenticationScreen(userId: String,
-                                                      sessionId: String = "SID_ Session",
+                                                      jobId: String = "job-\(UUID().uuidString)",
                                                       delegate: SmartSelfieResultDelegate)
     -> SmartSelfieInstructionsView {
-        let viewModel = SelfieCaptureViewModel(userId: userId, sessionId: sessionId, isEnroll: false)
+        let viewModel = SelfieCaptureViewModel(userId: userId, jobId: jobId, isEnroll: false)
         return SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
     }
 

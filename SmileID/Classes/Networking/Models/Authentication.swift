@@ -34,11 +34,11 @@ public extension AuthenticationRequest {
                   signature: true)
     }
 
-    init(jobType: JobType, enrollment: Bool, userId: String) {
+    init(jobType: JobType, enrollment: Bool, userId: String, jobId: String) {
         self.init(jobType: jobType,
                   enrollment: enrollment,
                   updateEnrolledImage: nil,
-                  jobId: nil,
+                  jobId: jobId,
                   userId: userId,
                   signature: true)
     }
