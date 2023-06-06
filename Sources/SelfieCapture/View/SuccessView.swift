@@ -38,7 +38,7 @@ struct SuccessView: View {
 struct SuccessView_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = SelfieCaptureViewModel(userId: "",
-                                               sessionId: "",
+                                               jobId: "",
                                                isEnroll: true)
         SuccessView(viewModel: viewModel)
     }
