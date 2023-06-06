@@ -36,8 +36,20 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           xcode: ${{ matrix.xcode }}
+      - name: Build and Deploy App to 🔥 TestFlight 🚀
+        run: |
+          
       - name: Build Package
-        run: bundle exec rake build:package:all
+        run: |
+          bundle exec rake provision:ios
+          bundle exec rake build:package:all
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
   build-example:
     name: "Build Example App"
@@ -52,16 +64,6 @@ jobs:
         with:
           key: ${{ secrets.CI_SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      - name: Build and Deploy App to 🔥 TestFlight 🚀
-        run: |
-          bundle exec rake provision:ios
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          ISSUER_ID: ${{ secrets.ISSUER_ID }}
-          KEY_ID: ${{ secrets.KEY_ID }}
-          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
-          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
       - name: Write Smile Config
         id: write_smile_config
         # Mask the config so it doesn't show up in the logs
