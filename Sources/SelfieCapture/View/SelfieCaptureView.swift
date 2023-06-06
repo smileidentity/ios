@@ -61,10 +61,10 @@ public struct SelfieCaptureView: View {
                 .padding()
         })
         .background(SmileID.theme.backgroundMain)
-        .onAppear{
+        .onAppear {
             viewModel.cameraManager.configure()
         }
-        .onDisappear{
+        .onDisappear {
             viewModel.cameraManager.stopCaptureSession()
             viewModel.resetCapture()
         }
@@ -79,7 +79,7 @@ public struct SelfieCaptureView: View {
 struct SelfieCaptureView_Previews: PreviewProvider {
     static var previews: some View {
         SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
-                                                            sessionId: UUID().uuidString,
+                                                            jobId: UUID().uuidString,
                                                             isEnroll: false))
     }
 }
