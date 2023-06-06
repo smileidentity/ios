@@ -104,8 +104,7 @@ namespace :provision do
     Dir.chdir('Example') do
       sh 'bundle install'
       sh 'pod install'
-      sh 'fastlane match development --readonly'
-      sh 'fastlane match appstore --readonly'
+      sh 'bundle exec fastlane run_match '
     end
   end
 end
