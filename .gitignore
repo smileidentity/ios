@@ -41,4 +41,5 @@ IDEWorkspaceChecks.plist
 *.xcframework.zip
 Tests/Artifacts/
 .build/
-release
+release/
+archives/
