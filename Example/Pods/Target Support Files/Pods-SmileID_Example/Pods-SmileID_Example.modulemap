@@ -1,6 +1,0 @@
-framework module Pods_SmileID_Example {
-  umbrella header "Pods-SmileID_Example-umbrella.h"
-
-  export *
-  module * { export * }
-}

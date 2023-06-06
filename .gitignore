@@ -42,4 +42,5 @@ IDEWorkspaceChecks.plist
 Tests/Artifacts/
 .build/
 release/
+Pods/
 archives/
