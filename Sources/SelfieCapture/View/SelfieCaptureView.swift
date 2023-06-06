@@ -61,10 +61,10 @@ public struct SelfieCaptureView: View {
                 .padding()
         })
         .background(SmileID.theme.backgroundMain)
-        .onAppear{
+        .onAppear {
             viewModel.cameraManager.configure()
         }
-        .onDisappear{
+        .onDisappear {
             viewModel.cameraManager.stopCaptureSession()
             viewModel.resetCapture()
         }
