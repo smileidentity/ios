@@ -47,7 +47,7 @@ struct FaceOverlayView: View {
 struct FaceOverlayView_Previews: PreviewProvider {
     static var previews: some View {
         FaceOverlayView(model: SelfieCaptureViewModel(userId: UUID().uuidString,
-                                                      sessionId: UUID().uuidString,
+                                                      jobId: UUID().uuidString,
                                                       isEnroll: false))
     }
 }

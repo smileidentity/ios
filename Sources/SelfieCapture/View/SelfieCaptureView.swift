@@ -79,7 +79,7 @@ public struct SelfieCaptureView: View {
 struct SelfieCaptureView_Previews: PreviewProvider {
     static var previews: some View {
         SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
-                                                            sessionId: UUID().uuidString,
+                                                            jobId: UUID().uuidString,
                                                             isEnroll: false))
     }
 }

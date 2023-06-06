@@ -110,7 +110,7 @@ public struct SmartSelfieInstructionsView: View {
 struct SmartSelfieInstructionsView_Previews: PreviewProvider {
     static var previews: some View {
         SmartSelfieInstructionsView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
-                                                                      sessionId: UUID().uuidString,
+                                                                      jobId: UUID().uuidString,
                                                                       isEnroll: false,
                                                                       showAttribution: true))
         .environment(\.locale, Locale(identifier: "en"))
