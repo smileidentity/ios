@@ -32,13 +32,15 @@ jobs:
         - '14.2' # Swift 5.7
         - '14.3' # Swift 5.8
     steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.CI_SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
           xcode: ${{ matrix.xcode }}
-      - name: Build and Deploy App to 🔥 TestFlight 🚀
-        run: |
-          
       - name: Build Package
         run: |
           bundle exec rake provision:ios
