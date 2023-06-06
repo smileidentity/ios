@@ -41,7 +41,6 @@ enum ProcessingState: Equatable {
 final class SelfieCaptureViewModel: ObservableObject {
     var userId: String
     var jobId: String
-    let sessionId = "SID_ Session"
     var isEnroll: Bool
     var showAttribution: Bool
     var faceLayoutGuideFrame = CGRect.zero
@@ -210,8 +209,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             self.selfieImage = selfieImage
             do {
                 files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
-                                                                      previewImage: selfieImage,
-                                                                      to: sessionId)
+                                                                      previewImage: selfieImage)
                 processingState = .confirmation
             } catch {
                 DispatchQueue.main.async { [self] in
