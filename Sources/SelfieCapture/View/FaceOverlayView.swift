@@ -38,7 +38,7 @@ struct FaceOverlayView: View {
                     .scaleEffect(1.2, anchor: .top)
                 InstructionsView(model: model)
                     .padding(.top, -((faceWidth)/2))
-
+                Button("Switch Camera", action: {model.cameraManager.switchCamera()})
             }
         }
     }

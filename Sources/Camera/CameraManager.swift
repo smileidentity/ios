@@ -103,6 +103,56 @@ class CameraManager: ObservableObject {
         status = .configured
     }
 
+    func switchCamera() {
+        sessionQueue.async {
+            guard self.status == .configured else { return }
+
+            self.session.beginConfiguration()
+            defer { self.session.commitConfiguration() }
+
+            if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
+                self.session.removeInput(currentInput)
+
+                let newCamera: AVCaptureDevice
+                if currentInput.device.position == .back {
+                    guard let frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera,
+                                                                    for: .video,
+                                                                    position: .front) else {
+                        self.set(error: .cameraUnavailable)
+                        self.status = .failed
+                        return
+                    }
+                    newCamera = frontCamera
+                } else {
+                    guard let backCamera = AVCaptureDevice.default(.builtInWideAngleCamera,
+                                                                   for: .video,
+                                                                   position: .back) else {
+                        self.set(error: .cameraUnavailable)
+                        self.status = .failed
+                        return
+                    }
+                    newCamera = backCamera
+                }
+
+                do {
+                    let newInput = try AVCaptureDeviceInput(device: newCamera)
+                    if self.session.canAddInput(newInput) {
+                        self.session.addInput(newInput)
+                    } else {
+                        self.set(error: .cannotAddInput)
+                        self.status = .failed
+                        return
+                    }
+                } catch {
+                    self.set(error: .createCaptureInput(error))
+                    self.status = .failed
+                    return
+                }
+            }
+        }
+    }
+
+
     func configure() {
         self.checkPermissions()
         sessionQueue.async {
