@@ -9,7 +9,6 @@ namespace :build do
 
     desc 'Builds the Smile ID package for iOS'
     task :iOS do
-      pod_install()
       xcodebuild('build -scheme "SmileID" -destination generic/platform=iOS')
     end
   end
@@ -98,11 +97,15 @@ def xcodebuild(command)
   end
 end
 
-def pod_install()
-  Dir.chdir('Example') do
-    sh 'bundle install'
-    sh 'pod install'
-    sh 'bundle exec fastlane run_match '
+
+namespace :provision do
+  desc 'Provision the app for building'
+  task :ios do
+    Dir.chdir('Example') do
+      sh 'bundle install'
+      sh 'pod install'
+      sh 'bundle exec fastlane run_match '
+    end
   end
 end
 
