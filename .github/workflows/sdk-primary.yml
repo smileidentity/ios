@@ -114,13 +114,16 @@ jobs:
         run: bundle exec rake test:package
       - name: Process test artifacts
         if: always()
-        run: bundle exec rake test:process
-      - name: Upload artifacts
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: TestArtifacts
-          path: Tests/Artifacts
+        run: | 
+         bundle exec rake provision:ios
+         bundle exec rake test:process
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
   cocoapod:
     name: "Lint CocoaPods podspec"
@@ -131,7 +134,16 @@ jobs:
         with:
           install-mint: false
       - name: Lint CocoaPod Podspec
-        run: bundle exec rake lint:podspec
+        run: |
+          bundle exec rake provision:ios
+          bundle exec rake lint:podspec
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
   spm:
     name: "Test Swift Package Manager support"
@@ -142,7 +154,16 @@ jobs:
         with:
           install-mint: true
       - name: Test Swift Package Manager support
-        run: bundle exec rake test:spm
+        run: |
+          bundle exec rake provision:ios
+          bundle exec rake test:spm
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
   build-xcframework:
     name: "Build XCFramework"
@@ -157,7 +178,16 @@ jobs:
           # will be able to use these XCFrameworks and the Smile ID spm package.
           xcode: '14.2' # Swift 5.7
       - name: Build XCFramework
-        run: bundle exec rake build:xcframework
+        run: |
+          bundle exec rake provision:ios
+          bundle exec rake build:xcframework
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
       - name: Upload XCFramework
         uses: actions/upload-artifact@v3
         with:
