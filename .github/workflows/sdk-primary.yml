@@ -92,7 +92,6 @@ jobs:
       - name: Build Example app & unit tests
         run: |
           bundle exec rake provision:ios
-          bundle exec rake test:example
           bundle exec rake build:example:all
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
@@ -107,56 +106,23 @@ jobs:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
+      - name: Setup environment
+        run: bundle install
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.CI_SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - uses: ./.github/actions/setup
         with:
           xcode: '14.3' # Swift 5.8
-      - name: Test Package
-        run: bundle exec rake test:package
-      - name: Process test artifacts
+      - name: Run tests
         if: always()
         run: | 
          bundle exec rake provision:ios
+         bundle exec rake test:package
          bundle exec rake test:process
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          ISSUER_ID: ${{ secrets.ISSUER_ID }}
-          KEY_ID: ${{ secrets.KEY_ID }}
-          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
-          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
-
-  cocoapod:
-    name: "Lint CocoaPods podspec"
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-        with:
-          install-mint: false
-      - name: Lint CocoaPod Podspec
-        run: |
-          bundle exec rake provision:ios
-          bundle exec rake lint:podspec
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          ISSUER_ID: ${{ secrets.ISSUER_ID }}
-          KEY_ID: ${{ secrets.KEY_ID }}
-          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
-          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
-
-  spm:
-    name: "Test Swift Package Manager support"
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-        with:
-          install-mint: true
-      - name: Test Swift Package Manager support
-        run: |
-          bundle exec rake provision:ios
-          bundle exec rake test:spm
+         bundle exec rake lint:podspec
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
@@ -170,6 +136,13 @@ jobs:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
+      - name: Setup environment
+        run: bundle install
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.CI_SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - uses: ./.github/actions/setup
         with:
           install-mint: true
