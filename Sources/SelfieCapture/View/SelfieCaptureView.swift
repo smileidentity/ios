@@ -37,6 +37,7 @@ public struct SelfieCaptureView: View {
                     }.scaleEffect(1.2, anchor: .top)
 
                 FaceOverlayView(model: viewModel)
+                FaceBoundingBoxView(model: viewModel)
                 switch viewModel.processingState {
                 case .confirmation:
                     ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
@@ -73,6 +74,28 @@ public struct SelfieCaptureView: View {
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {
         return CGSize(width: geometry.size.width * 0.6,
                       height: geometry.size.width * 0.6 / 0.7)
+    }
+}
+
+struct FaceBoundingBoxView: View {
+    @ObservedObject private(set) var model: SelfieCaptureViewModel
+
+    var body: some View {
+        switch model.faceGeometryState {
+        case .faceNotFound:
+            Rectangle().fill(Color.red)
+        case .faceFound(let faceGeometryModel):
+            Rectangle()
+                .path(in: CGRect(
+                    x: faceGeometryModel.boundingBox.origin.x,
+                    y: faceGeometryModel.boundingBox.origin.y,
+                    width: faceGeometryModel.boundingBox.width,
+                    height: faceGeometryModel.boundingBox.height
+                ))
+                .stroke(Color.yellow, lineWidth: 2.0)
+        case .errored:
+            Rectangle().fill(Color.red)
+        }
     }
 }
 
