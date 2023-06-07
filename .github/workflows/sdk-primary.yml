@@ -44,7 +44,7 @@ jobs:
       - name: Build Package
         run: |
           bundle exec rake provision:ios
-          bundle exec rake build:package:all
+          bundle exec rake build:package:all --trace
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
