@@ -32,7 +32,7 @@ public class SmileID {
         self.theme = theme
     }
 
-    public class func smartSelfieEnrollmentScreen(userId: String = "user-\(UUID().uuidString)",
+    public class func smartSelfieRegistrationScreen(userId: String = "user-\(UUID().uuidString)",
                                                     jobId: String = "job-\(UUID().uuidString)",
                                                     delegate: SmartSelfieResultDelegate)
     -> SmartSelfieInstructionsView {

@@ -16,8 +16,8 @@ struct HomeView: View {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nEnrollment")
                     }
 
-                    .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment,
-                           content: {SmileID.smartSelfieEnrollmentScreen(userId: viewModel.generateUserID(),
+                    .sheet(isPresented: $viewModel.presentSmartSelfieEnrolment,
+                           content: {SmileID.smartSelfieRegistrationScreen(userId: viewModel.generateUserID(),
                                                                            delegate: viewModel)})
                     Button(action: {self.viewModel.handleSmartSelfieAuthTap()}) {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nAuthentication")

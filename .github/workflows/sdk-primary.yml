@@ -32,12 +32,26 @@ jobs:
         - '14.2' # Swift 5.7
         - '14.3' # Swift 5.8
     steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.CI_SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
           xcode: ${{ matrix.xcode }}
       - name: Build Package
-        run: bundle exec rake build:package:all
+        run: |
+          bundle exec rake provision:ios
+          bundle exec rake build:package:all --trace
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
   build-example:
     name: "Build Example App"

@@ -29,7 +29,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     @IBAction func onSmartSelfieRegistrationTap(_ sender: Any) {
         userID = UUID().uuidString
         currentJob = .smartSelfieEnrollment
-        let smartSelfieRegistrationScreen = SmileID.smartSelfieEnrollmentScreen(userId: userID,
+        let smartSelfieRegistrationScreen = SmileID.smartSelfieRegistrationScreen(userId: userID,
                                                                                         delegate: self)
         cameraVC = UIHostingController(rootView: smartSelfieRegistrationScreen)
         cameraVC?.modalPresentationStyle = .fullScreen

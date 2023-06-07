@@ -9,18 +9,18 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
             switch product {
             case .smartSelfieEnrollment:
                 presentSmartSelfieAuth = false
-                presentSmartSelfieEnrollment = true
+                presentSmartSelfieEnrolment = true
             case .smartSelfieAuthentication:
                 presentSmartSelfieAuth = true
-                presentSmartSelfieEnrollment = false
+                presentSmartSelfieEnrolment = false
             default:
                 presentSmartSelfieAuth = false
-                presentSmartSelfieEnrollment = false
+                presentSmartSelfieEnrolment = false
             }
         }
     }
     @Published var presentSmartSelfieAuth = false
-    @Published var presentSmartSelfieEnrollment = false
+    @Published var presentSmartSelfieEnrolment = false
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false

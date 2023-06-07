@@ -2,18 +2,9 @@ default_platform(:ios)
 
 platform :ios do
 
-desc "Run unit tests"
-  lane :unit_tests do
-    clear_derived_data
-  scan(
-    project: "SmileIdentity.xcodeproj",
-    scheme: "SmileIdentityTests",
-    derived_data_path: "temp",
-    clean: true)
-  end
-
 desc "Release to TestFlight"
   lane :releaseapp do
+    cocoapods(clean_install: true)
     release_build
 
     api_key = app_store_connect_api_key(
@@ -31,9 +22,7 @@ desc "Release to TestFlight"
     )
   end
 
-  private_lane :release_build do
-    clear_derived_data
-      
+  lane :run_match do
     api_key = app_store_connect_api_key(
       key_id: ENV["KEY_ID"],
       issuer_id: ENV["ISSUER_ID"],
@@ -59,10 +48,15 @@ desc "Release to TestFlight"
       api_key: api_key,
       verbose: true
     )
+  end
+
+  private_lane :release_build do
+    run_match
+    clear_derived_data
   
     build_app(
       use_system_scm: true,
-      project: "SmileIdentity.xcodeproj",
+      workspace: "SmileIdentity.xcworkspace",
       scheme: "SmileIdentity-Example",
       export_method: "app-store"
     )
