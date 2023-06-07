@@ -5,7 +5,8 @@ project_path = 'Example/SmileID.xcodeproj'
 project = Xcodeproj::Project.open(project_path)
 
 #create file reference
-main_group = project.groups.find { |group| group.display_name == 'Example' }
+main_group = project.groups.find { |group| group.display_name == 'Example for SmileID' }
+# puts("Japhet is #{project.groups}")
 smile_config_reference = main_group.new_file('smile_config.json')
 
 #set target membership

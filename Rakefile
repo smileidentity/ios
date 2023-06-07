@@ -20,7 +20,6 @@ namespace :build do
 
     desc 'Builds the iOS Smile ID Example app'
     task :iOS do
-      pod_install()
       xcodebuild('build -scheme "SmileID-Example" -destination "platform=generic/platform=iOS Simulator"')
     end
   end
