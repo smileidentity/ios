@@ -2,9 +2,48 @@ default_platform(:ios)
 
 platform :ios do
 
+desc "Run unit tests"
+  lane :unit_tests do
+    clear_derived_data
+  scan(
+    workspace: "SmileID.xcworkspace",
+    scheme: "SmileID_Tests",
+    derived_data_path: "temp",
+    clean: true)
+  end
+
+
+desc "Match development"
+  lane :run_match do
+    cert
+    create_keychain(
+      name: "CI",
+      password: ENV["MATCH_PASSWORD"],
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: false
+    )
+    api_key = app_store_connect_api_key(
+      key_id: ENV["KEY_ID"],
+      issuer_id: ENV["ISSUER_ID"],
+      key_content: ENV["APPSTORE_CONNECT_PRIVATE_KEY"],
+      is_key_content_base64: true,
+      duration: 1200
+    )
+    match(
+      type: "development",
+      keychain_name: "CI",
+      keychain_password: ENV["MATCH_PASSWORD"],
+      readonly: is_ci,
+      api_key: api_key,
+      verbose: true
+    )
+    get_provisioning_profile(development:true,readonly:true)
+  end
+
 desc "Release to TestFlight"
   lane :releaseapp do
-    cocoapods(clean_install: true)
     release_build
 
     api_key = app_store_connect_api_key(
@@ -22,7 +61,9 @@ desc "Release to TestFlight"
     )
   end
 
-  lane :run_match do
+  private_lane :release_build do
+    clear_derived_data
+      
     api_key = app_store_connect_api_key(
       key_id: ENV["KEY_ID"],
       issuer_id: ENV["ISSUER_ID"],
@@ -48,15 +89,10 @@ desc "Release to TestFlight"
       api_key: api_key,
       verbose: true
     )
-  end
-
-  private_lane :release_build do
-    run_match
-    clear_derived_data
   
     build_app(
       use_system_scm: true,
-      workspace: "SmileIdentity.xcworkspace",
+      project: "SmileIdentity.xcodeproj",
       scheme: "SmileIdentity-Example",
       export_method: "app-store"
     )
