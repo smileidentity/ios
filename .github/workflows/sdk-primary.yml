@@ -85,10 +85,11 @@ jobs:
       - name: Add Smile Config to Xcode Project
         run: ruby add_smile_config.rb
       - uses: ./.github/actions/setup
-      - name: Example app unit tests
-        run: bundle exec rake test:example
-      - name: Build Example
-        run: bundle exec rake build:example:all
+      - name: Build Example app & unit tests
+        run: |
+          bundle exec rake provision:ios
+          bundle exec rake test:example
+          bundle exec rake build:example:all
 
   test-package:
     name: "Test Package"

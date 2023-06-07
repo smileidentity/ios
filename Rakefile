@@ -26,7 +26,6 @@ namespace :build do
 
   desc 'Builds an xcframework for all supported platforms'
   task :xcframework do
-    pod_install()
     sh 'rm -rf archives'
     sh 'rm -rf SmileID.xcframework'
     sh 'rm -rf release'
@@ -51,7 +50,6 @@ namespace :test do
 
   desc 'Tests the example app unit tests'
   task :example do
-    pod_install()
     xcodebuild('test -scheme "SmileID-Example" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)"')
   end
 
