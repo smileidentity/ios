@@ -15,7 +15,6 @@ desc "Run unit tests"
 
 desc "Match development"
   lane :run_match do
-    cert
     create_keychain(
       name: "CI",
       password: ENV["MATCH_PASSWORD"],
