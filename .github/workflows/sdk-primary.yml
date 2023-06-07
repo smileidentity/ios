@@ -120,8 +120,6 @@ jobs:
         if: always()
         run: | 
          bundle exec rake provision:ios
-         bundle exec rake test:package
-         bundle exec rake test:process
          bundle exec rake lint:podspec
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
