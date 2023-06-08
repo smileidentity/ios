@@ -83,7 +83,7 @@ struct FaceBoundingBoxView: View {
     var body: some View {
         switch model.faceGeometryState {
         case .faceNotFound:
-            Rectangle().fill(Color.red)
+            Rectangle().fill(Color.clear)
         case .faceFound(let faceGeometryModel):
             Rectangle()
                 .path(in: CGRect(
@@ -94,7 +94,7 @@ struct FaceBoundingBoxView: View {
                 ))
                 .stroke(Color.yellow, lineWidth: 2.0)
         case .errored:
-            Rectangle().fill(Color.red)
+            Rectangle().fill(Color.clear)
         }
     }
 }

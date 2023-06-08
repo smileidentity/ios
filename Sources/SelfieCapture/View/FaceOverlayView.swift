@@ -39,6 +39,7 @@ struct FaceOverlayView: View {
                 InstructionsView(model: model)
                     .padding(.top, -((faceWidth)/2))
                 Button("Switch Camera", action: {model.cameraManager.switchCamera()})
+                    .padding(.bottom, 50)
             }
         }
     }

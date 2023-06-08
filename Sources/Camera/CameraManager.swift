@@ -15,6 +15,12 @@ class CameraManager: ObservableObject {
     @Environment(\.isPreview) var isPreview
 
     let session = AVCaptureSession()
+    var cameraPositon: AVCaptureDevice.Position? {
+        if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
+            return currentInput.device.position
+        }
+        return nil
+    }
 
     private let sessionQueue = DispatchQueue(label: "com.smileid.ios")
     private let videoOutput = AVCaptureVideoDataOutput()
