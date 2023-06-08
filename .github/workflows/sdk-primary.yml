@@ -150,6 +150,7 @@ jobs:
           xcode: '14.2' # Swift 5.7
       - name: Build XCFramework
         run: |
+          brew install coreutils
           bundle exec rake provision:ios
           bundle exec rake build:xcframework
         env:
