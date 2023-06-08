@@ -9,38 +9,21 @@ struct AboutUsView: View {
     }
     var body: some View {
         NavigationView {
-            List {
-                HStack(spacing: 10) {
-                    Image(systemName: "info.circle.fill")
-                    Text("Who we are")
-                }
-                Button(action: {
-                    if let url = URL(string: "https://smileidentity.com") {
-                        UIApplication.shared.open(url)
-                    }
-                }, label: {
-                    HStack(spacing: 10) {
-                        Image(systemName: "star.fill")
-                        Text("Visit our website")
-                    }
-                })
-
-                Button(action: {
-                    if let url = URL(string: "https://smileidentity.com/contact-us") {
-                        UIApplication.shared.open(url)
-                    }
-                }, label: {
-                    HStack(spacing: 10) {
-                        Image(systemName: "envelope.fill")
-                        Text("Contact support")
-                    }
-                })
-
+            VStack(spacing: 15) {
+                AboutUsCell(imageName: "info.circle.fill", title: "About Us") {}
+                AboutUsCell(imageName: "star.fill", title: "Visit our website") {openUrl("https://smileidentity.com")}
+                AboutUsCell(imageName: "envelope.fill", title: "Contact support") {openUrl("https://smileidentity.com/contact-us")}
+                Spacer()
             }
-            .font(SmileID.theme.body)
-            .background(offWhite)
+            .padding()
+            .background(offWhite.edgesIgnoringSafeArea(.all))
             .navigationBarTitle("Smile ID", displayMode: .inline)
-            .navigationBarColor(sand)
+        }
+    }
+
+    func openUrl(_ urlString: String) {
+        if let url = URL(string: urlString) {
+            UIApplication.shared.open(url)
         }
     }
 }

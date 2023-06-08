@@ -23,18 +23,19 @@ struct MainView: View {
                 }
                 .edgesIgnoringSafeArea(.all)
 
-//            AboutUsView()
-//                .tabItem {
-//                    Image(systemName: "info.circle")
-//                    Text("Resources")
-//                }
+            ResourcesView()
+                .tabItem {
+                    Image(systemName: "info.circle")
+                    Text("Resources")
+                }
 
-//            AboutUsView()
-//                .tabItem {
-//                    Image(systemName: "gearshape.fill")
-//                    Text("About us")
-//                }
+            AboutUsView()
+                .tabItem {
+                    Image(systemName: "gearshape.fill")
+                    Text("About us")
+                }
         }
+        .accentColor(SmileID.theme.accent)
         .background(offWhite.edgesIgnoringSafeArea(.all))
         .edgesIgnoringSafeArea(.all)
         .preferredColorScheme(.light)
