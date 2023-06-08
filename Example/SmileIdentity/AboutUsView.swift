@@ -10,9 +10,12 @@ struct AboutUsView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 15) {
-                AboutUsCell(imageName: "info.circle.fill", title: "About Us") { openUrl("https://smileidentity.com/about-us") }
-                AboutUsCell(imageName: "star.fill", title: "Visit our website") { openUrl("https://smileidentity.com") }
-                AboutUsCell(imageName: "envelope.fill", title: "Contact support") { openUrl("https://smileidentity.com/contact-us") }
+                AboutUsCell(imageName: "info.circle.fill",
+                            title: "About Us") { openUrl("https://smileidentity.com/about-us") }
+                AboutUsCell(imageName: "star.fill",
+                            title: "Visit our website") { openUrl("https://smileidentity.com") }
+                AboutUsCell(imageName: "envelope.fill",
+                            title: "Contact support") { openUrl("https://smileidentity.com/contact-us") }
                 Spacer()
             }
             .padding()
