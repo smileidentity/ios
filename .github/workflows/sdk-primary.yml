@@ -43,7 +43,7 @@ jobs:
   build-example:
     name: "Build Example App"
     runs-on: macos-13
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -102,7 +102,7 @@ jobs:
   cocoapod:
     name: "Lint CocoaPods podspec"
     runs-on: macos-13
-    timeout-minutes: 1
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
@@ -126,7 +126,7 @@ jobs:
   build-xcframework:
     name: "Build XCFramework"
     runs-on: macos-13
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
