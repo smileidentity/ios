@@ -12,7 +12,6 @@
 		1E60ED382A29C306002695FF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED332A29C306002695FF /* Constants.swift */; };
 		1E60ED3A2A29C306002695FF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED352A29C306002695FF /* AppDelegate.swift */; };
 		1E60ED3B2A29C306002695FF /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED362A29C306002695FF /* CopyableLabel.swift */; };
-		1E60ED3D2A29C358002695FF /* smile_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 1E60ED3C2A29C358002695FF /* smile_config.json */; };
 		1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECAE3862A2F69BC00653FCA /* ToastView.swift */; };
 		1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F602A2F28590020BEFB /* HomeViewModel.swift */; };
 		1ED53F6B2A2F28590020BEFB /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F612A2F28590020BEFB /* ProductCell.swift */; };
@@ -26,6 +25,7 @@
 		1EFAB3152A374F3B008E3C13 /* AboutUsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */; };
 		1EFAB3162A374F3B008E3C13 /* ResourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3142A374F18008E3C13 /* ResourceCell.swift */; };
 		1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
+		4878FCBED8E032B2D7368110 /* smile_config.json in Sources */ = {isa = PBXBuildFile; fileRef = 12092587423466996635F92B /* smile_config.json */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		F703CAEEB3CEB5ADB5C99D44 /* Pods_SmileID_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */; };
@@ -43,6 +43,7 @@
 
 /* Begin PBXFileReference section */
 		0A98AE7C7B30F859CBC4DA6E /* Pods_SmileID_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		12092587423466996635F92B /* smile_config.json */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json; path = smile_config.json; sourceTree = "<group>"; };
 		1E60ED322A29C306002695FF /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1E60ED332A29C306002695FF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1E60ED342A29C306002695FF /* UserIDViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserIDViewController.swift; sourceTree = "<group>"; };
@@ -105,7 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
-				607FACD21AFB9204008FA782 /* Example for SmileID */,
+				607FACD21AFB9204008FA782 /* Example */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
 				828BF541E068101B2E6ED55F /* Pods */,
@@ -122,7 +123,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		607FACD21AFB9204008FA782 /* Example for SmileID */ = {
+		607FACD21AFB9204008FA782 /* Example */ = {
 			isa = PBXGroup;
 			children = (
 				1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */,
@@ -151,7 +152,7 @@
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 			);
-			name = "Example for SmileID";
+			name = Example;
 			path = SmileID;
 			sourceTree = "<group>";
 		};
