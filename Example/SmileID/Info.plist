@@ -19,11 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-<<<<<<< HEAD:Example/SmileID/Info.plist
-	<string>3</string>
-=======
 	<string>$(CURRENT_PROJECT_VERSION)</string>
->>>>>>> main:Example/SmileIdentity/Info.plist
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

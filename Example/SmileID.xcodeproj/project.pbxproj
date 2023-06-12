@@ -23,6 +23,9 @@
 		1ED53F712A2F28590020BEFB /* EnterUserIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */; };
 		1ED53F722A2F28590020BEFB /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F682A2F28590020BEFB /* ToggleButton.swift */; };
 		1ED53F732A2F28590020BEFB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F692A2F28590020BEFB /* HomeView.swift */; };
+		1EFAB3152A374F3B008E3C13 /* AboutUsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */; };
+		1EFAB3162A374F3B008E3C13 /* ResourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3142A374F18008E3C13 /* ResourceCell.swift */; };
+		1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
@@ -58,6 +61,8 @@
 		1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterUserIDView.swift; sourceTree = "<group>"; };
 		1ED53F682A2F28590020BEFB /* ToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
 		1ED53F692A2F28590020BEFB /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUsCell.swift; sourceTree = "<group>"; };
+		1EFAB3142A374F18008E3C13 /* ResourceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCell.swift; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
 		287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD01AFB9204008FA782 /* SmileID_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmileID_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,6 +127,8 @@
 		607FACD21AFB9204008FA782 /* Example for SmileID */ = {
 			isa = PBXGroup;
 			children = (
+				1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */,
+				1EFAB3142A374F18008E3C13 /* ResourceCell.swift */,
 				1ECAE3862A2F69BC00653FCA /* ToastView.swift */,
 				1ED53F652A2F28590020BEFB /* AboutUsView.swift */,
 				1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */,
@@ -295,6 +302,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */,
 				1E60ED3D2A29C358002695FF /* smile_config.json in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
@@ -407,6 +415,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1EFAB3152A374F3B008E3C13 /* AboutUsCell.swift in Sources */,
+				1EFAB3162A374F3B008E3C13 /* ResourceCell.swift in Sources */,
 				1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */,
 				1ED53F722A2F28590020BEFB /* ToggleButton.swift in Sources */,
 				1ED53F6C2A2F28590020BEFB /* MainView.swift in Sources */,
@@ -594,7 +604,6 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.smileidentity.example-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
