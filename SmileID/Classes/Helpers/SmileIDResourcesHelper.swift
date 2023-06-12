@@ -19,7 +19,7 @@ public class SmileIDResourcesHelper {
               Bundle(for: SmileIDResourcesHelper.self).resourceURL
           ]
 
-          let bundleName = "Resources"
+          let bundleName = "SmileID_SmileID"
 
           for candidate in candidates {
               let bundlePath = candidate?.appendingPathComponent(bundleName + ".bundle")
