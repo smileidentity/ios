@@ -100,7 +100,7 @@ desc "Release to TestFlight"
   end
   
   private_lane :increment_build do
-    build_number = `git rev-list HEAD --count`.to_i
+    build_number = `git rev-list HEAD --count`
     increment_build_number(build_number: build_number)
   end
 end
