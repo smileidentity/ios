@@ -41,7 +41,7 @@ public struct SelfieCaptureView: View {
                 case .confirmation:
                     ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
                 case .inProgress:
-                    ModalPresenter { ProcessingView() }
+                    ModalPresenter(centered: true){ ProcessingView() }
                 case .success:
                     ModalPresenter { SuccessView(viewModel: viewModel) }
                 case .error:

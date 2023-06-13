@@ -2,43 +2,51 @@ import SwiftUI
 
 struct InstructionsView: View {
     @ObservedObject private(set) var model: SelfieCaptureViewModel
-
+    @State private var debounceTimer: Timer?
+    @State private var directive: LocalizedStringKey = "Instructions.Start"
     var body: some View {
-        Text(SmileIDResourcesHelper.localizedString(for: faceDetectionState().stringKey))
+        Text(SmileIDResourcesHelper.localizedString(for: directive.stringKey))
             .multilineTextAlignment(.center)
             .foregroundColor(SmileID.theme.accent)
             .font(SmileID.theme.header4)
             .frame(maxWidth: 300)
             .transition(.slide)
-            .animation(.default)
+            .onReceive(model.$faceDetectionState, perform: {_ in
+                faceDetectionState()
+            })
     }
 }
 
 extension InstructionsView {
-    func faceDetectionState() -> LocalizedStringKey {
-        switch model.faceDetectionState {
-        case .sceneUnstable:
-            return "Instructions.Unstable"
-        case .faceDetectionErrored:
-            return "Instructions.UnknownError"
-        case .noFaceDetected:
-            return "Instructions.Start"
-        case .faceDetected:
-            if model.hasDetectedValidFace {
-                return "Instructions.Capturing"
-            } else if model.isAcceptableBounds == .detectedFaceOffCentre {
-                return "Instructions.UnableToDetectFace"
-            } else if model.isAcceptableBounds == .detectedFaceTooSmall {
-                return "Instructions.FaceFar"
-            } else if model.isAcceptableBounds == .detectedFaceTooLarge {
-                return "Instructions.FaceClose"
-            } else {
-                return "Instructions.Capturing"
+    func faceDetectionState() {
+        debounceTimer?.invalidate()
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: 0, repeats: false) { _ in
+            switch model.faceDetectionState {
+            case .smileFrame:
+                directive = "Instructions.Smile"
+            case .sceneUnstable:
+                directive = "Instructions.Unstable"
+            case .faceDetectionErrored:
+                directive = "Instructions.UnknownError"
+            case .noFaceDetected:
+                directive = "Instructions.Start"
+            case .faceDetected:
+                if model.hasDetectedValidFace && model.faceDetectionState == .smileFrame {
+                    directive = "Instructions.Smile"
+                } else if model.isAcceptableBounds == .detectedFaceOffCentre {
+                    directive = "Instructions.UnableToDetectFace"
+                } else if model.isAcceptableBounds == .detectedFaceTooSmall {
+                    directive = "Instructions.FaceFar"
+                } else if model.isAcceptableBounds == .detectedFaceTooLarge {
+                    directive = "Instructions.FaceClose"
+                } else {
+                    directive = "Instructions.Capturing"
+                }
+            case .multipleFacesDetected:
+                directive = "Instructions.MultipleFaces"
+            case .finalFrame:
+                directive = "Instructions.Smile"
             }
-        case .multipleFacesDetected:
-            return "Instructions.MultipleFaces"
-        case .finalFrame:
-            return "Instructions.Smile"
         }
     }
 }
