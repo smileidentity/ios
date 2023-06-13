@@ -4,7 +4,7 @@ struct Toast<Presenting, Content>: View where Presenting: View, Content: View {
     @Binding var isPresented: Bool
     let presenter: () -> Presenting
     let content: () -> Content
-    let delay: TimeInterval = 2
+    let delay: TimeInterval = 4
 
     var body: some View {
         if self.isPresented {

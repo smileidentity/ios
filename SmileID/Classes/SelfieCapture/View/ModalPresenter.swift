@@ -3,9 +3,10 @@ import SwiftUI
 struct ModalPresenter<ModalContent: View>: View {
     @Binding var isPresented: Bool
     let modalContent: ModalContent
-
-    init(isPresented: Binding<Bool> = .constant(true), @ViewBuilder content: () -> ModalContent) {
+    var centered: Bool
+    init(isPresented: Binding<Bool> = .constant(true), centered: Bool = false, @ViewBuilder content: () -> ModalContent) {
         self._isPresented = isPresented
+        self.centered = centered
         self.modalContent = content()
     }
 
@@ -21,11 +22,13 @@ struct ModalPresenter<ModalContent: View>: View {
                     }
                     .transition(.opacity)
                 VStack {
-                    Spacer()
+                    if !centered {
+                        Spacer()
+                    }
                     modalContent
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 50)
+                .padding(.bottom, centered ? 0 : 50)
             }
         }
     }

@@ -8,6 +8,7 @@ enum SelfieCaptureViewModelAction {
     case sceneUnstable
     // Face detection actions
     case noFaceDetected
+    case smileDirective
     case multipleFacesDetected
     case faceObservationDetected(FaceGeometryModel)
     case faceQualityObservationDetected(FaceQualityModel)
@@ -174,6 +175,8 @@ final class SelfieCaptureViewModel: ObservableObject {
             publishFaceObservation(.faceDetected, faceGeometryModel: faceGeometry)
         case .faceQualityObservationDetected(let faceQualityModel):
             publishFaceObservation(.faceDetected, faceQualityModel: faceQualityModel)
+        case .smileDirective:
+            publishFaceObservation(.smileFrame)
         }
     }
 
@@ -194,6 +197,10 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                      isGreyScale: true) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
+        }
+
+        if livenessImages.count >= 3 {
+            perform(action: .smileDirective)
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&

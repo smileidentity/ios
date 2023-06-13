@@ -13,17 +13,18 @@ concurrency:
 jobs:
   build:
     runs-on: macos-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup environment
         run: bundle install
-     
+
       - name: Select Xcode Version
         uses: maxim-lobanov/setup-xcode@v1
         with:
          xcode-version: latest-stable
-      
+
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -46,7 +47,7 @@ jobs:
           echo "partner_id=$PARTNER_ID" >> $GITHUB_OUTPUT
         env:
           SMILE_CONFIG_PARTNER_002: ${{ secrets.SMILE_CONFIG_PARTNER_002 }}
-    
+
       - name: Add Smile Config to Xcode Project
         run: ruby add_smile_config.rb
 
@@ -74,5 +75,3 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL}}
-
-
