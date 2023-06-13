@@ -114,7 +114,7 @@ jobs:
   spm:
     name: "Test Swift Package Manager support"
     runs-on: macos-13
-    timeout-minutes: 1
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
