@@ -9,18 +9,18 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
             switch product {
             case .smartSelfieEnrollment:
                 presentSmartSelfieAuth = false
-                presentSmartSelfieEnrolment = true
+                presentSmartSelfieEnrollment = true
             case .smartSelfieAuthentication:
                 presentSmartSelfieAuth = true
-                presentSmartSelfieEnrolment = false
+                presentSmartSelfieEnrollment = false
             default:
                 presentSmartSelfieAuth = false
-                presentSmartSelfieEnrolment = false
+                presentSmartSelfieEnrollment = false
             }
         }
     }
     @Published var presentSmartSelfieAuth = false
-    @Published var presentSmartSelfieEnrolment = false
+    @Published var presentSmartSelfieEnrollment = false
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
@@ -28,6 +28,10 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
 
     private var userID = ""
     var returnedUserID = ""
+
+    init() {
+       subscribeToAuthCompletion()
+    }
 
     func generateUserID() -> String {
         userID = UUID().uuidString
@@ -49,8 +53,19 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
         showToast = true
     }
 
-    func didError(error: Error) {
+    @objc func didError(error: Error) {
         toastMessage = error.localizedDescription
+        showToast = true
+    }
+
+    func subscribeToAuthCompletion() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion), name: Notification.Name(rawValue: "SelfieCaptureComplete"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion), name: Notification.Name(rawValue: "SelfieCaptureError"), object: nil)
+    }
+
+    @objc func handleAuthCompletion(_ notification: NSNotification) {
+        print("Its done")
+        toastMessage = "Smart selfie Authenticaion completed successfully"
         showToast = true
     }
 }

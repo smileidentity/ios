@@ -16,8 +16,8 @@ struct HomeView: View {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nEnrollment")
                     }
 
-                    .sheet(isPresented: $viewModel.presentSmartSelfieEnrolment,
-                           content: {SmileID.smartSelfieRegistrationScreen(userId: viewModel.generateUserID(),
+                    .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment,
+                           content: {SmileID.smartSelfieEnrollmentScreen(userId: viewModel.generateUserID(),
                                                                            delegate: viewModel)})
                     Button(action: {self.viewModel.handleSmartSelfieAuthTap()}) {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nAuthentication")
@@ -27,6 +27,9 @@ struct HomeView: View {
                     })
                 }
                 Spacer()
+                Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version)")
+                    .font(SmileID.theme.body)
+                    .foregroundColor(SmileID.theme.onLight)
 
             }
             .toast(isPresented: $viewModel.showToast) {

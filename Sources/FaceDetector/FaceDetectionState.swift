@@ -7,6 +7,7 @@ enum FaceDetectionState: Equatable {
     case faceDetected
     case noFaceDetected
     case faceDetectionErrored
+    case smileFrame
 }
 
 enum FaceObservation<T: Equatable, E: Equatable>: Equatable {
