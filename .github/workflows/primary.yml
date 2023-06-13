@@ -10,7 +10,7 @@ concurrency:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 5
     name: Code quality Checks
 
     steps:
