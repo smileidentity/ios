@@ -35,9 +35,9 @@ Pod::Spec.new do |s|
   s.swift_version = '5.5'
   
   # dev
-  s.source_files = 'SmileID/Classes/**/*'
+  s.source_files = 'Sources/SmileID/Classes/**/*'
   s.resource_bundles = {
-    'Resources' => ['SmileID/Assets/**/*.{storyboard,storyboardc,xib,nib,xcassets,json,png,ttf,lproj}']
+    'SmileID_SmileID' => ['Sources/SmileID/Resources/**/*.{storyboard,storyboardc,xib,nib,xcassets,json,png,ttf,lproj}']
   }
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'Tests/*'
