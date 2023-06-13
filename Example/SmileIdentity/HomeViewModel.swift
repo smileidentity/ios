@@ -29,6 +29,10 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
     private var userID = ""
     var returnedUserID = ""
 
+    init() {
+       subscribeToAuthCompletion()
+    }
+
     func generateUserID() -> String {
         userID = UUID().uuidString
         return userID
@@ -49,8 +53,19 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
         showToast = true
     }
 
-    func didError(error: Error) {
+    @objc func didError(error: Error) {
         toastMessage = error.localizedDescription
+        showToast = true
+    }
+
+    func subscribeToAuthCompletion() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion), name: Notification.Name(rawValue: "SelfieCaptureComplete"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion), name: Notification.Name(rawValue: "SelfieCaptureError"), object: nil)
+    }
+
+    @objc func handleAuthCompletion(_ notification: NSNotification) {
+        print("Its done")
+        toastMessage = "Smart selfie Authenticaion completed successfully"
         showToast = true
     }
 }

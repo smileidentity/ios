@@ -27,6 +27,9 @@ struct HomeView: View {
                     })
                 }
                 Spacer()
+                Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version)")
+                    .font(SmileID.theme.body)
+                    .foregroundColor(SmileID.theme.onLight)
 
             }
             .toast(isPresented: $viewModel.showToast) {
