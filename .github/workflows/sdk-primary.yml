@@ -26,6 +26,7 @@ jobs:
   build-package-macos-latest:
     name: "Build Package"
     runs-on: macos-13
+    timeout-minutes: 5
     strategy:
       matrix:
         xcode:
@@ -42,6 +43,7 @@ jobs:
   build-example:
     name: "Build Example App"
     runs-on: macos-13
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -79,6 +81,7 @@ jobs:
   test-package:
     name: "Test Package"
     runs-on: macos-13
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
@@ -99,6 +102,7 @@ jobs:
   cocoapod:
     name: "Lint CocoaPods podspec"
     runs-on: macos-13
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
@@ -110,6 +114,7 @@ jobs:
   spm:
     name: "Test Swift Package Manager support"
     runs-on: macos-13
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
@@ -121,6 +126,7 @@ jobs:
   build-xcframework:
     name: "Build XCFramework"
     runs-on: macos-13
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
