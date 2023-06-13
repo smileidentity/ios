@@ -91,6 +91,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     @Published private(set) var hasDetectedValidFace: Bool {
         didSet {
             if hasDetectedValidFace {
+                print("capturing image")
                 captureImage()
             }
         }
@@ -158,9 +159,16 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     private func pauseFaceDetection() {
-        facedetectionSubscribers?.cancel() // 3
+        facedetectionSubscribers?.cancel()
         facedetectionSubscribers = nil
         cameraManager.pauseSession()
+    }
+
+    func switchCamera() {
+        facedetectionSubscribers?.cancel()
+        facedetectionSubscribers = nil
+        cameraManager.switchCamera()
+        setupFaceDetectionSubscriptions()
     }
 
     func perform(action: SelfieCaptureViewModelAction) {
@@ -183,6 +191,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     private func captureImage() {
         guard let currentBuffer = currentBuffer, hasDetectedValidFace == true,
               livenessImages.count < numberOfLivenessImages + 1  else {
+            print("No buffer")
             return
         }
         guard case let .faceFound(faceGeometry) = faceGeometryState else {
@@ -361,9 +370,11 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     private func updateProgress() {
+        print("Updating progress")
         DispatchQueue.main.async { [self] in
             let selfieImageCount = selfieImage == nil ? 0 : 1
             progress = CGFloat(livenessImages.count+selfieImageCount)/CGFloat(numberOfLivenessImages+1)
+            print("progress count \(progress)")
         }
     }
 
