@@ -110,7 +110,7 @@ class CameraManager: ObservableObject {
     }
 
     func switchCamera() {
-        sessionQueue.async {
+        sessionQueue.async { [self] in
             guard self.status == .configured else { return }
 
             self.session.beginConfiguration()
@@ -144,6 +144,12 @@ class CameraManager: ObservableObject {
                     let newInput = try AVCaptureDeviceInput(device: newCamera)
                     if self.session.canAddInput(newInput) {
                         self.session.addInput(newInput)
+                        self.videoOutput.videoSettings =
+                        [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
+
+                        let videoConnection = self.videoOutput.connection(with: .video)
+                        videoConnection?.videoOrientation = .portrait
+                        videoConnection?.isVideoMirrored = true
                     } else {
                         self.set(error: .cannotAddInput)
                         self.status = .failed
