@@ -1,6 +1,7 @@
 import UIKit
 import SmileID
 import SwiftUI
+import netfox
 @UIApplicationMain
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -11,6 +12,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions
                      launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        NFX.sharedInstance().start()
         do {
             let config = try Config(url: Constant.configUrl)
             SmileID.initialize(config: config)

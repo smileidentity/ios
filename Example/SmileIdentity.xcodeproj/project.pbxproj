@@ -20,6 +20,7 @@
 		913C58642A31F8B400DD5AFE /* ResourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913C58632A31F8B400DD5AFE /* ResourceCell.swift */; };
 		913C58672A320BB500DD5AFE /* AboutUsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913C58662A320BB500DD5AFE /* AboutUsCell.swift */; };
 		91941A662A2103E200FFFB26 /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 91941A652A2103E200FFFB26 /* SmileID */; };
+		91AC32CF2A3B51F000C4A4C6 /* netfox in Frameworks */ = {isa = PBXBuildFile; productRef = 91AC32CE2A3B51F000C4A4C6 /* netfox */; };
 		91BA87D02A1EF4C000855648 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BA87CF2A1EF4C000855648 /* HomeViewModel.swift */; };
 		91E625F02A28F1F100BEA938 /* EnterUserIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E625EF2A28F1F100BEA938 /* EnterUserIDView.swift */; };
 		91E625F22A29EFA200BEA938 /* SmileTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E625F12A29EFA200BEA938 /* SmileTextField.swift */; };
@@ -64,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91AC32CF2A3B51F000C4A4C6 /* netfox in Frameworks */,
 				91941A662A2103E200FFFB26 /* SmileID in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,6 +173,7 @@
 			name = SmileIdentity_Example;
 			packageProductDependencies = (
 				91941A652A2103E200FFFB26 /* SmileID */,
+				91AC32CE2A3B51F000C4A4C6 /* netfox */,
 			);
 			productName = SmileIdentity;
 			productReference = 607FACD01AFB9204008FA782 /* Smile ID.app */;
@@ -202,6 +205,9 @@
 				Base,
 			);
 			mainGroup = 607FACC71AFB9204008FA782;
+			packageReferences = (
+				91AC32CD2A3B51F000C4A4C6 /* XCRemoteSwiftPackageReference "netfox" */,
+			);
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -385,7 +391,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileIdentity/Info.plist;
@@ -414,7 +420,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileIdentity/Info.plist;
@@ -460,10 +466,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		91AC32CD2A3B51F000C4A4C6 /* XCRemoteSwiftPackageReference "netfox" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kasketis/netfox";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.21.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		91941A652A2103E200FFFB26 /* SmileID */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SmileID;
+		};
+		91AC32CE2A3B51F000C4A4C6 /* netfox */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 91AC32CD2A3B51F000C4A4C6 /* XCRemoteSwiftPackageReference "netfox" */;
+			productName = netfox;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
