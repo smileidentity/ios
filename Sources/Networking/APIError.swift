@@ -1,14 +1,15 @@
 import Foundation
 
-public enum APIError: Error {
+public enum SmileIDError: Error {
     case encode(EncodingError)
     case request(URLError)
     case decode(DecodingError)
     case unknown(String)
-    case httpStatus(Int, Data)
+    case api(String, String)
+    case httpError(Int, Data)
 }
 
-extension APIError: LocalizedError {
+extension SmileIDError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .encode(let error):
@@ -19,17 +20,15 @@ extension APIError: LocalizedError {
             return String(describing: error)
         case .unknown(let message):
             return message
-        case .httpStatus(let code, let data):
-            guard let response = try? JSONDecoder().decode(HTTPErrorResponse.self, from: data) else {
-                print("Error code is \(code)")
-                return String(describing: data)
-            }
-            return response.message
+        case .httpError(let statusCode, let data):
+            return "HTTP Error with status code \(statusCode) and \(String(describing: data))"
+        case .api(_, let message):
+            return message
         }
     }
 }
 
-private struct HTTPErrorResponse: Decodable {
+public struct SmileIDErrorResponse: Decodable {
     var message: String
     var code: String
 
