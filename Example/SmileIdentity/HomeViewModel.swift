@@ -65,7 +65,23 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
 
     @objc func handleAuthCompletion(_ notification: NSNotification) {
         print("Its done")
-        toastMessage = "Smart selfie Authenticaion completed successfully"
-        showToast = true
+        if let dict =  notification.userInfo as? NSDictionary {
+            if let response = dict["Response"] as? JobStatusResponse {
+                if response.jobSuccess == true {
+                    toastMessage = "Smart selfie Authentication completed successfully"
+                    showToast = true
+                }
+
+                if response.jobComplete == false {
+                    toastMessage = "Job submitted successfully, results processing"
+                    showToast = true
+                }
+            }
+
+            if let error = dict["Error"] as? Error {
+                toastMessage = error.localizedDescription
+                showToast = true
+            }
+        }
     }
 }

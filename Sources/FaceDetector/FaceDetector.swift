@@ -5,8 +5,8 @@ import CoreImage
 class FaceDetector {
     var sequenceHandler = VNSequenceRequestHandler()
     weak var model: SelfieCaptureViewModel?
-    var viewDelegate: FaceDetectorDelegate?
-    private let maximumHistoryLength = 0
+    weak var viewDelegate: FaceDetectorDelegate?
+    private let maximumHistoryLength = 5
     private var transpositionHistoryPoints = [CGPoint]()
     private var previousPixelBuffer: CVPixelBuffer?
 
@@ -33,7 +33,6 @@ class FaceDetector {
     }
 
     func isSceneStable() -> Bool {
-        return true
         if transpositionHistoryPoints.count == maximumHistoryLength {
             // Calculate the moving average.
             var movingAverage: CGPoint = CGPoint.zero

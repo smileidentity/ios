@@ -21,7 +21,9 @@ struct EnterUserIDView: View {
                 VStack {
                     SmileTextField(field: $userId, placeholder: "User ID")
                         .multilineTextAlignment(.center)
-                    NavigationLink(destination: SmileID.smartSelfieAuthenticationScreen(userId: userId, delegate: viewModel).navigationBarBackButtonHidden(true), isActive: $goToAuth ) {
+                    NavigationLink(destination: SmileID.smartSelfieAuthenticationScreen(userId: userId,
+                                                                                        delegate: viewModel)
+                        .navigationBarBackButtonHidden(true), isActive: $goToAuth ) {
                     }
                     SmileButton(title: "Continue", clicked: {
                         goToAuth = true
@@ -54,12 +56,12 @@ class UserIDViewModel: ObservableObject, SmartSelfieResultDelegate {
 
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
         shouldDismiss = true
-        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"), object: ["Response": jobStatusResponse]))
+        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"), object: nil, userInfo: ["Response": jobStatusResponse]))
     }
 
     func didError(error: Error) {
         shouldDismiss = true
-        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureError"), object: ["Error": error]))
+        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureError"), object: nil, userInfo: ["Error": error]))
     }
 
 

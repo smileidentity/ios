@@ -18,7 +18,7 @@ public struct SmartSelfieInstructionsView: View {
     public var body: some View {
         NavigationView {
             VStack {
-                if viewModel.processingState == .endFlow {
+                if let processingState = viewModel.processingState, processingState == .endFlow {
                    let _ = DispatchQueue.main.async {
                         presentationMode.wrappedValue.dismiss()
                     }

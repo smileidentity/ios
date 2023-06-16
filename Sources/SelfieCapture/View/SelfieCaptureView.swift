@@ -37,13 +37,12 @@ public struct SelfieCaptureView: View {
                     }.scaleEffect(1.2, anchor: .top)
 
                 FaceOverlayView(model: viewModel)
-                FaceBoundingBoxView(model: viewModel)
                 switch viewModel.processingState {
                 case .confirmation:
                     ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
                 case .inProgress:
                     ModalPresenter(centered: true){ ProcessingView() }
-                case .success:
+                case .complete:
                     ModalPresenter { SuccessView(viewModel: viewModel) }
                 case .error:
                     ModalPresenter { ErrorView(viewModel: viewModel) }

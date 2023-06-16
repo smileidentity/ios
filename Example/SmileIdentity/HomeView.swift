@@ -4,7 +4,6 @@ import SmileID
 struct HomeView: View {
     var userID = ""
     @ObservedObject var viewModel = HomeViewModel()
-
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -39,7 +38,7 @@ struct HomeView: View {
                     .padding()
             }
             .padding()
-            .navigationBarTitle(Text("Smile ID").font(SmileID.theme.header1), displayMode: .inline)
+            .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
             .navigationBarItems(trailing: ToggleButton())
             .background(offWhite.edgesIgnoringSafeArea(.all))
         }

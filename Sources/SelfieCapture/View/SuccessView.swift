@@ -25,7 +25,7 @@ struct SuccessView: View {
             SmileButton(style: .primary,
                         title: "Confirmation.Continue",
                         clicked: {
-                viewModel.handleSuccess()
+                viewModel.handleCompletion()
             })
         }
         .padding()
