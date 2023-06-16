@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 
 struct FaceOverlayView: View {
+    @State var agentMode = false
     @ObservedObject private(set) var model: SelfieCaptureViewModel
     var body: some View {
         GeometryReader { geometry in
@@ -32,23 +33,43 @@ struct FaceOverlayView: View {
                                 lineCap: .round))
                                 .frame(width: faceWidth,
                                        height: faceHeight)
-                                .animation(.easeOut, value: model.progress)
+                                    .animation(.easeOut, value: model.progress)
                         )
-                }.padding(.top, -200)
-                    .scaleEffect(1.2, anchor: .top)
+
+                }
+                .padding(.top, -200)
+                .scaleEffect(1.2, anchor: .top)
                 InstructionsView(model: model)
                     .padding(.top, -((faceWidth)/2))
-                Button("Switch Camera", action: {model.switchCamera()})
-                    .padding(.bottom, 50)
+                HStack(spacing: 10) {
+                    Text("Agent Mode")
+                        .foregroundColor(agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent)
+                        .font(SmileID.theme.header4)
+                    Toggle("", isOn: $agentMode.didSet { (state) in
+                        print("switching camera")
+                        model.switchCamera()
+                    }).labelsHidden()
+                }
+                    .frame(width: 188, height: 46)
+                    .background(agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain)
+                    .cornerRadius(23)
+                    .shadow(radius: 23)
+                    .padding(.bottom, 35)
+                    .animation(.default)
+
             }
         }
     }
 }
 
-struct FaceOverlayView_Previews: PreviewProvider {
-    static var previews: some View {
-        FaceOverlayView(model: SelfieCaptureViewModel(userId: UUID().uuidString,
-                                                      jobId: UUID().uuidString,
-                                                      isEnroll: false))
+extension Binding {
+    func didSet(execute: @escaping (Value) -> Void) -> Binding {
+        return Binding(
+            get: { self.wrappedValue },
+            set: {
+                self.wrappedValue = $0
+                execute($0)
+            }
+        )
     }
 }
