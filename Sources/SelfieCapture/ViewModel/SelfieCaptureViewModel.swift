@@ -14,13 +14,13 @@ enum SelfieCaptureViewModelAction {
     case faceQualityObservationDetected(FaceQualityModel)
 }
 
-enum ProcessingState: Equatable {
+enum ProcessingState {
     static func == (lhs: ProcessingState, rhs: ProcessingState) -> Bool {
         switch (lhs, rhs) {
-        case (let .success(response1), let .success(response2)):
-            return response1.timestamp == response2.timestamp
+        case (let .complete(response1, error1), let .complete(response2, error2)):
+            return false
         case (let .error(error1), let .error(error2)):
-           return error1.localizedDescription == error2.localizedDescription
+            return error1.localizedDescription == error2.localizedDescription
         case (.confirmation, .confirmation):
             return true
         case (.endFlow, .endFlow):
@@ -34,7 +34,7 @@ enum ProcessingState: Equatable {
 
     case confirmation
     case inProgress
-    case success(JobStatusResponse)
+    case complete(JobStatusResponse?, SmileIDError?)
     case endFlow
     case error(Error)
 }
@@ -46,7 +46,8 @@ final class SelfieCaptureViewModel: ObservableObject {
     var showAttribution: Bool
     var faceLayoutGuideFrame = CGRect.zero
     var viewFinderSize = CGSize.zero
-    var viewDelegate: FaceDetectorDelegate? {
+    let subject = PassthroughSubject<String, Never>()
+    weak var viewDelegate: FaceDetectorDelegate? {
         didSet {
             faceDetector.viewDelegate = viewDelegate
         }
@@ -56,26 +57,21 @@ final class SelfieCaptureViewModel: ObservableObject {
     private var faceDetector = FaceDetector()
     private var subscribers = Set<AnyCancellable>()
     private var facedetectionSubscribers: AnyCancellable?
+    private var throttleSubscription: AnyCancellable?
     private let numberOfLivenessImages = 7
     private let livenessImageSize = CGSize(width: 256, height: 256)
     private let selfieImageSize = CGSize(width: 320, height: 320)
     private var currentBuffer: CVPixelBuffer?
     private var files = [URL]()
-    var selfieImage: Data? {
-        didSet {
-            updateProgress()
-        }
-    }
-    private var livenessImages = [Data]() {
-        didSet {
-            updateProgress()
-        }
-    }
+    var selfieImage: Data?
+    private var livenessImages = [Data]()
     private var lastCaptureTime: Int64 = 0
-    private var interCaptureDelay = 350
+    private var interCaptureDelay = 600
     weak var captureResultDelegate: SmartSelfieResultDelegate?
-
+    private var debounceTimer: Timer?
+    @Published var agentMode = false
     @Published private(set) var progress: CGFloat = 0
+    @Published var directive: String = "Instructions.Start"
     @Published private(set) var processingState: ProcessingState? {
         didSet {
             switch processingState {
@@ -88,42 +84,41 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    @Published private(set) var hasDetectedValidFace: Bool {
+    private(set) var hasDetectedValidFace: Bool {
         didSet {
             if hasDetectedValidFace {
-                print("capturing image")
                 captureImage()
             }
         }
     }
-    @Published private(set) var isAcceptableRoll: Bool {
+    private(set) var isAcceptableRoll: Bool {
         didSet {
             calculateDetectedFaceValidity()
         }
     }
-    @Published private(set) var isAcceptableYaw: Bool {
+    private(set) var isAcceptableYaw: Bool {
         didSet {
             calculateDetectedFaceValidity()
         }
     }
-    @Published private(set) var isAcceptableBounds: FaceBoundsState {
+    private(set) var isAcceptableBounds: FaceBoundsState {
         didSet {
             calculateDetectedFaceValidity()
         }
     }
-    @Published private(set) var isAcceptableQuality: Bool {
+    private(set) var isAcceptableQuality: Bool {
         didSet {
             calculateDetectedFaceValidity()
         }
     }
 
-    @Published private(set) var faceDetectionState: FaceDetectionState
-    @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel, ErrorWrapper> {
+    private(set) var faceDetectionState: FaceDetectionState
+    private(set) var faceGeometryState: FaceObservation<FaceGeometryModel, ErrorWrapper> {
         didSet {
             processUpdatedFaceGeometry()
         }
     }
-    @Published private(set) var faceQualityState: FaceObservation<FaceQualityModel, ErrorWrapper> {
+    private(set) var faceQualityState: FaceObservation<FaceQualityModel, ErrorWrapper> {
         didSet {
             processUpdatedFaceQuality()
         }
@@ -146,6 +141,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         self.showAttribution = showAttribution
         faceDetector.model = self
         setupFaceDetectionSubscriptions()
+        setupDirectiveSubscription()
     }
 
     private func setupFaceDetectionSubscriptions() {
@@ -169,29 +165,39 @@ final class SelfieCaptureViewModel: ObservableObject {
         facedetectionSubscribers = nil
         cameraManager.switchCamera()
         setupFaceDetectionSubscriptions()
+        resetCapture()
     }
 
     func perform(action: SelfieCaptureViewModelAction) {
         switch action {
         case .sceneUnstable:
             publishUnstableSceneObserved()
+            subject.send("Instructions.Start")
         case .noFaceDetected:
             publishNoFaceObserved()
+            subject.send("Instructions.Start")
         case .multipleFacesDetected:
             publishFaceObservation(.multipleFacesDetected)
+            subject.send("Instructions.MultipleFaces")
         case .faceObservationDetected(let faceGeometry):
             publishFaceObservation(.faceDetected, faceGeometryModel: faceGeometry)
         case .faceQualityObservationDetected(let faceQualityModel):
             publishFaceObservation(.faceDetected, faceQualityModel: faceQualityModel)
         case .smileDirective:
-            publishFaceObservation(.smileFrame)
+            subject.send("Instructions.Smile")
         }
     }
 
     private func captureImage() {
+        DispatchQueue.main.async {
+            if self.livenessImages.count >= 3 {
+                self.perform(action: .smileDirective)
+            } else {
+                self.subject.send("Instructions.Capturing")
+            }
+        }
         guard let currentBuffer = currentBuffer, hasDetectedValidFace == true,
               livenessImages.count < numberOfLivenessImages + 1  else {
-            print("No buffer")
             return
         }
         guard case let .faceFound(faceGeometry) = faceGeometryState else {
@@ -200,16 +206,13 @@ final class SelfieCaptureViewModel: ObservableObject {
         while (livenessImages.count < numberOfLivenessImages) &&
                 ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             guard let image = ImageUtils.captureFace(from: currentBuffer,
-                                                     faceGeometry: faceGeometry, padding: 95,
+                                                     faceGeometry: faceGeometry, padding: 100,
                                                      finalSize: livenessImageSize,
                                                      screenImageSize: viewFinderSize,
                                                      isGreyScale: true) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
-        }
-
-        if livenessImages.count >= 3 {
-            perform(action: .smileDirective)
+            updateProgress()
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&
@@ -223,10 +226,13 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                            isGreyScale: false) else { return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
+            updateProgress()
             do {
                 files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
-                                                                      previewImage: selfieImage)
-                processingState = .confirmation
+                                                      previewImage: selfieImage)
+                DispatchQueue.main.async {
+                    self.processingState = .confirmation
+                }
             } catch {
                 DispatchQueue.main.async { [self] in
                     processingState = .error(error)
@@ -274,24 +280,43 @@ final class SelfieCaptureViewModel: ObservableObject {
                 switch completion {
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
-                        print("error is \(error.localizedDescription)")
-                        self?.processingState = .error(error)
+                        if let error = error as? SmileIDError {
+                            switch error {
+                            case .request(let urlError):
+                                self?.processingState = .error(urlError)
+                            case .httpError, .unknown:
+                                self?.processingState = .error(error)
+                            default:
+                                self?.processingState = .complete(nil, error)
+                            }
+                        }
                     }
                 default:
                     break
                 }
             }, receiveValue: { [weak self] response in
                 DispatchQueue.main.async {
-                    self?.processingState = .success(response)
+                    self?.processingState = .complete(response, nil)
                 }
             }).store(in: &subscribers)
     }
 
     func resetCapture() {
-        livenessImages = []
-        selfieImage = nil
+        DispatchQueue.main.async {
+            if self.processingState != nil {
+                self.processingState = nil
+            }
+            if self.progress != 0 {
+                self.progress = 0
+            }
+        }
+        if !livenessImages.isEmpty {
+            livenessImages = []
+        }
+        if selfieImage != nil {
+            selfieImage = nil
+        }
         try? LocalStorage.delete(at: files)
-        processingState = nil
     }
 
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
@@ -323,18 +348,26 @@ final class SelfieCaptureViewModel: ObservableObject {
             .timeout(.seconds(10),
                      scheduler: DispatchQueue.main,
                      options: nil,
-                     customError: { SmileIDError.jobStatusTimeOut })
-
+                     customError: nil)
         return publisher.eraseToAnyPublisher()
     }
 
-    func handleSuccess() {
+    func handleClose() {
+        processingState = .endFlow
+    }
+
+    func handleCompletion() {
         switch processingState {
-        case .success(let response):
+        case .complete(let response, let error):
             processingState = .endFlow
-            captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
-                                              livenessImages: livenessImages,
-                                              jobStatusResponse: response)
+            if let response = response {
+                captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
+                                                  livenessImages: livenessImages,
+                                                  jobStatusResponse: response)
+            }
+            if let error = error {
+                captureResultDelegate?.didError(error: error)
+            }
         default:
             break
         }
@@ -345,10 +378,6 @@ final class SelfieCaptureViewModel: ObservableObject {
         submit()
     }
 
-    private func handleUploadResponse(_ response: JobStatusResponse) {
-        processingState = .success(response)
-    }
-
     func saveLivenessImage(data: Data) {
         if let photo = UIImage(data: data) {
             UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
@@ -356,25 +385,20 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     private func publishUnstableSceneObserved() {
-        DispatchQueue.main.async { [self] in
-            faceDetectionState = .sceneUnstable
-        }
+        faceDetectionState = .sceneUnstable
     }
 
     private func publishNoFaceObserved() {
-        DispatchQueue.main.async { [self] in
-            faceDetectionState = .noFaceDetected
-            faceGeometryState = .faceNotFound
-            faceQualityState = .faceNotFound
-        }
+        faceDetectionState = .noFaceDetected
+        faceGeometryState = .faceNotFound
+        faceQualityState = .faceNotFound
+        resetCapture()
     }
 
     private func updateProgress() {
-        print("Updating progress")
         DispatchQueue.main.async { [self] in
             let selfieImageCount = selfieImage == nil ? 0 : 1
             progress = CGFloat(livenessImages.count+selfieImageCount)/CGFloat(numberOfLivenessImages+1)
-            print("progress count \(progress)")
         }
     }
 
@@ -407,6 +431,16 @@ final class SelfieCaptureViewModel: ObservableObject {
             updateAcceptableRollYaw(using: roll, yaw: yaw)
         }
     }
+
+    func setupDirectiveSubscription() {
+        throttleSubscription = subject.throttle(for: .milliseconds(300),
+                                                scheduler: RunLoop.main,
+                                                latest: true).sink { value in
+            if value != self.directive {
+                self.directive = value
+            }
+        }
+    }
 }
 
 extension SelfieCaptureViewModel {
@@ -427,14 +461,18 @@ extension SelfieCaptureViewModel {
     func updateAcceptableBounds(using boundingBox: CGRect) {
         if boundingBox.width > 0.9 * faceLayoutGuideFrame.width {
             isAcceptableBounds = .detectedFaceTooLarge
+            subject.send("Instructions.FaceClose")
         } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {
             isAcceptableBounds = .detectedFaceTooSmall
+            subject.send("Instructions.FaceFar")
         } else {
             if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
                 isAcceptableBounds = .detectedFaceOffCentre
+                subject.send("Instructions.Start")
                 resetCapture()
             } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 210 {
                 isAcceptableBounds = .detectedFaceOffCentre
+                subject.send("Instructions.Start")
                 resetCapture()
             } else {
                 isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
