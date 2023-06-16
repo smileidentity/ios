@@ -21,9 +21,7 @@ extension FrameManager: AVCaptureVideoDataOutputSampleBufferDelegate {
                      didOutput sampleBuffer: CMSampleBuffer,
                      from connection: AVCaptureConnection) {
     if let buffer = sampleBuffer.imageBuffer {
-      DispatchQueue.main.async {
         self.sampleBuffer = buffer
-      }
     }
   }
 }
