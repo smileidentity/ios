@@ -111,8 +111,6 @@ class CameraManager: ObservableObject {
 
     func switchCamera() {
         sessionQueue.async { [self] in
-            guard self.status == .configured else { return }
-
             self.session.beginConfiguration()
             defer { self.session.commitConfiguration() }
 

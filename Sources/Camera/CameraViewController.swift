@@ -6,7 +6,7 @@ class PreviewView: UIViewController {
 
     var layedOutSubviews = false
     var previewLayer: AVCaptureVideoPreviewLayer?
-    private let cameraManager: CameraManager
+    private weak var cameraManager: CameraManager?
 
     init(cameraManager: CameraManager) {
         self.cameraManager = cameraManager
@@ -26,7 +26,8 @@ class PreviewView: UIViewController {
     }
 
     func configurePreviewLayer() {
-        previewLayer = AVCaptureVideoPreviewLayer(session: cameraManager.session)
+        guard let session = cameraManager?.session else { return }
+        previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer?.videoGravity = .resizeAspectFill
         previewLayer?.frame = view.bounds
         previewLayer?.connection?.videoOrientation = .portrait
@@ -36,7 +37,7 @@ class PreviewView: UIViewController {
 
 extension PreviewView: FaceDetectorDelegate {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
-      guard let previewLayer = previewLayer, let positon = cameraManager.cameraPositon else {
+      guard let previewLayer = previewLayer else {
           return .zero
       }
 
@@ -44,9 +45,8 @@ extension PreviewView: FaceDetectorDelegate {
                                     y: rect.origin.x,
                                     width: rect.height,
                                     height: rect.width)
-        let receivedRect = positon == .front ? normalizedRect : rect
 
-        let transformedRect = previewLayer.layerRectConverted(fromMetadataOutputRect: receivedRect)
+        let transformedRect = previewLayer.layerRectConverted(fromMetadataOutputRect: normalizedRect)
 
         let mirroredRect = CGRect(x: previewLayer.bounds.width - transformedRect.origin.x - transformedRect.width,
                                   y: previewLayer.bounds.height - transformedRect.origin.y - transformedRect.height,
