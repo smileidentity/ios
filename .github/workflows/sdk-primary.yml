@@ -31,18 +31,35 @@ jobs:
       matrix:
         xcode:
         - '14.2' # Swift 5.7
-        - '14.3' # Swift 5.8
     steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.CI_SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
           xcode: ${{ matrix.xcode }}
       - name: Build Package
-        run: bundle exec rake build:package:all
+        run: |
+          bundle exec rake provision:ios
+          bundle exec rake build:package:all
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
   build-example:
     name: "Build Example App"
     runs-on: macos-13
+    strategy:
+      matrix:
+        xcode:
+        - '14.2' # Swift 5.7
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -73,10 +90,17 @@ jobs:
       - name: Add Smile Config to Xcode Project
         run: ruby add_smile_config.rb
       - uses: ./.github/actions/setup
-      - name: Example app unit tests
-        run: bundle exec rake test:example
-      - name: Build Example
-        run: bundle exec rake build:example:all
+      - name: Build Example app & unit tests
+        run: |
+          bundle exec rake provision:ios
+          bundle exec rake build:example:all
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
   test-package:
     name: "Test Package"
@@ -84,51 +108,43 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
+      - name: Setup environment
+        run: bundle install
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.CI_SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - uses: ./.github/actions/setup
         with:
-          xcode: '14.3' # Swift 5.8
-      - name: Test Package
-        run: bundle exec rake test:package
-      - name: Process test artifacts
+          xcode: '14.2' # Swift 5.8
+      - name: Run tests
         if: always()
-        run: bundle exec rake test:process
-      - name: Upload artifacts
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: TestArtifacts
-          path: Tests/Artifacts
-
-  cocoapod:
-    name: "Lint CocoaPods podspec"
-    runs-on: macos-13
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-        with:
-          install-mint: false
-      - name: Lint CocoaPod Podspec
-        run: bundle exec rake lint:podspec
-
-  spm:
-    name: "Test Swift Package Manager support"
-    runs-on: macos-13
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-        with:
-          install-mint: true
-      - name: Test Swift Package Manager support
-        run: bundle exec rake test:spm
+        run: | 
+         bundle exec rake provision:ios
+         bundle exec rake lint:podspec
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
   build-xcframework:
     name: "Build XCFramework"
+    if: ${{ github.event_name == 'push'}}
     runs-on: macos-13
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
+      - name: Setup environment
+        run: bundle install
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.CI_SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - uses: ./.github/actions/setup
         with:
           install-mint: true
@@ -137,7 +153,17 @@ jobs:
           # will be able to use these XCFrameworks and the Smile ID spm package.
           xcode: '14.2' # Swift 5.7
       - name: Build XCFramework
-        run: bundle exec rake build:xcframework
+        run: |
+          brew install coreutils
+          bundle exec rake provision:ios
+          bundle exec rake build:xcframework
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          ISSUER_ID: ${{ secrets.ISSUER_ID }}
+          KEY_ID: ${{ secrets.KEY_ID }}
+          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
       - name: Upload XCFramework
         uses: actions/upload-artifact@v3
         with:

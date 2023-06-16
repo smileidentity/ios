@@ -1,0 +1,23 @@
+PODS:
+  - SmileID (0.0.0):
+    - Zip (~> 2.1.0)
+  - Zip (2.1.2)
+
+DEPENDENCIES:
+  - SmileID (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - Zip
+
+EXTERNAL SOURCES:
+  SmileID:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  SmileID: 752a584b9ad551f8f5d92bcfba9cf12d4c79f234
+  Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
+
+PODFILE CHECKSUM: d01174698b5156314c54492ef4b2971b49da70a6
+
+COCOAPODS: 1.11.3
