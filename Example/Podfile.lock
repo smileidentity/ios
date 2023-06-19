@@ -1,13 +1,16 @@
 PODS:
+  - netfox (1.21.0)
   - SmileID (0.0.0):
     - Zip (~> 2.1.0)
   - Zip (2.1.2)
 
 DEPENDENCIES:
+  - netfox
   - SmileID (from `../`)
 
 SPEC REPOS:
   trunk:
+    - netfox
     - Zip
 
 EXTERNAL SOURCES:
@@ -15,9 +18,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
+  netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
   SmileID: 752a584b9ad551f8f5d92bcfba9cf12d4c79f234
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: d01174698b5156314c54492ef4b2971b49da70a6
+PODFILE CHECKSUM: d298763077a7ce4ff68cfcfd892f57a70c2c00bd
 
 COCOAPODS: 1.11.3

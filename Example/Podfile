@@ -6,6 +6,7 @@ platform :ios, '13.0'
 
 target 'SmileID_Example' do
   pod 'SmileID', :path => '../'
+  pod 'netfox'
   # pod 'SmileID'
 
 
