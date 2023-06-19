@@ -87,7 +87,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     private(set) var hasDetectedValidFace: Bool {
         didSet {
             if hasDetectedValidFace {
-                captureImage()
+                //captureImage()
             }
         }
     }
