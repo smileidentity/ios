@@ -20,18 +20,21 @@ namespace :build do
 
     desc 'Builds the iOS Smile ID Example app'
     task :iOS do
-      xcodebuild('build -scheme "SmileIdentity-Example" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)" -project Example/SmileIdentity.xcodeproj')
+      xcodebuild('build -scheme "SmileID-Example" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)"')
     end
   end
 
   desc 'Builds an xcframework for all supported platforms'
   task :xcframework do
-    sh 'rm -rf .build/archives'
-    sh 'rm -rf release'
-    sh 'mint run unsignedapps/swift-create-xcframework --zip'
+    sh 'rm -rf archives'
     sh 'rm -rf SmileID.xcframework'
-    sh 'swift package compute-checksum SmileID.zip'
+    sh 'rm -rf release'
+    xcodebuild('archive -scheme "SmileID" -destination "generic/platform=iOS Simulator"  -archivePath "archives/ios_simulators.xcarchive" BUILD_LIBRARY_FOR_DISTRIBUTION=YES SKIP_INSTALL=NO')
+    xcodebuild('archive -scheme "SmileID" -destination "generic/platform=iOS"  -archivePath "archives/ios_devices.xcarchive" BUILD_LIBRARY_FOR_DISTRIBUTION=YES SKIP_INSTALL=NO')
+    xcarchive('-create-xcframework -framework archives/ios_devices.xcarchive/Products/Library/Frameworks/SmileID.framework -framework archives/ios_simulators.xcarchive/Products/Library/Frameworks/SmileID.framework -output SmileID.xcframework')
     sh 'mkdir release'
+    sh 'zip -r SmileID.zip SmileID.xcframework/'
+    sh 'sha256sum SmileID.zip > SmileID.sha256'
     sh 'mv SmileID.zip SmileID.sha256 release/'
   end
 end
@@ -42,17 +45,17 @@ namespace :test do
   desc 'Tests the Smile ID package for iOS'
   task :package do
     sh 'rm -rf Tests/Artifacts'
-    xcodebuild('test  -scheme "SmileID" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)" -resultBundlePath Tests/Artifacts/SmileIdentityTests.xcresult')
+    sh 'pod lib lint SmileID.podspec'
   end
 
   desc 'Tests the example app unit tests'
   task :example do
-    xcodebuild('test -project Example/SmileIdentity.xcodeproj  -scheme "SmileIdentityTests" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)"')
+    xcodebuild('test -scheme "SmileID-Example" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)"')
   end
 
   desc 'Processes .xcresult artifacts from the most recent test:package execution'
   task :process do
-    sh 'mint run ChargePoint/xcparse@2.3.1 xcparse attachments Tests/Artifacts/SmileIdentityTests.xcresult Tests/Artifacts/TestAttachments'
+    sh 'mint run ChargePoint/xcparse@2.3.1 xcparse attachments Tests/Artifacts/SmileIDTests.xcresult Tests/Artifacts/TestAttachments'
   end
 
   desc 'Tests Swift Package Manager support'
@@ -69,7 +72,7 @@ namespace :lint do
 
   desc 'Lints the CocoaPods podspec'
   task :podspec do
-    sh 'pod lib lint SmileIdentity.podspec'
+    sh 'pod lib lint SmileID.podspec'
   end
 end
   
@@ -81,6 +84,29 @@ namespace :format do
 end
   
 def xcodebuild(command)
+  # Check if the mint tool is installed -- if so, pipe the xcodebuild output through xcbeautify
+  `which mint`
+  sh 'rm -rf ~/Library/Developer/Xcode/DerivedData/* && echo "Successfully flushed DerivedData"'
+  if $?.success?
+    sh "set -o pipefail && xcodebuild #{command} -workspace Example/SmileID.xcworkspace | mint run thii/xcbeautify@0.10.2"
+  else
+    sh "xcodebuild #{command} -workspace Example/SmileID.xcworkspace"
+  end
+end
+
+
+namespace :provision do
+  desc 'Provision the app for building'
+  task :ios do
+    Dir.chdir('Example') do
+      sh 'bundle install'
+      sh 'pod install'
+      sh 'bundle exec fastlane run_match'
+    end
+  end
+end
+
+def xcarchive(command)
   # Check if the mint tool is installed -- if so, pipe the xcodebuild output through xcbeautify
   `which mint`
   sh 'rm -rf ~/Library/Developer/Xcode/DerivedData/* && echo "Successfully flushed DerivedData"'

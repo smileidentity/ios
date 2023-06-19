@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1410"
+   LastUpgradeVersion = "0900"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-               BuildableName = "Smile ID.app"
-               BlueprintName = "SmileIdentity_Example"
-               ReferencedContainer = "container:SmileIdentity.xcodeproj">
+               BuildableName = "SmileID_Example.app"
+               BlueprintName = "SmileID_Example"
+               ReferencedContainer = "container:SmileID.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "SmileIdentity_Tests.xctest"
-               BlueprintName = "SmileIdentity_Tests"
-               ReferencedContainer = "container:SmileIdentity.xcodeproj">
+               BuildableName = "SmileID_Tests.xctest"
+               BlueprintName = "SmileID_Tests"
+               ReferencedContainer = "container:SmileID.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -40,33 +40,37 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "Smile ID.app"
-            BlueprintName = "SmileIdentity_Example"
-            ReferencedContainer = "container:SmileIdentity.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "SmileIdentity_Tests.xctest"
-               BlueprintName = "SmileIdentity_Tests"
-               ReferencedContainer = "container:SmileIdentity.xcodeproj">
+               BuildableName = "SmileID_Tests.xctest"
+               BlueprintName = "SmileID_Tests"
+               ReferencedContainer = "container:SmileID.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "607FACCF1AFB9204008FA782"
+            BuildableName = "SmileID_Example.app"
+            BlueprintName = "SmileID_Example"
+            ReferencedContainer = "container:SmileID.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <AdditionalOptions>
+      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -78,11 +82,13 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "Smile ID.app"
-            BlueprintName = "SmileIdentity_Example"
-            ReferencedContainer = "container:SmileIdentity.xcodeproj">
+            BuildableName = "SmileID_Example.app"
+            BlueprintName = "SmileID_Example"
+            ReferencedContainer = "container:SmileID.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <AdditionalOptions>
+      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -95,9 +101,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "Smile ID.app"
-            BlueprintName = "SmileIdentity_Example"
-            ReferencedContainer = "container:SmileIdentity.xcodeproj">
+            BuildableName = "SmileID_Example.app"
+            BlueprintName = "SmileID_Example"
+            ReferencedContainer = "container:SmileID.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
