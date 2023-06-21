@@ -35,7 +35,7 @@ class PreviewView: UIViewController {
     }
 }
 
-extension PreviewView: FaceDetectorDelegate {
+extension PreviewView {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
       guard let previewLayer = previewLayer else {
           return .zero

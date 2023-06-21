@@ -1,8 +1,10 @@
 import Foundation
 import Vision
 import CoreImage
+import ARKit
+import UIKit
 
-class FaceDetector {
+class FaceDetector: NSObject, ARSCNViewDelegate {
     var sequenceHandler = VNSequenceRequestHandler()
     weak var model: SelfieCaptureViewModel?
     weak var viewDelegate: FaceDetectorDelegate?
@@ -10,12 +12,83 @@ class FaceDetector {
     private var transpositionHistoryPoints = [CGPoint]()
     private var previousPixelBuffer: CVPixelBuffer?
     private var eyeAspectRatioHistory: [CGPoint] = []
-    private var mouthAspectRatioHistory: [CGFloat] = []
+    private var mouthMovementHistory: [CGPoint] = []
     private let maximumAspectRatioHistoryLength = 10
+    let scene = ARSCNView()
+
+    override init() {
+        super.init()
+        scene.delegate = self
+    }
+
+    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+        let faceMesh = ARSCNFaceGeometry(device: scene.device!)
+        let node = SCNNode(geometry: faceMesh)
+        node.geometry?.firstMaterial?.fillMode = .lines
+        return node
+    }
+
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        if let faceAnchor = anchor as? ARFaceAnchor, let faceGeometry = node.geometry as? ARSCNFaceGeometry {
+            faceGeometry.update(from: faceAnchor.geometry)
+            expression(anchor: faceAnchor)
+        }
+    }
+
+    func expression(anchor: ARFaceAnchor) {
+        let smileLeft = anchor.blendShapes[.mouthSmileLeft]
+        let smileRight = anchor.blendShapes[.mouthSmileRight]
+        let cheekPuff = anchor.blendShapes[.cheekPuff]
+        let tongue = anchor.blendShapes[.tongueOut]
+
+        if ((smileLeft?.decimalValue ?? 0.0) + (smileRight?.decimalValue ?? 0.0)) > 0.9 {
+            print("You are smiling. ")
+        }
+
+        if cheekPuff?.decimalValue ?? 0.0 > 0.1 {
+            print("Your cheeks are puffed. ")
+        }
+
+        if tongue?.decimalValue ?? 0.0 > 0.1 {
+            print( "Don't stick your tongue out! ")
+        }
+    }
+
+    func setupAR() {
+        let configuration = ARFaceTrackingConfiguration()
+        scene.session.run(configuration)
+    }
+
 
     func detectFaces(imageBuffer: CVImageBuffer) {
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler: detectedFaceQualityRequest)
-        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
+        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest { [self] request, error in
+            guard let results = request.results as? [VNFaceObservation], let viewDelegate = viewDelegate else {
+                print("no face")
+                model?.perform(action: .noFaceDetected)
+                return
+            }
+
+            if results.count > 1 {
+                print("face")
+                model?.perform(action: .multipleFacesDetected)
+                return
+            }
+            guard let result = results.first, !result.boundingBox.isNaN else {
+                model?.perform(action: .noFaceDetected)
+                return
+            }
+            let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
+
+            print(convertedBoundingBox)
+
+            let faceObservationModel = FaceGeometryModel(
+                boundingBox: convertedBoundingBox,
+                roll: result.roll ?? 0,
+                yaw: result.yaw ?? 0
+            )
+            model?.perform(action: .faceObservationDetected(faceObservationModel))
+        }
 
         // Use most recent models or fallback to older versions
         if #available(iOS 14.0, *) {
@@ -70,8 +143,9 @@ class FaceDetector {
         }
 
         if isSceneStable() {
+            print("Scene stable")
             detectFaces(imageBuffer: pixelBuffer)
-            faceLandmarksChecks(pixelBuffer: pixelBuffer)
+            //faceLandmarksChecks(pixelBuffer: pixelBuffer)
         } else {
             model?.perform(action: .sceneUnstable)
         }
@@ -91,11 +165,11 @@ class FaceDetector {
         eyeAspectRatioHistory.append(ratio)
     }
 
-    func recordMouthAspectRatio(_ ratio: CGFloat) {
-        if mouthAspectRatioHistory.count >= maximumAspectRatioHistoryLength {
-            mouthAspectRatioHistory.removeFirst()
+    func recordMouthMovement(_ movement: CGPoint) {
+        if mouthMovementHistory.count >= maximumHistoryLength {
+            mouthMovementHistory.removeFirst()
         }
-        mouthAspectRatioHistory.append(ratio)
+        mouthMovementHistory.append(movement)
     }
 
     func averageEyeAspectRatioChange() -> CGFloat {
@@ -112,10 +186,10 @@ class FaceDetector {
         return changeSum / CGFloat(eyeAspectRatioHistory.count - 1)
     }
 
-    fileprivate func isUserAlive() -> Bool {
+    func isUserAlive() -> Bool {
         let averageEyeChange = self.averageEyeAspectRatioChange()
-        let averageMouthChange = self.averageMouthAspectRatioChange()
-        if averageEyeChange > 0.05 || averageMouthChange > 0.05 {
+        let averageMouthMovementChange = self.averageMouthMovementChange()
+        if averageMouthMovementChange > 0.015 {
             return true
         }
 
@@ -147,15 +221,18 @@ class FaceDetector {
                 return
             }
 
-            guard let innerLips = landmarks.outerLips else {
+            guard let outerLips = landmarks.outerLips, let innerLips = landmarks.innerLips else {
                 return
             }
 
-            let mouthAspectRatio = self.euclideanDistance(innerLips.normalizedPoints[2], innerLips.normalizedPoints[10]) /
-            self.euclideanDistance(innerLips.normalizedPoints[4], innerLips.normalizedPoints[8])
+            let innerLipsIncrease = innerLips.normalizedPoints[innerLips.pointCount-1].x - innerLips.normalizedPoints[0].x 
 
+            let mouthWidthIncrease = outerLips.normalizedPoints[6].x - outerLips.normalizedPoints[0].x
+            let leftLipRise = outerLips.normalizedPoints[4].y - outerLips.normalizedPoints[10].y
+            let rightLipRise = outerLips.normalizedPoints[0].y - outerLips.normalizedPoints[6].y
+            let mouthMovement = CGPoint(x: mouthWidthIncrease, y: (leftLipRise + rightLipRise)/2)
             // Record the mouth aspect ratio.
-            self.recordMouthAspectRatio(mouthAspectRatio)
+            self.recordMouthMovement(mouthMovement)
 
             guard let leftEye = landmarks.leftEye, let rightEye = landmarks.rightEye else {
                 return
@@ -177,20 +254,19 @@ class FaceDetector {
 
     }
 
-    func averageMouthAspectRatioChange() -> CGFloat {
-        guard mouthAspectRatioHistory.count > 1 else { return 0 }
+    func averageMouthMovementChange() -> CGFloat {
+        guard mouthMovementHistory.count > 1 else { return 0 }
 
         var changeSum: CGFloat = 0
-        for i in 1..<mouthAspectRatioHistory.count {
-            let previousRatio = mouthAspectRatioHistory[i-1]
-            let currentRatio = mouthAspectRatioHistory[i]
-            let changeInRatio = abs(currentRatio - previousRatio)
-            changeSum += changeInRatio
+        for i in 1..<mouthMovementHistory.count {
+            let previousMovement = mouthMovementHistory[i-1]
+            let currentMovement = mouthMovementHistory[i]
+            let changeInMovement = abs(currentMovement.x - previousMovement.x) + abs(currentMovement.y - previousMovement.y)
+            changeSum += changeInMovement
         }
 
-        return changeSum / CGFloat(mouthAspectRatioHistory.count - 1)
+        return changeSum / CGFloat(mouthMovementHistory.count - 1)
     }
-
 
     func resetTranspositionHistory() {
         transpositionHistoryPoints.removeAll()
@@ -217,11 +293,13 @@ class FaceDetector {
 extension FaceDetector {
     func detectedFaceRectangles(request: VNRequest, error: Error?) {
         guard let results = request.results as? [VNFaceObservation], let viewDelegate = viewDelegate else {
+            print("no face")
             model?.perform(action: .noFaceDetected)
             return
         }
 
         if results.count > 1 {
+            print("face")
             model?.perform(action: .multipleFacesDetected)
             return
         }
@@ -229,14 +307,16 @@ extension FaceDetector {
             model?.perform(action: .noFaceDetected)
             return
         }
-        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
-
-        let faceObservationModel = FaceGeometryModel(
-            boundingBox: convertedBoundingBox,
-            roll: result.roll ?? 0,
-            yaw: result.yaw ?? 0
-        )
-        model?.perform(action: .faceObservationDetected(faceObservationModel))
+//        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
+//
+//        print(convertedBoundingBox)
+//
+//        let faceObservationModel = FaceGeometryModel(
+//            boundingBox: convertedBoundingBox,
+//            roll: result.roll ?? 0,
+//            yaw: result.yaw ?? 0
+//        )
+//        model?.perform(action: .faceObservationDetected(faceObservationModel))
     }
 
     func detectedFaceQualityRequest(request: VNRequest, error: Error?) {
