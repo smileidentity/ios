@@ -1,4 +1,5 @@
 import Foundation
+import ARKit
 import UIKit
 import Combine
 
@@ -9,6 +10,8 @@ enum SelfieCaptureViewModelAction {
     // Face detection actions
     case noFaceDetected
     case smileDirective
+    case smileAction
+    case noSmile
     case multipleFacesDetected
     case faceObservationDetected(FaceGeometryModel)
     case faceQualityObservationDetected(FaceQualityModel)
@@ -76,7 +79,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         didSet {
             switch processingState {
             case .none:
-                setupFaceDetectionSubscriptions()
+                    //setupFaceDetectionSubscriptions()
                 cameraManager.resumeSession()
             case .some:
                 pauseFaceDetection()
@@ -87,7 +90,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     private(set) var hasDetectedValidFace: Bool {
         didSet {
             if hasDetectedValidFace {
-                //captureImage()
+                captureImage()
             }
         }
     }
@@ -106,7 +109,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             calculateDetectedFaceValidity()
         }
     }
-    private(set) var isAcceptableQuality: Bool {
+    private(set) var isAcceptableQuality: Bool = true {
         didSet {
             calculateDetectedFaceValidity()
         }
@@ -124,6 +127,12 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
+    private var isSmiling = false {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+
     init(userId: String, jobId: String, isEnroll: Bool, showAttribution: Bool = true) {
         self.userId = userId
         self.isEnroll = isEnroll
@@ -132,7 +141,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         isAcceptableRoll = false
         isAcceptableYaw = false
         isAcceptableBounds = .unknown
-        isAcceptableQuality = false
+        isAcceptableQuality = true
 
         hasDetectedValidFace = false
         faceGeometryState = .faceNotFound
@@ -142,6 +151,19 @@ final class SelfieCaptureViewModel: ObservableObject {
         faceDetector.model = self
         setupFaceDetectionSubscriptions()
         setupDirectiveSubscription()
+        subscribeToARFrame()
+    }
+
+    func subscribeToARFrame() {
+        NotificationCenter.default.addObserver(self, selector: #selector(didReceiveFrame), name: NSNotification.Name(rawValue: "UpdateARFrame"), object: nil)
+    }
+
+    @objc func didReceiveFrame(_ notification: NSNotification) {
+        if let dict =  notification.userInfo as? NSDictionary {
+            if let frame = dict["frame"] as? ARFrame {
+                self.currentBuffer = frame.capturedImage
+            }
+        }
     }
 
     private func setupFaceDetectionSubscriptions() {
@@ -185,10 +207,21 @@ final class SelfieCaptureViewModel: ObservableObject {
             publishFaceObservation(.faceDetected, faceQualityModel: faceQualityModel)
         case .smileDirective:
             subject.send("Instructions.Smile")
+        case .smileAction:
+            isSmiling = true
+        case .noSmile:
+            isSmiling = false
         }
     }
 
     private func captureImage() {
+        if livenessImages.count == 3 {
+            if isSmiling {
+                self.perform(action: .smileDirective)
+            } else {
+                return
+            }
+        }
         DispatchQueue.main.async {
             if self.livenessImages.count >= 3 {
                 self.perform(action: .smileDirective)
@@ -208,11 +241,11 @@ final class SelfieCaptureViewModel: ObservableObject {
             guard let image = ImageUtils.captureFace(from: currentBuffer,
                                                      faceGeometry: faceGeometry, padding: 100,
                                                      finalSize: livenessImageSize,
-                                                     screenImageSize: viewFinderSize,
-                                                     isGreyScale: true) else { return }
+                                                     screenImageSize: viewFinderSize, isSelfie: false) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
             updateProgress()
+            saveLivenessImage(data: image)
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&
@@ -222,8 +255,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
                                                            faceGeometry: faceGeometry, padding: 200,
                                                            finalSize: selfieImageSize,
-                                                           screenImageSize: viewFinderSize,
-                                                           isGreyScale: false) else { return }
+                                                           screenImageSize: viewFinderSize, isSelfie: true) else { return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
             updateProgress()
@@ -482,19 +514,19 @@ extension SelfieCaptureViewModel {
 
     func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
         isAcceptableRoll = abs(roll) < 0.5
-        isAcceptableYaw = abs(CGFloat(yaw)) < 0.15
+        isAcceptableYaw = abs(CGFloat(yaw)) < 0.5
     }
 
     func processUpdatedFaceQuality() {
         switch faceQualityState {
         case .faceNotFound:
-            isAcceptableQuality = false
+            isAcceptableQuality = true
         case .errored(let errorWrapper):
             print(errorWrapper.error.localizedDescription)
-            isAcceptableQuality = false
+            isAcceptableQuality = true
         case .faceFound(let faceQualityModel):
             if faceQualityModel.quality < 0.3 {
-                isAcceptableQuality = false
+                isAcceptableQuality = true
             }
             isAcceptableQuality = true
         }
