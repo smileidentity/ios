@@ -21,34 +21,37 @@ class ImageUtils {
                            padding: CGFloat,
                            finalSize: CGSize,
                            screenImageSize: CGSize,
-                           isGreyScale: Bool) -> Data? {
+                           isSelfie: Bool,
+                           orientation: CGImagePropertyOrientation = .right
+    ) -> Data? {
         guard !faceGeometry.boundingBox.isNaN else { return nil }
 
         CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)}
         let cameraAspectRatio = CGFloat(CVPixelBufferGetWidth(buffer))/CGFloat(CVPixelBufferGetHeight(buffer))
         let imagewidth = screenImageSize.height * cameraAspectRatio
+        let imageHeight = screenImageSize.width * cameraAspectRatio
         let trueImageSize = CGSize(width: imagewidth, height: screenImageSize.height)
 
         // ratio of the true image width to displayed image width
         let cutoffregion: CGFloat = max(imagewidth, screenImageSize.width) / min(imagewidth, screenImageSize.width)
-
+        let ycutoffregion: CGFloat = max(imageHeight, screenImageSize.height) / min(imageHeight, screenImageSize.height)
         // scale down the original buffer to match the size of whats displayed on screen
         guard let scaledDownBuffer = resizePixelBuffer(buffer, size: trueImageSize) else { return nil }
 
         // calculate crop rect
+        let cropL = max(faceGeometry.boundingBox.width, faceGeometry.boundingBox.height)
         let cropRect = CGRect(x: faceGeometry.boundingBox.origin.x * cutoffregion,
-                              y: faceGeometry.boundingBox.origin.y,
-                              width: faceGeometry.boundingBox.width,
-                              height: faceGeometry.boundingBox.height)
-        let finalrect = isGreyScale ?  increaseRect(rect: cropRect, byPercentage: 0.6) : increaseRect(rect: cropRect,
-                                                                                                      byPercentage: 1)
+                              y: faceGeometry.boundingBox.origin.y * ycutoffregion,
+                              width: cropL,
+                              height: cropL)
+        let finalrect = isSelfie ?  increaseRect(rect: cropRect, byPercentage: 0.6) : increaseRect(rect: cropRect,
+                                                                                                   byPercentage: 1)
 
         // crop face from the buffer returned in the above operation and return jpg
         return cropFace(scaledDownBuffer,
                         cropFrame: finalrect,
-                        scaleSize: finalSize,
-                        isGreyScale: isGreyScale)
+                        scaleSize: finalSize, orientation: orientation)
     }
 
     private class func increaseRect(rect: CGRect, byPercentage percentage: CGFloat) -> CGRect {
@@ -62,8 +65,9 @@ class ImageUtils {
     private class func cropFace(_ buffer: CVPixelBuffer,
                                 cropFrame: CGRect,
                                 scaleSize: CGSize,
-                                isGreyScale: Bool = true) -> Data? {
-        var ciImage = CIImage(cvPixelBuffer: buffer)
+                                orientation: CGImagePropertyOrientation,
+                                isGreyScale: Bool = false) -> Data? {
+        var ciImage = CIImage(cvPixelBuffer: buffer).oriented(orientation)
         if isGreyScale {
             let greyFilter = CIFilter(name: "CIPhotoEffectNoir")
             greyFilter?.setValue(ciImage, forKey: kCIInputImageKey)
