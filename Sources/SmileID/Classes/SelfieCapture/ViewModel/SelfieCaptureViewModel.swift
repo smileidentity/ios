@@ -194,7 +194,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                      faceGeometry: faceGeometry, padding: 95,
                                                      finalSize: livenessImageSize,
                                                      screenImageSize: viewFinderSize,
-                                                     isGreyScale: true) else { return }
+                                                     isLivenessImage: true) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
         }
@@ -211,7 +211,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                            faceGeometry: faceGeometry, padding: 200,
                                                            finalSize: selfieImageSize,
                                                            screenImageSize: viewFinderSize,
-                                                           isGreyScale: false) else { return }
+                                                           isLivenessImage: false) else { return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
             do {

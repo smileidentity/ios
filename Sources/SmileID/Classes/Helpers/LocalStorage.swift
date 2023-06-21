@@ -24,13 +24,15 @@ class LocalStorage {
         var urls = [URL]()
         try createDirectory(at: destinationFolder, overwrite: false)
         var imageInfoArray = try livenessImages.map({ [self] imageData in
-            let url =  try write(imageData, to: destinationFolder.appendingPathComponent(filename(for: "liveness")))
+            let fileName = filename(for: "liveness")
+            let url =  try write(imageData, to: destinationFolder.appendingPathComponent(fileName))
             urls.append(url)
-            return imageData.asLivenessImageInfo
+            return UploadImageInfo(imageTypeId: .livenessPngOrJpgFile,fileName: fileName)
         })
-        let previewUrl = try write(previewImage, to: destinationFolder.appendingPathComponent(filename(for: "selfie")))
+        let fileName = filename(for: "selfie")
+        let previewUrl = try write(previewImage, to: destinationFolder.appendingPathComponent(fileName))
         urls.append(previewUrl)
-        imageInfoArray.append(previewImage.asSelfieImageInfo)
+        imageInfoArray.append(UploadImageInfo(imageTypeId: .selfiePngOrJpgFile,fileName: fileName))
         let jsonData = try jsonEncoder.encode(UploadRequest(images: imageInfoArray))
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
         urls.append(jsonUrl)
@@ -42,7 +44,7 @@ class LocalStorage {
     }
 
     private static func filename(for imageType: String) -> String {
-        return "\(imagePrefix)_\(imageType)_\(Date().millisecondsSince1970).jpg"
+        return "\(imagePrefix)\(imageType)_\(Date().millisecondsSince1970).jpg"
     }
 
     static func write(_ data: Data, to url: URL) throws -> URL {
@@ -95,13 +97,13 @@ class LocalStorage {
 fileprivate extension Data {
     var asLivenessImageInfo: UploadImageInfo {
         return UploadImageInfo(imageTypeId: .livenessPngOrJpgBase64,
-                               image: self.base64EncodedString()
+                               fileName: self.base64EncodedString()
         )
     }
 
     var asSelfieImageInfo: UploadImageInfo {
         return UploadImageInfo(imageTypeId: .selfiePngOrJpgBase64,
-                               image: self.base64EncodedString())
+                               fileName: self.base64EncodedString())
     }
 }
 
