@@ -21,7 +21,7 @@ class ImageUtils {
                            padding: CGFloat,
                            finalSize: CGSize,
                            screenImageSize: CGSize,
-                           isGreyScale: Bool) -> Data? {
+                           isLivenessImage: Bool) -> Data? {
         guard !faceGeometry.boundingBox.isNaN else { return nil }
 
         CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
@@ -41,14 +41,14 @@ class ImageUtils {
                               y: faceGeometry.boundingBox.origin.y,
                               width: faceGeometry.boundingBox.width,
                               height: faceGeometry.boundingBox.height)
-        let finalrect = isGreyScale ?  increaseRect(rect: cropRect, byPercentage: 0.6) : increaseRect(rect: cropRect,
+        let finalrect = isLivenessImage ?  increaseRect(rect: cropRect, byPercentage: 0.6) : increaseRect(rect: cropRect,
                                                                                                       byPercentage: 1)
 
         // crop face from the buffer returned in the above operation and return jpg
         return cropFace(scaledDownBuffer,
                         cropFrame: finalrect,
                         scaleSize: finalSize,
-                        isGreyScale: isGreyScale)
+                        isLivenessImage: isLivenessImage)
     }
 
     private class func increaseRect(rect: CGRect, byPercentage percentage: CGFloat) -> CGRect {
@@ -62,13 +62,8 @@ class ImageUtils {
     private class func cropFace(_ buffer: CVPixelBuffer,
                                 cropFrame: CGRect,
                                 scaleSize: CGSize,
-                                isGreyScale: Bool = true) -> Data? {
+                                isLivenessImage: Bool = true) -> Data? {
         var ciImage = CIImage(cvPixelBuffer: buffer)
-        if isGreyScale {
-            let greyFilter = CIFilter(name: "CIPhotoEffectNoir")
-            greyFilter?.setValue(ciImage, forKey: kCIInputImageKey)
-            ciImage = greyFilter?.outputImage ?? ciImage
-        }
         guard let cgImage = convertCIImageToCGImage(ciImage: ciImage) else { return nil }
         guard let croppedImage = cgImage.cropping(to: cropFrame)?.resize(size: scaleSize) else { return nil }
         return convertCGImageToJPG(cgImage: croppedImage)
