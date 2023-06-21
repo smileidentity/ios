@@ -14,51 +14,6 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
     private var eyeAspectRatioHistory: [CGPoint] = []
     private var mouthMovementHistory: [CGPoint] = []
     private let maximumAspectRatioHistoryLength = 10
-    let scene = ARSCNView()
-
-    override init() {
-        super.init()
-        scene.delegate = self
-    }
-
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let faceMesh = ARSCNFaceGeometry(device: scene.device!)
-        let node = SCNNode(geometry: faceMesh)
-        node.geometry?.firstMaterial?.fillMode = .lines
-        return node
-    }
-
-    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        if let faceAnchor = anchor as? ARFaceAnchor, let faceGeometry = node.geometry as? ARSCNFaceGeometry {
-            faceGeometry.update(from: faceAnchor.geometry)
-            expression(anchor: faceAnchor)
-        }
-    }
-
-    func expression(anchor: ARFaceAnchor) {
-        let smileLeft = anchor.blendShapes[.mouthSmileLeft]
-        let smileRight = anchor.blendShapes[.mouthSmileRight]
-        let cheekPuff = anchor.blendShapes[.cheekPuff]
-        let tongue = anchor.blendShapes[.tongueOut]
-
-        if ((smileLeft?.decimalValue ?? 0.0) + (smileRight?.decimalValue ?? 0.0)) > 0.9 {
-            print("You are smiling. ")
-        }
-
-        if cheekPuff?.decimalValue ?? 0.0 > 0.1 {
-            print("Your cheeks are puffed. ")
-        }
-
-        if tongue?.decimalValue ?? 0.0 > 0.1 {
-            print( "Don't stick your tongue out! ")
-        }
-    }
-
-    func setupAR() {
-        let configuration = ARFaceTrackingConfiguration()
-        scene.session.run(configuration)
-    }
-
 
     func detectFaces(imageBuffer: CVImageBuffer) {
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler: detectedFaceQualityRequest)
@@ -143,9 +98,7 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
         }
 
         if isSceneStable() {
-            print("Scene stable")
             detectFaces(imageBuffer: pixelBuffer)
-            //faceLandmarksChecks(pixelBuffer: pixelBuffer)
         } else {
             model?.perform(action: .sceneUnstable)
         }
@@ -197,7 +150,6 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
     }
 
     func faceLandmarksChecks(pixelBuffer: CVPixelBuffer) {
-        var alive = false
         // Create a face landmarks request.
         let faceLandmarksRequest = VNDetectFaceLandmarksRequest { request, error in
             if let error = error {
@@ -307,16 +259,16 @@ extension FaceDetector {
             model?.perform(action: .noFaceDetected)
             return
         }
-//        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
-//
-//        print(convertedBoundingBox)
-//
-//        let faceObservationModel = FaceGeometryModel(
-//            boundingBox: convertedBoundingBox,
-//            roll: result.roll ?? 0,
-//            yaw: result.yaw ?? 0
-//        )
-//        model?.perform(action: .faceObservationDetected(faceObservationModel))
+        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
+
+        print(convertedBoundingBox)
+
+        let faceObservationModel = FaceGeometryModel(
+            boundingBox: convertedBoundingBox,
+            roll: result.roll ?? 0,
+            yaw: result.yaw ?? 0
+        )
+        model?.perform(action: .faceObservationDetected(faceObservationModel))
     }
 
     func detectedFaceQualityRequest(request: VNRequest, error: Error?) {
