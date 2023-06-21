@@ -41,21 +41,21 @@ struct FaceOverlayView: View {
                 .scaleEffect(1.2, anchor: .top)
                 InstructionsView(model: model)
                     .padding(.top, -((faceWidth)/2))
-                HStack(spacing: 10) {
-                    Text("Agent Mode")
-                        .foregroundColor(agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent)
-                        .font(SmileID.theme.header4)
-                    Toggle("", isOn: $agentMode.didSet { (state) in
-                        print("switching camera")
-                        model.switchCamera()
-                    }).labelsHidden()
-                }
-                    .frame(width: 188, height: 46)
-                    .background(agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain)
-                    .cornerRadius(23)
-                    .shadow(radius: 23)
-                    .padding(.bottom, 35)
-                    .animation(.default)
+//                HStack(spacing: 10) {
+//                    Text("Agent Mode")
+//                        .foregroundColor(agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent)
+//                        .font(SmileID.theme.header4)
+//                    Toggle("", isOn: $agentMode.didSet { (state) in
+//                        print("switching camera")
+//                        model.switchCamera()
+//                    }).labelsHidden()
+//                }
+//                    .frame(width: 188, height: 46)
+//                    .background(agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain)
+//                    .cornerRadius(23)
+//                    .shadow(radius: 23)
+//                    .padding(.bottom, 35)
+//                    .animation(.default)
 
             }
         }
