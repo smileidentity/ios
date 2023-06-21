@@ -6,6 +6,7 @@ public struct SelfieCaptureView: View {
     @ObservedObject private var viewModel: SelfieCaptureViewModel
     let camera: CameraView
     private weak var delegate: SmartSelfieResultDelegate?
+    let arView = ARView()
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
         self.viewModel = viewModel
@@ -26,13 +27,13 @@ public struct SelfieCaptureView: View {
         GeometryReader { geometry in
             let ovalSize = ovalSize(from: geometry)
             ZStack {
-                camera
+                arView
                     .onAppear {
                         viewModel.captureResultDelegate = delegate
                         viewModel.faceLayoutGuideFrame =
                         CGRect(origin: .zero,
                                size: ovalSize)
-                        viewModel.viewDelegate = camera.preview
+                        arView.preview.model = viewModel
                         viewModel.viewFinderSize = geometry.size
                     }.scaleEffect(1.2, anchor: .top)
 
