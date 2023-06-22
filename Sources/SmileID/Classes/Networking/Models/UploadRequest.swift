@@ -12,11 +12,11 @@ public struct UploadRequest: Codable {
 
 public struct UploadImageInfo: Codable {
     var imageTypeId: ImageType
-    var image: String
+    var fileName: String
 
     enum CodingKeys: String, CodingKey {
         case imageTypeId = "image_type_id"
-        case image
+        case fileName = "file_name"
     }
 }
 
