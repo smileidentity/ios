@@ -39,6 +39,14 @@ public class SmileID {
         let viewModel = SelfieCaptureViewModel(userId: userId, jobId: jobId, isEnroll: true)
         return  SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
     }
+    
+    public class func documentVerificationScreen(userId: String = "user-\(UUID().uuidString)",
+                                                    jobId: String = "job-\(UUID().uuidString)",
+                                                    delegate: DocumentCaptureResultDelegate)
+    -> DocumentCaptureInstructionsView {
+        let viewModel = DocumentCaptureViewModel()
+        return  DocumentCaptureInstructionsView(viewModel: viewModel, delegate: delegate)
+    }
 
     public class func smartSelfieAuthenticationScreen(userId: String,
                                                       jobId: String = "job-\(UUID().uuidString)",

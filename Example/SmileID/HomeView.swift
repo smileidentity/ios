@@ -26,6 +26,14 @@ struct HomeView: View {
                         EnterUserIDView(userId: viewModel.returnedUserID, viewModel: UserIDViewModel())
                     })
                 }
+                HStack(spacing: 15) {
+                    Button(action: {self.viewModel.handleDocumentVerificationTap()}) {
+                        ProductCell(productImage: "document", productName: "Document \nVerification")
+                    }
+                    .sheet(isPresented: $viewModel.presentDocumentVerification,
+                           content: {SmileID.documentVerificationScreen(userId: viewModel.generateUserID(),
+                                                                           delegate: viewModel)})
+                }
                 Spacer()
                 Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version)")
                     .font(SmileID.theme.body)
