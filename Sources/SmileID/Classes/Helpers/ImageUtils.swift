@@ -45,13 +45,19 @@ class ImageUtils {
                               y: faceGeometry.boundingBox.origin.y * ycutoffregion,
                               width: cropL,
                               height: cropL)
-        let finalrect = isSelfie ?  increaseRect(rect: cropRect, byPercentage: 0.6) : increaseRect(rect: cropRect,
+        let finalrect = isSelfie ?  CGRect(origin: .zero, size: trueImageSize) : increaseRect(rect: cropRect,
                                                                                                    byPercentage: 1)
 
         // crop face from the buffer returned in the above operation and return jpg
-        return cropFace(scaledDownBuffer,
-                        cropFrame: finalrect,
-                        scaleSize: finalSize, orientation: orientation)
+        if isSelfie {
+            return cropFace(scaledDownBuffer,
+                            cropFrame: finalrect,
+                            scaleSize: finalSize, orientation: orientation)
+        } else {
+            return cropFace(scaledDownBuffer,
+                            cropFrame: finalrect,
+                            scaleSize: finalSize, orientation: orientation)
+        }
     }
 
     private class func increaseRect(rect: CGRect, byPercentage percentage: CGFloat) -> CGRect {

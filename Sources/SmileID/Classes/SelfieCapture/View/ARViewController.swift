@@ -20,20 +20,35 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
         // Add face box view
         faceView = UIView()
         faceView?.backgroundColor = UIColor.clear
-        faceView?.layer.borderColor = UIColor.red.cgColor
+       // faceView?.layer.borderColor = UIColor.red.cgColor
         faceView?.layer.borderWidth = 2.0
-        view.addSubview(faceView!)
+        let configuration = ARFaceTrackingConfiguration()
+        sceneView.session.run(configuration)
+        //view.addSubview(faceView!)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let configuration = ARFaceTrackingConfiguration()
-        sceneView.session.run(configuration)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        sceneView.session.pause()
+        if sceneView != nil {
+            sceneView.session.pause()
+        }
+    }
+
+    func pauseSession() {
+        if sceneView != nil {
+            sceneView.session.pause()
+        }
+    }
+
+    func resumeSession() {
+        let configuration = ARFaceTrackingConfiguration()
+        if sceneView != nil {
+            sceneView.session.run(configuration)
+        }
     }
 
     // ARSCNViewDelegate methods
@@ -57,7 +72,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
         let angles = getEulerAngles(from: faceAnchor)
         let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox, roll: angles.roll as NSNumber, yaw: angles.yaw as NSNumber)
         model?.perform(action: .faceObservationDetected(faceObservationModel))
-        print("Yaw \(angles.yaw), roll \(angles.roll)")
     }
 
     func getEulerAngles(from faceAnchor: ARFaceAnchor) -> (roll: Float, pitch: Float, yaw: Float) {

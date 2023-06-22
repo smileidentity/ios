@@ -2,7 +2,10 @@ import Foundation
 import ARKit
 import UIKit
 import Combine
-
+protocol SelfieViewDelegate {
+    func pauseARSession()
+    func resumeARSession()
+}
 enum SelfieCaptureViewModelAction {
 
     // scene stabilization action
@@ -55,8 +58,8 @@ final class SelfieCaptureViewModel: ObservableObject {
             faceDetector.viewDelegate = viewDelegate
         }
     }
-    let cameraManager = CameraManager()
-    let frameManager: FrameManager
+    //let cameraManager = CameraManager()
+    //let frameManager: FrameManager
     private var faceDetector = FaceDetector()
     private var subscribers = Set<AnyCancellable>()
     private var facedetectionSubscribers: AnyCancellable?
@@ -71,18 +74,23 @@ final class SelfieCaptureViewModel: ObservableObject {
     private var lastCaptureTime: Int64 = 0
     private var interCaptureDelay = 600
     weak var captureResultDelegate: SmartSelfieResultDelegate?
+    var selfieViewDelegate: SelfieViewDelegate?
     private var debounceTimer: Timer?
     @Published var agentMode = false
     @Published private(set) var progress: CGFloat = 0
     @Published var directive: String = "Instructions.Start"
-    @Published private(set) var processingState: ProcessingState? {
+    @Published private(set) var processingState: ProcessingState?
+    {
         didSet {
             switch processingState {
             case .none:
                     //setupFaceDetectionSubscriptions()
-                cameraManager.resumeSession()
+                //cameraManager.resumeSession()
+                selfieViewDelegate?.resumeARSession()
             case .some:
-                pauseFaceDetection()
+                print("pausing")
+                selfieViewDelegate?.pauseARSession()
+
             }
         }
     }
@@ -146,16 +154,18 @@ final class SelfieCaptureViewModel: ObservableObject {
         hasDetectedValidFace = false
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
-        frameManager = FrameManager(cameraManager: cameraManager)
+        //frameManager = FrameManager(cameraManager: cameraManager)
         self.showAttribution = showAttribution
         faceDetector.model = self
-        setupFaceDetectionSubscriptions()
+        //setupFaceDetectionSubscriptions()
         setupDirectiveSubscription()
         subscribeToARFrame()
     }
 
     func subscribeToARFrame() {
-        NotificationCenter.default.addObserver(self, selector: #selector(didReceiveFrame), name: NSNotification.Name(rawValue: "UpdateARFrame"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didReceiveFrame),
+                                               name: NSNotification.Name(rawValue: "UpdateARFrame"),
+                                               object: nil)
     }
 
     @objc func didReceiveFrame(_ notification: NSNotification) {
@@ -167,25 +177,25 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     private func setupFaceDetectionSubscriptions() {
-        facedetectionSubscribers = frameManager.$sampleBuffer
-            .receive(on: DispatchQueue.global())
-            .compactMap { return $0 }
-            .sink {
-                self.faceDetector.detect(pixelBuffer: $0)
-                self.currentBuffer = $0
-            }
+//        facedetectionSubscribers = frameManager.$sampleBuffer
+//            .receive(on: DispatchQueue.global())
+//            .compactMap { return $0 }
+//            .sink {
+//                self.faceDetector.detect(pixelBuffer: $0)
+//                self.currentBuffer = $0
+//            }
     }
 
     private func pauseFaceDetection() {
         facedetectionSubscribers?.cancel()
         facedetectionSubscribers = nil
-        cameraManager.pauseSession()
+        //cameraManager.pauseSession()
     }
 
     func switchCamera() {
         facedetectionSubscribers?.cancel()
         facedetectionSubscribers = nil
-        cameraManager.switchCamera()
+        //cameraManager.switchCamera()
         setupFaceDetectionSubscriptions()
         resetCapture()
     }
@@ -216,6 +226,7 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     private func captureImage() {
         if livenessImages.count == 3 {
+            perform(action: .smileDirective)
             if isSmiling {
                 self.perform(action: .smileDirective)
             } else {

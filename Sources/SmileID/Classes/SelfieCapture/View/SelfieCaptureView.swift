@@ -1,26 +1,21 @@
 import SwiftUI
 import Combine
 
-public struct SelfieCaptureView: View {
+public struct SelfieCaptureView: View, SelfieViewDelegate {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var viewModel: SelfieCaptureViewModel
-    let camera: CameraView
     private weak var delegate: SmartSelfieResultDelegate?
     let arView = ARView()
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
         self.viewModel = viewModel
         self.delegate = delegate
-        self.camera = CameraView(frameManager: viewModel.frameManager,
-                                 cameraManager: viewModel.cameraManager)
     }
 
     // NB
     // TODO:only used for previews to remove lint issues
     fileprivate init(viewModel: SelfieCaptureViewModel) {
         self.viewModel = viewModel
-        self.camera = CameraView(frameManager: viewModel.frameManager,
-                                 cameraManager: viewModel.cameraManager)
     }
 
     public var body: some View {
@@ -35,6 +30,7 @@ public struct SelfieCaptureView: View {
                                size: ovalSize)
                         arView.preview.model = viewModel
                         viewModel.viewFinderSize = geometry.size
+                        viewModel.selfieViewDelegate = self
                     }.scaleEffect(1.2, anchor: .top)
 
                 FaceOverlayView(model: viewModel)
@@ -63,10 +59,10 @@ public struct SelfieCaptureView: View {
         })
         .background(SmileID.theme.backgroundMain)
         .onAppear {
-            viewModel.cameraManager.configure()
+  //viewModel.cameraManager.configure()
         }
         .onDisappear {
-            viewModel.cameraManager.stopCaptureSession()
+    //        viewModel.cameraManager.stopCaptureSession()
             viewModel.resetCapture()
         }
     }
@@ -74,6 +70,14 @@ public struct SelfieCaptureView: View {
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {
         return CGSize(width: geometry.size.width * 0.6,
                       height: geometry.size.width * 0.6 / 0.7)
+    }
+
+    func pauseARSession() {
+        arView.preview.pauseSession()
+    }
+
+    func resumeARSession() {
+        arView.preview.resumeSession()
     }
 }
 
