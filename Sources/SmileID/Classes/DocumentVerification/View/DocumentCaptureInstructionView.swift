@@ -15,12 +15,20 @@ public struct DocumentCaptureInstructionsView: View {
     }
     public var body: some View {
         ///we're using the selfie capture view for now to show it's working
-        CaptureInstructionView<SelfieCaptureView>(image: SmileIDResourcesHelper.InstructionsHeaderdDocumentIcon,
-                               title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Header"),
-                               callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Callout"),
-                               instructions: [
-                                CaptureInstruction(title: SmileIDResourcesHelper.localizedString(for:"Instructions.GoodLight"), instruction: SmileIDResourcesHelper.localizedString(for:"Instructions.GoodLightBody"), image: Constants.ImageName.light),
-                                CaptureInstruction(title: SmileIDResourcesHelper.localizedString(for:"Instructions.ClearImage"), instruction: SmileIDResourcesHelper.localizedString(for:"Instructions.ClearImageBody"), image: Constants.ImageName.clearImage)],detailView: SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: "", jobId: "", isEnroll: false), delegate: DummyDelegate()))
+        CaptureInstructionView<SelfieCaptureView>(
+            image: SmileIDResourcesHelper.InstructionsHeaderdDocumentIcon,
+            title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Header"),
+            callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Callout"),
+            instructions: [
+                CaptureInstruction(title: SmileIDResourcesHelper.localizedString(for:"Instructions.GoodLight"),
+                                   instruction: SmileIDResourcesHelper.localizedString(for:"Instructions.GoodLightBody"),
+                                   image: Constants.ImageName.light),
+                CaptureInstruction(title: SmileIDResourcesHelper.localizedString(for:"Instructions.ClearImage"),
+                                   instruction: SmileIDResourcesHelper.localizedString(for:"Instructions.ClearImageBody"),
+                                   image: Constants.ImageName.clearImage)],
+            detailView:SelfieCaptureView(
+                viewModel: SelfieCaptureViewModel(userId: "", jobId: "", isEnroll: false),
+                delegate: DummyDelegate()))
     }
 }
 
