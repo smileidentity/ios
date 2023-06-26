@@ -46,11 +46,19 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
         self.product = .smartSelfieAuthentication
     }
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
         returnedUserID = userID
         UIPasteboard.general.string = returnedUserID
-        toastMessage = "Smart selfie enrollment completed successfully and the user id has beed copied to the clipboard"
         showToast = true
+        if let jobStatusResponse = jobStatusResponse {
+            if jobStatusResponse.jobSuccess {
+                toastMessage = "Smart selfie enrollment completed successfully and the user id has beed copied to the clipboard"
+            } else {
+                toastMessage = "Job submitted successfully, results processing"
+            }
+        } else {
+            toastMessage = "Job submitted successfully, results processing"
+        }
     }
 
     @objc func didError(error: Error) {
@@ -64,24 +72,30 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
     }
 
     @objc func handleAuthCompletion(_ notification: NSNotification) {
-        print("Its done")
         if let dict =  notification.userInfo as? NSDictionary {
+            showToast = true
+            if let error = dict["Error"] as? Error {
+                toastMessage = error.localizedDescription
+                return
+            }
             if let response = dict["Response"] as? JobStatusResponse {
                 if response.jobSuccess == true {
-                    toastMessage = "Smart selfie Authentication completed successfully"
-                    showToast = true
+                    toastMessage = "Smart Selfie Authentication completed successfully"
+                    return
                 }
 
                 if response.jobComplete == false {
                     toastMessage = "Job submitted successfully, results processing"
-                    showToast = true
+                    return
                 }
+            } else {
+                toastMessage = "Job submitted successfully, results processing"
+                return
             }
-
-            if let error = dict["Error"] as? Error {
-                toastMessage = error.localizedDescription
-                showToast = true
-            }
+        }
+        else {
+            toastMessage = "Job submitted successfully, results processing"
+            return
         }
     }
 }

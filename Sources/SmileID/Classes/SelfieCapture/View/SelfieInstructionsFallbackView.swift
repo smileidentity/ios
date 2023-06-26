@@ -1,25 +1,25 @@
 import SwiftUI
 
-public struct SmartSelfieInstructionsView: View {
+struct SelfieInstructionsFallbackView: View, SelfieInstructions {
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var viewModel : SelfieCaptureViewModel
+    @ObservedObject private var viewModel : SelfieCaptureViewModel
     private weak var selfieCaptureDelegate: SmartSelfieResultDelegate?
     @State private var goesToDetail: Bool = false
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
         self.selfieCaptureDelegate = delegate
     }
 
     // Only exists for preview so not accessible out of the file
     fileprivate init(viewModel: SelfieCaptureViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
     }
     public var body: some View {
         NavigationView {
             VStack {
                 if let processingState = viewModel.processingState, processingState == .endFlow {
-                   let _ = DispatchQueue.main.async {
+                    let _ = DispatchQueue.main.async {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
@@ -86,7 +86,24 @@ public struct SmartSelfieInstructionsView: View {
             .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
         }
     }
+}
 
+struct SelfieInstructionsFallbackView_Previews: PreviewProvider {
+    static var previews: some View {
+        SelfieInstructionsFallbackView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
+                                                                         jobId: UUID().uuidString,
+                                                                         isEnroll: false,
+                                                                         showAttribution: true))
+    }
+}
+
+
+protocol SelfieInstructions {
+//    associatedtype <#AssocType#>: View
+//    func makeInstruction(title: LocalizedStringKey, body: LocalizedStringKey, image: String) -> <#AssocType#>
+}
+
+extension SelfieInstructions {
     func makeInstruction(title: LocalizedStringKey, body: LocalizedStringKey, image: String) -> some View {
         return HStack(spacing: 16) {
             if let instructionImage = SmileIDResourcesHelper.image(image) {
@@ -104,16 +121,5 @@ public struct SmartSelfieInstructionsView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-    }
-}
-
-struct SmartSelfieInstructionsView_Previews: PreviewProvider {
-    static var previews: some View {
-        SmartSelfieInstructionsView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
-                                                                      jobId: UUID().uuidString,
-                                                                      isEnroll: false,
-                                                                      showAttribution: true))
-        .environment(\.locale, Locale(identifier: "en"))
-
     }
 }

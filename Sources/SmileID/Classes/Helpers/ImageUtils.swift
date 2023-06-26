@@ -60,6 +60,41 @@ class ImageUtils {
         }
     }
 
+    class func resizePixelBufferToWidth(_ pixelBuffer: CVPixelBuffer, width: Int, exif: [String: Any]?, orientation: CGImagePropertyOrientation = .right) -> Data? {
+        var image = CIImage(cvPixelBuffer: pixelBuffer)
+        image = image.oriented(orientation)
+        guard let cgImage = CIContext(options: nil).createCGImage(image, from: image.extent) else {
+            return nil
+        }
+
+        let originalWidth = CGFloat(CVPixelBufferGetWidth(pixelBuffer))
+        let originalHeight = CGFloat(CVPixelBufferGetHeight(pixelBuffer))
+
+        var aspectRatio = originalHeight / originalWidth
+
+        // Adjust the aspect ratio for .left/.right orientations
+        if orientation == .left || orientation == .right {
+            aspectRatio = 1 / aspectRatio
+        }
+
+        let newHeight = Int(CGFloat(width) * aspectRatio)
+
+        guard let resizedImage = resizeCGImage(cgImage, newWidth: width, newHeight: newHeight) else {
+            return nil
+        }
+        return convertCGImageToJPG(cgImage: resizedImage, exifDictionary: exif)
+    }
+
+    private class func resizeCGImage(_ originalImage: CGImage, newWidth: Int, newHeight: Int) -> CGImage? {
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        guard let context = CGContext(data: nil, width: newWidth, height: newHeight, bitsPerComponent: 8, bytesPerRow: newWidth * 4, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
+            return nil
+        }
+        context.interpolationQuality = .high
+        context.draw(originalImage, in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight))
+        return context.makeImage()
+    }
+
     private class func increaseRect(rect: CGRect, byPercentage percentage: CGFloat) -> CGRect {
         let startWidth = rect.width
         let startHeight = rect.height
@@ -84,13 +119,20 @@ class ImageUtils {
         return convertCGImageToJPG(cgImage: croppedImage)
     }
 
-    private class func convertCGImageToJPG(cgImage: CGImage, compressionQuality: CGFloat = 0.8) -> Data? {
+    private class func convertCGImageToJPG(cgImage: CGImage, compressionQuality: CGFloat = 0.8, exifDictionary: [String: Any]? = nil) -> Data? {
         let jpgData = NSMutableData()
         guard let destination = CGImageDestinationCreateWithData(jpgData, kUTTypeJPEG, 1, nil) else { return nil }
 
-        let options: [String: Any] = [
+        var options: [String: Any] = [
             kCGImageDestinationLossyCompressionQuality as String: compressionQuality
         ]
+
+        if let exifDictionary = exifDictionary {
+            let exif = NSMutableDictionary(dictionary: exifDictionary)
+            let metadata = NSMutableDictionary()
+            metadata.setValue(exif, forKey: kCGImagePropertyExifDictionary as String)
+            options[kCGImagePropertyExifDictionary as String] = metadata
+        }
 
         CGImageDestinationAddImage(destination, cgImage, options as CFDictionary)
 

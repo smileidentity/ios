@@ -15,20 +15,14 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
         super.viewDidLoad()
         sceneView = ARSCNView(frame: view.frame)
         view.addSubview(sceneView)
-        sceneView.delegate = self
-        sceneView.session.delegate = self
-        // Add face box view
-        faceView = UIView()
-        faceView?.backgroundColor = UIColor.clear
-       // faceView?.layer.borderColor = UIColor.red.cgColor
-        faceView?.layer.borderWidth = 2.0
-        let configuration = ARFaceTrackingConfiguration()
-        sceneView.session.run(configuration)
-        //view.addSubview(faceView!)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        let configuration = ARFaceTrackingConfiguration()
+        sceneView.delegate = self
+        sceneView.session.delegate = self
+        sceneView.session.run(configuration)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -111,13 +105,19 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
         if let faceAnchor = anchor as? ARFaceAnchor {
 
             detectedFaces += 1
-            print("Face detected. Total faces: \(detectedFaces)")
 
             if detectedFaces > 1 {
                 model?.perform(action: .multipleFacesDetected)
             }
+            updateFeatures(for: faceAnchor)
             let projectedPoints = faceAnchor.verticeAndProjection(to: sceneView)
-            faceBoundingBox(for: projectedPoints)
+            let boundingBox = faceBoundingBox(for: projectedPoints)
+            let angles = getEulerAngles(from: faceAnchor)
+            let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox, roll: angles.roll as NSNumber, yaw: angles.yaw as NSNumber)
+            model?.perform(action: .faceObservationDetected(faceObservationModel))
+        } else {
+            model?.perform(action: .noFaceDetected)
+            return
         }
     }
 

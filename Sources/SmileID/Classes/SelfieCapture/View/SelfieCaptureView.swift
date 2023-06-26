@@ -3,19 +3,19 @@ import Combine
 
 public struct SelfieCaptureView: View, SelfieViewDelegate {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject private var viewModel: SelfieCaptureViewModel
+    @StateObject private var viewModel: SelfieCaptureViewModel
     private weak var delegate: SmartSelfieResultDelegate?
     let arView = ARView()
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
         self.delegate = delegate
     }
 
     // NB
     // TODO:only used for previews to remove lint issues
     fileprivate init(viewModel: SelfieCaptureViewModel) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     public var body: some View {
@@ -24,7 +24,6 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
             ZStack {
                 arView
                     .onAppear {
-                        viewModel.captureResultDelegate = delegate
                         viewModel.faceLayoutGuideFrame =
                         CGRect(origin: .zero,
                                size: ovalSize)
@@ -59,11 +58,8 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
         })
         .background(SmileID.theme.backgroundMain)
         .onAppear {
-  //viewModel.cameraManager.configure()
-        }
-        .onDisappear {
-    //        viewModel.cameraManager.stopCaptureSession()
-            viewModel.resetCapture()
+            UIScreen.main.brightness = 1
+            viewModel.captureResultDelegate = delegate
         }
     }
 
@@ -112,6 +108,6 @@ struct SelfieCaptureView_Previews: PreviewProvider {
 }
 
 class DummyDelegate: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {}
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {}
     func didError(error: Error) {}
 }

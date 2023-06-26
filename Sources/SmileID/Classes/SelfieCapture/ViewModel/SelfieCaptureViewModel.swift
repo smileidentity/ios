@@ -76,6 +76,8 @@ final class SelfieCaptureViewModel: ObservableObject {
     weak var captureResultDelegate: SmartSelfieResultDelegate?
     var selfieViewDelegate: SelfieViewDelegate?
     private var debounceTimer: Timer?
+    var displayedImage: Data?
+    var currentExif: [String: Any]?
     @Published var agentMode = false
     @Published private(set) var progress: CGFloat = 0
     @Published var directive: String = "Instructions.Start"
@@ -84,11 +86,10 @@ final class SelfieCaptureViewModel: ObservableObject {
         didSet {
             switch processingState {
             case .none:
-                    //setupFaceDetectionSubscriptions()
-                //cameraManager.resumeSession()
                 selfieViewDelegate?.resumeARSession()
+            case .endFlow:
+                selfieViewDelegate?.pauseARSession()
             case .some:
-                print("pausing")
                 selfieViewDelegate?.pauseARSession()
 
             }
@@ -97,6 +98,8 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     private(set) var hasDetectedValidFace: Bool {
         didSet {
+            print("has detected valid face \(hasDetectedValidFace)")
+            print("is acceptivle roll \(isAcceptableRoll), yaw \(isAcceptableYaw), quality \(isAcceptableQuality), bounds \(isAcceptableBounds)")
             if hasDetectedValidFace {
                 captureImage()
             }
@@ -168,10 +171,22 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                object: nil)
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        throttleSubscription?.cancel()
+        throttleSubscription = nil
+    }
+
     @objc func didReceiveFrame(_ notification: NSNotification) {
         if let dict =  notification.userInfo as? NSDictionary {
             if let frame = dict["frame"] as? ARFrame {
                 self.currentBuffer = frame.capturedImage
+
+                if #available(iOS 16.0, *) {
+                    self.currentExif = frame.exifData
+                } else {
+                    self.currentExif = nil
+                }
             }
         }
     }
@@ -249,26 +264,27 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
         while (livenessImages.count < numberOfLivenessImages) &&
                 ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
-            guard let image = ImageUtils.captureFace(from: currentBuffer,
-                                                     faceGeometry: faceGeometry, padding: 100,
-                                                     finalSize: livenessImageSize,
-                                                     screenImageSize: viewFinderSize, isSelfie: false) else { return }
+            guard let image = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 350, exif:
+                                                                    currentExif) else { return }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
             updateProgress()
-            saveLivenessImage(data: image)
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&
             ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) &&
             selfieImage == nil {
             publishFaceObservation(.finalFrame)
-            guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
+            guard let displayedImage = ImageUtils.captureFace(from: currentBuffer,
                                                            faceGeometry: faceGeometry, padding: 200,
                                                            finalSize: selfieImageSize,
-                                                           screenImageSize: viewFinderSize, isSelfie: true) else { return }
+                                                           screenImageSize: viewFinderSize,
+                                                              isSelfie: false) else { return }
+            guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
+                                                                        exif: currentExif) else { return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
+            self.displayedImage = displayedImage
             updateProgress()
             do {
                 files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
@@ -329,13 +345,15 @@ final class SelfieCaptureViewModel: ObservableObject {
                                 self?.processingState = .error(urlError)
                             case .httpError, .unknown:
                                 self?.processingState = .error(error)
+                            case .jobStatusTimeOut:
+                                self?.processingState = .complete(nil, nil)
                             default:
                                 self?.processingState = .complete(nil, error)
                             }
                         }
                     }
                 default:
-                    break
+                    self.processingState = .complete(nil, nil)
                 }
             }, receiveValue: { [weak self] response in
                 DispatchQueue.main.async {
@@ -391,7 +409,8 @@ final class SelfieCaptureViewModel: ObservableObject {
             .timeout(.seconds(10),
                      scheduler: DispatchQueue.main,
                      options: nil,
-                     customError: nil)
+                     customError: { SmileIDError.jobStatusTimeOut })
+
         return publisher.eraseToAnyPublisher()
     }
 
@@ -403,14 +422,14 @@ final class SelfieCaptureViewModel: ObservableObject {
         switch processingState {
         case .complete(let response, let error):
             processingState = .endFlow
-            if let response = response {
-                captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
-                                                  livenessImages: livenessImages,
-                                                  jobStatusResponse: response)
-            }
             if let error = error {
                 captureResultDelegate?.didError(error: error)
+                return
             }
+            captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
+                                              livenessImages: livenessImages,
+                                              jobStatusResponse: response)
+            selfieViewDelegate?.pauseARSession()
         default:
             break
         }
@@ -502,7 +521,7 @@ extension SelfieCaptureViewModel {
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
-        if boundingBox.width > 0.9 * faceLayoutGuideFrame.width {
+        if boundingBox.width > 0.80 * faceLayoutGuideFrame.width {
             isAcceptableBounds = .detectedFaceTooLarge
             subject.send("Instructions.FaceClose")
         } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {

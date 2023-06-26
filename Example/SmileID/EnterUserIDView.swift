@@ -5,7 +5,7 @@ struct EnterUserIDView: View {
     @Environment(\.presentationMode) var presentationMode
     @State var userId: String
     @State private var goToAuth: Bool = false
-    @ObservedObject var viewModel: UserIDViewModel
+    @StateObject var viewModel: UserIDViewModel
 
     var body: some View {
         NavigationView {
@@ -28,6 +28,7 @@ struct EnterUserIDView: View {
                     SmileButton(title: "Continue", clicked: {
                         goToAuth = true
                     })
+                    .disabled(userId.isEmpty)
                     .padding()
                 }
                 Spacer()
@@ -54,9 +55,17 @@ struct EnterUserIDView_Previews: PreviewProvider {
 class UserIDViewModel: ObservableObject, SmartSelfieResultDelegate {
     @Published var shouldDismiss = false
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
         shouldDismiss = true
-        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"), object: nil, userInfo: ["Response": jobStatusResponse]))
+        if let jobStatusResponse = jobStatusResponse {
+            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"),
+                                                         object: nil,
+                                                         userInfo: ["Response": jobStatusResponse]))
+        } else {
+            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"),
+                                                         object: nil,
+                                                         userInfo: nil))
+        }
     }
 
     func didError(error: Error) {

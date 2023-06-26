@@ -7,6 +7,7 @@ public enum SmileIDError: Error {
     case unknown(String)
     case api(String, String)
     case httpError(Int, Data)
+    case jobStatusTimeOut
 }
 
 extension SmileIDError: LocalizedError {
@@ -24,6 +25,8 @@ extension SmileIDError: LocalizedError {
             return "HTTP Error with status code \(statusCode) and \(String(describing: data))"
         case .api(_, let message):
             return message
+        case .jobStatusTimeOut:
+            return "Job submitted successfully but polling job status timed out"
         }
     }
 }
