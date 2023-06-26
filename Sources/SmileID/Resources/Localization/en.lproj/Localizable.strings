@@ -21,6 +21,8 @@
 "Instructions.Capturing" = "Capturing…";
 "Instructions.Start" = "Put your face inside the oval frame and wait until it turns green";
 "Instructions.Unstable" = "Put your face inside the oval frame and wait until it turns green";
+"Instructions.Document.Header" = "Submit Front of ID";
+"Instructions.Document.Callout" = "We'll use it to verify your identity. \nPlease follow the instructions below";
 "Error.JobStatusTimeOut" = "Job status timed out";
 "Confirmation.GoodSelfie" = "Is this a good quality selfie?";
 "Confirmation.FaceClear" = "Make sure your whole face is \n visible and clear";

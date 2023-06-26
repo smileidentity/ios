@@ -63,7 +63,7 @@ class ImageUtils {
                                 cropFrame: CGRect,
                                 scaleSize: CGSize,
                                 isLivenessImage: Bool = true) -> Data? {
-        var ciImage = CIImage(cvPixelBuffer: buffer)
+        let ciImage = CIImage(cvPixelBuffer: buffer)
         guard let cgImage = convertCIImageToCGImage(ciImage: ciImage) else { return nil }
         guard let croppedImage = cgImage.cropping(to: cropFrame)?.resize(size: scaleSize) else { return nil }
         return convertCGImageToJPG(cgImage: croppedImage)

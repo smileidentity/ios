@@ -3,24 +3,32 @@ import Combine
 import UIKit
 import SmileID
 
-class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
+class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptureResultDelegate {
     @Published var product: JobType? {
         didSet {
             switch product {
             case .smartSelfieEnrollment:
                 presentSmartSelfieAuth = false
                 presentSmartSelfieEnrollment = true
+                presentDocumentVerification = false
             case .smartSelfieAuthentication:
                 presentSmartSelfieAuth = true
                 presentSmartSelfieEnrollment = false
+                presentDocumentVerification = false
+            case .documentVerification:
+                presentSmartSelfieAuth = false
+                presentSmartSelfieEnrollment = false
+                presentDocumentVerification = true
             default:
                 presentSmartSelfieAuth = false
                 presentSmartSelfieEnrollment = false
+                presentDocumentVerification = false
             }
         }
     }
     @Published var presentSmartSelfieAuth = false
     @Published var presentSmartSelfieEnrollment = false
+    @Published var presentDocumentVerification = false
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
@@ -44,6 +52,10 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate {
 
     func handleSmartSelfieAuthTap() {
         self.product = .smartSelfieAuthentication
+    }
+    
+    func handleDocumentVerificationTap() {
+        self.product = .documentVerification
     }
 
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
