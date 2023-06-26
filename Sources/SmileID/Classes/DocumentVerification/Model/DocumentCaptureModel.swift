@@ -1,4 +1,4 @@
 import Foundation
-final class DocumentCaptureViewModel : ObservableObject {
-    ///coming soon
+final class DocumentCaptureViewModel: ObservableObject {
+    /// coming soon
 }

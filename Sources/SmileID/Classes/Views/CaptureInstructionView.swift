@@ -1,35 +1,33 @@
 import SwiftUI
 
 public struct CaptureInstruction {
-    var title:String
-    var instruction:String
-    var image:String
+    var title: String
+    var instruction: String
+    var image: String
 }
 
 // this should be reused with the selfie and document capture and can be extended in terms of instructions
-public struct CaptureInstructionView <TargetView: View> : View {
+public struct CaptureInstructionView<TargetView: View>: View {
     @Environment(\.presentationMode) var presentationMode
-    private var image : UIImage
-    private var title : String
-    private var callOut : String
-    private var instructions : [CaptureInstruction]
-    private var detailView : TargetView
+    private var image: UIImage
+    private var title: String
+    private var callOut: String
+    private var instructions: [CaptureInstruction]
+    private var detailView: TargetView
     @State private var goesToDetail: Bool = false
-    init(image:UIImage,title:String,callOut:String ,instructions: [CaptureInstruction],detailView: TargetView) {
+    init(image: UIImage, title: String, callOut: String, instructions: [CaptureInstruction], detailView: TargetView) {
         self.image = image
         self.title = title
         self.callOut = callOut
         self.instructions = instructions
         self.detailView = detailView
     }
-    
-    
+
     public var body: some View {
         NavigationView {
             VStack {
                 ScrollView {
                     VStack {
-                        
                         Image(uiImage: image)
                             .padding(.bottom, 27)
                         VStack(spacing: 32) {
@@ -48,7 +46,7 @@ public struct CaptureInstructionView <TargetView: View> : View {
                         }
                         .padding(.bottom, 20)
                         VStack(alignment: .leading, spacing: 30) {
-                            ForEach(instructions,id: \.title) { i in
+                            ForEach(instructions, id: \.title) { i in
                                 makeInstruction(title: i.title,
                                                 body: i.instruction,
                                                 image: i.image)
@@ -64,9 +62,10 @@ public struct CaptureInstructionView <TargetView: View> : View {
                 })
                 VStack(spacing: 18) {
                     NavigationLink(destination: detailView,
-                                   isActive: $goesToDetail) {
-                        SmileButton(title: "Instructions.Action",clicked: {goesToDetail = true})}
-                    
+                                   isActive: $goesToDetail)
+                    {
+                        SmileButton(title: "Instructions.Action", clicked: { goesToDetail = true })
+                    }
                 }
             }
             .padding(EdgeInsets(top: 0,
@@ -76,7 +75,7 @@ public struct CaptureInstructionView <TargetView: View> : View {
             .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
         }
     }
-    
+
     func makeInstruction(title: String, body: String, image: String) -> some View {
         return HStack(spacing: 16) {
             if let instructionImage = SmileIDResourcesHelper.image(image) {
