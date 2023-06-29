@@ -20,7 +20,6 @@ class ImageUtils {
     /// - Returns: An optional JPG image data returned from the cropping and resizing operation
     class func captureFace(from buffer: CVPixelBuffer,
                            faceGeometry: FaceGeometryModel,
-                           padding: CGFloat,
                            agentMode: Bool,
                            finalSize: CGSize,
                            screenImageSize: CGSize,
@@ -28,7 +27,6 @@ class ImageUtils {
                            orientation: CGImagePropertyOrientation = .right
     ) -> Data? {
         guard !faceGeometry.boundingBox.isNaN else { return nil }
-
         CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)}
         let cameraAspectRatio = CGFloat(CVPixelBufferGetWidth(buffer))/CGFloat(CVPixelBufferGetHeight(buffer))
@@ -37,23 +35,24 @@ class ImageUtils {
         let trueImageSize = CGSize(width: imagewidth, height: screenImageSize.height)
 
         // ratio of the true image width to displayed image width
-        let cutoffregion: CGFloat = max(imagewidth, screenImageSize.width) / min(imagewidth, screenImageSize.width)
+        let ycuttoffregionAgentMode: CGFloat = max(imageHeight, screenImageSize.width) / min(imageHeight, screenImageSize.width)
+        let xcutoffregion: CGFloat = max(imagewidth, screenImageSize.width) / min(imagewidth, screenImageSize.width)
         let ycutoffregion: CGFloat = max(imageHeight, screenImageSize.height) / min(imageHeight, screenImageSize.height)
         // scale down the original buffer to match the size of whats displayed on screen
         guard let scaledDownBuffer = resizePixelBuffer(buffer, size: trueImageSize) else { return nil }
 
         // calculate crop rect
-        let cropL = max(faceGeometry.boundingBox.width, faceGeometry.boundingBox.height)
-        let cropRect = agentMode == true ? CGRect(x: faceGeometry.boundingBox.origin.y * ycutoffregion ,
-                                                         y: faceGeometry.boundingBox.origin.x * cutoffregion,
-                                                         width: cropL, height: cropL) : CGRect(x: faceGeometry.boundingBox.origin.x * cutoffregion,
-                                                                    y: faceGeometry.boundingBox.origin.y * ycutoffregion,
-                                                                    width: cropL,
-                                                                    height: cropL)
-        let finalrect = agentMode == true ? increaseRect(rect: cropRect,
-                                                               byPercentage: 7) : increaseRect(rect: cropRect,
-                                                                                               byPercentage: 1)
 
+        let cropL = max(faceGeometry.boundingBox.width, faceGeometry.boundingBox.height)
+        let cropRect = agentMode ? CGRect(x: faceGeometry.boundingBox.origin.y * ycuttoffregionAgentMode,
+                                          y: faceGeometry.boundingBox.origin.y * ycuttoffregionAgentMode,
+                                          width: cropL,
+                                          height: cropL) : CGRect(x: faceGeometry.boundingBox.origin.x * xcutoffregion,
+                                                                  y: faceGeometry.boundingBox.origin.y * ycutoffregion,
+                                                                  width: cropL,
+                                                                  height: cropL)
+        let finalrect = agentMode ? increaseRect(rect: cropRect,
+                                                 byPercentage: 1.5) : increaseRect(rect: cropRect, byPercentage: 1)
 
         // crop face from the buffer returned in the above operation and return jpg
         if isSelfie {
@@ -93,6 +92,31 @@ class ImageUtils {
             return nil
         }
         return convertCGImageToJPG(cgImage: resizedImage, exifDictionary: exif)
+    }
+
+    func rotatePixelBuffer(_ pixelBuffer: CVPixelBuffer, orientation: CGImagePropertyOrientation) -> CVPixelBuffer? {
+        var ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+
+        switch orientation {
+        case .left:
+            ciImage = ciImage.oriented(.left)
+        default:
+            return nil
+        }
+
+        // Create new pixel buffer
+        var newPixelBuffer: CVPixelBuffer? = nil
+        CVPixelBufferCreate(kCFAllocatorDefault, Int(ciImage.extent.size.width), Int(ciImage.extent.size.height), CVPixelBufferGetPixelFormatType(pixelBuffer), nil, &newPixelBuffer)
+
+        // Create CIContext
+        let context = CIContext()
+
+        // Render the CIImage to the new CVPixelBuffer
+        if let newPixelBuffer = newPixelBuffer {
+            context.render(ciImage, to: newPixelBuffer)
+        }
+
+        return newPixelBuffer
     }
 
     private class func resizeCGImage(_ originalImage: CGImage, newWidth: Int, newHeight: Int) -> CGImage? {

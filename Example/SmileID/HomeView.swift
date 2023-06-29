@@ -34,7 +34,7 @@ struct HomeView: View {
                         .sheet(isPresented: $viewModel.presentDocumentVerification,
                                content: { SmileID.documentVerificationScreen(userId: viewModel.generateUserID(),
                                                                              delegate: viewModel) })
-                        .frame(width: geo.size.width/2)
+                        .frame(width: (geo.size.width/2) - 7.5)
                     }
                 }
                 Spacer()

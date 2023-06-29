@@ -341,7 +341,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             selfieImage == nil {
             publishFaceObservation(.finalFrame)
             guard let displayedImage = ImageUtils.captureFace(from: currentBuffer,
-                                                              faceGeometry: faceGeometry, padding: 200,
+                                                              faceGeometry: faceGeometry,
                                                               agentMode: agentMode,
                                                               finalSize: selfieImageSize,
                                                               screenImageSize: viewFinderSize,
@@ -613,9 +613,6 @@ extension SelfieCaptureViewModel {
         let maxRoll = cameraManager.cameraPositon == .back ? 2.0 : 0.5
         isAcceptableRoll = abs(roll) < maxRoll
         isAcceptableYaw = abs(CGFloat(yaw)) < 0.5
-
-        print("Acceptible roll \(isAcceptableRoll) - \(abs(roll))")
-        print("Acceptible yaw \(isAcceptableYaw)")
     }
 
     func processUpdatedFaceQuality() {
