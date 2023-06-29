@@ -2,7 +2,7 @@ use_frameworks!
 # source 'https://cdn.cocoapods.org/'
 # source 'https://github.com/smileidentity/smileid-ios'
 
-platform :ios, '14.0'
+platform :ios, '13.0'
 
 target 'SmileID_Example' do
   pod 'SmileID', :path => '../'

@@ -1,9 +1,11 @@
 import CoreVideo
+import AVFoundation
 import CoreImage
 import UIKit
 import VideoToolbox
 import Accelerate
 import Vision
+import AVFoundation
 import MobileCoreServices
 
 class ImageUtils {
@@ -19,6 +21,7 @@ class ImageUtils {
     class func captureFace(from buffer: CVPixelBuffer,
                            faceGeometry: FaceGeometryModel,
                            padding: CGFloat,
+                           cameraPosition: AVCaptureDevice.Position,
                            finalSize: CGSize,
                            screenImageSize: CGSize,
                            isSelfie: Bool,
@@ -41,12 +44,14 @@ class ImageUtils {
 
         // calculate crop rect
         let cropL = max(faceGeometry.boundingBox.width, faceGeometry.boundingBox.height)
-        let cropRect = CGRect(x: faceGeometry.boundingBox.origin.x * cutoffregion,
-                              y: faceGeometry.boundingBox.origin.y * ycutoffregion,
-                              width: cropL,
-                              height: cropL)
+        let cropRect = cameraPosition == . back ? CGRect(x: faceGeometry.boundingBox.origin.y * ycutoffregion ,
+                                                         y: faceGeometry.boundingBox.origin.x * cutoffregion,
+                                                         width: cropL, height: cropL) : CGRect(x: faceGeometry.boundingBox.origin.x * cutoffregion,
+                                                                    y: faceGeometry.boundingBox.origin.y * ycutoffregion,
+                                                                    width: cropL,
+                                                                    height: cropL)
         let finalrect = isSelfie ?  CGRect(origin: .zero, size: trueImageSize) : increaseRect(rect: cropRect,
-                                                                                                   byPercentage: 1)
+                                                                                                   byPercentage: 7)
 
         // crop face from the buffer returned in the above operation and return jpg
         if isSelfie {
@@ -60,7 +65,10 @@ class ImageUtils {
         }
     }
 
-    class func resizePixelBufferToWidth(_ pixelBuffer: CVPixelBuffer, width: Int, exif: [String: Any]?, orientation: CGImagePropertyOrientation = .right) -> Data? {
+    class func resizePixelBufferToWidth(_ pixelBuffer: CVPixelBuffer,
+                                        width: Int,
+                                        exif: [String: Any]?,
+                                        orientation: CGImagePropertyOrientation = .right) -> Data? {
         var image = CIImage(cvPixelBuffer: pixelBuffer)
         image = image.oriented(orientation)
         guard let cgImage = CIContext(options: nil).createCGImage(image, from: image.extent) else {

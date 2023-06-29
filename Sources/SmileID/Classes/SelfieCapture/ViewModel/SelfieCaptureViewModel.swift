@@ -2,15 +2,14 @@ import Foundation
 import ARKit
 import UIKit
 import Combine
+
 protocol SelfieViewDelegate {
     func pauseARSession()
     func resumeARSession()
 }
-enum SelfieCaptureViewModelAction {
 
-    // scene stabilization action
+enum SelfieCaptureViewModelAction {
     case sceneUnstable
-    // Face detection actions
     case noFaceDetected
     case smileDirective
     case smileAction
@@ -53,19 +52,12 @@ final class SelfieCaptureViewModel: ObservableObject {
     var faceLayoutGuideFrame = CGRect.zero
     var viewFinderSize = CGSize.zero
     let subject = PassthroughSubject<String, Never>()
-    weak var viewDelegate: FaceDetectorDelegate? {
-        didSet {
-            faceDetector.viewDelegate = viewDelegate
-        }
-    }
-    //let cameraManager = CameraManager()
-    //let frameManager: FrameManager
+    lazy var cameraManager = CameraManager()
     private var faceDetector = FaceDetector()
     private var subscribers = Set<AnyCancellable>()
     private var facedetectionSubscribers: AnyCancellable?
     private var throttleSubscription: AnyCancellable?
     private let numberOfLivenessImages = 7
-    private let livenessImageSize = CGSize(width: 256, height: 256)
     private let selfieImageSize = CGSize(width: 320, height: 320)
     private var currentBuffer: CVPixelBuffer?
     private var files = [URL]()
@@ -78,7 +70,18 @@ final class SelfieCaptureViewModel: ObservableObject {
     private var debounceTimer: Timer?
     var displayedImage: Data?
     var currentExif: [String: Any]?
-    @Published var agentMode = false
+    var isARSupported: Bool {
+        return ARFaceTrackingConfiguration.isSupported
+    }
+    @Published var agentMode = false {
+        didSet {
+            if isARSupported {
+                switchARKitCamera()
+            } else {
+                switchAVCaptureCamera()
+            }
+        }
+    }
     @Published private(set) var progress: CGFloat = 0
     @Published var directive: String = "Instructions.Start"
     @Published private(set) var processingState: ProcessingState?
@@ -87,20 +90,45 @@ final class SelfieCaptureViewModel: ObservableObject {
             switch processingState {
             case .none:
                 selfieViewDelegate?.resumeARSession()
+                setupFaceDetectionSubscriptions()
+                cameraManager.resumeSession()
             case .endFlow:
+                pauseFaceDetection()
                 selfieViewDelegate?.pauseARSession()
             case .some:
+                pauseFaceDetection()
                 selfieViewDelegate?.pauseARSession()
-
             }
         }
     }
 
+    weak var viewDelegate: FaceDetectorDelegate? {
+        didSet {
+            faceDetector.viewDelegate = viewDelegate
+        }
+    }
+    var fallbackTimer: Timer?
+
     private(set) var hasDetectedValidFace: Bool {
         didSet {
-            print("has detected valid face \(hasDetectedValidFace)")
-            print("is acceptivle roll \(isAcceptableRoll), yaw \(isAcceptableYaw), quality \(isAcceptableQuality), bounds \(isAcceptableBounds)")
             if hasDetectedValidFace {
+                if livenessImages.count == 3 && isARSupported && !agentMode {
+                    perform(action: .smileDirective)
+                    if isSmiling {
+                        captureImage()
+                        return
+                    } else {
+                        return
+                    }
+                } else if livenessImages.count == 3 {
+                    self.perform(action: .smileDirective)
+                    fallbackTimer = Timer.scheduledTimer(timeInterval: 2,
+                                                         target: self,
+                                                         selector: #selector(captureImageAfteThreeSecs),
+                                                         userInfo: nil,
+                                                         repeats: false)
+                    return
+                }
                 captureImage()
             }
         }
@@ -148,21 +176,26 @@ final class SelfieCaptureViewModel: ObservableObject {
         self.userId = userId
         self.isEnroll = isEnroll
         self.jobId = jobId
+        self.showAttribution = showAttribution
         faceDetectionState = .noFaceDetected
         isAcceptableRoll = false
         isAcceptableYaw = false
         isAcceptableBounds = .unknown
         isAcceptableQuality = true
-
         hasDetectedValidFace = false
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
-        //frameManager = FrameManager(cameraManager: cameraManager)
-        self.showAttribution = showAttribution
         faceDetector.model = self
-        //setupFaceDetectionSubscriptions()
+        if ARFaceTrackingConfiguration.isSupported {
+            subscribeToARFrame()
+        } else {
+            setupFaceDetectionSubscriptions()
+        }
         setupDirectiveSubscription()
-        subscribeToARFrame()
+    }
+
+    @objc func captureImageAfteThreeSecs() {
+        captureImage()
     }
 
     func subscribeToARFrame() {
@@ -192,27 +225,51 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     private func setupFaceDetectionSubscriptions() {
-//        facedetectionSubscribers = frameManager.$sampleBuffer
-//            .receive(on: DispatchQueue.global())
-//            .compactMap { return $0 }
-//            .sink {
-//                self.faceDetector.detect(pixelBuffer: $0)
-//                self.currentBuffer = $0
-//            }
+        facedetectionSubscribers = cameraManager.$sampleBuffer
+            .receive(on: DispatchQueue.global())
+            .compactMap { return $0 }
+            .sink {
+                self.faceDetector.detect(pixelBuffer: $0)
+                self.currentBuffer = $0
+            }
     }
 
     private func pauseFaceDetection() {
         facedetectionSubscribers?.cancel()
         facedetectionSubscribers = nil
-        //cameraManager.pauseSession()
+        cameraManager.pauseSession()
     }
 
-    func switchCamera() {
+    func switchARKitCamera() {
+        resetCapture()
         facedetectionSubscribers?.cancel()
         facedetectionSubscribers = nil
-        //cameraManager.switchCamera()
-        setupFaceDetectionSubscriptions()
+        if agentMode {
+            selfieViewDelegate?.pauseARSession()
+            setupFaceDetectionSubscriptions()
+            cameraManager.switchCamera(to: .back)
+        } else {
+            cameraManager.pauseSession()
+            selfieViewDelegate?.resumeARSession()
+        }
+    }
+
+    func handleRetakeButtonTap() {
         resetCapture()
+        facedetectionSubscribers?.cancel()
+        facedetectionSubscribers = nil
+
+    }
+
+    func switchAVCaptureCamera() {
+        facedetectionSubscribers?.cancel()
+        facedetectionSubscribers = nil
+        setupFaceDetectionSubscriptions()
+        if agentMode {
+            cameraManager.switchCamera(to: .back)
+        } else {
+            cameraManager.switchCamera(to: .front)
+        }
     }
 
     func perform(action: SelfieCaptureViewModelAction) {
@@ -240,14 +297,6 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     private func captureImage() {
-        if livenessImages.count == 3 {
-            perform(action: .smileDirective)
-            if isSmiling {
-                self.perform(action: .smileDirective)
-            } else {
-                return
-            }
-        }
         DispatchQueue.main.async {
             if self.livenessImages.count >= 3 {
                 self.perform(action: .smileDirective)
@@ -276,9 +325,10 @@ final class SelfieCaptureViewModel: ObservableObject {
             selfieImage == nil {
             publishFaceObservation(.finalFrame)
             guard let displayedImage = ImageUtils.captureFace(from: currentBuffer,
-                                                           faceGeometry: faceGeometry, padding: 200,
-                                                           finalSize: selfieImageSize,
-                                                           screenImageSize: viewFinderSize,
+                                                              faceGeometry: faceGeometry, padding: 200,
+                                                              cameraPosition: cameraManager.cameraPositon!,
+                                                              finalSize: selfieImageSize,
+                                                              screenImageSize: viewFinderSize,
                                                               isSelfie: false) else { return }
             guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
                                                                         exif: currentExif) else { return }
@@ -529,22 +579,32 @@ extension SelfieCaptureViewModel {
             subject.send("Instructions.FaceFar")
         } else {
             if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
+                print("X axis diff \(boundingBox.midX - faceLayoutGuideFrame.midX)")
+                print("off center")
                 isAcceptableBounds = .detectedFaceOffCentre
                 subject.send("Instructions.Start")
                 resetCapture()
             } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 210 {
+                print("Y axis diff \(boundingBox.midY - faceLayoutGuideFrame.midY)")
+                print("off center 2")
                 isAcceptableBounds = .detectedFaceOffCentre
                 subject.send("Instructions.Start")
                 resetCapture()
             } else {
+                print("acceptable bounds")
                 isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
             }
         }
     }
 
     func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
-        isAcceptableRoll = abs(roll) < 0.5
+        //Roll values differ because back camera feed is in landscape
+        let maxRoll = cameraManager.cameraPositon == .back ? 2.0 : 0.5
+        isAcceptableRoll = abs(roll) < maxRoll
         isAcceptableYaw = abs(CGFloat(yaw)) < 0.5
+
+        print("Acceptible roll \(isAcceptableRoll) - \(abs(roll))")
+        print("Acceptible yaw \(isAcceptableYaw)")
     }
 
     func processUpdatedFaceQuality() {

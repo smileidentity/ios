@@ -2,6 +2,7 @@ import UIKit
 import SmileID
 import SwiftUI
 import netfox
+@available(iOS 14.0, *)
 @UIApplicationMain
 
 class AppDelegate: UIResponder, UIApplicationDelegate {

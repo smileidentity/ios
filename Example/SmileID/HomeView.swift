@@ -1,6 +1,7 @@
 import SmileID
 import SwiftUI
 
+@available(iOS 14.0, *)
 struct HomeView: View {
     var userID = ""
     @ObservedObject var viewModel = HomeViewModel()
@@ -56,6 +57,7 @@ struct HomeView: View {
     }
 }
 
+@available(iOS 14.0, *)
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()

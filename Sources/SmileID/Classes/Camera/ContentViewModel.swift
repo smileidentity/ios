@@ -4,16 +4,16 @@ import VideoToolbox
 
 class ContentViewModel: ObservableObject {
     @Published var frame: CGImage?
-    private weak var frameManager: FrameManager?
+    var cameraManager: CameraManager
     private var subscribers = Set<AnyCancellable>()
 
-    init(frameManager: FrameManager) {
-        self.frameManager = frameManager
+    init(cameraManager: CameraManager) {
+        self.cameraManager = cameraManager
         setupSubscriptions()
     }
 
     func setupSubscriptions() {
-        frameManager?.$sampleBuffer
+        cameraManager.$sampleBuffer
             .receive(on: RunLoop.main)
             .compactMap { buffer in
                 return CGImage.create(from: buffer)

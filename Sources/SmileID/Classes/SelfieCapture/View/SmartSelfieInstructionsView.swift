@@ -2,18 +2,18 @@ import SwiftUI
 
 public struct SmartSelfieInstructionsView: View {
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var viewModel : SelfieCaptureViewModel
+    @ObservedObject private var viewModel : SelfieCaptureViewModel
     private weak var selfieCaptureDelegate: SmartSelfieResultDelegate?
     @State private var goesToDetail: Bool = false
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
         self.selfieCaptureDelegate = delegate
     }
 
     // Only exists for preview so not accessible out of the file
     fileprivate init(viewModel: SelfieCaptureViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
     }
 
     public var body: some View {

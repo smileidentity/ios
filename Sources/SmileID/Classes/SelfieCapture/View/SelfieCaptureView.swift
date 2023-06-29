@@ -1,38 +1,64 @@
 import SwiftUI
 import Combine
+import ARKit
 
 public struct SelfieCaptureView: View, SelfieViewDelegate {
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var viewModel: SelfieCaptureViewModel
+    @ObservedObject private var viewModel: SelfieCaptureViewModel
     private weak var delegate: SmartSelfieResultDelegate?
-    let arView = ARView()
+    let camera: CameraView?
+    let arView: ARView?
+    let faceOverlay: FaceOverlayView
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
         self.delegate = delegate
+        faceOverlay = FaceOverlayView(model: viewModel)
+        if ARFaceTrackingConfiguration.isSupported {
+            self.arView = ARView()
+            self.camera = CameraView(cameraManager: viewModel.cameraManager)
+        } else {
+            self.camera = CameraView(cameraManager: viewModel.cameraManager)
+            arView = nil
+        }
     }
 
     // NB
     // TODO:only used for previews to remove lint issues
     fileprivate init(viewModel: SelfieCaptureViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
+        self.camera = CameraView(cameraManager: viewModel.cameraManager)
+        faceOverlay = FaceOverlayView(model: viewModel)
+        arView = nil
     }
+
 
     public var body: some View {
         GeometryReader { geometry in
             let ovalSize = ovalSize(from: geometry)
             ZStack {
-                arView
-                    .onAppear {
-                        viewModel.faceLayoutGuideFrame =
-                        CGRect(origin: .zero,
-                               size: ovalSize)
-                        arView.preview.model = viewModel
-                        viewModel.viewFinderSize = geometry.size
-                        viewModel.selfieViewDelegate = self
-                    }.scaleEffect(1.2, anchor: .top)
-
-                FaceOverlayView(model: viewModel)
+                if ARFaceTrackingConfiguration.isSupported && viewModel.agentMode == false {
+                    arView
+                        .onAppear {
+                            viewModel.faceLayoutGuideFrame =
+                            CGRect(origin: .zero,
+                                   size: ovalSize)
+                            arView?.preview.model = viewModel
+                            viewModel.viewFinderSize = geometry.size
+                            viewModel.selfieViewDelegate = self
+                        }
+                } else {
+                    camera
+                        .onAppear {
+                            viewModel.captureResultDelegate = delegate
+                            viewModel.faceLayoutGuideFrame =
+                            CGRect(origin: .zero,
+                                   size: ovalSize)
+                            viewModel.viewDelegate = camera!.preview
+                            viewModel.viewFinderSize = geometry.size
+                        }.scaleEffect(1.2, anchor: .top)
+                }
+                faceOverlay
                 switch viewModel.processingState {
                 case .confirmation:
                     ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
@@ -60,6 +86,10 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
         .onAppear {
             UIScreen.main.brightness = 1
             viewModel.captureResultDelegate = delegate
+            viewModel.cameraManager.configure()
+        }
+        .onDisappear{
+            viewModel.cameraManager.pauseSession()
         }
     }
 
@@ -69,11 +99,11 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
     }
 
     func pauseARSession() {
-        arView.preview.pauseSession()
+        arView?.preview.pauseSession()
     }
 
     func resumeARSession() {
-        arView.preview.resumeSession()
+        arView?.preview.resumeSession()
     }
 }
 

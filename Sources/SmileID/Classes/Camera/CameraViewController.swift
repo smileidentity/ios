@@ -35,16 +35,17 @@ class PreviewView: UIViewController {
     }
 }
 
-extension PreviewView {
+extension PreviewView: FaceDetectorDelegate {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
       guard let previewLayer = previewLayer else {
           return .zero
       }
 
-        let normalizedRect = CGRect(x: rect.origin.y,
-                                    y: rect.origin.x,
-                                    width: rect.height,
-                                    height: rect.width)
+
+        let normalizedRect = cameraManager?.cameraPositon == .back ? rect : CGRect(x: rect.origin.y,
+                                                                                   y: rect.origin.x,
+                                                                                   width: rect.height,
+                                                                                   height: rect.width)
 
         let transformedRect = previewLayer.layerRectConverted(fromMetadataOutputRect: normalizedRect)
 

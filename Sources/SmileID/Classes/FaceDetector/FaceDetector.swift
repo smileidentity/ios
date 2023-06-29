@@ -261,8 +261,6 @@ extension FaceDetector {
         }
         let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
 
-        print(convertedBoundingBox)
-
         let faceObservationModel = FaceGeometryModel(
             boundingBox: convertedBoundingBox,
             roll: result.roll ?? 0,

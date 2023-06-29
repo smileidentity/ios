@@ -1,5 +1,6 @@
 import SwiftUI
 import SmileID
+@available(iOS 14.0, *)
 struct MainView: View {
 
     init() {
@@ -42,6 +43,7 @@ struct MainView: View {
     }
 }
 
+@available(iOS 14.0, *)
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainView()

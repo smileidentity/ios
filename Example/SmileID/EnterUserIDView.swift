@@ -1,6 +1,7 @@
 import SwiftUI
 import SmileID
 
+@available(iOS 14.0, *)
 struct EnterUserIDView: View {
     @Environment(\.presentationMode) var presentationMode
     @State var userId: String
@@ -46,6 +47,7 @@ struct EnterUserIDView: View {
     }
 }
 
+@available(iOS 14.0, *)
 struct EnterUserIDView_Previews: PreviewProvider {
     static var previews: some View {
         EnterUserIDView(userId: "", viewModel: UserIDViewModel())

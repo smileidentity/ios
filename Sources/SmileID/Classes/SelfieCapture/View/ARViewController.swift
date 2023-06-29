@@ -20,6 +20,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let configuration = ARFaceTrackingConfiguration()
+        configuration.worldAlignment = .gravity
         sceneView.delegate = self
         sceneView.session.delegate = self
         sceneView.session.run(configuration)
@@ -40,6 +41,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
 
     func resumeSession() {
         let configuration = ARFaceTrackingConfiguration()
+        configuration.worldAlignment = .gravity
         if sceneView != nil {
             sceneView.session.run(configuration)
         }
@@ -92,12 +94,18 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
         let maxX = allXs.max() ?? 0
         let minY = allYs.min() ?? 0
         let maxY = allYs.max() ?? 0
-        let boundingBox = CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+        let boundingBox = CGRect(x: minX, y: minY, width: (maxX - minX) * 0.8, height: (maxY - minY) * 0.8)
         DispatchQueue.main.async {
             self.faceView?.frame = boundingBox
         }
 
         return boundingBox
+    }
+
+    deinit {
+        if sceneView != nil {
+            sceneView.session.pause()
+        }
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {

@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 import SwiftUI
 
-class CameraManager: ObservableObject {
+class CameraManager: NSObject, ObservableObject {
 
     enum Status {
         case unconfigured
@@ -13,6 +13,11 @@ class CameraManager: ObservableObject {
 
     @Published var error: CameraError?
     @Environment(\.isPreview) var isPreview
+    @Published var sampleBuffer: CVPixelBuffer?
+    let videoOutputQueue = DispatchQueue(label: "com.smileid.videooutput",
+                                         qos: .userInitiated,
+                                         attributes: [],
+                                         autoreleaseFrequency: .workItem)
 
     let session = AVCaptureSession()
     var cameraPositon: AVCaptureDevice.Position? {
@@ -25,6 +30,11 @@ class CameraManager: ObservableObject {
     private let sessionQueue = DispatchQueue(label: "com.smileid.ios")
     private let videoOutput = AVCaptureVideoDataOutput()
     private var status = Status.unconfigured
+
+    override init() {
+        super.init()
+        set(self, queue: videoOutputQueue)
+    }
 
     private func set(error: CameraError?) {
         DispatchQueue.main.async {
@@ -57,111 +67,80 @@ class CameraManager: ObservableObject {
       }
     }
 
-    private func configureCaptureSession() {
+    func configureCaptureSession() {
         guard status == .unconfigured else {
             return
         }
-
         session.beginConfiguration()
         defer {
             session.commitConfiguration()
         }
-        let device = AVCaptureDevice.default(
-          .builtInWideAngleCamera,
-          for: .video,
-          position: .front)
-        guard let camera = device else {
-          set(error: .cameraUnavailable)
-          status = .failed
-          return
+
+        addCameraInput(position: .front)
+        configureVideoOutput()
+    }
+
+    private func addCameraInput(position: AVCaptureDevice.Position) {
+        guard let camera = getCameraForPosition(position) else {
+            set(error: .cameraUnavailable)
+            status = .failed
+            return
         }
 
         do {
-          let cameraInput = try AVCaptureDeviceInput(device: camera)
-          if session.canAddInput(cameraInput) {
-            session.addInput(cameraInput)
-          } else {
-            set(error: .cannotAddInput)
-            status = .failed
-            return
-          }
+            let cameraInput = try AVCaptureDeviceInput(device: camera)
+            if session.canAddInput(cameraInput) {
+                session.addInput(cameraInput)
+            } else {
+                set(error: .cannotAddInput)
+                status = .failed
+            }
         } catch {
-          set(error: .createCaptureInput(error))
-          status = .failed
-          return
+            set(error: .createCaptureInput(error))
+            status = .failed
         }
+    }
 
+    private func getCameraForPosition(_ position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+        switch position {
+        case .front:
+            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+        case .back:
+            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+        default:
+            return nil
+        }
+    }
+
+    private func configureVideoOutput() {
         if session.canAddOutput(videoOutput) {
-          session.addOutput(videoOutput)
-
-          videoOutput.videoSettings =
+            session.addOutput(videoOutput)
+            videoOutput.videoSettings =
             [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
 
-          let videoConnection = videoOutput.connection(with: .video)
+            let videoConnection = videoOutput.connection(with: .video)
             videoConnection?.videoOrientation = .portrait
             videoConnection?.isVideoMirrored = true
         } else {
-          set(error: .cannotAddOutput)
-          status = .failed
-          return
+            set(error: .cannotAddOutput)
+            status = .failed
         }
-
-        status = .configured
     }
 
-    func switchCamera() {
+    func switchCamera(to position: AVCaptureDevice.Position) {
         sessionQueue.async { [self] in
+            guard !self.session.isRunning else { return }
+            self.session.startRunning()
             self.session.beginConfiguration()
             defer { self.session.commitConfiguration() }
 
             if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
                 self.session.removeInput(currentInput)
-
-                let newCamera: AVCaptureDevice
-                if currentInput.device.position == .back {
-                    guard let frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera,
-                                                                    for: .video,
-                                                                    position: .front) else {
-                        self.set(error: .cameraUnavailable)
-                        self.status = .failed
-                        return
-                    }
-                    newCamera = frontCamera
-                } else {
-                    guard let backCamera = AVCaptureDevice.default(.builtInWideAngleCamera,
-                                                                   for: .video,
-                                                                   position: .back) else {
-                        self.set(error: .cameraUnavailable)
-                        self.status = .failed
-                        return
-                    }
-                    newCamera = backCamera
-                }
-
-                do {
-                    let newInput = try AVCaptureDeviceInput(device: newCamera)
-                    if self.session.canAddInput(newInput) {
-                        self.session.addInput(newInput)
-                        self.videoOutput.videoSettings =
-                        [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
-
-                        let videoConnection = self.videoOutput.connection(with: .video)
-                        videoConnection?.videoOrientation = .portrait
-                        videoConnection?.isVideoMirrored = true
-                    } else {
-                        self.set(error: .cannotAddInput)
-                        self.status = .failed
-                        return
-                    }
-                } catch {
-                    self.set(error: .createCaptureInput(error))
-                    self.status = .failed
-                    return
-                }
+                self.addCameraInput(position: position)
+                self.configureVideoOutput()
             }
         }
     }
-
 
     func configure() {
         self.checkPermissions()
@@ -201,5 +180,15 @@ class CameraManager: ObservableObject {
       sessionQueue.async {
         self.videoOutput.setSampleBufferDelegate(delegate, queue: queue)
       }
+    }
+}
+
+extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(_ output: AVCaptureOutput,
+                       didOutput sampleBuffer: CMSampleBuffer,
+                       from connection: AVCaptureConnection) {
+        if let buffer = sampleBuffer.imageBuffer {
+            self.sampleBuffer = buffer
+        }
     }
 }
