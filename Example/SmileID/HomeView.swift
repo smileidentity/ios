@@ -27,12 +27,15 @@ struct HomeView: View {
                     })
                 }
                 HStack(spacing: 15) {
-                    Button(action: { self.viewModel.handleDocumentVerificationTap() }) {
-                        ProductCell(productImage: "document", productName: "Document \nVerification")
+                    GeometryReader{ geo in
+                        Button(action: { self.viewModel.handleDocumentVerificationTap() }) {
+                            ProductCell(productImage: "document", productName: "Document \nVerification")
+                        }
+                        .sheet(isPresented: $viewModel.presentDocumentVerification,
+                               content: { SmileID.documentVerificationScreen(userId: viewModel.generateUserID(),
+                                                                             delegate: viewModel) })
+                        .frame(width: geo.size.width/2)
                     }
-                    .sheet(isPresented: $viewModel.presentDocumentVerification,
-                           content: { SmileID.documentVerificationScreen(userId: viewModel.generateUserID(),
-                                                                         delegate: viewModel) })
                 }
                 Spacer()
                 Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version)")

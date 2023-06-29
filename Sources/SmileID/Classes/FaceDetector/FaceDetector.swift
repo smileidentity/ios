@@ -19,13 +19,11 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler: detectedFaceQualityRequest)
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest { [self] request, error in
             guard let results = request.results as? [VNFaceObservation], let viewDelegate = viewDelegate else {
-                print("no face")
                 model?.perform(action: .noFaceDetected)
                 return
             }
 
             if results.count > 1 {
-                print("face")
                 model?.perform(action: .multipleFacesDetected)
                 return
             }

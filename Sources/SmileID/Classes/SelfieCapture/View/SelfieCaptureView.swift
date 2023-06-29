@@ -13,6 +13,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
         self.viewModel = viewModel
         self.delegate = delegate
+        UIScreen.main.brightness = 1
         faceOverlay = FaceOverlayView(model: viewModel)
         if ARFaceTrackingConfiguration.isSupported {
             self.arView = ARView()
@@ -84,9 +85,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
         })
         .background(SmileID.theme.backgroundMain)
         .onAppear {
-            UIScreen.main.brightness = 1
             viewModel.captureResultDelegate = delegate
-            viewModel.cameraManager.configure()
         }
         .onDisappear{
             viewModel.cameraManager.pauseSession()

@@ -17,6 +17,11 @@ public struct SmartSelfieInstructionsView: View {
     }
 
     public var body: some View {
+        if let processingState = viewModel.processingState, processingState == .endFlow {
+            let _ = DispatchQueue.main.async {
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
         CaptureInstructionView<SelfieCaptureView>(
             image: SmileIDResourcesHelper.InstructionsHeaderIcon,
             title: SmileIDResourcesHelper.localizedString(for: "Instructions.Header"),

@@ -136,9 +136,9 @@ class CameraManager: NSObject, ObservableObject {
 
             if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
                 self.session.removeInput(currentInput)
-                self.addCameraInput(position: position)
-                self.configureVideoOutput()
             }
+            self.configureVideoOutput()
+            self.addCameraInput(position: position)
         }
     }
 
@@ -152,6 +152,7 @@ class CameraManager: NSObject, ObservableObject {
     }
 
     func pauseSession() {
+        guard session.isRunning else { return }
         DispatchQueue.global(qos: .userInitiated).async {
             self.session.stopRunning()
         }

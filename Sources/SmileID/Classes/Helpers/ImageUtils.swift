@@ -21,7 +21,7 @@ class ImageUtils {
     class func captureFace(from buffer: CVPixelBuffer,
                            faceGeometry: FaceGeometryModel,
                            padding: CGFloat,
-                           cameraPosition: AVCaptureDevice.Position,
+                           agentMode: Bool,
                            finalSize: CGSize,
                            screenImageSize: CGSize,
                            isSelfie: Bool,
@@ -44,14 +44,16 @@ class ImageUtils {
 
         // calculate crop rect
         let cropL = max(faceGeometry.boundingBox.width, faceGeometry.boundingBox.height)
-        let cropRect = cameraPosition == . back ? CGRect(x: faceGeometry.boundingBox.origin.y * ycutoffregion ,
+        let cropRect = agentMode == true ? CGRect(x: faceGeometry.boundingBox.origin.y * ycutoffregion ,
                                                          y: faceGeometry.boundingBox.origin.x * cutoffregion,
                                                          width: cropL, height: cropL) : CGRect(x: faceGeometry.boundingBox.origin.x * cutoffregion,
                                                                     y: faceGeometry.boundingBox.origin.y * ycutoffregion,
                                                                     width: cropL,
                                                                     height: cropL)
-        let finalrect = isSelfie ?  CGRect(origin: .zero, size: trueImageSize) : increaseRect(rect: cropRect,
-                                                                                                   byPercentage: 7)
+        let finalrect = agentMode == true ? increaseRect(rect: cropRect,
+                                                               byPercentage: 7) : increaseRect(rect: cropRect,
+                                                                                               byPercentage: 1)
+
 
         // crop face from the buffer returned in the above operation and return jpg
         if isSelfie {

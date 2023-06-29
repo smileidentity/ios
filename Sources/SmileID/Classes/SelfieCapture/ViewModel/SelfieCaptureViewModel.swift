@@ -89,16 +89,33 @@ final class SelfieCaptureViewModel: ObservableObject {
         didSet {
             switch processingState {
             case .none:
-                selfieViewDelegate?.resumeARSession()
-                setupFaceDetectionSubscriptions()
-                cameraManager.resumeSession()
+                resumeCameraSession()
             case .endFlow:
-                pauseFaceDetection()
-                selfieViewDelegate?.pauseARSession()
+                pauseCameraSession()
             case .some:
-                pauseFaceDetection()
-                selfieViewDelegate?.pauseARSession()
+                pauseCameraSession()
             }
+        }
+    }
+
+    func pauseCameraSession() {
+        if isARSupported && agentMode {
+            cameraManager.pauseSession()
+        } else if isARSupported && !agentMode {
+            selfieViewDelegate?.pauseARSession()
+            cameraManager.pauseSession()
+        } else if !isARSupported {
+            cameraManager.pauseSession()
+        }
+    }
+
+    func resumeCameraSession() {
+        if isARSupported && agentMode {
+            cameraManager.resumeSession()
+        } else if isARSupported && !agentMode {
+            selfieViewDelegate?.resumeARSession()
+        } else if !isARSupported {
+            cameraManager.resumeSession()
         }
     }
 
@@ -122,9 +139,9 @@ final class SelfieCaptureViewModel: ObservableObject {
                     }
                 } else if livenessImages.count == 3 {
                     self.perform(action: .smileDirective)
-                    fallbackTimer = Timer.scheduledTimer(timeInterval: 2,
+                    fallbackTimer = Timer.scheduledTimer(timeInterval: 3,
                                                          target: self,
-                                                         selector: #selector(captureImageAfteThreeSecs),
+                                                         selector: #selector(captureImageAfterThreeSecs),
                                                          userInfo: nil,
                                                          repeats: false)
                     return
@@ -194,7 +211,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         setupDirectiveSubscription()
     }
 
-    @objc func captureImageAfteThreeSecs() {
+    @objc func captureImageAfterThreeSecs() {
         captureImage()
     }
 
@@ -208,6 +225,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         NotificationCenter.default.removeObserver(self)
         throttleSubscription?.cancel()
         throttleSubscription = nil
+        pauseCameraSession()
     }
 
     @objc func didReceiveFrame(_ notification: NSNotification) {
@@ -256,9 +274,7 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     func handleRetakeButtonTap() {
         resetCapture()
-        facedetectionSubscribers?.cancel()
-        facedetectionSubscribers = nil
-
+        resumeCameraSession()
     }
 
     func switchAVCaptureCamera() {
@@ -326,7 +342,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             publishFaceObservation(.finalFrame)
             guard let displayedImage = ImageUtils.captureFace(from: currentBuffer,
                                                               faceGeometry: faceGeometry, padding: 200,
-                                                              cameraPosition: cameraManager.cameraPositon!,
+                                                              agentMode: agentMode,
                                                               finalSize: selfieImageSize,
                                                               screenImageSize: viewFinderSize,
                                                               isSelfie: false) else { return }
@@ -471,6 +487,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     func handleCompletion() {
         switch processingState {
         case .complete(let response, let error):
+            pauseCameraSession()
             processingState = .endFlow
             if let error = error {
                 captureResultDelegate?.didError(error: error)
@@ -479,7 +496,6 @@ final class SelfieCaptureViewModel: ObservableObject {
             captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
                                               livenessImages: livenessImages,
                                               jobStatusResponse: response)
-            selfieViewDelegate?.pauseARSession()
         default:
             break
         }
@@ -579,19 +595,14 @@ extension SelfieCaptureViewModel {
             subject.send("Instructions.FaceFar")
         } else {
             if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
-                print("X axis diff \(boundingBox.midX - faceLayoutGuideFrame.midX)")
-                print("off center")
                 isAcceptableBounds = .detectedFaceOffCentre
                 subject.send("Instructions.Start")
                 resetCapture()
             } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 210 {
-                print("Y axis diff \(boundingBox.midY - faceLayoutGuideFrame.midY)")
-                print("off center 2")
                 isAcceptableBounds = .detectedFaceOffCentre
                 subject.send("Instructions.Start")
                 resetCapture()
             } else {
-                print("acceptable bounds")
                 isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
             }
         }

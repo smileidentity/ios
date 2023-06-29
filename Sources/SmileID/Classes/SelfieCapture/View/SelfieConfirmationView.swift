@@ -32,7 +32,7 @@ struct SelfieConfirmationView: View {
                 SmileButton(style: .secondary,
                             title: "Confirmation.Retake",
                             clicked: {
-                                        viewModel.resetCapture()
+                                    viewModel.handleRetakeButtonTap()
                 })
             }.padding()
         }
