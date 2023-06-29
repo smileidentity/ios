@@ -430,6 +430,7 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     func resetCapture() {
         DispatchQueue.main.async {
+            self.isSmiling = false
             if self.processingState != nil {
                 self.processingState = nil
             }
