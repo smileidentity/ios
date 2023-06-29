@@ -10,10 +10,10 @@ public struct PrepUploadRequest: Codable {
     var sourceSdkVersion = "10.0.0-beta01"
     var timestamp = String(Date().millisecondsSince1970)
     var signature = ""
-    var allowNewEnroll = "true"///backend is broken needs these as strings
+    var allowNewEnroll = "true" /// backend is broken needs these as strings
     var useEnrolledImage = false
-    var retry = "false" ///backend is broken needs these as strings
-    
+    var retry = "false" /// backend is broken needs these as strings
+
     enum CodingKeys: String, CodingKey {
         case filename = "file_name"
         case partnerParams = "partner_params"
@@ -35,7 +35,7 @@ public struct PrepUploadResponse: Codable {
     var uploadUrl: String
     var smileJobId: String
     var cameraConfig: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case code
         case refId = "ref_id"
