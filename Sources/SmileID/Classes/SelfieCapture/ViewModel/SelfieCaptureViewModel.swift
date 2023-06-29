@@ -36,7 +36,7 @@ enum ProcessingState {
             return false
         }
     }
-
+    
     case confirmation
     case inProgress
     case complete(JobStatusResponse?, SmileIDError?)
@@ -290,7 +290,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             cameraManager.switchCamera(to: .front)
         }
     }
-
+    
     func perform(action: SelfieCaptureViewModelAction) {
         switch action {
         case .sceneUnstable:
@@ -314,7 +314,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             isSmiling = false
         }
     }
-
+    
     private func captureImage() {
         DispatchQueue.main.async {
             if self.livenessImages.count >= 3 {
@@ -341,7 +341,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             lastCaptureTime = Date().millisecondsSince1970
             updateProgress()
         }
-
+        
         if (livenessImages.count == numberOfLivenessImages) &&
             ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) &&
             selfieImage == nil {
@@ -396,13 +396,13 @@ final class SelfieCaptureViewModel: ObservableObject {
             processingState = .error(error)
             return
         }
-
+        
         let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
         let authRequest = AuthenticationRequest(jobType: jobType,
                                                 enrollment: isEnroll,
                                                 userId: userId,
                                                 jobId: jobId)
-
+        
         SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in
                 self.prepUpload(authResponse)
@@ -437,7 +437,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                 }
             }).store(in: &subscribers)
     }
-
+    
     func resetCapture() {
         DispatchQueue.main.async {
             if self.processingState != nil {
@@ -517,17 +517,25 @@ final class SelfieCaptureViewModel: ObservableObject {
 
 extension SelfieCaptureViewModel {
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
+        return self.prepUpload(authResponse, allowNewEnroll: true, useEnrolledImage: false, retry: false)
+    }
+    
+    private func prepUpload(_ authResponse: AuthenticationResponse,allowNewEnroll:Bool,useEnrolledImage:Bool,retry:Bool) -> AnyPublisher<PrepUploadResponse, Error> {
         let prepUploadRequest = PrepUploadRequest(partnerParams: authResponse.partnerParams,
                                                   timestamp: authResponse.timestamp,
-                                                  signature: authResponse.signature)
+                                                  signature: authResponse.signature,
+                                                  allowNewEnroll: String(allowNewEnroll),
+                                                  useEnrolledImage: useEnrolledImage,
+                                                  retry:String(retry)
+        )
         return SmileID.api.prepUpload(request: prepUploadRequest)
     }
-
+    
     private func upload(_ prepUploadResponse: PrepUploadResponse, zip: Data) -> AnyPublisher<UploadResponse, Error> {
         return SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
             .eraseToAnyPublisher()
     }
-
+    
     private func pollJobStatus(_ authResponse: AuthenticationResponse) -> AnyPublisher<JobStatusResponse, Error> {
         let jobStatusRequest = JobStatusRequest(userId: authResponse.partnerParams.userId,
                                                 jobId: authResponse.partnerParams.jobId,
@@ -535,7 +543,7 @@ extension SelfieCaptureViewModel {
                                                 includeHistory: false,
                                                 timestamp: authResponse.timestamp,
                                                 signature: authResponse.signature)
-
+        
         let publisher = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()
             .setFailureType(to: Error.self)
@@ -546,7 +554,7 @@ extension SelfieCaptureViewModel {
                      scheduler: DispatchQueue.main,
                      options: nil,
                      customError: { SmileIDError.jobStatusTimeOut })
-
+        
         return publisher.eraseToAnyPublisher()
     }
 }
@@ -568,7 +576,7 @@ extension SelfieCaptureViewModel {
         facedetectionSubscribers = nil
         cameraManager.pauseSession()
     }
-
+    
     private func publishFaceObservation(_ faceDetectionState: FaceDetectionState,
                                         faceGeometryModel: FaceGeometryModel? = nil,
                                         faceQualityModel: FaceQualityModel? = nil) {
