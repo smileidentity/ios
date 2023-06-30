@@ -13,6 +13,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
         self.viewModel = viewModel
         self.delegate = delegate
+        viewModel.captureResultDelegate = delegate
         UIScreen.main.brightness = 1
         faceOverlay = FaceOverlayView(model: viewModel)
         if ARFaceTrackingConfiguration.isSupported {
@@ -78,15 +79,14 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
         .edgesIgnoringSafeArea(.all)
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: Button {
+            viewModel.resetState()
+            viewModel.pauseCameraSession()
             presentationMode.wrappedValue.dismiss()
         } label: {
             Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
                 .padding()
         })
         .background(SmileID.theme.backgroundMain)
-        .onAppear {
-            viewModel.captureResultDelegate = delegate
-        }
         .onDisappear{
             viewModel.cameraManager.pauseSession()
         }

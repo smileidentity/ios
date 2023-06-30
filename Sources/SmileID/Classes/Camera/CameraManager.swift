@@ -128,6 +128,7 @@ class CameraManager: NSObject, ObservableObject {
     }
 
     func switchCamera(to position: AVCaptureDevice.Position) {
+        self.checkPermissions()
         sessionQueue.async { [self] in
             guard !self.session.isRunning else { return }
             self.session.startRunning()

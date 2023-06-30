@@ -51,6 +51,10 @@ final class SelfieCaptureViewModel: ObservableObject {
     var showAttribution: Bool
     var faceLayoutGuideFrame = CGRect.zero
     var viewFinderSize = CGSize.zero
+    var displayedImage: Data?
+    var selfieImage: Data?
+    var selfieViewDelegate: SelfieViewDelegate?
+    var currentExif: [String: Any]?
     let subject = PassthroughSubject<String, Never>()
     lazy var cameraManager = CameraManager()
     private var faceDetector = FaceDetector()
@@ -60,72 +64,57 @@ final class SelfieCaptureViewModel: ObservableObject {
     private let numberOfLivenessImages = 7
     private let selfieImageSize = CGSize(width: 320, height: 320)
     private var currentBuffer: CVPixelBuffer?
+    private(set) var faceDetectionState: FaceDetectionState
+    private var fallbackTimer: Timer?
     private var files = [URL]()
-    var selfieImage: Data?
     private var livenessImages = [Data]()
     private var lastCaptureTime: Int64 = 0
     private var interCaptureDelay = 600
-    weak var captureResultDelegate: SmartSelfieResultDelegate?
-    var selfieViewDelegate: SelfieViewDelegate?
     private var debounceTimer: Timer?
-    var displayedImage: Data?
-    var currentExif: [String: Any]?
-    var isARSupported: Bool {
-        return ARFaceTrackingConfiguration.isSupported
-    }
-    @Published var agentMode = false {
-        didSet {
-            if isARSupported {
-                switchARKitCamera()
-            } else {
-                switchAVCaptureCamera()
-            }
-        }
-    }
-    @Published private(set) var progress: CGFloat = 0
-    @Published var directive: String = "Instructions.Start"
-    @Published private(set) var processingState: ProcessingState?
-    {
-        didSet {
-            switch processingState {
-            case .none:
-                resumeCameraSession()
-            case .endFlow:
-                pauseCameraSession()
-            case .some:
-                pauseCameraSession()
-            }
-        }
-    }
-
-    func pauseCameraSession() {
-        if isARSupported && agentMode {
-            cameraManager.pauseSession()
-        } else if isARSupported && !agentMode {
-            selfieViewDelegate?.pauseARSession()
-            cameraManager.pauseSession()
-        } else if !isARSupported {
-            cameraManager.pauseSession()
-        }
-    }
-
-    func resumeCameraSession() {
-        if isARSupported && agentMode {
-            cameraManager.resumeSession()
-        } else if isARSupported && !agentMode {
-            selfieViewDelegate?.resumeARSession()
-        } else if !isARSupported {
-            cameraManager.resumeSession()
-        }
-    }
-
+    weak var captureResultDelegate: SmartSelfieResultDelegate?
     weak var viewDelegate: FaceDetectorDelegate? {
         didSet {
             faceDetector.viewDelegate = viewDelegate
         }
     }
-    var fallbackTimer: Timer?
-
+    var isARSupported: Bool {
+        return ARFaceTrackingConfiguration.isSupported
+    }
+    private(set) var isAcceptableRoll: Bool {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    private(set) var isAcceptableYaw: Bool {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    private(set) var isAcceptableBounds: FaceBoundsState {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    private(set) var isAcceptableQuality: Bool = true {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    private(set) var faceGeometryState: FaceObservation<FaceGeometryModel, ErrorWrapper> {
+        didSet {
+            processUpdatedFaceGeometry()
+        }
+    }
+    private(set) var faceQualityState: FaceObservation<FaceQualityModel, ErrorWrapper> {
+        didSet {
+            processUpdatedFaceQuality()
+        }
+    }
+    private var isSmiling = false {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
     private(set) var hasDetectedValidFace: Bool {
         didSet {
             if hasDetectedValidFace {
@@ -150,42 +139,24 @@ final class SelfieCaptureViewModel: ObservableObject {
             }
         }
     }
-    private(set) var isAcceptableRoll: Bool {
+    @Published var agentMode = false {
         didSet {
-            calculateDetectedFaceValidity()
+            switchCamera()
         }
     }
-    private(set) var isAcceptableYaw: Bool {
+    @Published private(set) var progress: CGFloat = 0
+    @Published var directive: String = "Instructions.Start"
+    @Published private(set) var processingState: ProcessingState?
+    {
         didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    private(set) var isAcceptableBounds: FaceBoundsState {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    private(set) var isAcceptableQuality: Bool = true {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-
-    private(set) var faceDetectionState: FaceDetectionState
-    private(set) var faceGeometryState: FaceObservation<FaceGeometryModel, ErrorWrapper> {
-        didSet {
-            processUpdatedFaceGeometry()
-        }
-    }
-    private(set) var faceQualityState: FaceObservation<FaceQualityModel, ErrorWrapper> {
-        didSet {
-            processUpdatedFaceQuality()
-        }
-    }
-
-    private var isSmiling = false {
-        didSet {
-            calculateDetectedFaceValidity()
+            switch processingState {
+            case .none:
+                resumeCameraSession()
+            case .endFlow:
+                pauseCameraSession()
+            case .some:
+                pauseCameraSession()
+            }
         }
     }
 
@@ -209,6 +180,42 @@ final class SelfieCaptureViewModel: ObservableObject {
             setupFaceDetectionSubscriptions()
         }
         setupDirectiveSubscription()
+    }
+
+    func resetState() {
+        agentMode = false
+
+        resetCapture()
+    }
+
+    private func switchCamera() {
+        resetCapture()
+        if isARSupported {
+            switchARKitCamera()
+        } else {
+            switchAVCaptureCamera()
+        }
+    }
+
+    func pauseCameraSession() {
+        if isARSupported && agentMode {
+            cameraManager.pauseSession()
+        } else if isARSupported && !agentMode {
+            selfieViewDelegate?.pauseARSession()
+            cameraManager.pauseSession()
+        } else if !isARSupported {
+            cameraManager.pauseSession()
+        }
+    }
+
+    func resumeCameraSession() {
+        if isARSupported && agentMode {
+            cameraManager.resumeSession()
+        } else if isARSupported && !agentMode {
+            selfieViewDelegate?.resumeARSession()
+        } else if !isARSupported {
+            cameraManager.resumeSession()
+        }
     }
 
     @objc func captureImageAfterThreeSecs() {
@@ -259,7 +266,6 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     func switchARKitCamera() {
-        resetCapture()
         facedetectionSubscribers?.cancel()
         facedetectionSubscribers = nil
         if agentMode {
@@ -366,10 +372,22 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
+    private func handleError(_ error: SmileIDError) {
+        switch error {
+        case .request(let urlError):
+            processingState = .error(urlError)
+        case .httpError, .unknown:
+            processingState = .error(error)
+        case .jobStatusTimeOut:
+            processingState = .complete(nil, nil)
+        default:
+            processingState = .complete(nil, error)
+        }
+    }
+
     func submit() {
         processingState = .inProgress
         var zip: Data
-
         do {
             let zipUrl = try LocalStorage.zipFiles(at: files)
             zip = try Data(contentsOf: zipUrl)
@@ -406,16 +424,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
                         if let error = error as? SmileIDError {
-                            switch error {
-                            case .request(let urlError):
-                                self?.processingState = .error(urlError)
-                            case .httpError, .unknown:
-                                self?.processingState = .error(error)
-                            case .jobStatusTimeOut:
-                                self?.processingState = .complete(nil, nil)
-                            default:
-                                self?.processingState = .complete(nil, error)
-                            }
+                            self?.handleError(error)
                         }
                     }
                 default:
@@ -430,7 +439,6 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     func resetCapture() {
         DispatchQueue.main.async {
-            self.isSmiling = false
             if self.processingState != nil {
                 self.processingState = nil
             }
@@ -438,6 +446,16 @@ final class SelfieCaptureViewModel: ObservableObject {
                 self.progress = 0
             }
         }
+        isSmiling = false
+        faceDetectionState = .noFaceDetected
+        isAcceptableRoll = false
+        isAcceptableYaw = false
+        isAcceptableBounds = .unknown
+        isAcceptableQuality = true
+        hasDetectedValidFace = false
+        faceGeometryState = .faceNotFound
+        faceQualityState = .faceNotFound
+        faceDetector.model = self
         if !livenessImages.isEmpty {
             livenessImages = []
         }
@@ -505,12 +523,6 @@ final class SelfieCaptureViewModel: ObservableObject {
     func handleRetry() {
         processingState = .inProgress
         submit()
-    }
-
-    func saveLivenessImage(data: Data) {
-        if let photo = UIImage(data: data) {
-            UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
-        }
     }
 
     private func publishUnstableSceneObserved() {
@@ -611,7 +623,7 @@ extension SelfieCaptureViewModel {
 
     func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
         //Roll values differ because back camera feed is in landscape
-        let maxRoll = cameraManager.cameraPositon == .back ? 2.0 : 0.5
+        let maxRoll = agentMode ? 2.0 : 0.5
         isAcceptableRoll = abs(roll) < maxRoll
         isAcceptableYaw = abs(CGFloat(yaw)) < 0.5
     }
