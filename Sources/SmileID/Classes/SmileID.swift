@@ -26,7 +26,6 @@ public class SmileID {
     internal static var config: Config!
     internal static var useSandbox = true
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
-    @ObservedObject var navHelper = NavigationHelper()
 
     public class func initialize(config: Config, useSandbox: Bool = true) {
         self.config = config
@@ -56,9 +55,12 @@ public class SmileID {
                                                  jobId _: String = "job-\(UUID().uuidString)",
                                                  showAttribution: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
-    -> DocumentCaptureInstructionsView {
-        let viewModel = DocumentCaptureViewModel()
-        return DocumentCaptureInstructionsView(viewModel: viewModel, delegate: delegate)
+        -> SmileUIView {
+        smileView.showDocVCapture(currentDocCaptureDelegate: delegate,
+                                  currentUserId: userId,
+                                  jobId: jobId,
+                                  showInstruction: true)
+        return smileView
     }
 
     public class func smartSelfieAuthenticationScreen(userId: String,

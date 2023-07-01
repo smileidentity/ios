@@ -98,12 +98,24 @@ public struct CaptureInstructionView<TargetView: View>: View {
                     }
                 }
             }
-            .padding(EdgeInsets(top: 0,
-                                leading: 24,
-                                bottom: 24,
-                                trailing: 24))
-            .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
+            .navigationBarItems(leading: Button {
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Image(uiImage: SmileIDResourcesHelper.Close)
+                    .padding()
+            })
+            VStack(spacing: 18) {
+                NavigationLink(destination: detailView,
+                               isActive: $goesToDetail) {
+                    SmileButton(title: "Instructions.Action", clicked: { goesToDetail = true })
+                }
+            }
         }
+        .padding(EdgeInsets(top: 0,
+                            leading: 24,
+                            bottom: 24,
+                            trailing: 24))
+        .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
     }
 
     func makeInstruction(title: String, body: String, image: String) -> some View {
