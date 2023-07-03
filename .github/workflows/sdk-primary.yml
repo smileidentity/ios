@@ -78,7 +78,7 @@ jobs:
       - name: Run unit tests
         run: |
           bundle exec rake test:package
-       - name: Build Package
+      - name: Build Package
         run: |
           bundle exec rake build:package:all
         env:
