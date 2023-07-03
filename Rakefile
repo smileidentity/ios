@@ -44,8 +44,7 @@ namespace :test do
   task all: ['package', 'process', 'spm','example']
   desc 'Tests the Smile ID package for iOS'
   task :package do
-    sh 'rm -rf Tests/Artifacts'
-    sh 'pod lib lint SmileID.podspec'
+    xcodebuild('test -scheme "SmileID_Tests" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)"')
   end
 
   desc 'Tests the example app unit tests'

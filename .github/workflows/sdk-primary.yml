@@ -21,45 +21,28 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-jobs:
-
-  build-package-macos-latest:
-    name: "Build Package"
-    runs-on: macos-13
+jobs:  
+  
+  lint-package:
+    name: "Lint Package"
+    runs-on: ubuntu-latest
     timeout-minutes: 5
-    strategy:
-      matrix:
-        xcode:
-        - '14.2' # Swift 5.7
+    name: Code quality Checks
+
     steps:
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.CI_SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
+      - name: Danger
+        uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.15.0
         with:
-          xcode: ${{ matrix.xcode }}
-      - name: Build Package
-        run: |
-          bundle exec rake provision:ios
-          bundle exec rake build:package:all
+          args: --failOnErrors --no-publish-check
         env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          ISSUER_ID: ${{ secrets.ISSUER_ID }}
-          KEY_ID: ${{ secrets.KEY_ID }}
-          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
-          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-example:
-    name: "Build Example App"
+    name: "Build App and Run Unit Tests"
     runs-on: macos-13
-    strategy:
-      matrix:
-        xcode:
-        - '14.2' # Swift 5.7
+    xcode:
+      - '14.2'
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -90,10 +73,11 @@ jobs:
       - name: Add Smile Config to Xcode Project
         run: ruby add_smile_config.rb
       - uses: ./.github/actions/setup
-      - name: Build Example app & unit tests
+      - name: Build Example app & run unit tests
         run: |
           bundle exec rake provision:ios
           bundle exec rake build:example:all
+          bundle exec rake test:package
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
@@ -102,27 +86,28 @@ jobs:
           APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
           FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
-  test-package:
-    name: "Test Package"
-    runs-on: macos-13
-    timeout-minutes: 10
+  build-package-macos-latest:
+    name: "Build Package"
+    runs-on: macos-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        xcode:
+        - '14.2' # Swift 5.7
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup environment
-        run: bundle install
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.CI_SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
         with:
-          xcode: '14.2' # Swift 5.8
-      - name: Run tests
-        if: always()
-        run: | 
-         bundle exec rake provision:ios
-         bundle exec rake lint:podspec
+          xcode: ${{ matrix.xcode }}
+      - name: Build Package
+        run: |
+          bundle exec rake provision:ios
+          bundle exec rake build:package:all
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
