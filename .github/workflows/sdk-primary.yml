@@ -20,6 +20,7 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
+
 env:
   MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
   FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
@@ -27,6 +28,7 @@ env:
   KEY_ID: ${{ secrets.KEY_ID }}
   APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
+
 jobs:  
   
   lint-package:
@@ -87,10 +89,3 @@ jobs:
       - name: Build Package
         run: |
           bundle exec rake build:package:all
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          ISSUER_ID: ${{ secrets.ISSUER_ID }}
-          KEY_ID: ${{ secrets.KEY_ID }}
-          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
-          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
