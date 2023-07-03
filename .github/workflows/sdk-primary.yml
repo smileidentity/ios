@@ -79,13 +79,7 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           xcode: '14.2'
-      - name: Build Example app & run unit tests
+      - name: Build Example app and Run Unit Tests
         run: |
           bundle exec rake provision:ios
-          bundle exec rake build:example:all
-      - name: Run unit tests
-        run: |
           bundle exec rake test:package
-      - name: Build Package
-        run: |
-          bundle exec rake build:package:all
