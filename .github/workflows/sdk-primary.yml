@@ -38,9 +38,7 @@ jobs:
 
   build-example:
     name: "Build App and Run Unit Tests"
-    runs-on: macos-13
-    xcode:
-      - '14.2'
+    runs-on: macos-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -71,40 +69,17 @@ jobs:
       - name: Add Smile Config to Xcode Project
         run: ruby add_smile_config.rb
       - uses: ./.github/actions/setup
+        with:
+          xcode: '14.2'
       - name: Build Example app & run unit tests
         run: |
           bundle exec rake provision:ios
           bundle exec rake build:example:all
+      - name: Run unit tests
+         run: |
           bundle exec rake test:package
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          ISSUER_ID: ${{ secrets.ISSUER_ID }}
-          KEY_ID: ${{ secrets.KEY_ID }}
-          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
-          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
-
-  build-package-macos-latest:
-    name: "Build Package"
-    runs-on: macos-latest
-    timeout-minutes: 5
-    strategy:
-      matrix:
-        xcode:
-        - '14.2' # Swift 5.7
-    steps:
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.CI_SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-        with:
-          xcode: ${{ matrix.xcode }}
-      - name: Build Package
+       - name: Build Package
         run: |
-          bundle exec rake provision:ios
           bundle exec rake build:package:all
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
@@ -113,57 +88,3 @@ jobs:
           KEY_ID: ${{ secrets.KEY_ID }}
           APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
           FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
-
-  build-xcframework:
-    name: "Build XCFramework"
-    if: ${{ github.event_name == 'push'}}
-    runs-on: macos-13
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup environment
-        run: bundle install
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.CI_SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      - uses: ./.github/actions/setup
-        with:
-          install-mint: true
-          # XCFrameworks are forwards-compatible but not backwards-compatible.
-          # The Xcode version we use for this job is that oldest Xcode version that
-          # will be able to use these XCFrameworks and the Smile ID spm package.
-          xcode: '14.2' # Swift 5.7
-      - name: Build XCFramework
-        run: |
-          brew install coreutils
-          bundle exec rake provision:ios
-          bundle exec rake build:xcframework
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          ISSUER_ID: ${{ secrets.ISSUER_ID }}
-          KEY_ID: ${{ secrets.KEY_ID }}
-          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
-          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
-      - name: Upload XCFramework
-        uses: actions/upload-artifact@v3
-        with:
-          name: BuildProducts
-          # The xcframework is at the path `release/SmileIdentity.zip`.
-          # GitHub always zips the artifacts before uploading, so if we uploaded the .zip
-          # directly then it would actually upload a double-zip (a .zip containing our `SmileIdentity.zip`).
-          # This is confusing especially since macOS Archive Utility automatially unzips both layers at once.
-          # Instead, we upload the entire artifacts folder, resulting in an `XCFramework.zip` that unzips
-          # to an `artifacts` directory containing our `SmileIdentity.zip`.
-          path: release
-      - name: Upload to AWS
-        if: ${{ github.event_name == 'workflow_call'}}
-        uses: shallwefootball/s3-upload-action@master
-        with:
-          aws_key_id: ${{secrets.AWS_KEY_ID}}
-          aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws_bucket: ${{secrets.AWS_BUCKET}}
-          source_dir: release
-          destination_dir: ios-releases/0.0.0/
