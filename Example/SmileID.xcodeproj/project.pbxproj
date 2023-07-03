@@ -35,7 +35,6 @@
 		918321EE2A52E36A00D6FB7F /* NetworkingMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */; };
 		918321EF2A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E82A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift */; };
 		918321F02A52E36A00D6FB7F /* FaceDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E92A52E36A00D6FB7F /* FaceDetectorTests.swift */; };
-		918321F42A52E5DF00D6FB7F /* smile_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 1E60ED3C2A29C358002695FF /* smile_config.json */; };
 		F703CAEEB3CEB5ADB5C99D44 /* Pods_SmileID_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,7 +54,6 @@
 		1E60ED332A29C306002695FF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1E60ED352A29C306002695FF /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E60ED362A29C306002695FF /* CopyableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
-		1E60ED3C2A29C358002695FF /* smile_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = smile_config.json; sourceTree = "<group>"; };
 		1ECAE3862A2F69BC00653FCA /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		1ED53F602A2F28590020BEFB /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		1ED53F612A2F28590020BEFB /* ProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
@@ -151,7 +149,6 @@
 				1ED53F632A2F28590020BEFB /* SmileTextField.swift */,
 				1ED53F682A2F28590020BEFB /* ToggleButton.swift */,
 				916E487A2A4057B400C589FE /* smile_config.json */,
-				1E60ED3C2A29C358002695FF /* smile_config.json */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				1E60ED352A29C306002695FF /* AppDelegate.swift */,
 				1E60ED332A29C306002695FF /* Constants.swift */,
@@ -354,7 +351,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				918321F42A52E5DF00D6FB7F /* smile_config.json in Resources */,
 				1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				916E487B2A4057B400C589FE /* smile_config.json in Resources */,
@@ -642,7 +638,6 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 16;
 				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
@@ -692,7 +687,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmileID_Example.app/SmileID_Example";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Smile ID.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Smile ID";
 			};
 			name = Debug;
 		};
@@ -721,7 +716,7 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmileID_Example.app/SmileID_Example";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Smile ID.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Smile ID";
 			};
 			name = Release;
 		};
