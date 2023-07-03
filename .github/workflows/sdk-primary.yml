@@ -76,7 +76,7 @@ jobs:
           bundle exec rake provision:ios
           bundle exec rake build:example:all
       - name: Run unit tests
-         run: |
+        run: |
           bundle exec rake test:package
        - name: Build Package
         run: |
