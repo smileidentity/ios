@@ -118,23 +118,6 @@ final class SelfieCaptureViewModel: ObservableObject {
     private(set) var hasDetectedValidFace: Bool {
         didSet {
             if hasDetectedValidFace {
-                if livenessImages.count == 3 && isARSupported && !agentMode {
-                    perform(action: .smileDirective)
-                    if isSmiling {
-                        captureImage()
-                        return
-                    } else {
-                        return
-                    }
-                } else if livenessImages.count == 3 {
-                    self.perform(action: .smileDirective)
-                    fallbackTimer = Timer.scheduledTimer(timeInterval: 3,
-                                                         target: self,
-                                                         selector: #selector(captureImageAfterThreeSecs),
-                                                         userInfo: nil,
-                                                         repeats: false)
-                    return
-                }
                 captureImage()
             }
         }
@@ -184,7 +167,6 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     func resetState() {
         agentMode = false
-
         resetCapture()
     }
 
@@ -319,6 +301,23 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     private func captureImage() {
+        if livenessImages.count == 3 && isARSupported && !agentMode {
+            perform(action: .smileDirective)
+            if isSmiling {
+                captureImage()
+                return
+            } else {
+                return
+            }
+        } else if livenessImages.count == 3 {
+            self.perform(action: .smileDirective)
+            fallbackTimer = Timer.scheduledTimer(timeInterval: 3,
+                                                 target: self,
+                                                 selector: #selector(captureImageAfterThreeSecs),
+                                                 userInfo: nil,
+                                                 repeats: false)
+            return
+        }
         DispatchQueue.main.async {
             if self.livenessImages.count >= 3 {
                 self.perform(action: .smileDirective)
@@ -546,14 +545,12 @@ final class SelfieCaptureViewModel: ObservableObject {
     private func publishFaceObservation(_ faceDetectionState: FaceDetectionState,
                                         faceGeometryModel: FaceGeometryModel? = nil,
                                         faceQualityModel: FaceQualityModel? = nil) {
-        DispatchQueue.main.async { [self] in
-            self.faceDetectionState = faceDetectionState
-            if let faceGeometryModel = faceGeometryModel {
-                faceGeometryState = .faceFound(faceGeometryModel)
-            }
-            if let faceQualityModel = faceQualityModel {
-                faceQualityState = .faceFound(faceQualityModel)
-            }
+        self.faceDetectionState = faceDetectionState
+        if let faceGeometryModel = faceGeometryModel {
+            faceGeometryState = .faceFound(faceGeometryModel)
+        }
+        if let faceQualityModel = faceQualityModel {
+            faceQualityState = .faceFound(faceQualityModel)
         }
     }
 

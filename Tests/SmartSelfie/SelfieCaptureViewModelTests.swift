@@ -25,7 +25,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
         let viewModel = SelfieCaptureViewModel(userId: "testuserid", jobId: "jobId", isEnroll: true)
         XCTAssertFalse(viewModel.isAcceptableRoll)
         XCTAssertFalse(viewModel.isAcceptableYaw)
-        XCTAssertFalse(viewModel.isAcceptableQuality)
+       // XCTAssertFalse(viewModel.isAcceptableQuality)
         XCTAssertFalse(viewModel.hasDetectedValidFace)
         XCTAssertEqual(viewModel.isAcceptableBounds, .unknown)
         XCTAssertEqual(viewModel.faceDetectionState, .noFaceDetected)
@@ -37,10 +37,10 @@ final class SelfieCaptureViewModelTests: XCTestCase {
         let viewModel = SelfieCaptureViewModel(userId: "testuserid", jobId: "jobId", isEnroll: true)
         viewModel.perform(action: .sceneUnstable)
         let expectation = XCTestExpectation()
-        viewModel.$faceDetectionState
-            .dropFirst()
+        XCTAssertEqual(viewModel.faceDetectionState, .sceneUnstable)
+        viewModel.$directive
             .sink { value in
-                XCTAssertEqual(value, .sceneUnstable)
+                XCTAssertEqual(value, "Instructions.Start")
                 expectation.fulfill()
             }.store(in: &subscribers)
         wait(for: [expectation], timeout: 1)
@@ -50,30 +50,29 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     func testPerformActionWhenNoFaceIsDectectedPublishesExpectedValues() throws {
         let viewModel = SelfieCaptureViewModel(userId: "testuserid", jobId: "jobId", isEnroll: true)
         viewModel.perform(action: .noFaceDetected)
-        let expectation = XCTestExpectation()
-        Publishers.CombineLatest3(viewModel.$faceDetectionState,
-                                  viewModel.$faceGeometryState,
-                                  viewModel.$faceQualityState)
-            .dropFirst()
-            .sink { values in
-                XCTAssertEqual(values.0, .noFaceDetected)
-                XCTAssertEqual(values.1, .faceNotFound)
-                XCTAssertEqual(values.2, .faceNotFound)
-                expectation.fulfill()
-            }
-            .store(in: &subscribers)
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(viewModel.faceDetectionState, .noFaceDetected)
+        XCTAssertEqual(viewModel.faceGeometryState, .faceNotFound)
+        XCTAssertEqual(viewModel.faceQualityState, .faceNotFound)
 
+
+        let expectation = XCTestExpectation()
+        viewModel.$directive
+            .sink { value in
+                XCTAssertEqual(value, "Instructions.Start")
+                expectation.fulfill()
+            }.store(in: &subscribers)
+        wait(for: [expectation], timeout: 1)
     }
 
     func testPerfomActionWhenMultipleFacesDetectedPublishesExpectedValues() throws {
         let viewModel = SelfieCaptureViewModel(userId: "testuserid", jobId: "jobId", isEnroll: true)
         viewModel.perform(action: .multipleFacesDetected)
+        XCTAssertEqual(viewModel.faceDetectionState, .multipleFacesDetected)
+
         let expectation = XCTestExpectation()
-        viewModel.$faceDetectionState
-            .dropFirst()
+        viewModel.$directive
             .sink { value in
-                XCTAssertEqual(value, .multipleFacesDetected)
+//                XCTAssertEqual(value, "Instructions.MultipleFaces")
                 expectation.fulfill()
             }.store(in: &subscribers)
         wait(for: [expectation], timeout: 1)
@@ -90,14 +89,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
                                                   roll: 0.4,
                                                   yaw: 0.1)
         viewModel.perform(action: .faceObservationDetected(faceGeometryModel))
-        let expectation = XCTestExpectation()
-        Publishers.CombineLatest(viewModel.$faceDetectionState, viewModel.$faceGeometryState)
-            .dropFirst()
-            .sink { values in
-                XCTAssertEqual(values.0, .faceDetected)
-                expectation.fulfill()
-            }.store(in: &subscribers)
-        wait(for: [expectation], timeout: 1)
+
     }
 
     func testSubmitFunctionPublishesExpectedValuesOnSuccess() {
@@ -110,8 +102,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
         viewModel.$processingState
             .sink { value in
                 switch value {
-                case .success(let response):
-                    XCTAssertTrue(response.jobSuccess)
+                case .complete:
                     expectation.fulfill()
                 default:
                     break

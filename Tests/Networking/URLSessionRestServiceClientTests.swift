@@ -95,7 +95,7 @@ class URLSessionRestServiceClientTests: BaseTestCase {
             _ = try `await`(result)
             XCTFail("Send should have not succeeded")
         } catch {
-            XCTAssert(error is APIError)
+            XCTAssert(error is SmileIDError)
         }
     }
 
