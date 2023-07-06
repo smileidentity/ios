@@ -64,7 +64,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     private let numberOfLivenessImages = 7
     private let selfieImageSize = CGSize(width: 320, height: 320)
     private var currentBuffer: CVPixelBuffer?
-    private(set) var faceDetectionState: FaceDetectionState
+    private(set) var faceDetectionState: FaceDetectionState = .noFaceDetected
     private var fallbackTimer: Timer?
     private var files = [URL]()
     private var livenessImages = [Data]()
@@ -80,17 +80,17 @@ final class SelfieCaptureViewModel: ObservableObject {
     var isARSupported: Bool {
         return ARFaceTrackingConfiguration.isSupported
     }
-    private(set) var isAcceptableRoll: Bool {
+    private(set) var isAcceptableRoll: Bool = false {
         didSet {
             calculateDetectedFaceValidity()
         }
     }
-    private(set) var isAcceptableYaw: Bool {
+    private(set) var isAcceptableYaw: Bool = false {
         didSet {
             calculateDetectedFaceValidity()
         }
     }
-    private(set) var isAcceptableBounds: FaceBoundsState {
+    private(set) var isAcceptableBounds: FaceBoundsState = .unknown {
         didSet {
             calculateDetectedFaceValidity()
         }
@@ -100,12 +100,12 @@ final class SelfieCaptureViewModel: ObservableObject {
             calculateDetectedFaceValidity()
         }
     }
-    private(set) var faceGeometryState: FaceObservation<FaceGeometryModel, ErrorWrapper> {
+    private(set) var faceGeometryState: FaceObservation<FaceGeometryModel, ErrorWrapper> = .faceNotFound {
         didSet {
             processUpdatedFaceGeometry()
         }
     }
-    private(set) var faceQualityState: FaceObservation<FaceQualityModel, ErrorWrapper> {
+    private(set) var faceQualityState: FaceObservation<FaceQualityModel, ErrorWrapper> = .faceNotFound {
         didSet {
             processUpdatedFaceQuality()
         }
@@ -115,11 +115,9 @@ final class SelfieCaptureViewModel: ObservableObject {
             calculateDetectedFaceValidity()
         }
     }
-    private(set) var hasDetectedValidFace: Bool {
+    var hasDetectedValidFace: Bool = false {
         didSet {
-            if hasDetectedValidFace {
-                captureImage()
-            }
+            captureImageIfNeeded()
         }
     }
     @Published var agentMode = false {
@@ -148,14 +146,6 @@ final class SelfieCaptureViewModel: ObservableObject {
         self.isEnroll = isEnroll
         self.jobId = jobId
         self.showAttribution = showAttribution
-        faceDetectionState = .noFaceDetected
-        isAcceptableRoll = false
-        isAcceptableYaw = false
-        isAcceptableBounds = .unknown
-        isAcceptableQuality = true
-        hasDetectedValidFace = false
-        faceGeometryState = .faceNotFound
-        faceQualityState = .faceNotFound
         faceDetector.model = self
         if ARFaceTrackingConfiguration.isSupported {
             subscribeToARFrame()
@@ -202,6 +192,7 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     @objc func captureImageAfterThreeSecs() {
         captureImage()
+        fallbackTimer = nil
     }
 
     func subscribeToARFrame() {
@@ -228,6 +219,34 @@ final class SelfieCaptureViewModel: ObservableObject {
                     self.currentExif = nil
                 }
             }
+        }
+    }
+
+    private func captureImageIfNeeded() {
+        if hasDetectedValidFace {
+            if livenessImages.count == 3 && isARSupported && !agentMode {
+                perform(action: .smileDirective)
+                if isSmiling {
+                    captureImage()
+                    return
+                } else {
+                    return
+                }
+            } else if livenessImages.count == 3 {
+                self.perform(action: .smileDirective)
+                if fallbackTimer == nil {
+                    DispatchQueue.main.async {
+
+                        self.fallbackTimer = Timer.scheduledTimer(timeInterval: 2,
+                                                                  target: self,
+                                                                  selector: #selector(self.captureImageAfterThreeSecs),
+                                                                  userInfo: nil,
+                                                                  repeats: false)
+                    }
+                }
+                return
+            }
+            captureImage()
         }
     }
 
@@ -301,23 +320,6 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
 
     private func captureImage() {
-        if livenessImages.count == 3 && isARSupported && !agentMode {
-            perform(action: .smileDirective)
-            if isSmiling {
-                captureImage()
-                return
-            } else {
-                return
-            }
-        } else if livenessImages.count == 3 {
-            self.perform(action: .smileDirective)
-            fallbackTimer = Timer.scheduledTimer(timeInterval: 3,
-                                                 target: self,
-                                                 selector: #selector(captureImageAfterThreeSecs),
-                                                 userInfo: nil,
-                                                 repeats: false)
-            return
-        }
         DispatchQueue.main.async {
             if self.livenessImages.count >= 3 {
                 self.perform(action: .smileDirective)
@@ -335,7 +337,10 @@ final class SelfieCaptureViewModel: ObservableObject {
         while (livenessImages.count < numberOfLivenessImages) &&
                 ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             guard let image = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 350, exif:
-                                                                    currentExif) else { return }
+                                                                    currentExif) else {
+                return
+
+            }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
             updateProgress()
@@ -350,9 +355,11 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                               agentMode: agentMode,
                                                               finalSize: selfieImageSize,
                                                               screenImageSize: viewFinderSize,
-                                                              isSelfie: false) else { return }
+                                                              isSelfie: false) else {
+                return }
             guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
-                                                                        exif: currentExif) else { return }
+                                                                        exif: currentExif) else {
+                return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
             self.displayedImage = displayedImage
@@ -450,7 +457,6 @@ final class SelfieCaptureViewModel: ObservableObject {
         isAcceptableRoll = false
         isAcceptableYaw = false
         isAcceptableBounds = .unknown
-        isAcceptableQuality = true
         hasDetectedValidFace = false
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound

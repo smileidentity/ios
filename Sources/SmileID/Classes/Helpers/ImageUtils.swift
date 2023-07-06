@@ -203,7 +203,6 @@ class ImageUtils {
                                          &pixelBuffer)
         if status != kCVReturnSuccess {
             print("Error: could not create pixel buffer", status)
-            print("Error: could not create pixel buffer", status)
             return nil
         }
         return pixelBuffer

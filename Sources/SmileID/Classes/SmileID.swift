@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import SwiftUI
 
 public class SmileID {
     @Injected var injectedApi: SmileIDServiceable
@@ -23,7 +24,6 @@ public class SmileID {
     private init() {}
     internal static var config: Config!
     internal static var useSandbox = true
-    private static var selfieCaptureViewModel: SelfieCaptureViewModel?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
 
     public class func initialize(config: Config, useSandbox: Bool = true) {
@@ -59,8 +59,8 @@ public class SmileID {
                                                       delegate: SmartSelfieResultDelegate)
         -> SmartSelfieInstructionsView
     {
-        selfieCaptureViewModel = SelfieCaptureViewModel(userId: userId, jobId: jobId, isEnroll: false)
-        return SmartSelfieInstructionsView(viewModel: selfieCaptureViewModel!, delegate: delegate)
+        let viewModel = SelfieCaptureViewModel(userId: userId, jobId: jobId, isEnroll: false)
+        return SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
     }
 
     public class func setEnvironment(useSandbox: Bool) {

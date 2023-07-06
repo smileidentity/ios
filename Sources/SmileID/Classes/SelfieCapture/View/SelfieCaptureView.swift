@@ -4,18 +4,18 @@ import ARKit
 
 public struct SelfieCaptureView: View, SelfieViewDelegate {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject private var viewModel: SelfieCaptureViewModel
+    @ObservedObject var viewModel: SelfieCaptureViewModel
     private weak var delegate: SmartSelfieResultDelegate?
-    let camera: CameraView?
+    var camera: CameraView?
     let arView: ARView?
     let faceOverlay: FaceOverlayView
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
-        self.viewModel = viewModel
         self.delegate = delegate
+        self.viewModel = viewModel
+        self.faceOverlay = FaceOverlayView(model: viewModel)
         viewModel.captureResultDelegate = delegate
         UIScreen.main.brightness = 1
-        faceOverlay = FaceOverlayView(model: viewModel)
         if ARFaceTrackingConfiguration.isSupported {
             self.arView = ARView()
             self.camera = CameraView(cameraManager: viewModel.cameraManager)
@@ -27,12 +27,11 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
 
     // NB
     // TODO:only used for previews to remove lint issues
-    fileprivate init(viewModel: SelfieCaptureViewModel) {
-        self.viewModel = viewModel
-        self.camera = CameraView(cameraManager: viewModel.cameraManager)
-        faceOverlay = FaceOverlayView(model: viewModel)
-        arView = nil
-    }
+//    fileprivate init(viewModel: SelfieCaptureViewModel) {
+//        self.camera = CameraView(cameraManager: viewModel.cameraManager)
+//        faceOverlay = FaceOverlayView()
+//        arView = nil
+//    }
 
 
     public var body: some View {
@@ -128,13 +127,13 @@ struct FaceBoundingBoxView: View {
     }
 }
 
-struct SelfieCaptureView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
-                                                            jobId: UUID().uuidString,
-                                                            isEnroll: false))
-    }
-}
+//struct SelfieCaptureView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
+//                                                            jobId: UUID().uuidString,
+//                                                            isEnroll: false))
+//    }
+//}
 
 class DummyDelegate: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {}
