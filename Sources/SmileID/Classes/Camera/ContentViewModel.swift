@@ -4,7 +4,7 @@ import VideoToolbox
 
 class ContentViewModel: ObservableObject {
     @Published var frame: CGImage?
-    var cameraManager: CameraManager
+    private var cameraManager: CameraManager
     private var subscribers = Set<AnyCancellable>()
 
     init(cameraManager: CameraManager) {
