@@ -9,21 +9,11 @@ import AVFoundation
 import MobileCoreServices
 
 class ImageUtils {
-
-    /// Converts a buffer to JPG cropping the  face and returning the result of this operation
-    /// - Parameters:
-    ///   - buffer: An input pixel buffer
-    ///   - faceGeometry: A FaceGeometry object containing the frame of a detected face in the views coordinate system
-    ///   - finalSize: Final size of the cropped image
-    ///   - screenImageSize: Size of the view the camera feed is displayed
-    ///   - isGreyScale: A boolean flag, if true returns a greyscaled image
-    /// - Returns: An optional JPG image data returned from the cropping and resizing operation
     class func captureFace(from buffer: CVPixelBuffer,
                            faceGeometry: FaceGeometryModel,
                            agentMode: Bool,
                            finalSize: CGSize,
                            screenImageSize: CGSize,
-                           isSelfie: Bool,
                            orientation: CGImagePropertyOrientation = .right
     ) -> Data? {
         guard !faceGeometry.boundingBox.isNaN else { return nil }
@@ -55,15 +45,9 @@ class ImageUtils {
                                                  byPercentage: 1.5) : increaseRect(rect: cropRect, byPercentage: 1)
 
         // crop face from the buffer returned in the above operation and return jpg
-        if isSelfie {
             return cropFace(scaledDownBuffer,
                             cropFrame: finalrect,
                             scaleSize: finalSize, orientation: orientation)
-        } else {
-            return cropFace(scaledDownBuffer,
-                            cropFrame: finalrect,
-                            scaleSize: finalSize, orientation: orientation)
-        }
     }
 
     class func resizePixelBufferToWidth(_ pixelBuffer: CVPixelBuffer,
@@ -121,7 +105,12 @@ class ImageUtils {
 
     private class func resizeCGImage(_ originalImage: CGImage, newWidth: Int, newHeight: Int) -> CGImage? {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        guard let context = CGContext(data: nil, width: newWidth, height: newHeight, bitsPerComponent: 8, bytesPerRow: newWidth * 4, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
+        guard let context = CGContext(data: nil, width: newWidth,
+                                      height: newHeight,
+                                      bitsPerComponent: 8,
+                                      bytesPerRow: newWidth * 4,
+                                      space: colorSpace,
+                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
             return nil
         }
         context.interpolationQuality = .high
@@ -153,7 +142,9 @@ class ImageUtils {
         return convertCGImageToJPG(cgImage: croppedImage)
     }
 
-    private class func convertCGImageToJPG(cgImage: CGImage, compressionQuality: CGFloat = 0.8, exifDictionary: [String: Any]? = nil) -> Data? {
+    private class func convertCGImageToJPG(cgImage: CGImage,
+                                           compressionQuality: CGFloat = 0.8,
+                                           exifDictionary: [String: Any]? = nil) -> Data? {
         let jpgData = NSMutableData()
         guard let destination = CGImageDestinationCreateWithData(jpgData, kUTTypeJPEG, 1, nil) else { return nil }
 
@@ -225,19 +216,6 @@ class ImageUtils {
 
         // Render the CIImage to the destination pixel buffer
         ciContext.render(scaledImage, to: dstPixelBuffer)
-    }
-
-    private class func resizePixelBuffer(from srcPixelBuffer: CVPixelBuffer,
-                                         to dstPixelBuffer: CVPixelBuffer,
-                                         scaleSize: CGSize) {
-        let cropFrame = CGRect(x: 0,
-                               y: 0,
-                               width: CVPixelBufferGetWidth(srcPixelBuffer),
-                               height: CVPixelBufferGetHeight(srcPixelBuffer))
-        resizePixelBuffer(from: srcPixelBuffer,
-                          to: dstPixelBuffer,
-                          cropFrame: cropFrame,
-                          scaleSize: scaleSize)
     }
 
     private class func resizePixelBuffer(_ srcPixelBuffer: CVPixelBuffer,

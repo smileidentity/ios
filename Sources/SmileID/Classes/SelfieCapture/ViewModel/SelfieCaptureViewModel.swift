@@ -354,8 +354,7 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                               faceGeometry: faceGeometry,
                                                               agentMode: agentMode,
                                                               finalSize: selfieImageSize,
-                                                              screenImageSize: viewFinderSize,
-                                                              isSelfie: false) else {
+                                                              screenImageSize: viewFinderSize) else {
                 return }
             guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
                                                                         exif: currentExif) else {
