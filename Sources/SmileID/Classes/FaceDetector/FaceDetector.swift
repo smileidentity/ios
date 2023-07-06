@@ -119,12 +119,6 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
             print(error.localizedDescription)
         }
     }
-
-    func euclideanDistance(_ point1: CGPoint, _ point2: CGPoint) -> CGFloat {
-        let xDistance = point2.x - point1.x
-        let yDistance = point2.y - point1.y
-        return sqrt(xDistance * xDistance + yDistance * yDistance)
-    }
 }
 
 extension FaceDetector {
