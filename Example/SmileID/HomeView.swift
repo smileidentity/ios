@@ -38,7 +38,7 @@ struct HomeView: View {
                     }
                 }
                 Spacer()
-                Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version)")
+                Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version) - Build 19")
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }

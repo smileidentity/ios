@@ -33,7 +33,6 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     @Published var toastMessage = ""
     @Published var showToast = false
 
-
     private var userID = ""
     var returnedUserID = ""
 
