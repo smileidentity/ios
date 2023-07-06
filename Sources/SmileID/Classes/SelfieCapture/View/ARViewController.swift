@@ -66,24 +66,17 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
         let projectedPoints = faceAnchor.verticeAndProjection(to: sceneView)
         let boundingBox = faceBoundingBox(for: projectedPoints)
         let angles = getEulerAngles(from: faceAnchor)
-        let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox, roll: angles.roll as NSNumber, yaw: angles.yaw as NSNumber)
+        let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox,
+                                                     roll: angles.roll as NSNumber,
+                                                     yaw: angles.yaw as NSNumber)
         model?.perform(action: .faceObservationDetected(faceObservationModel))
     }
 
     func getEulerAngles(from faceAnchor: ARFaceAnchor) -> (roll: Float, pitch: Float, yaw: Float) {
         // Extract the 4x4 transform matrix from the face anchor.
         let transformMatrix = faceAnchor.transform
+        return (transformMatrix.eulerAngles.roll, transformMatrix.eulerAngles.pitch, transformMatrix.eulerAngles.yaw)
 
-        // Convert the transform matrix to a quaternion.
-        let orientationQuat = simd_quatf(transformMatrix)
-
-        // Convert the quaternion to roll, pitch, yaw.
-        let pitch = asin(2 * orientationQuat.vector.y * orientationQuat.vector.w - 2 * orientationQuat.vector.x * orientationQuat.vector.z)
-        let yaw = atan2(2 * orientationQuat.vector.x * orientationQuat.vector.w - 2 * orientationQuat.vector.y * orientationQuat.vector.z, 1 - 2 * pow(orientationQuat.vector.x, 2) - 2 * pow(orientationQuat.vector.y, 2))
-        let roll = atan2(2 * orientationQuat.vector.x * orientationQuat.vector.y - 2 * orientationQuat.vector.z * orientationQuat.vector.w, 1 - 2 * pow(orientationQuat.vector.y, 2) - 2 * pow(orientationQuat.vector.z, 2))
-
-        // Return as a tuple.
-        return (roll, pitch, yaw)
     }
 
     private func faceBoundingBox(for projectedPoints: [ARFaceAnchor.VerticesAndProjection]) -> CGRect {
@@ -121,7 +114,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
             let projectedPoints = faceAnchor.verticeAndProjection(to: sceneView)
             let boundingBox = faceBoundingBox(for: projectedPoints)
             let angles = getEulerAngles(from: faceAnchor)
-            let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox, roll: angles.roll as NSNumber, yaw: angles.yaw as NSNumber)
+            let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox,
+                                                         roll: angles.roll as NSNumber,
+                                                         yaw: angles.yaw as NSNumber)
             model?.perform(action: .faceObservationDetected(faceObservationModel))
         } else {
             model?.perform(action: .noFaceDetected)
@@ -137,7 +132,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
     }
 
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        NotificationCenter.default.post(name:  NSNotification.Name(rawValue: "UpdateARFrame"), object: nil, userInfo: ["frame" : frame])
+        NotificationCenter.default.post(name:  NSNotification.Name(rawValue: "UpdateARFrame"),
+                                        object: nil,
+                                        userInfo: ["frame" : frame])
     }
 
 
@@ -198,11 +195,50 @@ extension ARFaceAnchor{
 }
 
 extension matrix_float4x4 {
-
-    /// Get the position of the transform matrix.
-    public var position: SCNVector3 {
+    var position: SCNVector3 {
         get{
             return SCNVector3(self[3][0], self[3][1], self[3][2])
+        }
+    }
+
+    // Function to convert rad to deg
+    func radiansToDegress(radians: Float32) -> Float32 {
+        return radians * 180 / (Float32.pi)
+    }
+    var translation: SCNVector3 {
+        get {
+            return SCNVector3Make(columns.3.x, columns.3.y, columns.3.z)
+        }
+    }
+    // Retrieve euler angles from a quaternion matrix
+    var eulerAngles: (yaw: Float32, pitch: Float32, roll: Float32)  {
+        get {
+            // Get quaternions
+            let qw = sqrt(1 + self.columns.0.x + self.columns.1.y + self.columns.2.z) / 2.0
+            let qx = (self.columns.2.y - self.columns.1.z) / (qw * 4.0)
+            let qy = (self.columns.0.z - self.columns.2.x) / (qw * 4.0)
+            let qz = (self.columns.1.x - self.columns.0.y) / (qw * 4.0)
+
+            // Deduce euler angles
+            /// yaw (z-axis rotation)
+            let siny = +2.0 * (qw * qz + qx * qy)
+            let cosy = +1.0 - 2.0 * (qy * qy + qz * qz)
+            let yaw = atan2(siny, cosy)
+            // pitch (y-axis rotation)
+            let sinp = +2.0 * (qw * qy - qz * qx)
+            var pitch: Float
+            if abs(sinp) >= 1 {
+                pitch = copysign(Float.pi / 2, sinp)
+            } else {
+                pitch = asin(sinp)
+            }
+            /// roll (x-axis rotation)
+            let sinr = +2.0 * (qw * qx + qy * qz)
+            let cosr = +1.0 - 2.0 * (qx * qx + qy * qy)
+            let roll = atan2(sinr, cosr)
+
+            /// return array containing ypr values
+            return (yaw, pitch, roll)
         }
     }
 }
