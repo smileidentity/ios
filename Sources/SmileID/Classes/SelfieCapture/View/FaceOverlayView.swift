@@ -53,20 +53,7 @@ struct FaceOverlayView: View {
                     .shadow(radius: 23)
                     .padding(.bottom, 35)
                     .animation(.default)
-
             }
         }
-    }
-}
-
-extension Binding {
-    func didSet(execute: @escaping (Value) -> Void) -> Binding {
-        return Binding(
-            get: { self.wrappedValue },
-            set: {
-                self.wrappedValue = $0
-                execute($0)
-            }
-        )
     }
 }

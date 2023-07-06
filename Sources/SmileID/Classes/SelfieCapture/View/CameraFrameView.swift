@@ -11,7 +11,7 @@ struct CameraView: UIViewControllerRepresentable {
     let preview: PreviewView
     @ObservedObject private var model: ContentViewModel
 
-    init( cameraManager: CameraManager) {
+    init(cameraManager: CameraManager) {
         self.preview = PreviewView(cameraManager: cameraManager)
         self.model = ContentViewModel(cameraManager: cameraManager)
     }
