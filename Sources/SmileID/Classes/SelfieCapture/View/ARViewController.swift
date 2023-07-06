@@ -6,10 +6,8 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
 
     var sceneView: ARSCNView!
     private var detectedFaces = 0
-    private var faceView: UIView?
     weak var model: SelfieCaptureViewModel?
     private var faceNode: SCNNode?
-    private var virtualPhoneNode: SCNNode?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,10 +86,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
         let minY = allYs.min() ?? 0
         let maxY = allYs.max() ?? 0
         let boundingBox = CGRect(x: minX, y: minY, width: (maxX - minX) * 0.8, height: (maxY - minY) * 0.8)
-        DispatchQueue.main.async {
-            self.faceView?.frame = boundingBox
-        }
-
         return boundingBox
     }
 
@@ -127,7 +121,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
         if anchor is ARFaceAnchor {
             detectedFaces -= 1
-            faceView?.frame = .zero
         }
     }
 
