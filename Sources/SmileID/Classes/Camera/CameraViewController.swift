@@ -6,9 +6,9 @@ class PreviewView: UIViewController {
 
     var layedOutSubviews = false
     var previewLayer: AVCaptureVideoPreviewLayer?
-    private weak var cameraManager: CameraManager?
+    private weak var cameraManager: CameraManageable?
 
-    init(cameraManager: CameraManager) {
+    init(cameraManager: CameraManageable) {
         self.cameraManager = cameraManager
         super.init(nibName: nil, bundle: nil)
     }

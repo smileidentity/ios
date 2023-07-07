@@ -2,7 +2,16 @@ import Foundation
 import AVFoundation
 import SwiftUI
 
-class CameraManager: NSObject, ObservableObject {
+protocol CameraManageable: AnyObject {
+    func switchCamera(to position: AVCaptureDevice.Position)
+    func pauseSession()
+    func resumeSession()
+    var sampleBufferPublisher:  Published<CVPixelBuffer?>.Publisher {get}
+    var session: AVCaptureSession { get }
+    var cameraPositon: AVCaptureDevice.Position? {get}
+}
+
+class CameraManager: NSObject, ObservableObject, CameraManageable {
 
     enum Status {
         case unconfigured
@@ -14,12 +23,13 @@ class CameraManager: NSObject, ObservableObject {
     @Published var error: CameraError?
     @Environment(\.isPreview) var isPreview
     @Published var sampleBuffer: CVPixelBuffer?
+    var sampleBufferPublisher:  Published<CVPixelBuffer?>.Publisher { $sampleBuffer }
     let videoOutputQueue = DispatchQueue(label: "com.smileid.videooutput",
                                          qos: .userInitiated,
                                          attributes: [],
                                          autoreleaseFrequency: .workItem)
 
-    let session = AVCaptureSession()
+    var session = AVCaptureSession()
     var cameraPositon: AVCaptureDevice.Position? {
         if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
             return currentInput.device.position
@@ -39,6 +49,13 @@ class CameraManager: NSObject, ObservableObject {
     private func set(error: CameraError?) {
         DispatchQueue.main.async {
             self.error = error
+        }
+    }
+
+    private func set(_ delegate: AVCaptureVideoDataOutputSampleBufferDelegate,
+                     queue: DispatchQueue) {
+        sessionQueue.async {
+            self.videoOutput.setSampleBufferDelegate(delegate, queue: queue)
         }
     }
 
@@ -67,7 +84,7 @@ class CameraManager: NSObject, ObservableObject {
       }
     }
 
-    func configureCaptureSession() {
+    private func configureCaptureSession() {
         guard status == .unconfigured else {
             return
         }
@@ -143,15 +160,6 @@ class CameraManager: NSObject, ObservableObject {
         }
     }
 
-    func configure() {
-        self.checkPermissions()
-        sessionQueue.async {
-          self.configureCaptureSession()
-            guard !self.session.isRunning else { return }
-            self.session.startRunning()
-        }
-    }
-
     func pauseSession() {
         guard session.isRunning else { return }
         DispatchQueue.global(qos: .userInitiated).async {
@@ -164,24 +172,6 @@ class CameraManager: NSObject, ObservableObject {
         DispatchQueue.global(qos: .userInitiated).async {
             self.session.startRunning()
         }
-    }
-
-    func stopCaptureSession() {
-        session.stopRunning()
-
-        if let inputs = session.inputs as? [AVCaptureDeviceInput] {
-            for input in inputs {
-                session.removeInput(input)
-            }
-        }
-        status = .unconfigured
-    }
-
-    func set(_ delegate: AVCaptureVideoDataOutputSampleBufferDelegate,
-             queue: DispatchQueue) {
-      sessionQueue.async {
-        self.videoOutput.setSampleBufferDelegate(delegate, queue: queue)
-      }
     }
 }
 

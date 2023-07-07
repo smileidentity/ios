@@ -22,7 +22,7 @@ enum SelfieCaptureViewModelAction {
 enum ProcessingState {
     static func == (lhs: ProcessingState, rhs: ProcessingState) -> Bool {
         switch (lhs, rhs) {
-        case (let .complete(response1, error1), let .complete(response2, error2)):
+        case (.complete(_, _), .complete(_, _)):
             return false
         case (let .error(error1), let .error(error2)):
             return error1.localizedDescription == error2.localizedDescription
@@ -45,18 +45,50 @@ enum ProcessingState {
 }
 
 final class SelfieCaptureViewModel: ObservableObject {
+
+    //MARK: Published Properties
+    @Published var agentMode = false {
+        didSet {
+            switchCamera()
+        }
+    }
+    @Published private(set) var progress: CGFloat = 0
+    @Published var directive: String = "Instructions.Start"
+    @Published private(set) var processingState: ProcessingState?
+    {
+        didSet {
+            switch processingState {
+            case .none:
+                resumeCameraSession()
+            case .endFlow:
+                pauseCameraSession()
+            case .some:
+                pauseCameraSession()
+            }
+        }
+    }
+
+    //MARK: Public Properties
+    var faceLayoutGuideFrame = CGRect.zero
+    var viewFinderSize = CGSize.zero
+    var displayedImage: Data?
+    var selfieViewDelegate: SelfieViewDelegate?
+    weak var captureResultDelegate: SmartSelfieResultDelegate?
+    weak var viewDelegate: FaceDetectorDelegate? {
+        didSet {
+            faceDetector.viewDelegate = viewDelegate
+        }
+    }
+
+    //MARK: Public Properties
     private var userId: String
     private var jobId: String
     private var isEnroll: Bool
     private var showAttribution: Bool
-    var faceLayoutGuideFrame = CGRect.zero
-    var viewFinderSize = CGSize.zero
-    var displayedImage: Data?
     private var selfieImage: Data?
-    var selfieViewDelegate: SelfieViewDelegate?
     private var currentExif: [String: Any]?
     private let subject = PassthroughSubject<String, Never>()
-    private (set) lazy var cameraManager = CameraManager()
+    private (set) lazy var cameraManager: CameraManageable = CameraManager()
     private var faceDetector = FaceDetector()
     private var subscribers = Set<AnyCancellable>()
     private var facedetectionSubscribers: AnyCancellable?
@@ -71,12 +103,6 @@ final class SelfieCaptureViewModel: ObservableObject {
     private var lastCaptureTime: Int64 = 0
     private var interCaptureDelay = 600
     private var debounceTimer: Timer?
-    weak var captureResultDelegate: SmartSelfieResultDelegate?
-    weak var viewDelegate: FaceDetectorDelegate? {
-        didSet {
-            faceDetector.viewDelegate = viewDelegate
-        }
-    }
     private var isARSupported: Bool {
         return ARFaceTrackingConfiguration.isSupported
     }
@@ -120,33 +146,16 @@ final class SelfieCaptureViewModel: ObservableObject {
             captureImageIfNeeded()
         }
     }
-    @Published var agentMode = false {
-        didSet {
-            switchCamera()
-        }
-    }
-    @Published private(set) var progress: CGFloat = 0
-    @Published var directive: String = "Instructions.Start"
-    @Published private(set) var processingState: ProcessingState?
-    {
-        didSet {
-            switch processingState {
-            case .none:
-                resumeCameraSession()
-            case .endFlow:
-                pauseCameraSession()
-            case .some:
-                pauseCameraSession()
-            }
-        }
-    }
 
-    init(userId: String, jobId: String, isEnroll: Bool, showAttribution: Bool = true) {
+    init(userId: String, jobId: String, isEnroll: Bool, showAttribution: Bool = true, cameraManager: CameraManageable? = nil) {
         self.userId = userId
         self.isEnroll = isEnroll
         self.jobId = jobId
         self.showAttribution = showAttribution
         faceDetector.model = self
+        if let cameraManager = cameraManager {
+            self.cameraManager = cameraManager
+        }
         if ARFaceTrackingConfiguration.isSupported {
             subscribeToARFrame()
         } else {
@@ -542,7 +551,7 @@ extension SelfieCaptureViewModel {
 // MARK: Face detection methods
 extension SelfieCaptureViewModel {
     private func setupFaceDetectionSubscriptions() {
-        facedetectionSubscribers = cameraManager.$sampleBuffer
+        facedetectionSubscribers = cameraManager.sampleBufferPublisher
             .receive(on: DispatchQueue.global())
             .compactMap { return $0 }
             .sink {
