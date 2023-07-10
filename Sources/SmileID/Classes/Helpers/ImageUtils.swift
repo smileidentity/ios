@@ -5,7 +5,6 @@ import UIKit
 import VideoToolbox
 import Accelerate
 import Vision
-import AVFoundation
 import MobileCoreServices
 
 class ImageUtils {
@@ -89,8 +88,11 @@ class ImageUtils {
         }
 
         // Create new pixel buffer
-        var newPixelBuffer: CVPixelBuffer? = nil
-        CVPixelBufferCreate(kCFAllocatorDefault, Int(ciImage.extent.size.width), Int(ciImage.extent.size.height), CVPixelBufferGetPixelFormatType(pixelBuffer), nil, &newPixelBuffer)
+        var newPixelBuffer: CVPixelBuffer?
+        CVPixelBufferCreate(kCFAllocatorDefault, Int(ciImage.extent.size.width),
+                            Int(ciImage.extent.size.height),
+                            CVPixelBufferGetPixelFormatType(pixelBuffer),
+                            nil, &newPixelBuffer)
 
         // Create CIContext
         let context = CIContext()
