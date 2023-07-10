@@ -54,8 +54,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     }
     @Published private(set) var progress: CGFloat = 0
     @Published var directive: String = "Instructions.Start"
-    @Published private(set) var processingState: ProcessingState?
-    {
+    @Published private(set) var processingState: ProcessingState? {
         didSet {
             switch processingState {
             case .none:
@@ -68,7 +67,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    //MARK: Public Properties
+    // MARK: Public Properties
     var faceLayoutGuideFrame = CGRect.zero
     var viewFinderSize = CGSize.zero
     var displayedImage: Data?

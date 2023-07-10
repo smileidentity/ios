@@ -55,7 +55,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                 case .confirmation:
                     ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
                 case .inProgress:
-                    ModalPresenter(centered: true){ ProcessingView() }
+                    ModalPresenter(centered: true) { ProcessingView() }
                 case .complete:
                     ModalPresenter { SuccessView(viewModel: viewModel) }
                 case .error:
@@ -77,7 +77,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                 .padding()
         })
         .background(SmileID.theme.backgroundMain)
-        .onDisappear{
+        .onDisappear {
             viewModel.cameraManager.pauseSession()
         }
     }

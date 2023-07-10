@@ -2,7 +2,7 @@ import UIKit
 import SwiftUI
 import ARKit
 
-class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  {
+class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     var sceneView: ARSCNView!
     private var detectedFaces = 0
@@ -127,7 +127,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "UpdateARFrame"),
                                         object: nil,
-                                        userInfo: ["frame" : frame])
+                                        userInfo: ["frame": frame])
     }
 
     private func updateFeatures(for faceAnchor: ARFaceAnchor) {
@@ -158,7 +158,7 @@ struct ARView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: ARViewController, context: Context) {}
 }
 
-extension ARFaceAnchor{
+extension ARFaceAnchor {
     // struct to store the 3d vertex and the 2d projection point
     struct VerticesAndProjection {
         var vertex: SIMD3<Float>
@@ -166,7 +166,7 @@ extension ARFaceAnchor{
     }
 
     // return a struct with vertices and projection
-    func verticeAndProjection(to view: ARSCNView) -> [VerticesAndProjection]{
+    func verticeAndProjection(to view: ARSCNView) -> [VerticesAndProjection] {
 
         let points = geometry.vertices.compactMap({ (vertex) -> VerticesAndProjection? in
 
@@ -178,7 +178,7 @@ extension ARFaceAnchor{
             let vect = view.projectPoint(SCNVector3(pworld.position.x, pworld.position.y, pworld.position.z))
 
             let p = CGPoint(x: CGFloat(vect.x), y: CGFloat(vect.y))
-            return VerticesAndProjection(vertex:vertex, projected: p)
+            return VerticesAndProjection(vertex: vertex, projected: p)
         })
 
         return points
@@ -195,39 +195,37 @@ extension matrix_float4x4 {
         return radians * 180 / (Float32.pi)
     }
     var translation: SCNVector3 {
-        get {
-            return SCNVector3Make(columns.3.x, columns.3.y, columns.3.z)
-        }
+        return SCNVector3Make(columns.3.x, columns.3.y, columns.3.z)
     }
+
     // Retrieve euler angles from a quaternion matrix
-    var eulerAngles: (yaw: Float32, pitch: Float32, roll: Float32)  {
-        get {
-            // Get quaternions
-            let qw = sqrt(1 + self.columns.0.x + self.columns.1.y + self.columns.2.z) / 2.0
-            let qx = (self.columns.2.y - self.columns.1.z) / (qw * 4.0)
-            let qy = (self.columns.0.z - self.columns.2.x) / (qw * 4.0)
-            let qz = (self.columns.1.x - self.columns.0.y) / (qw * 4.0)
+    var eulerAngles: (yaw: Float32, pitch: Float32, roll: Float32) {
+        // Get quaternions
+        let qw = sqrt(1 + self.columns.0.x + self.columns.1.y + self.columns.2.z) / 2.0
+        let qx = (self.columns.2.y - self.columns.1.z) / (qw * 4.0)
+        let qy = (self.columns.0.z - self.columns.2.x) / (qw * 4.0)
+        let qz = (self.columns.1.x - self.columns.0.y) / (qw * 4.0)
 
-            // Deduce euler angles
-            /// yaw (z-axis rotation)
-            let siny = +2.0 * (qw * qz + qx * qy)
-            let cosy = +1.0 - 2.0 * (qy * qy + qz * qz)
-            let yaw = atan2(siny, cosy)
-            // pitch (y-axis rotation)
-            let sinp = +2.0 * (qw * qy - qz * qx)
-            var pitch: Float
-            if abs(sinp) >= 1 {
-                pitch = copysign(Float.pi / 2, sinp)
-            } else {
-                pitch = asin(sinp)
-            }
-            /// roll (x-axis rotation)
-            let sinr = +2.0 * (qw * qx + qy * qz)
-            let cosr = +1.0 - 2.0 * (qx * qx + qy * qy)
-            let roll = atan2(sinr, cosr)
-
-            /// return array containing ypr values
-            return (yaw, pitch, roll)
+        // Deduce euler angles
+        /// yaw (z-axis rotation)
+        let siny = +2.0 * (qw * qz + qx * qy)
+        let cosy = +1.0 - 2.0 * (qy * qy + qz * qz)
+        let yaw = atan2(siny, cosy)
+        // pitch (y-axis rotation)
+        let sinp = +2.0 * (qw * qy - qz * qx)
+        var pitch: Float
+        if abs(sinp) >= 1 {
+            pitch = copysign(Float.pi / 2, sinp)
+        } else {
+            pitch = asin(sinp)
         }
+        /// roll (x-axis rotation)
+        let sinr = +2.0 * (qw * qx + qy * qz)
+        let cosr = +1.0 - 2.0 * (qx * qx + qy * qy)
+        let roll = atan2(sinr, cosr)
+
+        /// return array containing ypr values
+        return (yaw, pitch, roll)
     }
+
 }
