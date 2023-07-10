@@ -54,7 +54,6 @@ final class SelfieCaptureViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.faceGeometryState, .faceNotFound)
         XCTAssertEqual(viewModel.faceQualityState, .faceNotFound)
 
-
         let expectation = XCTestExpectation()
         viewModel.$directive
             .sink { value in
@@ -71,7 +70,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
 
         let expectation = XCTestExpectation()
         viewModel.$directive
-            .sink { value in
+            .sink { _ in
 //                XCTAssertEqual(value, "Instructions.MultipleFaces")
                 expectation.fulfill()
             }.store(in: &subscribers)

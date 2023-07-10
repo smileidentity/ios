@@ -22,7 +22,7 @@ enum SelfieCaptureViewModelAction {
 enum ProcessingState {
     static func == (lhs: ProcessingState, rhs: ProcessingState) -> Bool {
         switch (lhs, rhs) {
-        case (.complete(_, _), .complete(_, _)):
+        case (.complete, .complete):
             return false
         case (let .error(error1), let .error(error2)):
             return error1.localizedDescription == error2.localizedDescription
@@ -46,7 +46,7 @@ enum ProcessingState {
 
 final class SelfieCaptureViewModel: ObservableObject {
 
-    //MARK: Published Properties
+    // MARK: Published Properties
     @Published var agentMode = false {
         didSet {
             switchCamera()
@@ -80,7 +80,7 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    //MARK: Public Properties
+    // MARK: Public Properties
     private var userId: String
     private var jobId: String
     private var isEnroll: Bool
@@ -147,7 +147,11 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    init(userId: String, jobId: String, isEnroll: Bool, showAttribution: Bool = true, cameraManager: CameraManageable? = nil) {
+    init(userId: String,
+         jobId: String,
+         isEnroll: Bool,
+         showAttribution: Bool = true,
+         cameraManager: CameraManageable? = nil) {
         self.userId = userId
         self.isEnroll = isEnroll
         self.jobId = jobId
@@ -622,7 +626,7 @@ extension SelfieCaptureViewModel {
     }
 
     func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
-        //Roll values differ because back camera feed is in landscape
+        // Roll values differ because back camera feed is in landscape
         let maxRoll = agentMode ? 2.0 : 0.5
         isAcceptableRoll = abs(roll) < maxRoll
         isAcceptableYaw = abs(CGFloat(yaw)) < 0.5
