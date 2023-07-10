@@ -4,6 +4,7 @@ import SwiftUI
 @available(iOS 14.0, *)
 struct HomeView: View {
     var userID = ""
+    let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
     @ObservedObject var viewModel = HomeViewModel()
     var body: some View {
         NavigationView {
@@ -12,16 +13,17 @@ struct HomeView: View {
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
                 HStack(spacing: 15) {
-                    Button(action: { self.viewModel.handleSmartSelfieEnrolmentTap() }) {
+                    Button(action: { self.viewModel.handleSmartSelfieEnrolmentTap() },
+                           label: {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nEnrollment")
-                    }
-
+                    })
                     .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment,
                            content: { SmileID.smartSelfieEnrollmentScreen(userId: viewModel.generateUserID(),
                                                                           delegate: viewModel) })
-                    Button(action: { self.viewModel.handleSmartSelfieAuthTap() }) {
+                    Button(action: { self.viewModel.handleSmartSelfieAuthTap() },
+                           label: {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nAuthentication")
-                    }
+                    })
                     .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
                         EnterUserIDView(userId: viewModel.returnedUserID, viewModel: UserIDViewModel())
                     })
@@ -38,7 +40,7 @@ struct HomeView: View {
                     }
                 }
                 Spacer()
-                Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version) - Build 19")
+                Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version) - Build \(build ?? "")")
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }

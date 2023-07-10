@@ -125,11 +125,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate  
     }
 
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        NotificationCenter.default.post(name:  NSNotification.Name(rawValue: "UpdateARFrame"),
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "UpdateARFrame"),
                                         object: nil,
                                         userInfo: ["frame" : frame])
     }
-
 
     private func updateFeatures(for faceAnchor: ARFaceAnchor) {
         if let faceGeometry = faceNode?.geometry as? ARSCNFaceGeometry {
@@ -158,7 +157,6 @@ struct ARView: UIViewControllerRepresentable {
     }
     func updateUIViewController(_ uiViewController: ARViewController, context: Context) {}
 }
-
 
 extension ARFaceAnchor{
     // struct to store the 3d vertex and the 2d projection point
@@ -189,9 +187,7 @@ extension ARFaceAnchor{
 
 extension matrix_float4x4 {
     var position: SCNVector3 {
-        get{
-            return SCNVector3(self[3][0], self[3][1], self[3][2])
-        }
+        return SCNVector3(self[3][0], self[3][1], self[3][2])
     }
 
     // Function to convert rad to deg

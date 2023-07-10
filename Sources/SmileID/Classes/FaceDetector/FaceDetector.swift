@@ -14,8 +14,9 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
     private let maximumAspectRatioHistoryLength = 10
 
     func detectFaces(imageBuffer: CVImageBuffer) {
-        let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler: detectedFaceQualityRequest)
-        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest { [self] request, error in
+        let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler:
+                                                                                detectedFaceQualityRequest)
+        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest { [self] request, _ in
             guard let results = request.results as? [VNFaceObservation], let viewDelegate = viewDelegate else {
                 model?.perform(action: .noFaceDetected)
                 return

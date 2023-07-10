@@ -55,7 +55,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
             case .smartSelfieEnrollment:
                 UIPasteboard.general.string = self.userID
                 self.presentAlert(title: "Smart Selfie Enrollment Complete",
-                                  message: "The user has been registered and the user id has been copied to the clipboard.")
+                                  message: "The user has been registered and the user id has been copied to the clipboard")
             case .smartSelfieAuthentication:
                 self.presentAlert(title: "Smart Selfie Authentication Complete",
                                   message: "The user has been authenticated succesfully")

@@ -25,15 +25,6 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
         }
     }
 
-    // NB
-    // TODO:only used for previews to remove lint issues
-//    fileprivate init(viewModel: SelfieCaptureViewModel) {
-//        self.camera = CameraView(cameraManager: viewModel.cameraManager)
-//        faceOverlay = FaceOverlayView()
-//        arView = nil
-//    }
-
-
     public var body: some View {
         GeometryReader { geometry in
             let ovalSize = ovalSize(from: geometry)
@@ -126,14 +117,6 @@ struct FaceBoundingBoxView: View {
         }
     }
 }
-
-//struct SelfieCaptureView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SelfieCaptureView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
-//                                                            jobId: UUID().uuidString,
-//                                                            isEnroll: false))
-//    }
-//}
 
 class DummyDelegate: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {}

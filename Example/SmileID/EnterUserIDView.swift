@@ -15,7 +15,7 @@ struct EnterUserIDView: View {
                      presentationMode.wrappedValue.dismiss()
                 }
             }
-            VStack(spacing: 5){
+            VStack(spacing: 5) {
                 Text("Please enter an enrolled User ID")
                     .font(SmileID.theme.header4)
                     .foregroundColor(SmileID.theme.onLight)
@@ -72,8 +72,8 @@ class UserIDViewModel: ObservableObject, SmartSelfieResultDelegate {
 
     func didError(error: Error) {
         shouldDismiss = true
-        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureError"), object: nil, userInfo: ["Error": error]))
+        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureError"),
+                                                     object: nil,
+                                                     userInfo: ["Error": error]))
     }
-
-
 }

@@ -52,7 +52,7 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     func handleSmartSelfieAuthTap() {
         self.product = .smartSelfieAuthentication
     }
-    
+
     func handleDocumentVerificationTap() {
         self.product = .documentVerification
     }
@@ -78,8 +78,12 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     }
 
     func subscribeToAuthCompletion() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion), name: Notification.Name(rawValue: "SelfieCaptureComplete"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion), name: Notification.Name(rawValue: "SelfieCaptureError"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion),
+                                               name: Notification.Name(rawValue: "SelfieCaptureComplete"),
+                                               object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion),
+                                               name: Notification.Name(rawValue: "SelfieCaptureError"),
+                                               object: nil)
     }
 
     @objc func handleAuthCompletion(_ notification: NSNotification) {
@@ -103,8 +107,7 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
                 toastMessage = "Job submitted successfully, results processing"
                 return
             }
-        }
-        else {
+        } else {
             toastMessage = "Job submitted successfully, results processing"
             return
         }

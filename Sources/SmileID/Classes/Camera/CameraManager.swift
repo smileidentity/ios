@@ -6,7 +6,7 @@ protocol CameraManageable: AnyObject {
     func switchCamera(to position: AVCaptureDevice.Position)
     func pauseSession()
     func resumeSession()
-    var sampleBufferPublisher:  Published<CVPixelBuffer?>.Publisher {get}
+    var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher {get}
     var session: AVCaptureSession { get }
     var cameraPositon: AVCaptureDevice.Position? {get}
 }
@@ -23,7 +23,7 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
     @Published var error: CameraError?
     @Environment(\.isPreview) var isPreview
     @Published var sampleBuffer: CVPixelBuffer?
-    var sampleBufferPublisher:  Published<CVPixelBuffer?>.Publisher { $sampleBuffer }
+    var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher { $sampleBuffer }
     let videoOutputQueue = DispatchQueue(label: "com.smileid.videooutput",
                                          qos: .userInitiated,
                                          attributes: [],

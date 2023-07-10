@@ -12,10 +12,6 @@ public struct SmartSelfieInstructionsView: View {
 
     }
 
-    // Only exists for preview so not accessible out of the file
-//    fileprivate init() {
-//    }
-
     public var body: some View {
         if let processingState = viewModel.processingState, processingState == .endFlow {
             let _ = DispatchQueue.main.async {
@@ -45,14 +41,3 @@ public struct SmartSelfieInstructionsView: View {
         )
     }
 }
-
-//struct SmartSelfieInstructionsView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SmartSelfieInstructionsView(viewModel: SelfieCaptureViewModel(userId: UUID().uuidString,
-//                                                                      jobId: UUID().uuidString,
-//                                                                      isEnroll: false,
-//                                                                      showAttribution: true), delegate: <#SmartSelfieResultDelegate#>)
-//        .environment(\.locale, Locale(identifier: "en"))
-//
-//    }
-//}
