@@ -48,14 +48,14 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
         navigationController?.present(cameraVC!, animated: true)
     }
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
         cameraVC?.dismiss(animated: true, completion: {
 
             switch self.currentJob {
             case .smartSelfieEnrollment:
                 UIPasteboard.general.string = self.userID
                 self.presentAlert(title: "Smart Selfie Enrollment Complete",
-                                  message: "The user has been registered and the user id has been copied to the clipboard.")
+                                  message: "The user has been registered and the user id has been copied to the clipboard")
             case .smartSelfieAuthentication:
                 self.presentAlert(title: "Smart Selfie Authentication Complete",
                                   message: "The user has been authenticated succesfully")

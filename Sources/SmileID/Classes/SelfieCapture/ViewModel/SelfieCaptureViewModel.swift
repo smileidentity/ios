@@ -1,26 +1,31 @@
 import Foundation
+import ARKit
 import UIKit
 import Combine
 
-enum SelfieCaptureViewModelAction {
+protocol SelfieViewDelegate {
+    func pauseARSession()
+    func resumeARSession()
+}
 
-    // scene stabilization action
+enum SelfieCaptureViewModelAction {
     case sceneUnstable
-    // Face detection actions
     case noFaceDetected
     case smileDirective
+    case smileAction
+    case noSmile
     case multipleFacesDetected
     case faceObservationDetected(FaceGeometryModel)
     case faceQualityObservationDetected(FaceQualityModel)
 }
 
-enum ProcessingState: Equatable {
+enum ProcessingState {
     static func == (lhs: ProcessingState, rhs: ProcessingState) -> Bool {
         switch (lhs, rhs) {
-        case (let .success(response1), let .success(response2)):
-            return response1.timestamp == response2.timestamp
+        case (.complete, .complete):
+            return false
         case (let .error(error1), let .error(error2)):
-           return error1.localizedDescription == error2.localizedDescription
+            return error1.localizedDescription == error2.localizedDescription
         case (.confirmation, .confirmation):
             return true
         case (.endFlow, .endFlow):
@@ -34,153 +39,290 @@ enum ProcessingState: Equatable {
 
     case confirmation
     case inProgress
-    case success(JobStatusResponse)
+    case complete(JobStatusResponse?, SmileIDError?)
     case endFlow
     case error(Error)
 }
 
 final class SelfieCaptureViewModel: ObservableObject {
-    var userId: String
-    var jobId: String
-    var isEnroll: Bool
-    var showAttribution: Bool
-    var faceLayoutGuideFrame = CGRect.zero
-    var viewFinderSize = CGSize.zero
-    var viewDelegate: FaceDetectorDelegate? {
-        didSet {
-            faceDetector.viewDelegate = viewDelegate
-        }
-    }
-    let cameraManager = CameraManager()
-    let frameManager: FrameManager
-    private var faceDetector = FaceDetector()
-    private var subscribers = Set<AnyCancellable>()
-    private var facedetectionSubscribers: AnyCancellable?
-    private let numberOfLivenessImages = 7
-    private let livenessImageSize = CGSize(width: 256, height: 256)
-    private let selfieImageSize = CGSize(width: 320, height: 320)
-    private var currentBuffer: CVPixelBuffer?
-    private var files = [URL]()
-    var selfieImage: Data? {
-        didSet {
-            updateProgress()
-        }
-    }
-    private var livenessImages = [Data]() {
-        didSet {
-            updateProgress()
-        }
-    }
-    private var lastCaptureTime: Int64 = 0
-    private var interCaptureDelay = 350
-    weak var captureResultDelegate: SmartSelfieResultDelegate?
 
+    // MARK: Published Properties
+    @Published var agentMode = false {
+        didSet {
+            switchCamera()
+        }
+    }
     @Published private(set) var progress: CGFloat = 0
+    @Published var directive: String = "Instructions.Start"
     @Published private(set) var processingState: ProcessingState? {
         didSet {
             switch processingState {
             case .none:
-                setupFaceDetectionSubscriptions()
-                cameraManager.resumeSession()
+                resumeCameraSession()
+            case .endFlow:
+                pauseCameraSession()
             case .some:
-                pauseFaceDetection()
+                pauseCameraSession()
             }
         }
     }
 
-    @Published private(set) var hasDetectedValidFace: Bool {
+    // MARK: Public Properties
+    var faceLayoutGuideFrame = CGRect.zero
+    var viewFinderSize = CGSize.zero
+    var displayedImage: Data?
+    var selfieViewDelegate: SelfieViewDelegate?
+    weak var captureResultDelegate: SmartSelfieResultDelegate?
+    weak var viewDelegate: FaceDetectorDelegate? {
         didSet {
-            if hasDetectedValidFace {
-                captureImage()
-            }
-        }
-    }
-    @Published private(set) var isAcceptableRoll: Bool {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    @Published private(set) var isAcceptableYaw: Bool {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    @Published private(set) var isAcceptableBounds: FaceBoundsState {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    @Published private(set) var isAcceptableQuality: Bool {
-        didSet {
-            calculateDetectedFaceValidity()
+            faceDetector.viewDelegate = viewDelegate
         }
     }
 
-    @Published private(set) var faceDetectionState: FaceDetectionState
-    @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel, ErrorWrapper> {
+    // MARK: Public Properties
+    private var userId: String
+    private var jobId: String
+    private var isEnroll: Bool
+    private var showAttribution: Bool
+    private var selfieImage: Data?
+    private var currentExif: [String: Any]?
+    private let subject = PassthroughSubject<String, Never>()
+    private (set) lazy var cameraManager: CameraManageable = CameraManager()
+    private var faceDetector = FaceDetector()
+    private var subscribers = Set<AnyCancellable>()
+    private var facedetectionSubscribers: AnyCancellable?
+    private var throttleSubscription: AnyCancellable?
+    private let numberOfLivenessImages = 7
+    private let selfieImageSize = CGSize(width: 320, height: 320)
+    private var currentBuffer: CVPixelBuffer?
+    private(set) var faceDetectionState: FaceDetectionState = .noFaceDetected
+    private var fallbackTimer: Timer?
+    private var files = [URL]()
+    private var livenessImages = [Data]()
+    private var lastCaptureTime: Int64 = 0
+    private var interCaptureDelay = 600
+    private var debounceTimer: Timer?
+    private var isARSupported: Bool {
+        return ARFaceTrackingConfiguration.isSupported
+    }
+    private(set) var isAcceptableRoll: Bool = false {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    private(set) var isAcceptableYaw: Bool = false {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    private(set) var isAcceptableBounds: FaceBoundsState = .unknown {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    private(set) var isAcceptableQuality: Bool = true {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    private(set) var faceGeometryState: FaceObservation<FaceGeometryModel, ErrorWrapper> = .faceNotFound {
         didSet {
             processUpdatedFaceGeometry()
         }
     }
-    @Published private(set) var faceQualityState: FaceObservation<FaceQualityModel, ErrorWrapper> {
+    private(set) var faceQualityState: FaceObservation<FaceQualityModel, ErrorWrapper> = .faceNotFound {
         didSet {
             processUpdatedFaceQuality()
         }
     }
+    private var isSmiling = false {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    private(set) var hasDetectedValidFace: Bool = false {
+        didSet {
+            captureImageIfNeeded()
+        }
+    }
 
-    init(userId: String, jobId: String, isEnroll: Bool, showAttribution: Bool = true) {
+    init(userId: String,
+         jobId: String,
+         isEnroll: Bool,
+         showAttribution: Bool = true,
+         cameraManager: CameraManageable? = nil) {
         self.userId = userId
         self.isEnroll = isEnroll
         self.jobId = jobId
-        faceDetectionState = .noFaceDetected
-        isAcceptableRoll = false
-        isAcceptableYaw = false
-        isAcceptableBounds = .unknown
-        isAcceptableQuality = false
-
-        hasDetectedValidFace = false
-        faceGeometryState = .faceNotFound
-        faceQualityState = .faceNotFound
-        frameManager = FrameManager(cameraManager: cameraManager)
         self.showAttribution = showAttribution
         faceDetector.model = self
-        setupFaceDetectionSubscriptions()
+        if let cameraManager = cameraManager {
+            self.cameraManager = cameraManager
+        }
+        if ARFaceTrackingConfiguration.isSupported {
+            subscribeToARFrame()
+        } else {
+            setupFaceDetectionSubscriptions()
+        }
+        setupDirectiveSubscription()
     }
 
-    private func setupFaceDetectionSubscriptions() {
-        facedetectionSubscribers = frameManager.$sampleBuffer
-            .receive(on: DispatchQueue.global())
-            .compactMap { return $0 }
-            .sink {
-                self.faceDetector.detect(pixelBuffer: $0)
-                self.currentBuffer = $0
+    func resetState() {
+        agentMode = false
+        resetCapture()
+    }
+
+    private func switchCamera() {
+        resetCapture()
+        if isARSupported {
+            switchARKitCamera()
+        } else {
+            switchAVCaptureCamera()
+        }
+    }
+
+    func pauseCameraSession() {
+        if isARSupported && agentMode {
+            cameraManager.pauseSession()
+        } else if isARSupported && !agentMode {
+            selfieViewDelegate?.pauseARSession()
+            cameraManager.pauseSession()
+        } else if !isARSupported {
+            cameraManager.pauseSession()
+        }
+    }
+
+    func resumeCameraSession() {
+        if isARSupported && agentMode {
+            cameraManager.resumeSession()
+        } else if isARSupported && !agentMode {
+            selfieViewDelegate?.resumeARSession()
+        } else if !isARSupported {
+            cameraManager.resumeSession()
+        }
+    }
+
+    @objc func captureImageAfterThreeSecs() {
+        captureImage()
+        fallbackTimer = nil
+    }
+
+    func subscribeToARFrame() {
+        NotificationCenter.default.addObserver(self, selector: #selector(didReceiveFrame),
+                                               name: NSNotification.Name(rawValue: "UpdateARFrame"),
+                                               object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        throttleSubscription?.cancel()
+        throttleSubscription = nil
+        pauseCameraSession()
+    }
+
+    @objc func didReceiveFrame(_ notification: NSNotification) {
+        if let dict =  notification.userInfo as? NSDictionary {
+            if let frame = dict["frame"] as? ARFrame {
+                self.currentBuffer = frame.capturedImage
+
+                if #available(iOS 16.0, *) {
+                    self.currentExif = frame.exifData
+                } else {
+                    self.currentExif = nil
+                }
             }
+        }
     }
 
-    private func pauseFaceDetection() {
-        facedetectionSubscribers?.cancel() // 3
+    private func captureImageIfNeeded() {
+        if hasDetectedValidFace {
+            if livenessImages.count == 3 && isARSupported && !agentMode {
+                perform(action: .smileDirective)
+                if isSmiling {
+                    captureImage()
+                    return
+                } else {
+                    return
+                }
+            } else if livenessImages.count == 3 {
+                self.perform(action: .smileDirective)
+                if fallbackTimer == nil {
+                    DispatchQueue.main.async {
+
+                        self.fallbackTimer = Timer.scheduledTimer(timeInterval: 2,
+                                                                  target: self,
+                                                                  selector: #selector(self.captureImageAfterThreeSecs),
+                                                                  userInfo: nil,
+                                                                  repeats: false)
+                    }
+                }
+                return
+            }
+            captureImage()
+        }
+    }
+
+    func switchARKitCamera() {
+        facedetectionSubscribers?.cancel()
         facedetectionSubscribers = nil
-        cameraManager.pauseSession()
+        if agentMode {
+            selfieViewDelegate?.pauseARSession()
+            setupFaceDetectionSubscriptions()
+            cameraManager.switchCamera(to: .back)
+        } else {
+            cameraManager.pauseSession()
+            selfieViewDelegate?.resumeARSession()
+        }
+    }
+
+    func handleRetakeButtonTap() {
+        resetCapture()
+        resumeCameraSession()
+    }
+
+    func switchAVCaptureCamera() {
+        facedetectionSubscribers?.cancel()
+        facedetectionSubscribers = nil
+        setupFaceDetectionSubscriptions()
+        if agentMode {
+            cameraManager.switchCamera(to: .back)
+        } else {
+            cameraManager.switchCamera(to: .front)
+        }
     }
 
     func perform(action: SelfieCaptureViewModelAction) {
         switch action {
         case .sceneUnstable:
             publishUnstableSceneObserved()
+            subject.send("Instructions.Start")
         case .noFaceDetected:
             publishNoFaceObserved()
+            subject.send("Instructions.Start")
         case .multipleFacesDetected:
             publishFaceObservation(.multipleFacesDetected)
+            subject.send("Instructions.MultipleFaces")
         case .faceObservationDetected(let faceGeometry):
             publishFaceObservation(.faceDetected, faceGeometryModel: faceGeometry)
         case .faceQualityObservationDetected(let faceQualityModel):
             publishFaceObservation(.faceDetected, faceQualityModel: faceQualityModel)
         case .smileDirective:
-            publishFaceObservation(.smileFrame)
+            subject.send("Instructions.Smile")
+        case .smileAction:
+            isSmiling = true
+        case .noSmile:
+            isSmiling = false
         }
     }
 
     private func captureImage() {
+        DispatchQueue.main.async {
+            if self.livenessImages.count >= 3 {
+                self.perform(action: .smileDirective)
+            } else {
+                self.subject.send("Instructions.Capturing")
+            }
+        }
         guard let currentBuffer = currentBuffer, hasDetectedValidFace == true,
               livenessImages.count < numberOfLivenessImages + 1  else {
             return
@@ -190,34 +332,39 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
         while (livenessImages.count < numberOfLivenessImages) &&
                 ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
-            guard let image = ImageUtils.captureFace(from: currentBuffer,
-                                                     faceGeometry: faceGeometry, padding: 95,
-                                                     finalSize: livenessImageSize,
-                                                     screenImageSize: viewFinderSize,
-                                                     isLivenessImage: true) else { return }
+            guard let image = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 350, exif:
+                                                                    currentExif) else {
+                return
+
+            }
             livenessImages.append(image)
             lastCaptureTime = Date().millisecondsSince1970
-        }
-
-        if livenessImages.count >= 3 {
-            perform(action: .smileDirective)
+            updateProgress()
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&
             ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) &&
             selfieImage == nil {
             publishFaceObservation(.finalFrame)
-            guard let selfieImage = ImageUtils.captureFace(from: currentBuffer,
-                                                           faceGeometry: faceGeometry, padding: 200,
-                                                           finalSize: selfieImageSize,
-                                                           screenImageSize: viewFinderSize,
-                                                           isLivenessImage: false) else { return }
+            guard let displayedImage = ImageUtils.captureFace(from: currentBuffer,
+                                                              faceGeometry: faceGeometry,
+                                                              agentMode: agentMode,
+                                                              finalSize: selfieImageSize,
+                                                              screenImageSize: viewFinderSize) else {
+                return }
+            guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
+                                                                        exif: currentExif) else {
+                return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
+            self.displayedImage = displayedImage
+            updateProgress()
             do {
                 files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
-                                                                      previewImage: selfieImage)
-                processingState = .confirmation
+                                                      previewImage: selfieImage)
+                DispatchQueue.main.async {
+                    self.processingState = .confirmation
+                }
             } catch {
                 DispatchQueue.main.async { [self] in
                     processingState = .error(error)
@@ -226,10 +373,22 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
+    private func handleError(_ error: SmileIDError) {
+        switch error {
+        case .request(let urlError):
+            processingState = .error(urlError)
+        case .httpError, .unknown:
+            processingState = .error(error)
+        case .jobStatusTimeOut:
+            processingState = .complete(nil, nil)
+        default:
+            processingState = .complete(nil, error)
+        }
+    }
+
     func submit() {
         processingState = .inProgress
         var zip: Data
-
         do {
             let zipUrl = try LocalStorage.zipFiles(at: files)
             zip = try Data(contentsOf: zipUrl)
@@ -265,26 +424,98 @@ final class SelfieCaptureViewModel: ObservableObject {
                 switch completion {
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
-                        print("error is \(error.localizedDescription)")
-                        self?.processingState = .error(error)
+                        if let error = error as? SmileIDError {
+                            self?.handleError(error)
+                        }
                     }
                 default:
-                    break
+                    self.processingState = .complete(nil, nil)
                 }
             }, receiveValue: { [weak self] response in
                 DispatchQueue.main.async {
-                    self?.processingState = .success(response)
+                    self?.processingState = .complete(response, nil)
                 }
             }).store(in: &subscribers)
     }
 
     func resetCapture() {
-        livenessImages = []
-        selfieImage = nil
+        DispatchQueue.main.async {
+            if self.processingState != nil {
+                self.processingState = nil
+            }
+            if self.progress != 0 {
+                self.progress = 0
+            }
+        }
+        isSmiling = false
+        faceDetectionState = .noFaceDetected
+        isAcceptableRoll = false
+        isAcceptableYaw = false
+        isAcceptableBounds = .unknown
+        hasDetectedValidFace = false
+        faceGeometryState = .faceNotFound
+        faceQualityState = .faceNotFound
+        faceDetector.model = self
+        if !livenessImages.isEmpty {
+            livenessImages = []
+        }
+        if selfieImage != nil {
+            selfieImage = nil
+        }
         try? LocalStorage.delete(at: files)
-        processingState = nil
     }
 
+    func handleClose() {
+        processingState = .endFlow
+    }
+
+    func handleCompletion() {
+        switch processingState {
+        case .complete(let response, let error):
+            pauseCameraSession()
+            processingState = .endFlow
+            if let error = error {
+                captureResultDelegate?.didError(error: error)
+                return
+            }
+            captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
+                                              livenessImages: livenessImages,
+                                              jobStatusResponse: response)
+        default:
+            break
+        }
+    }
+
+    func handleRetry() {
+        processingState = .inProgress
+        submit()
+    }
+
+    private func publishUnstableSceneObserved() {
+        faceDetectionState = .sceneUnstable
+    }
+
+    private func updateProgress() {
+        DispatchQueue.main.async { [self] in
+            let selfieImageCount = selfieImage == nil ? 0 : 1
+            progress = CGFloat(livenessImages.count+selfieImageCount)/CGFloat(numberOfLivenessImages+1)
+        }
+    }
+
+    func setupDirectiveSubscription() {
+        throttleSubscription = subject.throttle(for: .milliseconds(300),
+                                                scheduler: RunLoop.main,
+                                                latest: true).sink { value in
+            if value != self.directive {
+                self.directive = value
+            }
+        }
+    }
+}
+
+// MARK: Networking methods
+
+extension SelfieCaptureViewModel {
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
         let prepUploadRequest = PrepUploadRequest(partnerParams: authResponse.partnerParams,
                                                   timestamp: authResponse.timestamp,
@@ -318,67 +549,86 @@ final class SelfieCaptureViewModel: ObservableObject {
 
         return publisher.eraseToAnyPublisher()
     }
+}
 
-    func handleSuccess() {
-        switch processingState {
-        case .success(let response):
-            processingState = .endFlow
-            captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
-                                              livenessImages: livenessImages,
-                                              jobStatusResponse: response)
-        default:
-            break
-        }
+// MARK: Face detection methods
+extension SelfieCaptureViewModel {
+    private func setupFaceDetectionSubscriptions() {
+        facedetectionSubscribers = cameraManager.sampleBufferPublisher
+            .receive(on: DispatchQueue.global())
+            .compactMap { return $0 }
+            .sink {
+                self.faceDetector.detect(pixelBuffer: $0)
+                self.currentBuffer = $0
+            }
     }
 
-    func handleRetry() {
-        processingState = .inProgress
-        submit()
-    }
-
-    private func handleUploadResponse(_ response: JobStatusResponse) {
-        processingState = .success(response)
-    }
-
-    func saveLivenessImage(data: Data) {
-        if let photo = UIImage(data: data) {
-            UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil)
-        }
-    }
-
-    private func publishUnstableSceneObserved() {
-        DispatchQueue.main.async { [self] in
-            faceDetectionState = .sceneUnstable
-        }
-    }
-
-    private func publishNoFaceObserved() {
-        DispatchQueue.main.async { [self] in
-            faceDetectionState = .noFaceDetected
-            faceGeometryState = .faceNotFound
-            faceQualityState = .faceNotFound
-        }
-    }
-
-    private func updateProgress() {
-        DispatchQueue.main.async { [self] in
-            let selfieImageCount = selfieImage == nil ? 0 : 1
-            progress = CGFloat(livenessImages.count+selfieImageCount)/CGFloat(numberOfLivenessImages+1)
-        }
+    private func pauseFaceDetection() {
+        facedetectionSubscribers?.cancel()
+        facedetectionSubscribers = nil
+        cameraManager.pauseSession()
     }
 
     private func publishFaceObservation(_ faceDetectionState: FaceDetectionState,
                                         faceGeometryModel: FaceGeometryModel? = nil,
                                         faceQualityModel: FaceQualityModel? = nil) {
-        DispatchQueue.main.async { [self] in
-            self.faceDetectionState = faceDetectionState
-            if let faceGeometryModel = faceGeometryModel {
-                faceGeometryState = .faceFound(faceGeometryModel)
-            }
-            if let faceQualityModel = faceQualityModel {
-                faceQualityState = .faceFound(faceQualityModel)
+        self.faceDetectionState = faceDetectionState
+        if let faceGeometryModel = faceGeometryModel {
+            faceGeometryState = .faceFound(faceGeometryModel)
+        }
+        if let faceQualityModel = faceQualityModel {
+            faceQualityState = .faceFound(faceQualityModel)
+        }
+    }
+
+    private func publishNoFaceObserved() {
+        faceDetectionState = .noFaceDetected
+        faceGeometryState = .faceNotFound
+        faceQualityState = .faceNotFound
+        resetCapture()
+    }
+
+    func invalidateFaceGeometryState() {
+        isAcceptableRoll = false
+        isAcceptableYaw = false
+        isAcceptableBounds = .unknown
+    }
+
+    func calculateDetectedFaceValidity() {
+        hasDetectedValidFace =
+        isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
+        isAcceptableRoll &&
+        isAcceptableYaw &&
+        isAcceptableQuality
+    }
+
+    func updateAcceptableBounds(using boundingBox: CGRect) {
+        if boundingBox.width > 0.80 * faceLayoutGuideFrame.width {
+            isAcceptableBounds = .detectedFaceTooLarge
+            subject.send("Instructions.FaceClose")
+        } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {
+            isAcceptableBounds = .detectedFaceTooSmall
+            subject.send("Instructions.FaceFar")
+        } else {
+            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
+                isAcceptableBounds = .detectedFaceOffCentre
+                subject.send("Instructions.Start")
+                resetCapture()
+            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 210 {
+                isAcceptableBounds = .detectedFaceOffCentre
+                subject.send("Instructions.Start")
+                resetCapture()
+            } else {
+                isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
             }
         }
+    }
+
+    func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
+        // Roll values differ because back camera feed is in landscape
+        let maxRoll = agentMode ? 2.0 : 0.5
+        isAcceptableRoll = abs(roll) < maxRoll
+        isAcceptableYaw = abs(CGFloat(yaw)) < 0.5
     }
 
     func processUpdatedFaceGeometry() {
@@ -396,56 +646,17 @@ final class SelfieCaptureViewModel: ObservableObject {
             updateAcceptableRollYaw(using: roll, yaw: yaw)
         }
     }
-}
-
-extension SelfieCaptureViewModel {
-    func invalidateFaceGeometryState() {
-        isAcceptableRoll = false
-        isAcceptableYaw = false
-        isAcceptableBounds = .unknown
-    }
-
-    func calculateDetectedFaceValidity() {
-        hasDetectedValidFace =
-        isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
-        isAcceptableRoll &&
-        isAcceptableYaw &&
-        isAcceptableQuality
-    }
-
-    func updateAcceptableBounds(using boundingBox: CGRect) {
-        if boundingBox.width > 0.9 * faceLayoutGuideFrame.width {
-            isAcceptableBounds = .detectedFaceTooLarge
-        } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {
-            isAcceptableBounds = .detectedFaceTooSmall
-        } else {
-            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
-                isAcceptableBounds = .detectedFaceOffCentre
-                resetCapture()
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 210 {
-                isAcceptableBounds = .detectedFaceOffCentre
-                resetCapture()
-            } else {
-                isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
-            }
-        }
-    }
-
-    func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
-        isAcceptableRoll = abs(roll) < 0.5
-        isAcceptableYaw = abs(CGFloat(yaw)) < 0.15
-    }
 
     func processUpdatedFaceQuality() {
         switch faceQualityState {
         case .faceNotFound:
-            isAcceptableQuality = false
+            isAcceptableQuality = true
         case .errored(let errorWrapper):
             print(errorWrapper.error.localizedDescription)
-            isAcceptableQuality = false
+            isAcceptableQuality = true
         case .faceFound(let faceQualityModel):
             if faceQualityModel.quality < 0.3 {
-                isAcceptableQuality = false
+                isAcceptableQuality = true
             }
             isAcceptableQuality = true
         }

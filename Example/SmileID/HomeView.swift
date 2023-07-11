@@ -1,10 +1,11 @@
 import SmileID
 import SwiftUI
 
+@available(iOS 14.0, *)
 struct HomeView: View {
     var userID = ""
+    let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
     @ObservedObject var viewModel = HomeViewModel()
-
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -12,30 +13,34 @@ struct HomeView: View {
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
                 HStack(spacing: 15) {
-                    Button(action: { self.viewModel.handleSmartSelfieEnrolmentTap() }) {
+                    Button(action: { self.viewModel.handleSmartSelfieEnrolmentTap() },
+                           label: {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nEnrollment")
-                    }
-
+                    })
                     .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment,
                            content: { SmileID.smartSelfieEnrollmentScreen(userId: viewModel.generateUserID(),
                                                                           delegate: viewModel) })
-                    Button(action: { self.viewModel.handleSmartSelfieAuthTap() }) {
+                    Button(action: { self.viewModel.handleSmartSelfieAuthTap() },
+                           label: {
                         ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nAuthentication")
-                    }
+                    })
                     .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
                         EnterUserIDView(userId: viewModel.returnedUserID, viewModel: UserIDViewModel())
                     })
                 }
                 HStack(spacing: 15) {
-                    Button(action: { self.viewModel.handleDocumentVerificationTap() }) {
-                        ProductCell(productImage: "document", productName: "Document \nVerification")
+                    GeometryReader { geo in
+                        Button(action: { self.viewModel.handleDocumentVerificationTap() }) {
+                            ProductCell(productImage: "document", productName: "Document \nVerification")
+                        }
+                        .sheet(isPresented: $viewModel.presentDocumentVerification,
+                               content: { SmileID.documentVerificationScreen(userId: viewModel.generateUserID(),
+                                                                             delegate: viewModel) })
+                        .frame(width: (geo.size.width/2) - 7.5)
                     }
-                    .sheet(isPresented: $viewModel.presentDocumentVerification,
-                           content: { SmileID.documentVerificationScreen(userId: viewModel.generateUserID(),
-                                                                         delegate: viewModel) })
                 }
                 Spacer()
-                Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version)")
+                Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version) - Build \(build ?? "")")
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }
@@ -46,7 +51,7 @@ struct HomeView: View {
                     .padding()
             }
             .padding()
-            .navigationBarTitle(Text("Smile ID").font(SmileID.theme.header1), displayMode: .inline)
+            .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
             .navigationBarItems(trailing: ToggleButton())
             .background(offWhite.edgesIgnoringSafeArea(.all))
         }
@@ -57,6 +62,7 @@ struct HomeView: View {
     }
 }
 
+@available(iOS 14.0, *)
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()

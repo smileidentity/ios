@@ -1,11 +1,12 @@
 import SwiftUI
 import SmileID
 
+@available(iOS 14.0, *)
 struct EnterUserIDView: View {
     @Environment(\.presentationMode) var presentationMode
     @State var userId: String
     @State private var goToAuth: Bool = false
-    @ObservedObject var viewModel: UserIDViewModel
+    @StateObject var viewModel: UserIDViewModel
 
     var body: some View {
         NavigationView {
@@ -14,18 +15,21 @@ struct EnterUserIDView: View {
                      presentationMode.wrappedValue.dismiss()
                 }
             }
-            VStack(spacing: 5){
+            VStack(spacing: 5) {
                 Text("Please enter an enrolled User ID")
                     .font(SmileID.theme.header4)
                     .foregroundColor(SmileID.theme.onLight)
                 VStack {
                     SmileTextField(field: $userId, placeholder: "User ID")
                         .multilineTextAlignment(.center)
-                    NavigationLink(destination: SmileID.smartSelfieAuthenticationScreen(userId: userId, delegate: viewModel).navigationBarBackButtonHidden(true), isActive: $goToAuth ) {
+                    NavigationLink(destination: SmileID.smartSelfieAuthenticationScreen(userId: userId,
+                                                                                        delegate: viewModel)
+                        .navigationBarBackButtonHidden(true), isActive: $goToAuth ) {
                     }
                     SmileButton(title: "Continue", clicked: {
                         goToAuth = true
                     })
+                    .disabled(userId.isEmpty)
                     .padding()
                 }
                 Spacer()
@@ -43,6 +47,7 @@ struct EnterUserIDView: View {
     }
 }
 
+@available(iOS 14.0, *)
 struct EnterUserIDView_Previews: PreviewProvider {
     static var previews: some View {
         EnterUserIDView(userId: "", viewModel: UserIDViewModel())
@@ -52,15 +57,23 @@ struct EnterUserIDView_Previews: PreviewProvider {
 class UserIDViewModel: ObservableObject, SmartSelfieResultDelegate {
     @Published var shouldDismiss = false
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
         shouldDismiss = true
-        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"), object: ["Response": jobStatusResponse]))
+        if let jobStatusResponse = jobStatusResponse {
+            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"),
+                                                         object: nil,
+                                                         userInfo: ["Response": jobStatusResponse]))
+        } else {
+            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"),
+                                                         object: nil,
+                                                         userInfo: nil))
+        }
     }
 
     func didError(error: Error) {
         shouldDismiss = true
-        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureError"), object: ["Error": error]))
+        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureError"),
+                                                     object: nil,
+                                                     userInfo: ["Error": error]))
     }
-
-
 }

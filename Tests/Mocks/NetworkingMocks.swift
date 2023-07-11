@@ -28,7 +28,7 @@ class MockSmileIdentityService: SmileIDServiceable {
                                          jobSuccess: true,
                                          code: "2322")
         if MockHelper.shouldFail {
-            return Fail(error: APIError.request(URLError(.resourceUnavailable)))
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
                 .eraseToAnyPublisher()
         } else {
             return Result.Publisher(response)
@@ -45,7 +45,7 @@ class MockSmileIdentityService: SmileIDServiceable {
                                               timestamp: "time",
                                               partnerParams: params)
         if MockHelper.shouldFail {
-            return Fail(error: APIError.request(URLError(.resourceUnavailable)))
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
                 .eraseToAnyPublisher()
         } else {
             return Result.Publisher(response)
@@ -59,7 +59,7 @@ class MockSmileIdentityService: SmileIDServiceable {
                                           uploadUrl: "",
                                           smileJobId: "8950")
         if MockHelper.shouldFail {
-            return Fail(error: APIError.request(URLError(.resourceUnavailable)))
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
                 .eraseToAnyPublisher()
         } else {
             return Result.Publisher(response)
@@ -70,7 +70,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     func upload(zip: Data = Data(), to url: String = "") -> AnyPublisher<UploadResponse, Error> {
         let response = UploadResponse.response(data: Data())
         if MockHelper.shouldFail {
-            return Fail(error: APIError.request(URLError(.resourceUnavailable)))
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
                 .eraseToAnyPublisher()
         } else {
             return Result.Publisher(response)
@@ -83,7 +83,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     var successExpectation: XCTestExpectation?
     var failureExpection: XCTestExpectation?
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse) {
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
         successExpectation?.fulfill()
     }
 

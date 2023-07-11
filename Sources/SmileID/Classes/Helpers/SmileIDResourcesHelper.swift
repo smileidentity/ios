@@ -56,7 +56,7 @@ public class SmileIDResourcesHelper {
     /// SmileID images
     public static var ClearImage = SmileIDResourcesHelper.image("ClearImage")!
     public static var Face = SmileIDResourcesHelper.image("Face")!
-    public static var InstructionsHeaderIcon = SmileIDResourcesHelper.image("InstructionsHeaderIcon")!
+    public static var InstructionsHeaderIcon = SmileIDResourcesHelper.image("auth")!
     public static var InstructionsHeaderdDocumentIcon = SmileIDResourcesHelper.image("DocumentVerificationIcon")!
     public static var Light = SmileIDResourcesHelper.image("Light")!
     public static var SmileEmblem = SmileIDResourcesHelper.image("SmileEmblem")!

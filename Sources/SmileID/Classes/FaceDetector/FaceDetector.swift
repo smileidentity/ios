@@ -1,18 +1,45 @@
 import Foundation
 import Vision
 import CoreImage
+import ARKit
+import UIKit
 
-class FaceDetector {
+class FaceDetector: NSObject, ARSCNViewDelegate {
     var sequenceHandler = VNSequenceRequestHandler()
     weak var model: SelfieCaptureViewModel?
-    var viewDelegate: FaceDetectorDelegate?
-    private let maximumHistoryLength = 5
+    weak var viewDelegate: FaceDetectorDelegate?
+    private let maximumHistoryLength = 20
     private var transpositionHistoryPoints = [CGPoint]()
     private var previousPixelBuffer: CVPixelBuffer?
+    private let maximumAspectRatioHistoryLength = 10
 
     func detectFaces(imageBuffer: CVImageBuffer) {
-        let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler: detectedFaceQualityRequest)
-        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
+        let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler:
+                                                                                detectedFaceQualityRequest)
+        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest { [self] request, _ in
+            guard let results = request.results as? [VNFaceObservation], let viewDelegate = viewDelegate else {
+                model?.perform(action: .noFaceDetected)
+                return
+            }
+
+            if results.count > 1 {
+                model?.perform(action: .multipleFacesDetected)
+                return
+            }
+            guard let result = results.first, !result.boundingBox.isNaN else {
+                model?.perform(action: .noFaceDetected)
+                return
+            }
+            let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
+
+            let faceObservationModel = FaceGeometryModel(
+                boundingBox: convertedBoundingBox,
+                roll: result.roll ?? 0,
+                yaw: result.yaw ?? 0
+            )
+            model?.perform(action: .faceObservationDetected(faceObservationModel))
+        }
+
         // Use most recent models or fallback to older versions
         if #available(iOS 14.0, *) {
             detectCaptureQualityRequest.revision = VNDetectFaceCaptureQualityRequestRevision2

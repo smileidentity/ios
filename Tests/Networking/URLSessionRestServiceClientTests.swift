@@ -67,10 +67,6 @@ class URLSessionRestServiceClientTests: BaseTestCase {
                                                             statusCode: 200,
                                                             httpVersion: nil,
                                                             headerFields: nil)!
-        let expectedPublisher = Just((data: expectedData, response: expectedResponse))
-            .setFailureType(to: URLError.self)
-            .eraseToAnyPublisher()
-
         let queryParameters = [HTTPQueryParameters(key: "expand[]", values: ["plan", "number"])]
         let request = RestRequest(url: expectedURL, method: .get, queryParameters: queryParameters)
         mockServiceHeaderProvider.expectedHeaders = expectedHeaders
@@ -95,7 +91,7 @@ class URLSessionRestServiceClientTests: BaseTestCase {
             _ = try `await`(result)
             XCTFail("Send should have not succeeded")
         } catch {
-            XCTAssert(error is APIError)
+            XCTAssert(error is SmileIDError)
         }
     }
 

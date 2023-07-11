@@ -55,18 +55,10 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    private func checkSuccess(_ element: URLSession.DataTaskPublisher.Output) throws -> Bool {
-        guard let httpResponse = element.response as? HTTPURLResponse,
-              httpResponse.isSuccess else {
-            throw APIError.httpStatus((element.response as? HTTPURLResponse)?.statusCode ?? 500, element.data)
-        }
-        return true
-    }
-
-    private func mapToAPIError(_ error: Error) -> APIError {
+    private func mapToAPIError(_ error: Error) -> SmileIDError {
         if let decodingError = error as? DecodingError {
             return .decode(decodingError)
-        } else if let error = error as? APIError {
+        } else if let error = error as? SmileIDError {
             return error
         } else {
             return .unknown(error.localizedDescription)
@@ -76,7 +68,10 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     private func checkStatusCode(_ element: URLSession.DataTaskPublisher.Output) throws -> Data {
         guard let httpResponse = element.response as? HTTPURLResponse,
               httpResponse.isSuccess else {
-            throw APIError.httpStatus((element.response as? HTTPURLResponse)?.statusCode ?? 500, element.data)
+            if let decodedError = try? JSONDecoder().decode(SmileIDErrorResponse.self, from: element.data) {
+                throw SmileIDError.api(decodedError.code, decodedError.message)
+            }
+            throw SmileIDError.httpError((element.response as? HTTPURLResponse)?.statusCode ?? 500, element.data)
         }
 
         return element.data

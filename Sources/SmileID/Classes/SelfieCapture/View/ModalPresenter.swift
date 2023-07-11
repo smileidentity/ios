@@ -4,7 +4,7 @@ struct ModalPresenter<ModalContent: View>: View {
     @Binding var isPresented: Bool
     let modalContent: ModalContent
     var centered: Bool
-    init(isPresented: Binding<Bool> = .constant(true), centered: Bool = false, @ViewBuilder content: () -> ModalContent) {
+    init(isPresented: Binding<Bool> = .constant(true), centered: Bool = true, @ViewBuilder content: () -> ModalContent) {
         self._isPresented = isPresented
         self.centered = centered
         self.modalContent = content()

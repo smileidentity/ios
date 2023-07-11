@@ -28,7 +28,7 @@ struct ErrorView: View {
                 SmileButton(style: .destructive,
                             title: "Confirmation.Close",
                             clicked: {
-                    viewModel.resetCapture()
+                    viewModel.handleClose()
                 })
             }
 

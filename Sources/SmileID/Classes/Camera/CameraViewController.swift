@@ -6,9 +6,9 @@ class PreviewView: UIViewController {
 
     var layedOutSubviews = false
     var previewLayer: AVCaptureVideoPreviewLayer?
-    private let cameraManager: CameraManager
+    private weak var cameraManager: CameraManageable?
 
-    init(cameraManager: CameraManager) {
+    init(cameraManager: CameraManageable) {
         self.cameraManager = cameraManager
         super.init(nibName: nil, bundle: nil)
     }
@@ -26,7 +26,8 @@ class PreviewView: UIViewController {
     }
 
     func configurePreviewLayer() {
-        previewLayer = AVCaptureVideoPreviewLayer(session: cameraManager.session)
+        guard let session = cameraManager?.session else { return }
+        previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer?.videoGravity = .resizeAspectFill
         previewLayer?.frame = view.bounds
         previewLayer?.connection?.videoOrientation = .portrait
@@ -40,10 +41,11 @@ extension PreviewView: FaceDetectorDelegate {
           return .zero
       }
 
-        let normalizedRect = CGRect(x: rect.origin.y,
-                                    y: rect.origin.x,
-                                    width: rect.height,
-                                    height: rect.width)
+
+        let normalizedRect = cameraManager?.cameraPositon == .back ? rect : CGRect(x: rect.origin.y,
+                                                                                   y: rect.origin.x,
+                                                                                   width: rect.height,
+                                                                                   height: rect.width)
 
         let transformedRect = previewLayer.layerRectConverted(fromMetadataOutputRect: normalizedRect)
 

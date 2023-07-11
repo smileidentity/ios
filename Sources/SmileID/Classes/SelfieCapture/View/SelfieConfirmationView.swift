@@ -18,7 +18,7 @@ struct SelfieConfirmationView: View {
                     .lineSpacing(1.3)
             }
             VStack {
-                Image(uiImage: UIImage(data: viewModel.selfieImage ?? Data()) ?? UIImage())
+                Image(uiImage: UIImage(data: viewModel.displayedImage ?? Data()) ?? UIImage())
                     .cornerRadius(16)
                     .clipped()
             }
@@ -32,7 +32,7 @@ struct SelfieConfirmationView: View {
                 SmileButton(style: .secondary,
                             title: "Confirmation.Retake",
                             clicked: {
-                                        viewModel.resetCapture()
+                                    viewModel.handleRetakeButtonTap()
                 })
             }.padding()
         }
