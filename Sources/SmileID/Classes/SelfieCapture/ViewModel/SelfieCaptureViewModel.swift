@@ -209,8 +209,8 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     func subscribeToARFrame() {
         NotificationCenter.default.addObserver(self, selector: #selector(didReceiveFrame),
-                name: NSNotification.Name(rawValue: "UpdateARFrame"),
-                object: nil)
+                                               name: NSNotification.Name(rawValue: "UpdateARFrame"),
+                                               object: nil)
     }
 
     deinit {
@@ -250,10 +250,10 @@ final class SelfieCaptureViewModel: ObservableObject {
                     DispatchQueue.main.async {
 
                         self.fallbackTimer = Timer.scheduledTimer(timeInterval: 2,
-                                target: self,
-                                selector: #selector(self.captureImageAfterThreeSecs),
-                                userInfo: nil,
-                                repeats: false)
+                                                                  target: self,
+                                                                  selector: #selector(self.captureImageAfterThreeSecs),
+                                                                  userInfo: nil,
+                                                                  repeats: false)
                     }
                 }
                 return
@@ -331,9 +331,9 @@ final class SelfieCaptureViewModel: ObservableObject {
             return
         }
         while (livenessImages.count < numberOfLivenessImages) &&
-                      ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
+                ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             guard let image = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 350, exif:
-            currentExif) else {
+                                                                    currentExif) else {
                 return
 
             }
@@ -343,17 +343,17 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
 
         if (livenessImages.count == numberOfLivenessImages) &&
-                   ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) &&
-                   selfieImage == nil {
+            ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) &&
+            selfieImage == nil {
             publishFaceObservation(.finalFrame)
             guard let displayedImage = ImageUtils.captureFace(from: currentBuffer,
-                    faceGeometry: faceGeometry,
-                    agentMode: agentMode,
-                    finalSize: selfieImageSize,
-                    screenImageSize: viewFinderSize) else {
+                                                              faceGeometry: faceGeometry,
+                                                              agentMode: agentMode,
+                                                              finalSize: selfieImageSize,
+                                                              screenImageSize: viewFinderSize) else {
                 return }
             guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
-                    exif: currentExif) else {
+                                                                        exif: currentExif) else {
                 return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
@@ -361,7 +361,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             updateProgress()
             do {
                 files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
-                        previewImage: selfieImage)
+                                                      previewImage: selfieImage)
                 DispatchQueue.main.async {
                     self.processingState = .confirmation
                 }
@@ -399,43 +399,43 @@ final class SelfieCaptureViewModel: ObservableObject {
 
         let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
         let authRequest = AuthenticationRequest(jobType: jobType,
-                enrollment: isEnroll,
-                userId: userId,
-                jobId: jobId)
+                                                enrollment: isEnroll,
+                                                userId: userId,
+                                                jobId: jobId)
 
         SmileID.api.authenticate(request: authRequest)
-                .flatMap { authResponse in
-                    self.prepUpload(authResponse)
-                            .flatMap { prepUploadResponse in
-                                self.upload(prepUploadResponse, zip: zip)
-                                        .filter { result in
-                                            switch result {
-                                            case .response:
-                                                return true
-                                            default:
-                                                return false
-                                            }
-                                        }
-                                        .map { _ in authResponse }
+            .flatMap { authResponse in
+                self.prepUpload(authResponse)
+                    .flatMap { prepUploadResponse in
+                        self.upload(prepUploadResponse, zip: zip)
+                            .filter { result in
+                                switch result {
+                                case .response:
+                                    return true
+                                default:
+                                    return false
+                                }
                             }
-                }
-                .flatMap(pollJobStatus)
-                .sink(receiveCompletion: {completion in
-                    switch completion {
-                    case .failure(let error):
-                        DispatchQueue.main.async { [weak self] in
-                            if let error = error as? SmileIDError {
-                                self?.handleError(error)
-                            }
+                            .map { _ in authResponse }
+                    }
+            }
+            .flatMap(pollJobStatus)
+            .sink(receiveCompletion: {completion in
+                switch completion {
+                case .failure(let error):
+                    DispatchQueue.main.async { [weak self] in
+                        if let error = error as? SmileIDError {
+                            self?.handleError(error)
                         }
-                    default:
-                        self.processingState = .complete(nil, nil)
                     }
-                }, receiveValue: { [weak self] response in
-                    DispatchQueue.main.async {
-                        self?.processingState = .complete(response, nil)
-                    }
-                }).store(in: &subscribers)
+                default:
+                    self.processingState = .complete(nil, nil)
+                }
+            }, receiveValue: { [weak self] response in
+                DispatchQueue.main.async {
+                    self?.processingState = .complete(response, nil)
+                }
+            }).store(in: &subscribers)
     }
 
     func resetCapture() {
@@ -479,8 +479,8 @@ final class SelfieCaptureViewModel: ObservableObject {
                 return
             }
             captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
-                    livenessImages: livenessImages,
-                    jobStatusResponse: response)
+                                              livenessImages: livenessImages,
+                                              jobStatusResponse: response)
         default:
             break
         }
@@ -504,8 +504,8 @@ final class SelfieCaptureViewModel: ObservableObject {
 
     func setupDirectiveSubscription() {
         throttleSubscription = subject.throttle(for: .milliseconds(300),
-                scheduler: RunLoop.main,
-                latest: true).sink { value in
+                                                scheduler: RunLoop.main,
+                                                latest: true).sink { value in
             if value != self.directive {
                 self.directive = value
             }
@@ -518,34 +518,34 @@ final class SelfieCaptureViewModel: ObservableObject {
 extension SelfieCaptureViewModel {
     private func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error> {
         let prepUploadRequest = PrepUploadRequest(partnerParams: authResponse.partnerParams,
-                timestamp: authResponse.timestamp,
-                signature: authResponse.signature)
+                                                  timestamp: authResponse.timestamp,
+                                                  signature: authResponse.signature)
         return SmileID.api.prepUpload(request: prepUploadRequest)
     }
 
     private func upload(_ prepUploadResponse: PrepUploadResponse, zip: Data) -> AnyPublisher<UploadResponse, Error> {
         return SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
-                .eraseToAnyPublisher()
+            .eraseToAnyPublisher()
     }
 
     private func pollJobStatus(_ authResponse: AuthenticationResponse) -> AnyPublisher<JobStatusResponse, Error> {
         let jobStatusRequest = JobStatusRequest(userId: authResponse.partnerParams.userId,
-                jobId: authResponse.partnerParams.jobId,
-                includeImageLinks: false,
-                includeHistory: false,
-                timestamp: authResponse.timestamp,
-                signature: authResponse.signature)
+                                                jobId: authResponse.partnerParams.jobId,
+                                                includeImageLinks: false,
+                                                includeHistory: false,
+                                                timestamp: authResponse.timestamp,
+                                                signature: authResponse.signature)
 
         let publisher = Timer.publish(every: 1.0, on: .main, in: .common)
-                .autoconnect()
-                .setFailureType(to: Error.self)
-                .flatMap { _ in SmileID.api.getJobStatus(request: jobStatusRequest) }
-                .first(where: { response in
-                    return response.jobComplete})
-                .timeout(.seconds(10),
-                        scheduler: DispatchQueue.main,
-                        options: nil,
-                        customError: { SmileIDError.jobStatusTimeOut })
+            .autoconnect()
+            .setFailureType(to: Error.self)
+            .flatMap { _ in SmileID.api.getJobStatus(request: jobStatusRequest) }
+            .first(where: { response in
+                return response.jobComplete})
+            .timeout(.seconds(10),
+                     scheduler: DispatchQueue.main,
+                     options: nil,
+                     customError: { SmileIDError.jobStatusTimeOut })
 
         return publisher.eraseToAnyPublisher()
     }
@@ -555,12 +555,12 @@ extension SelfieCaptureViewModel {
 extension SelfieCaptureViewModel {
     private func setupFaceDetectionSubscriptions() {
         facedetectionSubscribers = cameraManager.sampleBufferPublisher
-                .receive(on: DispatchQueue.global())
-                .compactMap { return $0 }
-                .sink {
-                    self.faceDetector.detect(pixelBuffer: $0)
-                    self.currentBuffer = $0
-                }
+            .receive(on: DispatchQueue.global())
+            .compactMap { return $0 }
+            .sink {
+                self.faceDetector.detect(pixelBuffer: $0)
+                self.currentBuffer = $0
+            }
     }
 
     private func pauseFaceDetection() {
@@ -596,10 +596,10 @@ extension SelfieCaptureViewModel {
 
     func calculateDetectedFaceValidity() {
         hasDetectedValidFace =
-                isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
-                isAcceptableRoll &&
-                isAcceptableYaw &&
-                isAcceptableQuality
+        isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
+        isAcceptableRoll &&
+        isAcceptableYaw &&
+        isAcceptableQuality
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
