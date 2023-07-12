@@ -48,6 +48,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                                    size: ovalSize)
                             viewModel.viewDelegate = camera!.preview
                             viewModel.viewFinderSize = geometry.size
+                            viewModel.cameraManager.switchCamera(to: viewModel.agentMode ? .back : .front)
                         }.scaleEffect(1.2, anchor: .top)
                 }
                 faceOverlay

@@ -626,7 +626,7 @@ extension SelfieCaptureViewModel {
 
     func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
         // Roll values differ because back camera feed is in landscape
-        let maxRoll = agentMode ? 2.0 : 0.5
+        let maxRoll = agentMode || !isARSupported ? 2.0 : 0.5
         isAcceptableRoll = abs(roll) < maxRoll
         isAcceptableYaw = abs(CGFloat(yaw)) < 0.5
     }
