@@ -1,6 +1,6 @@
 import Foundation
-import UIKit
 import SwiftUI
+import UIKit
 
 public class SmileID {
     @Injected var injectedApi: SmileIDServiceable
@@ -28,7 +28,7 @@ public class SmileID {
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
 
     public class func initialize(config: Config, useSandbox: Bool = true) {
-        self.config = config
+        self.config = config 
         self.useSandbox = useSandbox
         SmileIDResourcesHelper.registerFonts()
     }
@@ -55,12 +55,12 @@ public class SmileID {
                                                  jobId _: String = "job-\(UUID().uuidString)",
                                                  showAttribution: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
-        -> SmileUIView {
-        smileView.showDocVCapture(currentDocCaptureDelegate: delegate,
-                                  currentUserId: userId,
-                                  jobId: jobId,
-                                  showInstruction: true)
-        return smileView
+        -> some View {
+        navigation.navigate(to: .documentCaptureInstructionScreen)
+        let viewModel = DocumentCaptureViewModel()
+        return SmileUIView {
+            DocumentCaptureInstructionsView(viewModel: viewModel, delegate: delegate)
+        }
     }
 
     public class func smartSelfieAuthenticationScreen(userId: String,

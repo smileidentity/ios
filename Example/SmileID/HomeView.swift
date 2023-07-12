@@ -23,11 +23,12 @@ struct HomeView: View {
                                                                           delegate: viewModel) })
                     Button(action: { self.viewModel.handleSmartSelfieAuthTap() },
                            label: {
-                        ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nAuthentication")
-                    })
-                    .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
-                        EnterUserIDView(userId: viewModel.returnedUserID, viewModel: UserIDViewModel())
-                    })
+                               ProductCell(productImage: "userauth",
+                                           productName: "SmartSelfie™ \nAuthentication")
+                           })
+                           .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
+                               EnterUserIDView(userId: viewModel.returnedUserID, viewModel: UserIDViewModel())
+                           })
                 }
                 HStack(spacing: 15) {
                     GeometryReader { geo in
@@ -36,10 +37,14 @@ struct HomeView: View {
                         } label: {
                             ProductCell(productImage: "document", productName: "Document \nVerification")
                         }
-                        .sheet(isPresented: $viewModel.presentDocumentVerification,
-                               content: { SmileID.documentVerificationScreen(userId: viewModel.generateUserID(),
-                                                                             delegate: viewModel) })
-                        .frame(width: (geo.size.width/2) - 7.5)
+                        .sheet(isPresented:
+                            $viewModel.presentDocumentVerification,
+                            content: { SmileID.documentVerificationScreen(
+                                userId: viewModel.generateUserID(),
+                                showInstruction: true,
+                                delegate: viewModel
+                            ) })
+                        .frame(width: (geo.size.width / 2) - 7.5)
                     }
                 }
                 Spacer()
