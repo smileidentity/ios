@@ -1,4 +1,9 @@
 import Foundation
-final class DocumentCaptureViewModel: ObservableObject {
-    /// coming soon
+class DocumentCaptureViewModel: ObservableObject {
+    private (set) lazy var cameraManager: CameraManageable = CameraManager()
+
+    func captureImage() {
+
+    }
+
 }
