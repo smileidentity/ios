@@ -6,4 +6,11 @@ class DocumentCaptureViewModel: ObservableObject {
 
     }
 
+    func resetState() {
+
+    }
+
+    func pauseCameraSession() {
+
+    }
 }

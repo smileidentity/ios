@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct DocumentCaptureView: View {
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: DocumentCaptureViewModel
     var camera: CameraView
     init(viewModel: DocumentCaptureViewModel) {
@@ -9,9 +10,22 @@ struct DocumentCaptureView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
+        ZStack {
             camera
-        }
+                .onAppear {
+                    viewModel.cameraManager.switchCamera(to: .back)
+                }
+            DocumentOverlayView()
+        } .edgesIgnoringSafeArea(.all)
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(leading: Button {
+                viewModel.resetState()
+                viewModel.pauseCameraSession()
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
+                    .padding()
+            })
     }
 }
 

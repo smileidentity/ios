@@ -5,19 +5,18 @@ struct DocumentOverlayView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let docWidth = geometry.size.width * 0.8
+            let docWidth = geometry.size.width * 0.9
             let docHeight = docWidth / aspectRatio
 
             ZStack {
                 Rectangle()
-                    .fill(Color.black.opacity(0.5))
+                    .fill(Color.white.opacity(0.8))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .overlay(
-                        Rectangle()
-                            .fill(Color.clear)
+                        RoundedRectangle(cornerRadius: 16)
+                            .blendMode(.destinationOut)
                             .frame(width: docWidth, height: docHeight)
-                            .border(Color.white, width: 2.0)
-                            .allowsHitTesting(false)
+                            .border(Color.white, width: 10)
                         ,alignment: .center)
             }
             VStack {
@@ -30,6 +29,7 @@ struct DocumentOverlayView: View {
                         .padding()
                 }
                 .background(Color.black.opacity(0.7))
+                .padding()
             }
         }
     }

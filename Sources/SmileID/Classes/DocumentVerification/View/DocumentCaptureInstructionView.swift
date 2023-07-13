@@ -17,7 +17,7 @@ public struct DocumentCaptureInstructionsView: View {
     public var body: some View {
         /// we're using the selfie capture view for now to show it's working
         let dummyDelegate = DummyDelegate()
-        CaptureInstructionView<SelfieCaptureView>(
+        CaptureInstructionView<DocumentCaptureView>(
             image: SmileIDResourcesHelper.InstructionsHeaderdDocumentIcon,
             title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Header"),
             callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Callout"),
@@ -29,10 +29,7 @@ public struct DocumentCaptureInstructionsView: View {
                                    instruction: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
                                    image: Constants.ImageName.clearImage),
             ],
-            detailView: SelfieCaptureView(
-                viewModel: SelfieCaptureViewModel(userId: "", jobId: "", isEnroll: false),
-                delegate: dummyDelegate
-            )
+            detailView: DocumentCaptureView(viewModel: viewModel)
         )
     }
 }
