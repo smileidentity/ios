@@ -147,11 +147,11 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
     func switchCamera(to position: AVCaptureDevice.Position) {
         self.checkPermissions()
         sessionQueue.async { [self] in
-            guard !self.session.isRunning else { return }
-            self.session.startRunning()
+            if !self.session.isRunning {
+                self.session.startRunning()
+            }
             self.session.beginConfiguration()
             defer { self.session.commitConfiguration() }
-
             if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
                 self.session.removeInput(currentInput)
             }
