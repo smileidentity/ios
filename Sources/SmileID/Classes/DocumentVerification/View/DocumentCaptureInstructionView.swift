@@ -32,7 +32,9 @@ public struct DocumentCaptureInstructionsView: View {
             detailView: SelfieCaptureView(
                 viewModel: SelfieCaptureViewModel(userId: "", jobId: "", isEnroll: false),
                 delegate: dummyDelegate
-            )
+            ),
+            // TO-DO: Get value from viewModel after document capture feature is complete
+            showAttribution: true
         )
     }
 }

@@ -14,13 +14,20 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var callOut: String
     private var instructions: [CaptureInstruction]
     private var detailView: TargetView
+    private var showAttribution: Bool
     @State private var goesToDetail: Bool = false
-    init(image: UIImage, title: String, callOut: String, instructions: [CaptureInstruction], detailView: TargetView) {
+    init(image: UIImage,
+         title: String,
+         callOut: String,
+         instructions: [CaptureInstruction],
+         detailView: TargetView,
+         showAttribution: Bool) {
         self.image = image
         self.title = title
         self.callOut = callOut
         self.instructions = instructions
         self.detailView = detailView
+        self.showAttribution = showAttribution
     }
 
     public var body: some View {
@@ -65,6 +72,10 @@ public struct CaptureInstructionView<TargetView: View>: View {
                                    isActive: $goesToDetail)
                     {
                         SmileButton(title: "Instructions.Action", clicked: { goesToDetail = true })
+                    }
+
+                    if showAttribution {
+                        Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                     }
                 }
             }
