@@ -43,7 +43,8 @@ public struct SmartSelfieInstructionsView: View {
                 viewModel: viewModel,
                 delegate: selfieCaptureDelegate ??
                     DummyDelegate()
-            )
+            ),
+            showAttribution: viewModel.showAttribution
         )
     }
 }
