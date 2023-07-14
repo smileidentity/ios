@@ -65,6 +65,7 @@ public class SmileIDResourcesHelper {
     public static var CheckBold = SmileIDResourcesHelper.image("CheckBold")!
     public static var Close = SmileIDResourcesHelper.image("Close")!
     public static var ArrowLeft = SmileIDResourcesHelper.image("ArrowLeft")!
+    public static var Capture = SmileIDResourcesHelper.image(Constants.ImageName.capture)!
 
     /// Size of font.
     public static let pointSize: CGFloat = 16

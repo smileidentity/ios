@@ -46,4 +46,14 @@ public struct EpilogueFont: FontType {
         SmileIDResourcesHelper.loadFontIfNeeded(name: Epilogue.bold.rawValue)
         return Font.custom(Epilogue.bold.rawValue, size: size)
     }
+
+    public static func mediumUIFont(with size: CGFloat) -> UIFont? {
+        SmileIDResourcesHelper.loadFontIfNeeded(name: Epilogue.medium.rawValue)
+        return UIFont(name: Epilogue.medium.rawValue, size: size)
+    }
+
+    public static func boldUIFont(with size: CGFloat) -> UIFont? {
+        SmileIDResourcesHelper.loadFontIfNeeded(name: Epilogue.bold.rawValue)
+        return UIFont(name: Epilogue.bold.rawValue, size: size)
+    }
 }
