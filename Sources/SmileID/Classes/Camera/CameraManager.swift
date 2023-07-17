@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 import SwiftUI
 
-protocol CameraManageable: AnyObject {
+protocol CameraManageable: AnyObject  {
     func switchCamera(to position: AVCaptureDevice.Position)
     func pauseSession()
     func resumeSession()
@@ -84,19 +84,6 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
       }
     }
 
-    private func configureCaptureSession() {
-        guard status == .unconfigured else {
-            return
-        }
-        session.beginConfiguration()
-        defer {
-            session.commitConfiguration()
-        }
-
-        addCameraInput(position: .front)
-        configureVideoOutput()
-    }
-
     private func addCameraInput(position: AVCaptureDevice.Position) {
         guard let camera = getCameraForPosition(position) else {
             set(error: .cameraUnavailable)
@@ -130,6 +117,7 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
     }
 
     private func configureVideoOutput() {
+        session.removeOutput(videoOutput)
         if session.canAddOutput(videoOutput) {
             session.addOutput(videoOutput)
             videoOutput.videoSettings =
@@ -137,7 +125,6 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
 
             let videoConnection = videoOutput.connection(with: .video)
             videoConnection?.videoOrientation = .portrait
-            videoConnection?.isVideoMirrored = true
         } else {
             set(error: .cannotAddOutput)
             status = .failed
@@ -148,15 +135,21 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
         self.checkPermissions()
         sessionQueue.async { [self] in
             if !self.session.isRunning {
-                self.session.startRunning()
+                if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
+                    self.session.removeInput(currentInput)
+                }
+                self.addCameraInput(position: position)
+                self.configureVideoOutput()
+                session.startRunning()
+            } else {
+                self.session.beginConfiguration()
+                if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
+                    self.session.removeInput(currentInput)
+                }
+                self.addCameraInput(position: position)
+                self.configureVideoOutput()
+                self.session.commitConfiguration()
             }
-            self.session.beginConfiguration()
-            defer { self.session.commitConfiguration() }
-            if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
-                self.session.removeInput(currentInput)
-            }
-            self.configureVideoOutput()
-            self.addCameraInput(position: position)
         }
     }
 
@@ -179,8 +172,10 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput,
                        didOutput sampleBuffer: CMSampleBuffer,
                        from connection: AVCaptureConnection) {
-        if let buffer = sampleBuffer.imageBuffer {
-            self.sampleBuffer = buffer
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
         }
+
+        self.sampleBuffer = imageBuffer
     }
 }
