@@ -85,7 +85,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         let maxX = allXs.max() ?? 0
         let minY = allYs.min() ?? 0
         let maxY = allYs.max() ?? 0
-        let boundingBox = CGRect(x: minX, y: minY, width: (maxX - minX) * 0.8, height: (maxY - minY) * 0.8)
+        let boundingBox = CGRect(x: minX, y: minY, width: (maxX - minX), height: (maxY - minY))
         return boundingBox
     }
 
