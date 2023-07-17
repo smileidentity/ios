@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import SwiftUI
 
 struct FaceOverlayView: View {
@@ -19,7 +20,27 @@ struct FaceOverlayView: View {
                                 .blendMode(.destinationOut)
                                 .frame(width: faceWidth,
                                        height: faceHeight)
+                                .background(GeometryReader { localGeometry in // local geometry reader
+                                    Color.clear.onReceive(Just(localGeometry.frame(in: .global))) { globalFrame in
+                                        if globalFrame.origin.x != model.faceLayoutGuideFrame.origin.x
+                                        {
+                                            let window = UIApplication
+                                                .shared
+                                                .connectedScenes
+                                                .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+                                                .last { $0.isKeyWindow }
+                                            if let rootView = window {
+                                                // Geometry reader's .global returns the frame in the screen's coordinate system.
+                                                let safeArea = rootView.screen.bounds.height - geometry.size.height
+                                                model.faceLayoutGuideFrame = CGRect(origin: CGPoint(x: globalFrame.origin.x,
+                                                                                                    y: globalFrame.origin.y - safeArea),
+                                                                                    size: globalFrame.size)
 
+                                            }
+
+                                        }
+                                    }
+                                })
                         )
                         .overlay(FaceShape()
                             .stroke(SmileID.theme.accent.opacity(0.4),
