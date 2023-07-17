@@ -3,7 +3,6 @@ import Combine
 import SwiftUI
 
 struct FaceOverlayView: View {
-    @State var agentMode = false
     @ObservedObject private(set) var model: SelfieCaptureViewModel
     var body: some View {
         GeometryReader { geometry in
@@ -64,12 +63,12 @@ struct FaceOverlayView: View {
                     .padding(.top, -((faceWidth)/2))
                 HStack(spacing: 10) {
                     Text("Agent Mode")
-                        .foregroundColor(agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent)
+                        .foregroundColor(model.agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent)
                         .font(SmileID.theme.header4)
                     Toggle("", isOn: $model.agentMode).labelsHidden()
                 }
                     .frame(width: 188, height: 46)
-                    .background(agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain)
+                    .background(model.agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain)
                     .cornerRadius(23)
                     .shadow(radius: 23)
                     .padding(.bottom, 35)
