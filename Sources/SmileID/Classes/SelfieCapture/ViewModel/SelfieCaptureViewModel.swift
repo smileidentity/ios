@@ -330,10 +330,11 @@ final class SelfieCaptureViewModel: ObservableObject {
         guard case let .faceFound(faceGeometry) = faceGeometryState else {
             return
         }
+        var orientation: CGImagePropertyOrientation = (isARSupported && !agentMode) ? .right : .upMirrored
         while (livenessImages.count < numberOfLivenessImages) &&
                 ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             guard let image = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 350, exif:
-                                                                    currentExif) else {
+                                                                    currentExif, orientation: orientation) else {
                 return
 
             }
@@ -350,10 +351,10 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                               faceGeometry: faceGeometry,
                                                               agentMode: agentMode,
                                                               finalSize: selfieImageSize,
-                                                              screenImageSize: viewFinderSize) else {
+                                                              screenImageSize: viewFinderSize, orientation: orientation) else {
                 return }
             guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
-                                                                        exif: currentExif) else {
+                                                                        exif: currentExif, orientation: orientation) else {
                 return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
