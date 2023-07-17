@@ -603,18 +603,18 @@ extension SelfieCaptureViewModel {
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
-        if boundingBox.width > 0.80 * faceLayoutGuideFrame.width {
+        if boundingBox.width > (0.80 * faceLayoutGuideFrame.width) {
             isAcceptableBounds = .detectedFaceTooLarge
             subject.send("Instructions.FaceClose")
-        } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {
+        } else if boundingBox.width < (faceLayoutGuideFrame.width * 0.25) {
             isAcceptableBounds = .detectedFaceTooSmall
             subject.send("Instructions.FaceFar")
         } else {
-            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
-                isAcceptableBounds = .detectedFaceOffCentre
-                subject.send("Instructions.Start")
-                resetCapture()
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 210 {
+            let isFaceInFrame =  boundingBox.minX >= faceLayoutGuideFrame.minX &&
+            boundingBox.maxX <= faceLayoutGuideFrame.maxX &&
+            boundingBox.maxY <= faceLayoutGuideFrame.maxY &&
+            boundingBox.minY >= faceLayoutGuideFrame.minY
+            if  !isFaceInFrame {
                 isAcceptableBounds = .detectedFaceOffCentre
                 subject.send("Instructions.Start")
                 resetCapture()
