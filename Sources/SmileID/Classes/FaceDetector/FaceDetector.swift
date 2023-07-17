@@ -16,29 +16,7 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
     func detectFaces(imageBuffer: CVImageBuffer) {
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler:
                                                                                 detectedFaceQualityRequest)
-        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest { [self] request, _ in
-            guard let results = request.results as? [VNFaceObservation], let viewDelegate = viewDelegate else {
-                model?.perform(action: .noFaceDetected)
-                return
-            }
-
-            if results.count > 1 {
-                model?.perform(action: .multipleFacesDetected)
-                return
-            }
-            guard let result = results.first, !result.boundingBox.isNaN else {
-                model?.perform(action: .noFaceDetected)
-                return
-            }
-            let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
-
-            let faceObservationModel = FaceGeometryModel(
-                boundingBox: convertedBoundingBox,
-                roll: result.roll ?? 0,
-                yaw: result.yaw ?? 0
-            )
-            model?.perform(action: .faceObservationDetected(faceObservationModel))
-        }
+        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
 
         // Use most recent models or fallback to older versions
         if #available(iOS 14.0, *) {
@@ -114,8 +92,7 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
                             imageBuffer: CVImageBuffer) {
         do {
             try sequenceHandler.perform(requests,
-                                        on: imageBuffer,
-                                        orientation: .upMirrored)
+                                        on: imageBuffer, orientation: .leftMirrored)
         } catch {
             print(error.localizedDescription)
         }
