@@ -84,7 +84,7 @@ final class SelfieCaptureViewModel: ObservableObject {
     private var userId: String
     private var jobId: String
     private var isEnroll: Bool
-    private var showAttribution: Bool
+    private (set) var showAttribution: Bool
     private var selfieImage: Data?
     private var currentExif: [String: Any]?
     private let subject = PassthroughSubject<String, Never>()
