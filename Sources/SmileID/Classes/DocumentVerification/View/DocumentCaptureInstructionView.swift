@@ -29,7 +29,7 @@ public struct DocumentCaptureInstructionsView: View {
                                    instruction: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
                                    image: Constants.ImageName.clearImage),
             ], captureType: .document,
-            detailView: DocumentCaptureView(viewModel: viewModel)
+            detailView: DocumentCaptureView(viewModel: viewModel),
             // TO-DO: Get value from viewModel after document capture feature is complete
             showAttribution: true
         )
