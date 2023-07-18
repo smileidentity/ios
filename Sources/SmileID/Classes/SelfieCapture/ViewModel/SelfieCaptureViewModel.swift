@@ -312,9 +312,13 @@ final class SelfieCaptureViewModel: ObservableObject {
         case .smileDirective:
             subject.send("Instructions.Smile")
         case .smileAction:
-            isSmiling = true
+            if livenessImages.count >= 3 {
+                isSmiling = true
+            }
         case .noSmile:
-            isSmiling = false
+            if livenessImages.count < 3 {
+                isSmiling = false
+            }
         }
     }
 
