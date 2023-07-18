@@ -7,7 +7,8 @@ struct DocumentCaptureView: View {
     init(viewModel: DocumentCaptureViewModel) {
         self.viewModel = viewModel
         camera = CameraView(cameraManager: viewModel.cameraManager)
-        UINavigationBar.appearance().titleTextAttributes = [.font : EpilogueFont.boldUIFont(with: 16)!, .foregroundColor : SmileID.theme.accent.uiColor()]
+        UINavigationBar.appearance().titleTextAttributes = [.font: EpilogueFont.boldUIFont(with: 16)!,
+            .foregroundColor: SmileID.theme.accent.uiColor()]
 
     }
 

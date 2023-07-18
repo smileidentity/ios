@@ -77,8 +77,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
                 })
                 VStack(spacing: 5) {
                     NavigationLink(destination: detailView,
-                                   isActive: $goesToDetail)
-                    {
+                                   isActive: $goesToDetail) {
                         SmileButton(title: captureType == .document ?
                                     "Action.TakePhoto" : "Instructions.Action",
                                     clicked: { goesToDetail = true })
@@ -87,7 +86,9 @@ public struct CaptureInstructionView<TargetView: View>: View {
                         NavigationLink(destination: detailView,
                                        isActive: $goesToDetail)
                         {
-                            SmileButton(style: .secondary, title: "Action.UploadPhoto", clicked: { goesToDetail = true })
+                            SmileButton(style: .secondary,
+                                        title: "Action.UploadPhoto",
+                                        clicked: { goesToDetail = true })
                         }
                     }
 

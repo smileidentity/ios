@@ -22,11 +22,15 @@ public struct DocumentCaptureInstructionsView: View {
             title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Header"),
             callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Callout"),
             instructions: [
-                CaptureInstruction(title: SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"),
-                                   instruction: SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLightBody"),
+                CaptureInstruction(title:
+                                    SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"),
+                                   instruction:
+                                    SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLightBody"),
                                    image: Constants.ImageName.light),
-                CaptureInstruction(title: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
-                                   instruction: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
+                CaptureInstruction(title:
+                                    SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
+                                   instruction:
+                                    SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
                                    image: Constants.ImageName.clearImage),
             ], captureType: .document,
             detailView: DocumentCaptureView(viewModel: viewModel),

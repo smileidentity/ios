@@ -19,8 +19,8 @@ struct DocumentOverlayView: View {
                                         .frame(width: docWidth, height: docHeight)
                                         .border(Color.gray, width: 10)
                                         .cornerRadius(16)
-                                        .blendMode(.destinationOut)
-                                    ,alignment: .center)
+                                        .blendMode(.destinationOut),
+                                    alignment: .center)
                                 .overlay(RoundedRectangle(cornerRadius: 16)
                                     .stroke(Color.gray,
                                             lineWidth: 10)
