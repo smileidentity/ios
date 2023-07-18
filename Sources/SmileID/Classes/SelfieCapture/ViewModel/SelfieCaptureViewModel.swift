@@ -2,7 +2,6 @@ import Foundation
 import ARKit
 import UIKit
 import Combine
-import SwiftUI
 
 protocol SelfieViewDelegate {
     func pauseARSession()
@@ -80,13 +79,14 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    // MARK: Public Properties
+    // MARK: Private Properties
     private var userId: String
     private var jobId: String
     private var isEnroll: Bool
     private var showAttribution: Bool
     private var selfieImage: Data?
     private var currentExif: [String: Any]?
+    private (set) var allowsAgentMode: Bool
     private let subject = PassthroughSubject<String, Never>()
     private (set) lazy var cameraManager: CameraManageable = CameraManager()
     private var faceDetector = FaceDetector()
@@ -146,16 +146,18 @@ final class SelfieCaptureViewModel: ObservableObject {
             captureImageIfNeeded()
         }
     }
-    var smartSelfieResult = PassthroughSubject<SmartSelfieResult, Error>()
+
     init(userId: String,
          jobId: String,
          isEnroll: Bool,
+         allowsAgentMode: Bool = false,
          showAttribution: Bool = true,
          cameraManager: CameraManageable? = nil) {
         self.userId = userId
         self.isEnroll = isEnroll
         self.jobId = jobId
         self.showAttribution = showAttribution
+        self.allowsAgentMode = allowsAgentMode
         faceDetector.model = self
         if let cameraManager = cameraManager {
             self.cameraManager = cameraManager
@@ -487,12 +489,8 @@ final class SelfieCaptureViewModel: ObservableObject {
             processingState = .endFlow
             if let error = error {
                 captureResultDelegate?.didError(error: error)
-                smartSelfieResult.send(completion: .failure(error))
                 return
             }
-            smartSelfieResult.send((selfieImage: selfieImage ?? Data(),
-                                    livenessImages: livenessImages,
-                                    jobStatusResponse: response))
             captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
                                               livenessImages: livenessImages,
                                               jobStatusResponse: response)
