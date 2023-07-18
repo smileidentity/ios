@@ -28,7 +28,7 @@ public struct DocumentCaptureInstructionsView: View {
                 CaptureInstruction(title: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
                                    instruction: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
                                    image: Constants.ImageName.clearImage),
-            ],
+            ], captureType: .document,
             detailView: DocumentCaptureView(viewModel: viewModel)
         )
     }
