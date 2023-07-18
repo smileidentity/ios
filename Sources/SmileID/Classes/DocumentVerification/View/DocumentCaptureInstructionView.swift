@@ -30,6 +30,8 @@ public struct DocumentCaptureInstructionsView: View {
                                    image: Constants.ImageName.clearImage),
             ], captureType: .document,
             detailView: DocumentCaptureView(viewModel: viewModel)
+            // TO-DO: Get value from viewModel after document capture feature is complete
+            showAttribution: true
         )
     }
 }

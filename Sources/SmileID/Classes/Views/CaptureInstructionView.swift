@@ -20,19 +20,22 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var instructions: [CaptureInstruction]
     private var detailView: TargetView
     private var captureType: CaptureType
+    private var showAttribution: Bool
     @State private var goesToDetail: Bool = false
     init(image: UIImage,
          title: String,
          callOut: String,
          instructions: [CaptureInstruction],
          captureType: CaptureType,
-         detailView: TargetView) {
+         detailView: TargetView,
+         showAttribution: Bool) {
         self.image = image
         self.title = title
         self.callOut = callOut
         self.instructions = instructions
         self.detailView = detailView
         self.captureType = captureType
+        self.showAttribution = showAttribution
     }
 
     public var body: some View {
@@ -86,6 +89,10 @@ public struct CaptureInstructionView<TargetView: View>: View {
                         {
                             SmileButton(style: .secondary, title: "Action.UploadPhoto", clicked: { goesToDetail = true })
                         }
+                    }
+
+                    if showAttribution {
+                        Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                     }
                 }
             }
