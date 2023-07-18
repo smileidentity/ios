@@ -2,6 +2,7 @@ import Foundation
 import ARKit
 import UIKit
 import Combine
+import SwiftUI
 
 protocol SelfieViewDelegate {
     func pauseARSession()
@@ -145,7 +146,7 @@ final class SelfieCaptureViewModel: ObservableObject {
             captureImageIfNeeded()
         }
     }
-
+    var smartSelfieResult = PassthroughSubject<SmartSelfieResult, Error>()
     init(userId: String,
          jobId: String,
          isEnroll: Bool,
@@ -330,7 +331,16 @@ final class SelfieCaptureViewModel: ObservableObject {
         guard case let .faceFound(faceGeometry) = faceGeometryState else {
             return
         }
-        var orientation: CGImagePropertyOrientation = (isARSupported && !agentMode) ? .right : .upMirrored
+        var orientation: CGImagePropertyOrientation
+
+        if (isARSupported && !agentMode) {
+            orientation = .right
+        } else if (!isARSupported && !agentMode) {
+           orientation = .upMirrored
+        } else {
+            orientation = .up
+        }
+
         while (livenessImages.count < numberOfLivenessImages) &&
                 ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             guard let image = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 350, exif:
@@ -477,8 +487,12 @@ final class SelfieCaptureViewModel: ObservableObject {
             processingState = .endFlow
             if let error = error {
                 captureResultDelegate?.didError(error: error)
+                smartSelfieResult.send(completion: .failure(error))
                 return
             }
+            smartSelfieResult.send((selfieImage: selfieImage ?? Data(),
+                                    livenessImages: livenessImages,
+                                    jobStatusResponse: response))
             captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
                                               livenessImages: livenessImages,
                                               jobStatusResponse: response)
@@ -625,6 +639,7 @@ extension SelfieCaptureViewModel {
         }
     }
 
+    //TO-DO: Fix roll and yaw
     func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
         // Roll values differ because back camera feed is in landscape
         let maxRoll = agentMode || !isARSupported ? 2.0 : 0.5
