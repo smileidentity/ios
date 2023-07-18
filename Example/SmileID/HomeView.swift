@@ -19,6 +19,7 @@ struct HomeView: View {
                     })
                     .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment,
                            content: { SmileID.smartSelfieEnrollmentScreen(userId: viewModel.generateUserID(),
+                                                                          allowAgentMode: true,
                                                                           delegate: viewModel) })
                     Button(action: { self.viewModel.handleSmartSelfieAuthTap() },
                            label: {
