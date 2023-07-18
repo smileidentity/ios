@@ -24,24 +24,24 @@ class ImageUtils {
         let trueImageSize = CGSize(width: imagewidth, height: screenImageSize.height)
 
         // ratio of the true image width to displayed image width
-        let ycuttoffregionAgentMode: CGFloat = max(imageHeight, screenImageSize.width) / min(imageHeight, screenImageSize.width)
         let xcutoffregion: CGFloat = max(imagewidth, screenImageSize.width) / min(imagewidth, screenImageSize.width)
-        let ycutoffregion: CGFloat = max(imageHeight, screenImageSize.height) / min(imageHeight, screenImageSize.height)
+        var ycutoffregion: CGFloat = max(imageHeight, screenImageSize.height) / min(imageHeight, screenImageSize.height)
+
+        // if pixel bufffer is gotten from AVCaptureSession, ycutoff is not required
+        if orientation == .up || orientation ==  .upMirrored {
+            ycutoffregion = 1
+        }
         // scale down the original buffer to match the size of whats displayed on screen
         guard let scaledDownBuffer = resizePixelBuffer(buffer, size: trueImageSize) else { return nil }
 
         // calculate crop rect
 
         let cropL = max(faceGeometry.boundingBox.width, faceGeometry.boundingBox.height)
-        let cropRect = agentMode ? CGRect(x: faceGeometry.boundingBox.origin.y * ycuttoffregionAgentMode,
-                                          y: faceGeometry.boundingBox.origin.y * ycuttoffregionAgentMode,
-                                          width: cropL,
-                                          height: cropL) : CGRect(x: faceGeometry.boundingBox.origin.x * xcutoffregion,
+        let cropRect = CGRect(x: faceGeometry.boundingBox.origin.x * xcutoffregion,
                                                                   y: faceGeometry.boundingBox.origin.y * ycutoffregion,
                                                                   width: cropL,
                                                                   height: cropL)
-        let finalrect = agentMode ? increaseRect(rect: cropRect,
-                                                 byPercentage: 1.5) : increaseRect(rect: cropRect, byPercentage: 1)
+        let finalrect = increaseRect(rect: cropRect, byPercentage: 1)
 
         // crop face from the buffer returned in the above operation and return jpg
             return cropFace(scaledDownBuffer,

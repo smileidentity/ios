@@ -23,6 +23,7 @@ struct EnterUserIDView: View {
                     SmileTextField(field: $userId, placeholder: "User ID")
                         .multilineTextAlignment(.center)
                     NavigationLink(destination: SmileID.smartSelfieAuthenticationScreen(userId: userId,
+                                                                                        allowAgentMode: true,
                                                                                         delegate: viewModel)
                         .navigationBarBackButtonHidden(true), isActive: $goToAuth ) {
                     }

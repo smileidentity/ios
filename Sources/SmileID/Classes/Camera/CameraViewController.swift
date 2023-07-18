@@ -17,12 +17,9 @@ class PreviewView: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if layedOutSubviews == false {
-            configurePreviewLayer()
-            layedOutSubviews = true
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configurePreviewLayer()
     }
 
     func configurePreviewLayer() {
@@ -30,7 +27,6 @@ class PreviewView: UIViewController {
         previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer?.videoGravity = .resizeAspectFill
         previewLayer?.frame = view.bounds
-        previewLayer?.connection?.videoOrientation = .portrait
         view.layer.addSublayer(previewLayer!)
     }
 }
@@ -40,21 +36,6 @@ extension PreviewView: FaceDetectorDelegate {
       guard let previewLayer = previewLayer else {
           return .zero
       }
-
-
-        let normalizedRect = cameraManager?.cameraPositon == .back ? rect : CGRect(x: rect.origin.y,
-                                                                                   y: rect.origin.x,
-                                                                                   width: rect.height,
-                                                                                   height: rect.width)
-
-        let transformedRect = previewLayer.layerRectConverted(fromMetadataOutputRect: normalizedRect)
-
-        let mirroredRect = CGRect(x: previewLayer.bounds.width - transformedRect.origin.x - transformedRect.width,
-                                  y: previewLayer.bounds.height - transformedRect.origin.y - transformedRect.height,
-                                  width: transformedRect.width,
-                                  height: transformedRect.height)
-
-        return mirroredRect
-
+        return previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
     }
 }

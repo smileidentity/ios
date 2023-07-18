@@ -38,14 +38,21 @@ public class SmileID {
 
     public class func smartSelfieEnrollmentScreen(userId: String = "user-\(UUID().uuidString)",
                                                   jobId: String = "job-\(UUID().uuidString)",
+                                                  allowAgentMode: Bool = false,
+                                                  showAttribution: Bool = true,
                                                   delegate: SmartSelfieResultDelegate)
     -> SmartSelfieInstructionsView {
-        let viewModel = SelfieCaptureViewModel(userId: userId, jobId: jobId, isEnroll: true)
+        let viewModel = SelfieCaptureViewModel(userId: userId,
+                                               jobId: jobId,
+                                               isEnroll: true,
+                                               allowsAgentMode: allowAgentMode,
+                                               showAttribution: showAttribution)
         return SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
     }
 
     public class func documentVerificationScreen(userId _: String = "user-\(UUID().uuidString)",
                                                  jobId _: String = "job-\(UUID().uuidString)",
+                                                 showAttribution: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
     -> DocumentCaptureInstructionsView {
         let viewModel = DocumentCaptureViewModel()
@@ -54,9 +61,15 @@ public class SmileID {
 
     public class func smartSelfieAuthenticationScreen(userId: String,
                                                       jobId: String = "job-\(UUID().uuidString)",
+                                                      allowAgentMode: Bool = false,
+                                                      showAttribution: Bool = true,
                                                       delegate: SmartSelfieResultDelegate)
     -> SmartSelfieInstructionsView {
-        let viewModel = SelfieCaptureViewModel(userId: userId, jobId: jobId, isEnroll: false)
+        let viewModel = SelfieCaptureViewModel(userId: userId,
+                                               jobId: jobId,
+                                               isEnroll: false,
+                                               allowsAgentMode: allowAgentMode,
+                                               showAttribution: showAttribution)
         return SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
     }
 
