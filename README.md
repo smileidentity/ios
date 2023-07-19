@@ -63,8 +63,8 @@ embed the views in a `UIHostingController`. All views are available under the `S
 
 e.g.
 ```swift
-SmileID.SmartSelfieEnrollment()
-SmileID.SmartSelfieAuthentication()
+SmileID.smartSelfieEnrollmentScreen()
+SmileID.smartSelfieAuthenticationScreen()
 ```
 
 #### Theming
