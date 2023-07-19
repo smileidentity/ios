@@ -27,14 +27,10 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
 
     public var body: some View {
         GeometryReader { geometry in
-            let ovalSize = ovalSize(from: geometry)
             ZStack {
                 if ARFaceTrackingConfiguration.isSupported && viewModel.agentMode == false {
                     arView
                         .onAppear {
-                            viewModel.faceLayoutGuideFrame =
-                            CGRect(origin: .zero,
-                                   size: ovalSize)
                             arView?.preview.model = viewModel
                             viewModel.viewFinderSize = geometry.size
                             viewModel.selfieViewDelegate = self
@@ -43,13 +39,10 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                     camera
                         .onAppear {
                             viewModel.captureResultDelegate = delegate
-                            viewModel.faceLayoutGuideFrame =
-                            CGRect(origin: .zero,
-                                   size: ovalSize)
                             viewModel.viewDelegate = camera!.preview
                             viewModel.viewFinderSize = geometry.size
                             viewModel.cameraManager.switchCamera(to: viewModel.agentMode ? .back : .front)
-                        }.scaleEffect(1.2, anchor: .top)
+                        }
                 }
                 faceOverlay
                 switch viewModel.processingState {
@@ -62,9 +55,8 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                 case .error:
                     ModalPresenter { ErrorView(viewModel: viewModel) }
                 default:
-                    Text("")
+                    Color.clear
                 }
-
             }
         }
         .edgesIgnoringSafeArea(.all)
@@ -106,15 +98,10 @@ struct FaceBoundingBoxView: View {
             Rectangle().fill(Color.clear)
         case .faceFound(let faceGeometryModel):
             Rectangle()
-                .path(in: CGRect(
-                    x: faceGeometryModel.boundingBox.origin.x,
-                    y: faceGeometryModel.boundingBox.origin.y,
-                    width: faceGeometryModel.boundingBox.width,
-                    height: faceGeometryModel.boundingBox.height
-                ))
+                .path(in: faceGeometryModel.boundingBox)
                 .stroke(Color.yellow, lineWidth: 2.0)
         case .errored:
-            Rectangle().fill(Color.clear)
+            Rectangle().fill(Color.yellow)
         }
     }
 }

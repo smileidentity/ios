@@ -79,13 +79,14 @@ final class SelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    // MARK: Public Properties
+    // MARK: Private Properties
     private var userId: String
     private var jobId: String
     private var isEnroll: Bool
     private (set) var showAttribution: Bool
     private var selfieImage: Data?
     private var currentExif: [String: Any]?
+    private (set) var allowsAgentMode: Bool
     private let subject = PassthroughSubject<String, Never>()
     private (set) lazy var cameraManager: CameraManageable = CameraManager()
     private var faceDetector = FaceDetector()
@@ -149,12 +150,14 @@ final class SelfieCaptureViewModel: ObservableObject {
     init(userId: String,
          jobId: String,
          isEnroll: Bool,
+         allowsAgentMode: Bool = false,
          showAttribution: Bool = true,
          cameraManager: CameraManageable? = nil) {
         self.userId = userId
         self.isEnroll = isEnroll
         self.jobId = jobId
         self.showAttribution = showAttribution
+        self.allowsAgentMode = allowsAgentMode
         faceDetector.model = self
         if let cameraManager = cameraManager {
             self.cameraManager = cameraManager
@@ -309,9 +312,13 @@ final class SelfieCaptureViewModel: ObservableObject {
         case .smileDirective:
             subject.send("Instructions.Smile")
         case .smileAction:
-            isSmiling = true
+            if livenessImages.count >= 3 {
+                isSmiling = true
+            }
         case .noSmile:
-            isSmiling = false
+            if livenessImages.count < 3 {
+                isSmiling = false
+            }
         }
     }
 
@@ -330,10 +337,20 @@ final class SelfieCaptureViewModel: ObservableObject {
         guard case let .faceFound(faceGeometry) = faceGeometryState else {
             return
         }
+        var orientation: CGImagePropertyOrientation
+
+        if (isARSupported && !agentMode) {
+            orientation = .right
+        } else if (!isARSupported && !agentMode) {
+           orientation = .upMirrored
+        } else {
+            orientation = .up
+        }
+
         while (livenessImages.count < numberOfLivenessImages) &&
                 ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
             guard let image = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 350, exif:
-                                                                    currentExif) else {
+                                                                    currentExif, orientation: orientation) else {
                 return
 
             }
@@ -350,10 +367,10 @@ final class SelfieCaptureViewModel: ObservableObject {
                                                               faceGeometry: faceGeometry,
                                                               agentMode: agentMode,
                                                               finalSize: selfieImageSize,
-                                                              screenImageSize: viewFinderSize) else {
+                                                              screenImageSize: viewFinderSize, orientation: orientation) else {
                 return }
             guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
-                                                                        exif: currentExif) else {
+                                                                        exif: currentExif, orientation: orientation) else {
                 return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
@@ -603,18 +620,18 @@ extension SelfieCaptureViewModel {
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
-        if boundingBox.width > 0.80 * faceLayoutGuideFrame.width {
+        if boundingBox.width > (0.80 * faceLayoutGuideFrame.width) {
             isAcceptableBounds = .detectedFaceTooLarge
             subject.send("Instructions.FaceClose")
-        } else if boundingBox.width < faceLayoutGuideFrame.width * 0.25 {
+        } else if boundingBox.width < (faceLayoutGuideFrame.width * 0.25) {
             isAcceptableBounds = .detectedFaceTooSmall
             subject.send("Instructions.FaceFar")
         } else {
-            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 100 {
-                isAcceptableBounds = .detectedFaceOffCentre
-                subject.send("Instructions.Start")
-                resetCapture()
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 210 {
+            let isFaceInFrame =  boundingBox.minX >= faceLayoutGuideFrame.minX &&
+            boundingBox.maxX <= faceLayoutGuideFrame.maxX &&
+            boundingBox.maxY <= faceLayoutGuideFrame.maxY &&
+            boundingBox.minY >= faceLayoutGuideFrame.minY
+            if  !isFaceInFrame {
                 isAcceptableBounds = .detectedFaceOffCentre
                 subject.send("Instructions.Start")
                 resetCapture()
@@ -624,6 +641,7 @@ extension SelfieCaptureViewModel {
         }
     }
 
+    //TO-DO: Fix roll and yaw
     func updateAcceptableRollYaw(using roll: Double, yaw: Double) {
         // Roll values differ because back camera feed is in landscape
         let maxRoll = agentMode || !isARSupported ? 2.0 : 0.5
