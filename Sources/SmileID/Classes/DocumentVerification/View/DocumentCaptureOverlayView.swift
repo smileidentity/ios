@@ -29,7 +29,7 @@ struct DocumentOverlayView: View {
 
                         }
                         VStack(alignment: .center, spacing: 16) {
-                            Text("Front of National ID Card")
+                            Text("Front of ID Card")
                                 .multilineTextAlignment(.center)
                                 .font(SmileID.theme.header4)
                                 .foregroundColor(SmileID.theme.accent)
