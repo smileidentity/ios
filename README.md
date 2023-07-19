@@ -70,7 +70,7 @@ SmileID.SmartSelfieAuthentication()
 #### Theming
 
 To customise the colors and typography of the SDK screens, you need to create a 
-class that conforms to SmileIdTheme protocol. This protocol exposes the cutomisable UI elements on the SDK.
+class that conforms to `SmileIdTheme` protocol. This protocol exposes the cutomisable UI elements on the SDK.
 
 ## API
 
