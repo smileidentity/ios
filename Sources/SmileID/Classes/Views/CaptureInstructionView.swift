@@ -1,5 +1,10 @@
 import SwiftUI
 
+enum CaptureType {
+    case selfie
+    case document
+}
+
 public struct CaptureInstruction {
     var title: String
     var instruction: String
@@ -14,12 +19,14 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var callOut: String
     private var instructions: [CaptureInstruction]
     private var detailView: TargetView
+    private var captureType: CaptureType
     private var showAttribution: Bool
     @State private var goesToDetail: Bool = false
     init(image: UIImage,
          title: String,
          callOut: String,
          instructions: [CaptureInstruction],
+         captureType: CaptureType,
          detailView: TargetView,
          showAttribution: Bool) {
         self.image = image
@@ -27,6 +34,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
         self.callOut = callOut
         self.instructions = instructions
         self.detailView = detailView
+        self.captureType = captureType
         self.showAttribution = showAttribution
     }
 
@@ -37,7 +45,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
                     VStack {
                         Image(uiImage: image)
                             .padding(.bottom, 27)
-                        VStack(spacing: 32) {
+                        VStack(spacing: 16) {
                             Text(title)
                                 .multilineTextAlignment(.center)
                                 .font(SmileID.theme.header1)
@@ -67,15 +75,26 @@ public struct CaptureInstructionView<TargetView: View>: View {
                     Image(uiImage: SmileIDResourcesHelper.Close)
                         .padding()
                 })
-                VStack(spacing: 18) {
+                VStack(spacing: 5) {
                     NavigationLink(destination: detailView,
-                                   isActive: $goesToDetail)
-                    {
-                        SmileButton(title: "Instructions.Action", clicked: { goesToDetail = true })
+                                   isActive: $goesToDetail) {
+                        SmileButton(title: captureType == .document ?
+                                    "Action.TakePhoto" : "Instructions.Action",
+                                    clicked: { goesToDetail = true })
+                    }
+                    if captureType == .document {
+                        NavigationLink(destination: detailView,
+                                       isActive: $goesToDetail)
+                        {
+                            SmileButton(style: .alternate,
+                                        title: "Action.UploadPhoto",
+                                        clicked: { goesToDetail = true })
+                        }
                     }
 
                     if showAttribution {
                         Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                            .padding()
                     }
                 }
             }

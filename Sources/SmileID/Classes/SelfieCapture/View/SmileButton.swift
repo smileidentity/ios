@@ -5,6 +5,7 @@ public struct SmileButton: View {
     public enum Style {
         case primary
         case secondary
+        case alternate
         case destructive
     }
 
@@ -42,6 +43,10 @@ public struct SmileButton: View {
         case .destructive:
             titleColor = SmileID.theme.error.opacity(0.8)
             backgroundColor = .clear
+            borderColor = .clear
+        case .alternate:
+            backgroundColor = .clear
+            titleColor = SmileID.theme.accent
             borderColor = .clear
         }
     }
