@@ -5,7 +5,7 @@ public struct PrepUploadRequest: Codable {
     var partnerParams: PartnerParams
     var callbackUrl: String? = ""
     var partnerId = SmileID.config.partnerId
-    var sourceSdk = "IOS"
+    var sourceSdk = "ios"
     // TO-DO: Fetch version dynamically
     var sourceSdkVersion = "10.0.0-beta01"
     var timestamp = String(Date().millisecondsSince1970)
