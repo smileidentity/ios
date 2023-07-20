@@ -4,20 +4,20 @@ import Combine
 @testable import SmileID
 
 class EnhancedKycTest: BaseTestCase {
-    func testShouldDecodeEnhancedKycAsyncResponseJson() {
+    func testShouldDecodeEnhancedKycAsyncResponseJson() throws {
         // given
         let json = """
                    {"success": true}
                    """.data(using: .ascii)!
 
         // when
-        let response = try! JSONDecoder().decode(EnhancedKycAsyncResponse.self, from: json)
+        let response = try JSONDecoder().decode(EnhancedKycAsyncResponse.self, from: json)
 
         // then
         assert(response.success)
     }
 
-    func testShouldIncludeCallbackUrlForEnhancedKycAsync() {
+    func testShouldIncludeCallbackUrlForEnhancedKycAsync() throws {
         // given
         let request = EnhancedKycRequest(
                 country: "country",
@@ -30,7 +30,7 @@ class EnhancedKycTest: BaseTestCase {
         )
 
         // when
-        let json = String(decoding: try! JSONEncoder().encode(request), as: UTF8.self)
+        let json = String(decoding: try JSONEncoder().encode(request), as: UTF8.self)
 
         // then
         assert(json.contains("callback_url"))
