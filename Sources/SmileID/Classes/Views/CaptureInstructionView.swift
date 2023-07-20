@@ -86,7 +86,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
                         NavigationLink(destination: detailView,
                                        isActive: $goesToDetail)
                         {
-                            SmileButton(style: .secondary,
+                            SmileButton(style: .alternate,
                                         title: "Action.UploadPhoto",
                                         clicked: { goesToDetail = true })
                         }

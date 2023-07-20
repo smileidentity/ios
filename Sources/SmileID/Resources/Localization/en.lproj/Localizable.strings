@@ -23,7 +23,7 @@
 "Instructions.Start" = "Position face in the oval";
 "Instructions.Quality" = "Move to well lit area";
 "Instructions.Unstable" = "Put your face inside the oval frame and wait until it turns green";
-"Instructions.Document.Header" = "Submit Front of \n ID";
+"Instructions.Document.Header" = "Submit Front of ID";
 "Instructions.Document.Callout" = "We'll use it to verify your identity. \nPlease follow the instructions below";
 "Instructions.Document.GoodLightBody" = "Make sure your ID image is taken in a well-lit environment. Ensure the ID is clear and visible.";
 "Instructions.Document.ClearImageBody" = "Take clear photos. Ensure the photo or scan of the ID card you submit is clear and not blurry";
