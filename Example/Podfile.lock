@@ -1,6 +1,6 @@
 PODS:
   - netfox (1.21.0)
-  - SmileID (0.0.0):
+  - SmileID (10.0.0-beta02):
     - Zip (~> 2.1.0)
   - Zip (2.1.2)
 
@@ -19,9 +19,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
-  SmileID: 752a584b9ad551f8f5d92bcfba9cf12d4c79f234
+  SmileID: 21a4f9d20f167575f0b89d5880508eec7acaa715
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: d298763077a7ce4ff68cfcfd892f57a70c2c00bd
+PODFILE CHECKSUM: 851e52c3dd7f969f6114ffcdbf8cce0faa2492fb
 
 COCOAPODS: 1.12.1
