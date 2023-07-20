@@ -44,3 +44,11 @@
 "Document.Clear" = "Make sure all corners are \n visible and there is no glare";
 "Action.TakePhoto" = "Take Photo";
 "Action.UploadPhoto" = "Upload Photo";
+"Document.Confirmation.Header" = "Is  the document clear and readable?";
+"Document.Confirmation.Callout" = "Make sure all corners of the document are visible and there is no glare";
+"Document.Confirmation.Accept" = "Yes, my ID is readable";
+"Document.Confirmation.Decline" = "No, retake photo";
+"Document.Processing.Header" = "Uploading Document";
+"Document.Processing.Callout" = "Just a few more seconds";
+"Document.Complete.Header" = "Document Submitted";
+"Document.Complete.Callout" = "We are verifying your information. You can now proceed.";
