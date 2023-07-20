@@ -94,6 +94,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
 
                     if showAttribution {
                         Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                            .padding()
                     }
                 }
             }
