@@ -31,7 +31,9 @@ struct HomeView: View {
                 }
                 HStack(spacing: 15) {
                     GeometryReader { geo in
-                        Button(action: { self.viewModel.handleDocumentVerificationTap() }) {
+                        Button {
+                            self.viewModel.handleDocumentVerificationTap()
+                        } label: {
                             ProductCell(productImage: "document", productName: "Document \nVerification")
                         }
                         .sheet(isPresented: $viewModel.presentDocumentVerification,
