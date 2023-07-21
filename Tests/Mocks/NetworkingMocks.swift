@@ -78,7 +78,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func doEnhancedKycAsync(request: EnhancedKycRequest) -> Combine.AnyPublisher<EnhancedKycAsyncResponse, Error> {
+    func doEnhancedKycAsync(request: EnhancedKycRequest) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)

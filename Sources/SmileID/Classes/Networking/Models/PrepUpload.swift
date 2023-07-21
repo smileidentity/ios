@@ -6,8 +6,7 @@ public struct PrepUploadRequest: Codable {
     var callbackUrl: String? = ""
     var partnerId = SmileID.config.partnerId
     var sourceSdk = "ios"
-    // TO-DO: Fetch version dynamically
-    var sourceSdkVersion = "10.0.0-beta01"
+    var sourceSdkVersion = SmileID.version
     var timestamp = String(Date().millisecondsSince1970)
     var signature = ""
     var allowNewEnroll = "true" /// backend is broken needs these as strings

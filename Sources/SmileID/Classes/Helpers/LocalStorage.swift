@@ -27,12 +27,12 @@ class LocalStorage {
             let fileName = filename(for: "liveness")
             let url =  try write(imageData, to: destinationFolder.appendingPathComponent(fileName))
             urls.append(url)
-            return UploadImageInfo(imageTypeId: .livenessPngOrJpgFile,fileName: fileName)
+            return UploadImageInfo(imageTypeId: .livenessJpgFile,fileName: fileName)
         })
         let fileName = filename(for: "selfie")
         let previewUrl = try write(previewImage, to: destinationFolder.appendingPathComponent(fileName))
         urls.append(previewUrl)
-        imageInfoArray.append(UploadImageInfo(imageTypeId: .selfiePngOrJpgFile,fileName: fileName))
+        imageInfoArray.append(UploadImageInfo(imageTypeId: .selfieJpgFile,fileName: fileName))
         let jsonData = try jsonEncoder.encode(UploadRequest(images: imageInfoArray))
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
         urls.append(jsonUrl)
@@ -96,13 +96,13 @@ class LocalStorage {
 
 fileprivate extension Data {
     var asLivenessImageInfo: UploadImageInfo {
-        return UploadImageInfo(imageTypeId: .livenessPngOrJpgBase64,
+        return UploadImageInfo(imageTypeId: .livenessJpgBase64,
                                fileName: self.base64EncodedString()
         )
     }
 
     var asSelfieImageInfo: UploadImageInfo {
-        return UploadImageInfo(imageTypeId: .selfiePngOrJpgBase64,
+        return UploadImageInfo(imageTypeId: .selfieJpgBase64,
                                fileName: self.base64EncodedString())
     }
 }

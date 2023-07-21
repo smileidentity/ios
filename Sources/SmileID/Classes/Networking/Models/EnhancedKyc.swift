@@ -41,8 +41,4 @@ public struct EnhancedKycRequest: Codable {
 
 public struct EnhancedKycAsyncResponse: Codable {
     public var success: Bool
-
-    enum CodingKeys: String, CodingKey {
-        case success
-    }
 }

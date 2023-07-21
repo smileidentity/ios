@@ -13,7 +13,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         let partnerID = SmileID.configuration.partnerId
-        versionLabel.text = "Partner \(partnerID) - Version \(VersionNames().version)"
+        versionLabel.text = "Partner \(partnerID) - Version \(SmileID.version)"
     }
 
     @IBAction func onEnvironmentToggle(_ sender: UIBarButtonItem) {
