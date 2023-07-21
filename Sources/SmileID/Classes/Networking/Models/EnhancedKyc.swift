@@ -16,8 +16,7 @@ public struct EnhancedKycRequest: Codable {
     public var timestamp = String(Date().millisecondsSince1970)
     public var partnerId: String = SmileID.config.partnerId
     public var sourceSdk: String = "ios"
-    // TO-DO: Fetch version dynamically
-    public var sourceSdkVersion = "10.0.0-beta01"
+    public var sourceSdkVersion = SmileID.version
 
     enum CodingKeys: String, CodingKey {
         case country
