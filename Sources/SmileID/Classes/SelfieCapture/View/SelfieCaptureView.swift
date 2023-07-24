@@ -49,9 +49,14 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                 case .confirmation:
                     ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
                 case .inProgress:
-                    ModalPresenter(centered: true) { ProcessingView() }
+                    ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.FaceOutline,
+                                                                    titleKey: "Confirmation.ProcessingSelfie",
+                                                                    calloutKey: "Confirmation.Time")
+                    }
                 case .complete:
-                    ModalPresenter { SuccessView(viewModel: viewModel) }
+                    ModalPresenter { SuccessView(titleKey: "Confirmation.SelfieCaptureComplete",
+                                                 bodyKey: "Confirmation.SuccessBody",
+                                                 clicked: { viewModel.handleCompletion() }) }
                 case .error:
                     ModalPresenter { ErrorView(viewModel: viewModel) }
                 default:

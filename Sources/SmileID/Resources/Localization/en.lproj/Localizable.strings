@@ -32,7 +32,7 @@
 "Confirmation.FaceClear" = "Make sure your whole face is \n visible and clear";
 "Confirmation.YesUse" = "Yes, use this";
 "Confirmation.Retake" = "No, retake Selfie";
-"Confirmation.Processing" = "Processing Selfie";
+"Confirmation.ProcessingSelfie" = "Processing Selfie";
 "Confirmation.Time" = "Just a few more seconds";
 "Confirmation.SelfieCaptureComplete" = "Selfie Capture Complete";
 "Confirmation.SuccessBody" = "Your selfie was successfully taken. \n You can now proceed.";
