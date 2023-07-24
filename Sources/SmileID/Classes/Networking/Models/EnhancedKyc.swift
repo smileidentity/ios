@@ -1,22 +1,52 @@
 import Foundation
 
 public struct EnhancedKycRequest: Codable {
-    public var country: String
-    public var idType: String
-    public var idNumber: String
-    public var firstName: String?
-    public var middleName: String?
-    public var lastName: String?
-    public var dob: String?
-    public var phoneNumber: String?
-    public var bankCode: String?
-    public var callbackUrl: String?
-    public var partnerParams: PartnerParams
-    public var signature = ""
-    public var timestamp = String(Date().millisecondsSince1970)
-    public var partnerId: String = SmileID.config.partnerId
-    public var sourceSdk: String = "ios"
-    public var sourceSdkVersion = SmileID.version
+    public let country: String
+    public let idType: String
+    public let idNumber: String
+    public let firstName: String?
+    public let middleName: String?
+    public let lastName: String?
+    public let dob: String?
+    public let phoneNumber: String?
+    public let bankCode: String?
+    public let callbackUrl: String?
+    public let partnerParams: PartnerParams
+    public let timestamp: String
+    public let signature: String
+    public let partnerId: String = SmileID.config.partnerId
+    public let sourceSdk: String = "ios"
+    public let sourceSdkVersion = SmileID.version
+    
+    public init(
+        country: String,
+        idType: String,
+        idNumber: String,
+        firstName: String? = nil,
+        middleName: String? = nil,
+        lastName: String? = nil,
+        dob: String? = nil,
+        phoneNumber: String? = nil,
+        bankCode: String? = nil,
+        callbackUrl: String?,
+        partnerParams: PartnerParams,
+        timestamp: String,
+        signature: String
+    ) {
+        self.country = country
+        self.idType = idType
+        self.idNumber = idNumber
+        self.firstName = firstName
+        self.middleName = middleName
+        self.lastName = lastName
+        self.dob = dob
+        self.phoneNumber = phoneNumber
+        self.bankCode = bankCode
+        self.callbackUrl = callbackUrl
+        self.partnerParams = partnerParams
+        self.timestamp = timestamp
+        self.signature = signature
+    }
 
     enum CodingKeys: String, CodingKey {
         case country

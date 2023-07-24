@@ -26,6 +26,7 @@ class EnhancedKycTest: BaseTestCase {
                 callbackUrl: "callbackUrl",
                 partnerParams: PartnerParams(jobId: "", userId: "", jobType: .enhancedKyc),
                 signature: "signature",
+                timestamp: "timestamp",
                 partnerId: "partnerId"
         )
 
