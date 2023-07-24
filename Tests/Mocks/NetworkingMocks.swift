@@ -77,6 +77,18 @@ class MockSmileIdentityService: SmileIDServiceable {
                 .eraseToAnyPublisher()
         }
     }
+
+    func doEnhancedKycAsync(request: EnhancedKycRequest) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
+        if MockHelper.shouldFail {
+            let error = SmileIDError.request(URLError(.resourceUnavailable))
+            return Fail(error: error)
+                    .eraseToAnyPublisher()
+        } else {
+            let response = EnhancedKycAsyncResponse(success: true)
+            return Result.Publisher(response)
+                    .eraseToAnyPublisher()
+        }
+    }
 }
 
 class MockResultDelegate: SmartSelfieResultDelegate {

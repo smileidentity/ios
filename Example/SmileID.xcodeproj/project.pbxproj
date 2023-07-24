@@ -25,6 +25,7 @@
 		1EFAB3152A374F3B008E3C13 /* AboutUsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */; };
 		1EFAB3162A374F3B008E3C13 /* ResourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3142A374F18008E3C13 /* ResourceCell.swift */; };
 		1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
+		58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		916E487B2A4057B400C589FE /* smile_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 916E487A2A4057B400C589FE /* smile_config.json */; };
@@ -68,6 +69,7 @@
 		1EFAB3142A374F18008E3C13 /* ResourceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCell.swift; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
 		287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycTest.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Smile ID.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Smile ID.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -86,7 +88,7 @@
 		918321E82A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfieCaptureViewModelTests.swift; sourceTree = "<group>"; };
 		918321E92A52E36A00D6FB7F /* FaceDetectorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceDetectorTests.swift; sourceTree = "<group>"; };
 		94E7560A47E255DD8215C183 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		9755B6A19CF28DE212F24C83 /* SmileID.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SmileID.podspec; path = ../SmileID.podspec; sourceTree = "<group>"; };
+		9755B6A19CF28DE212F24C83 /* SmileID.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SmileID.podspec; path = ../SmileID.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		C8CD2E3DB817D8C6334E9240 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		F7E93DC564F4962974BFA3CB /* Pods-SmileID_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Tests.debug.xcconfig"; path = "Target Support Files/Pods-SmileID_Tests/Pods-SmileID_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		FE4071A6FC696DDB1E5382FA /* Pods-SmileID_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Tests.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Tests/Pods-SmileID_Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 			isa = PBXGroup;
 			children = (
 				918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */,
+				58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */,
 			);
 			name = Networking;
 			path = ../../Tests/Networking;
@@ -469,6 +472,7 @@
 				918321ED2A52E36A00D6FB7F /* BaseTestCase.swift in Sources */,
 				918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */,
 				918321EF2A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift in Sources */,
+				58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */,
 				918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */,
 				918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */,
 			);
