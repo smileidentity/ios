@@ -35,7 +35,11 @@ struct DocumentCaptureView: View {
 
 struct DocumentCaptureView_Previews: PreviewProvider {
     static var previews: some View {
-        DocumentCaptureView(viewModel: DocumentCaptureViewModel())
+        DocumentCaptureView(viewModel: DocumentCaptureViewModel(userId: "",
+                                                                jobId: "",
+                                                                document: Document(countryCode: "",
+                                                                                   documentType: "",
+                                                                                   aspectRatio: 0.2)))
     }
 }
 
