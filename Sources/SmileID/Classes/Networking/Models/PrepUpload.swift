@@ -10,7 +10,11 @@ public struct PrepUploadRequest: Codable {
     var sourceSdkVersion = "10.0.0-beta01"
     var timestamp = String(Date().millisecondsSince1970)
     var signature = ""
-    var allowNewEnroll = "true" /// backend is broken needs these as strings
+    
+    /// backend is broken needs these as strings
+    /// I've also made this false until we have this properly
+    /// documented and done on both android and iOS
+    var allowNewEnroll = "false"
     var useEnrolledImage = false
     var retry = "false" /// backend is broken needs these as strings
 
