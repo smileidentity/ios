@@ -31,7 +31,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     }
 
     func getDocumentAspectRatio() {
-
+        
     }
 
     func submitJob(zip: Data) {
@@ -62,16 +62,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
                         if let error = error as? SmileIDError {
-                            //self?.handleError(error)
+
                         }
                     }
                 default:
                     break
-                    //self.processingState = .complete(nil, nil)
                 }
             }, receiveValue: { [weak self] response in
                 DispatchQueue.main.async {
-                    //self?.processingState = .complete(response, nil)
+
                 }
             }).store(in: &subscribers)
     }
