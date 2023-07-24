@@ -17,7 +17,7 @@ public struct EnhancedKycRequest: Codable {
     public let partnerId: String = SmileID.config.partnerId
     public let sourceSdk: String = "ios"
     public let sourceSdkVersion = SmileID.version
-    
+
     public init(
         country: String,
         idType: String,
