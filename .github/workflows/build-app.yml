@@ -54,6 +54,7 @@ jobs:
       - name: Build and Deploy App to 🔥 TestFlight 🚀
         run: |
           cd example
+          pod install
           bundle exec fastlane releaseapp
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
