@@ -51,7 +51,8 @@ public class SmileID {
                                                isEnroll: true,
                                                allowsAgentMode: allowAgentMode,
                                                showAttribution: showAttribution)
-        showInstruction ? navigation.navigate(to: .selfieInstructionScreen) : navigation.navigate(to: .selfieCaptureScreen)
+        showInstruction ? navigation.navigate(to: .selfieInstructionScreen)
+            : navigation.navigate(to: .selfieCaptureScreen)
         return SmileUIView {
             if showInstruction {
                 SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
@@ -68,7 +69,8 @@ public class SmileID {
                                                  delegate: DocumentCaptureResultDelegate)
         -> some View
     {
-        showInstruction ? navigation.navigate(to: .documentCaptureInstructionScreen) : navigation.navigate(to: .documentCaptureScreen)
+        showInstruction ? navigation.navigate(to: .documentCaptureInstructionScreen)
+            : navigation.navigate(to: .documentCaptureScreen)
         let viewModel = DocumentCaptureViewModel()
         return SmileUIView {
             if showInstruction {
@@ -88,7 +90,8 @@ public class SmileID {
                                                       delegate: SmartSelfieResultDelegate)
         -> some View
     {
-        showInstruction ? navigation.navigate(to: .selfieInstructionScreen) : navigation.navigate(to: .selfieCaptureScreen)
+        showInstruction ? navigation.navigate(to: .selfieInstructionScreen)
+            : navigation.navigate(to: .selfieCaptureScreen)
         let viewModel = SelfieCaptureViewModel(userId: userId,
                                                jobId: jobId,
                                                isEnroll: false,
