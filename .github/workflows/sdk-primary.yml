@@ -61,7 +61,7 @@ jobs:
       - name: Add Smile Config to Xcode Project
         run: ruby add_smile_config.rb
       - name: Setup Environment
-      - uses: ./.github/actions/setup
+        uses: ./.github/actions/setup
         with:
           xcode: '14.2'
       - name: Build Example app and Run Unit Tests
