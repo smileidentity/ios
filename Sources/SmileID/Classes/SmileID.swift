@@ -91,7 +91,6 @@ public class SmileID {
                                                isEnroll: false,
                                                allowsAgentMode: allowAgentMode,
                                                showAttribution: showAttribution)
-        
         return SmileUIView {
             if showInstruction {
                 SmartSelfieInstructionsView(viewModel: viewModel, delegate: delegate)
