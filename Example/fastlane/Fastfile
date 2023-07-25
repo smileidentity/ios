@@ -91,7 +91,7 @@ desc "Release to TestFlight"
   
     build_app(
       use_system_scm: true,
-      project: "SmileID.xcworkspace",
+      workspace: "SmileID.xcworkspace",
       scheme: "SmileID-Example",
       export_method: "app-store"
     )
