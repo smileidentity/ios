@@ -1,7 +1,6 @@
 import SwiftUI
 
 public struct SmileUIView<Content: View>: View {
-    @EnvironmentObject var navigation: NavigationHelper
     let content: Content
 
     init(@ViewBuilder _ content: () -> Content) {
