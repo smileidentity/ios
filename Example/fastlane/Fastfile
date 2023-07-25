@@ -88,7 +88,9 @@ desc "Release to TestFlight"
       api_key: api_key,
       verbose: true
     )
-  
+
+    increment_build
+
     build_app(
       use_system_scm: true,
       workspace: "SmileID.xcworkspace",
@@ -96,7 +98,6 @@ desc "Release to TestFlight"
       export_method: "app-store"
     )
 
-    increment_build
   end
   
   private_lane :increment_build do
