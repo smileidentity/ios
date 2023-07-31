@@ -31,7 +31,9 @@ struct HomeView: View {
                 }
                 HStack(spacing: 15) {
                     GeometryReader { geo in
-                        Button(action: { self.viewModel.handleDocumentVerificationTap() }) {
+                        Button {
+                            self.viewModel.handleDocumentVerificationTap()
+                        } label: {
                             ProductCell(productImage: "document", productName: "Document \nVerification")
                         }
                         .sheet(isPresented: $viewModel.presentDocumentVerification,
@@ -41,7 +43,7 @@ struct HomeView: View {
                     }
                 }
                 Spacer()
-                Text("Partner \(SmileID.configuration.partnerId) - Version \(VersionNames().version) - Build \(build ?? "")")
+                Text("Partner \(SmileID.configuration.partnerId) - Version \(SmileID.version) - Build \(build ?? "")")
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }

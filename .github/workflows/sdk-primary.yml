@@ -1,22 +1,7 @@
-name: SDK Build Actions
+name: Lint Build and Test
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
-  workflow_call:
-    inputs:
-      version_override:
-        type: string
-        description: 'The version to release. If not specified, the version will be inferred'
-        required: false
-        default: ''
-      bump_version:
-        type: boolean
-        description: 'Whether to automatically bump and commit the version after the release'
-        required: true
-        default: true
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -30,9 +15,8 @@ env:
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
 
 jobs:  
-  
-  lint-package:
-    name: "Lint Package"
+  lint:
+    name: "Lint"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -44,14 +28,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-example:
+  build:
     name: "Build App and Run Unit Tests"
     runs-on: macos-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup environment
+      - name: Install bundle
         run: bundle install
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
@@ -76,7 +60,8 @@ jobs:
           SMILE_CONFIG_PARTNER_002: ${{ secrets.SMILE_CONFIG_PARTNER_002 }}
       - name: Add Smile Config to Xcode Project
         run: ruby add_smile_config.rb
-      - uses: ./.github/actions/setup
+      - name: Setup Environment
+        uses: ./.github/actions/setup
         with:
           xcode: '14.2'
       - name: Build Example app and Run Unit Tests

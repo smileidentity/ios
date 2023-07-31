@@ -13,7 +13,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         let partnerID = SmileID.configuration.partnerId
-        versionLabel.text = "Partner \(partnerID) - Version \(VersionNames().version)"
+        versionLabel.text = "Partner \(partnerID) - Version \(SmileID.version)"
     }
 
     @IBAction func onEnvironmentToggle(_ sender: UIBarButtonItem) {
@@ -56,8 +56,9 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
             switch self.currentJob {
             case .smartSelfieEnrollment:
                 UIPasteboard.general.string = self.userID
+                let message = "The user has been registered and the user id has been copied to the clipboard"
                 self.presentAlert(title: "Smart Selfie Enrollment Complete",
-                                  message: "The user has been registered and the user id has been copied to the clipboard")
+                                  message: message)
             case .smartSelfieAuthentication:
                 self.presentAlert(title: "Smart Selfie Authentication Complete",
                                   message: "The user has been authenticated succesfully")
