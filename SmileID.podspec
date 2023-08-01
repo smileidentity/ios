@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://docs.smileidentity.com/mobile/ios"
   s.license = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = {  'Jubril O' => 'jubril@smileidentity.com', 'Japhet' => 'japhet@smileidentity.com'}
-  s.source           = { :http => "https://github.com/smileidentity/ios.git"}
+  s.source           = { :git => "https://github.com/smileidentity/ios.git", :tag => "v10.0.0-beta02" }
   s.ios.deployment_target = '13.0'
   s.dependency 'Zip', '~> 2.1.0'
   s.swift_version = '5.5'
