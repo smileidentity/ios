@@ -70,4 +70,8 @@ public struct EnhancedKycRequest: Codable {
 
 public struct EnhancedKycAsyncResponse: Codable {
     public var success: Bool
+
+    public init(success: Bool) {
+        self.success = success
+    }
 }
