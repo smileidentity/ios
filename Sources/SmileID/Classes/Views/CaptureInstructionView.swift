@@ -21,6 +21,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var detailView: TargetView
     private var captureType: CaptureType
     private var showAttribution: Bool
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
     @State private var goesToDetail: Bool = false
     init(image: UIImage,
          title: String,
@@ -99,16 +100,13 @@ public struct CaptureInstructionView<TargetView: View>: View {
                 }
             }
             .navigationBarItems(leading: Button {
-                presentationMode.wrappedValue.dismiss()
+                navigationViewModel.dismiss()
             } label: {
                 Image(uiImage: SmileIDResourcesHelper.Close)
                     .padding()
             })
             VStack(spacing: 18) {
-                NavigationLink(destination: detailView,
-                               isActive: $goesToDetail) {
-                    SmileButton(title: "Instructions.Action", clicked: { goesToDetail = true })
-                }
+                SmileButton(title: "Instructions.Action", clicked: { navigationViewModel.navigate(destination: self.destination, style: .push) })
             }
         }
         .padding(EdgeInsets(top: 0,

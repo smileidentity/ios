@@ -7,9 +7,8 @@ public struct SmartSelfieInstructionsView: View {
     @State var viewModel: SelfieCaptureViewModel
 
     init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
-        self.selfieCaptureDelegate = delegate
+        selfieCaptureDelegate = delegate
         _viewModel = State(initialValue: viewModel)
-
     }
 
     public var body: some View {
@@ -25,14 +24,14 @@ public struct SmartSelfieInstructionsView: View {
             instructions: [
                 CaptureInstruction(title: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.GoodLight"),
-                                   instruction: SmileIDResourcesHelper.localizedString(
-                                    for: "Instructions.GoodLightBody"),
-                                   image: Constants.ImageName.light),
+                instruction: SmileIDResourcesHelper.localizedString(
+                    for: "Instructions.GoodLightBody"),
+                image: Constants.ImageName.light),
                 CaptureInstruction(title: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.ClearImage"),
-                                   instruction: SmileIDResourcesHelper.localizedString(
-                                    for: "Instructions.ClearImageBody"),
-                                   image: Constants.ImageName.clearImage),
+                instruction: SmileIDResourcesHelper.localizedString(
+                    for: "Instructions.ClearImageBody"),
+                image: Constants.ImageName.clearImage),
                 CaptureInstruction(title: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.RemoveObstructions"),
                                    instruction: SmileIDResourcesHelper.localizedString(

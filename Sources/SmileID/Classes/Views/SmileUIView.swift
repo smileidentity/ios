@@ -1,15 +1,17 @@
 import SwiftUI
 
-public struct SmileUIView<Content: View>: View {
-    let content: Content
-
-    init(@ViewBuilder _ content: () -> Content) {
-        self.content = content()
+struct SmileUIView: View {
+    @EnvironmentObject var viewModel: NavigationViewModel
+    private var viewFactory = ViewFactory()
+    private let initialDestination: NavigationDestination
+    init(initialDestination: NavigationDestination) {
+        self.initialDestination = initialDestination
     }
 
-    public var body: some View {
+    var body: some View {
         NavigationView {
-            content
+            viewFactory.makeView(self.initialDestination)
+                .handleNavigation($viewModel.navigationDirection)
         }
     }
 }
