@@ -27,7 +27,9 @@ public class SmileID {
     internal static var useSandbox = true
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
 
-    public class func initialize(config: Config, useSandbox: Bool = true) {
+    public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
+                                                                                   withExtension: "json")!),
+                                 useSandbox: Bool = true) {
         self.config = config
         self.useSandbox = useSandbox
         SmileIDResourcesHelper.registerFonts()
