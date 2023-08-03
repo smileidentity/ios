@@ -21,8 +21,8 @@ class ViewFactory {
             SelfieCaptureView(viewModel: selfieCaptureViewModel, delegate: delegate ??  SelfiePlaceHolderDelegate())
         case .documentCaptureInstructionScreen(let documentCaptureViewModel,let delegate):
             DocumentCaptureInstructionsView(viewModel: documentCaptureViewModel, delegate: delegate ??  DocPlaceHolderDelegate())
-        case .documentCaptureScreen(let documentCaptureViewModel,let delegate):
-            DocumentCaptureInstructionsView(viewModel: documentCaptureViewModel, delegate: delegate ??  DocPlaceHolderDelegate())
+        case .documentCaptureScreen(let documentCaptureViewModel,_):
+            DocumentCaptureView(viewModel: documentCaptureViewModel)
         }
     }
 }

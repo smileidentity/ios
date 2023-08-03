@@ -38,11 +38,7 @@ public struct SmartSelfieInstructionsView: View {
                                     for: "Instructions.RemoveObstructionsBody"),
                                    image: Constants.ImageName.face)
             ], captureType: .selfie,
-            detailView: SelfieCaptureView(
-                viewModel: viewModel,
-                delegate: selfieCaptureDelegate ??
-                    DummyDelegate()
-            ),
+            destination: .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: selfieCaptureDelegate),
             showAttribution: viewModel.showAttribution
         )
     }

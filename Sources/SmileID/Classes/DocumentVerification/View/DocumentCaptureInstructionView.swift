@@ -1,7 +1,7 @@
 import SwiftUI
 /// Instructionf for document capture
 public struct DocumentCaptureInstructionsView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
     @ObservedObject private var viewModel: DocumentCaptureViewModel
     private weak var documentCaptureDelegate: DocumentCaptureResultDelegate?
 
@@ -16,7 +16,6 @@ public struct DocumentCaptureInstructionsView: View {
 
     public var body: some View {
         /// we're using the selfie capture view for now to show it's working
-        let dummyDelegate = DummyDelegate()
         CaptureInstructionView<DocumentCaptureView>(
             image: SmileIDResourcesHelper.InstructionsHeaderdDocumentIcon,
             title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Header"),
@@ -33,7 +32,7 @@ public struct DocumentCaptureInstructionsView: View {
                                     SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
                                    image: Constants.ImageName.clearImage),
             ], captureType: .document,
-            detailView: DocumentCaptureView(viewModel: viewModel),
+            destination: .documentCaptureScreen(documentCaptureViewModel: viewModel, delegate: documentCaptureDelegate),
             // TO-DO: Get value from viewModel after document capture feature is complete
             showAttribution: true
         )
