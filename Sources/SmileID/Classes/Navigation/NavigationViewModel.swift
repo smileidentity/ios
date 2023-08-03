@@ -5,8 +5,7 @@ class NavigationViewModel: ObservableObject {
     var navigationDirection: NavigationDirection?
 
     func showDocCaptureScreen(viewModel: DocumentCaptureViewModel,
-                              delegate: DocumentCaptureResultDelegate)
-    {
+                              delegate: DocumentCaptureResultDelegate) {
         navigationDirection = .forward(destination:
             .documentCaptureInstructionScreen(documentCaptureViewModel:
                 viewModel, delegate:

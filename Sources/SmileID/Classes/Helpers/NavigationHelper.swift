@@ -3,8 +3,7 @@ import SwiftUI
 
 extension View {
     func handleNavigation(_ navigationDirection: Binding<NavigationDirection?>,
-                          onDismiss: ((NavigationDestination) -> Void)? = nil) -> some View
-    {
+                          onDismiss: ((NavigationDestination) -> Void)? = nil) -> some View {
         modifier(NavigationHandler(navigationDirection: navigationDirection,
                                    onDismiss: onDismiss))
     }

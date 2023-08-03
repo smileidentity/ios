@@ -46,16 +46,16 @@ public class SmileID {
                                                   showAttribution: Bool = true,
                                                   showInstruction: Bool = true,
                                                   delegate: SmartSelfieResultDelegate)
-        -> some View
-    {
+        -> some View {
         let viewModel = SelfieCaptureViewModel(userId: userId,
                                                jobId: jobId,
                                                isEnroll: true,
                                                allowsAgentMode: allowAgentMode,
                                                showAttribution: showAttribution)
-        let destination: NavigationDestination = showInstruction ? .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
+        let destination: NavigationDestination = showInstruction ?
+            .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
             .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
-        return SmileUIView(initialDestination: destination).environmentObject(navigationState)
+        return SmileView(initialDestination: destination).environmentObject(navigationState)
     }
 
     public class func documentVerificationScreen(userId _: String = "user-\(UUID().uuidString)",
@@ -63,11 +63,12 @@ public class SmileID {
                                                  showAttribution _: Bool = true,
                                                  showInstruction _: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
-        -> some View
-    {
+        -> some View {
         let viewModel = DocumentCaptureViewModel()
-        let destination = NavigationDestination.documentCaptureInstructionScreen(documentCaptureViewModel: viewModel, delegate: delegate)
-        return SmileUIView(initialDestination: destination).environmentObject(navigationState)
+        let destination = NavigationDestination.documentCaptureInstructionScreen(
+            documentCaptureViewModel: viewModel,
+            delegate: delegate)
+        return SmileView(initialDestination: destination).environmentObject(navigationState)
     }
 
     public class func smartSelfieAuthenticationScreen(userId: String,
@@ -76,16 +77,16 @@ public class SmileID {
                                                       showAttribution: Bool = true,
                                                       showInstruction: Bool = true,
                                                       delegate: SmartSelfieResultDelegate)
-        -> some View
-    {
+        -> some View {
         let viewModel = SelfieCaptureViewModel(userId: userId,
                                                jobId: jobId,
                                                isEnroll: false,
                                                allowsAgentMode: allowAgentMode,
                                                showAttribution: showAttribution)
-        let destination: NavigationDestination = showInstruction ? .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
+        let destination: NavigationDestination = showInstruction ?
+                .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
             .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
-        return SmileUIView(initialDestination: destination).environmentObject(navigationState)
+        return SmileView(initialDestination: destination).environmentObject(navigationState)
     }
 
     public class func setEnvironment(useSandbox: Bool) {

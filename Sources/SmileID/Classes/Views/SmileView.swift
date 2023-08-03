@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SmileUIView: View {
+struct SmileView: View {
     @EnvironmentObject var viewModel: NavigationViewModel
     private var viewFactory = ViewFactory()
     private let initialDestination: NavigationDestination

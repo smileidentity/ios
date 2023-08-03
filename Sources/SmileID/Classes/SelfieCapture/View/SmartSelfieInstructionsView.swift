@@ -34,9 +34,9 @@ public struct SmartSelfieInstructionsView: View {
                 image: Constants.ImageName.clearImage),
                 CaptureInstruction(title: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.RemoveObstructions"),
-                                   instruction: SmileIDResourcesHelper.localizedString(
-                                    for: "Instructions.RemoveObstructionsBody"),
-                                   image: Constants.ImageName.face)
+                instruction: SmileIDResourcesHelper.localizedString(
+                    for: "Instructions.RemoveObstructionsBody"),
+                image: Constants.ImageName.face)
             ], captureType: .selfie,
             destination: .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: selfieCaptureDelegate),
             showAttribution: viewModel.showAttribution
