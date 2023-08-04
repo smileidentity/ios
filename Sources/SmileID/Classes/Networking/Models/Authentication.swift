@@ -6,10 +6,10 @@ public struct AuthenticationRequest: Codable {
     var updateEnrolledImage: Bool?
     var jobId: String?
     var userId: String?
-    internal var signature = true
-    internal var production = !SmileID.useSandbox
-    internal var partnerId = SmileID.config.partnerId
-    internal var authToken = SmileID.config.authToken
+    var signature = true
+    var production = !SmileID.useSandbox
+    var partnerId = SmileID.config.partnerId
+    var authToken = SmileID.config.authToken
 
     enum CodingKeys: String, CodingKey {
         case jobType = "job_type"
@@ -22,25 +22,47 @@ public struct AuthenticationRequest: Codable {
         case partnerId = "partner_id"
         case authToken = "auth_token"
     }
-}
 
-public extension AuthenticationRequest {
-    init(jobType: JobType, enrollment: Bool, updateEnrolledImage: Bool, jobId: String, userId: String) {
-        self.init(jobType: jobType,
-                  enrollment: enrollment,
-                  updateEnrolledImage: updateEnrolledImage,
-                  jobId: jobId,
-                  userId: userId,
-                  signature: true)
+   public init(jobType: JobType,
+         enrollment: Bool,
+         updateEnrolledImage: Bool?,
+         jobId: String?,
+         userId: String?,
+         signature: Bool,
+         production: Bool,
+         partnerId: String,
+         authToken: String) {
+        self.jobType = jobType
+        self.enrollment = enrollment
+        self.updateEnrolledImage = updateEnrolledImage
+        self.jobId = jobId
+        self.userId = userId
+        self.signature = signature
+        self.production = production
+        self.partnerId = partnerId
+        self.authToken = authToken
     }
 
-    init(jobType: JobType, enrollment: Bool, userId: String, jobId: String) {
-        self.init(jobType: jobType,
-                  enrollment: enrollment,
-                  updateEnrolledImage: nil,
-                  jobId: jobId,
-                  userId: userId,
-                  signature: true)
+    public init(jobType: JobType,
+                enrollment: Bool,
+                updateEnrolledImage: Bool,
+                jobId: String,
+                userId: String) {
+        self.jobType = jobType
+        self.enrollment = enrollment
+        self.updateEnrolledImage = updateEnrolledImage
+        self.jobId = jobId
+        self.userId = userId
+    }
+
+    public init(jobType: JobType,
+                enrollment: Bool,
+                userId: String,
+                jobId: String) {
+        self.jobType = jobType
+        self.enrollment = enrollment
+        self.jobId = jobId
+        self.userId = userId
     }
 }
 
@@ -49,6 +71,16 @@ public struct AuthenticationResponse: Decodable {
     public var signature: String
     public var timestamp: String
     public var partnerParams: PartnerParams
+
+    public init(success: Bool,
+                signature: String,
+                timestamp: String,
+                partnerParams: PartnerParams) {
+        self.success = success
+        self.signature = signature
+        self.timestamp = timestamp
+        self.partnerParams = partnerParams
+    }
 
     enum CodingKeys: String, CodingKey {
         case success
