@@ -1,15 +1,15 @@
 import Foundation
 
 public struct AuthenticationRequest: Codable {
-    var jobType: JobType
-    var enrollment: Bool
-    var updateEnrolledImage: Bool?
-    var jobId: String?
-    var userId: String?
-    var signature = true
-    var production = !SmileID.useSandbox
-    var partnerId = SmileID.config.partnerId
-    var authToken = SmileID.config.authToken
+    public var jobType: JobType
+    public var enrollment: Bool
+    public var updateEnrolledImage: Bool?
+    public var jobId: String?
+    public var userId: String?
+    public var signature = true
+    public var production = !SmileID.useSandbox
+    public var partnerId = SmileID.config.partnerId
+    public var authToken = SmileID.config.authToken
 
     enum CodingKeys: String, CodingKey {
         case jobType = "job_type"
