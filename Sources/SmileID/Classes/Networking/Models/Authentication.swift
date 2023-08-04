@@ -23,15 +23,15 @@ public struct AuthenticationRequest: Codable {
         case authToken = "auth_token"
     }
 
-   public init(jobType: JobType,
-         enrollment: Bool,
-         updateEnrolledImage: Bool?,
-         jobId: String?,
-         userId: String?,
-         signature: Bool,
-         production: Bool,
-         partnerId: String,
-         authToken: String) {
+    public init(jobType: JobType,
+                enrollment: Bool,
+                updateEnrolledImage: Bool?,
+                jobId: String?,
+                userId: String?,
+                signature: Bool,
+                production: Bool,
+                partnerId: String,
+                authToken: String) {
         self.jobType = jobType
         self.enrollment = enrollment
         self.updateEnrolledImage = updateEnrolledImage
