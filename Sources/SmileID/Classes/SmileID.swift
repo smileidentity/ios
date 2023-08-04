@@ -22,7 +22,7 @@ public class SmileID {
     }()
 
     private init() {}
-    public static let version = "10.0.0-beta03"
+    public static let version = "10.0.0-beta04"
     internal static var config: Config!
     internal static var useSandbox = true
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
