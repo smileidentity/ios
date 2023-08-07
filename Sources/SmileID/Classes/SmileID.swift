@@ -27,6 +27,9 @@ public class SmileID {
     internal static var useSandbox = true
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
 
+    @ObservedObject
+    internal static var navigationState = NavigationViewModel()
+
     public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
                                                                                    withExtension: "json")!),
                                  useSandbox: Bool = true) {
@@ -62,7 +65,11 @@ public class SmileID {
                                                  showAttribution: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
         -> some View {
-        let viewModel = DocumentCaptureViewModel()
+            let viewModel = DocumentCaptureViewModel(userId: "",
+                                                     jobId: "",
+                                                     document: Document(countryCode: "",
+                                                                        documentType: "",
+                                                                        aspectRatio: 0.5))
         let destination = NavigationDestination.documentCaptureInstructionScreen(
             documentCaptureViewModel: viewModel,
             delegate: delegate)
