@@ -24,8 +24,8 @@ public class SmileID {
 
     private init() {}
     public static let version = "10.0.0-beta04"
-    internal static var config: Config!
-    internal static var useSandbox = true
+    public private(set) static var config: Config!
+    public private(set) static var useSandbox = true
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
 
     public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",

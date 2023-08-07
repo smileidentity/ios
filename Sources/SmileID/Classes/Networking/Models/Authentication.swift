@@ -25,13 +25,13 @@ public struct AuthenticationRequest: Codable {
 
     public init(jobType: JobType,
                 enrollment: Bool,
-                updateEnrolledImage: Bool?,
+                updateEnrolledImage: Bool? = nil,
                 jobId: String?,
                 userId: String?,
-                signature: Bool,
-                production: Bool,
-                partnerId: String,
-                authToken: String) {
+                signature: Bool = true,
+                production: Bool = !SmileID.useSandbox,
+                partnerId: String = SmileID.config.partnerId,
+                authToken: String = SmileID.config.authToken) {
         self.jobType = jobType
         self.enrollment = enrollment
         self.updateEnrolledImage = updateEnrolledImage
@@ -41,28 +41,6 @@ public struct AuthenticationRequest: Codable {
         self.production = production
         self.partnerId = partnerId
         self.authToken = authToken
-    }
-
-    public init(jobType: JobType,
-                enrollment: Bool,
-                updateEnrolledImage: Bool,
-                jobId: String,
-                userId: String) {
-        self.jobType = jobType
-        self.enrollment = enrollment
-        self.updateEnrolledImage = updateEnrolledImage
-        self.jobId = jobId
-        self.userId = userId
-    }
-
-    public init(jobType: JobType,
-                enrollment: Bool,
-                userId: String,
-                jobId: String) {
-        self.jobType = jobType
-        self.enrollment = enrollment
-        self.jobId = jobId
-        self.userId = userId
     }
 }
 
