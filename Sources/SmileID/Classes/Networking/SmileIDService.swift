@@ -6,6 +6,7 @@ public protocol SmileIDServiceable {
     func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error>
     func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error>
     func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error>
+    func doEnhancedKycAsync(request: EnhancedKycRequest) -> AnyPublisher<EnhancedKycAsyncResponse, Error>
 }
 
 public class SmileIDService: SmileIDServiceable, ServiceRunnable {
@@ -26,5 +27,16 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
 
     public func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
         return post(to: "job_status", with: request)
+    }
+
+    /// Query the Identity Information of an individual using their ID number from a supported ID Type. Return the
+    /// personal information of the individual found in the database of the ID authority. The final result is delivered
+    /// to the url provided in the request's `callbackUrl` (which is required for this request)
+    ///
+    /// - Requires: The `callbackUrl` must be set on the `request`
+    /// - Parameter request: The Enhanced KYC request
+    /// - Returns: A response indicating whether the request was successfully submitted or not
+    public func doEnhancedKycAsync(request: EnhancedKycRequest) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
+        return post(to: "async_id_verification", with: request)
     }
 }
