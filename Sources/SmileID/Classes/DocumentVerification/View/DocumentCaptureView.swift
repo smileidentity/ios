@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct DocumentCaptureView: View {
-    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: DocumentCaptureViewModel
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
     var camera: CameraView
     init(viewModel: DocumentCaptureViewModel) {
         self.viewModel = viewModel
@@ -24,7 +24,7 @@ struct DocumentCaptureView: View {
             .navigationBarItems(leading: Button {
                 viewModel.resetState()
                 viewModel.pauseCameraSession()
-                presentationMode.wrappedValue.dismiss()
+                navigationViewModel.dismiss()
             } label: {
                 Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
                     .padding()
