@@ -1,11 +1,14 @@
 import Foundation
 import Combine
+import CoreVideo
 
 class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     private var userId: String
     private var jobId: String
     private var document: Document
+    private var currentBuffer: CVPixelBuffer?
     private var subscribers = Set<AnyCancellable>()
+    private var cameraFeedSubscriber: AnyCancellable?
     private (set) lazy var cameraManager: CameraManageable = CameraManager()
 
     var navTitle: String {
@@ -16,6 +19,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
         self.userId = userId
         self.jobId = jobId
         self.document = document
+    }
+
+    func subscribeToCameraFeed() {
+       cameraFeedSubscriber = cameraManager.sampleBufferPublisher
+            .receive(on: DispatchQueue.global())
+            .compactMap({$0})
+            .sink( receiveValue: { buffer in
+                
+            })
     }
 
     func captureImage() {

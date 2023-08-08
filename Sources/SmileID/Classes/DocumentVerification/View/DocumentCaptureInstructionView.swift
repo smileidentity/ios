@@ -15,8 +15,6 @@ public struct DocumentCaptureInstructionsView: View {
     }
 
     public var body: some View {
-        /// we're using the selfie capture view for now to show it's working
-        let dummyDelegate = DummyDelegate()
         CaptureInstructionView<DocumentCaptureView>(
             image: SmileIDResourcesHelper.InstructionsHeaderdDocumentIcon,
             title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Header"),
