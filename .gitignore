@@ -45,3 +45,6 @@ release
 Pods
 archives
 *.mobileprovision
+
+# JetBrains/AppCode
+.idea

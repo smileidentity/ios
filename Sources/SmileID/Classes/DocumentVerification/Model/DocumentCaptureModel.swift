@@ -1,9 +1,21 @@
 import Foundation
-class DocumentCaptureViewModel: ObservableObject {
+import Combine
+
+class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
+    private var userId: String
+    private var jobId: String
+    private var document: Document
+    private var subscribers = Set<AnyCancellable>()
     private (set) lazy var cameraManager: CameraManageable = CameraManager()
 
     var navTitle: String {
         return "Nigeria National ID Card"
+    }
+
+    init(userId: String, jobId: String, document: Document) {
+        self.userId = userId
+        self.jobId = jobId
+        self.document = document
     }
 
     func captureImage() {
@@ -16,5 +28,50 @@ class DocumentCaptureViewModel: ObservableObject {
 
     func pauseCameraSession() {
 
+    }
+
+    func getDocumentAspectRatio() {
+        
+    }
+
+    func submitJob(zip: Data) {
+        let authRequest = AuthenticationRequest(jobType: .documentVerification,
+                                                enrollment: false,
+                                                jobId: jobId,
+                                                userId: userId)
+
+        SmileID.api.authenticate(request: authRequest)
+            .flatMap { authResponse in
+                self.prepUpload(authResponse)
+                    .flatMap { prepUploadResponse in
+                        self.upload(prepUploadResponse, zip: zip)
+                            .filter { result in
+                                switch result {
+                                case .response:
+                                    return true
+                                default:
+                                    return false
+                                }
+                            }
+                            .map { _ in authResponse }
+                    }
+            }
+            .flatMap(pollJobStatus)
+            .sink(receiveCompletion: {completion in
+                switch completion {
+                case .failure(let error):
+                    DispatchQueue.main.async { [weak self] in
+                        if let error = error as? SmileIDError {
+
+                        }
+                    }
+                default:
+                    break
+                }
+            }, receiveValue: { [weak self] response in
+                DispatchQueue.main.async {
+
+                }
+            }).store(in: &subscribers)
     }
 }

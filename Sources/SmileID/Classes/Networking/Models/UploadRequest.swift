@@ -2,11 +2,9 @@ import Foundation
 
 public struct UploadRequest: Codable {
     var images: [UploadImageInfo]
-    var packageInfo = UploadPackageInfo()
 
     enum CodingKeys: String, CodingKey {
         case images
-        case packageInfo = "package_information"
     }
 }
 
@@ -20,45 +18,13 @@ public struct UploadImageInfo: Codable {
     }
 }
 
-public struct UploadPackageInfo: Codable {
-    var apiVersion = ApiVersion()
-    var versionNames = VersionNames()
-
-    enum CodingKeys: String, CodingKey {
-        case apiVersion
-        case versionNames = "version_names"
-    }
-}
-
-public struct ApiVersion: Codable {
-    var buildNumber = 2
-    var majorVersion = 2
-    var minorVersion = 1
-}
-
-public struct VersionNames: Codable {
-    // TO-DO: Dynamically fetch SDK version from Package.swift
-    public var version = "10.0.0"
-    var sdkType = "IOS"
-    var sdkBuild = "1"
-
-
-    public init() {}
-
-    enum CodingKeys: String, CodingKey {
-        case version = "sid_sdk_version"
-        case sdkType = "sid_sdk_type"
-        case sdkBuild = "sid_sdk_ux_version"
-    }
-}
-
 public enum ImageType: String, Codable {
-    case selfiePngOrJpgFile = "0"
-    case idCardPngOrJpgFile = "1"
-    case selfiePngOrJpgBase64 = "2"
-    case idCardPngOrJpgBase64 = "3"
-    case livenessPngOrJpgFile = "4"
-    case idCardRearPngOrJpgFile = "5"
-    case livenessPngOrJpgBase64 = "6"
-    case idCardRearPngOrJpgBase64 = "7"
+    case selfieJpgFile = "0"
+    case idCardJpgFile = "1"
+    case selfieJpgBase64 = "2"
+    case idCardJpgBase64 = "3"
+    case livenessJpgFile = "4"
+    case idCardRearJpgFile = "5"
+    case livenessJpgBase64 = "6"
+    case idCardRearJpgBase64 = "7"
 }

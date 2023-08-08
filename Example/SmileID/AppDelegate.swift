@@ -14,12 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         NFX.sharedInstance().start()
-        do {
-            let config = try Config(url: Constant.configUrl)
-            SmileID.initialize(config: config)
-        } catch {
-            print(error.localizedDescription)
-        }
+        SmileID.initialize()
         window?.rootViewController = UIHostingController(rootView: MainView())
         window?.makeKeyAndVisible()
         return true

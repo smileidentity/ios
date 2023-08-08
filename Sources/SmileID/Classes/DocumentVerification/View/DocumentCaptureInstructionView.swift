@@ -1,7 +1,7 @@
 import SwiftUI
 /// Instructionf for document capture
 public struct DocumentCaptureInstructionsView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
     @ObservedObject private var viewModel: DocumentCaptureViewModel
     private weak var documentCaptureDelegate: DocumentCaptureResultDelegate?
 
@@ -33,7 +33,7 @@ public struct DocumentCaptureInstructionsView: View {
                                     SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
                                    image: Constants.ImageName.clearImage),
             ], captureType: .document,
-            detailView: DocumentCaptureView(viewModel: viewModel),
+            destination: .documentCaptureScreen(documentCaptureViewModel: viewModel, delegate: documentCaptureDelegate),
             // TO-DO: Get value from viewModel after document capture feature is complete
             showAttribution: true
         )
@@ -42,7 +42,11 @@ public struct DocumentCaptureInstructionsView: View {
 
 struct DocumentCaptureInstructionsView_Previews: PreviewProvider {
     static var previews: some View {
-        DocumentCaptureInstructionsView(viewModel: DocumentCaptureViewModel())
+        DocumentCaptureInstructionsView(viewModel: DocumentCaptureViewModel(userId: "",
+                                                                            jobId: "",
+                                                                            document: Document(countryCode: "",
+                                                                                               documentType: "",
+                                                                                               aspectRatio: 0.2)))
             .environment(\.locale, Locale(identifier: "en"))
     }
 }
