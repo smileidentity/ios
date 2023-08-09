@@ -3,6 +3,7 @@ import SwiftUI
 struct DocumentCaptureView: View {
     @ObservedObject var viewModel: DocumentCaptureViewModel
     @EnvironmentObject var navigationViewModel: NavigationViewModel
+    @Environment(\.presentationMode) var presentationMode
     var camera: CameraView
     init(viewModel: DocumentCaptureViewModel) {
         self.viewModel = viewModel
@@ -17,14 +18,32 @@ struct DocumentCaptureView: View {
             camera
                 .onAppear {
                     viewModel.cameraManager.switchCamera(to: .back)
+                    viewModel.delegate = camera.preview
                 }
-            DocumentOverlayView()
+            DocumentOverlayView(viewModel: viewModel)
+            switch viewModel.processingState {
+            case .confirmation:
+                ModalPresenter { DocumentConfirmationView(viewModel: viewModel)}
+            case .inProgress:
+                ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.Scan,
+                                                                titleKey: "Document.Processing.Header",
+                                                                calloutKey: "Document.Processing.Callout")
+                }
+            case .complete:
+                ModalPresenter { SuccessView(titleKey: "Document.Complete.Header",
+                                             bodyKey: "Document.Complete.Callout",
+                                             clicked: { viewModel.handleCompletion() }) }
+            case .error:
+                ModalPresenter { ErrorView(viewModel: viewModel) }
+            default:
+                Color.clear
+            }
         } .edgesIgnoringSafeArea(.all)
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(leading: Button {
                 viewModel.resetState()
                 viewModel.pauseCameraSession()
-                navigationViewModel.dismiss()
+                presentationMode.wrappedValue.dismiss()
             } label: {
                 Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
                     .padding()
