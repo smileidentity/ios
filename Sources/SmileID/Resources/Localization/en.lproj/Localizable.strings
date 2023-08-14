@@ -27,6 +27,8 @@
 "Instructions.Document.Callout" = "We'll use it to verify your identity. \nPlease follow the instructions below";
 "Instructions.Document.GoodLightBody" = "Make sure your ID image is taken in a well-lit environment. Ensure the ID is clear and visible.";
 "Instructions.Document.ClearImageBody" = "Take clear photos. Ensure the photo or scan of the ID card you submit is clear and not blurry";
+"Instructions.Document.Back.Header" = "Submit Back of ID";
+"Instructions.Document.Back.Callout" = "For this ID type, we require that you submit the back of the ID ";
 "Error.JobStatusTimeOut" = "Job status timed out";
 "Confirmation.GoodSelfie" = "Is this a good quality selfie?";
 "Confirmation.FaceClear" = "Make sure your whole face is \n visible and clear";
@@ -44,7 +46,7 @@
 "Document.Clear" = "Make sure all corners are \n visible and there is no glare";
 "Action.TakePhoto" = "Take Photo";
 "Action.UploadPhoto" = "Upload Photo";
-"Document.Confirmation.Header" = "Is  the document clear and readable?";
+"Document.Confirmation.Header" = "Is the document clear and readable?";
 "Document.Confirmation.Callout" = "Make sure all corners of the document are visible and there is no glare";
 "Document.Confirmation.Accept" = "Yes, my ID is readable";
 "Document.Confirmation.Decline" = "No, retake photo";
