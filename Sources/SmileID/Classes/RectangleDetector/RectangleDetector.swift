@@ -6,6 +6,7 @@ class RectangleDetector {
         for request: VNImageRequestHandler,
         width: CGFloat,
         height: CGFloat,
+        aspectRatio: Double,
         completion: @escaping ((Quadrilateral?) -> Void)
     ) {
         // Create the rectangle request, and, if found, return the largest rectangle (else return nothing).
@@ -30,8 +31,7 @@ class RectangleDetector {
             })
 
             rectDetectRequest.minimumConfidence = 0.8
-            rectDetectRequest.maximumObservations = 15
-            rectDetectRequest.minimumAspectRatio = 0.3
+            rectDetectRequest.minimumAspectRatio = VNAspectRatio(0.6)
 
             return rectDetectRequest
         }()
@@ -50,13 +50,36 @@ class RectangleDetector {
     ///
     /// - Parameters:
     ///   - pixelBuffer: The pixelBuffer to detect rectangles on.
+    ///   - aspectRatio: The aspect ratio of rectangles to detect
     ///   - completion: The biggest rectangle on the CVPixelBuffer
-    static func rectangle(forPixelBuffer pixelBuffer: CVPixelBuffer, completion: @escaping ((Quadrilateral?) -> Void)) {
+    static func rectangle(forPixelBuffer pixelBuffer: CVPixelBuffer,
+                          aspectRatio: Double,
+                          completion: @escaping ((Quadrilateral?) -> Void)) {
         let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
         RectangleDetector.completeImageRequest(
             for: imageRequestHandler,
             width: CGFloat(CVPixelBufferGetWidth(pixelBuffer)),
             height: CGFloat(CVPixelBufferGetHeight(pixelBuffer)),
+            aspectRatio: aspectRatio,
             completion: completion)
     }
+}
+
+protocol RectangleDetectionDelegate: NSObjectProtocol {
+    /// Called when a quadrilateral has been detected.
+    /// - Parameters:
+    ///   - quad: The detected quadrilateral in the coordinates of the image.
+    ///   - imageSize: The size of the image the quadrilateral has been detected on.
+    func didDetectQuad(quad: Quadrilateral?, _ imageSize: CGSize)
+}
+
+/// Data structure representing the result of the detection of a quadrilateral.
+struct RectangleDetectorResult {
+
+    /// The detected quadrilateral.
+    let rectangle: Quadrilateral
+
+    /// The size of the image the quadrilateral was detected on.
+    let imageSize: CGSize
+
 }
