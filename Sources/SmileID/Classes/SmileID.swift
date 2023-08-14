@@ -62,6 +62,12 @@ public class SmileID {
 
     public class func documentVerificationScreen(userId: String = "user-\(UUID().uuidString)",
                                                  jobId: String = "job-\(UUID().uuidString)",
+                                                 idType: Document =  Document(countryCode: "",
+                                                                  documentType: "",
+                                                                  aspectRatio: 0.8),
+                                                 captureBothSides: Bool = true,
+                                                 allowGalleryUpload: Bool = false,
+                                                 showInstructions: Bool = false,
                                                  showAttribution: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
         -> some View {
@@ -69,8 +75,9 @@ public class SmileID {
                                                      jobId: "",
                                                      document: Document(countryCode: "",
                                                                         documentType: "",
-                                                                        aspectRatio: 0.5))
-        let destination = NavigationDestination.documentCaptureInstructionScreen(
+                                                                        aspectRatio: 0.8),
+                                                     captureBothSides: captureBothSides)
+        let destination = NavigationDestination.documentFrontCaptureInstructionScreen(
             documentCaptureViewModel: viewModel,
             delegate: delegate)
         return SmileView(initialDestination: destination).environmentObject(navigationState)
