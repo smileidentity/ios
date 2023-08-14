@@ -37,7 +37,7 @@ enum ProcessingState {
         }
     }
 
-    case confirmation
+    case confirmation(UIImage)
     case inProgress
     case complete(JobStatusResponse?, SmileIDError?)
     case endFlow
@@ -88,7 +88,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable {
     private var currentExif: [String: Any]?
     private (set) var allowsAgentMode: Bool
     private let subject = PassthroughSubject<String, Never>()
-    private (set) lazy var cameraManager: CameraManageable = CameraManager()
+    private (set) lazy var cameraManager: CameraManageable = CameraManager(mode: .selfie)
     private var faceDetector = FaceDetector()
     private var subscribers = Set<AnyCancellable>()
     private var facedetectionSubscribers: AnyCancellable?
@@ -380,7 +380,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable {
                 files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
                                                       previewImage: selfieImage)
                 DispatchQueue.main.async {
-                    self.processingState = .confirmation
+                    self.processingState = .confirmation(UIImage(data: displayedImage) ?? UIImage())
                 }
             } catch {
                 DispatchQueue.main.async { [self] in
