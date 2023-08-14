@@ -1,8 +1,13 @@
 import SwiftUI
 
-enum CaptureType {
+enum CaptureType: Equatable {
     case selfie
-    case document
+    case document(Position)
+
+    enum Position {
+        case front
+        case back
+    }
 }
 
 public struct CaptureInstruction {
@@ -69,10 +74,19 @@ public struct CaptureInstructionView<TargetView: View>: View {
                 }
             }
             .navigationBarItems(leading: Button {
-                navigationViewModel.dismiss()
+                if captureType == .document(.back) {
+                    navigationViewModel.dismiss()
+                } else {
+                    navigationViewModel.dismiss()
+                }
             } label: {
-                Image(uiImage: SmileIDResourcesHelper.Close)
-                    .padding()
+                if captureType == .document(.back) {
+                    Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
+                        .padding()
+                } else {
+                    Image(uiImage: SmileIDResourcesHelper.Close)
+                        .padding()
+                }
             })
             VStack(spacing: 5) {
                 SmileButton(title: "Instructions.Action",
@@ -82,7 +96,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
                                     style: .push
                                 )
                             })
-                if captureType == .document {
+                if captureType == .document(.front)  {
                     SmileButton(style: .alternate, title:
                         "Action.UploadPhoto",
                         clicked: {
@@ -103,6 +117,8 @@ public struct CaptureInstructionView<TargetView: View>: View {
                              bottom: 24,
                              trailing: 24))
             .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
+            .navigationBarBackButtonHidden(true)
+            .navigationBarTitle("")
     }
 
     func makeInstruction(title: String, body: String, image: String) -> some View {
