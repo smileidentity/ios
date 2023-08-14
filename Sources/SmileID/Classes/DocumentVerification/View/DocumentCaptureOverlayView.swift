@@ -29,26 +29,29 @@ struct DocumentOverlayView: View {
 //
 //                        }
                         Spacer()
-                        VStack(alignment: .center, spacing: 16) {
-                            Text("Front of ID Card")
-                                .multilineTextAlignment(.center)
-                                .font(SmileID.theme.header4)
-                                .foregroundColor(SmileID.theme.accent)
-                                .frame(width: 235, alignment: .center)
-                            Text(SmileIDResourcesHelper.localizedString(for: "Document.Clear"))
-                                .multilineTextAlignment(.center)
-                                .font(SmileID.theme.body)
-                                .foregroundColor(SmileID.theme.accent)
-                                .frame(width: 235, alignment: .center)
-                        }
+
                     }.position(CGPoint(x: geo.size.width/2,
                                        y: geo.size.height/2))
 
                 }
                 .padding(.top, window?.safeAreaInsets.top ?? 0 + 10)
+                VStack(alignment: .center, spacing: 20) {
+                    VStack(alignment: .center, spacing: 16) {
+                        Text("Front of ID")
+                            .multilineTextAlignment(.center)
+                            .font(SmileID.theme.header4)
+                            .foregroundColor(SmileID.theme.accent)
+                            .frame(width: geometry.size.width, alignment: .center)
+                        Text(SmileIDResourcesHelper.localizedString(for: "Document.Clear"))
+                            .multilineTextAlignment(.center)
+                            .font(SmileID.theme.body)
+                            .foregroundColor(SmileID.theme.accent)
+                            .frame(width: 235, alignment: .center)
+                    }.padding()
                     CaptureButton {
                         viewModel.captureImage()
                     }.padding(.bottom, 60)
+                }.background(SmileID.theme.backgroundMain.opacity(0.6))
             }
         }
     }
