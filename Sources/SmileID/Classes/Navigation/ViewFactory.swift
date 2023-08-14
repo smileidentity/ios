@@ -7,7 +7,7 @@ class ViewFactory {
     }
 
     class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
-        func didSucceed(selfieImage _: Data, livenessImages _: [Data], jobStatusResponse _: JobStatusResponse?) {}
+        func didSucceed(documentFrontImage: Data, documentBackImage: Data?, jobStatusResponse: JobStatusResponse?) {}
         func didError(error _: Error) {}
     }
 
@@ -22,11 +22,17 @@ class ViewFactory {
             SelfieCaptureView(viewModel:
                                 selfieCaptureViewModel, delegate:
                                 delegate ?? SelfiePlaceHolderDelegate())
-        case let .documentCaptureInstructionScreen(documentCaptureViewModel, delegate):
+        case let .documentFrontCaptureInstructionScreen(documentCaptureViewModel, delegate):
             DocumentCaptureInstructionsView(viewModel: documentCaptureViewModel,
+                                            postion: .front,
                                             delegate: delegate ?? DocPlaceHolderDelegate())
         case let .documentCaptureScreen(documentCaptureViewModel, _):
             DocumentCaptureView(viewModel: documentCaptureViewModel)
+        case .documentBackCaptureInstructionScreen(documentCaptureViewModel: let viewModel,
+                                                   delegate: let delegate):
+            DocumentCaptureInstructionsView(viewModel: viewModel,
+                                            postion: .back,
+                                            delegate: delegate ?? DocPlaceHolderDelegate())
         }
     }
 }
