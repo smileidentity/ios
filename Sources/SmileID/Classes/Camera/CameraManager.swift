@@ -4,14 +4,21 @@ import SwiftUI
 
 protocol CameraManageable: AnyObject  {
     func switchCamera(to position: AVCaptureDevice.Position)
+    func capturePhoto()
     func pauseSession()
     func resumeSession()
     var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher {get}
+    var capturedImagePublisher: Published<UIImage?>.Publisher {get}
     var session: AVCaptureSession { get }
     var cameraPositon: AVCaptureDevice.Position? {get}
 }
 
 class CameraManager: NSObject, ObservableObject, CameraManageable {
+
+    enum Mode {
+        case selfie
+        case document
+    }
 
     enum Status {
         case unconfigured
@@ -23,7 +30,9 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
     @Published var error: CameraError?
     @Environment(\.isPreview) var isPreview
     @Published var sampleBuffer: CVPixelBuffer?
+    @Published var capturedImage: UIImage?
     var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher { $sampleBuffer }
+    var capturedImagePublisher: Published<UIImage?>.Publisher { $capturedImage }
     let videoOutputQueue = DispatchQueue(label: "com.smileid.videooutput",
                                          qos: .userInitiated,
                                          attributes: [],
@@ -39,9 +48,12 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
 
     private let sessionQueue = DispatchQueue(label: "com.smileid.ios")
     private let videoOutput = AVCaptureVideoDataOutput()
+    private let photoOutput = AVCapturePhotoOutput()
     private var status = Status.unconfigured
+    private var mode: Mode
 
-    override init() {
+    init(mode: Mode) {
+        self.mode = mode
         super.init()
         set(self, queue: videoOutputQueue)
     }
@@ -118,13 +130,16 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
 
     private func configureVideoOutput() {
         session.removeOutput(videoOutput)
-        if session.canAddOutput(videoOutput) {
+        session.removeOutput(photoOutput)
+        if session.canAddOutput(videoOutput), session.canAddOutput(photoOutput) {
+            session.addOutput(photoOutput)
             session.addOutput(videoOutput)
             videoOutput.videoSettings =
             [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
-
-            let videoConnection = videoOutput.connection(with: .video)
-            videoConnection?.videoOrientation = .portrait
+            if mode == .selfie {
+                let videoConnection = videoOutput.connection(with: .video)
+                videoConnection?.videoOrientation = .portrait
+            }
         } else {
             set(error: .cannotAddOutput)
             status = .failed
@@ -166,6 +181,15 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
             self.session.startRunning()
         }
     }
+
+    internal func capturePhoto() {
+        guard let connection = photoOutput.connection(with: .video), connection.isEnabled, connection.isActive else {
+            return
+        }
+        let photoSettings = AVCapturePhotoSettings()
+        photoSettings.isAutoStillImageStabilizationEnabled = true
+        photoOutput.capturePhoto(with: photoSettings, delegate: self)
+    }
 }
 
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -177,5 +201,19 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
 
         self.sampleBuffer = imageBuffer
+    }
+}
+
+extension CameraManager: AVCapturePhotoCaptureDelegate {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        if let error {
+            return
+        }
+        if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
+            self.capturedImage  = image
+        } else {
+            print(error?.localizedDescription)
+            return
+        }
     }
 }
