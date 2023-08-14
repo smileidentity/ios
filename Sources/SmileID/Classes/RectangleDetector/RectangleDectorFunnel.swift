@@ -49,10 +49,6 @@ final class RectangleFeaturesFunnel {
     /// The minumum number of matching rectangles (within the `rectangle` queue), to be confident enough to display a rectangle.
     let minNumberOfMatches = 3
 
-    /// The value in pixels used to determine if a rectangle is accurate enough to be auto scanned.
-    /// A higher value means the auto scan is quicker, but the rectangle will be less accurate. On the other hand, the lower the value, the longer it'll take for the auto scan, but it'll be way more accurate
-    var autoScanMatchingThreshold: CGFloat = 6.0
-
     /// Add a rectangle to the funnel, and if a new rectangle should be displayed, the completion block will be called.
     /// The algorithm works the following way:
     /// 1. Makes sure that the funnel has been fed enough rectangles

@@ -31,7 +31,8 @@ class RectangleDetector {
             })
 
             rectDetectRequest.minimumConfidence = 0.8
-            rectDetectRequest.minimumAspectRatio = VNAspectRatio(0.6)
+            rectDetectRequest.minimumAspectRatio = VNAspectRatio(1.65)
+            rectDetectRequest.maximumAspectRatio = VNAspectRatio(1.8)
 
             return rectDetectRequest
         }()
