@@ -4,6 +4,8 @@ protocol JobSubmittable {
     func pollJobStatus(_ authResponse: AuthenticationResponse) -> AnyPublisher<JobStatusResponse, Error>
     func upload(_ prepUploadResponse: PrepUploadResponse, zip: Data) -> AnyPublisher<UploadResponse, Error>
     func prepUpload(_ authResponse: AuthenticationResponse) -> AnyPublisher<PrepUploadResponse, Error>
+    func handleRetry()
+    func handleClose()
 }
 
 extension JobSubmittable {

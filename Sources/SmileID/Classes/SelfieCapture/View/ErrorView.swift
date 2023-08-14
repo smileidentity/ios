@@ -1,6 +1,6 @@
 import SwiftUI
 struct ErrorView: View {
-    @ObservedObject var viewModel: SelfieCaptureViewModel
+    var viewModel: JobSubmittable
     var body: some View {
 
         VStack(spacing: 20) {
