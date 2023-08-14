@@ -18,11 +18,12 @@ struct DocumentCaptureView: View {
             camera
                 .onAppear {
                     viewModel.cameraManager.switchCamera(to: .back)
-                    viewModel.delegate = camera.preview
+                    viewModel.rectangleDetectionDelegate = camera.preview
                 }
             DocumentOverlayView(viewModel: viewModel)
             switch viewModel.processingState {
-            case .confirmation:
+            case .confirmation(let image):
+                let _ = viewModel.cropImage(image, quadView: camera.preview.quadView)
                 ModalPresenter { DocumentConfirmationView(viewModel: viewModel)}
             case .inProgress:
                 ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.Scan,
@@ -58,7 +59,8 @@ struct DocumentCaptureView_Previews: PreviewProvider {
                                                                 jobId: "",
                                                                 document: Document(countryCode: "",
                                                                                    documentType: "",
-                                                                                   aspectRatio: 0.2)))
+                                                                                   aspectRatio: 0.2),
+                                                                captureBothSides: true))
     }
 }
 
