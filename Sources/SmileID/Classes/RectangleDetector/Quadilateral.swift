@@ -96,6 +96,94 @@ struct Quadrilateral: Transformable {
         return true
     }
 
+    /// Scales the quadrilateral based on the ratio of two given sizes, and optionally applies a rotation.
+    ///
+    /// - Parameters:
+    ///   - fromSize: The size the quadrilateral is currently related to.
+    ///   - toSize: The size to scale the quadrilateral to.
+    ///   - rotationAngle: The optional rotation to apply.
+    /// - Returns: The newly scaled and potentially rotated quadrilateral.
+    func scale(_ fromSize: CGSize, _ toSize: CGSize, withRotationAngle rotationAngle: CGFloat = 0.0) -> Quadrilateral {
+        var invertedFromSize = fromSize
+        let rotated = rotationAngle != 0.0
+
+        if rotated && rotationAngle != CGFloat.pi {
+            invertedFromSize = CGSize(width: fromSize.height, height: fromSize.width)
+        }
+
+        var transformedQuad = self
+        let invertedFromSizeWidth = invertedFromSize.width == 0 ? .leastNormalMagnitude : invertedFromSize.width
+        let invertedFromSizeHeight = invertedFromSize.height == 0 ? .leastNormalMagnitude : invertedFromSize.height
+
+        let scaleWidth = toSize.width / invertedFromSizeWidth
+        let scaleHeight = toSize.height / invertedFromSizeHeight
+        let scaledTransform = CGAffineTransform(scaleX: scaleWidth, y: scaleHeight)
+        transformedQuad = transformedQuad.applying(scaledTransform)
+
+        if rotated {
+            let rotationTransform = CGAffineTransform(rotationAngle: rotationAngle)
+
+            let fromImageBounds = CGRect(origin: .zero, size: fromSize).applying(scaledTransform).applying(rotationTransform)
+
+            let toImageBounds = CGRect(origin: .zero, size: toSize)
+            let translationTransform = CGAffineTransform.translateTransform(
+                fromCenterOfRect: fromImageBounds,
+                toCenterOfRect: toImageBounds
+            )
+
+            transformedQuad = transformedQuad.applyTransforms([rotationTransform, translationTransform])
+        }
+
+        return transformedQuad
+    }
+
+
+    /// Reorganizes the current quadrilateral, making sure that the points are at their appropriate positions.
+    /// For example, it ensures that the top left point is actually the top and left point point of the quadrilateral.
+    mutating func reorganize() {
+        let points = [topLeft, topRight, bottomRight, bottomLeft]
+        let ySortedPoints = sortPointsByYValue(points)
+
+        guard ySortedPoints.count == 4 else {
+            return
+        }
+
+        let topMostPoints = Array(ySortedPoints[0..<2])
+        let bottomMostPoints = Array(ySortedPoints[2..<4])
+        let xSortedTopMostPoints = sortPointsByXValue(topMostPoints)
+        let xSortedBottomMostPoints = sortPointsByXValue(bottomMostPoints)
+
+        guard xSortedTopMostPoints.count > 1,
+              xSortedBottomMostPoints.count > 1 else {
+            return
+        }
+
+        topLeft = xSortedTopMostPoints[0]
+        topRight = xSortedTopMostPoints[1]
+        bottomRight = xSortedBottomMostPoints[1]
+        bottomLeft = xSortedBottomMostPoints[0]
+    }
+
+    /// Sorts the given `CGPoints` based on their y value.
+    /// - Parameters:
+    ///   - points: The points to sort.
+    /// - Returns: The points sorted based on their y value.
+    private func sortPointsByYValue(_ points: [CGPoint]) -> [CGPoint] {
+        return points.sorted { point1, point2 -> Bool in
+            point1.y < point2.y
+        }
+    }
+
+    /// Sorts the given `CGPoints` based on their x value.
+    /// - Parameters:
+    ///   - points: The points to sort.
+    /// - Returns: The points sorted based on their x value.
+    private func sortPointsByXValue(_ points: [CGPoint]) -> [CGPoint] {
+        return points.sorted { point1, point2 -> Bool in
+            point1.x < point2.x
+        }
+    }
+
 }
 
 extension Array where Element == Quadrilateral {
