@@ -5,8 +5,10 @@ enum NavigationDestination {
                                  delegate: SmartSelfieResultDelegate?)
     case selfieCaptureScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
                              delegate: SmartSelfieResultDelegate?)
-    case documentCaptureInstructionScreen(documentCaptureViewModel: DocumentCaptureViewModel,
-                                          delegate: DocumentCaptureResultDelegate?)
+    case documentFrontCaptureInstructionScreen(documentCaptureViewModel: DocumentCaptureViewModel,
+                                               delegate: DocumentCaptureResultDelegate?)
+    case documentBackCaptureInstructionScreen(documentCaptureViewModel: DocumentCaptureViewModel,
+                                              delegate: DocumentCaptureResultDelegate?)
     case documentCaptureScreen(documentCaptureViewModel: DocumentCaptureViewModel,
                                delegate: DocumentCaptureResultDelegate?)
 }
