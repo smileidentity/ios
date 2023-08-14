@@ -36,7 +36,7 @@ public struct DocumentCaptureInstructionsView: View {
                                                     title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Header"),
                                                     callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Callout"),
                                                     instructions: [],
-                                                    captureType: .document,
+                                                    captureType: .document(.back),
                                                     destination: .documentCaptureScreen(documentCaptureViewModel: viewModel,
                                                                                         delegate: documentCaptureDelegate),
                                                     showAttribution: true)
@@ -59,7 +59,7 @@ public struct DocumentCaptureInstructionsView: View {
                                    instruction:
                                     SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
                                    image: Constants.ImageName.clearImage),
-            ], captureType: .document,
+            ], captureType: .document(.front),
             destination: .documentCaptureScreen(documentCaptureViewModel: viewModel, delegate: documentCaptureDelegate),
             // TO-DO: Get value from viewModel after document capture feature is complete
             showAttribution: true
