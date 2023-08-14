@@ -42,6 +42,38 @@ class LocalStorage {
         return urls
     }
 
+    /// Saves front and back images of documents to disk, geneated an `info.json`
+    /// and returns the url of all the files that have been saved
+    /// - Parameters:
+    ///   - front: Jpg data representation id image fron
+    ///   - back: Jpg data for the back of tha id image
+    ///   - folder: The name of the folder the files should be saved
+    /// - Returns: An array of urls of all the files that have been saved to disk
+    static func saveDocumentImages(front: Data,
+                                   back: Data?,
+                                   to folder: String = "sid-\(UUID().uuidString)") throws -> [URL] {
+        try createDefaultDirectory()
+        let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
+        var urls = [URL]()
+        try createDirectory(at: destinationFolder, overwrite: false)
+        var imageInfoArray = [UploadImageInfo]()
+        let filename = filename(for: "idFront")
+        let url =  try write(front, to: destinationFolder.appendingPathComponent(filename))
+        urls.append(url)
+        imageInfoArray.append(UploadImageInfo(imageTypeId: .idCardJpgFile, fileName: filename))
+
+        if let back = back {
+            let filename = self.filename(for: "idBack")
+            let url =  try write(back, to: destinationFolder.appendingPathComponent(filename))
+            urls.append(url)
+            imageInfoArray.append(UploadImageInfo(imageTypeId: .idCardRearJpgFile, fileName: filename))
+        }
+        let jsonData = try jsonEncoder.encode(UploadRequest(images: imageInfoArray))
+        let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
+        urls.append(jsonUrl)
+        return urls
+    }
+
     private static func createDefaultDirectory() throws {
         try createDirectory(at: defaultDirectory, overwrite: false)
     }
