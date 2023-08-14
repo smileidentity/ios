@@ -2,11 +2,13 @@ import SwiftUI
 
 struct DocumentConfirmationView: View {
     @ObservedObject var viewModel: DocumentCaptureViewModel
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
+
     var body: some View {
-        VStack(alignment: .center, spacing: 49) {
+        VStack(spacing: 49) {
             VStack(spacing: 16) {
                 Text(SmileIDResourcesHelper.localizedString(for: "Document.Confirmation.Header"))                    .multilineTextAlignment(.center)
-                    .font(SmileID.theme.header1)
+                    .font(SmileID.theme.header2)
                     .foregroundColor(SmileID.theme.accent)
                     .lineSpacing(0.98)
                 Text(SmileIDResourcesHelper.localizedString(for: "Document.Confirmation.Callout"))                    .multilineTextAlignment(.center)
@@ -15,17 +17,26 @@ struct DocumentConfirmationView: View {
                     .lineSpacing(1.3)
             }
 
-            Image("")
+            Image(uiImage: viewModel.frontImage ?? UIImage())
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 200)
+                .cornerRadius(16)
+                .clipped()
 
             VStack(spacing: 16) {
                 SmileButton(style: .secondary,
                             title: "Document.Confirmation.Accept",
-                            clicked: { viewModel.submit() })
+                            clicked: { viewModel.submit(navigation: navigationViewModel) })
                 SmileButton(style: .secondary,
                             title: "Document.Confirmation.Decline",
                             clicked: { viewModel.handleDeclineButtonTap() })
             }
         }
+        .padding()
+        .background(SmileID.theme.backgroundMain)
+        .cornerRadius(20)
+        .shadow(radius: 20)
     }
 }
 
@@ -35,6 +46,7 @@ struct DocumentConfirmationView_Previews: PreviewProvider {
                                                                      jobId: "",
                                                                      document: Document(countryCode: "",
                                                                                         documentType: "",
-                                                                                        aspectRatio: 0.0)))
+                                                                                        aspectRatio: 0.0),
+                                                                     captureBothSides: true))
     }
 }
