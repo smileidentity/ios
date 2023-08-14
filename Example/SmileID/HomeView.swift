@@ -37,7 +37,7 @@ struct HomeView: View {
                         } label: {
                             ProductCell(productImage: "document", productName: "Document \nVerification")
                         }
-                        .sheet(isPresented:
+                        .fullScreenCover(isPresented:
                             $viewModel.presentDocumentVerification,
                             content: { SmileID.documentVerificationScreen(
                                 userId: viewModel.generateUserID(),
