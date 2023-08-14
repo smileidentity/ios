@@ -39,7 +39,8 @@ struct DocumentCaptureView: View {
             default:
                 Color.clear
             }
-        } .edgesIgnoringSafeArea(.all)
+        }
+        .edgesIgnoringSafeArea(.all)
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(leading: Button {
                 viewModel.resetState()
@@ -49,7 +50,6 @@ struct DocumentCaptureView: View {
                 Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
                     .padding()
             })
-            .navigationBarTitle(viewModel.navTitle)
     }
 }
 
