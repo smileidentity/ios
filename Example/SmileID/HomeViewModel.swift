@@ -86,6 +86,12 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
                                                object: nil)
     }
 
+    func didSucceed(documentFrontImage: Data,
+                    documentBackImage: Data?,
+                    jobStatusResponse: JobStatusResponse?) {
+
+    }
+
     @objc func handleAuthCompletion(_ notification: NSNotification) {
         if let dict =  notification.userInfo as? NSDictionary {
             showToast = true
