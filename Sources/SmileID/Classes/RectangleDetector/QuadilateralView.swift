@@ -90,13 +90,11 @@ final class QuadrilateralView: UIView {
         NSLayoutConstraint.activate(quadViewConstraints)
     }
 
-
     override public func layoutSubviews() {
         super.layoutSubviews()
         guard quadLayer.frame != bounds else {
             return
         }
-
         quadLayer.frame = bounds
         if let quad {
             drawQuadrilateral(quad: quad, animated: false)
@@ -115,27 +113,34 @@ final class QuadrilateralView: UIView {
     }
 
     private func drawQuad(_ quad: Quadrilateral, animated: Bool) {
-        var path = quad.path
+        DispatchQueue.main.async { [self] in
+            var path = quad.path
 
-        if editable {
-            path = path.reversing()
-            let rectPath = UIBezierPath(rect: bounds)
-            path.append(rectPath)
+            if editable {
+                path = path.reversing()
+                let rectPath = UIBezierPath(rect: bounds)
+                path.append(rectPath)
+            }
+
+            if animated == true {
+                let pathAnimation = CABasicAnimation(keyPath: "path")
+                pathAnimation.duration = 0.2
+                quadLayer.add(pathAnimation, forKey: "path")
+            }
+
+            quadLayer.path = path.cgPath
+            quadLayer.isHidden = false
         }
-
-        if animated == true {
-            let pathAnimation = CABasicAnimation(keyPath: "path")
-            pathAnimation.duration = 0.2
-            quadLayer.add(pathAnimation, forKey: "path")
-        }
-
-        quadLayer.path = path.cgPath
-        quadLayer.isHidden = false
     }
 
     func removeQuadrilateral() {
-        quadLayer.path = nil
-        quadLayer.isHidden = true
+        DispatchQueue.main.async { [self] in
+            quadLayer.path = nil
+            quadLayer.isHidden = true
+            let pathAnimation = CABasicAnimation(keyPath: "removepath")
+            pathAnimation.duration = 0.2
+            quadLayer.add(pathAnimation, forKey: "removepath")
+        }
     }
 
 
