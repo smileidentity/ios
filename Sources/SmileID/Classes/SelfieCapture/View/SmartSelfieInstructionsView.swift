@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct SmartSelfieInstructionsView: View {
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var navigationViewModel: NavigationViewModel
     private weak var selfieCaptureDelegate: SmartSelfieResultDelegate?
     @State private var goesToDetail: Bool = false
     @State var viewModel: SelfieCaptureViewModel
@@ -14,7 +15,7 @@ public struct SmartSelfieInstructionsView: View {
     public var body: some View {
         if let processingState = viewModel.processingState, processingState == .endFlow {
             let _ = DispatchQueue.main.async {
-                presentationMode.wrappedValue.dismiss()
+                navigationViewModel.dismiss()
             }
         }
         CaptureInstructionView<SelfieCaptureView>(

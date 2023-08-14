@@ -4,6 +4,10 @@ import CoreVideo
 import AVFoundation
 
 class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
+    enum Position {
+        case front
+        case back
+    }
     private let rectangleFunnel = RectangleFeaturesFunnel()
     weak var rectangleDetectionDelegate: RectangleDetectionDelegate?
     weak var captureResultDelegate: DocumentCaptureResultDelegate?
@@ -18,7 +22,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     private var captureSubscriber: AnyCancellable?
     private var captureBothSides: Bool
     private (set) lazy var cameraManager: CameraManageable = CameraManager(mode: .document)
-    @Published private(set) var processingState: ProcessingState? {
+    private (set) var postion = Position.front
+    @Published var processingState: ProcessingState? {
         didSet {
             switch processingState {
             case .none:
@@ -29,10 +34,6 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
                 pauseCameraSession()
             }
         }
-    }
-
-    var navTitle: String {
-        return "Nigeria National ID Card"
     }
 
     init(userId: String, jobId: String, document: Document, captureBothSides: Bool) {
@@ -126,12 +127,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     }
 
     func submit(navigation: NavigationViewModel) {
-        if captureBothSides {
+        if captureBothSides && postion == .front {
+            processingState = nil
+            postion = .back
             navigation.navigate(destination: .documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
                                                                                              delegate: captureResultDelegate),
                                          style: .push)
         } else {
             processingState = .inProgress
+            navigation.navigate(destination: .selfieCaptureScreen(selfieCaptureViewModel: SelfieCaptureViewModel(userId: userId, jobId: jobId, isEnroll: false), delegate: nil), style: .push)
             //LocalStorage.saveDocumentImages(front: <#T##Data#>, back: <#T##Data?#>)
         }
     }
