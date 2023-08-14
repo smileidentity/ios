@@ -3,8 +3,8 @@ import Foundation
 // MARK: - ServicesResponse
 
 public struct ServicesResponse: Codable {
-    let bankCodes: [BankCode]
-    let hostedWeb: HostedWeb
+    public let bankCodes: [BankCode]
+    public let hostedWeb: HostedWeb
 
     enum CodingKeys: String, CodingKey {
         case bankCodes = "bank_codes"
