@@ -46,8 +46,7 @@ extension ServiceRunnable {
 
     func get<U: Decodable>(to path: PathType) -> AnyPublisher<U, Error> {
         return createRestRequest(path: path,
-                                 method: .get,
-                                 headers: [.contentType(value: "application/json")])
+                                 method: .get)
             .flatMap(serviceClient.send)
             .eraseToAnyPublisher()
     }
@@ -113,7 +112,6 @@ extension ServiceRunnable {
 
     private func createRestRequest(path: PathType,
                                    method: RestMethod,
-                                   headers: [HTTPHeader]? = nil,
                                    queryParameters: [HTTPQueryParameters]? = nil) -> AnyPublisher<RestRequest, Error>
     {
         let path = String(describing: path)
@@ -124,7 +122,6 @@ extension ServiceRunnable {
 
         let request = RestRequest(url: url,
                                   method: method,
-                                  headers: headers,
                                   queryParameters: queryParameters)
         return Just(request)
             .setFailureType(to: Error.self)
