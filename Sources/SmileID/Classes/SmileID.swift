@@ -26,6 +26,8 @@ public class SmileID {
     internal static var config: Config!
     internal static var useSandbox = true
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
+    @ObservedObject
+    internal static var navigationState = NavigationViewModel()
 
     public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
                                                                                    withExtension: "json")!),
