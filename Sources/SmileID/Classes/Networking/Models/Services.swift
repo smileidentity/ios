@@ -5,7 +5,7 @@ import Foundation
 public struct ServicesResponse: Codable {
     public let bankCodes: [BankCode]
     public let hostedWeb: HostedWeb
-
+    
     enum CodingKeys: String, CodingKey {
         case bankCodes = "bank_codes"
         case hostedWeb = "hosted_web"
@@ -21,12 +21,27 @@ public struct BankCode: Codable {
 // MARK: - HostedWeb
 
 public struct HostedWeb: Codable {
-    let basicKyc: CountryCodeToCountryInfo
-    let biometricKyc: CountryCodeToCountryInfo
-    let enhancedKyc: CountryCodeToCountryInfo
-    let docVerification: CountryCodeToCountryInfo
-    let enhancedKycSmartSelfie: CountryCodeToCountryInfo
-
+    var basicKyc: CountryCodeToCountryInfo
+    var biometricKyc: CountryCodeToCountryInfo
+    var enhancedKyc: CountryCodeToCountryInfo
+    var docVerification: CountryCodeToCountryInfo
+    var enhancedKycSmartSelfie: CountryCodeToCountryInfo
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        basicKyc = try container.decode(CountryCodeToCountryInfo.self, forKey: .basicKyc)
+        biometricKyc = try container.decode(CountryCodeToCountryInfo.self, forKey: .biometricKyc)
+        enhancedKyc = try container.decode(CountryCodeToCountryInfo.self, forKey: .enhancedKyc)
+        docVerification = try container.decode(CountryCodeToCountryInfo.self, forKey: .docVerification)
+        enhancedKycSmartSelfie = try container.decode(CountryCodeToCountryInfo.self, forKey: .enhancedKycSmartSelfie)
+        
+        basicKyc = basicKyc.toCountryInfo()
+        biometricKyc = biometricKyc.toCountryInfo()
+        enhancedKyc = enhancedKyc.toCountryInfo()
+        docVerification = docVerification.toCountryInfo()
+        enhancedKycSmartSelfie = enhancedKycSmartSelfie.toCountryInfo()
+    }
+    
     private enum CodingKeys: String, CodingKey {
         case basicKyc = "basic_kyc"
         case biometricKyc = "biometric_kyc"
@@ -34,33 +49,42 @@ public struct HostedWeb: Codable {
         case docVerification = "doc_verification"
         case enhancedKycSmartSelfie = "ekyc_smartselfie"
     }
+    
+    
 }
 
 // MARK: - CountryInfo
 
-public struct CountryInfo: Codable {
-    let countryCode: String
+public  struct CountryInfo: Codable {
+    var countryCode = ""
     let name: String
-    let availableIdTypes: [AvailableIdType]
-
+    var availableIdTypes: IdTypeKeyToAvailableIdType
+    
     private enum CodingKeys: String, CodingKey {
-        case countryCode
         case name
         case availableIdTypes = "id_types"
     }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        availableIdTypes = try container.decode(IdTypeKeyToAvailableIdType.self, forKey: .availableIdTypes)
+        availableIdTypes = availableIdTypes.toAvailableIdTypes()
+    }
+    
+    
 }
 
 // MARK: - AvailableIdType
 
 public struct AvailableIdType: Codable {
-    let idTypeKey: String
+    var idTypeKey = ""
     let label: String
-    let requiredFields: [RequiredField]
+    let requiredFields: [RequiredField] = []
     let testData: String?
     let idNumberRegex: String?
-
+    
     private enum CodingKeys: String, CodingKey {
-        case idTypeKey
         case label
         case requiredFields = "required_fields"
         case testData = "test_data"
@@ -84,11 +108,6 @@ public enum RequiredField: String, Codable {
     case userId = "user_id"
     case jobId = "job_id"
     case unknown = "Unknown"
-
-    private enum CodingKeys: String, CodingKey {
-        case idNumber = "id_number"
-        // map other cases to JSON keys
-    }
 }
 
 // MARK: - CountryCodeToCountryInfo
@@ -98,3 +117,35 @@ public typealias CountryCodeToCountryInfo = [String: CountryInfo]
 // MARK: - IdTypeKeyToAvailableIdType
 
 public typealias IdTypeKeyToAvailableIdType = [String: AvailableIdType]
+
+
+extension CountryCodeToCountryInfo {
+    
+    func toCountryInfo() -> CountryCodeToCountryInfo {
+        var countryInfo : CountryInfo?
+        self.map { key, value in
+            countryInfo = value
+            countryInfo?.countryCode = key
+        }
+        guard let countryInfo else {
+            return self
+        }
+        return Dictionary(uniqueKeysWithValues:
+                            self.map { key, value in (key, countryInfo) })
+    }
+}
+
+extension IdTypeKeyToAvailableIdType {
+    func toAvailableIdTypes() -> IdTypeKeyToAvailableIdType {
+        var availableIdType : AvailableIdType?
+        self.map { key, value in
+            availableIdType = value
+            availableIdType?.idTypeKey = key
+        }
+        guard let availableIdType else {
+            return self
+        }
+        return Dictionary(uniqueKeysWithValues:
+                            self.map { key, value in (key, availableIdType) })
+    }
+}

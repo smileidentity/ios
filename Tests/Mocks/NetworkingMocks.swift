@@ -22,12 +22,15 @@ class MockURLSessionPublisher: URLSessionPublisher {
 
 class MockSmileIdentityService: SmileIDServiceable {
     func getServices() -> AnyPublisher<ServicesResponse, Error> {
-        let response = ServicesResponse(bankCodes: [],
-                                        hostedWeb: HostedWeb(basicKyc: CountryCodeToCountryInfo(),
-                                                            biometricKyc: CountryCodeToCountryInfo(),
-                                                            enhancedKyc: CountryCodeToCountryInfo(),
-                                                            docVerification: CountryCodeToCountryInfo(),
-                                                            enhancedKycSmartSelfie: CountryCodeToCountryInfo()))
+        var response : ServicesResponse
+        do {
+             response = try ServicesResponse(bankCodes: [],
+                                            hostedWeb: HostedWeb(from: JSONDecoder() as! Decoder))
+        } catch {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        }
+       
 
         if MockHelper.shouldFail {
             return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))

@@ -12,7 +12,7 @@ public protocol SmileIDServiceable {
 
 public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     public func getServices() -> AnyPublisher<ServicesResponse, Error> {
-        return get(to: "/v1/services")
+        return get(to: "services")
     }
 
     @Injected var serviceClient: RestServiceClient
