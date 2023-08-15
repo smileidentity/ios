@@ -36,7 +36,7 @@ You can add SmileID as a dependency by adding it to the `dependencies` value of 
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/smileidentity/ios.git", .upToNextMajor(from: "10.0.0-beta04"))
+    .package(url: "https://github.com/smileidentity/ios.git", .upToNextMajor(from: "10.0.0-beta05"))
 ]
 ```
 

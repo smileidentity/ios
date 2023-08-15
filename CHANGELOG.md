@@ -1,3 +1,8 @@
+## 10.0.0-beta05
+
+### Changed
+- Expose `sourceSdk` and `sourceSdkVersion` initializers and properties
+
 ## 10.0.0-beta04
 
 ### Changed
