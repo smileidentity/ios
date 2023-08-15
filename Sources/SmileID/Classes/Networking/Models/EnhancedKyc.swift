@@ -47,7 +47,7 @@ public struct EnhancedKycRequest: Codable {
         self.callbackUrl = callbackUrl
         self.partnerParams = partnerParams
         self.sourceSdk = sourceSdk
-        self.sourceSdkVersion = sourceSdk
+        self.sourceSdkVersion = sourceSdkVersion
         self.timestamp = timestamp
         self.signature = signature
     }
