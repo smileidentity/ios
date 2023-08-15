@@ -30,6 +30,8 @@ public struct EnhancedKycRequest: Codable {
         bankCode: String? = nil,
         callbackUrl: String?,
         partnerParams: PartnerParams,
+        sourceSdk: String,
+        sourceSdkVersion: String,
         timestamp: String,
         signature: String
     ) {
@@ -44,6 +46,8 @@ public struct EnhancedKycRequest: Codable {
         self.bankCode = bankCode
         self.callbackUrl = callbackUrl
         self.partnerParams = partnerParams
+        self.sourceSdk = sourceSdk
+        self.sourceSdkVersion = sourceSdk
         self.timestamp = timestamp
         self.signature = signature
     }
