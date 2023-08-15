@@ -54,7 +54,8 @@ extension ServiceRunnable {
 
     func upload(data: Data,
                 to url: String,
-                with restMethod: RestMethod) -> AnyPublisher<UploadResponse, Error> {
+                with restMethod: RestMethod) -> AnyPublisher<UploadResponse, Error>
+    {
         return createUploadRequest(url: url,
                                    method: restMethod,
                                    headers: [.contentType(value: "application/zip")],
@@ -68,7 +69,8 @@ extension ServiceRunnable {
                                      headers: [HTTPHeader]? = nil,
                                      uploadData: Data,
                                      queryParameters _: [HTTPQueryParameters]? = nil)
-                                     -> AnyPublisher<RestRequest, Error> {
+        -> AnyPublisher<RestRequest, Error>
+    {
         guard let url = URL(string: url) else {
             return Fail(error: URLError(.badURL))
                 .eraseToAnyPublisher()
@@ -86,7 +88,8 @@ extension ServiceRunnable {
                                                  method: RestMethod,
                                                  headers: [HTTPHeader]? = nil,
                                                  queryParameters: [HTTPQueryParameters]? = nil,
-                                                 body: T) -> AnyPublisher<RestRequest, Error> {
+                                                 body: T) -> AnyPublisher<RestRequest, Error>
+    {
         let path = String(describing: path)
         guard let url = baseURL?.appendingPathComponent(path) else {
             return Fail(error: URLError(.badURL))
@@ -111,7 +114,8 @@ extension ServiceRunnable {
     private func createRestRequest(path: PathType,
                                    method: RestMethod,
                                    headers: [HTTPHeader]? = nil,
-                                   queryParameters: [HTTPQueryParameters]? = nil) -> AnyPublisher<RestRequest, Error> {
+                                   queryParameters: [HTTPQueryParameters]? = nil) -> AnyPublisher<RestRequest, Error>
+    {
         let path = String(describing: path)
         guard let url = baseURL?.appendingPathComponent(path) else {
             return Fail(error: URLError(.badURL))

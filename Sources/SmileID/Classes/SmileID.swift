@@ -25,14 +25,11 @@ public class SmileID {
     public static let version = "10.0.0-beta03"
     internal static var config: Config!
     internal static var useSandbox = true
-    @ObservedObject
-    internal static var navigationState = NavigationViewModel()
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
 
     public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
                                                                                    withExtension: "json")!),
-                                 useSandbox: Bool = true)
-    {
+                                 useSandbox: Bool = true) {
         self.config = config
         self.useSandbox = useSandbox
         SmileIDResourcesHelper.registerFonts()
@@ -48,8 +45,7 @@ public class SmileID {
                                                   showAttribution: Bool = true,
                                                   showInstruction: Bool = true,
                                                   delegate: SmartSelfieResultDelegate)
-        -> some View
-    {
+        -> some View {
         let viewModel = SelfieCaptureViewModel(userId: userId,
                                                jobId: jobId,
                                                isEnroll: true,
@@ -66,13 +62,11 @@ public class SmileID {
                                                  showAttribution _: Bool = true,
                                                  showInstruction _: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
-        -> some View
-    {
+        -> some View {
         let viewModel = DocumentCaptureViewModel()
         let destination = NavigationDestination.documentCaptureInstructionScreen(
             documentCaptureViewModel: viewModel,
-            delegate: delegate
-        )
+            delegate: delegate)
         return SmileView(initialDestination: destination).environmentObject(navigationState)
     }
 
@@ -82,15 +76,14 @@ public class SmileID {
                                                       showAttribution: Bool = true,
                                                       showInstruction: Bool = true,
                                                       delegate: SmartSelfieResultDelegate)
-        -> some View
-    {
+        -> some View {
         let viewModel = SelfieCaptureViewModel(userId: userId,
                                                jobId: jobId,
                                                isEnroll: false,
                                                allowsAgentMode: allowAgentMode,
                                                showAttribution: showAttribution)
         let destination: NavigationDestination = showInstruction ?
-            .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
+                .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
             .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
         return SmileView(initialDestination: destination).environmentObject(navigationState)
     }

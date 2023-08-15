@@ -5,7 +5,7 @@ import Foundation
 public struct ServicesResponse: Codable {
     public let bankCodes: [BankCode]
     public let hostedWeb: HostedWeb
-    
+
     enum CodingKeys: String, CodingKey {
         case bankCodes = "bank_codes"
         case hostedWeb = "hosted_web"
@@ -26,7 +26,7 @@ public struct HostedWeb: Codable {
     var enhancedKyc: CountryCodeToCountryInfo
     var docVerification: CountryCodeToCountryInfo
     var enhancedKycSmartSelfie: CountryCodeToCountryInfo
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         basicKyc = try container.decode(CountryCodeToCountryInfo.self, forKey: .basicKyc)
@@ -34,14 +34,14 @@ public struct HostedWeb: Codable {
         enhancedKyc = try container.decode(CountryCodeToCountryInfo.self, forKey: .enhancedKyc)
         docVerification = try container.decode(CountryCodeToCountryInfo.self, forKey: .docVerification)
         enhancedKycSmartSelfie = try container.decode(CountryCodeToCountryInfo.self, forKey: .enhancedKycSmartSelfie)
-        
+
         basicKyc = basicKyc.toCountryInfo()
         biometricKyc = biometricKyc.toCountryInfo()
         enhancedKyc = enhancedKyc.toCountryInfo()
         docVerification = docVerification.toCountryInfo()
         enhancedKycSmartSelfie = enhancedKycSmartSelfie.toCountryInfo()
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case basicKyc = "basic_kyc"
         case biometricKyc = "biometric_kyc"
@@ -49,30 +49,26 @@ public struct HostedWeb: Codable {
         case docVerification = "doc_verification"
         case enhancedKycSmartSelfie = "ekyc_smartselfie"
     }
-    
-    
 }
 
 // MARK: - CountryInfo
 
-public  struct CountryInfo: Codable {
+public struct CountryInfo: Codable {
     var countryCode = ""
     let name: String
     var availableIdTypes: IdTypeKeyToAvailableIdType
-    
+
     private enum CodingKeys: String, CodingKey {
         case name
         case availableIdTypes = "id_types"
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: .name)
         availableIdTypes = try container.decode(IdTypeKeyToAvailableIdType.self, forKey: .availableIdTypes)
         availableIdTypes = availableIdTypes.toAvailableIdTypes()
     }
-    
-    
 }
 
 // MARK: - AvailableIdType
@@ -83,7 +79,7 @@ public struct AvailableIdType: Codable {
     let requiredFields: [RequiredField] = []
     let testData: String?
     let idNumberRegex: String?
-    
+
     private enum CodingKeys: String, CodingKey {
         case label
         case requiredFields = "required_fields"
@@ -93,6 +89,7 @@ public struct AvailableIdType: Codable {
 }
 
 // MARK: - RequiredField
+
 public enum RequiredField: String, Codable {
     case idNumber = "id_number"
     case firstName = "first_name"
@@ -118,12 +115,10 @@ public typealias CountryCodeToCountryInfo = [String: CountryInfo]
 
 public typealias IdTypeKeyToAvailableIdType = [String: AvailableIdType]
 
-
 extension CountryCodeToCountryInfo {
-    
     func toCountryInfo() -> CountryCodeToCountryInfo {
-        var countryInfo : CountryInfo?
-        self.map { key, value in
+        var countryInfo: CountryInfo?
+        map { key, value in
             countryInfo = value
             countryInfo?.countryCode = key
         }
@@ -131,14 +126,14 @@ extension CountryCodeToCountryInfo {
             return self
         }
         return Dictionary(uniqueKeysWithValues:
-                            self.map { key, value in (key, countryInfo) })
+            map { key, _ in (key, countryInfo) })
     }
 }
 
 extension IdTypeKeyToAvailableIdType {
     func toAvailableIdTypes() -> IdTypeKeyToAvailableIdType {
-        var availableIdType : AvailableIdType?
-        self.map { key, value in
+        var availableIdType: AvailableIdType?
+        map { key, value in
             availableIdType = value
             availableIdType?.idTypeKey = key
         }
@@ -146,6 +141,6 @@ extension IdTypeKeyToAvailableIdType {
             return self
         }
         return Dictionary(uniqueKeysWithValues:
-                            self.map { key, value in (key, availableIdType) })
+            map { key, _ in (key, availableIdType) })
     }
 }
