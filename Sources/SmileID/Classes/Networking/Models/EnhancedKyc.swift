@@ -15,8 +15,8 @@ public struct EnhancedKycRequest: Codable {
     public let timestamp: String
     public let signature: String
     public let partnerId: String = SmileID.config.partnerId
-    public let sourceSdk: String = "ios"
-    public let sourceSdkVersion = SmileID.version
+    public let sourceSdk: String
+    public let sourceSdkVersion: String
 
     public init(
         country: String,
@@ -30,6 +30,8 @@ public struct EnhancedKycRequest: Codable {
         bankCode: String? = nil,
         callbackUrl: String?,
         partnerParams: PartnerParams,
+        sourceSdk: String = "ios",
+        sourceSdkVersion: String = SmileID.version,
         timestamp: String,
         signature: String
     ) {
@@ -44,6 +46,8 @@ public struct EnhancedKycRequest: Codable {
         self.bankCode = bankCode
         self.callbackUrl = callbackUrl
         self.partnerParams = partnerParams
+        self.sourceSdk = sourceSdk
+        self.sourceSdkVersion = sourceSdkVersion
         self.timestamp = timestamp
         self.signature = signature
     }
