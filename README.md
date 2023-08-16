@@ -15,7 +15,7 @@ release notes
 
 Full documentation is available at https://docs.smileidentity.com/integration-options/mobile
 
-The [sample app](example/smileid) included in 
+The [sample app](Example) included in 
 this repo is a good reference implementation
 
 #### 0. Requirements
@@ -36,7 +36,7 @@ You can add SmileID as a dependency by adding it to the `dependencies` value of 
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/smileidentity/ios.git", .upToNextMajor(from: "10.0.0-beta.01"))
+    .package(url: "https://github.com/smileidentity/ios.git", .upToNextMajor(from: "10.0.0-beta05"))
 ]
 ```
 
