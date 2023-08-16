@@ -1,7 +1,7 @@
 import Foundation
 
 public struct AuthenticationRequest: Codable {
-    public var jobType: JobType
+    public var jobType: JobType?
     public var enrollment: Bool
     public var updateEnrolledImage: Bool?
     public var jobId: String?
@@ -23,7 +23,7 @@ public struct AuthenticationRequest: Codable {
         case authToken = "auth_token"
     }
 
-    public init(jobType: JobType,
+    public init(jobType: JobType?,
                 enrollment: Bool,
                 updateEnrolledImage: Bool? = nil,
                 jobId: String?,
