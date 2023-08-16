@@ -53,9 +53,9 @@ public struct HostedWeb: Codable {
 
 // MARK: - CountryInfo
 /**
- * The countryCode  field is not populated/returned by the API response, hence it being marked as
- * mutable. However, it should be populated before usage of this class.when the response gets decoded
- *the same applies to availableIdTypes
+ * The countryCode field is not populated/returned by the API response, hence it being marked as
+ * mutable. However, it should be populated before usage of this class/when the response gets decoded.
+ * The same applies to availableIdTypes
  */
 public struct CountryInfo: Codable {
     var countryCode = ""
