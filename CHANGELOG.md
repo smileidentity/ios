@@ -1,3 +1,8 @@
+## 10.0.0-beta07
+
+### Changed
+- Declare `jobType` property of `PartnerParams` as optional
+
 ## 10.0.0-beta06
 
 ### Changed
