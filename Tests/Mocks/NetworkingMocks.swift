@@ -1,28 +1,46 @@
-import Foundation
 import Combine
-import XCTest
+import Foundation
 @testable import SmileID
+import XCTest
 
 class MockServiceHeaderProvider: ServiceHeaderProvider {
     var expectedHeaders = [HTTPHeader(name: "", value: "")]
-    func provide(request: RestRequest) -> [HTTPHeader]? {
+    func provide(request _: RestRequest) -> [HTTPHeader]? {
         return expectedHeaders
     }
 }
 
 class MockURLSessionPublisher: URLSessionPublisher {
-
     var expectedData = Data()
     var expectedResponse = URLResponse()
 
-    func send(request: URLRequest) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
+    func send(request _: URLRequest) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
         return Result.Publisher((expectedData, expectedResponse))
             .eraseToAnyPublisher()
     }
 }
 
 class MockSmileIdentityService: SmileIDServiceable {
-    func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
+    func getServices() -> AnyPublisher<ServicesResponse, Error> {
+        var response: ServicesResponse
+        do {
+            response = try ServicesResponse(bankCodes: [],
+                                            hostedWeb: HostedWeb(from: JSONDecoder() as! Decoder))
+        } catch {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        }
+
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    func getJobStatus(request _: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
         let response = JobStatusResponse(timestamp: "timestamp",
                                          jobComplete: true,
                                          jobSuccess: true,
@@ -36,7 +54,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error> {
+    func authenticate(request _: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error> {
         let params = PartnerParams(jobId: "jobid",
                                    userId: "userid",
                                    jobType: .enhancedKyc)
@@ -53,7 +71,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error> {
+    func prepUpload(request _: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error> {
         let response = PrepUploadResponse(code: "code",
                                           refId: "refid",
                                           uploadUrl: "",
@@ -67,7 +85,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func upload(zip: Data = Data(), to url: String = "") -> AnyPublisher<UploadResponse, Error> {
+    func upload(zip _: Data = Data(), to _: String = "") -> AnyPublisher<UploadResponse, Error> {
         let response = UploadResponse.response(data: Data())
         if MockHelper.shouldFail {
             return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
@@ -78,15 +96,15 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func doEnhancedKycAsync(request: EnhancedKycRequest) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
+    func doEnhancedKycAsync(request _: EnhancedKycRequest) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)
-                    .eraseToAnyPublisher()
+                .eraseToAnyPublisher()
         } else {
             let response = EnhancedKycAsyncResponse(success: true)
             return Result.Publisher(response)
-                    .eraseToAnyPublisher()
+                .eraseToAnyPublisher()
         }
     }
 }
@@ -95,15 +113,15 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     var successExpectation: XCTestExpectation?
     var failureExpection: XCTestExpectation?
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
+    func didSucceed(selfieImage _: Data, livenessImages _: [Data], jobStatusResponse _: JobStatusResponse?) {
         successExpectation?.fulfill()
     }
 
-    func didError(error: Error) {
+    func didError(error _: Error) {
         failureExpection?.fulfill()
     }
 }
 
-class MockHelper {
+enum MockHelper {
     static var shouldFail = false
 }
