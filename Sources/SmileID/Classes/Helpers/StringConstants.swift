@@ -7,5 +7,6 @@ struct Constants {
         static let light = "Light"
         static let instructionsHeader = "InstructionsHeaderIcon"
         static let smileEmblem = "SmileEmblem"
+        static let capture = "Capture"
     }
 }

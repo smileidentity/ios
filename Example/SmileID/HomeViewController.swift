@@ -1,7 +1,7 @@
-import UIKit
-import SwiftUI
 import Combine
 import SmileID
+import SwiftUI
+import UIKit
 
 class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     var cameraVC: UIViewController?
@@ -26,7 +26,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
         }
     }
 
-    @IBAction func onSmartSelfieRegistrationTap(_ sender: Any) {
+    @IBAction func onSmartSelfieRegistrationTap(_: Any) {
         userID = UUID().uuidString
         currentJob = .smartSelfieEnrollment
         let smartSelfieRegistrationScreen = SmileID.smartSelfieEnrollmentScreen(userId: userID,
@@ -37,7 +37,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
         navigationController?.present(cameraVC!, animated: true)
     }
 
-    @IBAction func onSmartSelfieAuthenticationTap(_ sender: Any) {
+    @IBAction func onSmartSelfieAuthenticationTap(_: Any) {
         currentJob = .smartSelfieAuthentication
     }
 
@@ -50,9 +50,8 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
         navigationController?.present(cameraVC!, animated: true)
     }
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
+    func didSucceed(selfieImage _: Data, livenessImages _: [Data], jobStatusResponse _: JobStatusResponse?) {
         cameraVC?.dismiss(animated: true, completion: {
-
             switch self.currentJob {
             case .smartSelfieEnrollment:
                 UIPasteboard.general.string = self.userID
@@ -74,7 +73,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
                                                 message: message,
                                                 preferredStyle: .alert)
         alertController.addAction(.init(title: "Okay", style: .default))
-        self.navigationController?.present(alertController, animated: true)
+        navigationController?.present(alertController, animated: true)
     }
 
     func didError(error: Error) {
