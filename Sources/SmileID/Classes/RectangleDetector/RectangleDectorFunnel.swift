@@ -1,3 +1,6 @@
+//  Created by Boris Emorine on 2/9/18.
+//  Copyright © 2018 WeTransfer. All rights reserved.
+
 import AVFoundation
 import Foundation
 
