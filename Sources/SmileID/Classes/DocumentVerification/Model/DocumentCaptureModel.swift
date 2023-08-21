@@ -154,9 +154,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
                                                                     SelfieCaptureViewModel(userId: userId,
                                                                                            jobId: jobId,
                                                                                            isEnroll: false),
-                                                                  delegate: nil),
+                                                                  delegate: self),
                                 style: .push)
-            //LocalStorage.saveDocumentImages(front: <#T##Data#>, back: <#T##Data?#>)
         }
     }
 
@@ -237,7 +236,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
                         return
                     }
 
-                    self.displayRectangleResult(rectangleResult: RectangleDetectorResult(rectangle: rectangle, imageSize: imageSize))
+                    self.displayRectangleResult(rectangleResult: RectangleDetectorResult(rectangle: rectangle,
+                                                                                         imageSize: imageSize))
                 }
 
         } else {
@@ -259,6 +259,16 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
         }
 
         return quad
+    }
+}
+
+extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
+    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
+        //Submit Job with selfie and liveness images
+    }
+
+    func didError(error: Error) {
+        //Handle Error
     }
 }
 
