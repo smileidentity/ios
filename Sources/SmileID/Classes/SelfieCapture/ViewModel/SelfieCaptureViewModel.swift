@@ -83,12 +83,13 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable {
     private var userId: String
     private var jobId: String
     private var isEnroll: Bool
+    private var shouldSubmitJob: Bool
     private (set) var showAttribution: Bool
     private var selfieImage: Data?
     private var currentExif: [String: Any]?
     private (set) var allowsAgentMode: Bool
     private let subject = PassthroughSubject<String, Never>()
-    private (set) lazy var cameraManager: CameraManageable = CameraManager(mode: .selfie)
+    private (set) lazy var cameraManager: CameraManageable = CameraManager(orientation: .portrait)
     private var faceDetector = FaceDetector()
     private var subscribers = Set<AnyCancellable>()
     private var facedetectionSubscribers: AnyCancellable?
@@ -152,10 +153,12 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable {
          isEnroll: Bool,
          allowsAgentMode: Bool = false,
          showAttribution: Bool = true,
-         cameraManager: CameraManageable? = nil) {
+         cameraManager: CameraManageable? = nil,
+         shoudSubmitJob: Bool = true) {
         self.userId = userId
         self.isEnroll = isEnroll
         self.jobId = jobId
+        self.shouldSubmitJob = shoudSubmitJob
         self.showAttribution = showAttribution
         self.allowsAgentMode = allowsAgentMode
         faceDetector.model = self
@@ -404,6 +407,13 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable {
     }
 
     func submit() {
+        if !shouldSubmitJob {
+            try? LocalStorage.delete(at: files)
+            captureResultDelegate?.didSucceed(selfieImage: selfieImage!,
+                                              livenessImages: livenessImages,
+                                              jobStatusResponse: nil)
+            return
+        }
         processingState = .inProgress
         var zip: Data
         do {
