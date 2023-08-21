@@ -37,7 +37,7 @@ struct DocumentOverlayView: View {
                 .padding(.top, window?.safeAreaInsets.top ?? 0 + 10)
                 VStack(alignment: .center, spacing: 20) {
                     VStack(alignment: .center, spacing: 16) {
-                        Text("Front of ID")
+                        Text(SmileIDResourcesHelper.localizedString(for: viewModel.captureSideCopy))
                             .multilineTextAlignment(.center)
                             .font(SmileID.theme.header4)
                             .foregroundColor(SmileID.theme.accent)

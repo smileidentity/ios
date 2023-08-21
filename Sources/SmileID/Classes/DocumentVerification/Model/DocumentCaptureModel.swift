@@ -4,11 +4,18 @@ import CoreVideo
 import AVFoundation
 
 class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
-    enum Position {
+    enum Side {
         case front
         case back
     }
-    private let rectangleFunnel = RectangleFeaturesFunnel()
+    var captureSideCopy: String {
+        switch side {
+        case .back:
+            return "Document.Capture.Back"
+        case .front:
+            return "Document.Capture.Front"
+        }
+    }
     weak var rectangleDetectionDelegate: RectangleDetectionDelegate?
     weak var captureResultDelegate: DocumentCaptureResultDelegate?
     private var displayedRectangleResult: RectangleDetectorResult?
@@ -17,12 +24,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     private var document: Document
     private var currentBuffer: CVPixelBuffer?
     private (set) var frontImage: UIImage?
+    private (set) var backImage: UIImage?
     private var subscribers = Set<AnyCancellable>()
     private var cameraFeedSubscriber: AnyCancellable?
     private var captureSubscriber: AnyCancellable?
     private var captureBothSides: Bool
-    private (set) lazy var cameraManager: CameraManageable = CameraManager(mode: .document)
-    private (set) var postion = Position.front
+    private let rectangleFunnel = RectangleFeaturesFunnel()
+    private (set) lazy var cameraManager: CameraManageable = CameraManager(orientation: .landscape)
+    private (set) var side = Side.front
+    private (set) var showAttribution: Bool
     @Published var processingState: ProcessingState? {
         didSet {
             switch processingState {
@@ -36,11 +46,12 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
         }
     }
 
-    init(userId: String, jobId: String, document: Document, captureBothSides: Bool) {
+    init(userId: String, jobId: String, document: Document, captureBothSides: Bool, showAttribution: Bool) {
         self.userId = userId
         self.jobId = jobId
         self.document = document
         self.captureBothSides = captureBothSides
+        self.showAttribution = showAttribution
         subscribeToCameraFeed()
         subscribeToImageCapture()
     }
@@ -97,8 +108,12 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
             "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
             "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
         ])
-
-        frontImage = UIImage.from(ciImage: filteredImage)
+        switch side {
+        case .back:
+            backImage = UIImage.from(ciImage: filteredImage)
+        case .front:
+            frontImage = UIImage.from(ciImage: filteredImage)
+        }
     }
 
     func resumeCameraSession() {
@@ -118,8 +133,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
                 captureResultDelegate?.didError(error: error)
                 return
             }
-            captureResultDelegate?.didSucceed(documentFrontImage: Data(),
-                                              documentBackImage: nil,
+            captureResultDelegate?.didSucceed(documentFrontImage: frontImage!.jpegData(compressionQuality: 1)!,
+                                              documentBackImage: backImage!.jpegData(compressionQuality: 1)!,
                                               jobStatusResponse: response)
         default:
             break
@@ -127,15 +142,20 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     }
 
     func submit(navigation: NavigationViewModel) {
-        if captureBothSides && postion == .front {
+        if captureBothSides && side == .front {
             processingState = nil
-            postion = .back
+            side = .back
             navigation.navigate(destination: .documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
-                                                                                             delegate: captureResultDelegate),
-                                         style: .push)
+                                                                                   delegate: captureResultDelegate),
+                                style: .push)
         } else {
             processingState = .inProgress
-            navigation.navigate(destination: .selfieCaptureScreen(selfieCaptureViewModel: SelfieCaptureViewModel(userId: userId, jobId: jobId, isEnroll: false), delegate: nil), style: .push)
+            navigation.navigate(destination: .selfieCaptureScreen(selfieCaptureViewModel:
+                                                                    SelfieCaptureViewModel(userId: userId,
+                                                                                           jobId: jobId,
+                                                                                           isEnroll: false),
+                                                                  delegate: nil),
+                                style: .push)
             //LocalStorage.saveDocumentImages(front: <#T##Data#>, back: <#T##Data?#>)
         }
     }

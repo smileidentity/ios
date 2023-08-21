@@ -47,6 +47,6 @@ struct DocumentConfirmationView_Previews: PreviewProvider {
                                                                      document: Document(countryCode: "",
                                                                                         documentType: "",
                                                                                         aspectRatio: 0.0),
-                                                                     captureBothSides: true))
+                                                                     captureBothSides: true, showAttribution: true))
     }
 }

@@ -54,3 +54,5 @@
 "Document.Processing.Callout" = "Just a few more seconds";
 "Document.Complete.Header" = "Document Submitted";
 "Document.Complete.Callout" = "We are verifying your information. You can now proceed.";
+"Document.Capture.Front" = "Front of ID";
+"Document.Capture.Back" = "Back of ID";
