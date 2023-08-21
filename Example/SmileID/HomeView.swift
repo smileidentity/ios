@@ -41,7 +41,7 @@ struct HomeView: View {
                             $viewModel.presentDocumentVerification,
                             content: { SmileID.documentVerificationScreen(
                                 userId: viewModel.generateUserID(),
-                                showAttribution: true,
+                                idType: Document(countryCode: "", documentType: "", aspectRatio: 0.8), showAttribution: true,
                                 delegate: viewModel
                             ) })
                         .frame(width: (geo.size.width / 2) - 7.5)
