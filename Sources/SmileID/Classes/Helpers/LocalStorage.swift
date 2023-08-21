@@ -42,7 +42,7 @@ class LocalStorage {
         return urls
     }
 
-    /// Saves front and back images of documents to disk, geneated an `info.json`
+    /// Saves front and back images of documents to disk, generates an `info.json`
     /// and returns the url of all the files that have been saved
     /// - Parameters:
     ///   - front: Jpg data representation id image fron
