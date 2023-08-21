@@ -15,9 +15,9 @@ protocol CameraManageable: AnyObject  {
 
 class CameraManager: NSObject, ObservableObject, CameraManageable {
 
-    enum Mode {
-        case selfie
-        case document
+    enum Orientation {
+        case portrait
+        case landscape
     }
 
     enum Status {
@@ -50,10 +50,10 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
     private let videoOutput = AVCaptureVideoDataOutput()
     private let photoOutput = AVCapturePhotoOutput()
     private var status = Status.unconfigured
-    private var mode: Mode
+    private var orientation: Orientation
 
-    init(mode: Mode) {
-        self.mode = mode
+    init(orientation: Orientation) {
+        self.orientation = orientation
         super.init()
         set(self, queue: videoOutputQueue)
     }
@@ -136,7 +136,7 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
             session.addOutput(videoOutput)
             videoOutput.videoSettings =
             [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
-            if mode == .selfie {
+            if orientation == .portrait {
                 let videoConnection = videoOutput.connection(with: .video)
                 videoConnection?.videoOrientation = .portrait
             }
@@ -206,14 +206,12 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 extension CameraManager: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let error {
+        guard error == nil else {
+            set(error: .cannotCaptureImage(error!))
             return
         }
         if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
             self.capturedImage  = image
-        } else {
-            print(error?.localizedDescription)
-            return
         }
     }
 }
