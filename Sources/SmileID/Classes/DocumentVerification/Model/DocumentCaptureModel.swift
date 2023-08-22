@@ -153,7 +153,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
             navigation.navigate(destination: .selfieCaptureScreen(selfieCaptureViewModel:
                                                                     SelfieCaptureViewModel(userId: userId,
                                                                                            jobId: jobId,
-                                                                                           isEnroll: false),
+                                                                                           isEnroll: false,
+                                                                                           shoudSubmitJob: false),
                                                                   delegate: self),
                                 style: .push)
         }
@@ -265,10 +266,25 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
 extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
         //Submit Job with selfie and liveness images
+        processingState = .inProgress
+        var zip: Data
+        do {
+            let files = try LocalStorage.saveDocumentImages(front: frontImage!.jpegData(compressionQuality: 1)!,
+                                                back: backImage?.jpegData(compressionQuality: 1),
+                                                livenessImages: livenessImages,
+                                                            selfie: selfieImage,
+                                                            document: document)
+            let zipUrl = try LocalStorage.zipFiles(at: files)
+            zip = try Data(contentsOf: zipUrl)
+        } catch {
+            captureResultDelegate?.didError(error: error)
+            return
+        }
+        submitJob(zip: zip)
     }
 
     func didError(error: Error) {
-        //Handle Error
+        captureResultDelegate?.didError(error: error)
     }
 }
 
