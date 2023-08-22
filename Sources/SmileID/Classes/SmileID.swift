@@ -69,11 +69,9 @@ public class SmileID {
                                                  showAttribution: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
         -> some View {
-            let viewModel = DocumentCaptureViewModel(userId: "",
-                                                     jobId: "",
-                                                     document: Document(countryCode: "",
-                                                                        documentType: "",
-                                                                        aspectRatio: 0.8),
+            let viewModel = DocumentCaptureViewModel(userId: userId,
+                                                     jobId: jobId,
+                                                     document: idType,
                                                      captureBothSides: captureBothSides,
                                                      showAttribution: showAttribution)
         let destination = NavigationDestination.documentFrontCaptureInstructionScreen(
