@@ -22,6 +22,11 @@ public struct DocumentCaptureInstructionsView: View {
     }
 
     public var body: some View {
+        if let processingState = viewModel.processingState, processingState == .endFlow {
+            let _ = DispatchQueue.main.async {
+                navigationViewModel.dismiss()
+            }
+        }
         switch side {
         case .front:
             createFrontInstructions()

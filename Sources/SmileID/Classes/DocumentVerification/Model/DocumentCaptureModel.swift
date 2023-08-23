@@ -18,6 +18,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     }
     weak var rectangleDetectionDelegate: RectangleDetectionDelegate?
     weak var captureResultDelegate: DocumentCaptureResultDelegate?
+    var navigation: NavigationViewModel?
     private var displayedRectangleResult: RectangleDetectorResult?
     private var userId: String
     private var jobId: String
@@ -87,7 +88,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     }
 
     func resetState() {
-
+        DispatchQueue.main.async {
+            if self.processingState != nil {
+                self.processingState = nil
+            }
+        }
+        frontImage = nil
+        backImage = nil
+        displayedRectangleResult = nil
+        currentBuffer = nil
     }
 
     func cropImage(_ capturedImage: UIImage, quadView: QuadrilateralView) {
@@ -141,16 +150,16 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
         }
     }
 
-    func submit(navigation: NavigationViewModel) {
+    func submit(navigation _: NavigationViewModel) {
         if captureBothSides && side == .front {
             processingState = nil
             side = .back
-            navigation.navigate(destination: .documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
+            navigation?.navigate(destination: .documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
                                                                                    delegate: captureResultDelegate),
                                 style: .push)
         } else {
             processingState = .inProgress
-            navigation.navigate(destination: .selfieCaptureScreen(selfieCaptureViewModel:
+            navigation?.navigate(destination: .selfieCaptureScreen(selfieCaptureViewModel:
                                                                     SelfieCaptureViewModel(userId: userId,
                                                                                            jobId: jobId,
                                                                                            isEnroll: false,
@@ -162,11 +171,12 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
 
     func handleDeclineButtonTap() {
         processingState = nil
+        
     }
 
     func handleRetry() {
         processingState = .inProgress
-        //submit()
+        //TO-DO: Handle retry
     }
 
     func handleClose() {
@@ -210,20 +220,23 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
             }, receiveValue: { [weak self] response in
                 DispatchQueue.main.async {
                     self?.processingState = .complete(response, nil)
+                    self?.navigation?.navigate(destination: .documentCaptureComplete(viewModel: self!), style: .push)
                 }
             }).store(in: &subscribers)
     }
 
     private func handleError(_ error: SmileIDError) {
         switch error {
-        case .request(let urlError):
-            processingState = .error(urlError)
+        case .request:
+            navigation?.navigate(destination: .documentCaptureError(viewModel: self), style: .push)
         case .httpError, .unknown:
-            processingState = .error(error)
+            navigation?.navigate(destination: .documentCaptureError(viewModel: self), style: .push)
         case .jobStatusTimeOut:
             processingState = .complete(nil, nil)
+            navigation?.navigate(destination: .documentCaptureComplete(viewModel: self), style: .push)
         default:
             processingState = .complete(nil, error)
+            navigation?.navigate(destination: .documentCaptureComplete(viewModel: self), style: .push)
         }
     }
 
@@ -265,8 +278,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
 
 extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
-        //Submit Job with selfie and liveness images
-        processingState = .inProgress
+        navigation?.navigate(destination: .doucmentCaptureProcessing, style: .push)
         var zip: Data
         do {
             let files = try LocalStorage.saveDocumentImages(front: frontImage!.jpegData(compressionQuality: 1)!,

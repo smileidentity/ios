@@ -33,6 +33,17 @@ class ViewFactory {
             DocumentCaptureInstructionsView(viewModel: viewModel,
                                             side: .back,
                                             delegate: delegate ?? DocPlaceHolderDelegate())
+        case .doucmentCaptureProcessing:
+             ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.Scan,
+                                                                                  titleKey: "Document.Processing.Header",
+                                                                                  calloutKey: "Document.Processing.Callout")
+            }
+        case .documentCaptureComplete(viewModel: let viewModel):
+            ModalPresenter { SuccessView(titleKey: "Document.Complete.Header",
+                                         bodyKey: "Document.Complete.Callout",
+                                         clicked: { viewModel.handleCompletion() }) }
+        case .documentCaptureError(viewModel: let viewModel):
+            ModalPresenter { ErrorView(viewModel: viewModel) }
         }
     }
 }

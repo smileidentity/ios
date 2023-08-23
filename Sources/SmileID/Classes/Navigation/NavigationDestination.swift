@@ -11,4 +11,7 @@ enum NavigationDestination {
                                               delegate: DocumentCaptureResultDelegate?)
     case documentCaptureScreen(documentCaptureViewModel: DocumentCaptureViewModel,
                                delegate: DocumentCaptureResultDelegate?)
+    case doucmentCaptureProcessing
+    case documentCaptureError(viewModel: DocumentCaptureViewModel)
+    case documentCaptureComplete(viewModel: DocumentCaptureViewModel)
 }

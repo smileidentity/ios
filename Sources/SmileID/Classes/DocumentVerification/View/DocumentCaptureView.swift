@@ -19,6 +19,7 @@ struct DocumentCaptureView: View {
                 .onAppear {
                     viewModel.cameraManager.switchCamera(to: .back)
                     viewModel.rectangleDetectionDelegate = camera.preview
+                    viewModel.navigation = navigationViewModel
                 }
             DocumentOverlayView(viewModel: viewModel)
             switch viewModel.processingState {

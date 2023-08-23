@@ -63,6 +63,7 @@ public class SmileID {
     public class func documentVerificationScreen(userId: String = "user-\(UUID().uuidString)",
                                                  jobId: String = "job-\(UUID().uuidString)",
                                                  idType: Document,
+                                                 selfie: Data? = nil,
                                                  captureBothSides: Bool = true,
                                                  allowGalleryUpload: Bool = false,
                                                  showInstructions: Bool = false,

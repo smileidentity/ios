@@ -409,9 +409,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable {
     func submit() {
         if !shouldSubmitJob {
             try? LocalStorage.delete(at: files)
-            captureResultDelegate?.didSucceed(selfieImage: selfieImage!,
-                                              livenessImages: livenessImages,
-                                              jobStatusResponse: nil)
+            processingState = .complete(nil, nil)
             return
         }
         processingState = .inProgress
