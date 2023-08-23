@@ -6,10 +6,12 @@ public protocol DocumentCaptureResultDelegate: AnyObject {
     /// be complete. Use `jobStatusResponse.jobComplete` to check if a job is complete and
     /// `jobStatusResponse.jobSuccess` to check if a job is successful.
     /// - Parameters:
+    ///   - selfie: Jpg data of selfie
     ///   - documentFrontImage: Jpg data of the front of the image
     ///   - documentBackImage: Jpg data of the back of the image
     ///   - jobStatusResponse: An object that represent the status of a job.
-    func didSucceed(documentFrontImage: Data,
+    func didSucceed(selfie: Data,
+                    documentFrontImage: Data,
                     documentBackImage: Data?,
                     jobStatusResponse: JobStatusResponse?)
 

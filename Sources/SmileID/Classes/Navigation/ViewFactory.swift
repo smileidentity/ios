@@ -7,7 +7,8 @@ class ViewFactory {
     }
 
     class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
-        func didSucceed(documentFrontImage: Data, documentBackImage: Data?, jobStatusResponse: JobStatusResponse?) {}
+        func didSucceed(selfie: Data, documentFrontImage: Data, documentBackImage: Data?, jobStatusResponse: JobStatusResponse?) {}
+
         func didError(error _: Error) {}
     }
 

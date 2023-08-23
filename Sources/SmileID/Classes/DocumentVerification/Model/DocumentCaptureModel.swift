@@ -34,6 +34,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     private (set) lazy var cameraManager: CameraManageable = CameraManager(orientation: .landscape)
     private (set) var side = Side.front
     private (set) var showAttribution: Bool
+    private var selfie: Data?
     @State var galleryImageFront = UIImage() {
         didSet {
             frontImage = galleryImageFront
@@ -147,9 +148,12 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
                 captureResultDelegate?.didError(error: error)
                 return
             }
-            captureResultDelegate?.didSucceed(documentFrontImage: frontImage!.jpegData(compressionQuality: 1)!,
-                                              documentBackImage: backImage!.jpegData(compressionQuality: 1)!,
-                                              jobStatusResponse: response)
+            if let selfie = selfie {
+                captureResultDelegate?.didSucceed(selfie: selfie,
+                                                  documentFrontImage: frontImage!.jpegData(compressionQuality: 1)!,
+                                                  documentBackImage: backImage!.jpegData(compressionQuality: 1)!,
+                                                  jobStatusResponse: response)
+            }
         default:
             break
         }
@@ -284,6 +288,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
 extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
         navigation?.navigate(destination: .doucmentCaptureProcessing, style: .push)
+        self.selfie = selfieImage
         var zip: Data
         do {
             let files = try LocalStorage.saveDocumentImages(front: frontImage!.jpegData(compressionQuality: 1)!,
