@@ -35,6 +35,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     private (set) var side = Side.front
     private (set) var showAttribution: Bool
     private var selfie: Data?
+    private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
     @State var galleryImageFront = UIImage() {
         didSet {
             frontImage = galleryImageFront
@@ -65,7 +66,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
 
     func subscribeToCameraFeed() {
        cameraFeedSubscriber = cameraManager.sampleBufferPublisher
-            .receive(on: DispatchQueue.global())
+            .receive(on: recieveBufferQueue)
             .compactMap({$0})
             .sink( receiveValue: { [self] buffer in
                 self.currentBuffer = buffer
