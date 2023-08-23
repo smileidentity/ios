@@ -47,7 +47,12 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                 faceOverlay
                 switch viewModel.processingState {
                 case .confirmation:
-                    ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
+                    ModalPresenter { ImageConfirmationView(viewModel: viewModel,
+                                                           header: "Confirmation.GoodSelfie",
+                                                           callout: "Confirmation.FaceClear",
+                                                           confirmButtonTitle: "Confirmation.YesUse",
+                                                           declineButtonTitle: "Confirmation.Retake",
+                                                           image: UIImage(data: viewModel.displayedImage!)!)}
                 case .inProgress:
                     ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.FaceOutline,
                                                                     titleKey: "Confirmation.ProcessingSelfie",

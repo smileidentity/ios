@@ -44,7 +44,7 @@ enum ProcessingState {
     case error(Error)
 }
 
-final class SelfieCaptureViewModel: ObservableObject, JobSubmittable {
+final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDialogContract {
 
     // MARK: Published Properties
     @Published var agentMode = false {
@@ -281,7 +281,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable {
         }
     }
 
-    func handleRetakeButtonTap() {
+    func declineImage() {
         resetCapture()
         resumeCameraSession()
     }
@@ -488,6 +488,10 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable {
             selfieImage = nil
         }
         try? LocalStorage.delete(at: files)
+    }
+
+    func acceptImage() {
+        submit()
     }
 
     func handleClose() {
