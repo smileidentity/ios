@@ -82,7 +82,7 @@ class LocalStorage {
         let selfieUrl = try write(selfie, to: destinationFolder.appendingPathComponent(selfieFileName))
         urls.append(selfieUrl)
         imageInfoArray.append(UploadImageInfo(imageTypeId: .selfieJpgFile, fileName: selfieFileName))
-        let idInfo = IdInfo(country: document.countryCode, idType: document.documentType)
+        let idInfo = IdInfo(country: document.countryCode, idType: document.documentType ?? "")
         let jsonData = try jsonEncoder.encode(UploadRequest(images: imageInfoArray, idInfo: idInfo))
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
         urls.append(jsonUrl)
