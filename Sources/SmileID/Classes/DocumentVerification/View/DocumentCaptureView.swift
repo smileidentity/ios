@@ -25,7 +25,12 @@ struct DocumentCaptureView: View {
             switch viewModel.processingState {
             case .confirmation(let image):
                 let _ = viewModel.cropImage(image, quadView: camera.preview.quadView)
-                ModalPresenter { DocumentConfirmationView(viewModel: viewModel)}
+                ModalPresenter { ImageConfirmationView(viewModel: viewModel,
+                                                       header: "Document.Confirmation.Header",
+                                                       callout: "Document.Confirmation.Callout",
+                                                       confirmButtonTitle: "Document.Confirmation.Accept",
+                                                       declineButtonTitle:  "Document.Confirmation.Decline",
+                                                       image: viewModel.confirmationImage)}
             case .inProgress:
                 ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.Scan,
                                                                 titleKey: "Document.Processing.Header",

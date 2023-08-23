@@ -3,7 +3,7 @@ import Combine
 import CoreVideo
 import AVFoundation
 
-class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
+class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDialogContract {
     enum Side {
         case front
         case back
@@ -14,6 +14,14 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
             return "Document.Capture.Back"
         case .front:
             return "Document.Capture.Front"
+        }
+    }
+    var confirmationImage: UIImage {
+        switch side {
+        case .back:
+            return backImage!
+        case .front:
+            return frontImage!
         }
     }
     weak var rectangleDetectionDelegate: RectangleDetectionDelegate?
@@ -140,6 +148,14 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
         cameraManager.pauseSession()
     }
 
+    func acceptImage() {
+        submit()
+    }
+
+    func declineImage() {
+        processingState = nil
+    }
+
     func handleCompletion() {
         switch processingState {
         case .complete(let response, let error):
@@ -160,7 +176,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
         }
     }
 
-    func submit(navigation _: NavigationViewModel) {
+    func submit() {
         if captureBothSides && side == .front {
             processingState = nil
             side = .back
@@ -177,11 +193,6 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
                                                                   delegate: self),
                                 style: .push)
         }
-    }
-
-    func handleDeclineButtonTap() {
-        processingState = nil
-        
     }
 
     func handleRetry() {

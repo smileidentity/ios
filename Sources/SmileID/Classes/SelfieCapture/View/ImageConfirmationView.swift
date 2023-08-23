@@ -20,6 +20,7 @@ struct ImageConfirmationView: View {
                     .multilineTextAlignment(.center)
                     .font(SmileID.theme.header2)
                     .foregroundColor(SmileID.theme.accent)
+                    .lineSpacing(0.98)
 
                 Text(SmileIDResourcesHelper.localizedString(for: callout))
                     .multilineTextAlignment(.center)
@@ -29,11 +30,14 @@ struct ImageConfirmationView: View {
             }
             VStack {
                 Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 200)
                     .cornerRadius(16)
                     .clipped()
             }
 
-            VStack {
+            VStack(spacing: 16) {
                 SmileButton(style: .secondary,
                             title: confirmButtonTitle,
                             clicked: {
@@ -44,9 +48,9 @@ struct ImageConfirmationView: View {
                             clicked: {
                                     viewModel.declineImage()
                 })
-            }.padding()
+            }
         }
-        .padding(.top, 64)
+        .padding()
         .background(SmileID.theme.backgroundMain)
         .cornerRadius(20)
         .shadow(radius: 20)
