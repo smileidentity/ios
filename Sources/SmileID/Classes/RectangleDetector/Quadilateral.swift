@@ -64,7 +64,10 @@ struct Quadrilateral: Transformable {
         let bottomRight = self.bottomRight.cartesian(withHeight: height)
         let bottomLeft = self.bottomLeft.cartesian(withHeight: height)
 
-        return Quadrilateral(topLeft: topLeft, topRight: topRight, bottomRight: bottomRight, bottomLeft: bottomLeft)
+        return Quadrilateral(topLeft: topLeft,
+                             topRight: topRight,
+                             bottomRight: bottomRight,
+                             bottomLeft: bottomLeft)
     }
 
 
@@ -106,7 +109,9 @@ struct Quadrilateral: Transformable {
     ///   - toSize: The size to scale the quadrilateral to.
     ///   - rotationAngle: The optional rotation to apply.
     /// - Returns: The newly scaled and potentially rotated quadrilateral.
-    func scale(_ fromSize: CGSize, _ toSize: CGSize, withRotationAngle rotationAngle: CGFloat = 0.0) -> Quadrilateral {
+    func scale(_ fromSize: CGSize,
+               _ toSize: CGSize,
+               withRotationAngle rotationAngle: CGFloat = 0.0) -> Quadrilateral {
         var invertedFromSize = fromSize
         let rotated = rotationAngle != 0.0
 
@@ -126,7 +131,9 @@ struct Quadrilateral: Transformable {
         if rotated {
             let rotationTransform = CGAffineTransform(rotationAngle: rotationAngle)
 
-            let fromImageBounds = CGRect(origin: .zero, size: fromSize).applying(scaledTransform).applying(rotationTransform)
+            let fromImageBounds = CGRect(origin: .zero, size: fromSize)
+                .applying(scaledTransform)
+                .applying(rotationTransform)
 
             let toImageBounds = CGRect(origin: .zero, size: toSize)
             let translationTransform = CGAffineTransform.translateTransform(
