@@ -5,7 +5,8 @@ import AVFoundation
 import Foundation
 
 /// `RectangleFeaturesFunnel` is used to improve the confidence of the detected rectangles.
-/// Feed rectangles to a `RectangleFeaturesFunnel` instance, and it will call the completion block with a rectangle whose confidence is high enough to be displayed.
+/// Feed rectangles to a `RectangleFeaturesFunnel` instance, and it will call the completion block with a rectangle
+/// whose confidence is high enough to be displayed.
 final class RectangleFeaturesFunnel {
 
     /// `RectangleMatch` is a class used to assign matching scores to rectangles.
@@ -39,14 +40,17 @@ final class RectangleFeaturesFunnel {
     /// The queue of last added rectangles. The first rectangle is oldest one, and the last rectangle is the most recently added one.
     private var rectangles = [RectangleMatch]()
 
-    /// The maximum number of rectangles to compare newly added rectangles with. Determines the maximum size of `rectangles`. Increasing this value will impact performance.
+    /// The maximum number of rectangles to compare newly added rectangles with. Determines the maximum size of `rectangles`.
+    ///  Increasing this value will impact performance.
     let maxNumberOfRectangles = 8
 
-    /// The minimum number of rectangles needed to start making comparaisons and determining which rectangle to display. This value should always be inferior than `maxNumberOfRectangles`.
+    /// The minimum number of rectangles needed to start making comparaisons and determining which rectangle to display.
+    /// This value should always be inferior than `maxNumberOfRectangles`.
     /// A higher value will delay the first time a rectangle is displayed.
     let minNumberOfRectangles = 3
 
-    /// The value in pixels used to determine if two rectangle match or not. A higher value will prevent displayed rectangles to be refreshed. On the opposite, a smaller value will make new rectangles be displayed constantly.
+    /// The value in pixels used to determine if two rectangle match or not. A higher value will prevent displayed rectangles to be refreshed.
+    /// On the opposite, a smaller value will make new rectangles be displayed constantly.
     let matchingThreshold: CGFloat = 40.0
 
     /// The minumum number of matching rectangles (within the `rectangle` queue), to be confident enough to display a rectangle.
@@ -63,7 +67,9 @@ final class RectangleFeaturesFunnel {
     ///   - rectangleFeature: The rectangle to feed to the funnel.
     ///   - currentRectangle: The currently displayed rectangle. This is used to avoid displaying very close rectangles.
     ///   - completion: The completion block called when a new rectangle should be displayed.
-    func add(_ rectangleFeature: Quadrilateral, currentlyDisplayedRectangle currentRectangle: Quadrilateral?, completion: (Quadrilateral) -> Void) {
+    func add(_ rectangleFeature: Quadrilateral,
+             currentlyDisplayedRectangle currentRectangle: Quadrilateral?,
+             completion: (Quadrilateral) -> Void) {
         let rectangleMatch = RectangleMatch(rectangleFeature: rectangleFeature)
         rectangles.append(rectangleMatch)
 
@@ -124,7 +130,9 @@ final class RectangleFeaturesFunnel {
     ///   - rect2: The second rectangle to compare.
     ///   - currentRectangle: The currently displayed rectangle. This is used to avoid displaying very close rectangles.
     /// - Returns: The best rectangle to display between two rectangles with the same matching score.
-    private func breakTie(between rect1: RectangleMatch, rect2: RectangleMatch, currentRectangle: Quadrilateral) -> RectangleMatch {
+    private func breakTie(between rect1: RectangleMatch,
+                          rect2: RectangleMatch,
+                          currentRectangle: Quadrilateral) -> RectangleMatch {
         if rect1.rectangleFeature.isWithin(matchingThreshold, ofRectangleFeature: currentRectangle) {
             return rect1
         } else if rect2.rectangleFeature.isWithin(matchingThreshold, ofRectangleFeature: currentRectangle) {
@@ -134,7 +142,8 @@ final class RectangleFeaturesFunnel {
         return rect1
     }
 
-    /// Loops through all of the rectangles of the queue, and gives them a score depending on how many they match. @see `RectangleMatch.matchingScore`
+    /// Loops through all of the rectangles of the queue, and gives them a score depending on how many they match.
+    /// @see `RectangleMatch.matchingScore`
     private func updateRectangleMatches() {
         resetMatchingScores()
         guard !rectangles.isEmpty else { return }
