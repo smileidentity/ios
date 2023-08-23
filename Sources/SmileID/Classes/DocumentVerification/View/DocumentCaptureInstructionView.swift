@@ -43,6 +43,7 @@ public struct DocumentCaptureInstructionsView: View {
                                                     captureType: .document(.back),
                                                     destination: .documentCaptureScreen(documentCaptureViewModel: viewModel,
                                                                                         delegate: documentCaptureDelegate),
+                                                    secondaryDestination: .imagePicker(viewModel: viewModel),
                                                     showAttribution: viewModel.showAttribution)
 
     }
@@ -65,6 +66,7 @@ public struct DocumentCaptureInstructionsView: View {
                                    image: Constants.ImageName.clearImage),
             ], captureType: .document(.front),
             destination: .documentCaptureScreen(documentCaptureViewModel: viewModel, delegate: documentCaptureDelegate),
+            secondaryDestination: .imagePicker(viewModel: viewModel),
             showAttribution: viewModel.showAttribution
         )
     }

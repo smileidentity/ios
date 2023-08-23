@@ -34,6 +34,11 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable {
     private (set) lazy var cameraManager: CameraManageable = CameraManager(orientation: .landscape)
     private (set) var side = Side.front
     private (set) var showAttribution: Bool
+    @State var galleryImageFront = UIImage() {
+        didSet {
+            frontImage = galleryImageFront
+        }
+    }
     @Published var processingState: ProcessingState? {
         didSet {
             switch processingState {

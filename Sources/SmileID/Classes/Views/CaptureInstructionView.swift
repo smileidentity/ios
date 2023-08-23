@@ -23,6 +23,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var callOut: String
     private var instructions: [CaptureInstruction]
     private var destination: NavigationDestination
+    private var secondaryDestination: NavigationDestination?
     private var captureType: CaptureType
     private var showAttribution: Bool
     @EnvironmentObject var navigationViewModel: NavigationViewModel
@@ -33,12 +34,14 @@ public struct CaptureInstructionView<TargetView: View>: View {
          instructions: [CaptureInstruction],
          captureType: CaptureType,
          destination: NavigationDestination,
+         secondaryDestination: NavigationDestination? = nil,
          showAttribution: Bool) {
         self.image = image
         self.title = title
         self.callOut = callOut
         self.instructions = instructions
         self.destination = destination
+        self.secondaryDestination = secondaryDestination
         self.captureType = captureType
         self.showAttribution = showAttribution
     }
@@ -98,13 +101,13 @@ public struct CaptureInstructionView<TargetView: View>: View {
                             })
                 if captureType == .document(.front)  {
                     SmileButton(style: .alternate, title:
-                        "Action.UploadPhoto",
-                        clicked: {
-                            navigationViewModel.navigate(
-                                destination: self.destination,
-                                style: .push
-                            )
-                        })
+                                    "Action.UploadPhoto",
+                                clicked: {
+                        if let secondaryDestination = secondaryDestination {
+                            navigationViewModel.navigate(destination: secondaryDestination,
+                                                         style: .present)
+                        }
+                    })
                 }
 
                 if showAttribution {

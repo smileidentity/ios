@@ -44,6 +44,8 @@ class ViewFactory {
                                          clicked: { viewModel.handleCompletion() }) }
         case .documentCaptureError(viewModel: let viewModel):
             ModalPresenter { ErrorView(viewModel: viewModel) }
+        case .imagePicker(viewModel: let viewModel):
+            ImagePicker(selectedImage: viewModel.$galleryImageFront)
         }
     }
 }
