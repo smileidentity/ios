@@ -106,9 +106,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
     func resetState() {
         DispatchQueue.main.async {
-            if self.processingState != nil {
-                self.processingState = nil
-            }
+            self.processingState = nil
         }
         frontImage = nil
         backImage = nil

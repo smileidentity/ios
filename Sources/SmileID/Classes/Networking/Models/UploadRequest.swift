@@ -21,7 +21,7 @@ public struct IdInfo: Codable {
     var bankCode: String?
     var entered: Bool?
 
-    enum  CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case country
         case idType = "id_type"
         case idNumber = "id_number"

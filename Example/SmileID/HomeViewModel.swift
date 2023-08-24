@@ -87,7 +87,7 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     }
 
     func didSucceed(selfie: Data,
-                     documentFrontImage: Data,
+                    documentFrontImage: Data,
                     documentBackImage: Data?,
                     jobStatusResponse: JobStatusResponse?) {
 
