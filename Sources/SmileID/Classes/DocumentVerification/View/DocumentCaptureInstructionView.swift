@@ -84,7 +84,8 @@ struct DocumentCaptureInstructionsView_Previews: PreviewProvider {
                                                                                                documentType: "",
                                                                                                aspectRatio: 0.2),
                                                                             captureBothSides: true,
-                                                                           showAttribution: true))
+                                                                            showAttribution: true,
+                                                                            allowGalleryUpload: true))
             .environment(\.locale, Locale(identifier: "en"))
     }
 }

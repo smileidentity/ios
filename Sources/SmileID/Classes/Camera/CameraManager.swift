@@ -214,6 +214,8 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
         }
         if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
             self.capturedImage  = image
+        } else {
+            set(error: .cannotCaptureImage(nil))
         }
     }
 }

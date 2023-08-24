@@ -66,7 +66,9 @@ struct DocumentCaptureView_Previews: PreviewProvider {
                                                                 document: Document(countryCode: "",
                                                                                    documentType: "",
                                                                                    aspectRatio: 0.2),
-                                                                captureBothSides: true, showAttribution: true))
+                                                                captureBothSides: true,
+                                                                showAttribution: true,
+                                                                allowGalleryUpload: true))
     }
 }
 
