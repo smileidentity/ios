@@ -12,7 +12,7 @@ public struct UploadRequest: Codable {
 
 public struct IdInfo: Codable {
     var country: String
-    var idType: String
+    var idType: String?
     var idNumber: String?
     var firstName: String?
     var middleName: String?
