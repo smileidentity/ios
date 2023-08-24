@@ -73,8 +73,9 @@ public class SmileID {
             let viewModel = DocumentCaptureViewModel(userId: userId,
                                                      jobId: jobId,
                                                      document: idType,
+                                                     selfie: selfie,
                                                      captureBothSides: captureBothSides,
-                                                     showAttribution: showAttribution)
+                                                     showAttribution: showAttribution, allowGalleryUpload: allowGalleryUpload)
         let destination = NavigationDestination.documentFrontCaptureInstructionScreen(
             documentCaptureViewModel: viewModel,
             delegate: delegate)
