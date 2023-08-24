@@ -184,6 +184,8 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
 
     internal func capturePhoto() {
         guard let connection = photoOutput.connection(with: .video), connection.isEnabled, connection.isActive else {
+            set(error: .cameraUnavailable)
+            print("Camera unavailable")
             return
         }
         let photoSettings = AVCapturePhotoSettings()
