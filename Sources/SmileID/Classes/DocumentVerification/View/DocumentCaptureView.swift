@@ -39,7 +39,7 @@ struct DocumentCaptureView: View {
             case .complete:
                 ModalPresenter { SuccessView(titleKey: "Document.Complete.Header",
                                              bodyKey: "Document.Complete.Callout",
-                                             clicked: { viewModel.handleCompletion() }) }
+                                             clicked: { viewModel.handleCompletion() })}
             case .error:
                 ModalPresenter { ErrorView(viewModel: viewModel) }
             default:

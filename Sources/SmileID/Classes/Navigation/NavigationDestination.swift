@@ -15,4 +15,5 @@ enum NavigationDestination {
     case documentCaptureError(viewModel: DocumentCaptureViewModel)
     case documentCaptureComplete(viewModel: DocumentCaptureViewModel)
     case imagePicker(viewModel: DocumentCaptureViewModel)
+    case documentConfirmation(viewModel: DocumentCaptureViewModel)
 }

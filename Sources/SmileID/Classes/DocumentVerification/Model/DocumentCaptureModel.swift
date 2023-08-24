@@ -19,14 +19,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     var confirmationImage: UIImage {
         switch side {
         case .back:
-            return backImage!
+            return backImage ?? UIImage()
         case .front:
-            return frontImage!
+            return frontImage ?? UIImage()
         }
     }
     weak var rectangleDetectionDelegate: RectangleDetectionDelegate?
     weak var captureResultDelegate: DocumentCaptureResultDelegate?
     var navigation: NavigationViewModel?
+    private var cameraCapture: Bool = false
     private var displayedRectangleResult: RectangleDetectorResult?
     private var userId: String
     private var jobId: String
@@ -93,6 +94,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             .compactMap({$0})
             .sink( receiveValue: { image in
                 DispatchQueue.main.async {
+                    self.cameraCapture = true
                     self.processingState = .confirmation(image)
                 }
             })
@@ -153,7 +155,11 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 
     func declineImage() {
-        processingState = nil
+        if cameraCapture {
+            processingState = nil
+        } else {
+            navigation?.dismiss()
+        }
     }
 
     func handleCompletion() {
@@ -319,6 +325,20 @@ extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
 
     func didError(error: Error) {
         captureResultDelegate?.didError(error: error)
+    }
+}
+
+extension DocumentCaptureViewModel: ImagePickerDelegate {
+    func didSelect(image: UIImage) {
+        switch side {
+        case .back:
+            backImage = image
+        case .front:
+            frontImage = image
+        }
+        cameraCapture = false
+        navigation?.navigate(destination: .documentConfirmation(viewModel: self),
+                             style: .push)
     }
 }
 
