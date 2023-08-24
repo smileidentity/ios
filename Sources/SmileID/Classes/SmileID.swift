@@ -60,6 +60,22 @@ public class SmileID {
         return SmileView(initialDestination: destination).environmentObject(navigationState)
     }
 
+    /// Perform a Document Verification
+    /// - Parameters:
+    ///   - userId: The user ID to associate with the Document Verification. Most often, this will correspond to
+    ///   a unique User ID within your system. If not provided, a random user ID will be generated.
+    ///   - jobId: The job ID to associate with the Document Verification. Most often, this will correspond to a
+    ///   unique Job ID within your system. If not provided, a random job ID will be generated.
+    ///   - idType: The type of ID to be captured
+    ///   - selfie: A jpg selfie where if provided, the user will not be propmpted to capture a selfie and this file
+    ///   will be used as the selfie image.
+    ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the front side
+    ///   will be captured
+    ///   - allowGalleryUpload: Whether to allow the user to upload images from their gallery or not
+    ///   - showInstructions: Whether to deactivate capture screen's instructions for Document Verification
+    ///   (NB! If instructions are disabled, gallery upload won't be possible)
+    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions screen
+    ///   - delegate: The delegate object that recieves the result of the Document Verification
     public class func documentVerificationScreen(userId: String = "user-\(UUID().uuidString)",
                                                  jobId: String = "job-\(UUID().uuidString)",
                                                  idType: Document,
