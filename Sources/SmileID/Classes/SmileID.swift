@@ -75,7 +75,8 @@ public class SmileID {
                                                      document: idType,
                                                      selfie: selfie,
                                                      captureBothSides: captureBothSides,
-                                                     showAttribution: showAttribution, allowGalleryUpload: allowGalleryUpload)
+                                                     showAttribution: showAttribution,
+                                                     allowGalleryUpload: allowGalleryUpload)
         let destination = NavigationDestination.documentFrontCaptureInstructionScreen(
             documentCaptureViewModel: viewModel,
             delegate: delegate)
