@@ -47,8 +47,8 @@ public struct DocumentCaptureInstructionsView: View {
                                                     destination: .documentCaptureScreen(documentCaptureViewModel: viewModel,
                                                                                         delegate: documentCaptureDelegate),
                                                     secondaryDestination: .imagePicker(viewModel: viewModel),
-                                                    showAttribution: viewModel.showAttribution)
-
+                                                    showAttribution: viewModel.showAttribution,
+                                                    allowGalleryUpload: viewModel.allowGalleryUpload)
     }
 
     func createFrontInstructions() -> CaptureInstructionView<DocumentCaptureView> {
@@ -70,7 +70,8 @@ public struct DocumentCaptureInstructionsView: View {
             ], captureType: .document(.front),
             destination: .documentCaptureScreen(documentCaptureViewModel: viewModel, delegate: documentCaptureDelegate),
             secondaryDestination: .imagePicker(viewModel: viewModel),
-            showAttribution: viewModel.showAttribution
+            showAttribution: viewModel.showAttribution,
+            allowGalleryUpload: viewModel.allowGalleryUpload
         )
     }
 }

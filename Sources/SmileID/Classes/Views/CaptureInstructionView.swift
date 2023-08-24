@@ -26,6 +26,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var secondaryDestination: NavigationDestination?
     private var captureType: CaptureType
     private var showAttribution: Bool
+    private var allowGalleryUpload: Bool
     @EnvironmentObject var navigationViewModel: NavigationViewModel
     @State private var goesToDetail: Bool = false
     init(image: UIImage,
@@ -35,7 +36,8 @@ public struct CaptureInstructionView<TargetView: View>: View {
          captureType: CaptureType,
          destination: NavigationDestination,
          secondaryDestination: NavigationDestination? = nil,
-         showAttribution: Bool) {
+         showAttribution: Bool,
+         allowGalleryUpload: Bool = false) {
         self.image = image
         self.title = title
         self.callOut = callOut
@@ -44,6 +46,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
         self.secondaryDestination = secondaryDestination
         self.captureType = captureType
         self.showAttribution = showAttribution
+        self.allowGalleryUpload = allowGalleryUpload
     }
 
     public var body: some View {
@@ -99,7 +102,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
                                     style: .push
                                 )
                             })
-                if captureType == .document(.front)  {
+                if allowGalleryUpload {
                     SmileButton(style: .alternate, title:
                                     "Action.UploadPhoto",
                                 clicked: {

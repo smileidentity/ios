@@ -43,6 +43,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private (set) lazy var cameraManager: CameraManageable = CameraManager(orientation: .landscape)
     private (set) var side = Side.front
     private (set) var showAttribution: Bool
+    private (set) var allowGalleryUpload: Bool
     private var selfie: Data?
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
     @State var galleryImageFront = UIImage() {
@@ -63,12 +64,20 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         }
     }
 
-    init(userId: String, jobId: String, document: Document, captureBothSides: Bool, showAttribution: Bool) {
+    init(userId: String,
+         jobId: String,
+         document: Document,
+         selfie: Data? = nil,
+         captureBothSides: Bool,
+         showAttribution: Bool,
+         allowGalleryUpload: Bool) {
         self.userId = userId
         self.jobId = jobId
         self.document = document
+        self.selfie = selfie
         self.captureBothSides = captureBothSides
         self.showAttribution = showAttribution
+        self.allowGalleryUpload = allowGalleryUpload
         subscribeToCameraFeed()
         subscribeToImageCapture()
     }
