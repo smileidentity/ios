@@ -93,9 +93,11 @@ public class SmileID {
                                                      captureBothSides: captureBothSides,
                                                      showAttribution: showAttribution,
                                                      allowGalleryUpload: allowGalleryUpload)
-        let destination = NavigationDestination.documentFrontCaptureInstructionScreen(
+
+        let destination = showInstructions ? NavigationDestination.documentFrontCaptureInstructionScreen(
             documentCaptureViewModel: viewModel,
-            delegate: delegate)
+            delegate: delegate) : NavigationDestination.documentCaptureScreen(documentCaptureViewModel: viewModel,
+                                                                              delegate: delegate)
         return SmileView(initialDestination: destination).environmentObject(navigationState)
     }
 
