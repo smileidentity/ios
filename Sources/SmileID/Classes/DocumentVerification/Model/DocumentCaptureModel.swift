@@ -45,6 +45,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private (set) var showAttribution: Bool
     private (set) var allowGalleryUpload: Bool
     private var selfie: Data?
+    private var livenessImages: [Data]?
+    private var files = [URL]()
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
     @State var galleryImageFront = UIImage() {
         didSet {
@@ -210,14 +212,22 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
     func handleRetry() {
         processingState = .inProgress
-        //TO-DO: Handle retry
+        submitJob()
     }
 
     func handleClose() {
         processingState = .endFlow
     }
 
-    func submitJob(zip: Data) {
+    func submitJob() {
+        var zip: Data
+        do {
+            let zipUrl = try LocalStorage.zipFiles(at: files)
+            zip = try Data(contentsOf: zipUrl)
+        } catch {
+            captureResultDelegate?.didError(error: error)
+            return
+        }
         let authRequest = AuthenticationRequest(jobType: .documentVerification,
                                                 enrollment: false,
                                                 jobId: jobId,
@@ -308,26 +318,31 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
         return quad
     }
+
+    func saveFilesToDisk() {
+        if !files.isEmpty {
+            try? LocalStorage.delete(at: files)
+        }
+        do {
+            files = try LocalStorage.saveDocumentImages(front: frontImage!.jpegData(compressionQuality: 1)!,
+                                                        back: backImage?.jpegData(compressionQuality: 1),
+                                                        livenessImages: livenessImages,
+                                                        selfie: selfie!,
+                                                        document: document)
+        }
+        catch {
+            captureResultDelegate?.didError(error: error)
+        }
+    }
 }
 
 extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
         navigation?.navigate(destination: .doucmentCaptureProcessing, style: .push)
         self.selfie = selfieImage
-        var zip: Data
-        do {
-            let files = try LocalStorage.saveDocumentImages(front: frontImage!.jpegData(compressionQuality: 1)!,
-                                                back: backImage?.jpegData(compressionQuality: 1),
-                                                livenessImages: livenessImages,
-                                                            selfie: selfieImage,
-                                                            document: document)
-            let zipUrl = try LocalStorage.zipFiles(at: files)
-            zip = try Data(contentsOf: zipUrl)
-        } catch {
-            captureResultDelegate?.didError(error: error)
-            return
-        }
-        submitJob(zip: zip)
+        self.livenessImages = livenessImages
+        saveFilesToDisk()
+        submitJob()
     }
 
     func didError(error: Error) {

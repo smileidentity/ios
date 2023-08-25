@@ -51,7 +51,7 @@ class LocalStorage {
     /// - Returns: An array of urls of all the files that have been saved to disk
     static func saveDocumentImages(front: Data,
                                    back: Data?,
-                                   livenessImages: [Data],
+                                   livenessImages: [Data]?,
                                    selfie: Data,
                                    document: Document,
                                    to folder: String = "sid-\(UUID().uuidString)") throws -> [URL] {
@@ -71,13 +71,15 @@ class LocalStorage {
             urls.append(url)
             imageInfoArray.append(UploadImageInfo(imageTypeId: .idCardRearJpgFile, fileName: filename))
         }
-        let livenessInfoArray = try livenessImages.map({ [self] imageData in
+        let livenessInfoArray = try livenessImages?.map({ [self] imageData in
             let fileName = self.filename(for: "liveness")
             let url =  try write(imageData, to: destinationFolder.appendingPathComponent(fileName))
             urls.append(url)
             return UploadImageInfo(imageTypeId: .livenessJpgFile, fileName: fileName)
         })
-        imageInfoArray.append(contentsOf: livenessInfoArray)
+        if let livenessInfoArray = livenessInfoArray {
+            imageInfoArray.append(contentsOf: livenessInfoArray)
+        }
         let selfieFileName = self.filename(for: "selfie")
         let selfieUrl = try write(selfie, to: destinationFolder.appendingPathComponent(selfieFileName))
         urls.append(selfieUrl)
