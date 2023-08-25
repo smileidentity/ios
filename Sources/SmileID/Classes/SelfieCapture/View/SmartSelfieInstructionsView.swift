@@ -22,6 +22,7 @@ public struct SmartSelfieInstructionsView: View {
             image: SmileIDResourcesHelper.InstructionsHeaderIcon,
             title: SmileIDResourcesHelper.localizedString(for: "Instructions.Header"),
             callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Callout"),
+            buttonTitle: "Instructions.Action",
             instructions: [
                 CaptureInstruction(title: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.GoodLight"),

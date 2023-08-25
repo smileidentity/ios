@@ -21,6 +21,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var image: UIImage
     private var title: String
     private var callOut: String
+    private var buttonTitle: LocalizedStringKey
     private var instructions: [CaptureInstruction]
     private var destination: NavigationDestination
     private var secondaryDestination: NavigationDestination?
@@ -32,6 +33,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
     init(image: UIImage,
          title: String,
          callOut: String,
+         buttonTitle: LocalizedStringKey,
          instructions: [CaptureInstruction],
          captureType: CaptureType,
          destination: NavigationDestination,
@@ -41,6 +43,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
         self.image = image
         self.title = title
         self.callOut = callOut
+        self.buttonTitle = buttonTitle
         self.instructions = instructions
         self.destination = destination
         self.secondaryDestination = secondaryDestination
@@ -95,7 +98,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
                 }
             })
             VStack(spacing: 5) {
-                SmileButton(title: "Instructions.Action",
+                SmileButton(title: buttonTitle,
                             clicked: {
                                 navigationViewModel.navigate(
                                     destination: self.destination,
