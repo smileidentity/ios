@@ -40,7 +40,10 @@ struct HomeView: View {
                         .fullScreenCover(isPresented:
                             $viewModel.presentDocumentVerification,
                             content: { SmileID.documentVerificationScreen(
-                                idType: Document(countryCode: "NG", documentType: "PASSPORT", aspectRatio: 0.8), showAttribution: true,
+                                idType: Document(countryCode: "NG", documentType: "PASSPORT", aspectRatio: 0.8),
+                                allowGalleryUpload: true,
+                                showInstructions: true,
+                                showAttribution: true,
                                 delegate: viewModel
                             ) })
                         .frame(width: (geo.size.width / 2) - 7.5)
