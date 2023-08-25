@@ -123,6 +123,9 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         backImage = nil
         displayedRectangleResult = nil
         currentBuffer = nil
+        files = []
+        // TO-DO: Add check flag to know if partner supplied the selfie
+        selfie = nil
     }
 
     func cropImage(_ capturedImage: UIImage, quadView: QuadrilateralView) {
@@ -167,6 +170,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         if cameraCapture {
             processingState = nil
         } else {
+            resetState()
             navigation?.dismiss()
         }
     }
@@ -212,6 +216,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
     func handleRetry() {
         processingState = .inProgress
+        navigation?.navigate(destination: .doucmentCaptureProcessing, style: .push)
         submitJob()
     }
 
@@ -286,7 +291,6 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
     private func processRectangle(rectangle: Quadrilateral?, imageSize: CGSize) {
         if let rectangle {
-
             self.rectangleFunnel
                 .add(rectangle, currentlyDisplayedRectangle: self.displayedRectangleResult?.rectangle) { [weak self] rectangle in
 
@@ -297,7 +301,6 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     self.displayRectangleResult(rectangleResult: RectangleDetectorResult(rectangle: rectangle,
                                                                                          imageSize: imageSize))
                 }
-
         } else {
             self.displayedRectangleResult = nil
             self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize)
@@ -339,7 +342,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
         navigation?.navigate(destination: .doucmentCaptureProcessing, style: .push)
-        self.selfie = selfieImage
+        selfie = selfieImage
         self.livenessImages = livenessImages
         saveFilesToDisk()
         submitJob()

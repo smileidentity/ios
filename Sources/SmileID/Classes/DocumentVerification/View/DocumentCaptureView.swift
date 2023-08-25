@@ -14,6 +14,11 @@ struct DocumentCaptureView: View {
     }
 
     var body: some View {
+        if let processingState = viewModel.processingState, processingState == .endFlow {
+            let _ = DispatchQueue.main.async {
+                navigationViewModel.dismiss()
+            }
+        }
         ZStack {
             camera
                 .onAppear {
