@@ -47,6 +47,13 @@ class PreviewView: UIViewController {
     }
 }
 
+extension PreviewView {
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        previewLayer?.frame = view.bounds
+    }
+}
+
 extension PreviewView: FaceDetectorDelegate {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
       guard let previewLayer = previewLayer else {
