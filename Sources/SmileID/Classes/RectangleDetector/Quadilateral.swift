@@ -28,6 +28,10 @@ struct Quadrilateral: Transformable {
         return Double(perimeter)
     }
 
+    var aspectRatio: Double {
+        abs(topLeft.y - bottomLeft.y) / abs(topLeft.x - topRight.x)
+    }
+
     init(rectangleObservation: VNRectangleObservation) {
         self.topLeft = rectangleObservation.topLeft
         self.topRight = rectangleObservation.topRight

@@ -66,6 +66,20 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         }
     }
 
+    @Published var borderColor: UIColor = .gray
+    @Published var guideSize: CGSize = .zero
+    var width: CGFloat = .zero
+
+    var rectangleAspectRatio: Double = 1.66 {
+        didSet {
+            let rectWidth = 0.9 * width
+            let rectHeight = rectWidth/rectangleAspectRatio
+            DispatchQueue.main.async {
+                self.guideSize = CGSize(width: rectWidth, height: rectHeight)
+            }
+        }
+    }
+
     init(userId: String,
          jobId: String,
          document: Document,
@@ -297,7 +311,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     guard let self else {
                         return
                     }
-
+                    self.rectangleAspectRatio = rectangle.aspectRatio
                     self.displayRectangleResult(rectangleResult: RectangleDetectorResult(rectangle: rectangle,
                                                                                          imageSize: imageSize))
                 }
@@ -305,6 +319,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             self.displayedRectangleResult = nil
             self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize)
         }
+    }
+
+    func isRectangleValid() {
+        borderColor = .green
     }
 
     @discardableResult private func displayRectangleResult(rectangleResult: RectangleDetectorResult) -> Quadrilateral {

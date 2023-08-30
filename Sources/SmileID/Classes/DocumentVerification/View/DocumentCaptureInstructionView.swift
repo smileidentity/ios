@@ -41,7 +41,8 @@ public struct DocumentCaptureInstructionsView: View {
     func createBackInstuctions() -> CaptureInstructionView<DocumentCaptureView> {
         CaptureInstructionView<DocumentCaptureView>(image: UIImage(),
                                                     title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Header"),
-                                                    callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Callout"), buttonTitle: "Action.TakePhoto",
+                                                    callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Callout"),
+                                                    buttonTitle: "Action.TakePhoto",
                                                     instructions: [],
                                                     captureType: .document(.back),
                                                     destination: .documentCaptureScreen(documentCaptureViewModel: viewModel,
