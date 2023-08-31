@@ -27,6 +27,10 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
             )
         }
 
+        router.presentHandler = { route in
+            nav.present(UIHostingController(rootView: routeMap(route)), animated: true)
+        }
+
         router.pushHandler = { route in
             nav.pushViewController(
                 UIHostingController(rootView: routeMap(route)), animated: true
@@ -69,7 +73,8 @@ class PoppableNavigationController: UINavigationController, UINavigationControll
                               didShow viewController: UIViewController,
                               animated: Bool) {
 
-        if let stackSizeProvider = navStackHandler, stackSizeProvider() > navigationController.viewControllers.count {
+        if let stackSizeProvider = navStackHandler, stackSizeProvider() >
+            navigationController.viewControllers.count {
             self.popHandler?()
         }
     }

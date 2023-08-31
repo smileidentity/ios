@@ -31,7 +31,7 @@ public struct DocumentCaptureInstructionsView: View {
         case .front:
             createFrontInstructions()
                 .onAppear {
-                    viewModel.navigation = navigationViewModel
+                   // viewModel.navigation = navigationViewModel
                 }
         case .back:
             createBackInstuctions()

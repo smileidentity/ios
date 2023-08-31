@@ -1,33 +1,39 @@
-import Foundation
 import SwiftUI
 import Combine
 import UIKit
 
-public class Router<R: Equatable>: ObservableObject {
+class Router<R: Equatable>: ObservableObject {
     private (set) var routes: [R] = []
     var pushHandler: ((R) -> Void)?
     var popHandler: ((Int, Bool) -> Void)?
+    var presentHandler: ((R) -> Void)?
 
-    public init(initial: R? = nil) {
+    init(initial: R? = nil) {
 
         if let initial = initial {
             push(initial)
         }
     }
 
-    public func push(_ route: R) {
+    func present(_ route: R) {
+        presentHandler?(route)
+    }
+
+    func push(_ route: R) {
         self.routes.append(route)
         self.pushHandler?(route)
     }
 
-    public func pop(animated: Bool = true) {
+    func pop(animated: Bool = true) {
         if !self.routes.isEmpty {
-            let popped = self.routes.removeLast()
+            routes.removeLast()
             popHandler?(1, animated)
         }
     }
 
-    public func popTo(_ route: R, inclusive: Bool = false, animated: Bool = true) {
+    func popTo(_ route: R,
+                      inclusive: Bool = false,
+                      animated: Bool = true) {
 
         if routes.isEmpty {
             return
@@ -46,9 +52,9 @@ public class Router<R: Equatable>: ObservableObject {
         popHandler?(numToPop, animated)
     }
 
-    public func onUIKitPop() {
+    func onUIKitPop() {
         if !self.routes.isEmpty {
-            let popped = self.routes.removeLast()
+            routes.removeLast()
         }
     }
 }

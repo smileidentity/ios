@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SmileView: View {
-    @EnvironmentObject var viewModel: NavigationViewModel
+    @EnvironmentObject var router: Router<NavigationDestination>
     private var viewFactory = ViewFactory()
     private let initialDestination: NavigationDestination
     init(initialDestination: NavigationDestination) {
@@ -9,9 +9,10 @@ struct SmileView: View {
     }
 
     var body: some View {
-        NavigationView {
-            viewFactory.makeView(self.initialDestination)
-                .handleNavigation($viewModel.navigationDirection)
-        }
+        let _ = router.push(initialDestination)
+        NavigationControllerHost(navTitle: "",
+                                 navHidden: false,
+                                 router: router,
+                                 routeMap: ViewFactory().makeView(_:))
     }
 }

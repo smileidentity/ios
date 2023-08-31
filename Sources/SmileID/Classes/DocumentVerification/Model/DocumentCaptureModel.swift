@@ -26,7 +26,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
     weak var rectangleDetectionDelegate: RectangleDetectionDelegate?
     weak var captureResultDelegate: DocumentCaptureResultDelegate?
-    var navigation: NavigationViewModel?
+    var router: Router<NavigationDestination>?
     private var cameraCapture: Bool = false
     private var displayedRectangleResult: RectangleDetectorResult?
     private var userId: String
@@ -185,7 +185,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             processingState = nil
         } else {
             resetState()
-            navigation?.dismiss()
+            //T
+            //router?.dismiss()
         }
     }
 
@@ -213,24 +214,22 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         if captureBothSides && side == .front {
             processingState = nil
             side = .back
-            navigation?.navigate(destination: .documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
-                                                                                   delegate: captureResultDelegate),
-                                style: .push)
+            router?.push(.documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
+                                                              delegate: captureResultDelegate))
         } else {
             processingState = .inProgress
-            navigation?.navigate(destination: .selfieCaptureScreen(selfieCaptureViewModel:
-                                                                    SelfieCaptureViewModel(userId: userId,
-                                                                                           jobId: jobId,
-                                                                                           isEnroll: false,
-                                                                                           shoudSubmitJob: false),
-                                                                  delegate: self),
-                                style: .push)
+            router?.push(.selfieCaptureScreen(selfieCaptureViewModel:
+                                                SelfieCaptureViewModel(userId: userId,
+                                                                       jobId: jobId,
+                                                                       isEnroll: false,
+                                                                       shoudSubmitJob: false),
+                                              delegate: self))
         }
     }
 
     func handleRetry() {
         processingState = .inProgress
-        navigation?.navigate(destination: .doucmentCaptureProcessing, style: .push)
+                router?.push(.doucmentCaptureProcessing)
         submitJob()
     }
 
@@ -283,23 +282,23 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             }, receiveValue: { [weak self] response in
                 DispatchQueue.main.async {
                     self?.processingState = .complete(response, nil)
-                    self?.navigation?.navigate(destination: .documentCaptureComplete(viewModel: self!), style: .push)
+                    self?.router?.push(.documentCaptureComplete(viewModel: self!))
                 }
             }).store(in: &subscribers)
     }
 
     private func handleError(_ error: SmileIDError) {
         switch error {
-        case .request:
-            navigation?.navigate(destination: .documentCaptureError(viewModel: self), style: .push)
-        case .httpError, .unknown:
-            navigation?.navigate(destination: .documentCaptureError(viewModel: self), style: .push)
+        case .request, .httpError:
+            router?.push(.documentCaptureError(viewModel: self))
+        case .unknown:
+            router?.push(.documentCaptureError(viewModel: self))
         case .jobStatusTimeOut:
             processingState = .complete(nil, nil)
-            navigation?.navigate(destination: .documentCaptureComplete(viewModel: self), style: .push)
+            router?.push(.documentCaptureComplete(viewModel: self))
         default:
             processingState = .complete(nil, error)
-            navigation?.navigate(destination: .documentCaptureComplete(viewModel: self), style: .push)
+            router?.push(.documentCaptureComplete(viewModel: self))
         }
     }
 
@@ -359,7 +358,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
 extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
-        navigation?.navigate(destination: .doucmentCaptureProcessing, style: .push)
+        router?.push( .doucmentCaptureProcessing)
         selfie = selfieImage
         self.livenessImages = livenessImages
         saveFilesToDisk()
@@ -380,8 +379,7 @@ extension DocumentCaptureViewModel: ImagePickerDelegate {
             frontImage = image
         }
         cameraCapture = false
-        navigation?.navigate(destination: .documentConfirmation(viewModel: self),
-                             style: .push)
+        router?.push(.documentConfirmation(viewModel: self))
     }
 }
 

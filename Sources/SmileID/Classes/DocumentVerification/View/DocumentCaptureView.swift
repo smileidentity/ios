@@ -3,6 +3,7 @@ import SwiftUI
 struct DocumentCaptureView: View {
     @ObservedObject var viewModel: DocumentCaptureViewModel
     @EnvironmentObject var navigationViewModel: NavigationViewModel
+    @EnvironmentObject var router: Router<NavigationDestination>
     @Environment(\.presentationMode) var presentationMode
     var camera: CameraView
     init(viewModel: DocumentCaptureViewModel) {
@@ -25,7 +26,7 @@ struct DocumentCaptureView: View {
                     .onAppear {
                         viewModel.cameraManager.switchCamera(to: .back)
                         viewModel.rectangleDetectionDelegate = camera.preview
-                        viewModel.navigation = navigationViewModel
+                        viewModel.router = router
                     }
                 DocumentOverlayView(viewModel: viewModel)
             }

@@ -1,6 +1,7 @@
 import Foundation
 
-enum NavigationDestination {
+enum NavigationDestination: ReflectiveEquatable {
+
     case selfieInstructionScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
                                  delegate: SmartSelfieResultDelegate?)
     case selfieCaptureScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
@@ -16,4 +17,13 @@ enum NavigationDestination {
     case documentCaptureComplete(viewModel: DocumentCaptureViewModel)
     case imagePicker(viewModel: DocumentCaptureViewModel)
     case documentConfirmation(viewModel: DocumentCaptureViewModel)
+}
+
+protocol ReflectiveEquatable: Equatable {}
+
+extension ReflectiveEquatable {
+    var reflectedValue: String { String(reflecting: self) }
+    static func ==(lhs: Self, rhs: Self) -> Bool {
+        return lhs.reflectedValue == rhs.reflectedValue
+    }
 }

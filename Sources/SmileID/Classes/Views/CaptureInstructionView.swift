@@ -28,7 +28,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var captureType: CaptureType
     private var showAttribution: Bool
     private var allowGalleryUpload: Bool
-    @EnvironmentObject var navigationViewModel: NavigationViewModel
+    @EnvironmentObject var router: Router<NavigationDestination>
     @State private var goesToDetail: Bool = false
     init(image: UIImage,
          title: String,
@@ -84,9 +84,9 @@ public struct CaptureInstructionView<TargetView: View>: View {
             }
             .navigationBarItems(leading: Button {
                 if captureType == .document(.back) {
-                    navigationViewModel.dismiss()
+                    router.pop()
                 } else {
-                    navigationViewModel.dismiss()
+                    router.pop()
                 }
             } label: {
                 if captureType == .document(.back) {
@@ -100,18 +100,14 @@ public struct CaptureInstructionView<TargetView: View>: View {
             VStack(spacing: 5) {
                 SmileButton(title: buttonTitle,
                             clicked: {
-                                navigationViewModel.navigate(
-                                    destination: self.destination,
-                                    style: .push
-                                )
+                    router.push(destination)
                             })
                 if allowGalleryUpload {
                     SmileButton(style: .alternate, title:
                                     "Action.UploadPhoto",
                                 clicked: {
                         if let secondaryDestination = secondaryDestination {
-                            navigationViewModel.navigate(destination: secondaryDestination,
-                                                         style: .present)
+                            router.present(secondaryDestination)
                         }
                     })
                 }
