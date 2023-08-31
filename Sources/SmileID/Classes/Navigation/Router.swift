@@ -7,6 +7,7 @@ class Router<R: Equatable>: ObservableObject {
     var pushHandler: ((R) -> Void)?
     var popHandler: ((Int, Bool) -> Void)?
     var presentHandler: ((R) -> Void)?
+    var dismissHandler: (() -> Void)?
 
     init(initial: R? = nil) {
 
@@ -17,6 +18,11 @@ class Router<R: Equatable>: ObservableObject {
 
     func present(_ route: R) {
         presentHandler?(route)
+    }
+
+    func dismiss() {
+        dismissHandler?()
+        routes = []
     }
 
     func push(_ route: R) {

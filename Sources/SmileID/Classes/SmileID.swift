@@ -27,9 +27,6 @@ public class SmileID {
     internal static var useSandbox = true
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
 
-    @ObservedObject
-    internal static var navigationState = NavigationViewModel()
-
     @ObservedObject internal static var router = Router<NavigationDestination>()
 
     public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
@@ -59,7 +56,7 @@ public class SmileID {
         let destination: NavigationDestination = showInstruction ?
             .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
             .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
-        return SmileView(initialDestination: destination).environmentObject(navigationState)
+        return SmileView(initialDestination: destination).environmentObject(router)
     }
 
     /// Perform a Document Verification
@@ -118,7 +115,9 @@ public class SmileID {
         let destination: NavigationDestination = showInstruction ?
                 .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
             .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
-        return SmileView(initialDestination: destination).environmentObject(navigationState)
+            return SmileView(initialDestination: destination)
+                .environmentObject(router)
+
     }
 
     public class func setEnvironment(useSandbox: Bool) {

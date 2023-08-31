@@ -82,21 +82,6 @@ public struct CaptureInstructionView<TargetView: View>: View {
                     }
                 }
             }
-            .navigationBarItems(leading: Button {
-                if captureType == .document(.back) {
-                    router.pop()
-                } else {
-                    router.pop()
-                }
-            } label: {
-                if captureType == .document(.back) {
-                    Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
-                        .padding()
-                } else {
-                    Image(uiImage: SmileIDResourcesHelper.Close)
-                        .padding()
-                }
-            })
             VStack(spacing: 5) {
                 SmileButton(title: buttonTitle,
                             clicked: {
@@ -122,8 +107,27 @@ public struct CaptureInstructionView<TargetView: View>: View {
                              bottom: 24,
                              trailing: 24))
             .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
-            .navigationBarBackButtonHidden(true)
-            .navigationBarTitle("")
+            .leftBarButtonItem(backButton())
+            .uipNavigationTitle("Title")
+//            .navigationBarItems(leading: Button {
+//                if captureType == .document(.back) {
+//                    router.pop()
+//                } else {
+//                    router.pop()
+//                }
+//            } label: {
+//                if captureType == .document(.back) {
+//                    Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
+//                        .padding()
+//                } else {
+//                    Image(uiImage: SmileIDResourcesHelper.Close)
+//                }
+//            })
+    }
+
+    func backButton() -> UIBarButtonItem {
+
+        UIBarButtonItem(image: SmileIDResourcesHelper.Close, landscapeImagePhone: nil, style: .plain, target: self, action: nil)
     }
 
     func makeInstruction(title: String, body: String, image: String) -> some View {

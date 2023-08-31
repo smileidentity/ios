@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 enum NavigationDestination: ReflectiveEquatable {
 
@@ -16,7 +16,7 @@ enum NavigationDestination: ReflectiveEquatable {
     case documentCaptureError(viewModel: DocumentCaptureViewModel)
     case documentCaptureComplete(viewModel: DocumentCaptureViewModel)
     case imagePicker(viewModel: DocumentCaptureViewModel)
-    case documentConfirmation(viewModel: DocumentCaptureViewModel)
+    case documentConfirmation(viewModel: DocumentCaptureViewModel, image: UIImage)
 }
 
 protocol ReflectiveEquatable: Equatable {}

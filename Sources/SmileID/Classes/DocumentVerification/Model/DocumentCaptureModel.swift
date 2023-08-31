@@ -121,6 +121,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 DispatchQueue.main.async {
                     self.cameraCapture = true
                     self.processingState = .confirmation(image)
+                    self.router?.push(.documentConfirmation(viewModel: self, image: image))
                 }
             })
     }
@@ -185,9 +186,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             processingState = nil
         } else {
             resetState()
-            //T
-            //router?.dismiss()
         }
+        router?.pop()
     }
 
     func handleCompletion() {
@@ -379,7 +379,7 @@ extension DocumentCaptureViewModel: ImagePickerDelegate {
             frontImage = image
         }
         cameraCapture = false
-        router?.push(.documentConfirmation(viewModel: self))
+        router?.push(.documentConfirmation(viewModel: self, image: image))
     }
 }
 

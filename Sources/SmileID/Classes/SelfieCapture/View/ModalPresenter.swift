@@ -31,6 +31,5 @@ struct ModalPresenter<ModalContent: View>: View {
                 .padding(.bottom, centered ? 0 : 50)
             }
         }
-        .navigationBarBackButtonHidden(true)
     }
 }

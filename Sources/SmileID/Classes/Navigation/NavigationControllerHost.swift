@@ -2,9 +2,9 @@ import UIKit
 import SwiftUI
 
 struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRepresentable {
-
     let navTitle: String
     let navHidden: Bool
+    
 
     let router: Router<R>
 
@@ -37,6 +37,10 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
             )
         }
 
+        router.dismissHandler = {
+            nav.dismiss(animated: true)
+        }
+
         router.popHandler = { numToPop, animated in
             if numToPop == nav.viewControllers.count {
                 nav.viewControllers = []
@@ -52,6 +56,10 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
     func updateUIViewController(_ navigation: UINavigationController, context: Context) {
         navigation.topViewController?.navigationItem.title = navTitle
         navigation.navigationBar.isHidden = navHidden
+        navigation.navigationBar.backIndicatorImage = SmileIDResourcesHelper.ArrowLeft
+        navigation.navigationBar.backIndicatorTransitionMaskImage = SmileIDResourcesHelper.ArrowLeft
+        navigation.navigationBar.barTintColor = SmileID.theme.backgroundMain.uiColor()
+        navigation.topViewController?.navigationItem.leftBarButtonItem = UIBarButtonItem(image: SmileIDResourcesHelper.Close, style: .plain, target: nil, action: nil)
     }
 
     typealias UIViewControllerType = UINavigationController
