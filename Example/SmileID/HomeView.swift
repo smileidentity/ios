@@ -42,7 +42,7 @@ struct HomeView: View {
                             content: { SmileID.documentVerificationScreen(
                                 idType: Document(countryCode: "NG", documentType: "PASSPORT", aspectRatio: 0.8),
                                 allowGalleryUpload: true,
-                                showInstructions: true,
+                                showInstructions: false,
                                 showAttribution: true,
                                 delegate: viewModel
                             ) })

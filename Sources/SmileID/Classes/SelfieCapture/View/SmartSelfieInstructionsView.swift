@@ -15,8 +15,7 @@ public struct SmartSelfieInstructionsView: View {
     public var body: some View {
         if let processingState = viewModel.processingState, processingState == .endFlow {
             let _ = DispatchQueue.main.async {
-                //TO-DO: Handle dismiss
-                //navigationViewModel.dismiss()
+                router.dismiss()
             }
         }
         CaptureInstructionView<SelfieCaptureView>(

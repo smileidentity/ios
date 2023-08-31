@@ -24,8 +24,7 @@ public struct DocumentCaptureInstructionsView: View {
     public var body: some View {
         if let processingState = viewModel.processingState, processingState == .endFlow {
             let _ = DispatchQueue.main.async {
-                //TO-DO: Handle dissmiss
-                //navigationViewModel.dismiss()
+                router.dismiss()
             }
         }
         switch side {
