@@ -30,6 +30,8 @@ public class SmileID {
     @ObservedObject
     internal static var navigationState = NavigationViewModel()
 
+    @ObservedObject internal static var router = Router<NavigationDestination>()
+
     public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
                                                                                    withExtension: "json")!),
                                  useSandbox: Bool = true) {
@@ -98,7 +100,7 @@ public class SmileID {
             documentCaptureViewModel: viewModel,
             delegate: delegate) : NavigationDestination.documentCaptureScreen(documentCaptureViewModel: viewModel,
                                                                               delegate: delegate)
-        return SmileView(initialDestination: destination).environmentObject(navigationState)
+        return SmileView(initialDestination: destination).environmentObject(router)
     }
 
     public class func smartSelfieAuthenticationScreen(userId: String,
