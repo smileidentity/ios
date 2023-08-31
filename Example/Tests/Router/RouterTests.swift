@@ -39,7 +39,5 @@ final class RouterTests: XCTestCase {
 
         router.pop()
         XCTAssertEqual(router.routes.count, 0)
-
-        router.popTo(.one)
     }
 }
