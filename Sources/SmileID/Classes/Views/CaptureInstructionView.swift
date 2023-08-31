@@ -28,7 +28,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var captureType: CaptureType
     private var showAttribution: Bool
     private var allowGalleryUpload: Bool
-    @EnvironmentObject var navigationViewModel: NavigationViewModel
+    @EnvironmentObject var router: Router<NavigationDestination>
     @State private var goesToDetail: Bool = false
     init(image: UIImage,
          title: String,
@@ -82,36 +82,17 @@ public struct CaptureInstructionView<TargetView: View>: View {
                     }
                 }
             }
-            .navigationBarItems(leading: Button {
-                if captureType == .document(.back) {
-                    navigationViewModel.dismiss()
-                } else {
-                    navigationViewModel.dismiss()
-                }
-            } label: {
-                if captureType == .document(.back) {
-                    Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
-                        .padding()
-                } else {
-                    Image(uiImage: SmileIDResourcesHelper.Close)
-                        .padding()
-                }
-            })
             VStack(spacing: 5) {
                 SmileButton(title: buttonTitle,
                             clicked: {
-                                navigationViewModel.navigate(
-                                    destination: self.destination,
-                                    style: .push
-                                )
+                    router.push(destination)
                             })
                 if allowGalleryUpload {
                     SmileButton(style: .alternate, title:
                                     "Action.UploadPhoto",
                                 clicked: {
                         if let secondaryDestination = secondaryDestination {
-                            navigationViewModel.navigate(destination: secondaryDestination,
-                                                         style: .present)
+                            router.present(secondaryDestination)
                         }
                     })
                 }
@@ -126,8 +107,20 @@ public struct CaptureInstructionView<TargetView: View>: View {
                              bottom: 24,
                              trailing: 24))
             .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
-            .navigationBarBackButtonHidden(true)
-            .navigationBarTitle("")
+            .navigationBarItems(leading: Button {
+                if captureType == .document(.back) {
+                    router.pop()
+                } else {
+                    router.pop()
+                }
+            } label: {
+                if captureType == .document(.back) {
+                    Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
+                        .padding()
+                } else {
+                    Image(uiImage: SmileIDResourcesHelper.Close)
+                }
+            })
     }
 
     func makeInstruction(title: String, body: String, image: String) -> some View {

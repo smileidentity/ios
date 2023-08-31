@@ -47,13 +47,13 @@ class ViewFactory {
             ModalPresenter { ErrorView(viewModel: viewModel) }
         case .imagePicker(viewModel: let viewModel):
             ImagePicker(delegate: viewModel)
-        case .documentConfirmation(viewModel: let viewModel):
+        case .documentConfirmation(viewModel: let viewModel, image: let image):
             ModalPresenter { ImageConfirmationView(viewModel: viewModel,
                                                    header: "Document.Confirmation.Header",
                                                    callout: "Document.Confirmation.Callout",
                                                    confirmButtonTitle: "Document.Confirmation.Accept",
                                                    declineButtonTitle:  "Document.Confirmation.Decline",
-                                                   image: viewModel.confirmationImage)}
+                                                   image: image)}
         }
     }
 }

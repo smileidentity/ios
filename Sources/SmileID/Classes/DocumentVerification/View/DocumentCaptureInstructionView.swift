@@ -5,7 +5,7 @@ public struct DocumentCaptureInstructionsView: View {
         case back
     }
 
-    @EnvironmentObject var navigationViewModel: NavigationViewModel
+    @EnvironmentObject var router: Router<NavigationDestination>
     @ObservedObject private var viewModel: DocumentCaptureViewModel
     private var side: Side
     private weak var documentCaptureDelegate: DocumentCaptureResultDelegate?
@@ -24,14 +24,14 @@ public struct DocumentCaptureInstructionsView: View {
     public var body: some View {
         if let processingState = viewModel.processingState, processingState == .endFlow {
             let _ = DispatchQueue.main.async {
-                navigationViewModel.dismiss()
+                router.dismiss()
             }
         }
         switch side {
         case .front:
             createFrontInstructions()
                 .onAppear {
-                    viewModel.navigation = navigationViewModel
+                    viewModel.router = router
                 }
         case .back:
             createBackInstuctions()
