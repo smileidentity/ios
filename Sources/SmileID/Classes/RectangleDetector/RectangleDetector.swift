@@ -74,7 +74,7 @@ protocol RectangleDetectionDelegate: NSObjectProtocol {
     /// - Parameters:
     ///   - quad: The detected quadrilateral in the coordinates of the image.
     ///   - imageSize: The size of the image the quadrilateral has been detected on.
-    func didDetectQuad(quad: Quadrilateral?, _ imageSize: CGSize)
+    func didDetectQuad(quad: Quadrilateral?, _ imageSize: CGSize, completion: ((Quadrilateral) -> Void)? )
 }
 
 /// Data structure representing the result of the detection of a quadrilateral.
