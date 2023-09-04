@@ -1,3 +1,8 @@
+## 10.0.0-beta08 (unreleased)
+
+### Changed
+- Changed the SmileID public interface to match android interface
+
 ## 10.0.0-beta07
 
 ### Changed
