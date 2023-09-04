@@ -41,7 +41,7 @@ public class SmileID {
         self.theme = theme
     }
 
-    public class func smartSelfieEnrollmentScreen(userId: String = "user-\(UUID().uuidString)",
+    public class func SmartSelfieEnrollment(userId: String = "user-\(UUID().uuidString)",
                                                   jobId: String = "job-\(UUID().uuidString)",
                                                   allowAgentMode: Bool = false,
                                                   showAttribution: Bool = true,
@@ -59,7 +59,7 @@ public class SmileID {
         return SmileView(initialDestination: destination).environmentObject(navigationState)
     }
 
-    public class func documentVerificationScreen(userId _: String = "user-\(UUID().uuidString)",
+    public class func DocumentVerification(userId _: String = "user-\(UUID().uuidString)",
                                                  jobId _: String = "job-\(UUID().uuidString)",
                                                  showAttribution _: Bool = true,
                                                  showInstruction _: Bool = true,
@@ -72,7 +72,7 @@ public class SmileID {
         return SmileView(initialDestination: destination).environmentObject(navigationState)
     }
 
-    public class func smartSelfieAuthenticationScreen(userId: String,
+    public class func SmartSelfieAuthentication(userId: String,
                                                       jobId: String = "job-\(UUID().uuidString)",
                                                       allowAgentMode: Bool = false,
                                                       showAttribution: Bool = true,
