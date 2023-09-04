@@ -28,6 +28,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     weak var captureResultDelegate: DocumentCaptureResultDelegate?
     var router: Router<NavigationDestination>?
     private var cameraCapture: Bool = false
+    private let textDetector = TextDetector()
     private var displayedRectangleResult: RectangleDetectorResult?
     private var userId: String
     private var jobId: String
@@ -47,6 +48,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var selfie: Data?
     private var livenessImages: [Data]?
     private var files = [URL]()
+    private var textDetected = false
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
     @State var galleryImageFront = UIImage() {
         didSet {
@@ -96,6 +98,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         self.captureBothSides = captureBothSides
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
+        textDetector.model = self
         subscribeToCameraFeed()
         subscribeToImageCapture()
     }
@@ -108,6 +111,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 self.currentBuffer = buffer
                 let imageSize = CGSize(width: CVPixelBufferGetWidth(buffer),
                                        height: CVPixelBufferGetHeight(buffer))
+                self.textDetector.detectText(buffer: buffer)
                 RectangleDetector.rectangle(forPixelBuffer: buffer,
                                             aspectRatio: document.aspectRatio) { rect in
                     self.processRectangle(rectangle: rect, imageSize: imageSize)
@@ -339,8 +343,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 )
 
                 let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
-                if self.isWithinBoundsAndSize(cgrect1: rect, cgrect2: transformedQuad.cgRect) {
-                    self.borderColor = .green
+                if self.isWithinBoundsAndSize(cgrect1: rect, cgrect2: transformedQuad.cgRect) && self.textDetected {
+                    self.borderColor = SmileID.theme.success.uiColor()
                 } else {
                     self.borderColor = .gray
                 }
@@ -348,6 +352,17 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         }
 
         return quad
+    }
+
+    func handleNoTextDetected() {
+        DispatchQueue.main.async {
+            self.borderColor = .gray
+        }
+        textDetected = false
+    }
+
+    func handleTextDetected() {
+        textDetected = true
     }
 
     func isWithinBoundsAndSize(cgrect1: CGRect, cgrect2: CGRect) -> Bool {
