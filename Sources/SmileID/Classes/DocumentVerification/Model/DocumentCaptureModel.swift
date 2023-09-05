@@ -3,7 +3,7 @@ import Combine
 import CoreVideo
 import AVFoundation
 
-class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDialogContract {
+class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDialogContract, TextDetectionDelegate {
     enum Side {
         case front
         case back
@@ -67,7 +67,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             }
         }
     }
-
+    @Published var showCaptureButton = false
     @Published var borderColor: UIColor = .gray
     @Published var guideSize: CGSize = .zero
     var width: CGFloat = .zero
@@ -98,7 +98,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         self.captureBothSides = captureBothSides
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
-        textDetector.model = self
+        textDetector.delegate = self
         subscribeToCameraFeed()
         subscribeToImageCapture()
     }
@@ -159,24 +159,24 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
 
         let cropQuad = Quadrilateral(cgRect: rect)
-                let cgOrientation = CGImagePropertyOrientation(capturedImage.imageOrientation)
-                let orientedImage = ciImage.oriented(forExifOrientation: Int32(cgOrientation.rawValue))
-                let scaledQuad = cropQuad.scale(CGSize(width: width, height: height), capturedImage.size)
-                var cartesianScaledQuad = scaledQuad.toCartesian(withHeight: capturedImage.size.height)
+        let cgOrientation = CGImagePropertyOrientation(capturedImage.imageOrientation)
+        let orientedImage = ciImage.oriented(forExifOrientation: Int32(cgOrientation.rawValue))
+        let scaledQuad = cropQuad.scale(CGSize(width: width, height: height), capturedImage.size)
+        var cartesianScaledQuad = scaledQuad.toCartesian(withHeight: capturedImage.size.height)
         cartesianScaledQuad.reorganize()
-                let filteredImage = orientedImage.applyingFilter("CIPerspectiveCorrection", parameters: [
-                    "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
-                    "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
-                    "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
-                    "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
-                ])
+        let filteredImage = orientedImage.applyingFilter("CIPerspectiveCorrection", parameters: [
+            "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
+            "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
+            "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
+            "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
+        ])
         let croppedImage = UIImage.from(ciImage: filteredImage)
-                switch side {
-                case .back:
-                    backImage = croppedImage
-                case .front:
-                    frontImage = croppedImage
-                }
+        switch side {
+        case .back:
+            backImage = croppedImage
+        case .front:
+            frontImage = croppedImage
+        }
         self.router?.push(.documentConfirmation(viewModel: self, image: croppedImage))
     }
 
@@ -350,8 +350,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
                 if self.isWithinBoundsAndSize(cgrect1: rect, cgrect2: transformedQuad.cgRect) && self.textDetected {
                     self.borderColor = SmileID.theme.success.uiColor()
+                    self.showCaptureButton = true
                 } else {
                     self.borderColor = .gray
+                    self.showCaptureButton = false
                 }
             }
         }
@@ -359,14 +361,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         return quad
     }
 
-    func handleNoTextDetected() {
-        DispatchQueue.main.async {
-            self.borderColor = .gray
+    func noTextDetected() {
+        DispatchQueue.main.async { [weak self] in
+            self?.borderColor = .gray
+            self?.showCaptureButton = false
         }
         textDetected = false
     }
 
-    func handleTextDetected() {
+    func onTextDetected() {
         textDetected = true
     }
 

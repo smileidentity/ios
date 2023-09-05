@@ -2,10 +2,14 @@ import Foundation
 import Vision
 import CoreImage
 
+protocol TextDetectionDelegate: AnyObject {
+    func noTextDetected()
+    func onTextDetected()
+}
 
 class TextDetector {
     let sequenceHandler = VNSequenceRequestHandler()
-    weak var model: DocumentCaptureViewModel?
+    weak var delegate: TextDetectionDelegate?
 
     func detectText(buffer: CVPixelBuffer) {
         let request = VNRecognizeTextRequest(completionHandler: recognizeTextHandler)
@@ -15,7 +19,7 @@ class TextDetector {
     func recognizeTextHandler(request: VNRequest, error: Error?) {
         guard let observations =
                 request.results as? [VNRecognizedTextObservation] else {
-            model?.handleNoTextDetected()
+            delegate?.noTextDetected()
             return
         }
 
@@ -24,9 +28,9 @@ class TextDetector {
         }
 
         if recognisedString.isEmpty {
-            model?.handleNoTextDetected()
+            delegate?.noTextDetected()
         } else {
-            model?.handleTextDetected()
+            delegate?.onTextDetected()
         }
     }
 }
