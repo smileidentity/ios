@@ -71,8 +71,7 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
     typealias UIViewControllerType = PoppableNavigationController
 }
 
-class PoppableNavigationController: UINavigationController, UINavigationControllerDelegate
-{
+class PoppableNavigationController: UINavigationController, UINavigationControllerDelegate {
     var popHandler: (() -> Void)?
     var dismissHandler: (() -> Void)?
     var navStackHandler: (() -> Int)?
@@ -82,6 +81,7 @@ class PoppableNavigationController: UINavigationController, UINavigationControll
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
+        interactivePopGestureRecognizer?.isEnabled = false
     }
 
     func navigationController(_ navigationController: UINavigationController,

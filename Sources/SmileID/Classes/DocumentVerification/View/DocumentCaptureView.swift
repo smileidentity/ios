@@ -60,6 +60,10 @@ struct DocumentCaptureView: View {
                 .padding()
         })
     }
+
+    func handleBackButtonTap() {
+        viewModel.pauseCameraSession()
+    }
 }
 
 struct DocumentCaptureView_Previews: PreviewProvider {

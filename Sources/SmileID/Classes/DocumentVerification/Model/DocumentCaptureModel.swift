@@ -171,6 +171,12 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
                 ])
         let croppedImage = UIImage.from(ciImage: filteredImage)
+                switch side {
+                case .back:
+                    backImage = croppedImage
+                case .front:
+                    frontImage = croppedImage
+                }
         self.router?.push(.documentConfirmation(viewModel: self, image: croppedImage))
     }
 
