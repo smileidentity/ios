@@ -49,6 +49,13 @@ struct Quadrilateral: Transformable {
         self.bottomRight = rectangleObservation.bottomRight
     }
 
+    init(cgRect: CGRect) {
+        self.topLeft = cgRect.topLeft
+        self.topRight = cgRect.topRight
+        self.bottomLeft = cgRect.bottomLeft
+        self.bottomRight = cgRect.bottomRight
+    }
+
     init(topLeft: CGPoint, topRight: CGPoint, bottomRight: CGPoint, bottomLeft: CGPoint) {
         self.topLeft = topLeft
         self.topRight = topRight
@@ -255,5 +262,23 @@ extension CGPoint {
     /// Returns the distance between two points
     func distanceTo(point: CGPoint) -> CGFloat {
         return hypot((self.x - point.x), (self.y - point.y))
+    }
+}
+
+extension CGRect {
+    var topLeft: CGPoint {
+        return CGPoint(x: self.minX, y: self.minY)
+    }
+
+    var topRight: CGPoint {
+        return CGPoint(x: self.maxX, y: self.minY)
+    }
+
+    var bottomRight: CGPoint {
+        return CGPoint(x: self.maxX, y: self.maxY)
+    }
+
+    var bottomLeft: CGPoint {
+        return CGPoint(x: self.minX, y: self.maxY)
     }
 }

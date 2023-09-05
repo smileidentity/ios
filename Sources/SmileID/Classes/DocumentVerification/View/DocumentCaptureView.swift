@@ -42,9 +42,11 @@ struct DocumentCaptureView: View {
                             .foregroundColor(SmileID.theme.accent)
                             .frame(width: 235, alignment: .center)
                     }
-                    CaptureButton {
-                        viewModel.captureImage()
-                    }.padding(.bottom, 60)
+                    if viewModel.borderColor == SmileID.theme.success.uiColor() {
+                        CaptureButton {
+                            viewModel.captureImage()
+                        }.padding(.bottom, 60)
+                    }
                 }.frame(height: 230)
         }
         .edgesIgnoringSafeArea(.all)

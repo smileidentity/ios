@@ -127,7 +127,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 DispatchQueue.main.async {
                     self.cameraCapture = true
                     self.processingState = .confirmation(image)
-                    self.router?.push(.documentConfirmation(viewModel: self, image: image))
+                    self.cropImage(image)
                 }
             })
     }
@@ -149,30 +149,29 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         selfie = nil
     }
 
-    func cropImage(_ capturedImage: UIImage, quadView: Quadrilateral) {
-//        guard let quad = quadView.quad, let ciImage = CIImage(image: capturedImage) else {
-//            return
-//        }
-//        let cgOrientation = CGImagePropertyOrientation(capturedImage.imageOrientation)
-//        let orientedImage = ciImage.oriented(forExifOrientation: Int32(cgOrientation.rawValue))
-//        let scaledQuad = quad.scale(quadView.bounds.size, capturedImage.size)
-//
-//        // Cropped Image
-//        var cartesianScaledQuad = scaledQuad.toCartesian(withHeight: capturedImage.size.height)
-//        cartesianScaledQuad.reorganize()
-//
-//        let filteredImage = orientedImage.applyingFilter("CIPerspectiveCorrection", parameters: [
-//            "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
-//            "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
-//            "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
-//            "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
-//        ])
-//        switch side {
-//        case .back:
-//            backImage = UIImage.from(ciImage: filteredImage)
-//        case .front:
-//            frontImage = UIImage.from(ciImage: filteredImage)
-//        }
+    func cropImage(_ capturedImage: UIImage) {
+        guard let ciImage = CIImage(image: capturedImage) else { return }
+        let transparentRectOrigin = CGPoint(
+            x: (self.width - self.guideSize.width) / 2,
+            y: (self.height - self.guideSize.height) / 2
+        )
+
+        let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
+
+        let cropQuad = Quadrilateral(cgRect: rect)
+                let cgOrientation = CGImagePropertyOrientation(capturedImage.imageOrientation)
+                let orientedImage = ciImage.oriented(forExifOrientation: Int32(cgOrientation.rawValue))
+                let scaledQuad = cropQuad.scale(CGSize(width: width, height: height), capturedImage.size)
+                var cartesianScaledQuad = scaledQuad.toCartesian(withHeight: capturedImage.size.height)
+        cartesianScaledQuad.reorganize()
+                let filteredImage = orientedImage.applyingFilter("CIPerspectiveCorrection", parameters: [
+                    "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
+                    "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
+                    "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
+                    "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
+                ])
+        let croppedImage = UIImage.from(ciImage: filteredImage)
+        self.router?.push(.documentConfirmation(viewModel: self, image: croppedImage))
     }
 
     func resumeCameraSession() {
