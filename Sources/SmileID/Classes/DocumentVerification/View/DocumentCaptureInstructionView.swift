@@ -37,8 +37,8 @@ public struct DocumentCaptureInstructionsView: View {
             case .back:
                 createBackInstuctions()
             }
-        }.overlay (NavigationBar {
-
+        }.overlay ( NavigationBar {
+            router.dismiss()
         })
     }
 

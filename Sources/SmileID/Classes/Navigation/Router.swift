@@ -4,7 +4,7 @@ import UIKit
 
 class Router<R: Equatable>: ObservableObject {
     private (set) var routes: [R] = []
-    var pushHandler: ((R) -> Void)?
+    var pushHandler: ((R, Bool) -> Void)?
     var popHandler: ((Int, Bool) -> Void)?
     var presentHandler: ((R) -> Void)?
     var dismissHandler: (() -> Void)?
@@ -25,9 +25,9 @@ class Router<R: Equatable>: ObservableObject {
         routes = []
     }
 
-    func push(_ route: R) {
+    func push(_ route: R, animated: Bool = true) {
         self.routes.append(route)
-        self.pushHandler?(route)
+        self.pushHandler?(route, animated)
     }
 
     func pop(animated: Bool = true) {

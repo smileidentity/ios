@@ -44,9 +44,11 @@ public struct SmartSelfieInstructionsView: View {
                 destination: .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: selfieCaptureDelegate),
                 showAttribution: viewModel.showAttribution
             )
+            .padding(.top, 50)
         }.overlay(
             NavigationBar {
                 viewModel.handleClose()
+                router.dismiss()
             }
         )
     }

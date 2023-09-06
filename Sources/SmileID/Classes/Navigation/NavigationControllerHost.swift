@@ -34,9 +34,9 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
             nav.present(UIHostingController(rootView: routeMap(route)), animated: true)
         }
 
-        router.pushHandler = { route in
+        router.pushHandler = { route, animated in
             nav.pushViewController(
-                UIHostingController(rootView: routeMap(route)), animated: true
+                UIHostingController(rootView: routeMap(route)), animated: animated
             )
         }
 

@@ -107,20 +107,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
                              bottom: 24,
                              trailing: 24))
             .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
-            .navigationBarItems(leading: Button {
-                if captureType == .document(.back) {
-                    router.pop()
-                } else {
-                    router.pop()
-                }
-            } label: {
-                if captureType == .document(.back) {
-                    Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
-                        .padding()
-                } else {
-                    Image(uiImage: SmileIDResourcesHelper.Close)
-                }
-            })
+            .navigationBarHidden(true)
     }
 
     func makeInstruction(title: String, body: String, image: String) -> some View {

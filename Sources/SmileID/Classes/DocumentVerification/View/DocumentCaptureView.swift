@@ -20,7 +20,8 @@ struct DocumentCaptureView: View {
             }
         }
 
-        VStack{
+        VStack {
+            VStack {
                 ZStack {
                     camera
                         .onAppear {
@@ -48,17 +49,15 @@ struct DocumentCaptureView: View {
                         }.padding(.bottom, 60)
                     }
                 }.frame(height: 230)
+            }
+            .padding(.top, 50)
         }
-        .edgesIgnoringSafeArea(.all)
-        .navigationBarItems(leading: Button {
-            print("resetting state")
+        .overlay(NavigationBar {
             viewModel.resetState()
             viewModel.pauseCameraSession()
-            presentationMode.wrappedValue.dismiss()
-        } label: {
-            Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
-                .padding()
+            router.pop()
         })
+        .edgesIgnoringSafeArea(.all)
     }
 
     func handleBackButtonTap() {
