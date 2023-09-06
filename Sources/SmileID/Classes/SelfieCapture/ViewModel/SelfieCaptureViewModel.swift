@@ -495,6 +495,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     }
 
     func handleClose() {
+        pauseCameraSession()
         processingState = .endFlow
     }
 

@@ -192,6 +192,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         submit()
     }
 
+    func handleInstuctionsBackButtonTap(side: DocumentCaptureInstructionsView.Side) {
+        switch side {
+        case .front:
+            router?.dismiss()
+        case .back:
+            router?.pop()
+        }
+    }
+
     func declineImage() {
         if cameraCapture {
             processingState = nil

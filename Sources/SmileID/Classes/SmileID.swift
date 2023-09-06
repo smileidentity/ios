@@ -1,3 +1,4 @@
+// swiftlint:disable force_try
 import Foundation
 import SwiftUI
 import UIKit
@@ -79,7 +80,7 @@ public class SmileID {
                                                  jobId: String = "job-\(UUID().uuidString)",
                                                  idType: Document,
                                                  selfie: Data? = nil,
-                                                 captureBothSides: Bool = true,
+                                                 captureBothSides: Bool = false,
                                                  allowGalleryUpload: Bool = false,
                                                  showInstructions: Bool = false,
                                                  showAttribution: Bool = true,
