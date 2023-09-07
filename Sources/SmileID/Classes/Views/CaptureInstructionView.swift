@@ -3,11 +3,11 @@ import SwiftUI
 enum CaptureType: Equatable {
     case selfie
     case document(Position)
+}
 
-    enum Position {
-        case front
-        case back
-    }
+enum Position {
+     case front
+     case back
 }
 
 public struct CaptureInstruction {
@@ -47,6 +47,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
         self.instructions = instructions
         self.destination = destination
         self.secondaryDestination = secondaryDestination
+
         self.captureType = captureType
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
