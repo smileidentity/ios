@@ -42,9 +42,11 @@ struct DocumentCaptureView: View {
                             .foregroundColor(SmileID.theme.accent)
                             .frame(width: 235, alignment: .center)
                     }
-                    CaptureButton {
-                        viewModel.captureImage()
-                    }.padding(.bottom, 60)
+                    if viewModel.showCaptureButton {
+                        CaptureButton {
+                            viewModel.captureImage()
+                        }.padding(.bottom, 60)
+                    }
                 }.frame(height: 230)
         }
         .edgesIgnoringSafeArea(.all)
@@ -57,6 +59,10 @@ struct DocumentCaptureView: View {
             Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
                 .padding()
         })
+    }
+
+    func handleBackButtonTap() {
+        viewModel.pauseCameraSession()
     }
 }
 

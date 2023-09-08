@@ -3,7 +3,7 @@ import Combine
 import CoreVideo
 import AVFoundation
 
-class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDialogContract {
+class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDialogContract, TextDetectionDelegate {
     enum Side {
         case front
         case back
@@ -28,6 +28,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     weak var captureResultDelegate: DocumentCaptureResultDelegate?
     var router: Router<NavigationDestination>?
     private var cameraCapture: Bool = false
+    private let textDetector = TextDetector()
     private var displayedRectangleResult: RectangleDetectorResult?
     private var userId: String
     private var jobId: String
@@ -47,6 +48,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var selfie: Data?
     private var livenessImages: [Data]?
     private var files = [URL]()
+    private var textDetected = false
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
     @State var galleryImageFront = UIImage() {
         didSet {
@@ -65,15 +67,17 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             }
         }
     }
-
+    @Published var showCaptureButton = false
     @Published var borderColor: UIColor = .gray
     @Published var guideSize: CGSize = .zero
     var width: CGFloat = .zero
+    var height: CGFloat = .zero
 
     var rectangleAspectRatio: Double = 1.66 {
         didSet {
             let rectWidth = 0.9 * width
-            let rectHeight = rectWidth/rectangleAspectRatio
+            let rectHeight = min(rectWidth/rectangleAspectRatio, 0.9 * height)
+
             DispatchQueue.main.async {
                 self.guideSize = CGSize(width: rectWidth, height: rectHeight)
             }
@@ -94,6 +98,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         self.captureBothSides = captureBothSides
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
+        textDetector.delegate = self
         subscribeToCameraFeed()
         subscribeToImageCapture()
     }
@@ -106,6 +111,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 self.currentBuffer = buffer
                 let imageSize = CGSize(width: CVPixelBufferGetWidth(buffer),
                                        height: CVPixelBufferGetHeight(buffer))
+                self.textDetector.detectText(buffer: buffer)
                 RectangleDetector.rectangle(forPixelBuffer: buffer,
                                             aspectRatio: document.aspectRatio) { rect in
                     self.processRectangle(rectangle: rect, imageSize: imageSize)
@@ -121,7 +127,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 DispatchQueue.main.async {
                     self.cameraCapture = true
                     self.processingState = .confirmation(image)
-                    self.router?.push(.documentConfirmation(viewModel: self, image: image))
+                    self.cropImage(image)
                 }
             })
     }
@@ -143,30 +149,35 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         selfie = nil
     }
 
-    func cropImage(_ capturedImage: UIImage, quadView: QuadrilateralView) {
-        guard let quad = quadView.quad, let ciImage = CIImage(image: capturedImage) else {
-            return
-        }
+    func cropImage(_ capturedImage: UIImage) {
+        guard let ciImage = CIImage(image: capturedImage) else { return }
+        let transparentRectOrigin = CGPoint(
+            x: (self.width - self.guideSize.width) / 2,
+            y: (self.height - self.guideSize.height) / 2
+        )
+
+        let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
+
+        let cropQuad = Quadrilateral(cgRect: rect)
         let cgOrientation = CGImagePropertyOrientation(capturedImage.imageOrientation)
         let orientedImage = ciImage.oriented(forExifOrientation: Int32(cgOrientation.rawValue))
-        let scaledQuad = quad.scale(quadView.bounds.size, capturedImage.size)
-
-        // Cropped Image
+        let scaledQuad = cropQuad.scale(CGSize(width: width, height: height), capturedImage.size)
         var cartesianScaledQuad = scaledQuad.toCartesian(withHeight: capturedImage.size.height)
         cartesianScaledQuad.reorganize()
-
         let filteredImage = orientedImage.applyingFilter("CIPerspectiveCorrection", parameters: [
             "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
             "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
             "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
             "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
         ])
+        let croppedImage = UIImage.from(ciImage: filteredImage)
         switch side {
         case .back:
-            backImage = UIImage.from(ciImage: filteredImage)
+            backImage = croppedImage
         case .front:
-            frontImage = UIImage.from(ciImage: filteredImage)
+            frontImage = croppedImage
         }
+        self.router?.push(.documentConfirmation(viewModel: self, image: croppedImage))
     }
 
     func resumeCameraSession() {
@@ -311,17 +322,14 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                         return
                     }
                     self.rectangleAspectRatio = rectangle.aspectRatio
+
                     self.displayRectangleResult(rectangleResult: RectangleDetectorResult(rectangle: rectangle,
                                                                                          imageSize: imageSize))
                 }
         } else {
             self.displayedRectangleResult = nil
-            self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize)
+            self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize, completion: nil)
         }
-    }
-
-    func isRectangleValid() {
-        borderColor = .green
     }
 
     @discardableResult private func displayRectangleResult(rectangleResult: RectangleDetectorResult) -> Quadrilateral {
@@ -333,10 +341,50 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             guard let self else {
                 return
             }
-            self.rectangleDetectionDelegate?.didDetectQuad(quad: quad, rectangleResult.imageSize)
+            self.rectangleDetectionDelegate?.didDetectQuad(quad: quad, rectangleResult.imageSize) { [self] transformedQuad in
+                let transparentRectOrigin = CGPoint(
+                    x: (self.width - self.guideSize.width) / 2,
+                    y: (self.height - self.guideSize.height) / 2
+                )
+
+                let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
+                if self.isWithinBoundsAndSize(cgrect1: rect, cgrect2: transformedQuad.cgRect) && self.textDetected {
+                    self.borderColor = SmileID.theme.success.uiColor()
+                    self.showCaptureButton = true
+                } else {
+                    self.borderColor = .gray
+                    self.showCaptureButton = false
+                }
+            }
         }
 
         return quad
+    }
+
+    func noTextDetected() {
+        DispatchQueue.main.async { [weak self] in
+            self?.borderColor = .gray
+            self?.showCaptureButton = false
+        }
+        textDetected = false
+    }
+
+    func onTextDetected() {
+        textDetected = true
+    }
+
+    func isWithinBoundsAndSize(cgrect1: CGRect, cgrect2: CGRect) -> Bool {
+        // Check if cgrect2 is fully contained within cgrect1
+        if !cgrect1.contains(cgrect2) {
+            return false
+        }
+
+        // Calculate the areas of cgrect1 and cgrect2
+        let area1 = cgrect1.width * cgrect1.height
+        let area2 = cgrect2.width * cgrect2.height
+
+        // Check if cgrect2's area is at least 30% but not more than 100% of cgrect1's area
+        return area2 >= 0.3 * area1 && area2 <= area1
     }
 
     func saveFilesToDisk() {

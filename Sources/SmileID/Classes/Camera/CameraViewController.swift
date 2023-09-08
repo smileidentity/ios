@@ -3,7 +3,6 @@ import Vision
 import AVFoundation
 
 class PreviewView: UIViewController {
-    let quadView = QuadrilateralView()
     var layedOutSubviews = false
     var previewLayer: AVCaptureVideoPreviewLayer?
     private weak var cameraManager: CameraManageable?
@@ -20,10 +19,6 @@ class PreviewView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configurePreviewLayer()
-        quadView.translatesAutoresizingMaskIntoConstraints = false
-        quadView.editable = false
-        view.addSubview(quadView)
-        setupConstraints()
     }
 
     func configurePreviewLayer() {
@@ -34,17 +29,6 @@ class PreviewView: UIViewController {
         view.layer.addSublayer(previewLayer!)
     }
 
-    private func setupConstraints() {
-        var quadViewConstraints = [NSLayoutConstraint]()
-
-        quadViewConstraints = [
-            quadView.topAnchor.constraint(equalTo: view.topAnchor),
-            view.bottomAnchor.constraint(equalTo: quadView.bottomAnchor),
-            view.trailingAnchor.constraint(equalTo: quadView.trailingAnchor),
-            quadView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
-        ]
-        NSLayoutConstraint.activate(quadViewConstraints)
-    }
 }
 
 extension PreviewView {
@@ -64,22 +48,21 @@ extension PreviewView: FaceDetectorDelegate {
 }
 
 extension PreviewView: RectangleDetectionDelegate {
-    func didDetectQuad(quad: Quadrilateral?, _ imageSize: CGSize) {
+    func didDetectQuad(quad: Quadrilateral?, _ imageSize: CGSize, completion: ((Quadrilateral) -> Void)? ) {
         guard let quad else {
-            quadView.removeQuadrilateral()
             return
         }
         let portraitImageSize = CGSize(width: imageSize.height, height: imageSize.width)
         let scaleTransform = CGAffineTransform.scaleTransform(forSize: portraitImageSize,
-                                                              aspectFillInSize: quadView.bounds.size)
+                                                              aspectFillInSize: view.bounds.size)
         let scaledImageSize = imageSize.applying(scaleTransform)
         let rotationTransform = CGAffineTransform(rotationAngle: CGFloat.pi / 2.0)
         let imageBounds = CGRect(origin: .zero, size: scaledImageSize).applying(rotationTransform)
         let translationTransform = CGAffineTransform.translateTransform(fromCenterOfRect: imageBounds,
-                                                                        toCenterOfRect: quadView.bounds)
+                                                                        toCenterOfRect: view.bounds)
 
         let transforms = [scaleTransform, rotationTransform, translationTransform]
         let transformedQuad = quad.applyTransforms(transforms)
-        quadView.drawQuadrilateral(quad: transformedQuad, animated: true)
+        completion?(transformedQuad)
     }
 }
