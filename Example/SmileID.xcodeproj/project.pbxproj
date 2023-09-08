@@ -283,9 +283,9 @@
 			buildPhases = (
 				A9F06B7D2BE86D450711DA74 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
+				917D79282AA8024400FA6624 /* SwiftLint */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				917D79282AA8024400FA6624 /* SwiftLint */,
 				24C14E01D54D394A2B3921B7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
