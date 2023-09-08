@@ -8,7 +8,6 @@ class ViewFactory {
 
     class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
         func didSucceed(selfie: Data, documentFrontImage: Data, documentBackImage: Data?, jobStatusResponse: JobStatusResponse?) {}
-
         func didError(error _: Error) {}
     }
 
@@ -54,6 +53,7 @@ class ViewFactory {
                                                    confirmButtonTitle: "Document.Confirmation.Accept",
                                                    declineButtonTitle:  "Document.Confirmation.Decline",
                                                    image: image)}
+
         }
     }
 }

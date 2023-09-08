@@ -1,7 +1,27 @@
+## 10.0.0-beta07
+
+### Changed
+- Declare `jobType` property of `PartnerParams` as optional
+
+## 10.0.0-beta06
+
+### Changed
+- Declare `jobType` property of `AuthenticationRequest` as optional
+
+## 10.0.0-beta05
+
+### Changed
+- Expose `sourceSdk` and `sourceSdkVersion` initializers and properties
+
+## 10.0.0-beta04
+
+### Changed
+- Expose `AuthenticationRequest` and `AuthenticationResponse` initializers and properties
+
 ## 10.0.0-beta03
 
 ### Changed
-- Set default value for config param on `initilize` method
+- Set default value for config param on `initialize` method
 - Expose initializers for `PartnerParams` and `EnhancedKycAsycResponse` models
 
 ## 10.0.0-beta02
