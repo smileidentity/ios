@@ -1,7 +1,6 @@
 import UIKit
 
 enum NavigationDestination: ReflectiveEquatable {
-
     case selfieInstructionScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
                                  delegate: SmartSelfieResultDelegate?)
     case selfieCaptureScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
