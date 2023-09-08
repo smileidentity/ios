@@ -6,4 +6,3 @@ excluded:
   - Pods
 included:
   - ../Sources
-  - ../Example
