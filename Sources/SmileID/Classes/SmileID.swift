@@ -80,7 +80,7 @@ public class SmileID {
                                                  jobId: String = "job-\(UUID().uuidString)",
                                                  idType: Document,
                                                  selfie: Data? = nil,
-                                                 captureBothSides: Bool = false,
+                                                 captureBothSides: Bool = true,
                                                  allowGalleryUpload: Bool = false,
                                                  showInstructions: Bool = false,
                                                  showAttribution: Bool = true,

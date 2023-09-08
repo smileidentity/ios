@@ -50,6 +50,11 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var files = [URL]()
     private var textDetected = false
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
+    private var documentCaptureStart = 0
+    private var waitTimeInSecs = 10
+    var autoCaptureTimer: Timer?
+    var enableManualCaptureTimer: Timer?
+
     @State var galleryImageFront = UIImage() {
         didSet {
             frontImage = galleryImageFront
@@ -132,7 +137,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             })
     }
 
-    func captureImage() {
+    @objc func captureImage() {
         cameraManager.capturePhoto()
     }
 
@@ -350,7 +355,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             guard let self else {
                 return
             }
-            self.rectangleDetectionDelegate?.didDetectQuad(quad: quad, rectangleResult.imageSize) { [self] transformedQuad in
+            self.rectangleDetectionDelegate?.didDetectQuad(quad: quad,
+                                                           rectangleResult.imageSize) { [self] transformedQuad in
                 let transparentRectOrigin = CGPoint(
                     x: (self.width - self.guideSize.width) / 2,
                     y: (self.height - self.guideSize.height) / 2
@@ -359,10 +365,19 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
                 if self.isWithinBoundsAndSize(cgrect1: rect, cgrect2: transformedQuad.cgRect) && self.textDetected {
                     self.borderColor = SmileID.theme.success.uiColor()
-                    self.showCaptureButton = true
+                    if self.autoCaptureTimer == nil {
+                        self.showCaptureButton = false
+                        self.autoCaptureTimer = Timer.scheduledTimer(timeInterval: 2,
+                                                                     target: self,
+                                                                     selector: #selector(self.captureImage),
+                                                                     userInfo: nil,
+                                                                     repeats: false)
+                    }
                 } else {
+                    self.autoCaptureTimer?.invalidate()
+                    self.autoCaptureTimer = nil
                     self.borderColor = .gray
-                    self.showCaptureButton = false
+
                 }
             }
         }
