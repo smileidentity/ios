@@ -425,8 +425,8 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
         let authRequest = AuthenticationRequest(jobType: jobType,
                                                 enrollment: isEnroll,
-                                                userId: userId,
-                                                jobId: jobId)
+                                                jobId: jobId,
+                                                userId: userId)
 
         SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in

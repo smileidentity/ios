@@ -16,7 +16,6 @@ struct CaptureButton_Previews: PreviewProvider {
     }
 }
 
-
 import UIKit
 
 class TransparentCenterView: UIView {

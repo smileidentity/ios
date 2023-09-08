@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 public protocol SmileIDServiceable {
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error>
@@ -7,9 +7,14 @@ public protocol SmileIDServiceable {
     func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error>
     func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error>
     func doEnhancedKycAsync(request: EnhancedKycRequest) -> AnyPublisher<EnhancedKycAsyncResponse, Error>
+    func getServices() -> AnyPublisher<ServicesResponse, Error>
 }
 
 public class SmileIDService: SmileIDServiceable, ServiceRunnable {
+    public func getServices() -> AnyPublisher<ServicesResponse, Error> {
+        return get(to: "services")
+    }
+
     @Injected var serviceClient: RestServiceClient
     typealias PathType = String
 
