@@ -27,12 +27,23 @@ public class SmileID {
     public private(set) static var config: Config!
     public private(set) static var useSandbox = true
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
+    static var localizableStrings: SmileIDLocalizableStrings?
     @ObservedObject
     internal static var navigationState = NavigationViewModel()
+
+    /// This method initilizes SmileID. Invoke this method once in your applicaion lifecylce
+    /// before calling any other SmileID methods.
+    /// - Parameters:
+    ///   - config: The smile config file. If no value is supplied, we check the app's main bundle for a `smile_config.json` file.
+    ///   - localizableStrings: A `SmileIDLocalizableStrings`  used to override all copy used within the SDK.
+    ///   if no value is set, the default copy will be used.
+    ///   - useSandbox: A boolean to enable the sandbox environment or not
     public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
                                                                                    withExtension: "json")!),
+                                 localizableStrings: SmileIDLocalizableStrings? = nil,
                                  useSandbox: Bool = true) {
         self.config = config
+        self.localizableStrings = localizableStrings
         self.useSandbox = useSandbox
         SmileIDResourcesHelper.registerFonts()
     }
