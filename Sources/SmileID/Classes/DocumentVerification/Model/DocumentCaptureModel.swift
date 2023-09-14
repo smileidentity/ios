@@ -89,6 +89,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         }
     }
 
+    var maxAspectRatio: Double {
+        width/height
+    }
+
     init(userId: String,
          jobId: String,
          document: Document,
@@ -122,6 +126,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     self.processRectangle(rectangle: rect, imageSize: imageSize)
                 }
             })
+        self.startManualCaptureTimer()
     }
 
     func subscribeToImageCapture() {
@@ -135,6 +140,17 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     self.cropImage(image)
                 }
             })
+    }
+
+    func startManualCaptureTimer() {
+        if self.enableManualCaptureTimer == nil {
+            self.autoCaptureTimer?.invalidate()
+            self.enableManualCaptureTimer = Timer.scheduledTimer(timeInterval: 10,
+                                                                 target: self,
+                                                                 selector: #selector(manualCapture),
+                                                                 userInfo: nil,
+                                                                 repeats: false)
+        }
     }
 
     @objc func captureImage() {
@@ -212,6 +228,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         } else {
             resetState()
         }
+        enableManualCaptureTimer = nil
+        startManualCaptureTimer()
         router?.pop()
     }
 
@@ -327,6 +345,13 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         }
     }
 
+    @objc func manualCapture() {
+        DispatchQueue.main.async {
+            self.rectangleAspectRatio = self.maxAspectRatio
+            self.showCaptureButton = true
+        }
+    }
+
     private func processRectangle(rectangle: Quadrilateral?, imageSize: CGSize) {
         if let rectangle {
             self.rectangleFunnel
@@ -336,11 +361,11 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                         return
                     }
                     self.rectangleAspectRatio = rectangle.aspectRatio
-
                     self.displayRectangleResult(rectangleResult: RectangleDetectorResult(rectangle: rectangle,
                                                                                          imageSize: imageSize))
                 }
         } else {
+            startManualCaptureTimer()
             self.displayedRectangleResult = nil
             self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize, completion: nil)
         }
@@ -377,7 +402,6 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     self.autoCaptureTimer?.invalidate()
                     self.autoCaptureTimer = nil
                     self.borderColor = .gray
-
                 }
             }
         }
@@ -388,8 +412,9 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     func noTextDetected() {
         DispatchQueue.main.async { [weak self] in
             self?.borderColor = .gray
-            self?.showCaptureButton = false
         }
+        autoCaptureTimer?.invalidate()
+        autoCaptureTimer = nil
         textDetected = false
     }
 
