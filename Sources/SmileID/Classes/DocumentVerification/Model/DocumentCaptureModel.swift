@@ -392,7 +392,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     self.borderColor = SmileID.theme.success.uiColor()
                     if self.autoCaptureTimer == nil {
                         self.showCaptureButton = false
-                        self.autoCaptureTimer = Timer.scheduledTimer(timeInterval: autoCaptureDelay,
+                        self.autoCaptureTimer = Timer.scheduledTimer(timeInterval: self.autoCaptureDelay,
                                                                      target: self,
                                                                      selector: #selector(self.captureImage),
                                                                      userInfo: nil,
