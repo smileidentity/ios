@@ -50,8 +50,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var files = [URL]()
     private var textDetected = false
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
-    private let autoCaptureDelay: TimeInterval = 2
-    private let manualCaptureDelay: TimeInterval = 10
+    private let autoCaptureDelayInSecs: TimeInterval = 2
+    private let manualCaptureDelayInSecs: TimeInterval = 10
     var autoCaptureTimer: Timer?
     var manualCaptureTimer: Timer?
 
@@ -145,7 +145,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     func startManualCaptureTimer() {
         if self.manualCaptureTimer == nil {
             self.autoCaptureTimer?.invalidate()
-            self.manualCaptureTimer = Timer.scheduledTimer(timeInterval: manualCaptureDelay,
+            self.manualCaptureTimer = Timer.scheduledTimer(timeInterval: manualCaptureDelayInSecs,
                                                                  target: self,
                                                                  selector: #selector(manualCapture),
                                                                  userInfo: nil,
