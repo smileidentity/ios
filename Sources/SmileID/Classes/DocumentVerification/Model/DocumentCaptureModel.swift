@@ -50,10 +50,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var files = [URL]()
     private var textDetected = false
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
-    private var documentCaptureStart = 0
-    private var waitTimeInSecs = 10
+    private let autoCaptureDelay: TimeInterval = 2
+    private let manualCaptureDelay: TimeInterval = 10
     var autoCaptureTimer: Timer?
-    var enableManualCaptureTimer: Timer?
+    var manualCaptureTimer: Timer?
 
     @State var galleryImageFront = UIImage() {
         didSet {
@@ -110,6 +110,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         textDetector.delegate = self
         subscribeToCameraFeed()
         subscribeToImageCapture()
+        startManualCaptureTimer()
     }
 
     func subscribeToCameraFeed() {
@@ -126,7 +127,6 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     self.processRectangle(rectangle: rect, imageSize: imageSize)
                 }
             })
-        self.startManualCaptureTimer()
     }
 
     func subscribeToImageCapture() {
@@ -143,9 +143,9 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 
     func startManualCaptureTimer() {
-        if self.enableManualCaptureTimer == nil {
+        if self.manualCaptureTimer == nil {
             self.autoCaptureTimer?.invalidate()
-            self.enableManualCaptureTimer = Timer.scheduledTimer(timeInterval: 10,
+            self.manualCaptureTimer = Timer.scheduledTimer(timeInterval: manualCaptureDelay,
                                                                  target: self,
                                                                  selector: #selector(manualCapture),
                                                                  userInfo: nil,
@@ -228,7 +228,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         } else {
             resetState()
         }
-        enableManualCaptureTimer = nil
+        manualCaptureTimer = nil
         startManualCaptureTimer()
         router?.pop()
     }
@@ -355,8 +355,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private func processRectangle(rectangle: Quadrilateral?, imageSize: CGSize) {
         if let rectangle {
             self.rectangleFunnel
-                .add(rectangle, currentlyDisplayedRectangle: self.displayedRectangleResult?.rectangle) { [weak self] rectangle in
-
+                .add(rectangle,
+                     currentlyDisplayedRectangle: self.displayedRectangleResult?.rectangle) { [weak self] rectangle in
                     guard let self else {
                         return
                     }
@@ -446,8 +446,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                                         livenessImages: livenessImages,
                                                         selfie: selfie!,
                                                         document: document)
-        }
-        catch {
+        } catch {
             captureResultDelegate?.didError(error: error)
         }
     }
@@ -479,4 +478,3 @@ extension DocumentCaptureViewModel: ImagePickerDelegate {
         router?.push(.documentConfirmation(viewModel: self, image: image))
     }
 }
-

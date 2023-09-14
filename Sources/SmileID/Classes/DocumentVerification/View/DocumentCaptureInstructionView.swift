@@ -37,7 +37,7 @@ public struct DocumentCaptureInstructionsView: View {
             case .back:
                 createBackInstuctions()
             }
-        }.overlay ( NavigationBar {
+        }.overlay( NavigationBar {
             router.dismiss()
         })
     }
@@ -65,7 +65,8 @@ public struct DocumentCaptureInstructionsView: View {
                                                 delegate: documentCaptureDelegate),
             secondaryDestination: .imagePicker(viewModel: viewModel),
             showAttribution: viewModel.showAttribution,
-            allowGalleryUpload: viewModel.allowGalleryUpload).padding(.top, 50)
+            allowGalleryUpload: viewModel.allowGalleryUpload)
+        .padding(.top, 50)
     }
 
     func createFrontInstructions() -> some View {
