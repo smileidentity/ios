@@ -27,32 +27,49 @@ public struct DocumentCaptureInstructionsView: View {
                 router.dismiss()
             }
         }
-        switch side {
-        case .front:
-            createFrontInstructions()
-                .onAppear {
-                    viewModel.router = router
-                }
-        case .back:
-            createBackInstuctions()
-        }
+        VStack {
+            switch side {
+            case .front:
+                createFrontInstructions()
+                    .onAppear {
+                        viewModel.router = router
+                    }
+            case .back:
+                createBackInstuctions()
+            }
+        }.overlay( NavigationBar {
+            router.dismiss()
+        })
     }
 
-    func createBackInstuctions() -> CaptureInstructionView<DocumentCaptureView> {
-        CaptureInstructionView<DocumentCaptureView>(image: UIImage(),
-                                                    title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Header"),
-                                                    callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Callout"),
-                                                    buttonTitle: "Action.TakePhoto",
-                                                    instructions: [],
-                                                    captureType: .document(.back),
-                                                    destination: .documentCaptureScreen(documentCaptureViewModel: viewModel,
-                                                                                        delegate: documentCaptureDelegate),
-                                                    secondaryDestination: .imagePicker(viewModel: viewModel),
-                                                    showAttribution: viewModel.showAttribution,
-                                                    allowGalleryUpload: viewModel.allowGalleryUpload)
+    func createBackInstuctions() -> some View {
+        CaptureInstructionView<DocumentCaptureView>(
+            image: UIImage(),
+            title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Header"),
+            callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Callout"),
+            buttonTitle: "Action.TakePhoto",
+            instructions: [
+                CaptureInstruction(title:
+                                    SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"),
+                                   instruction:
+                                    SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLightBody"),
+                                   image: Constants.ImageName.light),
+                CaptureInstruction(title:
+                                    SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
+                                   instruction:
+                                    SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
+                                   image: Constants.ImageName.clearImage)
+            ],
+            captureType: .document(.back),
+            destination: .documentCaptureScreen(documentCaptureViewModel: viewModel,
+                                                delegate: documentCaptureDelegate),
+            secondaryDestination: .imagePicker(viewModel: viewModel),
+            showAttribution: viewModel.showAttribution,
+            allowGalleryUpload: viewModel.allowGalleryUpload)
+        .padding(.top, 50)
     }
 
-    func createFrontInstructions() -> CaptureInstructionView<DocumentCaptureView> {
+    func createFrontInstructions() -> some View {
         CaptureInstructionView<DocumentCaptureView>(
             image: SmileIDResourcesHelper.InstructionsHeaderdDocumentIcon,
             title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Header"),
@@ -68,13 +85,13 @@ public struct DocumentCaptureInstructionsView: View {
                                     SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
                                    instruction:
                                     SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
-                                   image: Constants.ImageName.clearImage),
+                                   image: Constants.ImageName.clearImage)
             ], captureType: .document(.front),
             destination: .documentCaptureScreen(documentCaptureViewModel: viewModel, delegate: documentCaptureDelegate),
             secondaryDestination: .imagePicker(viewModel: viewModel),
             showAttribution: viewModel.showAttribution,
             allowGalleryUpload: viewModel.allowGalleryUpload
-        )
+        ).padding(.top, 50)
     }
 }
 
@@ -88,6 +105,6 @@ struct DocumentCaptureInstructionsView_Previews: PreviewProvider {
                                                                             captureBothSides: true,
                                                                             showAttribution: true,
                                                                             allowGalleryUpload: true))
-            .environment(\.locale, Locale(identifier: "en"))
+        .environment(\.locale, Locale(identifier: "en"))
     }
 }

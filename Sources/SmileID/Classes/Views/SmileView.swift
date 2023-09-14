@@ -10,7 +10,7 @@ struct SmileView: View {
     }
 
     var body: some View {
-        let _ = router.push(initialDestination)
+        let _ = router.push(initialDestination, animated: false)
         NavigationControllerHost(navTitle: "",
                                  navHidden: true,
                                  router: router,

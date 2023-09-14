@@ -50,6 +50,11 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var files = [URL]()
     private var textDetected = false
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
+    private let autoCaptureDelayInSecs: TimeInterval = 2
+    private let manualCaptureDelayInSecs: TimeInterval = 10
+    var autoCaptureTimer: Timer?
+    var manualCaptureTimer: Timer?
+
     @State var galleryImageFront = UIImage() {
         didSet {
             frontImage = galleryImageFront
@@ -84,6 +89,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         }
     }
 
+    var maxAspectRatio: Double {
+        width/height
+    }
+
     init(userId: String,
          jobId: String,
          document: Document,
@@ -101,6 +110,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         textDetector.delegate = self
         subscribeToCameraFeed()
         subscribeToImageCapture()
+        startManualCaptureTimer()
     }
 
     func subscribeToCameraFeed() {
@@ -132,7 +142,18 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             })
     }
 
-    func captureImage() {
+    func startManualCaptureTimer() {
+        if self.manualCaptureTimer == nil {
+            self.autoCaptureTimer?.invalidate()
+            self.manualCaptureTimer = Timer.scheduledTimer(timeInterval: manualCaptureDelayInSecs,
+                                                                 target: self,
+                                                                 selector: #selector(manualCapture),
+                                                                 userInfo: nil,
+                                                                 repeats: false)
+        }
+    }
+
+    @objc func captureImage() {
         cameraManager.capturePhoto()
     }
 
@@ -192,12 +213,23 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         submit()
     }
 
+    func handleInstuctionsBackButtonTap(side: DocumentCaptureInstructionsView.Side) {
+        switch side {
+        case .front:
+            router?.dismiss()
+        case .back:
+            router?.pop()
+        }
+    }
+
     func declineImage() {
         if cameraCapture {
             processingState = nil
         } else {
             resetState()
         }
+        manualCaptureTimer = nil
+        startManualCaptureTimer()
         router?.pop()
     }
 
@@ -313,20 +345,27 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         }
     }
 
+    @objc func manualCapture() {
+        DispatchQueue.main.async {
+            self.rectangleAspectRatio = self.maxAspectRatio
+            self.showCaptureButton = true
+        }
+    }
+
     private func processRectangle(rectangle: Quadrilateral?, imageSize: CGSize) {
         if let rectangle {
             self.rectangleFunnel
-                .add(rectangle, currentlyDisplayedRectangle: self.displayedRectangleResult?.rectangle) { [weak self] rectangle in
-
+                .add(rectangle,
+                     currentlyDisplayedRectangle: self.displayedRectangleResult?.rectangle) { [weak self] rectangle in
                     guard let self else {
                         return
                     }
                     self.rectangleAspectRatio = rectangle.aspectRatio
-
                     self.displayRectangleResult(rectangleResult: RectangleDetectorResult(rectangle: rectangle,
                                                                                          imageSize: imageSize))
                 }
         } else {
+            startManualCaptureTimer()
             self.displayedRectangleResult = nil
             self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize, completion: nil)
         }
@@ -341,7 +380,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             guard let self else {
                 return
             }
-            self.rectangleDetectionDelegate?.didDetectQuad(quad: quad, rectangleResult.imageSize) { [self] transformedQuad in
+            self.rectangleDetectionDelegate?.didDetectQuad(quad: quad,
+                                                           rectangleResult.imageSize) { [self] transformedQuad in
                 let transparentRectOrigin = CGPoint(
                     x: (self.width - self.guideSize.width) / 2,
                     y: (self.height - self.guideSize.height) / 2
@@ -350,10 +390,18 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
                 if self.isWithinBoundsAndSize(cgrect1: rect, cgrect2: transformedQuad.cgRect) && self.textDetected {
                     self.borderColor = SmileID.theme.success.uiColor()
-                    self.showCaptureButton = true
+                    if self.autoCaptureTimer == nil {
+                        self.showCaptureButton = false
+                        self.autoCaptureTimer = Timer.scheduledTimer(timeInterval: self.autoCaptureDelayInSecs,
+                                                                     target: self,
+                                                                     selector: #selector(self.captureImage),
+                                                                     userInfo: nil,
+                                                                     repeats: false)
+                    }
                 } else {
+                    self.autoCaptureTimer?.invalidate()
+                    self.autoCaptureTimer = nil
                     self.borderColor = .gray
-                    self.showCaptureButton = false
                 }
             }
         }
@@ -364,8 +412,9 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     func noTextDetected() {
         DispatchQueue.main.async { [weak self] in
             self?.borderColor = .gray
-            self?.showCaptureButton = false
         }
+        autoCaptureTimer?.invalidate()
+        autoCaptureTimer = nil
         textDetected = false
     }
 
@@ -397,8 +446,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                                         livenessImages: livenessImages,
                                                         selfie: selfie!,
                                                         document: document)
-        }
-        catch {
+        } catch {
             captureResultDelegate?.didError(error: error)
         }
     }
@@ -430,4 +478,3 @@ extension DocumentCaptureViewModel: ImagePickerDelegate {
         router?.push(.documentConfirmation(viewModel: self, image: image))
     }
 }
-

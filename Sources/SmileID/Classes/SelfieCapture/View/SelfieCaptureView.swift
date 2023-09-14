@@ -4,6 +4,7 @@ import ARKit
 
 public struct SelfieCaptureView: View, SelfieViewDelegate {
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var router: Router<NavigationDestination>
     @ObservedObject var viewModel: SelfieCaptureViewModel
     private weak var delegate: SmartSelfieResultDelegate?
     var camera: CameraView?
@@ -68,6 +69,11 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                     Color.clear
                 }
             }
+            .overlay( NavigationBar {
+                viewModel.resetState()
+                viewModel.pauseCameraSession()
+                router.pop()
+            })
         }
         .edgesIgnoringSafeArea(.all)
         .navigationBarBackButtonHidden(true)
