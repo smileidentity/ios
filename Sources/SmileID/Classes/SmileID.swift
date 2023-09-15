@@ -30,7 +30,6 @@ public class SmileID {
     internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
     @ObservedObject internal static var router = Router<NavigationDestination>()
 
-
     /// This method initilizes SmileID. Invoke this method once in your applicaion lifecylce
     /// before calling any other SmileID methods.
     /// - Parameters:

@@ -37,6 +37,7 @@
 		918321EE2A52E36A00D6FB7F /* NetworkingMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */; };
 		918321EF2A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E82A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift */; };
 		918321F02A52E36A00D6FB7F /* FaceDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E92A52E36A00D6FB7F /* FaceDetectorTests.swift */; };
+		91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC32AB481FE00A8D36B /* PollingTests.swift */; };
 		F703CAEEB3CEB5ADB5C99D44 /* Pods_SmileID_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -89,6 +90,7 @@
 		918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingMocks.swift; sourceTree = "<group>"; };
 		918321E82A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfieCaptureViewModelTests.swift; sourceTree = "<group>"; };
 		918321E92A52E36A00D6FB7F /* FaceDetectorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceDetectorTests.swift; sourceTree = "<group>"; };
+		91D9FBC32AB481FE00A8D36B /* PollingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingTests.swift; sourceTree = "<group>"; };
 		94E7560A47E255DD8215C183 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		9755B6A19CF28DE212F24C83 /* SmileID.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SmileID.podspec; path = ../SmileID.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		C8CD2E3DB817D8C6334E9240 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 			children = (
 				918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */,
 				58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */,
+				91D9FBC32AB481FE00A8D36B /* PollingTests.swift */,
 			);
 			name = Networking;
 			path = ../../Tests/Networking;
@@ -498,6 +501,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				918321EE2A52E36A00D6FB7F /* NetworkingMocks.swift in Sources */,
+				91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */,
 				918321F02A52E36A00D6FB7F /* FaceDetectorTests.swift in Sources */,
 				918321ED2A52E36A00D6FB7F /* BaseTestCase.swift in Sources */,
 				918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */,

@@ -124,3 +124,58 @@ extension ServiceRunnable {
             .eraseToAnyPublisher()
     }
 }
+
+extension SmileIDServiceable {
+    /// Polls a particular endpoint
+    /// - Parameters:
+    ///   - service: The service where the request lives
+    ///   - request: The request to be polled
+    ///   - isComplete: A closure that returns a boolean when job complete is true
+    ///   - interval: The time interval between polls
+    ///   - numAttempts: The maximum number of attempst to be made
+    public func poll<T: SmileIDServiceable, U: Decodable>(
+        service: T,
+        request: @escaping () -> AnyPublisher<U, Error>,
+        isComplete: @escaping (U) -> Bool,
+        interval: TimeInterval,
+        numAttempts: Int
+    ) -> AnyPublisher<U, Error> {
+        var lastError: Error?
+        var lastResponse: U?
+        var attemptCount = 0
+
+        let publisher = Timer.publish(every: interval, on: .main, in: .common)
+            .autoconnect()
+            .setFailureType(to: Error.self)
+            .flatMap { _ -> AnyPublisher<U, Error> in
+                attemptCount += 1
+                return request()
+            }
+            .handleEvents(receiveOutput: { response in
+                lastResponse = response
+            })
+            .catch { error -> AnyPublisher<U, Error> in
+                lastError = error
+                return Empty<U, Error>().eraseToAnyPublisher()
+            }
+            .first(where: { response in
+                if isComplete(response) {
+                    lastError = nil
+                }
+                return isComplete(response) || attemptCount >= numAttempts
+            })
+            .flatMap { response -> AnyPublisher<U, Error> in
+                if attemptCount >= numAttempts {
+                    if let lastResponse = lastResponse {
+                        return Just(lastResponse).setFailureType(to: Error.self).eraseToAnyPublisher()
+                    } else if let lastError = lastError {
+                        return Fail(error: lastError).eraseToAnyPublisher()
+                    }
+                }
+                return Just(response).setFailureType(to: Error.self).eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
+
+        return publisher
+    }
+}
