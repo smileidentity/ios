@@ -1,8 +1,7 @@
 import SwiftUI
 
 public class SmileIDResourcesHelper {
-    /// An internal reference to the images bundle.
-    private static var internalBundle: Bundle?
+
     private static var loadedFonts: [String: String] = [String: String]()
 
     /**
@@ -39,11 +38,13 @@ public class SmileIDResourcesHelper {
     }
 
     /// Get localized strings
-    public static func localizedString(for key: String?,
-                                       locale: Locale = .current) -> String {
+    public static func localizedString(for key: String?) -> String {
 
         if let localizedKey = key {
-            return NSLocalizedString(localizedKey, bundle: bundle, comment: "")
+            return NSLocalizedString(localizedKey,
+                                     tableName: SmileID.localizableStrings?.tablename,
+                                     bundle: SmileID.localizableStrings?.bundle ?? bundle,
+                                     comment: "")
         }
         return ""// we'll return empty I think this will be easier to notice
     }
