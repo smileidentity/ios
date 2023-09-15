@@ -48,7 +48,6 @@ final class PollingTests: XCTestCase {
         })
         .store(in: &cancellables)
 
-        // Assert
         wait(for: [expectation], timeout: 10.0)
 
     }
@@ -65,7 +64,6 @@ final class PollingTests: XCTestCase {
 
         let expectation = XCTestExpectation(description: "Polling fails due to an error")
         MockHelper.shouldFail = true
-        // Act
         mockService.poll(service: mockService,
                          request: { self.mockService.getJobStatus(request: mockJobStatusRequest) },
                          isComplete: { $0.jobComplete },
@@ -74,7 +72,6 @@ final class PollingTests: XCTestCase {
         .sink(receiveCompletion: { completion in
             switch completion {
             case .failure(let error):
-                //XCTAssertEqual(error.localizedDescription, "Some error occurred")
                 expectation.fulfill()
             case .finished:
                 XCTFail("Polling should have failed due to an error")
@@ -84,12 +81,10 @@ final class PollingTests: XCTestCase {
         })
         .store(in: &cancellables)
 
-        // Assert
         wait(for: [expectation], timeout: 10.0)
     }
 
     func testPollingFunction_MaxAttemptsReached() {
-        // Arrange
         let mockJobStatusRequest = JobStatusRequest(userId: "",
                                                     jobId: "",
                                                     includeImageLinks: true,
@@ -97,10 +92,9 @@ final class PollingTests: XCTestCase {
                                                     partnerId: "",
                                                     timestamp: "",
                                                     signature: "")
-        // Configure the mock service to return the mock response at all attempts
         let expectation = XCTestExpectation(description: "Polling fails due to reaching the maximum number of attempts")
 
-        // Act
+        MockHelper.shouldFail = true
         mockService.poll(service: mockService,
                          request: { self.mockService.getJobStatus( request: mockJobStatusRequest ) },
              isComplete: { $0.jobComplete },
@@ -119,7 +113,6 @@ final class PollingTests: XCTestCase {
         })
         .store(in: &cancellables)
 
-        // Assert
         wait(for: [expectation], timeout: 1.0)
     }
 
