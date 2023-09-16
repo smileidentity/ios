@@ -1,3 +1,9 @@
+## 10.0.0-beta08 (unreleased)
+
+### Removed
+- `filename` property from `PrepUploadRequest`
+
+
 ## 10.0.0-beta07
 
 ### Changed
