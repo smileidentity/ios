@@ -74,5 +74,3 @@ struct DocumentCaptureView_Previews: PreviewProvider {
                                                                 allowGalleryUpload: true))
     }
 }
-
-

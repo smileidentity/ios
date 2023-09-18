@@ -1,4 +1,3 @@
-
 import UIKit
 import SwiftUI
 
@@ -6,7 +5,6 @@ struct TransparentRectangleView: UIViewRepresentable {
 
     @Binding var transparentRectSize: CGSize
     @Binding var borderColor: UIColor
-
 
     func makeUIView(context: Context) -> TransparentCenterView {
         let view = TransparentCenterView(frame: .zero)
