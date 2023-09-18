@@ -1,5 +1,6 @@
 //  Created by Boris Emorine on 2/9/18.
 //  Copyright © 2018 WeTransfer. All rights reserved.
+//  Source: https://github.com/WeTransfer/WeScan
 
 import Foundation
 import Vision

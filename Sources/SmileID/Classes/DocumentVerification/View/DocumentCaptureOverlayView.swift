@@ -9,7 +9,7 @@ struct DocumentOverlayView: View {
             VStack(spacing: 0) {
                 TransparentRectangleView(transparentRectSize: $viewModel.guideSize, borderColor: $viewModel.borderColor)
             }
-            .onAppear{
+            .onAppear {
                 viewModel.width = geometry.size.width
                 viewModel.height = geometry.size.height
             }

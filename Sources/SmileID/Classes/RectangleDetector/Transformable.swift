@@ -1,5 +1,6 @@
 //  Created by Boris Emorine on 2/9/18.
 //  Copyright © 2018 WeTransfer. All rights reserved.
+//  Source: https://github.com/WeTransfer/WeScan
 
 import Foundation
 
@@ -42,7 +43,8 @@ extension CGAffineTransform {
     /// - Parameters:
     ///   - fromSize: The size that needs to be transformed to fit (aspect fill) in the other given size.
     ///   - toSize: The size that should be matched by the `fromSize` parameter.
-    /// - Returns: The transform that will make the `fromSize` parameter fir (aspect fill) inside the `toSize` parameter.
+    /// - Returns: The transform that will make the `fromSize` parameter fir (aspect fill) inside
+    /// the `toSize` parameter.
     static func scaleTransform(forSize fromSize: CGSize,
                                aspectFillInSize toSize: CGSize) -> CGAffineTransform {
         let scale = max(toSize.width / fromSize.width, toSize.height / fromSize.height)
@@ -54,7 +56,8 @@ extension CGAffineTransform {
     /// - Parameters:
     ///   - fromRect: The rect which center needs to be translated to the center of the other passed in rect.
     ///   - toRect: The rect that should be matched.
-    /// - Returns: The transform that will translate the center of the `fromRect` parameter to the center of the `toRect` parameter.
+    /// - Returns: The transform that will translate the center of the `fromRect` parameter to the center of
+    /// the `toRect` parameter.
     static func translateTransform(fromCenterOfRect fromRect: CGRect,
                                    toCenterOfRect toRect: CGRect) -> CGAffineTransform {
         let translate = CGPoint(x: toRect.midX - fromRect.midX, y: toRect.midY - fromRect.midY)

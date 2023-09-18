@@ -9,8 +9,7 @@ struct DocumentCaptureView: View {
         self.viewModel = viewModel
         camera = CameraView(cameraManager: viewModel.cameraManager)
         UINavigationBar.appearance().titleTextAttributes = [.font: EpilogueFont.boldUIFont(with: 16)!,
-                                                            .foregroundColor: SmileID.theme.accent.uiColor()]
-
+            .foregroundColor: SmileID.theme.accent.uiColor()]
     }
 
     var body: some View {
@@ -20,7 +19,6 @@ struct DocumentCaptureView: View {
             }
         }
 
-        VStack {
             VStack {
                 ZStack {
                     camera
@@ -51,13 +49,12 @@ struct DocumentCaptureView: View {
                 }.frame(height: 230)
             }
             .padding(.top, 50)
-        }
-        .overlay(NavigationBar {
-            viewModel.resetState()
-            viewModel.pauseCameraSession()
-            router.pop()
-        })
-        .edgesIgnoringSafeArea(.all)
+            .overlay(NavigationBar {
+                viewModel.resetState()
+                viewModel.pauseCameraSession()
+                router.pop()
+            })
+            .edgesIgnoringSafeArea(.all)
     }
 
     func handleBackButtonTap() {

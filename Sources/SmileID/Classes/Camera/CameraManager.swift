@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 import SwiftUI
 
-protocol CameraManageable: AnyObject  {
+protocol CameraManageable: AnyObject {
     func switchCamera(to position: AVCaptureDevice.Position)
     func capturePhoto()
     func pauseSession()

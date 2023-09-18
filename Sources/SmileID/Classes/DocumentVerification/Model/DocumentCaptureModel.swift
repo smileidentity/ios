@@ -242,10 +242,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 captureResultDelegate?.didError(error: error)
                 return
             }
-            if let selfie = selfie {
+            if let selfie = selfie, let response = response  {
                 captureResultDelegate?.didSucceed(selfie: selfie,
                                                   documentFrontImage: frontImage!.jpegData(compressionQuality: 1)!,
-                                                  documentBackImage: backImage!.jpegData(compressionQuality: 1)!,
+                                                  documentBackImage: backImage?.jpegData(compressionQuality: 1),
                                                   jobStatusResponse: response)
             }
         default:

@@ -1,6 +1,7 @@
 disabled_rules:
   - identifier_name
   - type_body_length
+  - redundant_discardable_let
 
 excluded:
   - Pods

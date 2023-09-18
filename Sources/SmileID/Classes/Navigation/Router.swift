@@ -37,9 +37,7 @@ class Router<R: Equatable>: ObservableObject {
         }
     }
 
-    func popTo(_ route: R,
-                      inclusive: Bool = false,
-                      animated: Bool = true) {
+    func popTo(_ route: R, inclusive: Bool = false, animated: Bool = true) {
 
         if routes.isEmpty {
             return
@@ -64,4 +62,3 @@ class Router<R: Equatable>: ObservableObject {
         }
     }
 }
-
