@@ -37,6 +37,9 @@
 		918321EE2A52E36A00D6FB7F /* NetworkingMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */; };
 		918321EF2A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E82A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift */; };
 		918321F02A52E36A00D6FB7F /* FaceDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E92A52E36A00D6FB7F /* FaceDetectorTests.swift */; };
+		91D9FBC72AB49C5100A8D36B /* CountryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC62AB49C5100A8D36B /* CountryListView.swift */; };
+		91D9FBC92AB49D4A00A8D36B /* CountryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC82AB49D4A00A8D36B /* CountryRow.swift */; };
+		91D9FBCB2AB4A9F900A8D36B /* IDTypeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBCA2AB4A9F900A8D36B /* IDTypeRow.swift */; };
 		F703CAEEB3CEB5ADB5C99D44 /* Pods_SmileID_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -89,6 +92,9 @@
 		918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingMocks.swift; sourceTree = "<group>"; };
 		918321E82A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfieCaptureViewModelTests.swift; sourceTree = "<group>"; };
 		918321E92A52E36A00D6FB7F /* FaceDetectorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceDetectorTests.swift; sourceTree = "<group>"; };
+		91D9FBC62AB49C5100A8D36B /* CountryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListView.swift; sourceTree = "<group>"; };
+		91D9FBC82AB49D4A00A8D36B /* CountryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryRow.swift; sourceTree = "<group>"; };
+		91D9FBCA2AB4A9F900A8D36B /* IDTypeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDTypeRow.swift; sourceTree = "<group>"; };
 		94E7560A47E255DD8215C183 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		9755B6A19CF28DE212F24C83 /* SmileID.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SmileID.podspec; path = ../SmileID.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		C8CD2E3DB817D8C6334E9240 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -140,6 +146,7 @@
 		607FACD21AFB9204008FA782 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				91D9FBC52AB49C3400A8D36B /* CountrySelector */,
 				1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */,
 				1EFAB3142A374F18008E3C13 /* ResourceCell.swift */,
 				1ECAE3862A2F69BC00653FCA /* ToastView.swift */,
@@ -272,6 +279,16 @@
 			);
 			name = SmartSelfie;
 			path = ../../Tests/SmartSelfie;
+			sourceTree = "<group>";
+		};
+		91D9FBC52AB49C3400A8D36B /* CountrySelector */ = {
+			isa = PBXGroup;
+			children = (
+				91D9FBC62AB49C5100A8D36B /* CountryListView.swift */,
+				91D9FBC82AB49D4A00A8D36B /* CountryRow.swift */,
+				91D9FBCA2AB4A9F900A8D36B /* IDTypeRow.swift */,
+			);
+			name = CountrySelector;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -464,11 +481,14 @@
 				1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */,
 				1E60ED372A29C306002695FF /* HomeViewController.swift in Sources */,
 				1E60ED3A2A29C306002695FF /* AppDelegate.swift in Sources */,
+				91D9FBCB2AB4A9F900A8D36B /* IDTypeRow.swift in Sources */,
 				1ED53F6D2A2F28590020BEFB /* SmileTextField.swift in Sources */,
 				1ED53F6B2A2F28590020BEFB /* ProductCell.swift in Sources */,
 				1E60ED382A29C306002695FF /* Constants.swift in Sources */,
 				1ED53F6F2A2F28590020BEFB /* AboutUsView.swift in Sources */,
+				91D9FBC72AB49C5100A8D36B /* CountryListView.swift in Sources */,
 				1ED53F712A2F28590020BEFB /* EnterUserIDView.swift in Sources */,
+				91D9FBC92AB49D4A00A8D36B /* CountryRow.swift in Sources */,
 				1ED53F732A2F28590020BEFB /* HomeView.swift in Sources */,
 				1E60ED3B2A29C306002695FF /* CopyableLabel.swift in Sources */,
 			);
