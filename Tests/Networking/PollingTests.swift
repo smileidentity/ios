@@ -31,6 +31,7 @@ final class PollingTests: XCTestCase {
                                                     signature: "")
         let expectation = XCTestExpectation(description: "Polling completes successfully")
         MockHelper.shouldFail = false
+        MockHelper.jobComplete = true
         mockService.poll(service: mockService,
                          request: { self.mockService.getJobStatus(request: mockJobStatusRequest) },
                          isComplete: { $0.jobComplete },
@@ -52,7 +53,6 @@ final class PollingTests: XCTestCase {
 
     }
 
-
     func testPollingFunction_ErrorDuringPolling() {
         let mockJobStatusRequest = JobStatusRequest(userId: "",
                                                     jobId: "",
@@ -64,14 +64,17 @@ final class PollingTests: XCTestCase {
 
         let expectation = XCTestExpectation(description: "Polling fails due to an error")
         MockHelper.shouldFail = true
+        MockHelper.jobComplete = false
         mockService.poll(service: mockService,
                          request: { self.mockService.getJobStatus(request: mockJobStatusRequest) },
-                         isComplete: { $0.jobComplete },
-                         interval: 1,
+                         isComplete: {
+            print("is complete \($0.jobComplete)")
+            return $0.jobComplete },
+                         interval: 0.1,
                          numAttempts: 5)
         .sink(receiveCompletion: { completion in
             switch completion {
-            case .failure(let error):
+            case .failure:
                 expectation.fulfill()
             case .finished:
                 XCTFail("Polling should have failed due to an error")
@@ -81,7 +84,7 @@ final class PollingTests: XCTestCase {
         })
         .store(in: &cancellables)
 
-        wait(for: [expectation], timeout: 10.0)
+        wait(for: [expectation], timeout: 2.0)
     }
 
     func testPollingFunction_MaxAttemptsReached() {
@@ -94,17 +97,19 @@ final class PollingTests: XCTestCase {
                                                     signature: "")
         let expectation = XCTestExpectation(description: "Polling fails due to reaching the maximum number of attempts")
 
-        MockHelper.shouldFail = true
+        MockHelper.shouldFail = false
+        MockHelper.jobComplete = false
         mockService.poll(service: mockService,
-                         request: { self.mockService.getJobStatus( request: mockJobStatusRequest ) },
-             isComplete: { $0.jobComplete },
-             interval: 0.1,
-             numAttempts: 5)
+                         request: { self.mockService.getJobStatus(request: mockJobStatusRequest) },
+                         isComplete: { $0.jobComplete },
+                         interval: 0.1,
+                         numAttempts: 5)
         .sink(receiveCompletion: { completion in
             switch completion {
             case .failure(let error):
-                XCTAssertEqual(error.localizedDescription, "Reached the maximum number of attempts")
-                expectation.fulfill()
+                if error.localizedDescription == SmileIDError.jobStatusTimeOut.localizedDescription {
+                    expectation.fulfill()
+                }
             case .finished:
                 XCTFail("Polling should have failed due to reaching the maximum number of attempts")
             }
@@ -113,7 +118,7 @@ final class PollingTests: XCTestCase {
         })
         .store(in: &cancellables)
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 2.0)
     }
 
 }

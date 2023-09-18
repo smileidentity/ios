@@ -42,7 +42,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     func getJobStatus(request _: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
         let response = JobStatusResponse(timestamp: "timestamp",
-                                         jobComplete: !MockHelper.shouldFail,
+                                         jobComplete: MockHelper.jobComplete,
                                          jobSuccess: true,
                                          code: "2322")
         if MockHelper.shouldFail {
@@ -124,4 +124,5 @@ class MockResultDelegate: SmartSelfieResultDelegate {
 
 enum MockHelper {
     static var shouldFail = false
+    static var jobComplete = true
 }

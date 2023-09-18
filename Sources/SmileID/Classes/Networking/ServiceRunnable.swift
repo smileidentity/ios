@@ -40,15 +40,15 @@ extension ServiceRunnable {
                                  method: .post,
                                  headers: [.contentType(value: "application/json")],
                                  body: body)
-            .flatMap(serviceClient.send)
-            .eraseToAnyPublisher()
+        .flatMap(serviceClient.send)
+        .eraseToAnyPublisher()
     }
 
     func get<U: Decodable>(to path: PathType) -> AnyPublisher<U, Error> {
         return createRestRequest(path: path,
                                  method: .get)
-            .flatMap(serviceClient.send)
-            .eraseToAnyPublisher()
+        .flatMap(serviceClient.send)
+        .eraseToAnyPublisher()
     }
 
     func upload(data: Data,
@@ -58,8 +58,8 @@ extension ServiceRunnable {
                                    method: restMethod,
                                    headers: [.contentType(value: "application/zip")],
                                    uploadData: data)
-            .flatMap { serviceClient.upload(request: $0) }
-            .eraseToAnyPublisher()
+        .flatMap { serviceClient.upload(request: $0) }
+        .eraseToAnyPublisher()
     }
 
     private func createUploadRequest(url: String,
@@ -67,7 +67,7 @@ extension ServiceRunnable {
                                      headers: [HTTPHeader]? = nil,
                                      uploadData: Data,
                                      queryParameters _: [HTTPQueryParameters]? = nil)
-        -> AnyPublisher<RestRequest, Error> {
+    -> AnyPublisher<RestRequest, Error> {
         guard let url = URL(string: url) else {
             return Fail(error: URLError(.badURL))
                 .eraseToAnyPublisher()
@@ -140,42 +140,35 @@ extension SmileIDServiceable {
         interval: TimeInterval,
         numAttempts: Int
     ) -> AnyPublisher<U, Error> {
+
         var lastError: Error?
-        var lastResponse: U?
         var attemptCount = 0
 
-        let publisher = Timer.publish(every: interval, on: .main, in: .common)
-            .autoconnect()
-            .setFailureType(to: Error.self)
-            .flatMap { _ -> AnyPublisher<U, Error> in
-                attemptCount += 1
-                return request()
-            }
-            .handleEvents(receiveOutput: { response in
-                lastResponse = response
-            })
-            .catch { error -> AnyPublisher<U, Error> in
-                lastError = error
-                return Empty<U, Error>().eraseToAnyPublisher()
-            }
-            .first(where: { response in
-                if isComplete(response) {
-                    lastError = nil
-                }
-                return isComplete(response) || attemptCount >= numAttempts
-            })
-            .flatMap { response -> AnyPublisher<U, Error> in
-                if attemptCount >= numAttempts {
-                    if let lastResponse = lastResponse {
-                        return Just(lastResponse).setFailureType(to: Error.self).eraseToAnyPublisher()
-                    } else if let lastError = lastError {
-                        return Fail(error: lastError).eraseToAnyPublisher()
+        func makeRequest() -> AnyPublisher<U, Error> {
+            attemptCount += 1
+
+            return request()
+                .delay(for: .seconds(interval), scheduler: RunLoop.main)
+                .flatMap { response -> AnyPublisher<U, Error> in
+                    if isComplete(response) {
+                        return Just(response).setFailureType(to: Error.self).eraseToAnyPublisher()
+                    } else if attemptCount < numAttempts {
+                        return makeRequest()
+                    } else {
+                        return Fail(error: SmileIDError.jobStatusTimeOut).eraseToAnyPublisher()
                     }
                 }
-                return Just(response).setFailureType(to: Error.self).eraseToAnyPublisher()
-            }
-            .eraseToAnyPublisher()
+                .catch { error -> AnyPublisher<U, Error> in
+                    lastError = error
+                    if attemptCount < numAttempts {
+                        return makeRequest()
+                    } else {
+                        return Fail(error: lastError ?? error).eraseToAnyPublisher()
+                    }
+                }
+                .eraseToAnyPublisher()
+        }
 
-        return publisher
+        return makeRequest()
     }
 }
