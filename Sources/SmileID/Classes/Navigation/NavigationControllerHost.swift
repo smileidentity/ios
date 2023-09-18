@@ -4,8 +4,6 @@ import SwiftUI
 struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRepresentable {
     let navTitle: String
     let navHidden: Bool
-    
-
     let router: Router<R>
 
     @ViewBuilder
@@ -62,10 +60,11 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
         navigation.navigationBar.backIndicatorImage = SmileIDResourcesHelper.ArrowLeft
         navigation.navigationBar.backIndicatorTransitionMaskImage = SmileIDResourcesHelper.ArrowLeft
         navigation.navigationBar.barTintColor = SmileID.theme.backgroundMain.uiColor()
-        navigation.topViewController?.navigationItem.leftBarButtonItem = UIBarButtonItem(image: SmileIDResourcesHelper.Close,
-                                                                                         style: .plain,
-                                                                                         target: navigation,
-                                                                                         action: #selector(navigation.dismissNav))
+        let barButton = UIBarButtonItem(image: SmileIDResourcesHelper.Close,
+                                        style: .plain,
+                                        target: navigation,
+                                        action: #selector(navigation.dismissNav))
+        navigation.topViewController?.navigationItem.leftBarButtonItem = barButton
     }
 
     typealias UIViewControllerType = PoppableNavigationController
@@ -98,4 +97,3 @@ class PoppableNavigationController: UINavigationController, UINavigationControll
         dismissHandler?()
     }
 }
-

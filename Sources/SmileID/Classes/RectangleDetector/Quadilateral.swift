@@ -1,5 +1,6 @@
 //  Created by Boris Emorine on 2/9/18.
 //  Copyright © 2018 WeTransfer. All rights reserved.
+//  Source: https://github.com/WeTransfer/WeScan
 
 import Vision
 
@@ -91,7 +92,6 @@ struct Quadrilateral: Transformable {
                              bottomLeft: bottomLeft)
     }
 
-
     /// Checks whether the quadrilateral is within a given distance of another quadrilateral.
     ///
     /// - Parameters:
@@ -167,7 +167,6 @@ struct Quadrilateral: Transformable {
 
         return transformedQuad
     }
-
 
     /// Reorganizes the current quadrilateral, making sure that the points are at their appropriate positions.
     /// For example, it ensures that the top left point is actually the top and left point point of the quadrilateral.

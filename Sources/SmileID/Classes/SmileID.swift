@@ -33,7 +33,8 @@ public class SmileID {
     /// This method initilizes SmileID. Invoke this method once in your applicaion lifecylce
     /// before calling any other SmileID methods.
     /// - Parameters:
-    ///   - config: The smile config file. If no value is supplied, we check the app's main bundle for a `smile_config.json` file.
+    ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
+    ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
     public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
                                                                                    withExtension: "json")!),

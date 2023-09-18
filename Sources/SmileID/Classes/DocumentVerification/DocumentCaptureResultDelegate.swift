@@ -13,7 +13,7 @@ public protocol DocumentCaptureResultDelegate: AnyObject {
     func didSucceed(selfie: Data,
                     documentFrontImage: Data,
                     documentBackImage: Data?,
-                    jobStatusResponse: JobStatusResponse?)
+                    jobStatusResponse: JobStatusResponse)
 
     /// Delegate method called when an error occurs during the selfie capture session. This may
     /// be as a result of a network failure or an error that occurs during capture, for example not

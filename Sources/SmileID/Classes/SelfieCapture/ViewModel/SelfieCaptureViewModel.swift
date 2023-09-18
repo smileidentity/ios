@@ -342,9 +342,9 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         }
         var orientation: CGImagePropertyOrientation
 
-        if (isARSupported && !agentMode) {
+        if isARSupported && !agentMode {
             orientation = .right
-        } else if (!isARSupported && !agentMode) {
+        } else if !isARSupported && !agentMode {
            orientation = .upMirrored
         } else {
             orientation = .up
@@ -370,10 +370,12 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
                                                               faceGeometry: faceGeometry,
                                                               agentMode: agentMode,
                                                               finalSize: selfieImageSize,
-                                                              screenImageSize: viewFinderSize, orientation: orientation) else {
+                                                              screenImageSize: viewFinderSize,
+                                                              orientation: orientation) else {
                 return }
             guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
-                                                                        exif: currentExif, orientation: orientation) else {
+                                                                        exif: currentExif,
+                                                                        orientation: orientation) else {
                 return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
