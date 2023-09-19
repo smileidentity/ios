@@ -446,7 +446,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
                             .map { _ in authResponse }
                     }
             }
-            .flatMap(pollJobStatus)
+            .flatMap(getJobStatus)
             .sink(receiveCompletion: {completion in
                 switch completion {
                 case .failure(let error):
