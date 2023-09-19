@@ -453,7 +453,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 }
 
 extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
+    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse?) {
         router?.push( .doucmentCaptureProcessing)
         selfie = selfieImage
         self.livenessImages = livenessImages

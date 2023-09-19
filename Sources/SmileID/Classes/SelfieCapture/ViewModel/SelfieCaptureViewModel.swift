@@ -381,16 +381,8 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
             self.selfieImage = selfieImage
             self.displayedImage = displayedImage
             updateProgress()
-            do {
-                files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
-                                                      previewImage: selfieImage)
-                DispatchQueue.main.async {
-                    self.processingState = .confirmation(UIImage(data: displayedImage) ?? UIImage())
-                }
-            } catch {
-                DispatchQueue.main.async { [self] in
-                    processingState = .error(error)
-                }
+            DispatchQueue.main.async {
+                self.processingState = .confirmation(UIImage(data: displayedImage) ?? UIImage())
             }
         }
     }
@@ -410,13 +402,14 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
 
     func submit() {
         if !shouldSubmitJob {
-            try? LocalStorage.delete(at: files)
             processingState = .complete(nil, nil)
             return
         }
         processingState = .inProgress
         var zip: Data
         do {
+            files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
+                                                  previewImage: selfieImage!)
             let zipUrl = try LocalStorage.zipFiles(at: files)
             zip = try Data(contentsOf: zipUrl)
         } catch {

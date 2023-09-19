@@ -6,8 +6,8 @@ public protocol SmartSelfieResultDelegate: AnyObject {
     /// - Parameters:
     ///   - selfieImage: A colour selfie image
     ///   - livenessImages: An array of a series of greyscaled images captured for liveness checks
-    func didSucceed(selfieImage: Data,
-                    livenessImages: [Data],
+    func didSucceed(selfieImage: URL,
+                    livenessImages: [URL],
                     jobStatusResponse: JobStatusResponse?)
 
     /// An error occured during the selfie capture session

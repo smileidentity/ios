@@ -10,9 +10,9 @@ public protocol DocumentCaptureResultDelegate: AnyObject {
     ///   - documentFrontImage: Jpg data of the front of the image
     ///   - documentBackImage: Jpg data of the back of the image
     ///   - jobStatusResponse: An object that represent the status of a job.
-    func didSucceed(selfie: Data,
-                    documentFrontImage: Data,
-                    documentBackImage: Data?,
+    func didSucceed(selfie: URL,
+                    documentFrontImage: URL,
+                    documentBackImage: URL?,
                     jobStatusResponse: JobStatusResponse)
 
     /// Delegate method called when an error occurs during the selfie capture session. This may

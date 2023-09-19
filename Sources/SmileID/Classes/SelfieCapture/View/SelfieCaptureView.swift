@@ -123,6 +123,6 @@ struct FaceBoundingBoxView: View {
 }
 
 class DummyDelegate: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {}
+    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse?) {}
     func didError(error: Error) {}
 }
