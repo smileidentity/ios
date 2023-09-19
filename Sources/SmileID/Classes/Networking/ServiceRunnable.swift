@@ -132,7 +132,7 @@ extension SmileIDServiceable {
     ///   - request: The request to be polled
     ///   - isComplete: A closure that returns a boolean when job complete is true
     ///   - interval: The time interval between polls
-    ///   - numAttempts: The maximum number of attempst to be made
+    ///   - numAttempts: The maximum number of attempts to be made
     public func poll<T: SmileIDServiceable, U: Decodable>(
         service: T,
         request: @escaping () -> AnyPublisher<U, Error>,
