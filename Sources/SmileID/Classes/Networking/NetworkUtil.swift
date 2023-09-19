@@ -3,7 +3,13 @@ import CommonCrypto
 
 func calculateSignature(timestamp: String) throws -> String {
     guard let apiKey = SmileID.apiKey else {
-        throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "API key not set. If using the authToken from smile_config.json, ensure you have set the signature/timestamp properties on the request from the values returned by SmileID.authenticate.signature/timestamp"])
+        throw NSError(domain: "",
+                      code: 0,
+                      userInfo: [NSLocalizedDescriptionKey: """
+                                 API key not set. If using the authToken from smile_config.json, \
+                                 ensure you have set the signature/timestamp properties on the request from the \
+                                 values returned by SmileID.authenticate.signature/timestamp
+                                 """])
     }
     let hashContent = "\(timestamp)\(SmileID.config.partnerId)sid_request"
     guard let hmac = hashContent.hmac(algorithm: .SHA256, key: apiKey) else {

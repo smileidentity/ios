@@ -1,6 +1,6 @@
 import Foundation
 
-public struct GlobalDocVResponse: Codable {
+public struct ValidDocumentsResponse: Codable {
     public let validDocuments: [ValidDocument]
 
     public init(validDocuments: [ValidDocument]) {
@@ -45,7 +45,6 @@ public struct IdType: Codable {
     public let hasBack: Bool
     public let name: String
 
-
     public init(code: String,
                 example: [String],
                 hasBack: Bool,
@@ -61,5 +60,29 @@ public struct IdType: Codable {
         case example
         case hasBack = "has_back"
         case name
+    }
+}
+
+public struct ProductsConfigRequest: Encodable {
+    public let partnerId: String
+    public let timestamp: String
+    public let signature: String?
+
+    public init() {
+        self.partnerId = SmileID.config.partnerId
+        self.timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
+        self.signature = try? calculateSignature(timestamp: timestamp)
+    }
+
+    public init(partnerId: String, timestamp: String, signature: String) {
+        self.partnerId = partnerId
+        self.signature = signature
+        self.timestamp = timestamp
+    }
+
+    enum CodingKeys: CodingKey {
+        case partnerId
+        case timestamp
+        case signature
     }
 }

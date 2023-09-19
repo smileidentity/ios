@@ -32,7 +32,9 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var displayedRectangleResult: RectangleDetectorResult?
     private var userId: String
     private var jobId: String
-    private var document: Document
+    private var countryCode: String
+    private var documentType: String?
+    private var idAspectRatio: Double?
     private var currentBuffer: CVPixelBuffer?
     private (set) var frontImage: UIImage?
     private (set) var backImage: UIImage?
@@ -95,14 +97,18 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
     init(userId: String,
          jobId: String,
-         document: Document,
+         countryCode: String,
+         documentType: String?,
+         idAspectRatio: Double? = nil,
          selfie: Data? = nil,
          captureBothSides: Bool,
          showAttribution: Bool,
          allowGalleryUpload: Bool) {
         self.userId = userId
         self.jobId = jobId
-        self.document = document
+        self.documentType = documentType
+        self.countryCode = countryCode
+        self.idAspectRatio = idAspectRatio
         self.selfie = selfie
         self.captureBothSides = captureBothSides
         self.showAttribution = showAttribution
@@ -123,7 +129,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                        height: CVPixelBufferGetHeight(buffer))
                 self.textDetector.detectText(buffer: buffer)
                 RectangleDetector.rectangle(forPixelBuffer: buffer,
-                                            aspectRatio: document.aspectRatio) { rect in
+                                            aspectRatio: idAspectRatio) { rect in
                     self.processRectangle(rectangle: rect, imageSize: imageSize)
                 }
             })
@@ -445,7 +451,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                                         back: backImage?.jpegData(compressionQuality: 1),
                                                         livenessImages: livenessImages,
                                                         selfie: selfie!,
-                                                        document: document)
+                                                        countryCode: countryCode,
+                                                        documentType: documentType)
         } catch {
             captureResultDelegate?.didError(error: error)
         }

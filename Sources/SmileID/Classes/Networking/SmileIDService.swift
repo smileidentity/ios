@@ -45,7 +45,10 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         return post(to: "async_id_verification", with: request)
     }
 
-    public func getValidDocuments(request: EnhancedKycRequest) -> AnyPublisher<GlobalDocVResponse, Error> {
+    /// Gets supported doucuments and metadata for Doucument Verification
+    /// - Parameter request: request description
+    /// - Returns: description
+    public func getValidDocuments(request: ProductsConfigRequest) -> AnyPublisher<ValidDocumentsResponse, Error> {
         return post(to: "valid_documents", with: request)
     }
 

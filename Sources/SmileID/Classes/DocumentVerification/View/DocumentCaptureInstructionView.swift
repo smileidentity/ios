@@ -99,9 +99,8 @@ struct DocumentCaptureInstructionsView_Previews: PreviewProvider {
     static var previews: some View {
         DocumentCaptureInstructionsView(viewModel: DocumentCaptureViewModel(userId: "",
                                                                             jobId: "",
-                                                                            document: Document(countryCode: "",
-                                                                                               documentType: "",
-                                                                                               aspectRatio: 0.2),
+                                                                            countryCode: "",
+                                                                            documentType: "",
                                                                             captureBothSides: true,
                                                                             showAttribution: true,
                                                                             allowGalleryUpload: true))
