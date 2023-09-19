@@ -1,7 +1,6 @@
 import Foundation
 
 public struct PrepUploadRequest: Codable {
-    var filename: String = "upload.zip"
     var partnerParams: PartnerParams
     var callbackUrl: String? = ""
     var partnerId = SmileID.config.partnerId
@@ -17,7 +16,6 @@ public struct PrepUploadRequest: Codable {
     var retry = "false" /// backend is broken needs these as strings
 
     enum CodingKeys: String, CodingKey {
-        case filename = "file_name"
         case partnerParams = "partner_params"
         case callbackUrl = "callback_url"
         case partnerId = "smile_client_id"

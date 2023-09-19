@@ -41,6 +41,7 @@
 		91D9FBC92AB49D4A00A8D36B /* CountryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC82AB49D4A00A8D36B /* CountryRow.swift */; };
 		91D9FBCB2AB4A9F900A8D36B /* IDTypeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBCA2AB4A9F900A8D36B /* IDTypeRow.swift */; };
 		91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */; };
+		91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC32AB481FE00A8D36B /* PollingTests.swift */; };
 		F703CAEEB3CEB5ADB5C99D44 /* Pods_SmileID_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -97,6 +98,7 @@
 		91D9FBC82AB49D4A00A8D36B /* CountryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryRow.swift; sourceTree = "<group>"; };
 		91D9FBCA2AB4A9F900A8D36B /* IDTypeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDTypeRow.swift; sourceTree = "<group>"; };
 		91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateSignatureTests.swift; sourceTree = "<group>"; };
+		91D9FBC32AB481FE00A8D36B /* PollingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingTests.swift; sourceTree = "<group>"; };
 		94E7560A47E255DD8215C183 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		9755B6A19CF28DE212F24C83 /* SmileID.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SmileID.podspec; path = ../SmileID.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		C8CD2E3DB817D8C6334E9240 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 				918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */,
 				58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */,
 				91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */,
+				91D9FBC32AB481FE00A8D36B /* PollingTests.swift */,
 			);
 			name = Networking;
 			path = ../../Tests/Networking;
@@ -303,6 +306,7 @@
 			buildPhases = (
 				A9F06B7D2BE86D450711DA74 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
+				917D79282AA8024400FA6624 /* SwiftLint */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				24C14E01D54D394A2B3921B7 /* [CP] Embed Pods Frameworks */,
@@ -424,6 +428,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		917D79282AA8024400FA6624 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../Sources\n\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
 		A9F06B7D2BE86D450711DA74 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -502,6 +524,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				918321EE2A52E36A00D6FB7F /* NetworkingMocks.swift in Sources */,
+				91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */,
 				918321F02A52E36A00D6FB7F /* FaceDetectorTests.swift in Sources */,
 				918321ED2A52E36A00D6FB7F /* BaseTestCase.swift in Sources */,
 				918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */,
@@ -651,7 +674,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = 99P7YGX9Q6;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileID/Info.plist;
@@ -678,7 +701,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileID/Info.plist;

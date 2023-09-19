@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 public protocol SmileIDServiceable {
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error>
@@ -7,9 +7,14 @@ public protocol SmileIDServiceable {
     func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error>
     func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error>
     func doEnhancedKycAsync(request: EnhancedKycRequest) -> AnyPublisher<EnhancedKycAsyncResponse, Error>
+    func getServices() -> AnyPublisher<ServicesResponse, Error>
 }
 
 public class SmileIDService: SmileIDServiceable, ServiceRunnable {
+    public func getServices() -> AnyPublisher<ServicesResponse, Error> {
+        return get(to: "services")
+    }
+
     @Injected var serviceClient: RestServiceClient
     typealias PathType = String
 
@@ -42,5 +47,24 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
 
     public func getValidDocuments(request: EnhancedKycRequest) -> AnyPublisher<GlobalDocVResponse, Error> {
         return post(to: "valid_documents", with: request)
+    }
+
+    ///      Polls the server for the status of a Job until it is complete. This should be called after the
+    ///      Job has been submitted to the server. The returned flow will be updated with every job status
+    ///      response. The flow will complete when the job is complete, or the attempt limit is reached.
+    ///      If any exceptions occur, only the last one will be thrown. If there is a successful API response
+    ///      after an exception, the exception will be ignored.
+    /// - Parameters:
+    ///   - request: The JobStatus request to made
+    ///   - interval: The time interval in secods between each poll
+    ///   - numAttempts: The maximum number of polls before ending the flow
+    public func pollJobStatus(request: JobStatusRequest,
+                              interval: TimeInterval,
+                              numAttempts: Int) -> AnyPublisher<JobStatusResponse, Error> {
+        return poll(service: SmileID.api,
+                    request: {SmileID.api.getJobStatus(request: request)},
+                    isComplete: {$0.jobComplete},
+                    interval: interval,
+                    numAttempts: numAttempts)
     }
 }

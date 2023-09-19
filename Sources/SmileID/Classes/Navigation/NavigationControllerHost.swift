@@ -4,14 +4,12 @@ import SwiftUI
 struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRepresentable {
     let navTitle: String
     let navHidden: Bool
-    
-
     let router: Router<R>
 
     @ViewBuilder
     var routeMap: (R) -> Screen
 
-    func makeUIViewController(context: Context) -> UINavigationController {
+    func makeUIViewController(context: Context) -> PoppableNavigationController {
         let nav = PoppableNavigationController()
 
         nav.popHandler = {
@@ -19,6 +17,9 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
         }
         nav.navStackHandler = {
             router.routes.count
+        }
+        nav.dismissHandler = {
+            router.dismiss()
         }
 
         for path in router.routes {
@@ -31,9 +32,9 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
             nav.present(UIHostingController(rootView: routeMap(route)), animated: true)
         }
 
-        router.pushHandler = { route in
+        router.pushHandler = { route, animated in
             nav.pushViewController(
-                UIHostingController(rootView: routeMap(route)), animated: true
+                UIHostingController(rootView: routeMap(route)), animated: animated
             )
         }
 
@@ -53,21 +54,25 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
         return nav
     }
 
-    func updateUIViewController(_ navigation: UINavigationController, context: Context) {
+    func updateUIViewController(_ navigation: PoppableNavigationController, context: Context) {
         navigation.topViewController?.navigationItem.title = navTitle
         navigation.navigationBar.isHidden = navHidden
         navigation.navigationBar.backIndicatorImage = SmileIDResourcesHelper.ArrowLeft
         navigation.navigationBar.backIndicatorTransitionMaskImage = SmileIDResourcesHelper.ArrowLeft
         navigation.navigationBar.barTintColor = SmileID.theme.backgroundMain.uiColor()
-        navigation.topViewController?.navigationItem.leftBarButtonItem = UIBarButtonItem(image: SmileIDResourcesHelper.Close, style: .plain, target: nil, action: nil)
+        let barButton = UIBarButtonItem(image: SmileIDResourcesHelper.Close,
+                                        style: .plain,
+                                        target: navigation,
+                                        action: #selector(navigation.dismissNav))
+        navigation.topViewController?.navigationItem.leftBarButtonItem = barButton
     }
 
-    typealias UIViewControllerType = UINavigationController
+    typealias UIViewControllerType = PoppableNavigationController
 }
 
-class PoppableNavigationController: UINavigationController, UINavigationControllerDelegate
-{
+class PoppableNavigationController: UINavigationController, UINavigationControllerDelegate {
     var popHandler: (() -> Void)?
+    var dismissHandler: (() -> Void)?
     var navStackHandler: (() -> Int)?
 
     var popGestureBeganController: UIViewController?
@@ -75,6 +80,7 @@ class PoppableNavigationController: UINavigationController, UINavigationControll
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
+        interactivePopGestureRecognizer?.isEnabled = false
     }
 
     func navigationController(_ navigationController: UINavigationController,
@@ -86,5 +92,8 @@ class PoppableNavigationController: UINavigationController, UINavigationControll
             self.popHandler?()
         }
     }
-}
 
+    @objc func dismissNav() {
+        dismissHandler?()
+    }
+}

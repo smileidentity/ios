@@ -9,8 +9,7 @@ struct DocumentCaptureView: View {
         self.viewModel = viewModel
         camera = CameraView(cameraManager: viewModel.cameraManager)
         UINavigationBar.appearance().titleTextAttributes = [.font: EpilogueFont.boldUIFont(with: 16)!,
-                                                            .foregroundColor: SmileID.theme.accent.uiColor()]
-
+            .foregroundColor: SmileID.theme.accent.uiColor()]
     }
 
     var body: some View {
@@ -20,7 +19,7 @@ struct DocumentCaptureView: View {
             }
         }
 
-        VStack{
+            VStack {
                 ZStack {
                     camera
                         .onAppear {
@@ -42,21 +41,24 @@ struct DocumentCaptureView: View {
                             .foregroundColor(SmileID.theme.accent)
                             .frame(width: 235, alignment: .center)
                     }
-                    CaptureButton {
-                        viewModel.captureImage()
-                    }.padding(.bottom, 60)
+                    if viewModel.showCaptureButton {
+                        CaptureButton {
+                            viewModel.captureImage()
+                        }.padding(.bottom, 60)
+                    }
                 }.frame(height: 230)
-        }
-        .edgesIgnoringSafeArea(.all)
-        .navigationBarItems(leading: Button {
-            print("resetting state")
-            viewModel.resetState()
-            viewModel.pauseCameraSession()
-            presentationMode.wrappedValue.dismiss()
-        } label: {
-            Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
-                .padding()
-        })
+            }
+            .padding(.top, 50)
+            .overlay(NavigationBar {
+                viewModel.resetState()
+                viewModel.pauseCameraSession()
+                router.pop()
+            })
+            .edgesIgnoringSafeArea(.all)
+    }
+
+    func handleBackButtonTap() {
+        viewModel.pauseCameraSession()
     }
 }
 
@@ -72,5 +74,3 @@ struct DocumentCaptureView_Previews: PreviewProvider {
                                                                 allowGalleryUpload: true))
     }
 }
-
-

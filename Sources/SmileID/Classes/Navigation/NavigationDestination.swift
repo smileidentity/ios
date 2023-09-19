@@ -1,7 +1,6 @@
 import UIKit
 
 enum NavigationDestination: ReflectiveEquatable {
-
     case selfieInstructionScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
                                  delegate: SmartSelfieResultDelegate?)
     case selfieCaptureScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
@@ -23,7 +22,7 @@ protocol ReflectiveEquatable: Equatable {}
 
 extension ReflectiveEquatable {
     var reflectedValue: String { String(reflecting: self) }
-    static func ==(lhs: Self, rhs: Self) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.reflectedValue == rhs.reflectedValue
     }
 }

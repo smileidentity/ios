@@ -1,5 +1,6 @@
 //  Created by Boris Emorine on 2/9/18.
 //  Copyright © 2018 WeTransfer. All rights reserved.
+//  Source: https://github.com/WeTransfer/WeScan
 
 import Foundation
 import Vision
@@ -34,8 +35,6 @@ class RectangleDetector {
             })
 
             rectDetectRequest.minimumConfidence = 0.8
-            rectDetectRequest.minimumAspectRatio = VNAspectRatio(1.65)
-            rectDetectRequest.maximumAspectRatio = VNAspectRatio(1.8)
 
             return rectDetectRequest
         }()
@@ -74,7 +73,7 @@ protocol RectangleDetectionDelegate: NSObjectProtocol {
     /// - Parameters:
     ///   - quad: The detected quadrilateral in the coordinates of the image.
     ///   - imageSize: The size of the image the quadrilateral has been detected on.
-    func didDetectQuad(quad: Quadrilateral?, _ imageSize: CGSize)
+    func didDetectQuad(quad: Quadrilateral?, _ imageSize: CGSize, completion: ((Quadrilateral) -> Void)? )
 }
 
 /// Data structure representing the result of the detection of a quadrilateral.

@@ -1,5 +1,6 @@
 //  Created by Boris Emorine on 2/9/18.
 //  Copyright © 2018 WeTransfer. All rights reserved.
+//  Source: https://github.com/WeTransfer/WeScan
 
 import AVFoundation
 import Foundation
@@ -15,7 +16,8 @@ final class RectangleFeaturesFunnel {
         let rectangleFeature: Quadrilateral
 
         /// The score to indicate how strongly the rectangle of this instance matches other recently added rectangles.
-        /// A higher score indicates that many recently added rectangles are very close to the rectangle of this instance.
+        /// A higher score indicates that many recently added rectangles are very close to
+        /// the rectangle of this instance.
         var matchingScore = 0
 
         init(rectangleFeature: Quadrilateral) {
@@ -37,10 +39,12 @@ final class RectangleFeaturesFunnel {
         }
     }
 
-    /// The queue of last added rectangles. The first rectangle is oldest one, and the last rectangle is the most recently added one.
+    /// The queue of last added rectangles. The first rectangle is oldest one,
+    /// and the last rectangle is the most recently added one.
     private var rectangles = [RectangleMatch]()
 
-    /// The maximum number of rectangles to compare newly added rectangles with. Determines the maximum size of `rectangles`.
+    /// The maximum number of rectangles to compare newly added rectangles with.
+    /// Determines the maximum size of `rectangles`.
     ///  Increasing this value will impact performance.
     let maxNumberOfRectangles = 8
 
@@ -49,11 +53,13 @@ final class RectangleFeaturesFunnel {
     /// A higher value will delay the first time a rectangle is displayed.
     let minNumberOfRectangles = 3
 
-    /// The value in pixels used to determine if two rectangle match or not. A higher value will prevent displayed rectangles to be refreshed.
+    /// The value in pixels used to determine if two rectangle match or not.
+    /// A higher value will prevent displayed rectangles to be refreshed.
     /// On the opposite, a smaller value will make new rectangles be displayed constantly.
     let matchingThreshold: CGFloat = 40.0
 
-    /// The minumum number of matching rectangles (within the `rectangle` queue), to be confident enough to display a rectangle.
+    /// The minumum number of matching rectangles (within the `rectangle` queue), to be confident
+    /// enough to display a rectangle.
     let minNumberOfMatches = 3
 
     /// Add a rectangle to the funnel, and if a new rectangle should be displayed, the completion block will be called.
@@ -61,8 +67,10 @@ final class RectangleFeaturesFunnel {
     /// 1. Makes sure that the funnel has been fed enough rectangles
     /// 2. Removes old rectangles if needed
     /// 3. Compares all of the recently added rectangles to find out which one match each other
-    /// 4. Within all of the recently added rectangles, finds the "best" one (@see `bestRectangle(withCurrentlyDisplayedRectangle:)`)
-    /// 5. If the best rectangle is different than the currently displayed rectangle, informs the listener that a new rectangle should be displayed
+    /// 4. Within all of the recently added rectangles, finds the "best" one
+    /// (@see `bestRectangle(withCurrentlyDisplayedRectangle:)`)
+    /// 5. If the best rectangle is different than the currently displayed rectangle, informs the listener that
+    /// a new rectangle should be displayed
     /// - Parameters:
     ///   - rectangleFeature: The rectangle to feed to the funnel.
     ///   - currentRectangle: The currently displayed rectangle. This is used to avoid displaying very close rectangles.
@@ -92,7 +100,8 @@ final class RectangleFeaturesFunnel {
 
     /// Determines which rectangle is best to displayed.
     /// The criteria used to find the best rectangle is its matching score.
-    /// If multiple rectangles have the same matching score, we use a tie breaker to find the best rectangle (@see breakTie(forRectangles:)).
+    /// If multiple rectangles have the same matching score, we use a tie breaker to find the best rectangle
+    /// (@see breakTie(forRectangles:)).
     /// Parameters:
     ///   - currentRectangle: The currently displayed rectangle. This is used to avoid displaying very close rectangles.
     /// Returns: The best rectangle to display given the current history.
@@ -123,8 +132,9 @@ final class RectangleFeaturesFunnel {
     /// Breaks a tie between two rectangles to find out which is best to display.
     /// The first passed rectangle is returned if no other criteria could be used to break the tie.
     /// If the first passed rectangle (rect1) is close to the currently displayed rectangle, we pick it.
-    /// Otherwise if the second passed rectangle (rect2) is close to the currently displayed rectangle, we pick this one.
-    /// Finally, if none of the passed in rectangles are close to the currently displayed rectangle, we arbitrary pick the first one.
+    /// Otherwise if the second passed rectangle (rect2) is close to the currently displayed rectangle,
+    /// we pick this one. Finally, if none of the passed in rectangles are close to the currently displayed rectangle,
+    /// we arbitrary pick the first one.
     /// - Parameters:
     ///   - rect1: The first rectangle to compare.
     ///   - rect2: The second rectangle to compare.

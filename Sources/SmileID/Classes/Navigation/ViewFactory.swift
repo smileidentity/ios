@@ -7,8 +7,10 @@ class ViewFactory {
     }
 
     class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
-        func didSucceed(selfie: Data, documentFrontImage: Data, documentBackImage: Data?, jobStatusResponse: JobStatusResponse?) {}
-
+        func didSucceed(selfie: Data,
+                        documentFrontImage: Data,
+                        documentBackImage: Data?,
+                        jobStatusResponse: JobStatusResponse) {}
         func didError(error _: Error) {}
     }
 
@@ -36,8 +38,8 @@ class ViewFactory {
                                             delegate: delegate ?? DocPlaceHolderDelegate())
         case .doucmentCaptureProcessing:
              ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.Scan,
-                                                                                  titleKey: "Document.Processing.Header",
-                                                                                  calloutKey: "Document.Processing.Callout")
+                                                             titleKey: "Document.Processing.Header",
+                                                             calloutKey: "Document.Processing.Callout")
             }
         case .documentCaptureComplete(viewModel: let viewModel):
             ModalPresenter { SuccessView(titleKey: "Document.Complete.Header",
@@ -52,8 +54,9 @@ class ViewFactory {
                                                    header: "Document.Confirmation.Header",
                                                    callout: "Document.Confirmation.Callout",
                                                    confirmButtonTitle: "Document.Confirmation.Accept",
-                                                   declineButtonTitle:  "Document.Confirmation.Decline",
+                                                   declineButtonTitle: "Document.Confirmation.Decline",
                                                    image: image)}
+
         }
     }
 }

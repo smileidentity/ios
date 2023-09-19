@@ -3,11 +3,11 @@ import SwiftUI
 enum CaptureType: Equatable {
     case selfie
     case document(Position)
+}
 
-    enum Position {
-        case front
-        case back
-    }
+enum Position {
+     case front
+     case back
 }
 
 public struct CaptureInstruction {
@@ -47,6 +47,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
         self.instructions = instructions
         self.destination = destination
         self.secondaryDestination = secondaryDestination
+
         self.captureType = captureType
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
@@ -107,20 +108,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
                              bottom: 24,
                              trailing: 24))
             .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
-            .navigationBarItems(leading: Button {
-                if captureType == .document(.back) {
-                    router.pop()
-                } else {
-                    router.pop()
-                }
-            } label: {
-                if captureType == .document(.back) {
-                    Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
-                        .padding()
-                } else {
-                    Image(uiImage: SmileIDResourcesHelper.Close)
-                }
-            })
+            .navigationBarHidden(true)
     }
 
     func makeInstruction(title: String, body: String, image: String) -> some View {

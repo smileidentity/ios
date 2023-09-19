@@ -2,7 +2,7 @@
 import Danger
 
 fileprivate extension Danger.File {
-    var isInTests: Bool { hasPrefix("Tests/") }
+    var isInTests: Bool { hasPrefix("Example/Tests/") }
 
     var isSourceFile: Bool {
         hasSuffix(".swift") || hasSuffix(".h") || hasSuffix(".m")
@@ -13,7 +13,7 @@ let danger = Danger()
 
 let hasSourceChanges = (danger.git.modifiedFiles + danger.git.createdFiles).contains { $0.isSourceFile }
 // SwiftLint
-SwiftLint.lint(inline: true, configFile: "Example/.swiftlint.yml")
+SwiftLint.lint(inline: true, configFile: "Sources/.swiftlint.yml")
 
 // Encourage smaller PRs
 let bigPRThreshold = 70

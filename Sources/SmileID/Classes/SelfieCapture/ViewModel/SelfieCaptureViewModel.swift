@@ -342,9 +342,9 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         }
         var orientation: CGImagePropertyOrientation
 
-        if (isARSupported && !agentMode) {
+        if isARSupported && !agentMode {
             orientation = .right
-        } else if (!isARSupported && !agentMode) {
+        } else if !isARSupported && !agentMode {
            orientation = .upMirrored
         } else {
             orientation = .up
@@ -370,10 +370,12 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
                                                               faceGeometry: faceGeometry,
                                                               agentMode: agentMode,
                                                               finalSize: selfieImageSize,
-                                                              screenImageSize: viewFinderSize, orientation: orientation) else {
+                                                              screenImageSize: viewFinderSize,
+                                                              orientation: orientation) else {
                 return }
             guard let selfieImage = ImageUtils.resizePixelBufferToWidth(currentBuffer, width: 600,
-                                                                        exif: currentExif, orientation: orientation) else {
+                                                                        exif: currentExif,
+                                                                        orientation: orientation) else {
                 return }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
@@ -425,8 +427,8 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
         let authRequest = AuthenticationRequest(jobType: jobType,
                                                 enrollment: isEnroll,
-                                                userId: userId,
-                                                jobId: jobId)
+                                                jobId: jobId,
+                                                userId: userId)
 
         SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in
@@ -444,7 +446,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
                             .map { _ in authResponse }
                     }
             }
-            .flatMap(pollJobStatus)
+            .flatMap(getJobStatus)
             .sink(receiveCompletion: {completion in
                 switch completion {
                 case .failure(let error):
@@ -495,6 +497,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     }
 
     func handleClose() {
+        pauseCameraSession()
         processingState = .endFlow
     }
 

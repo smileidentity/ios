@@ -3,11 +3,11 @@ import Foundation
 public struct PartnerParams: Codable {
     public var jobId: String
     public var userId: String
-    public var jobType: JobType
+    public var jobType: JobType?
 
     public init(jobId: String,
                 userId: String,
-                jobType: JobType) {
+                jobType: JobType?) {
         self.jobId = jobId
         self.userId = userId
         self.jobType = jobType

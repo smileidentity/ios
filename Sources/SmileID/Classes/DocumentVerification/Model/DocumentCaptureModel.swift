@@ -3,7 +3,7 @@ import Combine
 import CoreVideo
 import AVFoundation
 
-class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDialogContract {
+class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDialogContract, TextDetectionDelegate {
     enum Side {
         case front
         case back
@@ -28,6 +28,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     weak var captureResultDelegate: DocumentCaptureResultDelegate?
     var router: Router<NavigationDestination>?
     private var cameraCapture: Bool = false
+    private let textDetector = TextDetector()
     private var displayedRectangleResult: RectangleDetectorResult?
     private var userId: String
     private var jobId: String
@@ -47,7 +48,13 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var selfie: Data?
     private var livenessImages: [Data]?
     private var files = [URL]()
+    private var textDetected = false
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
+    private let autoCaptureDelayInSecs: TimeInterval = 2
+    private let manualCaptureDelayInSecs: TimeInterval = 10
+    var autoCaptureTimer: Timer?
+    var manualCaptureTimer: Timer?
+
     @State var galleryImageFront = UIImage() {
         didSet {
             frontImage = galleryImageFront
@@ -65,19 +72,25 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             }
         }
     }
-
+    @Published var showCaptureButton = false
     @Published var borderColor: UIColor = .gray
     @Published var guideSize: CGSize = .zero
     var width: CGFloat = .zero
+    var height: CGFloat = .zero
 
     var rectangleAspectRatio: Double = 1.66 {
         didSet {
             let rectWidth = 0.9 * width
-            let rectHeight = rectWidth/rectangleAspectRatio
+            let rectHeight = min(rectWidth/rectangleAspectRatio, 0.9 * height)
+
             DispatchQueue.main.async {
                 self.guideSize = CGSize(width: rectWidth, height: rectHeight)
             }
         }
+    }
+
+    var maxAspectRatio: Double {
+        width/height
     }
 
     init(userId: String,
@@ -94,8 +107,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         self.captureBothSides = captureBothSides
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
+        textDetector.delegate = self
         subscribeToCameraFeed()
         subscribeToImageCapture()
+        startManualCaptureTimer()
     }
 
     func subscribeToCameraFeed() {
@@ -106,6 +121,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 self.currentBuffer = buffer
                 let imageSize = CGSize(width: CVPixelBufferGetWidth(buffer),
                                        height: CVPixelBufferGetHeight(buffer))
+                self.textDetector.detectText(buffer: buffer)
                 RectangleDetector.rectangle(forPixelBuffer: buffer,
                                             aspectRatio: document.aspectRatio) { rect in
                     self.processRectangle(rectangle: rect, imageSize: imageSize)
@@ -121,12 +137,23 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 DispatchQueue.main.async {
                     self.cameraCapture = true
                     self.processingState = .confirmation(image)
-                    self.router?.push(.documentConfirmation(viewModel: self, image: image))
+                    self.cropImage(image)
                 }
             })
     }
 
-    func captureImage() {
+    func startManualCaptureTimer() {
+        if self.manualCaptureTimer == nil {
+            self.autoCaptureTimer?.invalidate()
+            self.manualCaptureTimer = Timer.scheduledTimer(timeInterval: manualCaptureDelayInSecs,
+                                                                 target: self,
+                                                                 selector: #selector(manualCapture),
+                                                                 userInfo: nil,
+                                                                 repeats: false)
+        }
+    }
+
+    @objc func captureImage() {
         cameraManager.capturePhoto()
     }
 
@@ -143,30 +170,35 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         selfie = nil
     }
 
-    func cropImage(_ capturedImage: UIImage, quadView: QuadrilateralView) {
-        guard let quad = quadView.quad, let ciImage = CIImage(image: capturedImage) else {
-            return
-        }
+    func cropImage(_ capturedImage: UIImage) {
+        guard let ciImage = CIImage(image: capturedImage) else { return }
+        let transparentRectOrigin = CGPoint(
+            x: (self.width - self.guideSize.width) / 2,
+            y: (self.height - self.guideSize.height) / 2
+        )
+
+        let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
+
+        let cropQuad = Quadrilateral(cgRect: rect)
         let cgOrientation = CGImagePropertyOrientation(capturedImage.imageOrientation)
         let orientedImage = ciImage.oriented(forExifOrientation: Int32(cgOrientation.rawValue))
-        let scaledQuad = quad.scale(quadView.bounds.size, capturedImage.size)
-
-        // Cropped Image
+        let scaledQuad = cropQuad.scale(CGSize(width: width, height: height), capturedImage.size)
         var cartesianScaledQuad = scaledQuad.toCartesian(withHeight: capturedImage.size.height)
         cartesianScaledQuad.reorganize()
-
         let filteredImage = orientedImage.applyingFilter("CIPerspectiveCorrection", parameters: [
             "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
             "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
             "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
             "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
         ])
+        let croppedImage = UIImage.from(ciImage: filteredImage)
         switch side {
         case .back:
-            backImage = UIImage.from(ciImage: filteredImage)
+            backImage = croppedImage
         case .front:
-            frontImage = UIImage.from(ciImage: filteredImage)
+            frontImage = croppedImage
         }
+        self.router?.push(.documentConfirmation(viewModel: self, image: croppedImage))
     }
 
     func resumeCameraSession() {
@@ -181,12 +213,23 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         submit()
     }
 
+    func handleInstuctionsBackButtonTap(side: DocumentCaptureInstructionsView.Side) {
+        switch side {
+        case .front:
+            router?.dismiss()
+        case .back:
+            router?.pop()
+        }
+    }
+
     func declineImage() {
         if cameraCapture {
             processingState = nil
         } else {
             resetState()
         }
+        manualCaptureTimer = nil
+        startManualCaptureTimer()
         router?.pop()
     }
 
@@ -199,10 +242,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 captureResultDelegate?.didError(error: error)
                 return
             }
-            if let selfie = selfie {
+            if let selfie = selfie, let response = response {
                 captureResultDelegate?.didSucceed(selfie: selfie,
                                                   documentFrontImage: frontImage!.jpegData(compressionQuality: 1)!,
-                                                  documentBackImage: backImage!.jpegData(compressionQuality: 1)!,
+                                                  documentBackImage: backImage?.jpegData(compressionQuality: 1),
                                                   jobStatusResponse: response)
             }
         default:
@@ -267,7 +310,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                             .map { _ in authResponse }
                     }
             }
-            .flatMap(pollJobStatus)
+            .flatMap(getJobStatus)
             .sink(receiveCompletion: {completion in
                 switch completion {
                 case .failure(let error):
@@ -302,11 +345,18 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         }
     }
 
+    @objc func manualCapture() {
+        DispatchQueue.main.async {
+            self.rectangleAspectRatio = self.maxAspectRatio
+            self.showCaptureButton = true
+        }
+    }
+
     private func processRectangle(rectangle: Quadrilateral?, imageSize: CGSize) {
         if let rectangle {
             self.rectangleFunnel
-                .add(rectangle, currentlyDisplayedRectangle: self.displayedRectangleResult?.rectangle) { [weak self] rectangle in
-
+                .add(rectangle,
+                     currentlyDisplayedRectangle: self.displayedRectangleResult?.rectangle) { [weak self] rectangle in
                     guard let self else {
                         return
                     }
@@ -315,13 +365,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                                                                          imageSize: imageSize))
                 }
         } else {
+            startManualCaptureTimer()
             self.displayedRectangleResult = nil
-            self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize)
+            self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize, completion: nil)
         }
-    }
-
-    func isRectangleValid() {
-        borderColor = .green
     }
 
     @discardableResult private func displayRectangleResult(rectangleResult: RectangleDetectorResult) -> Quadrilateral {
@@ -333,10 +380,60 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             guard let self else {
                 return
             }
-            self.rectangleDetectionDelegate?.didDetectQuad(quad: quad, rectangleResult.imageSize)
+            self.rectangleDetectionDelegate?.didDetectQuad(quad: quad,
+                                                           rectangleResult.imageSize) { [self] transformedQuad in
+                let transparentRectOrigin = CGPoint(
+                    x: (self.width - self.guideSize.width) / 2,
+                    y: (self.height - self.guideSize.height) / 2
+                )
+
+                let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
+                if self.isWithinBoundsAndSize(cgrect1: rect, cgrect2: transformedQuad.cgRect) && self.textDetected {
+                    self.borderColor = SmileID.theme.success.uiColor()
+                    if self.autoCaptureTimer == nil {
+                        self.showCaptureButton = false
+                        self.autoCaptureTimer = Timer.scheduledTimer(timeInterval: self.autoCaptureDelayInSecs,
+                                                                     target: self,
+                                                                     selector: #selector(self.captureImage),
+                                                                     userInfo: nil,
+                                                                     repeats: false)
+                    }
+                } else {
+                    self.autoCaptureTimer?.invalidate()
+                    self.autoCaptureTimer = nil
+                    self.borderColor = .gray
+                }
+            }
         }
 
         return quad
+    }
+
+    func noTextDetected() {
+        DispatchQueue.main.async { [weak self] in
+            self?.borderColor = .gray
+        }
+        autoCaptureTimer?.invalidate()
+        autoCaptureTimer = nil
+        textDetected = false
+    }
+
+    func onTextDetected() {
+        textDetected = true
+    }
+
+    func isWithinBoundsAndSize(cgrect1: CGRect, cgrect2: CGRect) -> Bool {
+        // Check if cgrect2 is fully contained within cgrect1
+        if !cgrect1.contains(cgrect2) {
+            return false
+        }
+
+        // Calculate the areas of cgrect1 and cgrect2
+        let area1 = cgrect1.width * cgrect1.height
+        let area2 = cgrect2.width * cgrect2.height
+
+        // Check if cgrect2's area is at least 30% but not more than 100% of cgrect1's area
+        return area2 >= 0.3 * area1 && area2 <= area1
     }
 
     func saveFilesToDisk() {
@@ -349,8 +446,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                                         livenessImages: livenessImages,
                                                         selfie: selfie!,
                                                         document: document)
-        }
-        catch {
+        } catch {
             captureResultDelegate?.didError(error: error)
         }
     }
@@ -382,4 +478,3 @@ extension DocumentCaptureViewModel: ImagePickerDelegate {
         router?.push(.documentConfirmation(viewModel: self, image: image))
     }
 }
-

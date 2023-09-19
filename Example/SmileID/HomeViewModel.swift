@@ -37,7 +37,7 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     var returnedUserID = ""
 
     init() {
-       subscribeToAuthCompletion()
+        subscribeToAuthCompletion()
     }
 
     func generateUserID() -> String {
@@ -89,7 +89,7 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     func didSucceed(selfie: Data,
                     documentFrontImage: Data,
                     documentBackImage: Data?,
-                    jobStatusResponse: JobStatusResponse?) {
+                    jobStatusResponse: JobStatusResponse) {
 
     }
 

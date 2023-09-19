@@ -1,3 +1,4 @@
+// swiftlint:disable force_try
 import Foundation
 import SwiftUI
 import UIKit
@@ -22,27 +23,38 @@ public class SmileID {
     }()
 
     private init() {}
-    public static let version = "10.0.0-beta03"
-    internal static var config: Config!
-    internal static var useSandbox = true
+    public static let version = "10.0.0-beta07"
+    public private(set) static var config: Config!
+    public private(set) static var useSandbox = true
     internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
-
+    internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
     @ObservedObject internal static var router = Router<NavigationDestination>()
-
-    public class func initialize(
-        apiKey: String? = nil,
-        config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
-                                                          withExtension: "json")!),
-        useSandbox: Bool = true) {
-            self.config = config
-            self.useSandbox = useSandbox
-            self.apiKey = apiKey
-            SmileIDResourcesHelper.registerFonts()
+    /// This method initilizes SmileID. Invoke this method once in your applicaion lifecylce
+    /// before calling any other SmileID methods.
+    /// - Parameters:
+    ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
+    ///    for a `smile_config.json` file.
+    ///   - useSandbox: A boolean to enable the sandbox environment or not
+    public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
+                                                                                   withExtension: "json")!),
+                                 useSandbox: Bool = true) {
+        self.config = config
+        self.useSandbox = useSandbox
+        self.apiKey = apiKey
+        SmileIDResourcesHelper.registerFonts()
+    }
         }
 
     public class func apply(_ theme: SmileIdTheme) {
         self.theme = theme
+    }
+
+    /// Apply localizable strings
+    /// - Parameter localizableStrings: A `SmileIDLocalizableStrings`  used to override all copy used within the SDK.
+    ///   if no value is set, the default copy will be used.
+    public class func apply(_ localizableStrings: SmileIDLocalizableStrings) {
+        self.localizableStrings = localizableStrings
     }
 
     public class func smartSelfieEnrollmentScreen(userId: String = "user-\(UUID().uuidString)",

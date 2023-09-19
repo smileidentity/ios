@@ -1,5 +1,6 @@
 //  Created by Boris Emorine on 2/9/18.
 //  Copyright © 2018 WeTransfer. All rights reserved.
+//  Source: https://github.com/WeTransfer/WeScan
 
 import Vision
 
@@ -20,6 +21,16 @@ struct Quadrilateral: Transformable {
         return path
     }
 
+    var cgRect: CGRect {
+        let minX = min(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
+        let minY = min(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
+
+        let maxX = max(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
+        let maxY = max(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
+
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
+
     var perimeter: Double {
         let perimeter = topLeft.distanceTo(point: topRight)
         + topRight.distanceTo(point: bottomRight)
@@ -37,6 +48,13 @@ struct Quadrilateral: Transformable {
         self.topRight = rectangleObservation.topRight
         self.bottomLeft = rectangleObservation.bottomLeft
         self.bottomRight = rectangleObservation.bottomRight
+    }
+
+    init(cgRect: CGRect) {
+        self.topLeft = cgRect.topLeft
+        self.topRight = cgRect.topRight
+        self.bottomLeft = cgRect.bottomLeft
+        self.bottomRight = cgRect.bottomRight
     }
 
     init(topLeft: CGPoint, topRight: CGPoint, bottomRight: CGPoint, bottomLeft: CGPoint) {
@@ -73,7 +91,6 @@ struct Quadrilateral: Transformable {
                              bottomRight: bottomRight,
                              bottomLeft: bottomLeft)
     }
-
 
     /// Checks whether the quadrilateral is within a given distance of another quadrilateral.
     ///
@@ -150,7 +167,6 @@ struct Quadrilateral: Transformable {
 
         return transformedQuad
     }
-
 
     /// Reorganizes the current quadrilateral, making sure that the points are at their appropriate positions.
     /// For example, it ensures that the top left point is actually the top and left point point of the quadrilateral.
@@ -246,27 +262,22 @@ extension CGPoint {
     func distanceTo(point: CGPoint) -> CGFloat {
         return hypot((self.x - point.x), (self.y - point.y))
     }
+}
 
-    /// Returns the closest corner from the point
-    func closestCornerFrom(quad: Quadrilateral) -> CornerPosition {
-        var smallestDistance = distanceTo(point: quad.topLeft)
-        var closestCorner = CornerPosition.topLeft
+extension CGRect {
+    var topLeft: CGPoint {
+        return CGPoint(x: self.minX, y: self.minY)
+    }
 
-        if distanceTo(point: quad.topRight) < smallestDistance {
-            smallestDistance = distanceTo(point: quad.topRight)
-            closestCorner = .topRight
-        }
+    var topRight: CGPoint {
+        return CGPoint(x: self.maxX, y: self.minY)
+    }
 
-        if distanceTo(point: quad.bottomRight) < smallestDistance {
-            smallestDistance = distanceTo(point: quad.bottomRight)
-            closestCorner = .bottomRight
-        }
+    var bottomRight: CGPoint {
+        return CGPoint(x: self.maxX, y: self.maxY)
+    }
 
-        if distanceTo(point: quad.bottomLeft) < smallestDistance {
-            smallestDistance = distanceTo(point: quad.bottomLeft)
-            closestCorner = .bottomLeft
-        }
-
-        return closestCorner
+    var bottomLeft: CGPoint {
+        return CGPoint(x: self.minX, y: self.maxY)
     }
 }
