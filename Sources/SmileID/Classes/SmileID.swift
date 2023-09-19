@@ -25,17 +25,21 @@ public class SmileID {
     public static let version = "10.0.0-beta03"
     internal static var config: Config!
     internal static var useSandbox = true
+    internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
 
     @ObservedObject internal static var router = Router<NavigationDestination>()
 
-    public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
-                                                                                   withExtension: "json")!),
-                                 useSandbox: Bool = true) {
-        self.config = config
-        self.useSandbox = useSandbox
-        SmileIDResourcesHelper.registerFonts()
-    }
+    public class func initialize(
+        apiKey: String? = nil,
+        config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
+                                                          withExtension: "json")!),
+        useSandbox: Bool = true) {
+            self.config = config
+            self.useSandbox = useSandbox
+            self.apiKey = apiKey
+            SmileIDResourcesHelper.registerFonts()
+        }
 
     public class func apply(_ theme: SmileIdTheme) {
         self.theme = theme
