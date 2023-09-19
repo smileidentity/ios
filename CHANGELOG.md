@@ -1,7 +1,11 @@
 ## 10.0.0-beta08 (unreleased)
 
+### Added 
+- Convenience method for partners to poll the `jobStatus` endpoint
+
 ### Removed
 - `filename` property from `PrepUploadRequest`
+-  `jobStatus` polling from `SmartSelfieAuthentication`, `SmartSelfieEnrollment` and `DocumentVerification`
 
 
 ## 10.0.0-beta07
