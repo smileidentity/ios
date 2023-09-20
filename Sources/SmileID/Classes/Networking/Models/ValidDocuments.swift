@@ -12,7 +12,8 @@ public struct ValidDocumentsResponse: Codable {
     }
 }
 
-public struct ValidDocument: Codable {
+public struct ValidDocument: Codable, Identifiable {
+    public let id = UUID()
     public let country: Country
     public let idTypes: [IdType]
 
@@ -28,6 +29,7 @@ public struct ValidDocument: Codable {
 }
 
 public struct Country: Codable {
+
     public let code: String
     public let continent: String
     public let name: String

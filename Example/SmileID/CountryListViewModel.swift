@@ -1,8 +1,8 @@
 import SmileID
 
-class CountryListViewModel {
-    var validDocuments = [ValidDocument]()
-    
+class CountryListViewModel: ObservableObject {
+    @Published var validDocuments = [ValidDocument]()
+
     func getValidDocuments() {
         let request = ProductsConfigRequest()
         SmileID.api.getValidDocuments(request: request)
