@@ -1,20 +1,6 @@
 import Foundation
 import Zip
 
-struct SelfieCaptureResultStore {
-    var allFiles: [URL]
-    var selfie: URL
-    var livenessImages: [URL]
-}
-
-struct DocumentCaptureResultStore {
-    var allFiles: [URL]
-    var documentFront: URL
-    var docmentBack: URL?
-    var selfie: URL
-    var livenessImages: [URL]
-}
-
 class LocalStorage {
     private static let defaultFolderName = "sid_jobs"
     private static let imagePrefix = "si_"
@@ -56,8 +42,8 @@ class LocalStorage {
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
         allFileUrls.append(jsonUrl)
         return SelfieCaptureResultStore(allFiles: allFileUrls,
-                                 selfie: selfieUrl,
-                                 livenessImages: livenessUrls)
+                                        selfie: selfieUrl,
+                                        livenessImages: livenessUrls)
     }
 
     /// Saves front and back images of documents to disk, generates an `info.json`
@@ -66,13 +52,14 @@ class LocalStorage {
     ///   - front: Jpg data representation id image fron
     ///   - back: Jpg data for the back of tha id image
     ///   - folder: The name of the folder the files should be saved
-    /// - Returns: An array of urls of all the files that have been saved to disk
+    /// - Returns: A document result store which encapsulates the urls of the saved images
     static func saveDocumentImages(front: Data,
                                    back: Data?,
                                    livenessImages: [Data]?,
                                    selfie: Data,
                                    document: Document,
-                                   to folder: String = "sid-\(UUID().uuidString)") throws -> DocumentCaptureResultStore {
+                                   to folder: String = "sid-\(UUID().uuidString)")
+    throws -> DocumentCaptureResultStore {
         try createDefaultDirectory()
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         var allFiles = [URL]()

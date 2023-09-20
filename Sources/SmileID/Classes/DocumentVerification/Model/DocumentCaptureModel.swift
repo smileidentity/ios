@@ -463,7 +463,7 @@ extension DocumentCaptureViewModel: SmartSelfieResultDelegate, SelfieImageCaptur
         submitJob()
     }
 
-    func didSucceed(selfieImage: URL, 
+    func didSucceed(selfieImage: URL,
                     livenessImages: [URL],
                     jobStatusResponse: JobStatusResponse) {}
 
