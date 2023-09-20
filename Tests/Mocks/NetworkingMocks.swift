@@ -114,7 +114,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     var successExpectation: XCTestExpectation?
     var failureExpection: XCTestExpectation?
 
-    func didSucceed(selfieImage _: Data, livenessImages _: [Data], jobStatusResponse _: JobStatusResponse?) {
+    func didSucceed(selfieImage _: URL, livenessImages _: [URL], jobStatusResponse _: JobStatusResponse) {
         successExpectation?.fulfill()
     }
 

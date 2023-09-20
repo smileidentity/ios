@@ -58,17 +58,11 @@ struct EnterUserIDView_Previews: PreviewProvider {
 class UserIDViewModel: ObservableObject, SmartSelfieResultDelegate {
     @Published var shouldDismiss = false
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
+    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {
         shouldDismiss = true
-        if let jobStatusResponse = jobStatusResponse {
             NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"),
                                                          object: nil,
                                                          userInfo: ["Response": jobStatusResponse]))
-        } else {
-            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"),
-                                                         object: nil,
-                                                         userInfo: nil))
-        }
     }
 
     func didError(error: Error) {

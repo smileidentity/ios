@@ -50,7 +50,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
         navigationController?.present(cameraVC!, animated: true)
     }
 
-    func didSucceed(selfieImage _: Data, livenessImages _: [Data], jobStatusResponse _: JobStatusResponse?) {
+    func didSucceed(selfieImage _: URL, livenessImages _: [URL], jobStatusResponse _: JobStatusResponse) {
         cameraVC?.dismiss(animated: true, completion: {
             switch self.currentJob {
             case .smartSelfieEnrollment:

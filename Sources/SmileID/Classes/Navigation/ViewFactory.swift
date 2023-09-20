@@ -2,7 +2,7 @@ import SwiftUI
 
 class ViewFactory {
     class SelfiePlaceHolderDelegate: SmartSelfieResultDelegate {
-        func didSucceed(selfieImage _: URL, livenessImages _: [URL], jobStatusResponse _: JobStatusResponse?) {}
+        func didSucceed(selfieImage _: URL, livenessImages _: [URL], jobStatusResponse _: JobStatusResponse) {}
         func didError(error _: Error) {}
     }
 
