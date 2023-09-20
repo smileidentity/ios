@@ -11,11 +11,12 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
     let arView: ARView?
     let faceOverlay: FaceOverlayView
 
-    init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
+    init(viewModel: SelfieCaptureViewModel, 
+         delegate: SmartSelfieResultDelegate) {
         self.delegate = delegate
         self.viewModel = viewModel
         self.faceOverlay = FaceOverlayView(model: viewModel)
-        viewModel.captureResultDelegate = delegate
+        viewModel.smartSelfieResultDelegate = delegate
         UIScreen.main.brightness = 1
         if ARFaceTrackingConfiguration.isSupported {
             self.arView = ARView()
@@ -39,7 +40,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                 } else {
                     camera
                         .onAppear {
-                            viewModel.captureResultDelegate = delegate
+                            viewModel.smartSelfieResultDelegate = delegate
                             viewModel.viewDelegate = camera!.preview
                             viewModel.viewFinderSize = geometry.size
                             viewModel.cameraManager.switchCamera(to: viewModel.agentMode ? .back : .front)
@@ -123,6 +124,6 @@ struct FaceBoundingBoxView: View {
 }
 
 class DummyDelegate: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {}
+    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {}
     func didError(error: Error) {}
 }

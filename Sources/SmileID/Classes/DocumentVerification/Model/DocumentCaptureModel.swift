@@ -47,7 +47,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private (set) var allowGalleryUpload: Bool
     private var selfie: Data?
     private var livenessImages: [Data]?
-    private var files = [URL]()
+    private var savedFiles: DocumentCaptureResultStore?
     private var textDetected = false
     private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
     private let autoCaptureDelayInSecs: TimeInterval = 2
@@ -165,7 +165,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         backImage = nil
         displayedRectangleResult = nil
         currentBuffer = nil
-        files = []
+        savedFiles = nil
         // TO-DO: Add check flag to know if partner supplied the selfie
         selfie = nil
     }
@@ -242,10 +242,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 captureResultDelegate?.didError(error: error)
                 return
             }
-            if let selfie = selfie, let response = response {
-                captureResultDelegate?.didSucceed(selfie: selfie,
-                                                  documentFrontImage: frontImage!.jpegData(compressionQuality: 1)!,
-                                                  documentBackImage: backImage?.jpegData(compressionQuality: 1),
+            if let savedFiles = savedFiles, let response = response {
+                captureResultDelegate?.didSucceed(selfie: savedFiles.selfie,
+                                                  documentFrontImage: savedFiles.documentFront,
+                                                  documentBackImage: savedFiles.docmentBack,
                                                   jobStatusResponse: response)
             }
         default:
@@ -265,7 +265,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                                 SelfieCaptureViewModel(userId: userId,
                                                                        jobId: jobId,
                                                                        isEnroll: false,
-                                                                       shoudSubmitJob: false),
+                                                                       shoudSubmitJob: false,
+                                                                       imageCaptureDelegate: self),
                                               delegate: self))
         }
     }
@@ -281,9 +282,10 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 
     func submitJob() {
+        guard let savedFiles = savedFiles else { return }
         var zip: Data
         do {
-            let zipUrl = try LocalStorage.zipFiles(at: files)
+            let zipUrl = try LocalStorage.zipFiles(at: savedFiles.allFiles)
             zip = try Data(contentsOf: zipUrl)
         } catch {
             captureResultDelegate?.didError(error: error)
@@ -437,11 +439,11 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 
     func saveFilesToDisk() {
-        if !files.isEmpty {
-            try? LocalStorage.delete(at: files)
+        if let savedFiles = savedFiles, !savedFiles.allFiles.isEmpty {
+            try? LocalStorage.delete(at: savedFiles.allFiles)
         }
         do {
-            files = try LocalStorage.saveDocumentImages(front: frontImage!.jpegData(compressionQuality: 1)!,
+            savedFiles = try LocalStorage.saveDocumentImages(front: frontImage!.jpegData(compressionQuality: 1)!,
                                                         back: backImage?.jpegData(compressionQuality: 1),
                                                         livenessImages: livenessImages,
                                                         selfie: selfie!,
@@ -452,14 +454,18 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 }
 
-extension DocumentCaptureViewModel: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
+extension DocumentCaptureViewModel: SmartSelfieResultDelegate, SelfieImageCaptureDelegate {
+    func didCapture(selfie: Data, livenessImages: [Data]) {
         router?.push( .doucmentCaptureProcessing)
-        selfie = selfieImage
+        self.selfie = selfie
         self.livenessImages = livenessImages
         saveFilesToDisk()
         submitJob()
     }
+
+    func didSucceed(selfieImage: URL,
+                    livenessImages: [URL],
+                    jobStatusResponse: JobStatusResponse) {}
 
     func didError(error: Error) {
         captureResultDelegate?.didError(error: error)

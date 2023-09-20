@@ -72,7 +72,8 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     var viewFinderSize = CGSize.zero
     var displayedImage: Data?
     var selfieViewDelegate: SelfieViewDelegate?
-    weak var captureResultDelegate: SmartSelfieResultDelegate?
+    weak var smartSelfieResultDelegate: SmartSelfieResultDelegate?
+    weak var imageCaptureDelegate: SelfieImageCaptureDelegate?
     weak var viewDelegate: FaceDetectorDelegate? {
         didSet {
             faceDetector.viewDelegate = viewDelegate
@@ -99,7 +100,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     private var currentBuffer: CVPixelBuffer?
     private(set) var faceDetectionState: FaceDetectionState = .noFaceDetected
     private var fallbackTimer: Timer?
-    private var files = [URL]()
+    private var savedFiles: SelfieCaptureResultStore?
     private var livenessImages = [Data]()
     private var lastCaptureTime: Int64 = 0
     private var interCaptureDelay = 600
@@ -154,13 +155,15 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
          allowsAgentMode: Bool = false,
          showAttribution: Bool = true,
          cameraManager: CameraManageable? = nil,
-         shoudSubmitJob: Bool = true) {
+         shoudSubmitJob: Bool = true,
+         imageCaptureDelegate: SelfieImageCaptureDelegate? = nil) {
         self.userId = userId
         self.isEnroll = isEnroll
         self.jobId = jobId
         self.shouldSubmitJob = shoudSubmitJob
         self.showAttribution = showAttribution
         self.allowsAgentMode = allowsAgentMode
+        self.imageCaptureDelegate = imageCaptureDelegate
         faceDetector.model = self
         if let cameraManager = cameraManager {
             self.cameraManager = cameraManager
@@ -381,16 +384,8 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
             self.selfieImage = selfieImage
             self.displayedImage = displayedImage
             updateProgress()
-            do {
-                files = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
-                                                      previewImage: selfieImage)
-                DispatchQueue.main.async {
-                    self.processingState = .confirmation(UIImage(data: displayedImage) ?? UIImage())
-                }
-            } catch {
-                DispatchQueue.main.async { [self] in
-                    processingState = .error(error)
-                }
+            DispatchQueue.main.async {
+                self.processingState = .confirmation(UIImage(data: displayedImage) ?? UIImage())
             }
         }
     }
@@ -410,14 +405,15 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
 
     func submit() {
         if !shouldSubmitJob {
-            try? LocalStorage.delete(at: files)
             processingState = .complete(nil, nil)
             return
         }
         processingState = .inProgress
         var zip: Data
         do {
-            let zipUrl = try LocalStorage.zipFiles(at: files)
+            savedFiles = try LocalStorage.saveImageJpg(livenessImages: livenessImages,
+                                                       previewImage: selfieImage ?? Data())
+            let zipUrl = try LocalStorage.zipFiles(at: savedFiles!.allFiles)
             zip = try Data(contentsOf: zipUrl)
         } catch {
             processingState = .error(error)
@@ -489,7 +485,9 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         if selfieImage != nil {
             selfieImage = nil
         }
-        try? LocalStorage.delete(at: files)
+        if let savedFiles = savedFiles {
+            try? LocalStorage.delete(at: savedFiles.allFiles)
+        }
     }
 
     func acceptImage() {
@@ -507,12 +505,20 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
             pauseCameraSession()
             processingState = .endFlow
             if let error = error {
-                captureResultDelegate?.didError(error: error)
+                smartSelfieResultDelegate?.didError(error: error)
                 return
             }
-            captureResultDelegate?.didSucceed(selfieImage: selfieImage ?? Data(),
-                                              livenessImages: livenessImages,
-                                              jobStatusResponse: response)
+            if let savedFiles = savedFiles, let response = response {
+                smartSelfieResultDelegate?.didSucceed(selfieImage: savedFiles.selfie,
+                                                      livenessImages: savedFiles.livenessImages,
+                                                      jobStatusResponse: response)
+                return
+            }
+            if let selfie = selfieImage {
+                imageCaptureDelegate?.didCapture(selfie: selfie,
+                                               livenessImages: livenessImages)
+                return
+            }
         default:
             break
         }

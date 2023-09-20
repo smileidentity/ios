@@ -21,25 +21,29 @@ class LocalStorage {
     static func saveImageJpg(livenessImages: [Data],
                              previewImage: Data,
                              to folder: String = "sid-\(UUID().uuidString)"
-    ) throws -> [URL] {
+    ) throws -> SelfieCaptureResultStore {
         try createDefaultDirectory()
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
-        var urls = [URL]()
+        var allFileUrls = [URL]()
+        var livenessUrls = [URL]()
         try createDirectory(at: destinationFolder, overwrite: false)
         var imageInfoArray = try livenessImages.map({ [self] imageData in
             let fileName = filename(for: "liveness")
             let url =  try write(imageData, to: destinationFolder.appendingPathComponent(fileName))
-            urls.append(url)
+            allFileUrls.append(url)
+            livenessUrls.append(url)
             return UploadImageInfo(imageTypeId: .livenessJpgFile, fileName: fileName)
         })
         let fileName = filename(for: "selfie")
-        let previewUrl = try write(previewImage, to: destinationFolder.appendingPathComponent(fileName))
-        urls.append(previewUrl)
+        let selfieUrl = try write(previewImage, to: destinationFolder.appendingPathComponent(fileName))
+        allFileUrls.append(selfieUrl)
         imageInfoArray.append(UploadImageInfo(imageTypeId: .selfieJpgFile, fileName: fileName))
         let jsonData = try jsonEncoder.encode(UploadRequest(images: imageInfoArray))
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
-        urls.append(jsonUrl)
-        return urls
+        allFileUrls.append(jsonUrl)
+        return SelfieCaptureResultStore(allFiles: allFileUrls,
+                                        selfie: selfieUrl,
+                                        livenessImages: livenessUrls)
     }
 
     /// Saves front and back images of documents to disk, generates an `info.json`
@@ -48,33 +52,38 @@ class LocalStorage {
     ///   - front: Jpg data representation id image fron
     ///   - back: Jpg data for the back of tha id image
     ///   - folder: The name of the folder the files should be saved
-    /// - Returns: An array of urls of all the files that have been saved to disk
+    /// - Returns: A document result store which encapsulates the urls of the saved images
     static func saveDocumentImages(front: Data,
                                    back: Data?,
                                    livenessImages: [Data]?,
                                    selfie: Data,
                                    document: Document,
-                                   to folder: String = "sid-\(UUID().uuidString)") throws -> [URL] {
+                                   to folder: String = "sid-\(UUID().uuidString)")
+    throws -> DocumentCaptureResultStore {
         try createDefaultDirectory()
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
-        var urls = [URL]()
+        var allFiles = [URL]()
+        var livenessImagesUrl = [URL]()
+        var documentBack: URL?
         try createDirectory(at: destinationFolder, overwrite: false)
         var imageInfoArray = [UploadImageInfo]()
         let filename = filename(for: "idFront")
-        let url =  try write(front, to: destinationFolder.appendingPathComponent(filename))
-        urls.append(url)
+        let documentFront =  try write(front, to: destinationFolder.appendingPathComponent(filename))
+        allFiles.append(documentFront)
         imageInfoArray.append(UploadImageInfo(imageTypeId: .idCardJpgFile, fileName: filename))
 
         if let back = back {
             let filename = self.filename(for: "idBack")
             let url =  try write(back, to: destinationFolder.appendingPathComponent(filename))
-            urls.append(url)
+            documentBack = url
+            allFiles.append(url)
             imageInfoArray.append(UploadImageInfo(imageTypeId: .idCardRearJpgFile, fileName: filename))
         }
         let livenessInfoArray = try livenessImages?.map({ [self] imageData in
             let fileName = self.filename(for: "liveness")
             let url =  try write(imageData, to: destinationFolder.appendingPathComponent(fileName))
-            urls.append(url)
+            allFiles.append(url)
+            livenessImagesUrl.append(url)
             return UploadImageInfo(imageTypeId: .livenessJpgFile, fileName: fileName)
         })
         if let livenessInfoArray = livenessInfoArray {
@@ -82,13 +91,17 @@ class LocalStorage {
         }
         let selfieFileName = self.filename(for: "selfie")
         let selfieUrl = try write(selfie, to: destinationFolder.appendingPathComponent(selfieFileName))
-        urls.append(selfieUrl)
+        allFiles.append(selfieUrl)
         imageInfoArray.append(UploadImageInfo(imageTypeId: .selfieJpgFile, fileName: selfieFileName))
         let idInfo = IdInfo(country: document.countryCode, idType: document.documentType ?? "")
         let jsonData = try jsonEncoder.encode(UploadRequest(images: imageInfoArray, idInfo: idInfo))
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
-        urls.append(jsonUrl)
-        return urls
+        allFiles.append(jsonUrl)
+        return DocumentCaptureResultStore(allFiles: allFiles,
+                                          documentFront: documentFront,
+                                          docmentBack: documentBack,
+                                          selfie: selfieUrl,
+                                          livenessImages: livenessImagesUrl)
     }
 
     private static func createDefaultDirectory() throws {
