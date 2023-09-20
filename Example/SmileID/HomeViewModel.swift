@@ -57,16 +57,12 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
         self.product = .documentVerification
     }
 
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
+    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {
         returnedUserID = userID
         UIPasteboard.general.string = returnedUserID
         showToast = true
-        if let jobStatusResponse = jobStatusResponse {
-            if jobStatusResponse.jobSuccess {
-                toastMessage = "Smart selfie enrollment completed successfully and the user id has beed copied to the clipboard"
-            } else {
-                toastMessage = "Job submitted successfully, results processing"
-            }
+        if jobStatusResponse.jobSuccess {
+            toastMessage = "Smart selfie enrollment completed successfully and the user id has beed copied to the clipboard"
         } else {
             toastMessage = "Job submitted successfully, results processing"
         }
@@ -86,9 +82,9 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
                                                object: nil)
     }
 
-    func didSucceed(selfie: Data,
-                    documentFrontImage: Data,
-                    documentBackImage: Data?,
+    func didSucceed(selfie: URL,
+                    documentFrontImage: URL,
+                    documentBackImage: URL?,
                     jobStatusResponse: JobStatusResponse) {
 
     }
