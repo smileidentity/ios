@@ -2,23 +2,24 @@ import SwiftUI
 import SmileID
 
 struct ProductCell: View {
-    var productImage: String
-    var productName: String
+    let productImage: String
+    let productName: String
 
     var body: some View {
         VStack(spacing: 24) {
             Image(productImage)
                 .resizable()
-                .frame(width: 48, height: 48)
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 48)
             Text(productName)
                 .multilineTextAlignment(.center)
                 .font(SmileID.theme.header4)
                 .foregroundColor(offWhite)
         }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: 150)
-        .background(SmileID.theme.accent)
-        .cornerRadius(6)
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(SmileID.theme.accent)
+            .cornerRadius(8)
     }
 }
 
@@ -30,8 +31,7 @@ struct ProductCell_Previews: PreviewProvider {
 }
 
 let offWhite = Color(hex: "#DBDBC4")
-let sand = Color(hex: "#DBDBC4")
-let offWhiteUIColor = UIColor(red: 219/256, green: 219/256, blue: 196/256, alpha: 1)
+let offWhiteUIColor = UIColor(red: 219 / 256, green: 219 / 256, blue: 196 / 256, alpha: 1)
 
 extension Color {
     init(hex: String) {
