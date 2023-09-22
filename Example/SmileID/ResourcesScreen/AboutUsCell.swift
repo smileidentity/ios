@@ -4,7 +4,7 @@ import SmileID
 struct AboutUsCell: View {
     let imageName: String
     let title: String
-    let action: (() -> Void)
+    let action: () -> Void
     
     var body: some View {
         Button(action: action) {

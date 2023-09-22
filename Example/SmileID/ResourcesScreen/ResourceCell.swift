@@ -4,7 +4,7 @@ import SmileID
 struct ResourceCell: View {
     let title: String
     let caption: String
-    let action: (() -> Void)
+    let action: () -> Void
 
     var body: some View {
         Button(action: action) {

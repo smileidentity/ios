@@ -32,6 +32,7 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
+    @Published var returnedUserID = ""
 
     init() {
        subscribeToAuthCompletion()
@@ -50,7 +51,8 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     }
 
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
-        UIPasteboard.general.string = jobStatusResponse?.result?.partnerParams?.userId ?? ""
+        returnedUserID = jobStatusResponse?.result?.partnerParams?.userId ?? ""
+        UIPasteboard.general.string = returnedUserID
         showToast = true
         if let jobStatusResponse = jobStatusResponse {
             if jobStatusResponse.jobSuccess {

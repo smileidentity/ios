@@ -18,7 +18,7 @@ struct HomeView: View {
                     })
                         .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment, content: {
                             SmileID.smartSelfieEnrollmentScreen(
-                                userId: viewModel.generateUserID(),
+                                userId: generateUserId(),
                                 allowAgentMode: true,
                                 delegate: viewModel
                             )
@@ -43,7 +43,6 @@ struct HomeView: View {
                             $viewModel.presentDocumentVerification,
                                 content: {
                                     SmileID.documentVerificationScreen(
-                                        userId: viewModel.generateUserID(),
                                         showAttribution: true,
                                         delegate: viewModel
                                     )
