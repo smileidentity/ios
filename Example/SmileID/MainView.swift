@@ -29,12 +29,6 @@ struct MainView: View {
                     Image(systemName: "info.circle")
                     Text("Resources")
                 }
-
-            AboutUsView()
-                .tabItem {
-                    Image(systemName: "gearshape.fill")
-                    Text("About us")
-                }
         }
         .accentColor(SmileID.theme.accent)
         .background(offWhite.edgesIgnoringSafeArea(.all))

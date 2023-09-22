@@ -33,33 +33,24 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     @Published var toastMessage = ""
     @Published var showToast = false
 
-    private var userID = ""
-    var returnedUserID = ""
-
     init() {
        subscribeToAuthCompletion()
     }
 
-    func generateUserID() -> String {
-        userID = UUID().uuidString
-        return userID
-    }
-
     func handleSmartSelfieEnrolmentTap() {
-        self.product = .smartSelfieEnrollment
+        product = .smartSelfieEnrollment
     }
 
     func handleSmartSelfieAuthTap() {
-        self.product = .smartSelfieAuthentication
+        product = .smartSelfieAuthentication
     }
 
     func handleDocumentVerificationTap() {
-        self.product = .documentVerification
+        product = .documentVerification
     }
 
     func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {
-        returnedUserID = userID
-        UIPasteboard.general.string = returnedUserID
+        UIPasteboard.general.string = jobStatusResponse?.result?.partnerParams?.userId ?? ""
         showToast = true
         if let jobStatusResponse = jobStatusResponse {
             if jobStatusResponse.jobSuccess {

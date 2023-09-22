@@ -2,14 +2,16 @@ import SwiftUI
 import SmileID
 
 struct AboutUsCell: View {
-    var imageName: String
-    var title: String
-    var action: (() -> Void)
+    let imageName: String
+    let title: String
+    let action: (() -> Void)
+    
     var body: some View {
         Button(action: action) {
             HStack(alignment: .top) {
                 Image(systemName: imageName)
                     .foregroundColor(SmileID.theme.onLight)
+                
                 VStack(alignment: .leading, spacing: 15) {
                     Text(title)
                         .font(SmileID.theme.button)

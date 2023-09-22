@@ -7,27 +7,30 @@ struct HomeView: View {
     @ObservedObject var viewModel = HomeViewModel()
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
+            VStack(spacing: 24) {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
-                HStack(spacing: 15) {
-                    Button(action: { self.viewModel.handleSmartSelfieEnrolmentTap() },
-                           label: {
-                        ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nEnrollment")
+
+                HStack(spacing: 16) {
+                    Button(action: viewModel.handleSmartSelfieEnrolmentTap, label: {
+                        ProductCell(productImage: "userauth", productName: "SmartSelfie™ Enrollment")
                     })
-                    .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment,
-                           content: { SmileID.smartSelfieEnrollmentScreen(userId: viewModel.generateUserID(),
-                                                                          allowAgentMode: true,
-                                                                          delegate: viewModel) })
+                        .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment, content: {
+                            SmileID.smartSelfieEnrollmentScreen(
+                                userId: viewModel.generateUserID(),
+                                allowAgentMode: true,
+                                delegate: viewModel
+                            )
+                        })
                     Button(action: { self.viewModel.handleSmartSelfieAuthTap() },
-                           label: {
-                               ProductCell(productImage: "userauth",
-                                           productName: "SmartSelfie™ \nAuthentication")
-                           })
-                           .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
-                               EnterUserIDView(userId: viewModel.returnedUserID, viewModel: UserIDViewModel())
-                           })
+                        label: {
+                            ProductCell(productImage: "userauth",
+                                productName: "SmartSelfie™ \nAuthentication")
+                        })
+                        .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
+                            EnterUserIDView(userId: viewModel.returnedUserID, viewModel: UserIDViewModel())
+                        })
                 }
                 HStack(spacing: 15) {
                     GeometryReader { geo in
@@ -36,14 +39,16 @@ struct HomeView: View {
                         } label: {
                             ProductCell(productImage: "document", productName: "Document \nVerification")
                         }
-                        .sheet(isPresented:
+                            .sheet(isPresented:
                             $viewModel.presentDocumentVerification,
-                            content: { SmileID.documentVerificationScreen(
-                                userId: viewModel.generateUserID(),
-                                showAttribution: true,
-                                delegate: viewModel
-                            ) })
-                        .frame(width: (geo.size.width / 2) - 7.5)
+                                content: {
+                                    SmileID.documentVerificationScreen(
+                                        userId: viewModel.generateUserID(),
+                                        showAttribution: true,
+                                        delegate: viewModel
+                                    )
+                                })
+                            .frame(width: (geo.size.width / 2) - 7.5)
                     }
                 }
                 Spacer()
@@ -51,16 +56,16 @@ struct HomeView: View {
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }
-            .toast(isPresented: $viewModel.showToast) {
-                Text(viewModel.toastMessage)
-                    .font(SmileID.theme.body)
-                    .multilineTextAlignment(.center)
-                    .padding()
-            }
-            .padding()
-            .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
-            .navigationBarItems(trailing: ToggleButton())
-            .background(offWhite.edgesIgnoringSafeArea(.all))
+                .toast(isPresented: $viewModel.showToast) {
+                    Text(viewModel.toastMessage)
+                        .font(SmileID.theme.body)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+                .padding()
+                .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
+                .navigationBarItems(trailing: ToggleButton())
+                .background(offWhite.edgesIgnoringSafeArea(.all))
         }
     }
 }

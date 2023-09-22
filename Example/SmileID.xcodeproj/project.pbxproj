@@ -18,13 +18,13 @@
 		1ED53F6C2A2F28590020BEFB /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F622A2F28590020BEFB /* MainView.swift */; };
 		1ED53F6D2A2F28590020BEFB /* SmileTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F632A2F28590020BEFB /* SmileTextField.swift */; };
 		1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F642A2F28590020BEFB /* ResourcesView.swift */; };
-		1ED53F6F2A2F28590020BEFB /* AboutUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F652A2F28590020BEFB /* AboutUsView.swift */; };
 		1ED53F712A2F28590020BEFB /* EnterUserIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */; };
 		1ED53F722A2F28590020BEFB /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F682A2F28590020BEFB /* ToggleButton.swift */; };
 		1ED53F732A2F28590020BEFB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F692A2F28590020BEFB /* HomeView.swift */; };
 		1EFAB3152A374F3B008E3C13 /* AboutUsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */; };
 		1EFAB3162A374F3B008E3C13 /* ResourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3142A374F18008E3C13 /* ResourceCell.swift */; };
 		1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
+		58A0433D2ABE4E9800FF8F08 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58A0433C2ABE4E9800FF8F08 /* Util.swift */; };
 		58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
@@ -61,7 +61,6 @@
 		1ED53F622A2F28590020BEFB /* MainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		1ED53F632A2F28590020BEFB /* SmileTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileTextField.swift; sourceTree = "<group>"; };
 		1ED53F642A2F28590020BEFB /* ResourcesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourcesView.swift; sourceTree = "<group>"; };
-		1ED53F652A2F28590020BEFB /* AboutUsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutUsView.swift; sourceTree = "<group>"; };
 		1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterUserIDView.swift; sourceTree = "<group>"; };
 		1ED53F682A2F28590020BEFB /* ToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
 		1ED53F692A2F28590020BEFB /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -69,6 +68,7 @@
 		1EFAB3142A374F18008E3C13 /* ResourceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCell.swift; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
 		287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		58A0433C2ABE4E9800FF8F08 /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycTest.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Smile ID.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Smile ID.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -141,7 +141,6 @@
 				1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */,
 				1EFAB3142A374F18008E3C13 /* ResourceCell.swift */,
 				1ECAE3862A2F69BC00653FCA /* ToastView.swift */,
-				1ED53F652A2F28590020BEFB /* AboutUsView.swift */,
 				1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */,
 				1ED53F692A2F28590020BEFB /* HomeView.swift */,
 				1ED53F602A2F28590020BEFB /* HomeViewModel.swift */,
@@ -160,6 +159,7 @@
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
+				58A0433C2ABE4E9800FF8F08 /* Util.swift */,
 			);
 			name = Example;
 			path = SmileID;
@@ -318,13 +318,13 @@
 						CreatedOnToolsVersion = 6.3.1;
 						DevelopmentTeam = 99P7YGX9Q6;
 						LastSwiftMigration = 0900;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
 						DevelopmentTeam = 99P7YGX9Q6;
 						LastSwiftMigration = 1430;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
 				};
@@ -450,13 +450,13 @@
 				1ED53F722A2F28590020BEFB /* ToggleButton.swift in Sources */,
 				1ED53F6C2A2F28590020BEFB /* MainView.swift in Sources */,
 				1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */,
+				58A0433D2ABE4E9800FF8F08 /* Util.swift in Sources */,
 				1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */,
 				1E60ED372A29C306002695FF /* HomeViewController.swift in Sources */,
 				1E60ED3A2A29C306002695FF /* AppDelegate.swift in Sources */,
 				1ED53F6D2A2F28590020BEFB /* SmileTextField.swift in Sources */,
 				1ED53F6B2A2F28590020BEFB /* ProductCell.swift in Sources */,
 				1E60ED382A29C306002695FF /* Constants.swift in Sources */,
-				1ED53F6F2A2F28590020BEFB /* AboutUsView.swift in Sources */,
 				1ED53F712A2F28590020BEFB /* EnterUserIDView.swift in Sources */,
 				1ED53F732A2F28590020BEFB /* HomeView.swift in Sources */,
 				1E60ED3B2A29C306002695FF /* CopyableLabel.swift in Sources */,
@@ -614,10 +614,10 @@
 			baseConfigurationReference = 67420F8D15457A4FC46AFB84 /* Pods-SmileID_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = 99P7YGX9Q6;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileID/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Smile ID";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -628,7 +628,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.smileidentity.example-ios";
 				PRODUCT_NAME = "Smile ID";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 			};
@@ -640,11 +639,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 22;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
+				DEVELOPMENT_TEAM = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileID/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Smile ID";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -655,7 +652,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.smileidentity.example-ios";
 				PRODUCT_NAME = "Smile ID";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 			};
@@ -666,12 +662,9 @@
 			baseConfigurationReference = F7E93DC564F4962974BFA3CB /* Pods-SmileID_Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 99P7YGX9Q6;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -686,8 +679,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.smileidentity.example-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
@@ -700,12 +691,9 @@
 			baseConfigurationReference = FE4071A6FC696DDB1E5382FA /* Pods-SmileID_Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 99P7YGX9Q6;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -716,8 +704,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.smileidentity.example-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Smile ID.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Smile ID";

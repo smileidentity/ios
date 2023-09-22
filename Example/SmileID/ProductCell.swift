@@ -6,10 +6,10 @@ struct ProductCell: View {
     var productName: String
 
     var body: some View {
-        VStack(spacing: 25) {
+        VStack(spacing: 24) {
             Image(productImage)
                 .resizable()
-                .frame(width: 50, height: 50)
+                .frame(width: 48, height: 48)
             Text(productName)
                 .multilineTextAlignment(.center)
                 .font(SmileID.theme.header4)
