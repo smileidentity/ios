@@ -3,7 +3,6 @@ import SwiftUI
 
 @available(iOS 14.0, *)
 struct HomeView: View {
-    var userID = ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
     @ObservedObject var viewModel = HomeViewModel()
     var body: some View {
@@ -63,10 +62,6 @@ struct HomeView: View {
             .navigationBarItems(trailing: ToggleButton())
             .background(offWhite.edgesIgnoringSafeArea(.all))
         }
-    }
-
-    mutating func generateUUID() {
-        userID = UUID().uuidString
     }
 }
 
