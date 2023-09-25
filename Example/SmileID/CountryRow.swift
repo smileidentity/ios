@@ -2,17 +2,15 @@ import SwiftUI
 import SmileID
 
 struct CountryRow: View {
-    @State var country: String
+    var document: ValidDocument
+    var action: (ValidDocument) -> Void
     var body: some View {
-        Text(country)
-            .multilineTextAlignment(.leading)
-            .foregroundColor(SmileID.theme.accent)
-
-    }
-}
-
-struct CountryRow_Previews: PreviewProvider {
-    static var previews: some View {
-        CountryRow(country: "Nigeria")
+        Button(action: {
+            action(document)
+        }, label: {
+            Text(document.country.name)
+                .multilineTextAlignment(.leading)
+                .foregroundColor(SmileID.theme.accent)
+        })
     }
 }

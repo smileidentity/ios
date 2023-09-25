@@ -8,7 +8,6 @@ public protocol SmileIDServiceable {
     func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error>
     func getServices() -> AnyPublisher<ServicesResponse, Error>
 
-
     /// Query the Identity Information of an individual using their ID number from a supported ID Type. Return the
     /// personal information of the individual found in the database of the ID authority. The final result is delivered
     /// to the url provided in the request's `callbackUrl` (which is required for this request)
@@ -18,7 +17,7 @@ public protocol SmileIDServiceable {
     /// - Returns: A response indicating whether the request was successfully submitted or not
     func doEnhancedKycAsync(request: EnhancedKycRequest) -> AnyPublisher<EnhancedKycAsyncResponse, Error>
 
-    /// Gets supported doucuments and metadata for Doucument Verification
+    /// Gets supported documents and metadata for Document Verification
     /// - Parameter request: request description
     /// - Returns: description
     func getValidDocuments(request: ProductsConfigRequest) -> AnyPublisher<ValidDocumentsResponse, Error>
@@ -33,8 +32,8 @@ public protocol SmileIDServiceable {
     ///   - interval: The time interval in secods between each poll
     ///   - numAttempts: The maximum number of polls before ending the flow
     func pollJobStatus(request: JobStatusRequest,
-                      interval: TimeInterval,
-                      numAttempts: Int) -> AnyPublisher<JobStatusResponse, Error>}
+                       interval: TimeInterval,
+                       numAttempts: Int) -> AnyPublisher<JobStatusResponse, Error>}
 
 public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     public func getServices() -> AnyPublisher<ServicesResponse, Error> {

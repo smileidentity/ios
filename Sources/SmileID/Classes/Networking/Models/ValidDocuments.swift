@@ -41,7 +41,8 @@ public struct Country: Codable {
     }
 }
 
-public struct IdType: Codable {
+public struct IdType: Codable, Identifiable {
+    public let id = UUID()
     public let code: String
     public let example: [String]
     public let hasBack: Bool
@@ -54,7 +55,7 @@ public struct IdType: Codable {
         self.code = code
         self.example = example
         self.hasBack = hasBack
-        self.name = name
+        self.name = name        
     }
 
     enum CodingKeys: String, CodingKey {
@@ -82,8 +83,8 @@ public struct ProductsConfigRequest: Encodable {
         self.timestamp = timestamp
     }
 
-    enum CodingKeys: CodingKey {
-        case partnerId
+    enum CodingKeys: String, CodingKey {
+        case partnerId = "partner_id"
         case timestamp
         case signature
     }
