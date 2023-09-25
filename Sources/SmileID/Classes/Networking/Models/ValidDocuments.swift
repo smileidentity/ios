@@ -41,7 +41,7 @@ public struct Country: Codable {
     }
 }
 
-public struct IdType: Codable, Identifiable {
+public struct IdType: Codable, Identifiable, Equatable {
     public let id = UUID()
     public let code: String
     public let example: [String]

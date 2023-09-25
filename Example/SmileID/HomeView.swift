@@ -41,7 +41,7 @@ struct HomeView: View {
                         .fullScreenCover(isPresented:
                             $viewModel.presentDocumentVerification,
                             content: { 
-                            let _ = router.push(.countrySelectorScreen, animated: false)
+                            let _ = router.push(.countrySelectorScreen(homeVieModel: viewModel), animated: false)
                             NavigationControllerHost(navTitle: "",
                                                      navHidden: true,
                                                      router: router,

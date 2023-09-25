@@ -24,7 +24,7 @@ struct MainView: View {
                 }
                 .edgesIgnoringSafeArea(.all)
 
-            CountryListView()
+            ResourcesView()
                 .tabItem {
                     Image(systemName: "info.circle")
                     Text("Resources")

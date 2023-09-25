@@ -7,6 +7,7 @@ class ViewFactory {
         switch destination {
         case let .documentCaptureScreen(countryCode,
                                     documentType,
+                                    captureBothSides,
                                     allowGalleryUpload,
                                     showInstructions,
                                     showAttribution,
@@ -14,14 +15,15 @@ class ViewFactory {
             SmileID.documentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
+                captureBothSides: captureBothSides,
                 allowGalleryUpload: allowGalleryUpload,
                 showInstructions: showInstructions,
                 showAttribution: showAttribution,
                 delegate: delegate)
-        case .countrySelectorScreen:
-            CountryListView()
-        case let .documentSelectorScreen(document):
-            IdTypeListView(document: document)
+        case let .countrySelectorScreen(homeViewModel):
+            CountryListView(homeViewModel: homeViewModel)
+        case let .documentSelectorScreen(document, homeViewModel):
+            IdTypeListView(document: document, homeViewModel: homeViewModel)
         }
     }
 }

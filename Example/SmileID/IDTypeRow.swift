@@ -3,23 +3,22 @@ import SmileID
 
 struct IDTypeRow: View {
     var idType: IdType
+    @Binding var isSelected: Bool
     var body: some View {
-        Button(action: <#T##() -> Void#>, label: {
+        Button(action: {
+            isSelected.toggle()
+        }, label: {
             HStack {
                 Text(idType.name)
                     .multilineTextAlignment(.leading)
+                    .foregroundColor(SmileID.theme.accent)
                     .padding()
                 Spacer()
-                Image(systemName: "circle")
+                Image(systemName: isSelected ? "checkmark.circle" : "circle")
+                    .foregroundColor(SmileID.theme.accent)
                     .padding()
             }
             .frame(height: 59)
         })
-    }
-}
-
-struct SwiftUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        IDTypeRow(idType: IdType(code: "", example: [String](), hasBack: true, name: "Passport"))
     }
 }

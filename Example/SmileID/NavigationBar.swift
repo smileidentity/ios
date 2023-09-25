@@ -16,6 +16,7 @@ struct NavigationBar: View {
             }
             Text(title)
                 .multilineTextAlignment(.center)
+                .foregroundColor(SmileID.theme.accent)
         }
         .frame(height: 50)
         .frame(maxHeight: .infinity, alignment: .top)

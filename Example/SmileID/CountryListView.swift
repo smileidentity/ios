@@ -3,6 +3,7 @@ import SmileID
 
 struct CountryListView: View {
     @ObservedObject var viewModel = CountryListViewModel()
+    var homeViewModel: HomeViewModel
     @EnvironmentObject var router: Router<NavigationDestination>
     @State private var searchText: String = ""
 
@@ -13,7 +14,8 @@ struct CountryListView: View {
     }
 
 
-    init() {
+    init(homeViewModel: HomeViewModel) {
+        self.homeViewModel = homeViewModel
         viewModel.getValidDocuments()
     }
 
@@ -34,18 +36,12 @@ struct CountryListView: View {
             } else {
                 List(filteredCountries) { validDocument in
                     CountryRow(document: validDocument, action: { document in
-                        router.push(.documentSelectorScreen(document: document))
+                        router.push(.documentSelectorScreen(document: document, homeViewModel: homeViewModel))
                     })
                 }
             }
         }
         .padding(.top, 50)
         .overlay(NavigationBar(backButtonHandler: {router.dismiss()}, title: "Select Country of Issue"))
-    }
-}
-
-struct CountryListView_Previews: PreviewProvider {
-    static var previews: some View {
-        CountryListView()
     }
 }
