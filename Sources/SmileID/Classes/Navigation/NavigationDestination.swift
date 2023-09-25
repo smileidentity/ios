@@ -18,9 +18,9 @@ enum NavigationDestination: ReflectiveEquatable {
     case documentConfirmation(viewModel: DocumentCaptureViewModel, image: UIImage)
 }
 
-protocol ReflectiveEquatable: Equatable {}
+public protocol ReflectiveEquatable: Equatable {}
 
-extension ReflectiveEquatable {
+public extension ReflectiveEquatable {
     var reflectedValue: String { String(reflecting: self) }
     static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.reflectedValue == rhs.reflectedValue
