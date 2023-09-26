@@ -84,6 +84,15 @@ public struct CaptureInstructionView<TargetView: View>: View {
                 }
             }
             VStack(spacing: 5) {
+                if captureType == .document(.back) {
+                    Button(action: { }, label: {
+                        Text(SmileIDResourcesHelper.localizedString(for: "Action.Skip"))
+                            .multilineTextAlignment(.center)
+                            .font(SmileID.theme.button)
+                            .foregroundColor(SmileID.theme.tertiary.opacity(0.8))
+                    })
+                    .frame(height: 54)
+                }
                 SmileButton(title: buttonTitle,
                             clicked: {
                     router.push(destination)
