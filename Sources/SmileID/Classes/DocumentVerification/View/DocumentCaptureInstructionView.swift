@@ -38,7 +38,11 @@ public struct DocumentCaptureInstructionsView: View {
                 createBackInstuctions()
             }
         }.overlay( NavigationBar {
-            router.dismiss()
+            if side == .back {
+                router.pop()
+            } else {
+                router.dismiss()
+            }
         })
     }
 

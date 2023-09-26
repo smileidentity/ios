@@ -261,8 +261,9 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
     func submit() {
         if captureBothSides && side == .front {
-            processingState = nil
             side = .back
+            manualCaptureTimer = nil
+            pauseCameraSession()
             router?.push(.documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
                                                               delegate: captureResultDelegate))
         } else {
@@ -373,6 +374,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                                                                          imageSize: imageSize))
                 }
         } else {
+            manualCaptureTimer = nil
             startManualCaptureTimer()
             self.displayedRectangleResult = nil
             self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize, completion: nil)
