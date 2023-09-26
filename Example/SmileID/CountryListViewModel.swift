@@ -8,10 +8,15 @@ class CountryListViewModel: ObservableObject {
 
     func getValidDocuments() {
         isLoading = true
-        let request = ProductsConfigRequest()
-        SmileID.api.getValidDocuments(request: request)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: {completion in
+        let authRequest = AuthenticationRequest(jobType: .documentVerification, enrollment: false, jobId: nil, userId: UUID().uuidString )
+
+        SmileID.api.authenticate(request: authRequest)
+            .flatMap { authResponse in
+                let productRequest = ProductsConfigRequest(partnerId: SmileID.config.partnerId, timestamp: authResponse.timestamp, signature: authResponse.signature)
+                return SmileID.api.getValidDocuments(request: productRequest)
+            }
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { completion in
                 self.isLoading = false
                 switch completion {
                 case .failure(let error):
@@ -21,6 +26,7 @@ class CountryListViewModel: ObservableObject {
                 }
             }, receiveValue: { response in
                 self.validDocuments = response.validDocuments
-            }).store(in: &subscribers)
+            })
+            .store(in: &subscribers)
     }
 }
