@@ -260,21 +260,23 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 
     func submit() {
+        let selfieCaptureScreen = NavigationDestination.selfieCaptureScreen(selfieCaptureViewModel:
+                                                            SelfieCaptureViewModel(userId: userId,
+                                                                                   jobId: jobId,
+                                                                                   isEnroll: false,
+                                                                                   shoudSubmitJob: false,
+                                                                                   imageCaptureDelegate: self),
+                                                           delegate: self)
         if captureBothSides && side == .front {
             side = .back
             manualCaptureTimer = nil
             pauseCameraSession()
             router?.push(.documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
+                                                               skipDestination: selfieCaptureScreen,
                                                               delegate: captureResultDelegate))
         } else {
             processingState = .inProgress
-            router?.push(.selfieCaptureScreen(selfieCaptureViewModel:
-                                                SelfieCaptureViewModel(userId: userId,
-                                                                       jobId: jobId,
-                                                                       isEnroll: false,
-                                                                       shoudSubmitJob: false,
-                                                                       imageCaptureDelegate: self),
-                                              delegate: self))
+            router?.push(selfieCaptureScreen)
         }
     }
 

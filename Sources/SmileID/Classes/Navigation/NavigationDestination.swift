@@ -1,6 +1,6 @@
 import UIKit
 
-enum NavigationDestination: ReflectiveEquatable {
+indirect enum NavigationDestination: ReflectiveEquatable {
     case selfieInstructionScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
                                  delegate: SmartSelfieResultDelegate?)
     case selfieCaptureScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
@@ -8,6 +8,7 @@ enum NavigationDestination: ReflectiveEquatable {
     case documentFrontCaptureInstructionScreen(documentCaptureViewModel: DocumentCaptureViewModel,
                                                delegate: DocumentCaptureResultDelegate?)
     case documentBackCaptureInstructionScreen(documentCaptureViewModel: DocumentCaptureViewModel,
+                                              skipDestination: NavigationDestination,
                                               delegate: DocumentCaptureResultDelegate?)
     case documentCaptureScreen(documentCaptureViewModel: DocumentCaptureViewModel,
                                delegate: DocumentCaptureResultDelegate?)

@@ -32,9 +32,11 @@ class ViewFactory {
         case let .documentCaptureScreen(documentCaptureViewModel, _):
             DocumentCaptureView(viewModel: documentCaptureViewModel)
         case .documentBackCaptureInstructionScreen(documentCaptureViewModel: let viewModel,
+                                                   let skipDestination,
                                                    delegate: let delegate):
             DocumentCaptureInstructionsView(viewModel: viewModel,
                                             side: .back,
+                                            skipDestination: skipDestination,
                                             delegate: delegate ?? DocPlaceHolderDelegate())
         case .doucmentCaptureProcessing:
              ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.Scan,
