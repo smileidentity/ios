@@ -76,7 +76,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
     @Published var showCaptureButton = false
     @Published var borderColor: UIColor = .gray
-    @Published var guideSize: CGSize = .zero
+    @Published var guideSize: CGSize = CGSize(width: UIScreen.main.bounds.width * 0.9,
+                                              height: UIScreen.main.bounds.width/1.66)
     var width: CGFloat = .zero
     var height: CGFloat = .zero
 
