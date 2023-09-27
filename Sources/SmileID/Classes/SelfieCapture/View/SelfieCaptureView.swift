@@ -4,17 +4,19 @@ import ARKit
 
 public struct SelfieCaptureView: View, SelfieViewDelegate {
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var router: Router<NavigationDestination>
     @ObservedObject var viewModel: SelfieCaptureViewModel
     private weak var delegate: SmartSelfieResultDelegate?
     var camera: CameraView?
     let arView: ARView?
     let faceOverlay: FaceOverlayView
 
-    init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
+    init(viewModel: SelfieCaptureViewModel, 
+         delegate: SmartSelfieResultDelegate) {
         self.delegate = delegate
         self.viewModel = viewModel
         self.faceOverlay = FaceOverlayView(model: viewModel)
-        viewModel.captureResultDelegate = delegate
+        viewModel.smartSelfieResultDelegate = delegate
         UIScreen.main.brightness = 1
         if ARFaceTrackingConfiguration.isSupported {
             self.arView = ARView()
@@ -38,7 +40,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                 } else {
                     camera
                         .onAppear {
-                            viewModel.captureResultDelegate = delegate
+                            viewModel.smartSelfieResultDelegate = delegate
                             viewModel.viewDelegate = camera!.preview
                             viewModel.viewFinderSize = geometry.size
                             viewModel.cameraManager.switchCamera(to: viewModel.agentMode ? .back : .front)
@@ -47,17 +49,32 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                 faceOverlay
                 switch viewModel.processingState {
                 case .confirmation:
-                    ModalPresenter { SelfieConfirmationView(viewModel: viewModel)}
+                    ModalPresenter { ImageConfirmationView(viewModel: viewModel,
+                                                           header: "Confirmation.GoodSelfie",
+                                                           callout: "Confirmation.FaceClear",
+                                                           confirmButtonTitle: "Confirmation.YesUse",
+                                                           declineButtonTitle: "Confirmation.Retake",
+                                                           image: UIImage(data: viewModel.displayedImage!)!)}
                 case .inProgress:
-                    ModalPresenter(centered: true) { ProcessingView() }
+                    ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.FaceOutline,
+                                                                    titleKey: "Confirmation.ProcessingSelfie",
+                                                                    calloutKey: "Confirmation.Time")
+                    }
                 case .complete:
-                    ModalPresenter { SuccessView(viewModel: viewModel) }
+                    ModalPresenter { SuccessView(titleKey: "Confirmation.SelfieCaptureComplete",
+                                                 bodyKey: "Confirmation.SuccessBody",
+                                                 clicked: { viewModel.handleCompletion() }) }
                 case .error:
                     ModalPresenter { ErrorView(viewModel: viewModel) }
                 default:
                     Color.clear
                 }
             }
+            .overlay( NavigationBar {
+                viewModel.resetState()
+                viewModel.pauseCameraSession()
+                router.pop()
+            })
         }
         .edgesIgnoringSafeArea(.all)
         .navigationBarBackButtonHidden(true)
@@ -107,6 +124,6 @@ struct FaceBoundingBoxView: View {
 }
 
 class DummyDelegate: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: Data, livenessImages: [Data], jobStatusResponse: JobStatusResponse?) {}
+    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {}
     func didError(error: Error) {}
 }

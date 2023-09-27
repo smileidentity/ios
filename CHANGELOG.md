@@ -1,8 +1,20 @@
 ## 10.0.0-beta08 (unreleased)
 
+### Added
+- Document Verification
+- Navigation router using `UINavigationController`
+- Linting within Xcode
+- Convenience method for partners to poll the `jobStatus` endpoint
+
+### Changed
+- Return images captured from selfie capture and document capture as URLs 
+
 ### Removed
 - `filename` property from `PrepUploadRequest`
+- `jobStatus` polling from `SmartSelfieAuthentication`, `SmartSelfieEnrollment` and `DocumentVerification`
 
+### Dependencies
+- SwiftLint
 
 ## 10.0.0-beta07
 

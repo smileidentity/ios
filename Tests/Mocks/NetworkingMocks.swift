@@ -1,3 +1,4 @@
+// swiftlint:disable force_cast
 import Combine
 import Foundation
 @testable import SmileID
@@ -21,6 +22,31 @@ class MockURLSessionPublisher: URLSessionPublisher {
 }
 
 class MockSmileIdentityService: SmileIDServiceable {
+    func getValidDocuments(request: ProductsConfigRequest) -> AnyPublisher<ValidDocumentsResponse, Error> {
+        let response = ValidDocumentsResponse(validDocuments: [ValidDocument]())
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+    
+    func pollJobStatus(request: JobStatusRequest, interval: TimeInterval, numAttempts: Int) -> AnyPublisher<JobStatusResponse, Error> {
+        let response = JobStatusResponse(timestamp: "timestamp",
+                                         jobComplete: MockHelper.jobComplete,
+                                         jobSuccess: true,
+                                         code: "2322")
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+    
     func getServices() -> AnyPublisher<ServicesResponse, Error> {
         var response: ServicesResponse
         do {
@@ -42,7 +68,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     func getJobStatus(request _: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
         let response = JobStatusResponse(timestamp: "timestamp",
-                                         jobComplete: true,
+                                         jobComplete: MockHelper.jobComplete,
                                          jobSuccess: true,
                                          code: "2322")
         if MockHelper.shouldFail {
@@ -113,7 +139,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     var successExpectation: XCTestExpectation?
     var failureExpection: XCTestExpectation?
 
-    func didSucceed(selfieImage _: Data, livenessImages _: [Data], jobStatusResponse _: JobStatusResponse?) {
+    func didSucceed(selfieImage _: URL, livenessImages _: [URL], jobStatusResponse _: JobStatusResponse) {
         successExpectation?.fulfill()
     }
 
@@ -124,4 +150,5 @@ class MockResultDelegate: SmartSelfieResultDelegate {
 
 enum MockHelper {
     static var shouldFail = false
+    static var jobComplete = true
 }

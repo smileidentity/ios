@@ -6,6 +6,7 @@ struct HomeView: View {
     var userID = ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
     @ObservedObject var viewModel = HomeViewModel()
+    @ObservedObject var router = Router<NavigationDestination>()
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -37,13 +38,15 @@ struct HomeView: View {
                         } label: {
                             ProductCell(productImage: "document", productName: "Document \nVerification")
                         }
-                        .sheet(isPresented:
+                        .fullScreenCover(isPresented:
                             $viewModel.presentDocumentVerification,
-                            content: { SmileID.documentVerificationScreen(
-                                userId: viewModel.generateUserID(),
-                                showAttribution: true,
-                                delegate: viewModel
-                            ) })
+                            content: { 
+                            let _ = router.push(.countrySelectorScreen(homeVieModel: viewModel), animated: false)
+                            NavigationControllerHost(navTitle: "",
+                                                     navHidden: true,
+                                                     router: router,
+                                                     routeMap: ViewFactory().makeView(_:)).environmentObject(router)
+                        })
                         .frame(width: (geo.size.width / 2) - 7.5)
                     }
                 }

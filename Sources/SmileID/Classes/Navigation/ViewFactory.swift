@@ -2,12 +2,15 @@ import SwiftUI
 
 class ViewFactory {
     class SelfiePlaceHolderDelegate: SmartSelfieResultDelegate {
-        func didSucceed(selfieImage _: Data, livenessImages _: [Data], jobStatusResponse _: JobStatusResponse?) {}
+        func didSucceed(selfieImage _: URL, livenessImages _: [URL], jobStatusResponse _: JobStatusResponse) {}
         func didError(error _: Error) {}
     }
 
     class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
-        func didSucceed(selfieImage _: Data, livenessImages _: [Data], jobStatusResponse _: JobStatusResponse?) {}
+        func didSucceed(selfie: URL,
+                        documentFrontImage: URL,
+                        documentBackImage: URL?,
+                        jobStatusResponse: JobStatusResponse) {}
         func didError(error _: Error) {}
     }
 
@@ -22,11 +25,40 @@ class ViewFactory {
             SelfieCaptureView(viewModel:
                                 selfieCaptureViewModel, delegate:
                                 delegate ?? SelfiePlaceHolderDelegate())
-        case let .documentCaptureInstructionScreen(documentCaptureViewModel, delegate):
+        case let .documentFrontCaptureInstructionScreen(documentCaptureViewModel, delegate):
             DocumentCaptureInstructionsView(viewModel: documentCaptureViewModel,
+                                             side: .front,
                                             delegate: delegate ?? DocPlaceHolderDelegate())
         case let .documentCaptureScreen(documentCaptureViewModel, _):
             DocumentCaptureView(viewModel: documentCaptureViewModel)
+        case .documentBackCaptureInstructionScreen(documentCaptureViewModel: let viewModel,
+                                                   let skipDestination,
+                                                   delegate: let delegate):
+            DocumentCaptureInstructionsView(viewModel: viewModel,
+                                            side: .back,
+                                            skipDestination: skipDestination,
+                                            delegate: delegate ?? DocPlaceHolderDelegate())
+        case .doucmentCaptureProcessing:
+             ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.Scan,
+                                                             titleKey: "Document.Processing.Header",
+                                                             calloutKey: "Document.Processing.Callout")
+            }
+        case .documentCaptureComplete(viewModel: let viewModel):
+            ModalPresenter { SuccessView(titleKey: "Document.Complete.Header",
+                                         bodyKey: "Document.Complete.Callout",
+                                         clicked: { viewModel.handleCompletion() }) }
+        case .documentCaptureError(viewModel: let viewModel):
+            ModalPresenter { ErrorView(viewModel: viewModel) }
+        case .imagePicker(viewModel: let viewModel):
+            ImagePicker(delegate: viewModel)
+        case .documentConfirmation(viewModel: let viewModel, image: let image):
+            ModalPresenter { ImageConfirmationView(viewModel: viewModel,
+                                                   header: "Document.Confirmation.Header",
+                                                   callout: "Document.Confirmation.Callout",
+                                                   confirmButtonTitle: "Document.Confirmation.Accept",
+                                                   declineButtonTitle: "Document.Confirmation.Decline",
+                                                   image: image)}
+
         }
     }
 }

@@ -1,8 +1,13 @@
 import SwiftUI
 
-enum CaptureType {
+enum CaptureType: Equatable {
     case selfie
-    case document
+    case document(Position)
+}
+
+enum Position {
+     case front
+     case back
 }
 
 public struct CaptureInstruction {
@@ -16,26 +21,38 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var image: UIImage
     private var title: String
     private var callOut: String
+    private var buttonTitle: LocalizedStringKey
     private var instructions: [CaptureInstruction]
     private var destination: NavigationDestination
+    private var secondaryDestination: NavigationDestination?
+    private var skipDestination: NavigationDestination?
     private var captureType: CaptureType
     private var showAttribution: Bool
-    @EnvironmentObject var navigationViewModel: NavigationViewModel
+    private var allowGalleryUpload: Bool
+    @EnvironmentObject var router: Router<NavigationDestination>
     @State private var goesToDetail: Bool = false
     init(image: UIImage,
          title: String,
          callOut: String,
+         buttonTitle: LocalizedStringKey,
          instructions: [CaptureInstruction],
          captureType: CaptureType,
          destination: NavigationDestination,
-         showAttribution: Bool) {
+         secondaryDestination: NavigationDestination? = nil,
+         skipDestination: NavigationDestination? = nil,
+         showAttribution: Bool,
+         allowGalleryUpload: Bool = false) {
         self.image = image
         self.title = title
         self.callOut = callOut
+        self.buttonTitle = buttonTitle
         self.instructions = instructions
         self.destination = destination
+        self.secondaryDestination = secondaryDestination
+        self.skipDestination = skipDestination
         self.captureType = captureType
         self.showAttribution = showAttribution
+        self.allowGalleryUpload = allowGalleryUpload
     }
 
     public var body: some View {
@@ -68,29 +85,28 @@ public struct CaptureInstructionView<TargetView: View>: View {
                     }
                 }
             }
-            .navigationBarItems(leading: Button {
-                navigationViewModel.dismiss()
-            } label: {
-                Image(uiImage: SmileIDResourcesHelper.Close)
-                    .padding()
-            })
             VStack(spacing: 5) {
-                SmileButton(title: "Instructions.Action",
+                if captureType == .document(.back), let skipDestination = skipDestination {
+                    Button(action: { router.push(skipDestination) }, label: {
+                        Text(SmileIDResourcesHelper.localizedString(for: "Action.Skip"))
+                            .multilineTextAlignment(.center)
+                            .font(SmileID.theme.button)
+                            .foregroundColor(SmileID.theme.tertiary.opacity(0.8))
+                    })
+                    .frame(height: 54)
+                }
+                SmileButton(title: buttonTitle,
                             clicked: {
-                                navigationViewModel.navigate(
-                                    destination: self.destination,
-                                    style: .push
-                                )
+                    router.push(destination)
                             })
-                if captureType == .document {
+                if allowGalleryUpload {
                     SmileButton(style: .alternate, title:
-                        "Action.UploadPhoto",
-                        clicked: {
-                            navigationViewModel.navigate(
-                                destination: self.destination,
-                                style: .push
-                            )
-                        })
+                                    "Action.UploadPhoto",
+                                clicked: {
+                        if let secondaryDestination = secondaryDestination {
+                            router.present(secondaryDestination)
+                        }
+                    })
                 }
 
                 if showAttribution {
@@ -103,6 +119,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
                              bottom: 24,
                              trailing: 24))
             .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
+            .navigationBarHidden(true)
     }
 
     func makeInstruction(title: String, body: String, image: String) -> some View {

@@ -96,7 +96,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
 
         MockHelper.shouldFail = false
         let expectation = XCTestExpectation()
-        viewModel.captureResultDelegate = mockResult
+        viewModel.smartSelfieResultDelegate = mockResult
         viewModel.submit()
         viewModel.$processingState
             .sink { value in
@@ -114,7 +114,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
         let viewModel = SelfieCaptureViewModel(userId: "testuserid", jobId: "jobId", isEnroll: true)
         MockHelper.shouldFail = true
         let expectation = XCTestExpectation()
-        viewModel.captureResultDelegate = mockResult
+        viewModel.smartSelfieResultDelegate = mockResult
         viewModel.submit()
         viewModel.$processingState
             .sink { value in

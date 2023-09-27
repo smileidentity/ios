@@ -40,15 +40,15 @@ extension ServiceRunnable {
                                  method: .post,
                                  headers: [.contentType(value: "application/json")],
                                  body: body)
-            .flatMap(serviceClient.send)
-            .eraseToAnyPublisher()
+        .flatMap(serviceClient.send)
+        .eraseToAnyPublisher()
     }
 
     func get<U: Decodable>(to path: PathType) -> AnyPublisher<U, Error> {
         return createRestRequest(path: path,
                                  method: .get)
-            .flatMap(serviceClient.send)
-            .eraseToAnyPublisher()
+        .flatMap(serviceClient.send)
+        .eraseToAnyPublisher()
     }
 
     func upload(data: Data,
@@ -58,8 +58,8 @@ extension ServiceRunnable {
                                    method: restMethod,
                                    headers: [.contentType(value: "application/zip")],
                                    uploadData: data)
-            .flatMap { serviceClient.upload(request: $0) }
-            .eraseToAnyPublisher()
+        .flatMap { serviceClient.upload(request: $0) }
+        .eraseToAnyPublisher()
     }
 
     private func createUploadRequest(url: String,
@@ -67,7 +67,7 @@ extension ServiceRunnable {
                                      headers: [HTTPHeader]? = nil,
                                      uploadData: Data,
                                      queryParameters _: [HTTPQueryParameters]? = nil)
-        -> AnyPublisher<RestRequest, Error> {
+    -> AnyPublisher<RestRequest, Error> {
         guard let url = URL(string: url) else {
             return Fail(error: URLError(.badURL))
                 .eraseToAnyPublisher()
@@ -122,5 +122,53 @@ extension ServiceRunnable {
         return Just(request)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
+    }
+}
+
+extension SmileIDServiceable {
+    /// Polls a particular endpoint
+    /// - Parameters:
+    ///   - service: The service where the request lives
+    ///   - request: The request to be polled
+    ///   - isComplete: A closure that returns a boolean when job complete is true
+    ///   - interval: The time interval between polls
+    ///   - numAttempts: The maximum number of attempts to be made
+    public func poll<T: SmileIDServiceable, U: Decodable>(
+        service: T,
+        request: @escaping () -> AnyPublisher<U, Error>,
+        isComplete: @escaping (U) -> Bool,
+        interval: TimeInterval,
+        numAttempts: Int
+    ) -> AnyPublisher<U, Error> {
+
+        var lastError: Error?
+        var attemptCount = 0
+
+        func makeRequest() -> AnyPublisher<U, Error> {
+            attemptCount += 1
+
+            return request()
+                .delay(for: .seconds(interval), scheduler: RunLoop.main)
+                .flatMap { response -> AnyPublisher<U, Error> in
+                    if isComplete(response) {
+                        return Just(response).setFailureType(to: Error.self).eraseToAnyPublisher()
+                    } else if attemptCount < numAttempts {
+                        return makeRequest()
+                    } else {
+                        return Fail(error: SmileIDError.jobStatusTimeOut).eraseToAnyPublisher()
+                    }
+                }
+                .catch { error -> AnyPublisher<U, Error> in
+                    lastError = error
+                    if attemptCount < numAttempts {
+                        return makeRequest()
+                    } else {
+                        return Fail(error: lastError ?? error).eraseToAnyPublisher()
+                    }
+                }
+                .eraseToAnyPublisher()
+        }
+
+        return makeRequest()
     }
 }

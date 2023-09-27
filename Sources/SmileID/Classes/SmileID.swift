@@ -26,21 +26,25 @@ public class SmileID {
     public static let version = "10.0.0-beta07"
     public private(set) static var config: Config!
     public private(set) static var useSandbox = true
+    internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
-    @ObservedObject
-    internal static var navigationState = NavigationViewModel()
-
+    @ObservedObject internal static var router = Router<NavigationDestination>()
     /// This method initilizes SmileID. Invoke this method once in your applicaion lifecylce
     /// before calling any other SmileID methods.
     /// - Parameters:
-    ///   - config: The smile config file. If no value is supplied, we check the app's main bundle for a `smile_config.json` file.
+    ///   - apiKey: The api key displayed on your partner portal
+    ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
+    ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
-    public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
-                                                                                   withExtension: "json")!),
-                                 useSandbox: Bool = true) {
+    public class func initialize(
+        apiKey: String? = nil,
+        config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
+                                                          withExtension: "json")!),
+        useSandbox: Bool = true) {
         self.config = config
         self.useSandbox = useSandbox
+        self.apiKey = apiKey
         SmileIDResourcesHelper.registerFonts()
     }
 
@@ -70,20 +74,55 @@ public class SmileID {
         let destination: NavigationDestination = showInstruction ?
             .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
             .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
-        return SmileView(initialDestination: destination).environmentObject(navigationState)
+        return SmileView(initialDestination: destination).environmentObject(router)
     }
 
-    public class func documentVerificationScreen(userId _: String = "user-\(UUID().uuidString)",
-                                                 jobId _: String = "job-\(UUID().uuidString)",
-                                                 showAttribution _: Bool = true,
-                                                 showInstruction _: Bool = true,
+    /// Perform a Document Verification
+    /// - Parameters:
+    ///   - userId: The user ID to associate with the Document Verification. Most often, this will correspond to
+    ///   a unique User ID within your system. If not provided, a random user ID will be generated.
+    ///   - jobId: The job ID to associate with the Document Verification. Most often, this will correspond to a
+    ///   unique Job ID within your system. If not provided, a random job ID will be generated.
+    ///   - countryCode: The ISO 3166-1 alpha-3 country code of the document
+    ///   - doucumentType: An optional string respresenting the type of document to be captured
+    ///   - idAspectRatio: An optional value for the aspect ratio of the document. If no value it supplied,
+    ///   image analysis is done to calculate the documents aspect raito
+    ///   - selfie: A jpg selfie where if provided, the user will not be propmpted to capture a selfie and this file
+    ///   will be used as the selfie image.
+    ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the front side
+    ///   will be captured
+    ///   - allowGalleryUpload: Whether to allow the user to upload images from their gallery or not
+    ///   - showInstructions: Whether to deactivate capture screen's instructions for Document Verification
+    ///   (NB! If instructions are disabled, gallery upload won't be possible)
+    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions screen
+    ///   - delegate: The delegate object that recieves the result of the Document Verification
+    public class func documentVerificationScreen(userId: String = "user-\(UUID().uuidString)",
+                                                 jobId: String = "job-\(UUID().uuidString)",
+                                                 countryCode: String,
+                                                 documentType: String? = nil,
+                                                 idAspectRatio: Double? = nil,
+                                                 selfie: Data? = nil,
+                                                 captureBothSides: Bool = true,
+                                                 allowGalleryUpload: Bool = false,
+                                                 showInstructions: Bool = true,
+                                                 showAttribution: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
         -> some View {
-        let viewModel = DocumentCaptureViewModel()
-        let destination = NavigationDestination.documentCaptureInstructionScreen(
+            let viewModel = DocumentCaptureViewModel(userId: userId,
+                                                     jobId: jobId,
+                                                     countryCode: countryCode,
+                                                     documentType: documentType,
+                                                     idAspectRatio: idAspectRatio,
+                                                     selfie: selfie,
+                                                     captureBothSides: captureBothSides,
+                                                     showAttribution: showAttribution,
+                                                     allowGalleryUpload: allowGalleryUpload)
+
+        let destination = showInstructions ? NavigationDestination.documentFrontCaptureInstructionScreen(
             documentCaptureViewModel: viewModel,
-            delegate: delegate)
-        return SmileView(initialDestination: destination).environmentObject(navigationState)
+            delegate: delegate) : NavigationDestination.documentCaptureScreen(documentCaptureViewModel: viewModel,
+                                                                              delegate: delegate)
+        return SmileView(initialDestination: destination).environmentObject(router)
     }
 
     public class func smartSelfieAuthenticationScreen(userId: String,
@@ -101,7 +140,9 @@ public class SmileID {
         let destination: NavigationDestination = showInstruction ?
                 .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
             .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
-        return SmileView(initialDestination: destination).environmentObject(navigationState)
+            return SmileView(initialDestination: destination)
+                .environmentObject(router)
+
     }
 
     public class func setEnvironment(useSandbox: Bool) {

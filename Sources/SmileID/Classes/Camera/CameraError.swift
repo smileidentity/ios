@@ -8,4 +8,5 @@ enum CameraError: Error {
     case cannotAddInput
     case cannotAddOutput
     case createCaptureInput(Error)
+    case cannotCaptureImage(Error?)
 }
