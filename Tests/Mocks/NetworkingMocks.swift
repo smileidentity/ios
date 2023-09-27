@@ -22,6 +22,31 @@ class MockURLSessionPublisher: URLSessionPublisher {
 }
 
 class MockSmileIdentityService: SmileIDServiceable {
+    func getValidDocuments(request: ProductsConfigRequest) -> AnyPublisher<ValidDocumentsResponse, Error> {
+        let response = ValidDocumentsResponse(validDocuments: [ValidDocument]())
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+    
+    func pollJobStatus(request: JobStatusRequest, interval: TimeInterval, numAttempts: Int) -> AnyPublisher<JobStatusResponse, Error> {
+        let response = JobStatusResponse(timestamp: "timestamp",
+                                         jobComplete: MockHelper.jobComplete,
+                                         jobSuccess: true,
+                                         code: "2322")
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+    
     func getServices() -> AnyPublisher<ServicesResponse, Error> {
         var response: ServicesResponse
         do {

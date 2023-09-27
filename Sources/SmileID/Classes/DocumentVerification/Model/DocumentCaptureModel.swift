@@ -32,7 +32,9 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var displayedRectangleResult: RectangleDetectorResult?
     private var userId: String
     private var jobId: String
-    private var document: Document
+    private var countryCode: String
+    private var documentType: String?
+    private var idAspectRatio: Double?
     private var currentBuffer: CVPixelBuffer?
     private (set) var frontImage: UIImage?
     private (set) var backImage: UIImage?
@@ -74,7 +76,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
     @Published var showCaptureButton = false
     @Published var borderColor: UIColor = .gray
-    @Published var guideSize: CGSize = .zero
+    @Published var guideSize: CGSize = CGSize(width: UIScreen.main.bounds.width * 0.9,
+                                              height: UIScreen.main.bounds.width/1.66)
     var width: CGFloat = .zero
     var height: CGFloat = .zero
 
@@ -95,14 +98,18 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
     init(userId: String,
          jobId: String,
-         document: Document,
+         countryCode: String,
+         documentType: String?,
+         idAspectRatio: Double? = nil,
          selfie: Data? = nil,
          captureBothSides: Bool,
          showAttribution: Bool,
          allowGalleryUpload: Bool) {
         self.userId = userId
         self.jobId = jobId
-        self.document = document
+        self.documentType = documentType
+        self.countryCode = countryCode
+        self.idAspectRatio = idAspectRatio
         self.selfie = selfie
         self.captureBothSides = captureBothSides
         self.showAttribution = showAttribution
@@ -123,7 +130,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                        height: CVPixelBufferGetHeight(buffer))
                 self.textDetector.detectText(buffer: buffer)
                 RectangleDetector.rectangle(forPixelBuffer: buffer,
-                                            aspectRatio: document.aspectRatio) { rect in
+                                            aspectRatio: idAspectRatio) { rect in
                     self.processRectangle(rectangle: rect, imageSize: imageSize)
                 }
             })
@@ -254,20 +261,23 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 
     func submit() {
+        let selfieCaptureScreen = NavigationDestination.selfieCaptureScreen(selfieCaptureViewModel:
+                                                            SelfieCaptureViewModel(userId: userId,
+                                                                                   jobId: jobId,
+                                                                                   isEnroll: false,
+                                                                                   shoudSubmitJob: false,
+                                                                                   imageCaptureDelegate: self),
+                                                           delegate: self)
         if captureBothSides && side == .front {
-            processingState = nil
             side = .back
+            manualCaptureTimer = nil
+            pauseCameraSession()
             router?.push(.documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
+                                                               skipDestination: selfieCaptureScreen,
                                                               delegate: captureResultDelegate))
         } else {
             processingState = .inProgress
-            router?.push(.selfieCaptureScreen(selfieCaptureViewModel:
-                                                SelfieCaptureViewModel(userId: userId,
-                                                                       jobId: jobId,
-                                                                       isEnroll: false,
-                                                                       shoudSubmitJob: false,
-                                                                       imageCaptureDelegate: self),
-                                              delegate: self))
+            router?.push(selfieCaptureScreen)
         }
     }
 
@@ -367,6 +377,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                                                                          imageSize: imageSize))
                 }
         } else {
+            manualCaptureTimer = nil
             startManualCaptureTimer()
             self.displayedRectangleResult = nil
             self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize, completion: nil)
@@ -447,7 +458,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                                                         back: backImage?.jpegData(compressionQuality: 1),
                                                         livenessImages: livenessImages,
                                                         selfie: selfie!,
-                                                        document: document)
+                                                        countryCode: countryCode,
+                                                        documentType: documentType)
         } catch {
             captureResultDelegate?.didError(error: error)
         }

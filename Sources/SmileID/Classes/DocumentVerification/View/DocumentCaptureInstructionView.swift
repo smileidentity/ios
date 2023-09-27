@@ -8,11 +8,16 @@ public struct DocumentCaptureInstructionsView: View {
     @EnvironmentObject var router: Router<NavigationDestination>
     @ObservedObject private var viewModel: DocumentCaptureViewModel
     private var side: Side
+    private var skipDestination: NavigationDestination?
     private weak var documentCaptureDelegate: DocumentCaptureResultDelegate?
 
-    init(viewModel: DocumentCaptureViewModel, side: Side, delegate: DocumentCaptureResultDelegate) {
+    init(viewModel: DocumentCaptureViewModel,
+         side: Side,
+         skipDestination: NavigationDestination? = nil,
+         delegate: DocumentCaptureResultDelegate) {
         self.viewModel = viewModel
         self.side = side
+        self.skipDestination = skipDestination
         documentCaptureDelegate = delegate
     }
 
@@ -38,7 +43,11 @@ public struct DocumentCaptureInstructionsView: View {
                 createBackInstuctions()
             }
         }.overlay( NavigationBar {
-            router.dismiss()
+            if side == .back {
+                router.pop()
+            } else {
+                router.dismiss()
+            }
         })
     }
 
@@ -64,6 +73,7 @@ public struct DocumentCaptureInstructionsView: View {
             destination: .documentCaptureScreen(documentCaptureViewModel: viewModel,
                                                 delegate: documentCaptureDelegate),
             secondaryDestination: .imagePicker(viewModel: viewModel),
+            skipDestination: skipDestination,
             showAttribution: viewModel.showAttribution,
             allowGalleryUpload: viewModel.allowGalleryUpload)
         .padding(.top, 50)
@@ -99,9 +109,8 @@ struct DocumentCaptureInstructionsView_Previews: PreviewProvider {
     static var previews: some View {
         DocumentCaptureInstructionsView(viewModel: DocumentCaptureViewModel(userId: "",
                                                                             jobId: "",
-                                                                            document: Document(countryCode: "",
-                                                                                               documentType: "",
-                                                                                               aspectRatio: 0.2),
+                                                                            countryCode: "",
+                                                                            documentType: "",
                                                                             captureBothSides: true,
                                                                             showAttribution: true,
                                                                             allowGalleryUpload: true))

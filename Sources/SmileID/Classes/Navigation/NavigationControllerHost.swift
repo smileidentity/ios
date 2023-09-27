@@ -1,15 +1,22 @@
 import UIKit
 import SwiftUI
 
-struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRepresentable {
-    let navTitle: String
-    let navHidden: Bool
-    let router: Router<R>
+public struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRepresentable {
+    public let navTitle: String
+    public let navHidden: Bool
+    public let router: Router<R>
 
     @ViewBuilder
-    var routeMap: (R) -> Screen
+    public var routeMap: (R) -> Screen
 
-    func makeUIViewController(context: Context) -> PoppableNavigationController {
+    public init(navTitle: String, navHidden: Bool, router: Router<R>, routeMap: @escaping (R) -> Screen) {
+        self.navTitle = navTitle
+        self.navHidden = navHidden
+        self.router = router
+        self.routeMap = routeMap
+    }
+
+    public func makeUIViewController(context: Context) -> PoppableNavigationController {
         let nav = PoppableNavigationController()
 
         nav.popHandler = {
@@ -54,7 +61,7 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
         return nav
     }
 
-    func updateUIViewController(_ navigation: PoppableNavigationController, context: Context) {
+    public func updateUIViewController(_ navigation: PoppableNavigationController, context: Context) {
         navigation.topViewController?.navigationItem.title = navTitle
         navigation.navigationBar.isHidden = navHidden
         navigation.navigationBar.backIndicatorImage = SmileIDResourcesHelper.ArrowLeft
@@ -67,23 +74,23 @@ struct NavigationControllerHost<R: Equatable, Screen: View>: UIViewControllerRep
         navigation.topViewController?.navigationItem.leftBarButtonItem = barButton
     }
 
-    typealias UIViewControllerType = PoppableNavigationController
+    public typealias UIViewControllerType = PoppableNavigationController
 }
 
-class PoppableNavigationController: UINavigationController, UINavigationControllerDelegate {
+public class PoppableNavigationController: UINavigationController, UINavigationControllerDelegate {
     var popHandler: (() -> Void)?
     var dismissHandler: (() -> Void)?
     var navStackHandler: (() -> Int)?
 
     var popGestureBeganController: UIViewController?
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
         interactivePopGestureRecognizer?.isEnabled = false
     }
 
-    func navigationController(_ navigationController: UINavigationController,
+    public func navigationController(_ navigationController: UINavigationController,
                               didShow viewController: UIViewController,
                               animated: Bool) {
 

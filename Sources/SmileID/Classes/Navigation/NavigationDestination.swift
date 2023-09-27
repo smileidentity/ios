@@ -1,6 +1,6 @@
 import UIKit
 
-enum NavigationDestination: ReflectiveEquatable {
+indirect enum NavigationDestination: ReflectiveEquatable {
     case selfieInstructionScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
                                  delegate: SmartSelfieResultDelegate?)
     case selfieCaptureScreen(selfieCaptureViewModel: SelfieCaptureViewModel,
@@ -8,6 +8,7 @@ enum NavigationDestination: ReflectiveEquatable {
     case documentFrontCaptureInstructionScreen(documentCaptureViewModel: DocumentCaptureViewModel,
                                                delegate: DocumentCaptureResultDelegate?)
     case documentBackCaptureInstructionScreen(documentCaptureViewModel: DocumentCaptureViewModel,
+                                              skipDestination: NavigationDestination,
                                               delegate: DocumentCaptureResultDelegate?)
     case documentCaptureScreen(documentCaptureViewModel: DocumentCaptureViewModel,
                                delegate: DocumentCaptureResultDelegate?)
@@ -18,9 +19,9 @@ enum NavigationDestination: ReflectiveEquatable {
     case documentConfirmation(viewModel: DocumentCaptureViewModel, image: UIImage)
 }
 
-protocol ReflectiveEquatable: Equatable {}
+public protocol ReflectiveEquatable: Equatable {}
 
-extension ReflectiveEquatable {
+public extension ReflectiveEquatable {
     var reflectedValue: String { String(reflecting: self) }
     static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.reflectedValue == rhs.reflectedValue

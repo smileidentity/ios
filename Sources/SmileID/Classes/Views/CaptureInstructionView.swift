@@ -25,6 +25,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var instructions: [CaptureInstruction]
     private var destination: NavigationDestination
     private var secondaryDestination: NavigationDestination?
+    private var skipDestination: NavigationDestination?
     private var captureType: CaptureType
     private var showAttribution: Bool
     private var allowGalleryUpload: Bool
@@ -38,6 +39,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
          captureType: CaptureType,
          destination: NavigationDestination,
          secondaryDestination: NavigationDestination? = nil,
+         skipDestination: NavigationDestination? = nil,
          showAttribution: Bool,
          allowGalleryUpload: Bool = false) {
         self.image = image
@@ -47,7 +49,7 @@ public struct CaptureInstructionView<TargetView: View>: View {
         self.instructions = instructions
         self.destination = destination
         self.secondaryDestination = secondaryDestination
-
+        self.skipDestination = skipDestination
         self.captureType = captureType
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
@@ -84,6 +86,15 @@ public struct CaptureInstructionView<TargetView: View>: View {
                 }
             }
             VStack(spacing: 5) {
+                if captureType == .document(.back), let skipDestination = skipDestination {
+                    Button(action: { router.push(skipDestination) }, label: {
+                        Text(SmileIDResourcesHelper.localizedString(for: "Action.Skip"))
+                            .multilineTextAlignment(.center)
+                            .font(SmileID.theme.button)
+                            .foregroundColor(SmileID.theme.tertiary.opacity(0.8))
+                    })
+                    .frame(height: 54)
+                }
                 SmileButton(title: buttonTitle,
                             clicked: {
                     router.push(destination)

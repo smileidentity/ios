@@ -10,7 +10,7 @@ class RectangleDetector {
         for request: VNImageRequestHandler,
         width: CGFloat,
         height: CGFloat,
-        aspectRatio: Double,
+        aspectRatio: Double?,
         completion: @escaping ((Quadrilateral?) -> Void)
     ) {
         // Create the rectangle request, and, if found, return the largest rectangle (else return nothing).
@@ -56,7 +56,7 @@ class RectangleDetector {
     ///   - aspectRatio: The aspect ratio of rectangles to detect
     ///   - completion: The biggest rectangle on the CVPixelBuffer
     static func rectangle(forPixelBuffer pixelBuffer: CVPixelBuffer,
-                          aspectRatio: Double,
+                          aspectRatio: Double?,
                           completion: @escaping ((Quadrilateral?) -> Void)) {
         let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
         RectangleDetector.completeImageRequest(

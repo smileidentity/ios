@@ -26,21 +26,25 @@ public class SmileID {
     public static let version = "10.0.0-beta07"
     public private(set) static var config: Config!
     public private(set) static var useSandbox = true
+    internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
     @ObservedObject internal static var router = Router<NavigationDestination>()
-
     /// This method initilizes SmileID. Invoke this method once in your applicaion lifecylce
     /// before calling any other SmileID methods.
     /// - Parameters:
+    ///   - apiKey: The api key displayed on your partner portal
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
-    public class func initialize(config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
-                                                                                   withExtension: "json")!),
-                                 useSandbox: Bool = true) {
+    public class func initialize(
+        apiKey: String? = nil,
+        config: Config = try! Config(url: Bundle.main.url(forResource: "smile_config",
+                                                          withExtension: "json")!),
+        useSandbox: Bool = true) {
         self.config = config
         self.useSandbox = useSandbox
+        self.apiKey = apiKey
         SmileIDResourcesHelper.registerFonts()
     }
 
@@ -79,7 +83,10 @@ public class SmileID {
     ///   a unique User ID within your system. If not provided, a random user ID will be generated.
     ///   - jobId: The job ID to associate with the Document Verification. Most often, this will correspond to a
     ///   unique Job ID within your system. If not provided, a random job ID will be generated.
-    ///   - idType: The type of ID to be captured
+    ///   - countryCode: The ISO 3166-1 alpha-3 country code of the document
+    ///   - doucumentType: An optional string respresenting the type of document to be captured
+    ///   - idAspectRatio: An optional value for the aspect ratio of the document. If no value it supplied,
+    ///   image analysis is done to calculate the documents aspect raito
     ///   - selfie: A jpg selfie where if provided, the user will not be propmpted to capture a selfie and this file
     ///   will be used as the selfie image.
     ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the front side
@@ -91,17 +98,21 @@ public class SmileID {
     ///   - delegate: The delegate object that recieves the result of the Document Verification
     public class func documentVerificationScreen(userId: String = "user-\(UUID().uuidString)",
                                                  jobId: String = "job-\(UUID().uuidString)",
-                                                 idType: Document,
+                                                 countryCode: String,
+                                                 documentType: String? = nil,
+                                                 idAspectRatio: Double? = nil,
                                                  selfie: Data? = nil,
                                                  captureBothSides: Bool = true,
                                                  allowGalleryUpload: Bool = false,
-                                                 showInstructions: Bool = false,
+                                                 showInstructions: Bool = true,
                                                  showAttribution: Bool = true,
                                                  delegate: DocumentCaptureResultDelegate)
         -> some View {
             let viewModel = DocumentCaptureViewModel(userId: userId,
                                                      jobId: jobId,
-                                                     document: idType,
+                                                     countryCode: countryCode,
+                                                     documentType: documentType,
+                                                     idAspectRatio: idAspectRatio,
                                                      selfie: selfie,
                                                      captureBothSides: captureBothSides,
                                                      showAttribution: showAttribution,
