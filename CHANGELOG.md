@@ -11,7 +11,7 @@
 
 ### Removed
 - `filename` property from `PrepUploadRequest`
--  `jobStatus` polling from `SmartSelfieAuthentication`, `SmartSelfieEnrollment` and `DocumentVerification`
+- `jobStatus` polling from `SmartSelfieAuthentication`, `SmartSelfieEnrollment` and `DocumentVerification`
 
 ### Dependencies
 - SwiftLint
