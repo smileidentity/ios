@@ -3,7 +3,6 @@ import Vision
 import AVFoundation
 
 class PreviewView: UIViewController {
-    var layedOutSubviews = false
     var previewLayer: AVCaptureVideoPreviewLayer?
     private weak var cameraManager: CameraManageable?
 
@@ -48,19 +47,24 @@ extension PreviewView: FaceDetectorDelegate {
 }
 
 extension PreviewView: RectangleDetectionDelegate {
-    func didDetectQuad(quad: Quadrilateral?, _ imageSize: CGSize, completion: ((Quadrilateral) -> Void)? ) {
-        guard let quad else {
-            return
-        }
+    func didDetectQuad(
+        quad: Quadrilateral?,
+        _ imageSize: CGSize,
+        completion: ((Quadrilateral) -> Void)?
+    ) {
+        guard let quad else { return }
         let portraitImageSize = CGSize(width: imageSize.height, height: imageSize.width)
-        let scaleTransform = CGAffineTransform.scaleTransform(forSize: portraitImageSize,
-                                                              aspectFillInSize: view.bounds.size)
+        let scaleTransform = CGAffineTransform.scaleTransform(
+            forSize: portraitImageSize,
+            aspectFillInSize: view.bounds.size
+        )
         let scaledImageSize = imageSize.applying(scaleTransform)
         let rotationTransform = CGAffineTransform(rotationAngle: CGFloat.pi / 2.0)
         let imageBounds = CGRect(origin: .zero, size: scaledImageSize).applying(rotationTransform)
-        let translationTransform = CGAffineTransform.translateTransform(fromCenterOfRect: imageBounds,
-                                                                        toCenterOfRect: view.bounds)
-
+        let translationTransform = CGAffineTransform.translateTransform(
+            fromCenterOfRect: imageBounds,
+            toCenterOfRect: view.bounds
+        )
         let transforms = [scaleTransform, rotationTransform, translationTransform]
         let transformedQuad = quad.applyTransforms(transforms)
         completion?(transformedQuad)

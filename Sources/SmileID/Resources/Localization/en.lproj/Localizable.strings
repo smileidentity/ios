@@ -1,4 +1,4 @@
-/* 
+/*
  en.lproj/Localizable.strings
 
 */
@@ -40,7 +40,7 @@
 "Confirmation.SuccessBody" = "Your selfie was successfully taken. \n You can now proceed.";
 "Confirmation.Continue" = "Continue";
 "Confirmation.Failure" = "Your selfie failed to process";
-"Confirmation.FaulireReason" = "This could be because of image quality \n or internet connectivity.";
+"Confirmation.FailureReason" = "This could be because of image quality \n or internet connectivity.";
 "Confirmation.Retry" = "Retry";
 "Confirmation.Close" = "Close";
 "Document.Clear" = "Make sure all corners are \n visible and there is no glare";

@@ -4,7 +4,7 @@ struct SuccessView: View {
     @Environment(\.presentationMode) var presentationMode
     var titleKey: String
     var bodyKey: String
-    var clicked: (() -> Void)
+    var clicked: () -> Void
     var body: some View {
 
         VStack(spacing: 20) {
@@ -21,26 +21,27 @@ struct SuccessView: View {
                     .foregroundColor(SmileID.theme.tertiary)
                     .lineSpacing(1.3)
             }
-            .padding(.bottom, 30)
-            .frame(maxWidth: .infinity)
-            SmileButton(style: .primary,
-                        title: "Confirmation.Continue",
-                        clicked: clicked )
+                .padding(.bottom, 30)
+                .frame(maxWidth: .infinity)
+            SmileButton(
+                style: .primary,
+                title: "Confirmation.Continue",
+                clicked: clicked
+            )
         }
-        .padding()
-        .background(SmileID.theme.backgroundMain)
-        .cornerRadius(20)
-        .shadow(radius: 20)
+            .padding()
+            .background(SmileID.theme.backgroundMain)
+            .cornerRadius(20)
+            .shadow(radius: 20)
     }
 }
 
 struct SuccessView_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = SelfieCaptureViewModel(userId: "",
-                                               jobId: "",
-                                               isEnroll: true)
-        SuccessView(titleKey: "Confirmation.SelfieCaptureComplete",
-                    bodyKey: "Confirmation.SuccessBody",
-                    clicked: { })
+        SuccessView(
+            titleKey: "Confirmation.SelfieCaptureComplete",
+            bodyKey: "Confirmation.SuccessBody",
+            clicked: {}
+        )
     }
 }

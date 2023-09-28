@@ -7,21 +7,24 @@ struct RestRequest: Equatable {
     var body: Data?
     var queryParameters: [HTTPQueryParameters]?
 
-    init(url: URL,
-         method: RestMethod,
-         headers: [HTTPHeader]? = nil,
-         queryParameters: [HTTPQueryParameters]? = nil) {
+    init(
+        url: URL,
+        method: RestMethod,
+        headers: [HTTPHeader]? = nil,
+        queryParameters: [HTTPQueryParameters]? = nil
+    ) {
         self.url = url
         self.method = method
         self.headers = headers
         self.queryParameters = queryParameters
     }
 
-    init(url: URL,
-         method: RestMethod,
-         headers: [HTTPHeader]? = nil,
-         queryParameters: [HTTPQueryParameters]? = nil,
-         body: Data
+    init(
+        url: URL,
+        method: RestMethod,
+        headers: [HTTPHeader]? = nil,
+        queryParameters: [HTTPQueryParameters]? = nil,
+        body: Data
     ) {
         self.url = url
         self.method = method
@@ -30,11 +33,13 @@ struct RestRequest: Equatable {
         self.body = body
     }
 
-    init<T: Encodable>(url: URL,
-                       method: RestMethod,
-                       headers: [HTTPHeader]? = nil,
-                       queryParameters: [HTTPQueryParameters]? = nil,
-                       body: T) throws {
+    init<T: Encodable>(
+        url: URL,
+        method: RestMethod,
+        headers: [HTTPHeader]? = nil,
+        queryParameters: [HTTPQueryParameters]? = nil,
+        body: T
+    ) throws {
         let encoder = JSONEncoder()
         self.url = url
         self.method = method
@@ -64,7 +69,7 @@ extension RestRequest {
     private func buildURL(with url: URL) throws -> URL {
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         components?.queryItems = queryParameters?.flatMap { queryParam in
-            queryParam.value.map {
+            queryParam.values.map {
                 URLQueryItem(name: queryParam.key, value: $0)
             }
         }
@@ -83,6 +88,6 @@ enum RestMethod: String {
 
 extension RestMethod {
     var httpMethod: String {
-        return rawValue.uppercased()
+        rawValue.uppercased()
     }
 }

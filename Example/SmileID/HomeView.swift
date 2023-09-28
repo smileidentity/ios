@@ -9,67 +9,88 @@ struct HomeView: View {
     @ObservedObject var router = Router<NavigationDestination>()
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
+            VStack(spacing: 24) {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
-                HStack(spacing: 15) {
-                    Button(action: { self.viewModel.handleSmartSelfieEnrolmentTap() },
+                HStack(spacing: 16) {
+                    Button(
+                        action: viewModel.handleSmartSelfieEnrolmentTap,
+                        label: {
+                            ProductCell(
+                                productImage: "userauth",
+                                productName: "SmartSelfie™ Enrollment"
+                            )
+                        })
+                        .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment,
+                               content: {
+                                   SmileID.smartSelfieEnrollmentScreen(
+                                       userId: generateUserId(),
+                                       allowAgentMode: true,
+                                       delegate: viewModel
+                                   )
+                               })
+                    Button(action: viewModel.handleSmartSelfieAuthTap,
                            label: {
-                        ProductCell(productImage: "userauth", productName: "SmartSelfie™ \nEnrollment")
-                    })
-                    .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment,
-                           content: { SmileID.smartSelfieEnrollmentScreen(userId: viewModel.generateUserID(),
-                                                                          allowAgentMode: true,
-                                                                          delegate: viewModel) })
-                    Button(action: { self.viewModel.handleSmartSelfieAuthTap() },
-                           label: {
-                               ProductCell(productImage: "userauth",
-                                           productName: "SmartSelfie™ \nAuthentication")
+                               ProductCell(
+                                   productImage: "userauth",
+                                   productName: "SmartSelfie™ Authentication"
+                               )
                            })
-                           .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
-                               EnterUserIDView(userId: viewModel.returnedUserID, viewModel: UserIDViewModel())
-                           })
+                        .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
+                            EnterUserIDView(
+                                userId: viewModel.returnedUserID,
+                                viewModel: UserIDViewModel()
+                            )
+                        })
                 }
                 HStack(spacing: 15) {
                     GeometryReader { geo in
-                        Button {
-                            self.viewModel.handleDocumentVerificationTap()
-                        } label: {
-                            ProductCell(productImage: "document", productName: "Document \nVerification")
-                        }
-                        .fullScreenCover(isPresented:
-                            $viewModel.presentDocumentVerification,
-                            content: { 
-                            let _ = router.push(.countrySelectorScreen(homeVieModel: viewModel), animated: false)
-                            NavigationControllerHost(navTitle: "",
-                                                     navHidden: true,
-                                                     router: router,
-                                                     routeMap: ViewFactory().makeView(_:)).environmentObject(router)
-                        })
-                        .frame(width: (geo.size.width / 2) - 7.5)
+                        Button(
+                            action: viewModel.handleDocumentVerificationTap,
+                            label: {
+                                ProductCell(
+                                    productImage: "document",
+                                    productName: "Document Verification"
+                                )
+                            }
+                        )
+                            .fullScreenCover(
+                                isPresented: $viewModel.presentDocumentVerification,
+                                content: {
+                                    let _ = router.push(
+                                        .countrySelectorScreen(homeVieModel: viewModel),
+                                        animated: false
+                                    )
+                                    NavigationControllerHost(
+                                        navTitle: "",
+                                        navHidden: true,
+                                        router: router,
+                                        routeMap: ViewFactory().makeView(_:)
+                                    ).environmentObject(router)
+                                })
+                            .frame(width: (geo.size.width / 2) - 7.5)
                     }
                 }
                 Spacer()
-                Text("Partner \(SmileID.configuration.partnerId) - Version \(SmileID.version) - Build \(build ?? "")")
+                let partner = "Partner \(SmileID.configuration.partnerId)"
+                let version = "Version \(SmileID.version)"
+                let build = "Build \(build ?? "")"
+                Text("\(partner) - \(version) - \(build)")
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }
-            .toast(isPresented: $viewModel.showToast) {
-                Text(viewModel.toastMessage)
-                    .font(SmileID.theme.body)
-                    .multilineTextAlignment(.center)
-                    .padding()
-            }
-            .padding()
-            .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
-            .navigationBarItems(trailing: ToggleButton())
-            .background(offWhite.edgesIgnoringSafeArea(.all))
+                .toast(isPresented: $viewModel.showToast) {
+                    Text(viewModel.toastMessage)
+                        .font(SmileID.theme.body)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+                .padding()
+                .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
+                .navigationBarItems(trailing: ToggleButton())
+                .background(offWhite.edgesIgnoringSafeArea(.all))
         }
-    }
-
-    mutating func generateUUID() {
-        userID = UUID().uuidString
     }
 }
 
@@ -102,7 +123,7 @@ struct NavigationBarModifier: ViewModifier {
             content
             VStack {
                 GeometryReader { geometry in
-                    self.backgroundColor
+                    backgroundColor
                         .frame(height: geometry.safeAreaInsets.top)
                         .edgesIgnoringSafeArea(.top)
                     Spacer()

@@ -53,7 +53,7 @@ extension DependencyContainer: DependencyResolver {
 
 private extension DependencyContainer {
     func key<T>(forType type: T.Type) -> String {
-        return String(describing: type)
+        String(describing: type)
     }
 }
 

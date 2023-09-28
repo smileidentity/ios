@@ -7,7 +7,10 @@ struct DocumentOverlayView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                TransparentRectangleView(transparentRectSize: $viewModel.guideSize, borderColor: $viewModel.borderColor)
+                TransparentRectangleView(
+                    transparentRectSize: $viewModel.guideSize,
+                    borderColor: $viewModel.borderColor
+                )
             }
             .onAppear {
                 viewModel.width = geometry.size.width

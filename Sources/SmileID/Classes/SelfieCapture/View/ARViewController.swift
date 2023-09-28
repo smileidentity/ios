@@ -51,7 +51,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         let faceMesh = ARSCNFaceGeometry(device: sceneView.device!)
         let node = SCNNode(geometry: faceMesh)
         node.geometry?.firstMaterial?.transparency = 0.0
-        self.faceNode = node
+        faceNode = node
         return node
     }
 
@@ -61,7 +61,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             return
         }
         updateFeatures(for: faceAnchor)
-        let projectedPoints = faceAnchor.verticeAndProjection(to: sceneView)
+        let projectedPoints = faceAnchor.verticesAndProjection(to: sceneView)
         let boundingBox = faceBoundingBox(for: projectedPoints)
         let angles = getEulerAngles(from: faceAnchor)
         let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox,
@@ -73,11 +73,16 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     func getEulerAngles(from faceAnchor: ARFaceAnchor) -> (roll: Float, pitch: Float, yaw: Float) {
         // Extract the 4x4 transform matrix from the face anchor.
         let transformMatrix = faceAnchor.transform
-        return (transformMatrix.eulerAngles.roll, transformMatrix.eulerAngles.pitch, transformMatrix.eulerAngles.yaw)
-
+        return (
+            transformMatrix.eulerAngles.roll,
+            transformMatrix.eulerAngles.pitch,
+            transformMatrix.eulerAngles.yaw
+        )
     }
 
-    private func faceBoundingBox(for projectedPoints: [ARFaceAnchor.VerticesAndProjection]) -> CGRect {
+    private func faceBoundingBox(
+        for projectedPoints: [ARFaceAnchor.VerticesAndProjection]
+    ) -> CGRect {
         let allXs = projectedPoints.map { $0.projected.x }
         let allYs = projectedPoints.map { $0.projected.y }
 
@@ -105,12 +110,14 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                 model?.perform(action: .multipleFacesDetected)
             }
             updateFeatures(for: faceAnchor)
-            let projectedPoints = faceAnchor.verticeAndProjection(to: sceneView)
+            let projectedPoints = faceAnchor.verticesAndProjection(to: sceneView)
             let boundingBox = faceBoundingBox(for: projectedPoints)
             let angles = getEulerAngles(from: faceAnchor)
-            let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox,
-                                                         roll: angles.roll as NSNumber,
-                                                         yaw: angles.yaw as NSNumber)
+            let faceObservationModel = FaceGeometryModel(
+                boundingBox: boundingBox,
+                roll: angles.roll as NSNumber,
+                yaw: angles.yaw as NSNumber
+            )
             model?.perform(action: .faceObservationDetected(faceObservationModel))
         } else {
             model?.perform(action: .noFaceDetected)
@@ -125,9 +132,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     }
 
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "UpdateARFrame"),
-                                        object: nil,
-                                        userInfo: ["frame": frame])
+        NotificationCenter.default.post(
+            name: NSNotification.Name(rawValue: "UpdateARFrame"),
+            object: nil,
+            userInfo: ["frame": frame]
+        )
     }
 
     private func updateFeatures(for faceAnchor: ARFaceAnchor) {
@@ -137,7 +146,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         let smileLeft = faceAnchor.blendShapes[.mouthSmileLeft]
         let smileRight = faceAnchor.blendShapes[.mouthSmileRight]
 
-        if let smileL = smileLeft, let smileR = smileRight, smileL.floatValue > 0.5 && smileR.floatValue > 0.5 {
+        if let smileL = smileLeft,
+           let smileR = smileRight,
+           smileL.floatValue > 0.5 && smileR.floatValue > 0.5 {
             model?.perform(action: .smileAction)
         } else {
             model?.perform(action: .noSmile)
@@ -150,11 +161,13 @@ struct ARView: UIViewControllerRepresentable {
     typealias UIViewControllerType = ARViewController
 
     init() {
-        self.preview = ARViewController()
+        preview = ARViewController()
     }
+
     func makeUIViewController(context: Context) -> ARViewController {
-       return preview
+        preview
     }
+
     func updateUIViewController(_ uiViewController: ARViewController, context: Context) {}
 }
 
@@ -166,7 +179,7 @@ extension ARFaceAnchor {
     }
 
     // return a struct with vertices and projection
-    func verticeAndProjection(to view: ARSCNView) -> [VerticesAndProjection] {
+    func verticesAndProjection(to view: ARSCNView) -> [VerticesAndProjection] {
 
         let points = geometry.vertices.compactMap({ (vertex) -> VerticesAndProjection? in
 
@@ -175,10 +188,12 @@ extension ARFaceAnchor {
 
             let pworld = transform * simd_float4x4(col, col, col, pos)
 
-            let vect = view.projectPoint(SCNVector3(pworld.position.x, pworld.position.y, pworld.position.z))
+            let vect = view.projectPoint(
+                SCNVector3(pworld.position.x, pworld.position.y, pworld.position.z)
+            )
 
-            let p = CGPoint(x: CGFloat(vect.x), y: CGFloat(vect.y))
-            return VerticesAndProjection(vertex: vertex, projected: p)
+            let point = CGPoint(x: CGFloat(vect.x), y: CGFloat(vect.y))
+            return VerticesAndProjection(vertex: vertex, projected: point)
         })
 
         return points
@@ -187,24 +202,16 @@ extension ARFaceAnchor {
 
 extension matrix_float4x4 {
     var position: SCNVector3 {
-        return SCNVector3(self[3][0], self[3][1], self[3][2])
-    }
-
-    // Function to convert rad to deg
-    func radiansToDegress(radians: Float32) -> Float32 {
-        return radians * 180 / (Float32.pi)
-    }
-    var translation: SCNVector3 {
-        return SCNVector3Make(columns.3.x, columns.3.y, columns.3.z)
+        SCNVector3(self[3][0], self[3][1], self[3][2])
     }
 
     // Retrieve euler angles from a quaternion matrix
     var eulerAngles: (yaw: Float32, pitch: Float32, roll: Float32) {
         // Get quaternions
-        let qw = sqrt(1 + self.columns.0.x + self.columns.1.y + self.columns.2.z) / 2.0
-        let qx = (self.columns.2.y - self.columns.1.z) / (qw * 4.0)
-        let qy = (self.columns.0.z - self.columns.2.x) / (qw * 4.0)
-        let qz = (self.columns.1.x - self.columns.0.y) / (qw * 4.0)
+        let qw = sqrt(1 + columns.0.x + columns.1.y + columns.2.z) / 2.0
+        let qx = (columns.2.y - columns.1.z) / (qw * 4.0)
+        let qy = (columns.0.z - columns.2.x) / (qw * 4.0)
+        let qz = (columns.1.x - columns.0.y) / (qw * 4.0)
 
         // Deduce euler angles
         /// yaw (z-axis rotation)
@@ -227,5 +234,4 @@ extension matrix_float4x4 {
         /// return array containing ypr values
         return (yaw, pitch, roll)
     }
-
 }

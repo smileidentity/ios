@@ -23,15 +23,17 @@ public struct AuthenticationRequest: Codable {
         case authToken = "auth_token"
     }
 
-    public init(jobType: JobType?,
-                enrollment: Bool,
-                updateEnrolledImage: Bool? = nil,
-                jobId: String?,
-                userId: String?,
-                signature: Bool = true,
-                production: Bool = !SmileID.useSandbox,
-                partnerId: String = SmileID.config.partnerId,
-                authToken: String = SmileID.config.authToken) {
+    public init(
+        jobType: JobType?,
+        enrollment: Bool,
+        updateEnrolledImage: Bool? = nil,
+        jobId: String?,
+        userId: String?,
+        signature: Bool = true,
+        production: Bool = !SmileID.useSandbox,
+        partnerId: String = SmileID.config.partnerId,
+        authToken: String = SmileID.config.authToken
+    ) {
         self.jobType = jobType
         self.enrollment = enrollment
         self.updateEnrolledImage = updateEnrolledImage
@@ -50,10 +52,12 @@ public struct AuthenticationResponse: Decodable {
     public var timestamp: String
     public var partnerParams: PartnerParams
 
-    public init(success: Bool,
-                signature: String,
-                timestamp: String,
-                partnerParams: PartnerParams) {
+    public init(
+        success: Bool,
+        signature: String,
+        timestamp: String,
+        partnerParams: PartnerParams
+    ) {
         self.success = success
         self.signature = signature
         self.timestamp = timestamp

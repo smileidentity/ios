@@ -9,18 +9,21 @@ public struct SmileButton: View {
         case destructive
     }
 
-    var title: LocalizedStringKey
+    let title: LocalizedStringKey
     var titleColor = SmileID.theme.onDark
     var backgroundColor: Color = SmileID.theme.accent
     var cornerRadius: CGFloat = 15
     var borderColor = Color.clear
     var inactiveColor: Color?
-    var clicked: (() -> Void)
-    var style: Style
+    let clicked: () -> Void
+    let style: Style
 
-    public init(style: Style = .primary, title: LocalizedStringKey,
-         backgroundColor: Color = SmileID.theme.accent,
-         clicked: @escaping (() -> Void)) {
+    public init(
+        style: Style = .primary,
+        title: LocalizedStringKey,
+        backgroundColor: Color = SmileID.theme.accent,
+        clicked: @escaping () -> Void
+    ) {
         self.style = style
         self.title = title
         self.backgroundColor = backgroundColor
@@ -59,23 +62,25 @@ public struct SmileButton: View {
                     .font(SmileID.theme.button)
                     .frame(maxWidth: .infinity)
             }
-            .foregroundColor(titleColor)
-            .background(backgroundColor)
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(borderColor, lineWidth: 4)
-            )
-            .cornerRadius(cornerRadius)
-            .frame(maxWidth: .infinity)
+                .foregroundColor(titleColor)
+                .background(backgroundColor)
+                .overlay(
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .stroke(borderColor, lineWidth: 4)
+                )
+                .cornerRadius(cornerRadius)
+                .frame(maxWidth: .infinity)
         }
     }
 }
 
 struct SmileButton_Previews: PreviewProvider {
     static var previews: some View {
-        SmileButton(title: "Instructions.Action",
-                    backgroundColor: .blue,
-                    clicked: {})
-        .environment(\.locale, Locale(identifier: "en"))
+        SmileButton(
+            title: "Instructions.Action",
+            backgroundColor: .blue,
+            clicked: {}
+        )
+            .environment(\.locale, Locale(identifier: "en"))
     }
 }

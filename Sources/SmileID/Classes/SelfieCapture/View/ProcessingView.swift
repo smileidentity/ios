@@ -21,10 +21,10 @@ struct ProcessingView: View {
                     .multilineTextAlignment(.center)
                     .font(SmileID.theme.header5)
                     .foregroundColor(SmileID.theme.tertiary)
-                .lineSpacing(1.3)
+                    .lineSpacing(1.3)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, 80)
+                .frame(maxWidth: .infinity)
+                .padding(.bottom, 80)
         }
             .padding()
             .background(SmileID.theme.backgroundMain)
@@ -35,8 +35,10 @@ struct ProcessingView: View {
 
 struct ProcessingView_Previews: PreviewProvider {
     static var previews: some View {
-        ProcessingView(image: SmileIDResourcesHelper.FaceOutline,
-                       titleKey: "Confirmation.ProcessingSelfie",
-                       calloutKey: "Confirmation.Time")
+        ProcessingView(
+            image: SmileIDResourcesHelper.FaceOutline,
+            titleKey: "Confirmation.ProcessingSelfie",
+            calloutKey: "Confirmation.Time"
+        )
     }
 }

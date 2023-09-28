@@ -3,7 +3,11 @@ import Combine
 
 public protocol URLUploadSessionPublisher {
     var delegate: URLDelegate { get }
-    func upload(request: URLRequest, data: Data?, _ callback: @escaping (Data?, URLResponse?, Error?) -> Void)
+    func upload(
+        request: URLRequest,
+        data: Data?,
+        _ callback: @escaping (Data?, URLResponse?, Error?) -> Void
+    )
 }
 
 class URLSessionRestServiceClient: NSObject, RestServiceClient {
@@ -11,15 +15,17 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     let uploadSession: URLUploadSessionPublisher
     let decoder = JSONDecoder()
 
-    public init(session: URLSessionPublisher = URLSession.shared,
-                uploadSession: URLUploadSessionPublisher = URLUploadSessionPublisherImplementation()) {
+    public init(
+        session: URLSessionPublisher = URLSession.shared,
+        uploadSession: URLUploadSessionPublisher = URLUploadSessionPublisherImplementation()
+    ) {
         self.session = session
         self.uploadSession = uploadSession
     }
 
     func send<T: Decodable>(request: RestRequest) -> AnyPublisher<T, Error> {
         do {
-         let urlRequest = try request.getURLRequest()
+            let urlRequest = try request.getURLRequest()
             return session.send(request: urlRequest)
                 .tryMap(checkStatusCode)
                 .decode(type: T.self, decoder: decoder)
@@ -67,8 +73,12 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
 
     private func checkStatusCode(_ element: URLSession.DataTaskPublisher.Output) throws -> Data {
         guard let httpResponse = element.response as? HTTPURLResponse,
-              httpResponse.isSuccess else {
-            if let decodedError = try? JSONDecoder().decode(SmileIDErrorResponse.self, from: element.data) {
+              httpResponse.isSuccess
+        else {
+            if let decodedError = try? JSONDecoder().decode(
+                SmileIDErrorResponse.self,
+                from: element.data
+            ) {
                 throw SmileIDError.api(decodedError.code, decodedError.message)
             }
             throw SmileIDError.httpError((element.response as? HTTPURLResponse)?.statusCode ?? 500, element.data)
@@ -93,14 +103,15 @@ public class URLDelegate: NSObject, URLSessionTaskDelegate {
         self.subject = subject
     }
 
-    public func urlSession(_ session: URLSession,
-                           task: URLSessionTask,
-                           didSendBodyData bytesSent: Int64,
-                           totalBytesSent: Int64,
-                           totalBytesExpectedToSend: Int64) {
+    public func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didSendBodyData bytesSent: Int64,
+        totalBytesSent: Int64,
+        totalBytesExpectedToSend: Int64
+    ) {
         subject.send(.progress(percentage: task.progress.fractionCompleted))
     }
-
 }
 
 public final class URLUploadSessionPublisherImplementation: URLUploadSessionPublisher {
@@ -114,12 +125,16 @@ public final class URLUploadSessionPublisherImplementation: URLUploadSessionPubl
 
     public init() {}
 
-    public func upload(request: URLRequest, data: Data?, _ callback: @escaping (Data?, URLResponse?, Error?) -> Void) {
+    public func upload(
+        request: URLRequest,
+        data: Data?,
+        _ callback: @escaping (Data?, URLResponse?, Error?) -> Void
+    ) {
         session.uploadTask(with: request, from: data) { data, response, error in
-            callback(data, response, error)
-        }.resume()
+                callback(data, response, error)
+            }
+            .resume()
     }
-
 }
 
 public enum UploadResponse: Equatable {

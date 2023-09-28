@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct NavigationBar: View {
-    var backButtonHandler: (() -> Void)
+    let backButtonHandler: () -> Void
     var body: some View {
         HStack {
             Button {

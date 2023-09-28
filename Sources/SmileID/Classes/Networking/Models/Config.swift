@@ -15,11 +15,11 @@ public extension Config {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let data = try Data(contentsOf: url)
         let decodedConfig = try decoder.decode(Config.self, from: data)
-        self.partnerId = decodedConfig.partnerId
-        self.authToken = decodedConfig.authToken
-        self.prodUrl = decodedConfig.prodUrl
-        self.testUrl = decodedConfig.testUrl
-        self.prodLambdaUrl = decodedConfig.prodLambdaUrl
-        self.testLambdaUrl = decodedConfig.testLambdaUrl
+        partnerId = decodedConfig.partnerId
+        authToken = decodedConfig.authToken
+        prodUrl = decodedConfig.prodUrl
+        testUrl = decodedConfig.testUrl
+        prodLambdaUrl = decodedConfig.prodLambdaUrl
+        testLambdaUrl = decodedConfig.testLambdaUrl
     }
 }

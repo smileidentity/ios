@@ -2,9 +2,9 @@ import SwiftUI
 import SmileID
 
 struct ResourceCell: View {
-    var title: String
-    var caption: String
-    var action: (() -> Void)
+    let title: String
+    let caption: String
+    var action: () -> Void
 
     var body: some View {
         Button(action: action) {
@@ -31,6 +31,9 @@ struct ResourceCell: View {
 
 struct ResourceCell_Previews: PreviewProvider {
     static var previews: some View {
-        ResourceCell(title: "Explore Documentation", caption: "Read everything relating to our stack") {}
+        ResourceCell(
+            title: "Explore Documentation",
+            caption: "Read everything relating to our stack"
+        ) {}
     }
 }

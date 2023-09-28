@@ -5,20 +5,21 @@ struct IDTypeRow: View {
     var idType: IdType
     @Binding var isSelected: Bool
     var body: some View {
-        Button(action: {
-            isSelected.toggle()
-        }, label: {
-            HStack {
-                Text(idType.name)
-                    .multilineTextAlignment(.leading)
-                    .foregroundColor(SmileID.theme.accent)
-                    .padding()
-                Spacer()
-                Image(systemName: isSelected ? "checkmark.circle" : "circle")
-                    .foregroundColor(SmileID.theme.accent)
-                    .padding()
+        Button(
+            action: { isSelected.toggle() },
+            label: {
+                HStack {
+                    Text(idType.name)
+                        .multilineTextAlignment(.leading)
+                        .foregroundColor(SmileID.theme.accent)
+                        .padding()
+                    Spacer()
+                    Image(systemName: isSelected ? "checkmark.circle" : "circle")
+                        .foregroundColor(SmileID.theme.accent)
+                        .padding()
+                }
+                    .frame(height: 59)
             }
-            .frame(height: 59)
-        })
+        )
     }
 }

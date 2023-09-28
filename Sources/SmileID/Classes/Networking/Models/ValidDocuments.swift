@@ -48,14 +48,16 @@ public struct IdType: Codable, Identifiable, Equatable {
     public let hasBack: Bool
     public let name: String
 
-    public init(code: String,
-                example: [String],
-                hasBack: Bool,
-                name: String) {
+    public init(
+        code: String,
+        example: [String],
+        hasBack: Bool,
+        name: String
+    ) {
         self.code = code
         self.example = example
         self.hasBack = hasBack
-        self.name = name        
+        self.name = name
     }
 
     enum CodingKeys: String, CodingKey {
@@ -72,9 +74,9 @@ public struct ProductsConfigRequest: Encodable {
     public let signature: String?
 
     public init() {
-        self.partnerId = SmileID.config.partnerId
-        self.timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
-        self.signature = try? calculateSignature(timestamp: timestamp)
+        partnerId = SmileID.config.partnerId
+        timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
+        signature = try? calculateSignature(timestamp: timestamp)
     }
 
     public init(partnerId: String, timestamp: String, signature: String) {

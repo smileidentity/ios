@@ -13,7 +13,6 @@ struct CountryListView: View {
         }
     }
 
-
     init(homeViewModel: HomeViewModel) {
         self.homeViewModel = homeViewModel
         viewModel.getValidDocuments()
@@ -26,22 +25,31 @@ struct CountryListView: View {
                 TextField("Search", text: $searchText)
                     .autocapitalization(.none)
             }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            .padding([.horizontal, .top])
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .padding([.horizontal, .top])
             if viewModel.isLoading {
                 ActivityIndicator(isAnimating: viewModel.isLoading)
                 Spacer()
             } else {
                 List(filteredCountries) { validDocument in
-                    CountryRow(document: validDocument, action: { document in
-                        router.push(.documentSelectorScreen(document: document, homeViewModel: homeViewModel))
-                    })
+                    CountryRow(
+                        document: validDocument,
+                        action: { document in
+                            router.push(.documentSelectorScreen(
+                                document: document,
+                                homeViewModel: homeViewModel
+                            ))
+                        }
+                    )
                 }
             }
         }
-        .padding(.top, 50)
-        .overlay(NavigationBar(backButtonHandler: {router.dismiss()}, title: "Select Country of Issue"))
+            .padding(.top, 50)
+            .overlay(NavigationBar(
+                backButtonHandler: router.dismiss,
+                title: "Select Country of Issue"
+            ))
     }
 }

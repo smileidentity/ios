@@ -13,7 +13,6 @@ public struct HTTPHeader: Equatable {
 extension Array where Element == HTTPHeader {
 
     func toDictionary() -> [String: String] {
-        return reduce(into: [String: String]()) { $0[$1.name] = $1.value }
+        reduce(into: [String: String]()) { $0[$1.name] = $1.value }
     }
-
 }

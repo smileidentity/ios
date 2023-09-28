@@ -23,34 +23,28 @@ struct TransparentRectangleView: UIViewRepresentable {
 class TransparentCenterView: UIView {
 
     var transparentRectSize = CGSize(width: 100, height: 100) {
-        didSet {
-            setNeedsDisplay()
-        }
+        didSet { setNeedsDisplay() }
     }
     var borderWidth: CGFloat = 10.0 {
-        didSet {
-            setNeedsDisplay()
-        }
+        didSet { setNeedsDisplay() }
     }
     var borderColor: UIColor = .green {
-        didSet {
-            setNeedsDisplay()
-        }
+        didSet { setNeedsDisplay() }
     }
     var translucentColor: UIColor = .white.withAlphaComponent(0.6)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .clear
+        backgroundColor = .clear
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.backgroundColor = .clear
+        backgroundColor = .clear
     }
 
     override func draw(_ rect: CGRect) {
-        guard let context = UIGraphicsGetCurrentContext() else { return }
+        guard UIGraphicsGetCurrentContext() != nil else { return }
 
         // Create a path for the full view
         let fullViewPath = UIBezierPath(rect: rect)

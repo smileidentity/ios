@@ -11,7 +11,9 @@ struct ImagePicker: UIViewControllerRepresentable {
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
     var delegate: ImagePickerDelegate?
 
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
+    func makeUIViewController(
+        context: UIViewControllerRepresentableContext<ImagePicker>
+    ) -> UIImagePickerController {
 
         let imagePicker = UIImagePickerController()
         imagePicker.allowsEditing = false
@@ -21,8 +23,10 @@ struct ImagePicker: UIViewControllerRepresentable {
         return imagePicker
     }
 
-    func updateUIViewController(_ uiViewController: UIImagePickerController,
-                                context: UIViewControllerRepresentableContext<ImagePicker>) {
+    func updateUIViewController(
+        _ uiViewController: UIImagePickerController,
+        context: UIViewControllerRepresentableContext<ImagePicker>
+    ) {
 
     }
 
@@ -30,7 +34,10 @@ struct ImagePicker: UIViewControllerRepresentable {
         Coordinator(self)
     }
 
-    final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    final class Coordinator:
+        NSObject,
+        UIImagePickerControllerDelegate,
+        UINavigationControllerDelegate {
 
         var parent: ImagePicker
 
@@ -38,13 +45,14 @@ struct ImagePicker: UIViewControllerRepresentable {
             self.parent = parent
         }
 
-        func imagePickerController(_ picker: UIImagePickerController,
-                                   didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+        ) {
             if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
                 parent.delegate?.didSelect(image: image)
                 parent.presentationMode.wrappedValue.dismiss()
             }
         }
-
     }
 }

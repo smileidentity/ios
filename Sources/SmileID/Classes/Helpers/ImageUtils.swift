@@ -8,51 +8,62 @@ import Vision
 import MobileCoreServices
 
 class ImageUtils {
-    class func captureFace(from buffer: CVPixelBuffer,
-                           faceGeometry: FaceGeometryModel,
-                           agentMode: Bool,
-                           finalSize: CGSize,
-                           screenImageSize: CGSize,
-                           orientation: CGImagePropertyOrientation = .right
+    class func captureFace(
+        from buffer: CVPixelBuffer,
+        faceGeometry: FaceGeometryModel,
+        agentMode: Bool,
+        finalSize: CGSize,
+        screenImageSize: CGSize,
+        orientation: CGImagePropertyOrientation = .right
     ) -> Data? {
         guard !faceGeometry.boundingBox.isNaN else { return nil }
         CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)
-        defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly)}
-        let cameraAspectRatio = CGFloat(CVPixelBufferGetWidth(buffer))/CGFloat(CVPixelBufferGetHeight(buffer))
-        let imagewidth = screenImageSize.height * cameraAspectRatio
+        defer { CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags.readOnly) }
+        let bufferWidth = CGFloat(CVPixelBufferGetWidth(buffer))
+        let bufferHeight = CGFloat(CVPixelBufferGetHeight(buffer))
+        let cameraAspectRatio = bufferWidth / bufferHeight
+        let imageWidth = screenImageSize.height * cameraAspectRatio
         let imageHeight = screenImageSize.width * cameraAspectRatio
-        let trueImageSize = CGSize(width: imagewidth, height: screenImageSize.height)
+        let trueImageSize = CGSize(width: imageWidth, height: screenImageSize.height)
 
         // ratio of the true image width to displayed image width
-        let xcutoffregion: CGFloat = max(imagewidth, screenImageSize.width) / min(imagewidth, screenImageSize.width)
-        var ycutoffregion: CGFloat = max(imageHeight, screenImageSize.height) / min(imageHeight, screenImageSize.height)
+        let xCutOffRegion: CGFloat =
+            max(imageWidth, screenImageSize.width) / min(imageWidth, screenImageSize.width)
+        var yCutOffRegion: CGFloat =
+            max(imageHeight, screenImageSize.height) / min(imageHeight, screenImageSize.height)
 
-        // if pixel bufffer is gotten from AVCaptureSession, ycutoff is not required
-        if orientation == .up || orientation ==  .upMirrored {
-            ycutoffregion = 1
+        // if pixel buffer is gotten from AVCaptureSession, yCutOff is not required
+        if orientation == .up || orientation == .upMirrored {
+            yCutOffRegion = 1
         }
         // scale down the original buffer to match the size of whats displayed on screen
-        guard let scaledDownBuffer = resizePixelBuffer(buffer, size: trueImageSize) else { return nil }
+        guard let scaledDownBuffer = resizePixelBuffer(buffer, size: trueImageSize) else {
+            return nil
+        }
 
         // calculate crop rect
 
         let cropL = max(faceGeometry.boundingBox.width, faceGeometry.boundingBox.height)
-        let cropRect = CGRect(x: faceGeometry.boundingBox.origin.x * xcutoffregion,
-                                                                  y: faceGeometry.boundingBox.origin.y * ycutoffregion,
-                                                                  width: cropL,
-                                                                  height: cropL)
-        let finalrect = increaseRect(rect: cropRect, byPercentage: 1)
+        let cropRect = CGRect(
+            x: faceGeometry.boundingBox.origin.x * xCutOffRegion,
+            y: faceGeometry.boundingBox.origin.y * yCutOffRegion,
+            width: cropL,
+            height: cropL
+        )
+        let finalRect = increaseRect(rect: cropRect, byPercentage: 1)
 
         // crop face from the buffer returned in the above operation and return jpg
-            return cropFace(scaledDownBuffer,
-                            cropFrame: finalrect,
-                            scaleSize: finalSize, orientation: orientation)
+        return cropFace(scaledDownBuffer,
+                        cropFrame: finalRect,
+                        scaleSize: finalSize, orientation: orientation)
     }
 
-    class func resizePixelBufferToWidth(_ pixelBuffer: CVPixelBuffer,
-                                        width: Int,
-                                        exif: [String: Any]?,
-                                        orientation: CGImagePropertyOrientation = .right) -> Data? {
+    class func resizePixelBufferToWidth(
+        _ pixelBuffer: CVPixelBuffer,
+        width: Int,
+        exif: [String: Any]?,
+        orientation: CGImagePropertyOrientation = .right
+    ) -> Data? {
         var image = CIImage(cvPixelBuffer: pixelBuffer)
         image = image.oriented(orientation)
         guard let cgImage = CIContext(options: nil).createCGImage(image, from: image.extent) else {
@@ -71,13 +82,21 @@ class ImageUtils {
 
         let newHeight = Int(CGFloat(width) * aspectRatio)
 
-        guard let resizedImage = resizeCGImage(cgImage, newWidth: width, newHeight: newHeight) else {
+        guard let resizedImage = resizeCGImage(
+            cgImage,
+            newWidth: width,
+            newHeight: newHeight
+        )
+        else {
             return nil
         }
         return convertCGImageToJPG(cgImage: resizedImage, exifDictionary: exif)
     }
 
-    func rotatePixelBuffer(_ pixelBuffer: CVPixelBuffer, orientation: CGImagePropertyOrientation) -> CVPixelBuffer? {
+    func rotatePixelBuffer(
+        _ pixelBuffer: CVPixelBuffer,
+        orientation: CGImagePropertyOrientation
+    ) -> CVPixelBuffer? {
         var ciImage = CIImage(cvPixelBuffer: pixelBuffer)
 
         switch orientation {
@@ -89,10 +108,14 @@ class ImageUtils {
 
         // Create new pixel buffer
         var newPixelBuffer: CVPixelBuffer?
-        CVPixelBufferCreate(kCFAllocatorDefault, Int(ciImage.extent.size.width),
-                            Int(ciImage.extent.size.height),
-                            CVPixelBufferGetPixelFormatType(pixelBuffer),
-                            nil, &newPixelBuffer)
+        CVPixelBufferCreate(
+            kCFAllocatorDefault,
+            Int(ciImage.extent.size.width),
+            Int(ciImage.extent.size.height),
+            CVPixelBufferGetPixelFormatType(pixelBuffer),
+            nil,
+            &newPixelBuffer
+        )
 
         // Create CIContext
         let context = CIContext()
@@ -105,14 +128,21 @@ class ImageUtils {
         return newPixelBuffer
     }
 
-    private class func resizeCGImage(_ originalImage: CGImage, newWidth: Int, newHeight: Int) -> CGImage? {
+    private class func resizeCGImage(
+        _ originalImage: CGImage,
+        newWidth: Int,
+        newHeight: Int
+    ) -> CGImage? {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        guard let context = CGContext(data: nil, width: newWidth,
-                                      height: newHeight,
-                                      bitsPerComponent: 8,
-                                      bytesPerRow: newWidth * 4,
-                                      space: colorSpace,
-                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
+        guard let context = CGContext(
+            data: nil, width: newWidth,
+            height: newHeight,
+            bitsPerComponent: 8,
+            bytesPerRow: newWidth * 4,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        )
+        else {
             return nil
         }
         context.interpolationQuality = .high
@@ -128,11 +158,13 @@ class ImageUtils {
         return rect.insetBy(dx: -adjustmentWidth, dy: -adjustmentHeight)
     }
 
-    private class func cropFace(_ buffer: CVPixelBuffer,
-                                cropFrame: CGRect,
-                                scaleSize: CGSize,
-                                orientation: CGImagePropertyOrientation,
-                                isGreyScale: Bool = false) -> Data? {
+    private class func cropFace(
+        _ buffer: CVPixelBuffer,
+        cropFrame: CGRect,
+        scaleSize: CGSize,
+        orientation: CGImagePropertyOrientation,
+        isGreyScale: Bool = false
+    ) -> Data? {
         var ciImage = CIImage(cvPixelBuffer: buffer).oriented(orientation)
         if isGreyScale {
             let greyFilter = CIFilter(name: "CIPhotoEffectNoir")
@@ -140,15 +172,23 @@ class ImageUtils {
             ciImage = greyFilter?.outputImage ?? ciImage
         }
         guard let cgImage = convertCIImageToCGImage(ciImage: ciImage) else { return nil }
-        guard let croppedImage = cgImage.cropping(to: cropFrame)?.resize(size: scaleSize) else { return nil }
+        guard let croppedImage = cgImage.cropping(to: cropFrame)?.resize(size: scaleSize) else {
+            return nil
+        }
         return convertCGImageToJPG(cgImage: croppedImage)
     }
 
-    private class func convertCGImageToJPG(cgImage: CGImage,
-                                           compressionQuality: CGFloat = 0.8,
-                                           exifDictionary: [String: Any]? = nil) -> Data? {
+    private class func convertCGImageToJPG(
+        cgImage: CGImage,
+        compressionQuality: CGFloat = 0.8,
+        exifDictionary: [String: Any]? = nil
+    ) -> Data? {
         let jpgData = NSMutableData()
-        guard let destination = CGImageDestinationCreateWithData(jpgData, kUTTypeJPEG, 1, nil) else { return nil }
+
+        guard let destination = CGImageDestinationCreateWithData(jpgData, kUTTypeJPEG, 1, nil)
+        else {
+            return nil
+        }
 
         var options: [String: Any] = [
             kCGImageDestinationLossyCompressionQuality as String: compressionQuality
@@ -189,11 +229,14 @@ class ImageUtils {
     private class func createPixelBuffer(size: CGSize, pixelFormat: OSType) -> CVPixelBuffer? {
         let attributes = metalCompatiblityAttributes() as CFDictionary
         var pixelBuffer: CVPixelBuffer?
-        let status = CVPixelBufferCreate(nil,
-                                         Int(size.width),
-                                         Int(size.height),
-                                         pixelFormat, attributes,
-                                         &pixelBuffer)
+        let status = CVPixelBufferCreate(
+            nil,
+            Int(size.width),
+            Int(size.height),
+            pixelFormat,
+            attributes,
+            &pixelBuffer
+        )
         if status != kCVReturnSuccess {
             print("Error: could not create pixel buffer", status)
             return nil
@@ -201,17 +244,22 @@ class ImageUtils {
         return pixelBuffer
     }
 
-    class func resizePixelBuffer(from srcPixelBuffer: CVPixelBuffer,
-                                 to dstPixelBuffer: CVPixelBuffer,
-                                 cropFrame: CGRect,
-                                 scaleSize: CGSize) {
+    class func resizePixelBuffer(
+        from srcPixelBuffer: CVPixelBuffer,
+        to dstPixelBuffer: CVPixelBuffer,
+        cropFrame: CGRect,
+        scaleSize: CGSize
+    ) {
         let ciImage = CIImage(cvPixelBuffer: srcPixelBuffer)
 
         // Create a new CIImage with the specified crop and scale
         let croppedImage = ciImage.cropped(to: cropFrame)
-        let scaledImage = croppedImage.transformed(by: CGAffineTransform(
-            scaleX: scaleSize.width / croppedImage.extent.width,
-            y: scaleSize.height / croppedImage.extent.height))
+        let scaledImage = croppedImage.transformed(
+            by: CGAffineTransform(
+                scaleX: scaleSize.width / croppedImage.extent.width,
+                y: scaleSize.height / croppedImage.extent.height
+            )
+        )
 
         // Create a CIContext to render the CIImage to the destination pixel buffer
         let ciContext = CIContext(options: nil)
@@ -220,33 +268,43 @@ class ImageUtils {
         ciContext.render(scaledImage, to: dstPixelBuffer)
     }
 
-    private class func resizePixelBuffer(_ srcPixelBuffer: CVPixelBuffer,
-                                         cropFrame: CGRect,
-                                         scaleSize: CGSize) -> CVPixelBuffer? {
+    private class func resizePixelBuffer(
+        _ srcPixelBuffer: CVPixelBuffer,
+        cropFrame: CGRect,
+        scaleSize: CGSize
+    ) -> CVPixelBuffer? {
 
         let pixelFormat = CVPixelBufferGetPixelFormatType(srcPixelBuffer)
-        let dstPixelBuffer = createPixelBuffer(size: scaleSize,
-                                               pixelFormat: pixelFormat)
+        let dstPixelBuffer = createPixelBuffer(
+            size: scaleSize,
+            pixelFormat: pixelFormat
+        )
 
         if let dstPixelBuffer = dstPixelBuffer {
             CVBufferPropagateAttachments(srcPixelBuffer, dstPixelBuffer)
 
-            resizePixelBuffer(from: srcPixelBuffer, to: dstPixelBuffer,
-                              cropFrame: cropFrame,
-                              scaleSize: scaleSize)
+            resizePixelBuffer(
+                from: srcPixelBuffer, to: dstPixelBuffer,
+                cropFrame: cropFrame,
+                scaleSize: scaleSize
+            )
         }
 
         return dstPixelBuffer
     }
 
-    private class func resizePixelBuffer(_ pixelBuffer: CVPixelBuffer,
-                                         size: CGSize) -> CVPixelBuffer? {
+    private class func resizePixelBuffer(
+        _ pixelBuffer: CVPixelBuffer,
+        size: CGSize
+    ) -> CVPixelBuffer? {
         let imageWidth = CGFloat(CVPixelBufferGetWidth(pixelBuffer))
         let imageHeight = CGFloat(CVPixelBufferGetHeight(pixelBuffer))
         let cropFrame = CGRect(x: 0, y: 0, width: imageWidth, height: imageHeight)
-        return resizePixelBuffer(pixelBuffer,
-                                 cropFrame: cropFrame,
-                                 scaleSize: size)
+        return resizePixelBuffer(
+            pixelBuffer,
+            cropFrame: cropFrame,
+            scaleSize: size
+        )
     }
 }
 
@@ -255,17 +313,20 @@ extension CGImage {
         let width: Int = Int(size.width)
         let height: Int = Int(size.height)
 
-        let bytesPerPixel = self.bitsPerPixel / self.bitsPerComponent
+        let bytesPerPixel = bitsPerPixel / bitsPerComponent
         let destBytesPerRow = width * bytesPerPixel
 
-        guard let colorSpace = self.colorSpace else { return nil }
-        guard let context = CGContext(data: nil,
-                                      width: width,
-                                      height: height,
-                                      bitsPerComponent: self.bitsPerComponent,
-                                      bytesPerRow: destBytesPerRow,
-                                      space: colorSpace,
-                                      bitmapInfo: self.alphaInfo.rawValue) else { return nil }
+        guard let colorSpace = colorSpace else { return nil }
+        guard let context = CGContext(
+            data: nil,
+            width: width,
+            height: height,
+            bitsPerComponent: self.bitsPerComponent,
+            bytesPerRow: destBytesPerRow,
+            space: colorSpace,
+            bitmapInfo: self.alphaInfo.rawValue
+        )
+        else { return nil }
 
         context.interpolationQuality = .high
         context.draw(self, in: CGRect(x: 0, y: 0, width: width, height: height))

@@ -7,9 +7,11 @@ public protocol SmartSelfieResultDelegate: AnyObject {
     ///   - selfieImage: The local url of the colour selfie image captured
     ///   - livenessImages: An array of local urls of images captured for liveness checks
     ///   - jobStatusResponse: The response object after submitting the jib
-    func didSucceed(selfieImage: URL,
-                    livenessImages: [URL],
-                    jobStatusResponse: JobStatusResponse)
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: JobStatusResponse
+    )
 
     /// An error occured during the selfie capture session
     /// - Parameter error: The error returned from a failed selfie capture

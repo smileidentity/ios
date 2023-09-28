@@ -7,6 +7,6 @@ protocol URLSessionPublisher {
 
 extension URLSession: URLSessionPublisher {
     func send(request: URLRequest) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
-        return dataTaskPublisher(for: request).eraseToAnyPublisher()
+        dataTaskPublisher(for: request).eraseToAnyPublisher()
     }
 }

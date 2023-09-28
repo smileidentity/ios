@@ -1,12 +1,13 @@
 import SwiftUI
 
 struct CaptureButton: View {
-    var action: (() -> Void)
+    let action: () -> Void
     var body: some View {
-        Button(action: action, label: {
-            Image(uiImage: SmileIDResourcesHelper.Capture)
-        })
-        .frame(width: 70, height: 70, alignment: .center)
+        Button(
+            action: action,
+            label: { Image(uiImage: SmileIDResourcesHelper.Capture) }
+        )
+            .frame(width: 70, height: 70, alignment: .center)
     }
 }
 

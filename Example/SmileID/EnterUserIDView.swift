@@ -12,7 +12,7 @@ struct EnterUserIDView: View {
         NavigationView {
             if viewModel.shouldDismiss {
                 let _ = DispatchQueue.main.async {
-                     presentationMode.wrappedValue.dismiss()
+                    presentationMode.wrappedValue.dismiss()
                 }
             }
             VStack(spacing: 5) {
@@ -22,29 +22,31 @@ struct EnterUserIDView: View {
                 VStack {
                     SmileTextField(field: $userId, placeholder: "User ID")
                         .multilineTextAlignment(.center)
-                    NavigationLink(destination: SmileID.smartSelfieAuthenticationScreen(userId: userId,
-                                                                                        allowAgentMode: true,
-                                                                                        delegate: viewModel)
-                        .navigationBarBackButtonHidden(true), isActive: $goToAuth ) {
-                    }
-                    SmileButton(title: "Continue", clicked: {
-                        goToAuth = true
-                    })
-                    .disabled(userId.isEmpty)
-                    .padding()
+                    NavigationLink(
+                        destination: SmileID.smartSelfieAuthenticationScreen(
+                            userId: userId,
+                            allowAgentMode: true,
+                            delegate: viewModel
+                        ).navigationBarBackButtonHidden(true), isActive: $goToAuth
+                    ) {}
+
+                    SmileButton(title: "Continue", clicked: { goToAuth = true })
+                        .disabled(userId.isEmpty)
+                        .padding()
                 }
                 Spacer()
             }
-            .padding(.top, 50)
-            .background(offWhite.edgesIgnoringSafeArea(.all))
-            .navigationBarItems(leading: Button {
-                presentationMode.wrappedValue.dismiss()
-            } label: {
-                Image(uiImage: SmileIDResourcesHelper.Close)
-                    .padding()
-            })
+                .padding(.top, 50)
+                .background(offWhite.edgesIgnoringSafeArea(.all))
+                .navigationBarItems(
+                    leading: Button { presentationMode.wrappedValue.dismiss() }
+                    label: {
+                        Image(uiImage: SmileIDResourcesHelper.Close)
+                            .padding()
+                    }
+                )
         }
-        .navigationBarBackButtonHidden()
+            .navigationBarBackButtonHidden()
     }
 }
 
@@ -60,15 +62,19 @@ class UserIDViewModel: ObservableObject, SmartSelfieResultDelegate {
 
     func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {
         shouldDismiss = true
-            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureComplete"),
-                                                         object: nil,
-                                                         userInfo: ["Response": jobStatusResponse]))
+        NotificationCenter.default.post(Notification(
+            name: Notification.Name(rawValue: "SelfieCaptureComplete"),
+            object: nil,
+            userInfo: ["Response": jobStatusResponse]
+        ))
     }
 
     func didError(error: Error) {
         shouldDismiss = true
-        NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "SelfieCaptureError"),
-                                                     object: nil,
-                                                     userInfo: ["Error": error]))
+        NotificationCenter.default.post(Notification(
+            name: Notification.Name(rawValue: "SelfieCaptureError"),
+            object: nil,
+            userInfo: ["Error": error]
+        ))
     }
 }

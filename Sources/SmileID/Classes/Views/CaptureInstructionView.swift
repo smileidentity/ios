@@ -6,8 +6,8 @@ enum CaptureType: Equatable {
 }
 
 enum Position {
-     case front
-     case back
+    case front
+    case back
 }
 
 public struct CaptureInstruction {
@@ -31,17 +31,20 @@ public struct CaptureInstructionView<TargetView: View>: View {
     private var allowGalleryUpload: Bool
     @EnvironmentObject var router: Router<NavigationDestination>
     @State private var goesToDetail: Bool = false
-    init(image: UIImage,
-         title: String,
-         callOut: String,
-         buttonTitle: LocalizedStringKey,
-         instructions: [CaptureInstruction],
-         captureType: CaptureType,
-         destination: NavigationDestination,
-         secondaryDestination: NavigationDestination? = nil,
-         skipDestination: NavigationDestination? = nil,
-         showAttribution: Bool,
-         allowGalleryUpload: Bool = false) {
+
+    init(
+        image: UIImage,
+        title: String,
+        callOut: String,
+        buttonTitle: LocalizedStringKey,
+        instructions: [CaptureInstruction],
+        captureType: CaptureType,
+        destination: NavigationDestination,
+        secondaryDestination: NavigationDestination? = nil,
+        skipDestination: NavigationDestination? = nil,
+        showAttribution: Bool,
+        allowGalleryUpload: Bool = false
+    ) {
         self.image = image
         self.title = title
         self.callOut = callOut
@@ -75,38 +78,45 @@ public struct CaptureInstructionView<TargetView: View>: View {
                             .lineSpacing(1.3)
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                    .padding(.bottom, 20)
+                        .padding(.bottom, 20)
                     VStack(alignment: .leading, spacing: 30) {
                         ForEach(instructions, id: \.title) { instruction in
-                            makeInstruction(title: instruction.title,
-                                            body: instruction.instruction,
-                                            image: instruction.image)
+                            makeInstruction(
+                                title: instruction.title,
+                                body: instruction.instruction,
+                                image: instruction.image
+                            )
                         }
                     }
                 }
             }
             VStack(spacing: 5) {
                 if captureType == .document(.back), let skipDestination = skipDestination {
-                    Button(action: { router.push(skipDestination) }, label: {
-                        Text(SmileIDResourcesHelper.localizedString(for: "Action.Skip"))
-                            .multilineTextAlignment(.center)
-                            .font(SmileID.theme.button)
-                            .foregroundColor(SmileID.theme.tertiary.opacity(0.8))
-                    })
-                    .frame(height: 54)
-                }
-                SmileButton(title: buttonTitle,
-                            clicked: {
-                    router.push(destination)
-                            })
-                if allowGalleryUpload {
-                    SmileButton(style: .alternate, title:
-                                    "Action.UploadPhoto",
-                                clicked: {
-                        if let secondaryDestination = secondaryDestination {
-                            router.present(secondaryDestination)
+                    Button(
+                        action: { router.push(skipDestination) },
+                        label: {
+                            Text(SmileIDResourcesHelper.localizedString(for: "Action.Skip"))
+                                .multilineTextAlignment(.center)
+                                .font(SmileID.theme.button)
+                                .foregroundColor(SmileID.theme.tertiary.opacity(0.8))
                         }
-                    })
+                    )
+                        .frame(height: 54)
+                }
+                SmileButton(
+                    title: buttonTitle,
+                    clicked: { router.push(destination) }
+                )
+                if allowGalleryUpload {
+                    SmileButton(
+                        style: .alternate,
+                        title: "Action.UploadPhoto",
+                        clicked: {
+                            if let secondaryDestination = secondaryDestination {
+                                router.present(secondaryDestination)
+                            }
+                        }
+                    )
                 }
 
                 if showAttribution {
@@ -114,16 +124,19 @@ public struct CaptureInstructionView<TargetView: View>: View {
                         .padding()
                 }
             }
-        }.padding(EdgeInsets(top: 0,
-                             leading: 24,
-                             bottom: 24,
-                             trailing: 24))
+        }
+            .padding(EdgeInsets(
+                top: 0,
+                leading: 24,
+                bottom: 24,
+                trailing: 24
+            ))
             .background(SmileID.theme.backgroundMain.edgesIgnoringSafeArea(.all))
             .navigationBarHidden(true)
     }
 
     func makeInstruction(title: String, body: String, image: String) -> some View {
-        return HStack(spacing: 16) {
+        HStack(spacing: 16) {
             if let instructionImage = SmileIDResourcesHelper.image(image) {
                 Image(uiImage: instructionImage)
             }
