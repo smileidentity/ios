@@ -5,11 +5,11 @@ class DependencyAutoResolver {
     private static var instance: DependencyResolver = DependencyContainer.shared
 
     static func has<T>(_ dependency: T.Type) -> Bool {
-        return instance.has(dependency)
+        instance.has(dependency)
     }
 
     static func resolve<T>(_ dependency: T.Type) -> T {
-        return instance.resolve(dependency)
+        instance.resolve(dependency)
     }
 
     static func set(resolver: DependencyResolver) {

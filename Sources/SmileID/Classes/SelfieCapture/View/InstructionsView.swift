@@ -19,7 +19,12 @@ struct InstructionsView: View {
 
 struct InstructionsView_Previews: PreviewProvider {
     static var previews: some View {
-        InstructionsView(model: SelfieCaptureViewModel(userId: UUID().uuidString, jobId: UUID().uuidString,
-                                                       isEnroll: false))
+        InstructionsView(
+            model: SelfieCaptureViewModel(
+                userId: UUID().uuidString,
+                jobId: UUID().uuidString,
+                isEnroll: false
+            )
+        )
     }
 }

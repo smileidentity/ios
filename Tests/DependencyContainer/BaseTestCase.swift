@@ -7,7 +7,8 @@ class BaseTestCase: XCTestCase {
 
     override func setUpWithError() throws {
         mockDependencyContainer = DependencyContainer()
-        DependencyAutoResolver.set(resolver: mockDependencyContainer)    }
+        DependencyAutoResolver.set(resolver: mockDependencyContainer)
+    }
 
     override func tearDownWithError() throws {
         DependencyAutoResolver.reset()

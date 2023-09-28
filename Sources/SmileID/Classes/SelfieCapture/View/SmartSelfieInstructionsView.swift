@@ -25,31 +25,48 @@ public struct SmartSelfieInstructionsView: View {
                 callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Callout"),
                 buttonTitle: "Instructions.Action",
                 instructions: [
-                    CaptureInstruction(title: SmileIDResourcesHelper.localizedString(
-                        for: "Instructions.GoodLight"),
-                                       instruction: SmileIDResourcesHelper.localizedString(
-                                        for: "Instructions.GoodLightBody"),
-                                       image: Constants.ImageName.light),
-                    CaptureInstruction(title: SmileIDResourcesHelper.localizedString(
-                        for: "Instructions.ClearImage"),
-                                       instruction: SmileIDResourcesHelper.localizedString(
-                                        for: "Instructions.ClearImageBody"),
-                                       image: Constants.ImageName.clearImage),
-                    CaptureInstruction(title: SmileIDResourcesHelper.localizedString(
-                        for: "Instructions.RemoveObstructions"),
-                                       instruction: SmileIDResourcesHelper.localizedString(
-                                        for: "Instructions.RemoveObstructionsBody"),
-                                       image: Constants.ImageName.face)
-                ], captureType: .selfie,
-                destination: .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: selfieCaptureDelegate),
+                    CaptureInstruction(
+                        title: SmileIDResourcesHelper.localizedString(
+                            for: "Instructions.GoodLight"
+                        ),
+                        instruction: SmileIDResourcesHelper.localizedString(
+                            for: "Instructions.GoodLightBody"
+                        ),
+                        image: Constants.ImageName.light
+                    ),
+                    CaptureInstruction(
+                        title: SmileIDResourcesHelper.localizedString(
+                            for: "Instructions.ClearImage"
+                        ),
+                        instruction: SmileIDResourcesHelper.localizedString(
+                            for: "Instructions.ClearImageBody"
+                        ),
+                        image: Constants.ImageName.clearImage
+                    ),
+                    CaptureInstruction(
+                        title: SmileIDResourcesHelper.localizedString(
+                            for: "Instructions.RemoveObstructions"
+                        ),
+                        instruction: SmileIDResourcesHelper.localizedString(
+                            for: "Instructions.RemoveObstructionsBody"
+                        ),
+                        image: Constants.ImageName.face
+                    )
+                ],
+                captureType: .selfie,
+                destination: .selfieCaptureScreen(
+                    selfieCaptureViewModel: viewModel,
+                    delegate: selfieCaptureDelegate
+                ),
                 showAttribution: viewModel.showAttribution
             )
-            .padding(.top, 50)
-        }.overlay(
-            NavigationBar {
-                viewModel.handleClose()
-                router.dismiss()
-            }
-        )
+                .padding(.top, 50)
+        }
+            .overlay(
+                NavigationBar {
+                    viewModel.handleClose()
+                    router.dismiss()
+                }
+            )
     }
 }

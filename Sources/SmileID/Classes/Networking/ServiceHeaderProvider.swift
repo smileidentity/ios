@@ -22,7 +22,7 @@ public class DefaultServiceHeaderProvider: ServiceHeaderProvider {
 public extension HTTPHeader {
 
     static func contentType(value: String) -> HTTPHeader {
-        return HTTPHeader(name: "Content-Type", value: value)
+        HTTPHeader(name: "Content-Type", value: value)
     }
 
 }

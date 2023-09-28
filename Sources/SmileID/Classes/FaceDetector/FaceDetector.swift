@@ -14,9 +14,13 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
     private let maximumAspectRatioHistoryLength = 10
 
     func detectFaces(imageBuffer: CVImageBuffer) {
-        let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(completionHandler:
-                                                                                detectedFaceQualityRequest)
-        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
+        let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(
+            completionHandler:
+            detectedFaceQualityRequest
+        )
+        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(
+            completionHandler: detectedFaceRectangles
+        )
 
         // Use most recent models or fallback to older versions
         if #available(iOS 14.0, *) {
@@ -27,14 +31,18 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
 
         if #available(iOS 15.0, *) {
             detectFaceRectanglesRequest.revision = VNDetectFaceRectanglesRequestRevision3
-            runSequenceHandler(with: [detectFaceRectanglesRequest, detectCaptureQualityRequest],
-                               imageBuffer: imageBuffer)
+            runSequenceHandler(
+                with: [detectFaceRectanglesRequest, detectCaptureQualityRequest],
+                imageBuffer: imageBuffer
+            )
             return
         } else {
             detectFaceRectanglesRequest.revision = VNDetectFaceRectanglesRequestRevision2
         }
-        runSequenceHandler(with: [detectFaceRectanglesRequest, detectCaptureQualityRequest],
-                           imageBuffer: imageBuffer)
+        runSequenceHandler(
+            with: [detectFaceRectanglesRequest, detectCaptureQualityRequest],
+            imageBuffer: imageBuffer
+        )
     }
 
     func isSceneStable() -> Bool {
@@ -56,17 +64,19 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
     func detect(pixelBuffer: CVPixelBuffer) {
         guard let previousBuffer = previousPixelBuffer else {
             previousPixelBuffer = pixelBuffer
-            self.resetTranspositionHistory()
+            resetTranspositionHistory()
             return
         }
-        let registrationRequest = VNTranslationalImageRegistrationRequest(targetedCVPixelBuffer: pixelBuffer)
+        let registrationRequest = VNTranslationalImageRegistrationRequest(
+            targetedCVPixelBuffer: pixelBuffer
+        )
         runSequenceHandler(with: [registrationRequest], imageBuffer: previousBuffer)
 
         previousPixelBuffer = pixelBuffer
         if let results = registrationRequest.results {
             if let alignmentObservation = results.first {
                 let alignmentTransform = alignmentObservation.alignmentTransform
-                self.recordTransposition(CGPoint(x: alignmentTransform.tx, y: alignmentTransform.ty))
+                recordTransposition(CGPoint(x: alignmentTransform.tx, y: alignmentTransform.ty))
             }
         }
 
@@ -91,8 +101,11 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
     func runSequenceHandler(with requests: [VNRequest],
                             imageBuffer: CVImageBuffer) {
         do {
-            try sequenceHandler.perform(requests,
-                                        on: imageBuffer, orientation: .leftMirrored)
+            try sequenceHandler.perform(
+                requests,
+                on: imageBuffer,
+                orientation: .leftMirrored
+            )
         } catch {
             print(error.localizedDescription)
         }
@@ -101,7 +114,9 @@ class FaceDetector: NSObject, ARSCNViewDelegate {
 
 extension FaceDetector {
     func detectedFaceRectangles(request: VNRequest, error: Error?) {
-        guard let results = request.results as? [VNFaceObservation], let viewDelegate = viewDelegate else {
+        guard let results = request.results as? [VNFaceObservation],
+              let viewDelegate = viewDelegate
+        else {
             model?.perform(action: .noFaceDetected)
             return
         }
@@ -114,7 +129,9 @@ extension FaceDetector {
             model?.perform(action: .noFaceDetected)
             return
         }
-        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
+        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(
+            rect: result.boundingBox
+        )
 
         let faceObservationModel = FaceGeometryModel(
             boundingBox: convertedBoundingBox,
@@ -130,7 +147,8 @@ extension FaceDetector {
         }
 
         guard let results = request.results as? [VNFaceObservation],
-              let result = results.first else {
+              let result = results.first
+        else {
             model.perform(action: .noFaceDetected)
             return
         }
@@ -142,6 +160,6 @@ extension FaceDetector {
 
 extension CGRect {
     var isNaN: Bool {
-        return origin.x.isNaN || origin.y.isNaN || size.width.isNaN || size.height.isNaN
+        origin.x.isNaN || origin.y.isNaN || size.width.isNaN || size.height.isNaN
     }
 }

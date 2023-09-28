@@ -11,9 +11,11 @@ struct SmileView: View {
 
     var body: some View {
         let _ = router.push(initialDestination, animated: false)
-        NavigationControllerHost(navTitle: "",
-                                 navHidden: true,
-                                 router: router,
-                                 routeMap: ViewFactory().makeView(_:))
+        NavigationControllerHost(
+            navTitle: "",
+            navHidden: true,
+            router: router,
+            routeMap: ViewFactory().makeView(_:)
+        )
     }
 }

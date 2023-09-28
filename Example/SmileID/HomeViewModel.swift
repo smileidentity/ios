@@ -33,36 +33,33 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     @Published var toastMessage = ""
     @Published var showToast = false
 
-    private var userID = ""
     var returnedUserID = ""
 
     init() {
         subscribeToAuthCompletion()
     }
 
-    func generateUserID() -> String {
-        userID = UUID().uuidString
-        return userID
-    }
-
     func handleSmartSelfieEnrolmentTap() {
-        self.product = .smartSelfieEnrollment
+        product = .smartSelfieEnrollment
     }
 
     func handleSmartSelfieAuthTap() {
-        self.product = .smartSelfieAuthentication
+        product = .smartSelfieAuthentication
     }
 
     func handleDocumentVerificationTap() {
-        self.product = .documentVerification
+        product = .documentVerification
     }
 
     func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {
-        returnedUserID = userID
+        returnedUserID = jobStatusResponse.result?.partnerParams?.userId ?? ""
         UIPasteboard.general.string = returnedUserID
         showToast = true
         if jobStatusResponse.jobSuccess {
-            toastMessage = "Smart selfie enrollment completed successfully and the user id has beed copied to the clipboard"
+            toastMessage = """
+                           SmartSelfie Enrollment completed successfully. User ID has been copied to
+                            the clipboard
+                           """
         } else {
             toastMessage = "Job submitted successfully, results processing"
         }
@@ -74,23 +71,30 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     }
 
     func subscribeToAuthCompletion() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion),
-                                               name: Notification.Name(rawValue: "SelfieCaptureComplete"),
-                                               object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleAuthCompletion),
-                                               name: Notification.Name(rawValue: "SelfieCaptureError"),
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAuthCompletion),
+            name: Notification.Name(rawValue: "SelfieCaptureComplete"),
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAuthCompletion),
+            name: Notification.Name(rawValue: "SelfieCaptureError"),
+            object: nil
+        )
     }
 
-    func didSucceed(selfie: URL,
-                    documentFrontImage: URL,
-                    documentBackImage: URL?,
-                    jobStatusResponse: JobStatusResponse) {
-
+    func didSucceed(
+        selfie: URL,
+        documentFrontImage: URL,
+        documentBackImage: URL?,
+        jobStatusResponse: JobStatusResponse
+    ) {
     }
 
     @objc func handleAuthCompletion(_ notification: NSNotification) {
-        if let dict =  notification.userInfo as? NSDictionary {
+        if let dict = notification.userInfo as? NSDictionary {
             showToast = true
             if let error = dict["Error"] as? Error {
                 toastMessage = error.localizedDescription

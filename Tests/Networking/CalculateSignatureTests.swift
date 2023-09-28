@@ -15,6 +15,10 @@ final class CalculateSignatureTests: XCTestCase {
             return
         }
         let computedHMACBase64 = hmacData.base64EncodedString()
-        XCTAssertEqual(computedHMACBase64, expectedHMACBase64, "Calculated HMAC does not match expected value")
+        XCTAssertEqual(
+            computedHMACBase64,
+            expectedHMACBase64,
+            "Calculated HMAC does not match expected value"
+        )
     }
 }

@@ -8,28 +8,27 @@ enum Epilogue: String, CaseIterable {
 public struct EpilogueFont: FontType {
 
     public static func regular(with size: CGFloat) -> Font {
-        // TODO: the project doesn't currently have regular not sure why
-        return medium(with: SmileIDResourcesHelper.pointSize)
+        medium(with: SmileIDResourcesHelper.pointSize)
     }
 
     /// Size of font.
     public static var pointSize: CGFloat {
-        return SmileIDResourcesHelper.pointSize
+        SmileIDResourcesHelper.pointSize
     }
 
     /// Medium font.
     public static var medium: Font {
-        return medium(with: SmileIDResourcesHelper.pointSize)
+        medium(with: SmileIDResourcesHelper.pointSize)
     }
 
     /// Bold font.
     public static var bold: Font {
-        return bold(with: SmileIDResourcesHelper.pointSize)
+        bold(with: SmileIDResourcesHelper.pointSize)
     }
 
     /**
      Medium with size font.
-     - Parameter with size: A CGFLoat for the font size.
+     - Parameter size: A CGFloat for the font size.
      - Returns: A UIFont.
      */
     public static func medium(with size: CGFloat) -> Font {
@@ -39,7 +38,7 @@ public struct EpilogueFont: FontType {
 
     /**
      Bold with size font.
-     - Parameter with size: A CGFLoat for the font size.
+     - Parameter size: A CGFloat for the font size.
      - Returns: A UIFont.
      */
     public static func bold(with size: CGFloat) -> Font {

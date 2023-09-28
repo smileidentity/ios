@@ -4,10 +4,15 @@ struct ModalPresenter<ModalContent: View>: View {
     @Binding var isPresented: Bool
     let modalContent: ModalContent
     var centered: Bool
-    init(isPresented: Binding<Bool> = .constant(true), centered: Bool = true, @ViewBuilder content: () -> ModalContent) {
+
+    init(
+        isPresented: Binding<Bool> = .constant(true),
+        centered: Bool = true,
+        @ViewBuilder content: () -> ModalContent
+    ) {
         self._isPresented = isPresented
         self.centered = centered
-        self.modalContent = content()
+        modalContent = content()
     }
 
     var body: some View {
@@ -27,8 +32,8 @@ struct ModalPresenter<ModalContent: View>: View {
                     }
                     modalContent
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, centered ? 0 : 50)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, centered ? 0 : 50)
             }
         }
     }

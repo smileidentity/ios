@@ -32,8 +32,14 @@ public struct HostedWeb: Codable {
         basicKyc = try container.decode(CountryCodeToCountryInfo.self, forKey: .basicKyc)
         biometricKyc = try container.decode(CountryCodeToCountryInfo.self, forKey: .biometricKyc)
         enhancedKyc = try container.decode(CountryCodeToCountryInfo.self, forKey: .enhancedKyc)
-        docVerification = try container.decode(CountryCodeToCountryInfo.self, forKey: .docVerification)
-        enhancedKycSmartSelfie = try container.decode(CountryCodeToCountryInfo.self, forKey: .enhancedKycSmartSelfie)
+        docVerification = try container.decode(
+            CountryCodeToCountryInfo.self,
+            forKey: .docVerification
+        )
+        enhancedKycSmartSelfie = try container.decode(
+            CountryCodeToCountryInfo.self,
+            forKey: .enhancedKycSmartSelfie
+        )
 
         basicKyc = basicKyc.toCountryInfo()
         biometricKyc = biometricKyc.toCountryInfo()
@@ -70,7 +76,10 @@ public struct CountryInfo: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: .name)
-        availableIdTypes = try container.decode(IdTypeKeyToAvailableIdType.self, forKey: .availableIdTypes)
+        availableIdTypes = try container.decode(
+            IdTypeKeyToAvailableIdType.self,
+            forKey: .availableIdTypes
+        )
         availableIdTypes = availableIdTypes.toAvailableIdTypes()
     }
 }
@@ -132,8 +141,7 @@ extension CountryCodeToCountryInfo {
         guard let countryInfo else {
             return self
         }
-        return Dictionary(uniqueKeysWithValues:
-            map { key, _ in (key, countryInfo) })
+        return Dictionary(uniqueKeysWithValues: map { key, _ in (key, countryInfo) })
     }
 }
 
@@ -147,7 +155,6 @@ extension IdTypeKeyToAvailableIdType {
         guard let availableIdType else {
             return self
         }
-        return Dictionary(uniqueKeysWithValues:
-            map { key, _ in (key, availableIdType) })
+        return Dictionary(uniqueKeysWithValues: map { key, _ in (key, availableIdType) })
     }
 }

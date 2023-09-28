@@ -13,7 +13,9 @@ class URLSessionRestServiceClientTests: BaseTestCase {
         try super.setUpWithError()
         mockServiceHeaderProvider = MockServiceHeaderProvider()
         mockSessionPublisher = MockURLSessionPublisher()
-        mockDependencyContainer.register(ServiceHeaderProvider.self) { self.mockServiceHeaderProvider }
+        mockDependencyContainer.register(ServiceHeaderProvider.self) {
+            self.mockServiceHeaderProvider
+        }
 
         serviceUnderTest = URLSessionRestServiceClient(session: mockSessionPublisher)
     }
@@ -21,10 +23,12 @@ class URLSessionRestServiceClientTests: BaseTestCase {
     func testSendReturnsPublisherWithSuccessResponse() throws {
         let expectedURL = URL(string: "https://example.com")!
         let expectedData = try JSONEncoder().encode(TestResponse(status: true, message: "Success"))
-        let expectedResponse: URLResponse = HTTPURLResponse(url: expectedURL,
-                                                            statusCode: 200,
-                                                            httpVersion: nil,
-                                                            headerFields: nil)!
+        let expectedResponse: URLResponse = HTTPURLResponse(
+            url: expectedURL,
+            statusCode: 200,
+            httpVersion: nil,
+            headerFields: nil
+        )!
         mockSessionPublisher.expectedResponse = expectedResponse
         mockSessionPublisher.expectedData = expectedData
         let request = RestRequest(url: expectedURL, method: .get)
@@ -36,10 +40,12 @@ class URLSessionRestServiceClientTests: BaseTestCase {
     func testSendReturnsPublisherWithSuccessResponseAnd201ResponseCode() throws {
         let expectedURL = URL(string: "https://example.com")!
         let expectedData = try JSONEncoder().encode(TestResponse(status: true, message: "Success"))
-        let expectedResponse: URLResponse = HTTPURLResponse(url: expectedURL,
-                                                            statusCode: 201,
-                                                            httpVersion: nil,
-                                                            headerFields: nil)!
+        let expectedResponse: URLResponse = HTTPURLResponse(
+            url: expectedURL,
+            statusCode: 201,
+            httpVersion: nil,
+            headerFields: nil
+        )!
 
         mockSessionPublisher.expectedResponse = expectedResponse
         mockSessionPublisher.expectedData = expectedData
@@ -56,32 +62,27 @@ class URLSessionRestServiceClientTests: BaseTestCase {
         mockServiceHeaderProvider.expectedHeaders = expectedHeaders
         let urlRequest = try request.getURLRequest()
         XCTAssertEqual(urlRequest.allHTTPHeaderFields!, expectedHeaders.toDictionary())
-
     }
 
     func testGetURLRequestSetsCorrectQueryParameters() throws {
         let expectedURL = URL(string: "https://example.com?expand[]=plan&expand[]=number")!
         let expectedHeaders: [HTTPHeader] = [HTTPHeader(name: "Header", value: "Value")]
-        let expectedData = try JSONEncoder().encode(TestResponse(status: true, message: "Success"))
-        let expectedResponse: URLResponse = HTTPURLResponse(url: expectedURL,
-                                                            statusCode: 200,
-                                                            httpVersion: nil,
-                                                            headerFields: nil)!
         let queryParameters = [HTTPQueryParameters(key: "expand[]", values: ["plan", "number"])]
         let request = RestRequest(url: expectedURL, method: .get, queryParameters: queryParameters)
         mockServiceHeaderProvider.expectedHeaders = expectedHeaders
         let urlRequest = try request.getURLRequest()
         XCTAssertEqual(urlRequest.url!, expectedURL)
-
     }
 
     func testSendReturnsPublisherWithFailureResponseWhenHttpResponseIsNotSuccessful() throws {
         let expectedURL = URL(string: "https://example.com")!
         let expectedData = try JSONEncoder().encode(TestResponse(status: true, message: "Success"))
-        let expectedResponse: URLResponse = HTTPURLResponse(url: expectedURL,
-                                                            statusCode: 500,
-                                                            httpVersion: nil,
-                                                            headerFields: nil)!
+        let expectedResponse: URLResponse = HTTPURLResponse(
+            url: expectedURL,
+            statusCode: 500,
+            httpVersion: nil,
+            headerFields: nil
+        )!
         mockSessionPublisher.expectedResponse = expectedResponse
         mockSessionPublisher.expectedData = expectedData
         let request = RestRequest(url: expectedURL, method: .get)
@@ -94,7 +95,6 @@ class URLSessionRestServiceClientTests: BaseTestCase {
             XCTAssert(error is SmileIDError)
         }
     }
-
 }
 
 struct TestResponse: Codable {

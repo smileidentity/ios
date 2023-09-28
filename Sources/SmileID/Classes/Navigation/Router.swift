@@ -26,12 +26,12 @@ public class Router<R: Equatable>: ObservableObject {
     }
 
     public func push(_ route: R, animated: Bool = true) {
-        self.routes.append(route)
-        self.pushHandler?(route, animated)
+        routes.append(route)
+        pushHandler?(route, animated)
     }
 
     public func pop(animated: Bool = true) {
-        if !self.routes.isEmpty {
+        if !routes.isEmpty {
             routes.removeLast()
             popHandler?(1, animated)
         }
@@ -57,7 +57,7 @@ public class Router<R: Equatable>: ObservableObject {
     }
 
     public func onUIKitPop() {
-        if !self.routes.isEmpty {
+        if !routes.isEmpty {
             routes.removeLast()
         }
     }

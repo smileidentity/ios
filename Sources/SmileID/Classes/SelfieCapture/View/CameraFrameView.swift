@@ -7,18 +7,18 @@ protocol FaceDetectorDelegate: AnyObject {
 }
 
 struct CameraView: UIViewControllerRepresentable {
-  typealias UIViewType = PreviewView
+    typealias UIViewType = PreviewView
     let preview: PreviewView
     @ObservedObject private var model: ContentViewModel
 
     init(cameraManager: CameraManageable) {
-        self.preview = PreviewView(cameraManager: cameraManager)
-        self.model = ContentViewModel(cameraManager: cameraManager)
+        preview = PreviewView(cameraManager: cameraManager)
+        model = ContentViewModel(cameraManager: cameraManager)
     }
 
     func makeUIViewController(context: Context) -> PreviewView {
-        return preview
+        preview
     }
 
-    func updateUIViewController(_ uiViewController: PreviewView, context: Context) { }
+    func updateUIViewController(_ uiViewController: PreviewView, context: Context) {}
 }

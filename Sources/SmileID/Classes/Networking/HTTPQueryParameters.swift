@@ -2,16 +2,16 @@ import Foundation
 
 public struct HTTPQueryParameters: Equatable {
     public var key: String
-    public var value: [String]
+    public var values: [String]
 
     public init(key: String, values: [String]) {
         self.key = key
-        self.value = values
+        self.values = values
     }
 
     public init(key: String, value: String) {
         self.key = key
-        self.value = [value]
+        values = [value]
     }
 
 }

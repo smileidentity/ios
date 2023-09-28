@@ -3,7 +3,7 @@ import UIKit
 class CopyableLabel: UILabel {
 
     override public var canBecomeFirstResponder: Bool {
-        return true
+        true
     }
 
     override init(frame: CGRect) {
@@ -38,6 +38,6 @@ class CopyableLabel: UILabel {
     }
 
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        return (action == #selector(copyToClipboard))
-        }
+        (action == #selector(copyToClipboard))
     }
+}

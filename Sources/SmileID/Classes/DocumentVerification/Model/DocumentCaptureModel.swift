@@ -3,11 +3,16 @@ import Combine
 import CoreVideo
 import AVFoundation
 
-class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDialogContract, TextDetectionDelegate {
+class DocumentCaptureViewModel: ObservableObject,
+    JobSubmittable,
+    ConfirmationDialogContract,
+    TextDetectionDelegate {
+
     enum Side {
         case front
         case back
     }
+
     var captureSideCopy: String {
         switch side {
         case .back:
@@ -16,6 +21,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             return "Document.Capture.Front"
         }
     }
+
     var confirmationImage: UIImage {
         switch side {
         case .back:
@@ -24,6 +30,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             return frontImage ?? UIImage()
         }
     }
+
     weak var rectangleDetectionDelegate: RectangleDetectionDelegate?
     weak var captureResultDelegate: DocumentCaptureResultDelegate?
     var router: Router<NavigationDestination>?
@@ -51,17 +58,16 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     private var livenessImages: [Data]?
     private var savedFiles: DocumentCaptureResultStore?
     private var textDetected = false
-    private var recieveBufferQueue = DispatchQueue(label: "com.smileid.receivebuffer")
+    private var receiveBufferQueue = DispatchQueue(label: "com.smileidentity.receivebuffer")
     private let autoCaptureDelayInSecs: TimeInterval = 2
     private let manualCaptureDelayInSecs: TimeInterval = 10
     var autoCaptureTimer: Timer?
     var manualCaptureTimer: Timer?
 
     @State var galleryImageFront = UIImage() {
-        didSet {
-            frontImage = galleryImageFront
-        }
+        didSet { frontImage = galleryImageFront }
     }
+
     @Published var processingState: ProcessingState? {
         didSet {
             switch processingState {
@@ -74,17 +80,20 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             }
         }
     }
+
     @Published var showCaptureButton = false
     @Published var borderColor: UIColor = .gray
-    @Published var guideSize: CGSize = CGSize(width: UIScreen.main.bounds.width * 0.9,
-                                              height: UIScreen.main.bounds.width/1.66)
+    @Published var guideSize: CGSize = CGSize(
+        width: UIScreen.main.bounds.width * 0.9,
+        height: UIScreen.main.bounds.width / 1.66
+    )
     var width: CGFloat = .zero
     var height: CGFloat = .zero
 
     var rectangleAspectRatio: Double = 1.66 {
         didSet {
             let rectWidth = 0.9 * width
-            let rectHeight = min(rectWidth/rectangleAspectRatio, 0.9 * height)
+            let rectHeight = min(rectWidth / rectangleAspectRatio, 0.9 * height)
 
             DispatchQueue.main.async {
                 self.guideSize = CGSize(width: rectWidth, height: rectHeight)
@@ -92,19 +101,19 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         }
     }
 
-    var maxAspectRatio: Double {
-        width/height
-    }
+    var maxAspectRatio: Double { width / height }
 
-    init(userId: String,
-         jobId: String,
-         countryCode: String,
-         documentType: String?,
-         idAspectRatio: Double? = nil,
-         selfie: Data? = nil,
-         captureBothSides: Bool,
-         showAttribution: Bool,
-         allowGalleryUpload: Bool) {
+    init(
+        userId: String,
+        jobId: String,
+        countryCode: String,
+        documentType: String?,
+        idAspectRatio: Double? = nil,
+        selfie: Data? = nil,
+        captureBothSides: Bool,
+        showAttribution: Bool,
+        allowGalleryUpload: Bool
+    ) {
         self.userId = userId
         self.jobId = jobId
         self.documentType = documentType
@@ -121,17 +130,21 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 
     func subscribeToCameraFeed() {
-       cameraFeedSubscriber = cameraManager.sampleBufferPublisher
-            .receive(on: recieveBufferQueue)
-            .compactMap({$0})
-            .sink( receiveValue: { [self] buffer in
-                self.currentBuffer = buffer
-                let imageSize = CGSize(width: CVPixelBufferGetWidth(buffer),
-                                       height: CVPixelBufferGetHeight(buffer))
-                self.textDetector.detectText(buffer: buffer)
-                RectangleDetector.rectangle(forPixelBuffer: buffer,
-                                            aspectRatio: idAspectRatio) { rect in
-                    self.processRectangle(rectangle: rect, imageSize: imageSize)
+        cameraFeedSubscriber = cameraManager.sampleBufferPublisher
+            .receive(on: receiveBufferQueue)
+            .compactMap { $0 }
+            .sink(receiveValue: { [self] buffer in
+                currentBuffer = buffer
+                let imageSize = CGSize(
+                    width: CVPixelBufferGetWidth(buffer),
+                    height: CVPixelBufferGetHeight(buffer)
+                )
+                textDetector.detectText(buffer: buffer)
+                RectangleDetector.rectangle(
+                    forPixelBuffer: buffer,
+                    aspectRatio: idAspectRatio
+                ) { [self] rect in
+                    processRectangle(rectangle: rect, imageSize: imageSize)
                 }
             })
     }
@@ -139,8 +152,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     func subscribeToImageCapture() {
         captureSubscriber = cameraManager.capturedImagePublisher
             .receive(on: DispatchQueue.global())
-            .compactMap({$0})
-            .sink( receiveValue: { image in
+            .compactMap { $0 }
+            .sink(receiveValue: { image in
                 DispatchQueue.main.async {
                     self.cameraCapture = true
                     self.processingState = .confirmation(image)
@@ -150,13 +163,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 
     func startManualCaptureTimer() {
-        if self.manualCaptureTimer == nil {
-            self.autoCaptureTimer?.invalidate()
-            self.manualCaptureTimer = Timer.scheduledTimer(timeInterval: manualCaptureDelayInSecs,
-                                                                 target: self,
-                                                                 selector: #selector(manualCapture),
-                                                                 userInfo: nil,
-                                                                 repeats: false)
+        if manualCaptureTimer == nil {
+            autoCaptureTimer?.invalidate()
+            manualCaptureTimer = Timer.scheduledTimer(
+                timeInterval: manualCaptureDelayInSecs,
+                target: self,
+                selector: #selector(manualCapture),
+                userInfo: nil,
+                repeats: false
+            )
         }
     }
 
@@ -192,12 +207,15 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         let scaledQuad = cropQuad.scale(CGSize(width: width, height: height), capturedImage.size)
         var cartesianScaledQuad = scaledQuad.toCartesian(withHeight: capturedImage.size.height)
         cartesianScaledQuad.reorganize()
-        let filteredImage = orientedImage.applyingFilter("CIPerspectiveCorrection", parameters: [
-            "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
-            "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
-            "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
-            "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
-        ])
+        let filteredImage = orientedImage.applyingFilter(
+            "CIPerspectiveCorrection",
+            parameters: [
+                "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
+                "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
+                "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
+                "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
+            ]
+        )
         let croppedImage = UIImage.from(ciImage: filteredImage)
         switch side {
         case .back:
@@ -205,7 +223,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         case .front:
             frontImage = croppedImage
         }
-        self.router?.push(.documentConfirmation(viewModel: self, image: croppedImage))
+        router?.push(.documentConfirmation(viewModel: self, image: croppedImage))
     }
 
     func resumeCameraSession() {
@@ -220,7 +238,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
         submit()
     }
 
-    func handleInstuctionsBackButtonTap(side: DocumentCaptureInstructionsView.Side) {
+    func handleInstructionsBackButtonTap(side: DocumentCaptureInstructionsView.Side) {
         switch side {
         case .front:
             router?.dismiss()
@@ -250,10 +268,12 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                 return
             }
             if let savedFiles = savedFiles, let response = response {
-                captureResultDelegate?.didSucceed(selfie: savedFiles.selfie,
-                                                  documentFrontImage: savedFiles.documentFront,
-                                                  documentBackImage: savedFiles.docmentBack,
-                                                  jobStatusResponse: response)
+                captureResultDelegate?.didSucceed(
+                    selfie: savedFiles.selfie,
+                    documentFrontImage: savedFiles.documentFront,
+                    documentBackImage: savedFiles.documentBack,
+                    jobStatusResponse: response
+                )
             }
         default:
             break
@@ -261,20 +281,25 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
     }
 
     func submit() {
-        let selfieCaptureScreen = NavigationDestination.selfieCaptureScreen(selfieCaptureViewModel:
-                                                            SelfieCaptureViewModel(userId: userId,
-                                                                                   jobId: jobId,
-                                                                                   isEnroll: false,
-                                                                                   shoudSubmitJob: false,
-                                                                                   imageCaptureDelegate: self),
-                                                           delegate: self)
+        let selfieCaptureScreen = NavigationDestination.selfieCaptureScreen(
+            selfieCaptureViewModel: SelfieCaptureViewModel(
+                userId: userId,
+                jobId: jobId,
+                isEnroll: false,
+                shouldSubmitJob: false,
+                imageCaptureDelegate: self
+            ),
+            delegate: self
+        )
         if captureBothSides && side == .front {
             side = .back
             manualCaptureTimer = nil
             pauseCameraSession()
-            router?.push(.documentBackCaptureInstructionScreen(documentCaptureViewModel: self,
-                                                               skipDestination: selfieCaptureScreen,
-                                                              delegate: captureResultDelegate))
+            router?.push(.documentBackCaptureInstructionScreen(
+                documentCaptureViewModel: self,
+                skipDestination: selfieCaptureScreen,
+                delegate: captureResultDelegate
+            ))
         } else {
             processingState = .inProgress
             router?.push(selfieCaptureScreen)
@@ -283,7 +308,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
     func handleRetry() {
         processingState = .inProgress
-                router?.push(.doucmentCaptureProcessing)
+        router?.push(.documentCaptureProcessing)
         submitJob()
     }
 
@@ -301,10 +326,12 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             captureResultDelegate?.didError(error: error)
             return
         }
-        let authRequest = AuthenticationRequest(jobType: .documentVerification,
-                                                enrollment: false,
-                                                jobId: jobId,
-                                                userId: userId)
+        let authRequest = AuthenticationRequest(
+            jobType: .documentVerification,
+            enrollment: false,
+            jobId: jobId,
+            userId: userId
+        )
 
         SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in
@@ -323,7 +350,7 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     }
             }
             .flatMap(getJobStatus)
-            .sink(receiveCompletion: {completion in
+            .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
@@ -339,7 +366,8 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
                     self?.processingState = .complete(response, nil)
                     self?.router?.push(.documentCaptureComplete(viewModel: self!))
                 }
-            }).store(in: &subscribers)
+            })
+            .store(in: &subscribers)
     }
 
     private func handleError(_ error: SmileIDError) {
@@ -366,50 +394,58 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
     private func processRectangle(rectangle: Quadrilateral?, imageSize: CGSize) {
         if let rectangle {
-            self.rectangleFunnel
-                .add(rectangle,
-                     currentlyDisplayedRectangle: self.displayedRectangleResult?.rectangle) { [weak self] rectangle in
-                    guard let self else {
-                        return
-                    }
-                    self.rectangleAspectRatio = rectangle.aspectRatio
-                    self.displayRectangleResult(rectangleResult: RectangleDetectorResult(rectangle: rectangle,
-                                                                                         imageSize: imageSize))
-                }
+            rectangleFunnel.add(
+                rectangle,
+                currentlyDisplayedRectangle: displayedRectangleResult?.rectangle
+            ) { [weak self] rectangle in
+                guard let self else { return }
+                rectangleAspectRatio = rectangle.aspectRatio
+                displayRectangleResult(
+                    rectangleResult: RectangleDetectorResult(
+                        rectangle: rectangle,
+                        imageSize: imageSize
+                    )
+                )
+            }
         } else {
             manualCaptureTimer = nil
             startManualCaptureTimer()
-            self.displayedRectangleResult = nil
-            self.rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize, completion: nil)
+            displayedRectangleResult = nil
+            rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize, completion: nil)
         }
     }
 
     @discardableResult private func displayRectangleResult(rectangleResult: RectangleDetectorResult) -> Quadrilateral {
         displayedRectangleResult = rectangleResult
-
-        let quad = rectangleResult.rectangle.toCartesian(withHeight: rectangleResult.imageSize.height)
+        let quad = rectangleResult.rectangle.toCartesian(
+            withHeight: rectangleResult.imageSize.height
+        )
 
         DispatchQueue.main.async { [weak self] in
-            guard let self else {
-                return
-            }
-            self.rectangleDetectionDelegate?.didDetectQuad(quad: quad,
-                                                           rectangleResult.imageSize) { [self] transformedQuad in
+            guard let self else { return }
+            self.rectangleDetectionDelegate?.didDetectQuad(
+                quad: quad,
+                rectangleResult.imageSize
+            ) { [self] transformedQuad in
                 let transparentRectOrigin = CGPoint(
                     x: (self.width - self.guideSize.width) / 2,
                     y: (self.height - self.guideSize.height) / 2
                 )
-
                 let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
-                if self.isWithinBoundsAndSize(cgrect1: rect, cgrect2: transformedQuad.cgRect) && self.textDetected {
+                if self.textDetected && self.isWithinBoundsAndSize(
+                    cgrect1: rect,
+                    cgrect2: transformedQuad.cgRect
+                ) {
                     self.borderColor = SmileID.theme.success.uiColor()
                     if self.autoCaptureTimer == nil {
                         self.showCaptureButton = false
-                        self.autoCaptureTimer = Timer.scheduledTimer(timeInterval: self.autoCaptureDelayInSecs,
-                                                                     target: self,
-                                                                     selector: #selector(self.captureImage),
-                                                                     userInfo: nil,
-                                                                     repeats: false)
+                        self.autoCaptureTimer = Timer.scheduledTimer(
+                            timeInterval: self.autoCaptureDelayInSecs,
+                            target: self,
+                            selector: #selector(self.captureImage),
+                            userInfo: nil,
+                            repeats: false
+                        )
                     }
                 } else {
                     self.autoCaptureTimer?.invalidate()
@@ -454,12 +490,14 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
             try? LocalStorage.delete(at: savedFiles.allFiles)
         }
         do {
-            savedFiles = try LocalStorage.saveDocumentImages(front: frontImage!.jpegData(compressionQuality: 1)!,
-                                                        back: backImage?.jpegData(compressionQuality: 1),
-                                                        livenessImages: livenessImages,
-                                                        selfie: selfie!,
-                                                        countryCode: countryCode,
-                                                        documentType: documentType)
+            savedFiles = try LocalStorage.saveDocumentImages(
+                front: frontImage!.jpegData(compressionQuality: 1)!,
+                back: backImage?.jpegData(compressionQuality: 1),
+                livenessImages: livenessImages,
+                selfie: selfie!,
+                countryCode: countryCode,
+                documentType: documentType
+            )
         } catch {
             captureResultDelegate?.didError(error: error)
         }
@@ -468,16 +506,18 @@ class DocumentCaptureViewModel: ObservableObject, JobSubmittable, ConfirmationDi
 
 extension DocumentCaptureViewModel: SmartSelfieResultDelegate, SelfieImageCaptureDelegate {
     func didCapture(selfie: Data, livenessImages: [Data]) {
-        router?.push( .doucmentCaptureProcessing)
+        router?.push(.documentCaptureProcessing)
         self.selfie = selfie
         self.livenessImages = livenessImages
         saveFilesToDisk()
         submitJob()
     }
 
-    func didSucceed(selfieImage: URL,
-                    livenessImages: [URL],
-                    jobStatusResponse: JobStatusResponse) {}
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: JobStatusResponse
+    ) {}
 
     func didError(error: Error) {
         captureResultDelegate?.didError(error: error)

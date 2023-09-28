@@ -1,4 +1,5 @@
 import SwiftUI
+
 public struct DocumentCaptureInstructionsView: View {
     enum Side {
         case front
@@ -11,10 +12,12 @@ public struct DocumentCaptureInstructionsView: View {
     private var skipDestination: NavigationDestination?
     private weak var documentCaptureDelegate: DocumentCaptureResultDelegate?
 
-    init(viewModel: DocumentCaptureViewModel,
-         side: Side,
-         skipDestination: NavigationDestination? = nil,
-         delegate: DocumentCaptureResultDelegate) {
+    init(
+        viewModel: DocumentCaptureViewModel,
+        side: Side,
+        skipDestination: NavigationDestination? = nil,
+        delegate: DocumentCaptureResultDelegate
+    ) {
         self.viewModel = viewModel
         self.side = side
         self.skipDestination = skipDestination
@@ -23,7 +26,7 @@ public struct DocumentCaptureInstructionsView: View {
 
     fileprivate init(viewModel: DocumentCaptureViewModel) {
         self.viewModel = viewModel
-        self.side = .back
+        side = .back
     }
 
     public var body: some View {
@@ -32,6 +35,7 @@ public struct DocumentCaptureInstructionsView: View {
                 router.dismiss()
             }
         }
+
         VStack {
             switch side {
             case .front:
@@ -40,64 +44,80 @@ public struct DocumentCaptureInstructionsView: View {
                         viewModel.router = router
                     }
             case .back:
-                createBackInstuctions()
+                createBackInstructions()
             }
-        }.overlay( NavigationBar {
-            if side == .back {
-                router.pop()
-            } else {
-                router.dismiss()
-            }
-        })
+        }
+            .overlay(NavigationBar {
+                if side == .back {
+                    router.pop()
+                } else {
+                    router.dismiss()
+                }
+            })
     }
 
-    func createBackInstuctions() -> some View {
+    func createBackInstructions() -> some View {
         CaptureInstructionView<DocumentCaptureView>(
             image: UIImage(),
             title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Header"),
-            callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Callout"),
+            callOut: SmileIDResourcesHelper.localizedString(
+                for: "Instructions.Document.Back.Callout"
+            ),
             buttonTitle: "Action.TakePhoto",
             instructions: [
-                CaptureInstruction(title:
-                                    SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"),
-                                   instruction:
-                                    SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLightBody"),
-                                   image: Constants.ImageName.light),
-                CaptureInstruction(title:
-                                    SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
-                                   instruction:
-                                    SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
-                                   image: Constants.ImageName.clearImage)
+                CaptureInstruction(
+                    title: SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"),
+                    instruction: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.GoodLightBody"
+                    ),
+                    image: Constants.ImageName.light
+                ),
+                CaptureInstruction(
+                    title: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
+                    instruction: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.ClearImageBody"
+                    ),
+                    image: Constants.ImageName.clearImage)
             ],
             captureType: .document(.back),
-            destination: .documentCaptureScreen(documentCaptureViewModel: viewModel,
-                                                delegate: documentCaptureDelegate),
+            destination: .documentCaptureScreen(
+                documentCaptureViewModel: viewModel,
+                delegate: documentCaptureDelegate
+            ),
             secondaryDestination: .imagePicker(viewModel: viewModel),
             skipDestination: skipDestination,
             showAttribution: viewModel.showAttribution,
             allowGalleryUpload: viewModel.allowGalleryUpload)
-        .padding(.top, 50)
+            .padding(.top, 50)
     }
 
     func createFrontInstructions() -> some View {
         CaptureInstructionView<DocumentCaptureView>(
-            image: SmileIDResourcesHelper.InstructionsHeaderdDocumentIcon,
+            image: SmileIDResourcesHelper.InstructionsHeaderDocumentIcon,
             title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Header"),
             callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Callout"),
             buttonTitle: "Action.TakePhoto",
             instructions: [
-                CaptureInstruction(title:
-                                    SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"),
-                                   instruction:
-                                    SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLightBody"),
-                                   image: Constants.ImageName.light),
-                CaptureInstruction(title:
-                                    SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
-                                   instruction:
-                                    SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"),
-                                   image: Constants.ImageName.clearImage)
-            ], captureType: .document(.front),
-            destination: .documentCaptureScreen(documentCaptureViewModel: viewModel, delegate: documentCaptureDelegate),
+                CaptureInstruction(
+                    title: SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"),
+                    instruction: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.GoodLightBody"
+                    ),
+                    image: Constants.ImageName.light
+                ),
+                CaptureInstruction(
+                    title: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
+                    instruction: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.ClearImageBody"
+                    ),
+                    image: Constants.ImageName.clearImage
+                )
+            ],
+            captureType: .document(.front),
+            destination: .documentCaptureScreen(
+                documentCaptureViewModel: viewModel,
+                delegate: documentCaptureDelegate
+            ),
             secondaryDestination: .imagePicker(viewModel: viewModel),
             showAttribution: viewModel.showAttribution,
             allowGalleryUpload: viewModel.allowGalleryUpload
@@ -107,13 +127,16 @@ public struct DocumentCaptureInstructionsView: View {
 
 struct DocumentCaptureInstructionsView_Previews: PreviewProvider {
     static var previews: some View {
-        DocumentCaptureInstructionsView(viewModel: DocumentCaptureViewModel(userId: "",
-                                                                            jobId: "",
-                                                                            countryCode: "",
-                                                                            documentType: "",
-                                                                            captureBothSides: true,
-                                                                            showAttribution: true,
-                                                                            allowGalleryUpload: true))
-        .environment(\.locale, Locale(identifier: "en"))
+        DocumentCaptureInstructionsView(
+            viewModel: DocumentCaptureViewModel(
+                userId: "",
+                jobId: "",
+                countryCode: "",
+                documentType: "",
+                captureBothSides: true,
+                showAttribution: true,
+                allowGalleryUpload: true
+            )
+        ).environment(\.locale, Locale(identifier: "en"))
     }
 }

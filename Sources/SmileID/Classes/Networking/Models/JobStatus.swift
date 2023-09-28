@@ -32,18 +32,18 @@ public struct JobStatusResponse: Codable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.timestamp = try container.decode(String.self, forKey: .timestamp)
-        self.jobComplete = try container.decode(Bool.self, forKey: .jobComplete)
-        self.jobSuccess = try container.decode(Bool.self, forKey: .jobSuccess)
-        self.code = try container.decode(String.self, forKey: .code)
+        timestamp = try container.decode(String.self, forKey: .timestamp)
+        jobComplete = try container.decode(Bool.self, forKey: .jobComplete)
+        jobSuccess = try container.decode(Bool.self, forKey: .jobSuccess)
+        code = try container.decode(String.self, forKey: .code)
         if let result = try? container.decodeIfPresent(JobResult.self, forKey: .result) {
             self.result = result
         }
         if let resultString = try? container.decodeIfPresent(String.self, forKey: .result) {
             self.resultString = resultString
         }
-        self.history = try container.decodeIfPresent(JobResult.self, forKey: .history)
-        self.imageLinks = try container.decodeIfPresent(ImageLinks.self, forKey: .imageLinks)
+        history = try container.decodeIfPresent(JobResult.self, forKey: .history)
+        imageLinks = try container.decodeIfPresent(ImageLinks.self, forKey: .imageLinks)
     }
 
     init(timestamp: String, jobComplete: Bool, jobSuccess: Bool, code: String) {

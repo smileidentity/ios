@@ -38,21 +38,21 @@ struct ImageConfirmationView: View {
             }
 
             VStack(spacing: 16) {
-                SmileButton(style: .secondary,
-                            title: confirmButtonTitle,
-                            clicked: {
-                    viewModel.acceptImage()
-                })
-                SmileButton(style: .secondary,
-                            title: declineButtonTitle,
-                            clicked: {
-                                    viewModel.declineImage()
-                })
+                SmileButton(
+                    style: .secondary,
+                    title: confirmButtonTitle,
+                    clicked: viewModel.acceptImage
+                )
+                SmileButton(
+                    style: .secondary,
+                    title: declineButtonTitle,
+                    clicked: viewModel.declineImage
+                )
             }
         }
-        .padding()
-        .background(SmileID.theme.backgroundMain)
-        .cornerRadius(20)
-        .shadow(radius: 20)
+            .padding()
+            .background(SmileID.theme.backgroundMain)
+            .cornerRadius(20)
+            .shadow(radius: 20)
     }
 }

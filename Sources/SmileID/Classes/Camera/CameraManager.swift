@@ -10,7 +10,7 @@ protocol CameraManageable: AnyObject {
     var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher {get}
     var capturedImagePublisher: Published<UIImage?>.Publisher {get}
     var session: AVCaptureSession { get }
-    var cameraPositon: AVCaptureDevice.Position? {get}
+    var cameraPosition: AVCaptureDevice.Position? {get}
 }
 
 class CameraManager: NSObject, ObservableObject, CameraManageable {
@@ -27,26 +27,26 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
         case failed
     }
 
-    @Published var error: CameraError?
     @Environment(\.isPreview) var isPreview
+    @Published var error: CameraError?
     @Published var sampleBuffer: CVPixelBuffer?
     @Published var capturedImage: UIImage?
+
     var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher { $sampleBuffer }
     var capturedImagePublisher: Published<UIImage?>.Publisher { $capturedImage }
-    let videoOutputQueue = DispatchQueue(label: "com.smileid.videooutput",
-                                         qos: .userInitiated,
-                                         attributes: [],
-                                         autoreleaseFrequency: .workItem)
+    let videoOutputQueue = DispatchQueue(
+        label: "com.smileidentity.videooutput",
+        qos: .userInitiated,
+        attributes: [],
+        autoreleaseFrequency: .workItem
+    )
 
     var session = AVCaptureSession()
-    var cameraPositon: AVCaptureDevice.Position? {
-        if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
-            return currentInput.device.position
-        }
-        return nil
+    var cameraPosition: AVCaptureDevice.Position? {
+        (session.inputs.first as? AVCaptureDeviceInput)?.device.position
     }
 
-    private let sessionQueue = DispatchQueue(label: "com.smileid.ios")
+    private let sessionQueue = DispatchQueue(label: "com.smileidentity.ios")
     private let videoOutput = AVCaptureVideoDataOutput()
     private let photoOutput = AVCapturePhotoOutput()
     private var status = Status.unconfigured
@@ -64,8 +64,10 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
         }
     }
 
-    private func set(_ delegate: AVCaptureVideoDataOutputSampleBufferDelegate,
-                     queue: DispatchQueue) {
+    private func set(
+        _ delegate: AVCaptureVideoDataOutputSampleBufferDelegate,
+        queue: DispatchQueue
+    ) {
         sessionQueue.async {
             self.videoOutput.setSampleBufferDelegate(delegate, queue: queue)
         }
@@ -124,7 +126,7 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
         case .back:
             return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
         default:
-            return nil
+            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
         }
     }
 
@@ -147,23 +149,23 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
     }
 
     func switchCamera(to position: AVCaptureDevice.Position) {
-        self.checkPermissions()
+        checkPermissions()
         sessionQueue.async { [self] in
-            if !self.session.isRunning {
-                if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
-                    self.session.removeInput(currentInput)
+            if !session.isRunning {
+                if let currentInput = session.inputs.first as? AVCaptureDeviceInput {
+                    session.removeInput(currentInput)
                 }
-                self.addCameraInput(position: position)
-                self.configureVideoOutput()
+                addCameraInput(position: position)
+                configureVideoOutput()
                 session.startRunning()
             } else {
-                self.session.beginConfiguration()
-                if let currentInput = self.session.inputs.first as? AVCaptureDeviceInput {
-                    self.session.removeInput(currentInput)
+                session.beginConfiguration()
+                if let currentInput = session.inputs.first as? AVCaptureDeviceInput {
+                    session.removeInput(currentInput)
                 }
-                self.addCameraInput(position: position)
-                self.configureVideoOutput()
-                self.session.commitConfiguration()
+                addCameraInput(position: position)
+                configureVideoOutput()
+                session.commitConfiguration()
             }
         }
     }
@@ -189,31 +191,34 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
             return
         }
         let photoSettings = AVCapturePhotoSettings()
-        photoSettings.isAutoStillImageStabilizationEnabled = true
+        photoSettings.photoQualityPrioritization = .balanced
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
     }
 }
 
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(_ output: AVCaptureOutput,
-                       didOutput sampleBuffer: CMSampleBuffer,
-                       from connection: AVCaptureConnection) {
-        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            return
-        }
-
+    func captureOutput(
+        _ output: AVCaptureOutput,
+        didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection
+    ) {
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         self.sampleBuffer = imageBuffer
     }
 }
 
 extension CameraManager: AVCapturePhotoCaptureDelegate {
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+    func photoOutput(
+        _ output: AVCapturePhotoOutput,
+        didFinishProcessingPhoto photo: AVCapturePhoto,
+        error: Error?
+    ) {
         guard error == nil else {
             set(error: .cannotCaptureImage(error!))
             return
         }
         if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
-            self.capturedImage  = image
+            capturedImage  = image
         } else {
             set(error: .cannotCaptureImage(nil))
         }

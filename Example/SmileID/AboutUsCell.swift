@@ -4,7 +4,7 @@ import SmileID
 struct AboutUsCell: View {
     var imageName: String
     var title: String
-    var action: (() -> Void)
+    var action: () -> Void
     var body: some View {
         Button(action: action) {
             HStack(alignment: .top) {

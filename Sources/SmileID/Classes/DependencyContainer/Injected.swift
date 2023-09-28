@@ -2,10 +2,7 @@ import Foundation
 
 @propertyWrapper struct Injected<DependencyType> {
 
-    var wrappedValue: DependencyType {
-        return instance
-    }
-
+    var wrappedValue: DependencyType { instance }
     private let instance: DependencyType
 
     public init() {

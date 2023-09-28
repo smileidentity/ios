@@ -11,18 +11,18 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
     let arView: ARView?
     let faceOverlay: FaceOverlayView
 
-    init(viewModel: SelfieCaptureViewModel, 
+    init(viewModel: SelfieCaptureViewModel,
          delegate: SmartSelfieResultDelegate) {
         self.delegate = delegate
         self.viewModel = viewModel
-        self.faceOverlay = FaceOverlayView(model: viewModel)
+        faceOverlay = FaceOverlayView(model: viewModel)
         viewModel.smartSelfieResultDelegate = delegate
         UIScreen.main.brightness = 1
         if ARFaceTrackingConfiguration.isSupported {
-            self.arView = ARView()
-            self.camera = CameraView(cameraManager: viewModel.cameraManager)
+            arView = ARView()
+            camera = CameraView(cameraManager: viewModel.cameraManager)
         } else {
-            self.camera = CameraView(cameraManager: viewModel.cameraManager)
+            camera = CameraView(cameraManager: viewModel.cameraManager)
             arView = nil
         }
     }
@@ -31,70 +31,80 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
         GeometryReader { geometry in
             ZStack {
                 if ARFaceTrackingConfiguration.isSupported && viewModel.agentMode == false {
-                    arView
-                        .onAppear {
-                            arView?.preview.model = viewModel
-                            viewModel.viewFinderSize = geometry.size
-                            viewModel.selfieViewDelegate = self
-                        }
+                    arView.onAppear {
+                        arView?.preview.model = viewModel
+                        viewModel.viewFinderSize = geometry.size
+                        viewModel.selfieViewDelegate = self
+                    }
                 } else {
-                    camera
-                        .onAppear {
-                            viewModel.smartSelfieResultDelegate = delegate
-                            viewModel.viewDelegate = camera!.preview
-                            viewModel.viewFinderSize = geometry.size
-                            viewModel.cameraManager.switchCamera(to: viewModel.agentMode ? .back : .front)
-                        }
+                    camera.onAppear {
+                        viewModel.smartSelfieResultDelegate = delegate
+                        viewModel.viewDelegate = camera!.preview
+                        viewModel.viewFinderSize = geometry.size
+                        viewModel.cameraManager.switchCamera(
+                            to: viewModel.agentMode ? .back : .front
+                        )
+                    }
                 }
                 faceOverlay
                 switch viewModel.processingState {
                 case .confirmation:
-                    ModalPresenter { ImageConfirmationView(viewModel: viewModel,
-                                                           header: "Confirmation.GoodSelfie",
-                                                           callout: "Confirmation.FaceClear",
-                                                           confirmButtonTitle: "Confirmation.YesUse",
-                                                           declineButtonTitle: "Confirmation.Retake",
-                                                           image: UIImage(data: viewModel.displayedImage!)!)}
+                    ModalPresenter {
+                        ImageConfirmationView(
+                            viewModel: viewModel,
+                            header: "Confirmation.GoodSelfie",
+                            callout: "Confirmation.FaceClear",
+                            confirmButtonTitle: "Confirmation.YesUse",
+                            declineButtonTitle: "Confirmation.Retake",
+                            image: UIImage(data: viewModel.displayedImage!)!
+                        )
+                    }
                 case .inProgress:
-                    ModalPresenter(centered: true) { ProcessingView(image: SmileIDResourcesHelper.FaceOutline,
-                                                                    titleKey: "Confirmation.ProcessingSelfie",
-                                                                    calloutKey: "Confirmation.Time")
+                    ModalPresenter(centered: true) {
+                        ProcessingView(
+                            image: SmileIDResourcesHelper.FaceOutline,
+                            titleKey: "Confirmation.ProcessingSelfie",
+                            calloutKey: "Confirmation.Time"
+                        )
                     }
                 case .complete:
-                    ModalPresenter { SuccessView(titleKey: "Confirmation.SelfieCaptureComplete",
-                                                 bodyKey: "Confirmation.SuccessBody",
-                                                 clicked: { viewModel.handleCompletion() }) }
+                    ModalPresenter {
+                        SuccessView(
+                            titleKey: "Confirmation.SelfieCaptureComplete",
+                            bodyKey: "Confirmation.SuccessBody",
+                            clicked: viewModel.handleCompletion
+                        )
+                    }
                 case .error:
                     ModalPresenter { ErrorView(viewModel: viewModel) }
                 default:
                     Color.clear
                 }
             }
-            .overlay( NavigationBar {
-                viewModel.resetState()
-                viewModel.pauseCameraSession()
-                router.pop()
-            })
+                .overlay(NavigationBar {
+                    viewModel.resetState()
+                    viewModel.pauseCameraSession()
+                    router.pop()
+                })
         }
-        .edgesIgnoringSafeArea(.all)
-        .navigationBarBackButtonHidden(true)
-        .navigationBarItems(leading: Button {
-            viewModel.resetState()
-            viewModel.pauseCameraSession()
-            presentationMode.wrappedValue.dismiss()
-        } label: {
-            Image(uiImage: SmileIDResourcesHelper.ArrowLeft)
-                .padding()
-        })
-        .background(SmileID.theme.backgroundMain)
-        .onDisappear {
-            viewModel.cameraManager.pauseSession()
-        }
+            .edgesIgnoringSafeArea(.all)
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(
+                leading: Button {
+                    viewModel.resetState()
+                    viewModel.pauseCameraSession()
+                    presentationMode.wrappedValue.dismiss()
+                }
+                label: { Image(uiImage: SmileIDResourcesHelper.ArrowLeft).padding() }
+            )
+            .background(SmileID.theme.backgroundMain)
+            .onDisappear {
+                viewModel.cameraManager.pauseSession()
+            }
     }
 
     private func ovalSize(from geometry: GeometryProxy) -> CGSize {
-        return CGSize(width: geometry.size.width * 0.6,
-                      height: geometry.size.width * 0.6 / 0.7)
+        CGSize(width: geometry.size.width * 0.6, height: geometry.size.width * 0.6 / 0.7)
     }
 
     func pauseARSession() {
@@ -124,6 +134,11 @@ struct FaceBoundingBoxView: View {
 }
 
 class DummyDelegate: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {}
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: JobStatusResponse
+    ) {}
+
     func didError(error: Error) {}
 }

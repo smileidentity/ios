@@ -17,15 +17,12 @@ class TextDetector {
     }
 
     func recognizeTextHandler(request: VNRequest, error: Error?) {
-        guard let observations =
-                request.results as? [VNRecognizedTextObservation] else {
+        guard let observations = request.results as? [VNRecognizedTextObservation] else {
             delegate?.noTextDetected()
             return
         }
 
-        let recognisedString = observations.compactMap { observation in
-            return observation.topCandidates(1).first?.string
-        }
+        let recognisedString = observations.compactMap { $0.topCandidates(1).first?.string }
 
         if recognisedString.isEmpty {
             delegate?.noTextDetected()
