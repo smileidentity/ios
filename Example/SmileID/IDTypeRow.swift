@@ -2,7 +2,7 @@ import SwiftUI
 import SmileID
 
 struct IDTypeRow: View {
-    var idType: IdType
+    let idType: IdType
     @Binding var isSelected: Bool
     var body: some View {
         Button(
@@ -18,7 +18,7 @@ struct IDTypeRow: View {
                         .foregroundColor(SmileID.theme.accent)
                         .padding()
                 }
-                    .frame(height: 59)
+                    .frame(height: 48)
             }
         )
     }
