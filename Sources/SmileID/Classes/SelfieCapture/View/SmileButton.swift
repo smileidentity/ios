@@ -12,9 +12,10 @@ public struct SmileButton: View {
     let title: LocalizedStringKey
     var titleColor = SmileID.theme.onDark
     var backgroundColor: Color = SmileID.theme.accent
+    private let disabledColor = Color.gray.opacity(0.5)
     var cornerRadius: CGFloat = 15
     var borderColor = Color.clear
-    var inactiveColor: Color?
+    var isDisabled: Bool
     let clicked: () -> Void
     let style: Style
 
@@ -22,11 +23,13 @@ public struct SmileButton: View {
         style: Style = .primary,
         title: LocalizedStringKey,
         backgroundColor: Color = SmileID.theme.accent,
+        isDisabled: Bool = false,
         clicked: @escaping () -> Void
     ) {
         self.style = style
         self.title = title
         self.backgroundColor = backgroundColor
+        self.isDisabled = isDisabled
         self.clicked = clicked
         setup()
     }
@@ -63,13 +66,14 @@ public struct SmileButton: View {
                     .frame(maxWidth: .infinity)
             }
                 .foregroundColor(titleColor)
-                .background(backgroundColor)
+                .background(isDisabled ? disabledColor : backgroundColor)
                 .overlay(
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(borderColor, lineWidth: 4)
                 )
                 .cornerRadius(cornerRadius)
                 .frame(maxWidth: .infinity)
+                .disabled(isDisabled)
         }
     }
 }

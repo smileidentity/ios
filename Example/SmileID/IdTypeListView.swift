@@ -22,6 +22,7 @@ struct IdTypeListView: View {
                 style: .primary,
                 title: "Continue",
                 backgroundColor: SmileID.theme.accent,
+                isDisabled: selectedIdType == nil,
                 clicked: {
                     if let selectedIdType = selectedIdType {
                         router.push(.documentCaptureScreen(
