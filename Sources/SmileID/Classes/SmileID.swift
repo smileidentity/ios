@@ -1,4 +1,3 @@
-// swiftlint:disable force_try
 import Foundation
 import SwiftUI
 import UIKit
@@ -37,9 +36,11 @@ public class SmileID {
     ///   - useSandbox: A boolean to enable the sandbox environment or not
     public class func initialize(
         apiKey: String? = nil,
+        // swiftlint:disable force_try
         config: Config = try! Config(
             url: Bundle.main.url(forResource: "smile_config", withExtension: "json")!
         ),
+        // swiftlint:enable force_try
         useSandbox: Bool = true
     ) {
         self.config = config

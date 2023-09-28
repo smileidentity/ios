@@ -68,8 +68,8 @@ class LocalStorage {
     static func saveDocumentImages(
         front: Data,
         back: Data?,
-        livenessImages: [Data]?,
         selfie: Data,
+        livenessImages: [Data]?,
         countryCode: String,
         documentType: String?,
         to folder: String = "sid-\(UUID().uuidString)"
@@ -168,10 +168,8 @@ class LocalStorage {
     }
 
     static func delete(at urls: [URL]) throws {
-        for url in urls {
-            if fileManager.fileExists(atPath: url.relativePath) {
-                try fileManager.removeItem(atPath: url.relativePath)
-            }
+        for url in urls where fileManager.fileExists(atPath: url.relativePath) {
+            try fileManager.removeItem(atPath: url.relativePath)
         }
     }
 

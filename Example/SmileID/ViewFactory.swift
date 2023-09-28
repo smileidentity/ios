@@ -5,13 +5,15 @@ class ViewFactory {
     @ViewBuilder
     func makeView(_ destination: NavigationDestination) -> some View {
         switch destination {
-        case let .documentCaptureScreen(countryCode,
-                                    documentType,
-                                    captureBothSides,
-                                    allowGalleryUpload,
-                                    showInstructions,
-                                    showAttribution,
-                                    delegate):
+        case let .documentCaptureScreen(
+            countryCode,
+            documentType,
+            captureBothSides,
+            allowGalleryUpload,
+            showInstructions,
+            showAttribution,
+            delegate
+        ):
             SmileID.documentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
@@ -19,7 +21,8 @@ class ViewFactory {
                 allowGalleryUpload: allowGalleryUpload,
                 showInstructions: showInstructions,
                 showAttribution: showAttribution,
-                delegate: delegate)
+                delegate: delegate
+            )
         case let .countrySelectorScreen(homeViewModel):
             CountryListView(homeViewModel: homeViewModel)
         case let .documentSelectorScreen(document, homeViewModel):

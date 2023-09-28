@@ -493,8 +493,8 @@ class DocumentCaptureViewModel: ObservableObject,
             savedFiles = try LocalStorage.saveDocumentImages(
                 front: frontImage!.jpegData(compressionQuality: 1)!,
                 back: backImage?.jpegData(compressionQuality: 1),
-                livenessImages: livenessImages,
                 selfie: selfie!,
+                livenessImages: livenessImages,
                 countryCode: countryCode,
                 documentType: documentType
             )
