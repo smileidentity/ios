@@ -2,14 +2,14 @@ import Foundation
 import UIKit
 import SwiftUI
 
-protocol ImagePickerDelegate {
+protocol ImagePickerDelegate: AnyObject {
     func didSelect(image: UIImage)
 }
 
 struct ImagePicker: UIViewControllerRepresentable {
     @Environment(\.presentationMode) private var presentationMode
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    var delegate: ImagePickerDelegate?
+    weak var delegate: ImagePickerDelegate?
 
     func makeUIViewController(
         context: UIViewControllerRepresentableContext<ImagePicker>

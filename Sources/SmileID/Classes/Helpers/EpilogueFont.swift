@@ -8,7 +8,6 @@ enum Epilogue: String, CaseIterable {
 public struct EpilogueFont: FontType {
 
     public static func regular(with size: CGFloat) -> Font {
-        // TODO: the project doesn't currently have regular not sure why
         medium(with: SmileIDResourcesHelper.pointSize)
     }
 

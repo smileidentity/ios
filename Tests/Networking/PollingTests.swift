@@ -94,7 +94,7 @@ final class PollingTests: XCTestCase {
                         XCTFail("Polling should have failed due to an error")
                     }
                 },
-                receiveValue: { response in
+                receiveValue: { _ in
                     XCTFail("No response should be received b/c an error occurs at first attempt")
                 })
             .store(in: &cancellables)

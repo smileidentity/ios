@@ -34,7 +34,7 @@ public protocol ReflectiveEquatable: Equatable {}
 public extension ReflectiveEquatable {
     var reflectedValue: String { String(reflecting: self) }
 
-    static func ==(lhs: Self, rhs: Self) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.reflectedValue == rhs.reflectedValue
     }
 }

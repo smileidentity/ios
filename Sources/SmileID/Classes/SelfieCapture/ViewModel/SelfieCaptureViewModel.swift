@@ -20,7 +20,7 @@ enum SelfieCaptureViewModelAction {
 }
 
 enum ProcessingState {
-    static func ==(lhs: ProcessingState, rhs: ProcessingState) -> Bool {
+    static func == (lhs: ProcessingState, rhs: ProcessingState) -> Bool {
         switch (lhs, rhs) {
         case (.complete, .complete):
             return false

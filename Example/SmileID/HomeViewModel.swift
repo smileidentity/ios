@@ -57,7 +57,7 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
         showToast = true
         if jobStatusResponse.jobSuccess {
             toastMessage = """
-                           SmartSelfie Enrollment completed successfully. User ID has been copied to 
+                           SmartSelfie Enrollment completed successfully. User ID has been copied to
                             the clipboard
                            """
         } else {

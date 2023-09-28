@@ -29,7 +29,6 @@ struct ResourcesView: View {
                     openUrl("https://docs.smileidentity.com/supported-id-types/for-individuals-kyc")
                 }
 
-
                 AboutUsCell(imageName: "info.circle.fill", title: "About Us") {
                     openUrl("https://usesmileid.com/about-us")
                 }

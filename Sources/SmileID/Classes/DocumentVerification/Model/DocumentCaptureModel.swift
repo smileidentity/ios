@@ -3,8 +3,7 @@ import Combine
 import CoreVideo
 import AVFoundation
 
-class DocumentCaptureViewModel:
-    ObservableObject,
+class DocumentCaptureViewModel: ObservableObject,
     JobSubmittable,
     ConfirmationDialogContract,
     TextDetectionDelegate {
