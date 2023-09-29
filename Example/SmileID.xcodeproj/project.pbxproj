@@ -24,6 +24,7 @@
 		1EFAB3152A374F3B008E3C13 /* AboutUsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3132A374F18008E3C13 /* AboutUsCell.swift */; };
 		1EFAB3162A374F3B008E3C13 /* ResourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFAB3142A374F18008E3C13 /* ResourceCell.swift */; };
 		1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
+		585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */; };
 		58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
@@ -80,6 +81,7 @@
 		1EFAB3142A374F18008E3C13 /* ResourceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCell.swift; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
 		287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestartableTimerTest.swift; sourceTree = "<group>"; };
 		58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycTest.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Smile ID.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Smile ID.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 				918321E72A52E36A00D6FB7F /* SmartSelfie */,
 				918321E12A52E36A00D6FB7F /* XCTestExtension.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
+				585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -554,6 +557,7 @@
 				918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */,
 				918321EF2A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift in Sources */,
 				91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */,
+				585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */,
 				58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */,
 				918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */,
 				915748532AA09A1F004A9F23 /* RouterTests.swift in Sources */,
