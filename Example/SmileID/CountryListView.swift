@@ -31,6 +31,7 @@ struct CountryListView: View {
                 .padding([.horizontal, .top])
             if viewModel.isLoading {
                 ActivityIndicator(isAnimating: viewModel.isLoading)
+                    .padding()
                 Spacer()
             } else {
                 List(filteredCountries) { validDocument in
