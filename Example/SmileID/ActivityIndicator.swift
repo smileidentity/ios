@@ -2,13 +2,12 @@ import UIKit
 import SwiftUI
 
 struct ActivityIndicator: UIViewRepresentable {
-    var isAnimating: Bool
+    let isAnimating: Bool
 
     func makeUIView(
         context: UIViewRepresentableContext<ActivityIndicator>
     ) -> UIActivityIndicatorView {
-        let indicator = UIActivityIndicatorView(style: .medium)
-        return indicator
+        UIActivityIndicatorView(style: .medium)
     }
 
     func updateUIView(
