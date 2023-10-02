@@ -13,7 +13,7 @@ let danger = Danger()
 
 let hasSourceChanges = (danger.git.modifiedFiles + danger.git.createdFiles).contains { $0.isSourceFile }
 // SwiftLint
-SwiftLint.lint(inline: true, configFile: "./.swiftlint.yml")
+SwiftLint.lint(inline: true, configFile: "Sources/.swiftlint.yml")
 
 // Encourage smaller PRs
 let bigPRThreshold = 70
