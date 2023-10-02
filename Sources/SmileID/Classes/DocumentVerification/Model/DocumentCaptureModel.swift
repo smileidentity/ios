@@ -61,8 +61,8 @@ class DocumentCaptureViewModel: ObservableObject,
     private var receiveBufferQueue = DispatchQueue(label: "com.smileidentity.receivebuffer")
     private let autoCaptureDelayInSecs: TimeInterval = 2
     private let manualCaptureDelayInSecs: TimeInterval = 10
-    private var autoCaptureTimer: RestartableTimer? = nil
-    private var manualCaptureTimer: Timer? = nil
+    private var autoCaptureTimer: RestartableTimer?
+    private var manualCaptureTimer: Timer?
 
     @State var galleryImageFront = UIImage() {
         didSet { frontImage = galleryImageFront }
