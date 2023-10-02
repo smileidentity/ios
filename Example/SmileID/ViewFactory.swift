@@ -9,18 +9,13 @@ class ViewFactory {
             countryCode,
             documentType,
             captureBothSides,
-            allowGalleryUpload,
-            showInstructions,
-            showAttribution,
             delegate
         ):
             SmileID.documentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
                 captureBothSides: captureBothSides,
-                allowGalleryUpload: allowGalleryUpload,
-                showInstructions: showInstructions,
-                showAttribution: showAttribution,
+                allowGalleryUpload: true,
                 delegate: delegate
             )
         case let .countrySelectorScreen(homeViewModel):
