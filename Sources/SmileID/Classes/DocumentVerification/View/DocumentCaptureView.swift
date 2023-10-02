@@ -43,10 +43,15 @@ struct DocumentCaptureView: View {
                         .foregroundColor(SmileID.theme.accent)
                         .frame(width: 235, alignment: .center)
                 }
-                if viewModel.showCaptureButton {
+                Spacer()
+                if viewModel.isCapturing {
+                    ActivityIndicator(isAnimating: true)
+                        .padding()
+                } else if viewModel.showCaptureButton {
                     CaptureButton(action: viewModel.captureImage)
-                        .padding(.bottom, 60)
+                        .padding()
                 }
+                Spacer()
             }
                 .frame(height: 230)
         }
