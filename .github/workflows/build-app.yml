@@ -51,7 +51,7 @@ jobs:
           bundle exec fastlane releaseapp
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.GITHUB_PAT_IOS_CERTIFICATES_REPO_B64 }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.PAT_IOS_CERTIFICATES_REPO_B64 }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
           ISSUER_ID: ${{ secrets.ISSUER_ID }}
           KEY_ID: ${{ secrets.KEY_ID }}
