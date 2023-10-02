@@ -25,15 +25,9 @@ jobs:
         with:
          xcode-version: latest-stable
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.CI_SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-
       - name: Write Smile Config
         id: write_smile_config
-        # Mask the config so it doesn't show up in the logs
+        # Mask the config so that it doesn't show up in the logs
         run: |
           INPUT_SMILE_CONFIG=$(jq -r '.inputs.smile_config // empty' $GITHUB_EVENT_PATH)
           echo "::add-mask::$INPUT_SMILE_CONFIG"
@@ -51,12 +45,13 @@ jobs:
       - name: Add Smile Config to Xcode Project
         run: ruby add_smile_config.rb
 
-      - name: Build and Deploy App to 🔥 TestFlight 🚀
+      - name: Build and Deploy to TestFlight 🚀
         run: |
           cd example
           bundle exec fastlane releaseapp
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.GITHUB_PAT_IOS_CERTIFICATES_REPO_B64 }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
           ISSUER_ID: ${{ secrets.ISSUER_ID }}
           KEY_ID: ${{ secrets.KEY_ID }}
