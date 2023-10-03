@@ -1,13 +1,20 @@
-## 10.0.0-beta08 (unreleased)
+## 10.0.0-beta09 (unreleased)
+
+### Added
+
+### Changed
+
+### Removed
+
+## 10.0.0-beta08
 
 ### Added
 - Document Verification
 - Navigation router using `UINavigationController`
-- Linting within Xcode
 - Convenience method for partners to poll the `jobStatus` endpoint
 
 ### Changed
-- Return images captured from selfie capture and document capture as URLs 
+- Return images captured from selfie capture and document capture as URLs
 
 ### Removed
 - `filename` property from `PrepUploadRequest`
