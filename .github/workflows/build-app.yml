@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-latest-large
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -23,7 +23,7 @@ jobs:
       - name: Select Xcode Version
         uses: maxim-lobanov/setup-xcode@v1
         with:
-         xcode-version: latest-stable
+         xcode-version: latest
 
       - name: Write Smile Config
         id: write_smile_config

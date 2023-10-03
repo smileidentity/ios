@@ -31,7 +31,7 @@ jobs:
 
   build:
     name: "Build App and Run Unit Tests"
-    runs-on: macos-latest
+    runs-on: macos-latest-large
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -59,7 +59,7 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup
         with:
-          xcode: '14.2'
+          xcode: '15.0'
       - name: Build Example app and Run Unit Tests
         run: |
           bundle exec rake provision:ios
