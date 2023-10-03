@@ -2,6 +2,11 @@ disabled_rules:
   - file_length
   - type_body_length
   - redundant_discardable_let
+  - function_body_length
+  - blanket_disable_command
+  - function_parameter_count
+  - large_tuple
+  - class_delegate_protocol
 
 excluded:
   - Pods

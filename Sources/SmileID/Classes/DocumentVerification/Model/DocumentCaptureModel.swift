@@ -61,8 +61,8 @@ class DocumentCaptureViewModel: ObservableObject,
     private var receiveBufferQueue = DispatchQueue(label: "com.smileidentity.receivebuffer")
     private let autoCaptureDelayInSecs: TimeInterval = 2
     private let manualCaptureDelayInSecs: TimeInterval = 10
-    var autoCaptureTimer: Timer?
-    var manualCaptureTimer: Timer?
+    private var autoCaptureTimer: RestartableTimer?
+    private var manualCaptureTimer: Timer?
 
     @State var galleryImageFront = UIImage() {
         didSet { frontImage = galleryImageFront }
@@ -82,6 +82,7 @@ class DocumentCaptureViewModel: ObservableObject,
     }
 
     @Published var showCaptureButton = false
+    @Published var isCapturing = false
     @Published var borderColor: UIColor = .gray
     @Published var guideSize: CGSize = CGSize(
         width: UIScreen.main.bounds.width * 0.9,
@@ -100,8 +101,6 @@ class DocumentCaptureViewModel: ObservableObject,
             }
         }
     }
-
-    var maxAspectRatio: Double { width / height }
 
     init(
         userId: String,
@@ -123,10 +122,23 @@ class DocumentCaptureViewModel: ObservableObject,
         self.captureBothSides = captureBothSides
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
+
+        autoCaptureTimer = RestartableTimer(
+            timeInterval: autoCaptureDelayInSecs,
+            target: self,
+            selector: #selector(captureImage)
+        )
+        manualCaptureTimer = Timer.scheduledTimer(
+            timeInterval: manualCaptureDelayInSecs,
+            target: self,
+            selector: #selector(showManualCapture),
+            userInfo: nil,
+            repeats: false
+        )
+
         textDetector.delegate = self
         subscribeToCameraFeed()
         subscribeToImageCapture()
-        startManualCaptureTimer()
     }
 
     func subscribeToCameraFeed() {
@@ -162,21 +174,11 @@ class DocumentCaptureViewModel: ObservableObject,
             })
     }
 
-    func startManualCaptureTimer() {
-        if manualCaptureTimer == nil {
-            autoCaptureTimer?.invalidate()
-            manualCaptureTimer = Timer.scheduledTimer(
-                timeInterval: manualCaptureDelayInSecs,
-                target: self,
-                selector: #selector(manualCapture),
-                userInfo: nil,
-                repeats: false
-            )
-        }
-    }
-
     @objc func captureImage() {
         cameraManager.capturePhoto()
+        DispatchQueue.main.async {
+            self.isCapturing = true
+        }
     }
 
     func resetState() {
@@ -195,8 +197,8 @@ class DocumentCaptureViewModel: ObservableObject,
     func cropImage(_ capturedImage: UIImage) {
         guard let ciImage = CIImage(image: capturedImage) else { return }
         let transparentRectOrigin = CGPoint(
-            x: (self.width - self.guideSize.width) / 2,
-            y: (self.height - self.guideSize.height) / 2
+            x: (width - guideSize.width) / 2,
+            y: (height - guideSize.height) / 2
         )
 
         let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
@@ -253,8 +255,6 @@ class DocumentCaptureViewModel: ObservableObject,
         } else {
             resetState()
         }
-        manualCaptureTimer = nil
-        startManualCaptureTimer()
         router?.pop()
     }
 
@@ -293,13 +293,14 @@ class DocumentCaptureViewModel: ObservableObject,
         )
         if captureBothSides && side == .front {
             side = .back
-            manualCaptureTimer = nil
             pauseCameraSession()
-            router?.push(.documentBackCaptureInstructionScreen(
-                documentCaptureViewModel: self,
-                skipDestination: selfieCaptureScreen,
-                delegate: captureResultDelegate
-            ))
+            router?.push(
+                .documentBackCaptureInstructionScreen(
+                    documentCaptureViewModel: self,
+                    skipDestination: selfieCaptureScreen,
+                    delegate: captureResultDelegate
+                )
+            )
         } else {
             processingState = .inProgress
             router?.push(selfieCaptureScreen)
@@ -385,9 +386,8 @@ class DocumentCaptureViewModel: ObservableObject,
         }
     }
 
-    @objc func manualCapture() {
+    @objc func showManualCapture() {
         DispatchQueue.main.async {
-            self.rectangleAspectRatio = self.maxAspectRatio
             self.showCaptureButton = true
         }
     }
@@ -408,14 +408,14 @@ class DocumentCaptureViewModel: ObservableObject,
                 )
             }
         } else {
-            manualCaptureTimer = nil
-            startManualCaptureTimer()
             displayedRectangleResult = nil
             rectangleDetectionDelegate?.didDetectQuad(quad: nil, imageSize, completion: nil)
         }
     }
 
-    @discardableResult private func displayRectangleResult(rectangleResult: RectangleDetectorResult) -> Quadrilateral {
+    @discardableResult private func displayRectangleResult(
+        rectangleResult: RectangleDetectorResult
+    ) -> Quadrilateral {
         displayedRectangleResult = rectangleResult
         let quad = rectangleResult.rectangle.toCartesian(
             withHeight: rectangleResult.imageSize.height
@@ -432,24 +432,18 @@ class DocumentCaptureViewModel: ObservableObject,
                     y: (self.height - self.guideSize.height) / 2
                 )
                 let rect = CGRect(origin: transparentRectOrigin, size: self.guideSize)
+
                 if self.textDetected && self.isWithinBoundsAndSize(
                     cgrect1: rect,
                     cgrect2: transformedQuad.cgRect
                 ) {
                     self.borderColor = SmileID.theme.success.uiColor()
-                    if self.autoCaptureTimer == nil {
-                        self.showCaptureButton = false
-                        self.autoCaptureTimer = Timer.scheduledTimer(
-                            timeInterval: self.autoCaptureDelayInSecs,
-                            target: self,
-                            selector: #selector(self.captureImage),
-                            userInfo: nil,
-                            repeats: false
-                        )
+                    if !(self.autoCaptureTimer?.isValid ?? false) {
+                        self.autoCaptureTimer?.restart()
                     }
                 } else {
-                    self.autoCaptureTimer?.invalidate()
-                    self.autoCaptureTimer = nil
+                    self.autoCaptureTimer?.stop()
+                    self.isCapturing = false
                     self.borderColor = .gray
                 }
             }
@@ -462,8 +456,8 @@ class DocumentCaptureViewModel: ObservableObject,
         DispatchQueue.main.async { [weak self] in
             self?.borderColor = .gray
         }
-        autoCaptureTimer?.invalidate()
-        autoCaptureTimer = nil
+        autoCaptureTimer?.stop()
+        isCapturing = false
         textDetected = false
     }
 
@@ -493,8 +487,8 @@ class DocumentCaptureViewModel: ObservableObject,
             savedFiles = try LocalStorage.saveDocumentImages(
                 front: frontImage!.jpegData(compressionQuality: 1)!,
                 back: backImage?.jpegData(compressionQuality: 1),
-                livenessImages: livenessImages,
                 selfie: selfie!,
+                livenessImages: livenessImages,
                 countryCode: countryCode,
                 documentType: documentType
             )

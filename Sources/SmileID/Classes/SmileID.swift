@@ -1,10 +1,9 @@
-// swiftlint:disable force_try
 import Foundation
 import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.0.0-beta07"
+    public static let version = "10.0.0-beta08"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -31,15 +30,34 @@ public class SmileID {
     /// This method initializes SmileID. Invoke this method once in your application lifecylce
     /// before calling any other SmileID methods.
     /// - Parameters:
+    ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
+    ///    for a `smile_config.json` file.
+    ///   - useSandbox: A boolean to enable the sandbox environment or not
+    public class func initialize(
+        // swiftlint:disable force_try
+        config: Config = try! Config(
+            url: Bundle.main.url(forResource: "smile_config", withExtension: "json")!
+        ),
+        // swiftlint:enable force_try
+        useSandbox: Bool = true
+    ) {
+        initialize(apiKey: nil, config: config, useSandbox: useSandbox)
+    }
+
+    /// This method initializes SmileID. Invoke this method once in your application lifecylce
+    /// before calling any other SmileID methods.
+    /// - Parameters:
     ///   - apiKey: The api key displayed on your partner portal
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
     public class func initialize(
         apiKey: String? = nil,
+        // swiftlint:disable force_try
         config: Config = try! Config(
             url: Bundle.main.url(forResource: "smile_config", withExtension: "json")!
         ),
+        // swiftlint:enable force_try
         useSandbox: Bool = true
     ) {
         self.config = config
@@ -63,8 +81,8 @@ public class SmileID {
     }
 
     public class func smartSelfieEnrollmentScreen(
-        userId: String = "user-\(UUID().uuidString)",
-        jobId: String = "job-\(UUID().uuidString)",
+        userId: String = generateUserId(),
+        jobId: String = generateJobId(),
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstruction: Bool = true,
@@ -99,15 +117,16 @@ public class SmileID {
     ///   - selfie: A jpg selfie where if provided, the user will not be prompted to capture a
     ///    selfie and this file will be used as the selfie image.
     ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
-    ///   front side will be captured
+    ///   front side will be captured. If this is true, an option to skip back side will still be
+    ///   shown
     ///   - allowGalleryUpload: Whether to allow the user to upload images from their gallery or not
     ///   - showInstructions: Whether to deactivate capture screen's instructions for Document
     ///   Verification (NB! If instructions are disabled, gallery upload won't be possible)
     ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions screen
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func documentVerificationScreen(
-        userId: String = "user-\(UUID().uuidString)",
-        jobId: String = "job-\(UUID().uuidString)",
+        userId: String = generateUserId(),
+        jobId: String = generateJobId(),
         countryCode: String,
         documentType: String? = nil,
         idAspectRatio: Double? = nil,
@@ -144,7 +163,7 @@ public class SmileID {
 
     public class func smartSelfieAuthenticationScreen(
         userId: String,
-        jobId: String = "job-\(UUID().uuidString)",
+        jobId: String = generateJobId(),
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstruction: Bool = true,

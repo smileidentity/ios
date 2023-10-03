@@ -3,7 +3,7 @@ import SwiftUI
 public struct SmartSelfieInstructionsView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var router: Router<NavigationDestination>
-    private weak var selfieCaptureDelegate: SmartSelfieResultDelegate?
+    private var selfieCaptureDelegate: SmartSelfieResultDelegate?
     @State private var goesToDetail: Bool = false
     @State var viewModel: SelfieCaptureViewModel
 

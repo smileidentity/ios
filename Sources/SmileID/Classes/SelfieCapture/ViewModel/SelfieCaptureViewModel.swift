@@ -70,7 +70,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     var viewFinderSize = CGSize.zero
     var displayedImage: Data?
     var selfieViewDelegate: SelfieViewDelegate?
-    weak var smartSelfieResultDelegate: SmartSelfieResultDelegate?
+    var smartSelfieResultDelegate: SmartSelfieResultDelegate?
     weak var imageCaptureDelegate: SelfieImageCaptureDelegate?
     weak var viewDelegate: FaceDetectorDelegate? {
         didSet {

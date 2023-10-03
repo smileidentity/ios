@@ -6,13 +6,15 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var router: Router<NavigationDestination>
     @ObservedObject var viewModel: SelfieCaptureViewModel
-    private weak var delegate: SmartSelfieResultDelegate?
+    private var delegate: SmartSelfieResultDelegate?
     var camera: CameraView?
     let arView: ARView?
     let faceOverlay: FaceOverlayView
 
-    init(viewModel: SelfieCaptureViewModel,
-         delegate: SmartSelfieResultDelegate) {
+    init(
+        viewModel: SelfieCaptureViewModel,
+        delegate: SmartSelfieResultDelegate
+    ) {
         self.delegate = delegate
         self.viewModel = viewModel
         faceOverlay = FaceOverlayView(model: viewModel)
