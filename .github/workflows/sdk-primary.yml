@@ -59,7 +59,7 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup
         with:
-          xcode: '15.0'
+          xcode: '14.2'
       - name: Build Example app and Run Unit Tests
         run: |
           bundle exec rake provision:ios
