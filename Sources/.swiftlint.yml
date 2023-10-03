@@ -6,6 +6,7 @@ disabled_rules:
   - blanket_disable_command
   - function_parameter_count
   - large_tuple
+  - class_delegate_protocol
 
 excluded:
   - Pods
