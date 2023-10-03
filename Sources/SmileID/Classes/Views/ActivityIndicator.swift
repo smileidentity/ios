@@ -18,7 +18,7 @@ public struct ActivityIndicator: UIViewRepresentable {
         _ uiView: UIActivityIndicatorView,
         context: UIViewRepresentableContext<ActivityIndicator>
     ) {
-        if (isAnimating) {
+        if isAnimating {
             uiView.startAnimating()
         } else {
             uiView.stopAnimating()
