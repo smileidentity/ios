@@ -122,7 +122,7 @@ public class SmileID {
             .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
         return SmileView(initialDestination: destination).environmentObject(router)
     }
-    
+
     /// Perform a Document Verification
     /// - Parameters:
     ///   - userId: The user ID to associate with the Document Verification. Most often, this will
@@ -135,8 +135,8 @@ public class SmileID {
     ///   - documentType: An optional string for the type of document to be captured
     ///   - idAspectRatio: An optional value for the aspect ratio of the document. If no value is,
     ///   supplied, image analysis is done to calculate the documents aspect ratio
-    ///   - selfie: A jpg selfie where if provided, the user will not be prompted to capture a
-    ///    selfie and this file will be used as the selfie image.
+    ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
+    ///   image
     ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
     ///   front side will be captured. If this is true, an option to skip back side will still be
     ///   shown
