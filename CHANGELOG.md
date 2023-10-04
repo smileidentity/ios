@@ -1,10 +1,17 @@
-## 10.0.0-beta09 (unreleased)
+## 10.0.0-beta10 (unreleased)
 
 ### Added
 
 ### Changed
 
+### Fixed
+
 ### Removed
+
+## 10.0.0-beta09
+
+### Fixed
+- Fixed a bug where Document Verification results were not being delivered to the delegate
 
 ## 10.0.0-beta08
 
