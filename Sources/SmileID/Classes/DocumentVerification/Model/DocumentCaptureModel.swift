@@ -32,7 +32,7 @@ class DocumentCaptureViewModel: ObservableObject,
     }
 
     weak var rectangleDetectionDelegate: RectangleDetectionDelegate?
-    weak var captureResultDelegate: DocumentCaptureResultDelegate?
+    var captureResultDelegate: DocumentCaptureResultDelegate?
     var router: Router<NavigationDestination>?
     private var cameraCapture: Bool = false
     private let textDetector = TextDetector()
@@ -111,7 +111,8 @@ class DocumentCaptureViewModel: ObservableObject,
         selfie: Data? = nil,
         captureBothSides: Bool,
         showAttribution: Bool,
-        allowGalleryUpload: Bool
+        allowGalleryUpload: Bool,
+        delegate: DocumentCaptureResultDelegate
     ) {
         self.userId = userId
         self.jobId = jobId
@@ -122,6 +123,7 @@ class DocumentCaptureViewModel: ObservableObject,
         self.captureBothSides = captureBothSides
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
+        captureResultDelegate = delegate
 
         autoCaptureTimer = RestartableTimer(
             timeInterval: autoCaptureDelayInSecs,
@@ -274,6 +276,8 @@ class DocumentCaptureViewModel: ObservableObject,
                     documentBackImage: savedFiles.documentBack,
                     jobStatusResponse: response
                 )
+            } else {
+                captureResultDelegate?.didError(error: SmileIDError.unknown("Unknown Error"))
             }
         default:
             break
@@ -297,8 +301,7 @@ class DocumentCaptureViewModel: ObservableObject,
             router?.push(
                 .documentBackCaptureInstructionScreen(
                     documentCaptureViewModel: self,
-                    skipDestination: selfieCaptureScreen,
-                    delegate: captureResultDelegate
+                    skipDestination: selfieCaptureScreen
                 )
             )
         } else {

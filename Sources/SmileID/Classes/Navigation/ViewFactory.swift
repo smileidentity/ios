@@ -35,24 +35,21 @@ class ViewFactory {
                 viewModel: selfieCaptureViewModel,
                 delegate: delegate ?? SelfiePlaceHolderDelegate()
             )
-        case let .documentFrontCaptureInstructionScreen(documentCaptureViewModel, delegate):
+        case let .documentFrontCaptureInstructionScreen(documentCaptureViewModel):
             DocumentCaptureInstructionsView(
                 viewModel: documentCaptureViewModel,
-                side: .front,
-                delegate: delegate ?? DocPlaceHolderDelegate()
+                side: .front
             )
-        case let .documentCaptureScreen(documentCaptureViewModel, _):
+        case let .documentCaptureScreen(documentCaptureViewModel):
             DocumentCaptureView(viewModel: documentCaptureViewModel)
         case .documentBackCaptureInstructionScreen(
             documentCaptureViewModel: let viewModel,
-            let skipDestination,
-            delegate: let delegate
+            let skipDestination
         ):
             DocumentCaptureInstructionsView(
                 viewModel: viewModel,
                 side: .back,
-                skipDestination: skipDestination,
-                delegate: delegate ?? DocPlaceHolderDelegate()
+                skipDestination: skipDestination
             )
         case .documentCaptureProcessing:
             ModalPresenter(centered: true) {
@@ -67,7 +64,7 @@ class ViewFactory {
                 SuccessView(
                     titleKey: "Document.Complete.Header",
                     bodyKey: "Document.Complete.Callout",
-                    clicked: { viewModel.handleCompletion() }
+                    clicked: viewModel.handleCompletion
                 )
             }
         case .documentCaptureError(viewModel: let viewModel):

@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.0.0-beta08"
+    public static let version = "10.0.0-beta09"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -85,7 +85,7 @@ public class SmileID {
         jobId: String = generateJobId(),
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
-        showInstruction: Bool = true,
+        showInstructions: Bool = true,
         delegate: SmartSelfieResultDelegate
     )
         -> some View {
@@ -96,7 +96,28 @@ public class SmileID {
             allowsAgentMode: allowAgentMode,
             showAttribution: showAttribution
         )
-        let destination: NavigationDestination = showInstruction ?
+        let destination: NavigationDestination = showInstructions ?
+            .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
+            .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
+        return SmileView(initialDestination: destination).environmentObject(router)
+    }
+
+    public class func smartSelfieAuthenticationScreen(
+        userId: String,
+        jobId: String = generateJobId(),
+        allowAgentMode: Bool = false,
+        showAttribution: Bool = true,
+        showInstructions: Bool = true,
+        delegate: SmartSelfieResultDelegate
+    ) -> some View {
+        let viewModel = SelfieCaptureViewModel(
+            userId: userId,
+            jobId: jobId,
+            isEnroll: false,
+            allowsAgentMode: allowAgentMode,
+            showAttribution: showAttribution
+        )
+        let destination: NavigationDestination = showInstructions ?
             .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
             .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
         return SmileView(initialDestination: destination).environmentObject(router)
@@ -114,8 +135,8 @@ public class SmileID {
     ///   - documentType: An optional string for the type of document to be captured
     ///   - idAspectRatio: An optional value for the aspect ratio of the document. If no value is,
     ///   supplied, image analysis is done to calculate the documents aspect ratio
-    ///   - selfie: A jpg selfie where if provided, the user will not be prompted to capture a
-    ///    selfie and this file will be used as the selfie image.
+    ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
+    ///   image
     ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
     ///   front side will be captured. If this is true, an option to skip back side will still be
     ///   shown
@@ -130,7 +151,7 @@ public class SmileID {
         countryCode: String,
         documentType: String? = nil,
         idAspectRatio: Double? = nil,
-        selfie: Data? = nil,
+        bypassSelfieCaptureWithFile: URL? = nil,
         captureBothSides: Bool = true,
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
@@ -143,42 +164,20 @@ public class SmileID {
             countryCode: countryCode,
             documentType: documentType,
             idAspectRatio: idAspectRatio,
-            selfie: selfie,
+            selfie: bypassSelfieCaptureWithFile.flatMap { try? Data(contentsOf: $0) },
             captureBothSides: captureBothSides,
             showAttribution: showAttribution,
-            allowGalleryUpload: allowGalleryUpload
+            allowGalleryUpload: allowGalleryUpload,
+            delegate: delegate
         )
 
         let destination = showInstructions ?
             NavigationDestination.documentFrontCaptureInstructionScreen(
-                documentCaptureViewModel: viewModel,
-                delegate: delegate
+                documentCaptureViewModel: viewModel
             ) :
             NavigationDestination.documentCaptureScreen(
-                documentCaptureViewModel: viewModel,
-                delegate: delegate
+                documentCaptureViewModel: viewModel
             )
-        return SmileView(initialDestination: destination).environmentObject(router)
-    }
-
-    public class func smartSelfieAuthenticationScreen(
-        userId: String,
-        jobId: String = generateJobId(),
-        allowAgentMode: Bool = false,
-        showAttribution: Bool = true,
-        showInstruction: Bool = true,
-        delegate: SmartSelfieResultDelegate
-    ) -> some View {
-        let viewModel = SelfieCaptureViewModel(
-            userId: userId,
-            jobId: jobId,
-            isEnroll: false,
-            allowsAgentMode: allowAgentMode,
-            showAttribution: showAttribution
-        )
-        let destination: NavigationDestination = showInstruction ?
-            .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
-            .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
         return SmileView(initialDestination: destination).environmentObject(router)
     }
 

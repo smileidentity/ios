@@ -10,17 +10,14 @@ indirect enum NavigationDestination: ReflectiveEquatable {
         delegate: SmartSelfieResultDelegate?
     )
     case documentFrontCaptureInstructionScreen(
-        documentCaptureViewModel: DocumentCaptureViewModel,
-        delegate: DocumentCaptureResultDelegate?
+        documentCaptureViewModel: DocumentCaptureViewModel
     )
     case documentBackCaptureInstructionScreen(
         documentCaptureViewModel: DocumentCaptureViewModel,
-        skipDestination: NavigationDestination,
-        delegate: DocumentCaptureResultDelegate?
+        skipDestination: NavigationDestination
     )
     case documentCaptureScreen(
-        documentCaptureViewModel: DocumentCaptureViewModel,
-        delegate: DocumentCaptureResultDelegate?
+        documentCaptureViewModel: DocumentCaptureViewModel
     )
     case documentCaptureProcessing
     case documentCaptureError(viewModel: DocumentCaptureViewModel)

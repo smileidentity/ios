@@ -79,8 +79,20 @@ struct DocumentCaptureView_Previews: PreviewProvider {
                 documentType: "",
                 captureBothSides: true,
                 showAttribution: true,
-                allowGalleryUpload: true
+                allowGalleryUpload: true,
+                delegate: DocPlaceHolderDelegate()
             )
         )
+    }
+
+    private class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
+        func didSucceed(
+            selfie: URL,
+            documentFrontImage: URL,
+            documentBackImage: URL?,
+            jobStatusResponse: JobStatusResponse
+        ) {}
+
+        func didError(error _: Error) {}
     }
 }

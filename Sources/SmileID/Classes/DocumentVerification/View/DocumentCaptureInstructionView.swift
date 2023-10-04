@@ -10,18 +10,15 @@ public struct DocumentCaptureInstructionsView: View {
     @ObservedObject private var viewModel: DocumentCaptureViewModel
     private var side: Side
     private var skipDestination: NavigationDestination?
-    private weak var documentCaptureDelegate: DocumentCaptureResultDelegate?
 
     init(
         viewModel: DocumentCaptureViewModel,
         side: Side,
-        skipDestination: NavigationDestination? = nil,
-        delegate: DocumentCaptureResultDelegate
+        skipDestination: NavigationDestination? = nil
     ) {
         self.viewModel = viewModel
         self.side = side
         self.skipDestination = skipDestination
-        documentCaptureDelegate = delegate
     }
 
     fileprivate init(viewModel: DocumentCaptureViewModel) {
@@ -81,8 +78,7 @@ public struct DocumentCaptureInstructionsView: View {
             ],
             captureType: .document(.back),
             destination: .documentCaptureScreen(
-                documentCaptureViewModel: viewModel,
-                delegate: documentCaptureDelegate
+                documentCaptureViewModel: viewModel
             ),
             secondaryDestination: .imagePicker(viewModel: viewModel),
             skipDestination: skipDestination,
@@ -115,8 +111,7 @@ public struct DocumentCaptureInstructionsView: View {
             ],
             captureType: .document(.front),
             destination: .documentCaptureScreen(
-                documentCaptureViewModel: viewModel,
-                delegate: documentCaptureDelegate
+                documentCaptureViewModel: viewModel
             ),
             secondaryDestination: .imagePicker(viewModel: viewModel),
             showAttribution: viewModel.showAttribution,
@@ -135,8 +130,20 @@ struct DocumentCaptureInstructionsView_Previews: PreviewProvider {
                 documentType: "",
                 captureBothSides: true,
                 showAttribution: true,
-                allowGalleryUpload: true
+                allowGalleryUpload: true,
+                delegate: DocPlaceHolderDelegate()
             )
         ).environment(\.locale, Locale(identifier: "en"))
+    }
+
+    private class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
+        func didSucceed(
+            selfie: URL,
+            documentFrontImage: URL,
+            documentBackImage: URL?,
+            jobStatusResponse: JobStatusResponse
+        ) {}
+
+        func didError(error _: Error) {}
     }
 }
