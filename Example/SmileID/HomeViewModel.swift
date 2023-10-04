@@ -91,6 +91,8 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
         documentBackImage: URL?,
         jobStatusResponse: JobStatusResponse
     ) {
+        showToast = true
+        toastMessage = "Document Verification submitted successfully, results processing"
     }
 
     @objc func handleAuthCompletion(_ notification: NSNotification) {

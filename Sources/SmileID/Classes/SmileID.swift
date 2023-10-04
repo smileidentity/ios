@@ -130,7 +130,7 @@ public class SmileID {
         countryCode: String,
         documentType: String? = nil,
         idAspectRatio: Double? = nil,
-        selfie: Data? = nil,
+        bypassSelfieCaptureWithFile: URL? = nil,
         captureBothSides: Bool = true,
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
@@ -143,20 +143,19 @@ public class SmileID {
             countryCode: countryCode,
             documentType: documentType,
             idAspectRatio: idAspectRatio,
-            selfie: selfie,
+            selfie: bypassSelfieCaptureWithFile.flatMap { try? Data(contentsOf: $0) },
             captureBothSides: captureBothSides,
             showAttribution: showAttribution,
-            allowGalleryUpload: allowGalleryUpload
+            allowGalleryUpload: allowGalleryUpload,
+            delegate: delegate
         )
 
         let destination = showInstructions ?
             NavigationDestination.documentFrontCaptureInstructionScreen(
-                documentCaptureViewModel: viewModel,
-                delegate: delegate
+                documentCaptureViewModel: viewModel
             ) :
             NavigationDestination.documentCaptureScreen(
-                documentCaptureViewModel: viewModel,
-                delegate: delegate
+                documentCaptureViewModel: viewModel
             )
         return SmileView(initialDestination: destination).environmentObject(router)
     }
