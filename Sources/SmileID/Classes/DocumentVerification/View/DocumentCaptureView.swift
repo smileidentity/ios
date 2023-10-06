@@ -3,12 +3,13 @@ import SwiftUI
 struct DocumentCaptureView: View {
     @ObservedObject var viewModel: DocumentCaptureViewModel
     @EnvironmentObject var router: Router<NavigationDestination>
-    @Environment(\.presentationMode) var presentationMode
-    var camera: CameraView
+    // var camera: CameraView
 
-    init(viewModel: DocumentCaptureViewModel) {
+    init(
+        viewModel: DocumentCaptureViewModel
+    ) {
         self.viewModel = viewModel
-        camera = CameraView(cameraManager: viewModel.cameraManager)
+        // camera = CameraView(cameraManager: viewModel.cameraManager)
         UINavigationBar.appearance().titleTextAttributes = [
             .font: EpilogueFont.boldUIFont(with: 16)!,
             .foregroundColor: SmileID.theme.accent.uiColor()
@@ -16,27 +17,27 @@ struct DocumentCaptureView: View {
     }
 
     var body: some View {
-        if let processingState = viewModel.processingState, processingState == .endFlow {
-            let _ = DispatchQueue.main.async {
-                router.dismiss()
-            }
-        }
+        // if let processingState = viewModel.processingState, processingState == .endFlow {
+        //     let _ = DispatchQueue.main.async {
+        //         router.dismiss()
+        //     }
+        // }
 
         VStack {
             ZStack {
-                camera.onAppear {
-                    viewModel.cameraManager.switchCamera(to: .back)
-                    viewModel.rectangleDetectionDelegate = camera.preview
-                    viewModel.router = router
-                }
-                DocumentOverlayView(viewModel: viewModel)
+                // camera.onAppear {
+                //     viewModel.cameraManager.switchCamera(to: .back)
+                //     viewModel.rectangleDetectionDelegate = camera.preview
+                //     viewModel.router = router
+                // }
+//                DocumentOverlayView(viewModel: viewModel)
             }
             VStack(alignment: .center, spacing: 20) {
                 VStack(alignment: .center, spacing: 16) {
-                    Text(SmileIDResourcesHelper.localizedString(for: viewModel.captureSideCopy))
-                        .multilineTextAlignment(.center)
-                        .font(SmileID.theme.header4)
-                        .foregroundColor(SmileID.theme.accent)
+                    // Text(SmileIDResourcesHelper.localizedString(for: viewModel.captureSideCopy))
+                    //     .multilineTextAlignment(.center)
+                    //     .font(SmileID.theme.header4)
+                    //     .foregroundColor(SmileID.theme.accent)
                     Text(SmileIDResourcesHelper.localizedString(for: "Document.Clear"))
                         .multilineTextAlignment(.center)
                         .font(SmileID.theme.body)
@@ -44,55 +45,55 @@ struct DocumentCaptureView: View {
                         .frame(width: 235, alignment: .center)
                 }
                 Spacer()
-                if viewModel.isCapturing {
-                    ActivityIndicator(isAnimating: true)
-                        .padding()
-                } else if viewModel.showCaptureButton {
-                    CaptureButton(action: viewModel.captureImage)
-                        .padding()
-                }
+                // if viewModel.isCapturing {
+                //     ActivityIndicator(isAnimating: true)
+                //         .padding()
+                // } else if viewModel.showCaptureButton {
+                //     CaptureButton(action: viewModel.captureImage)
+                //         .padding()
+                // }
                 Spacer()
             }
                 .frame(height: 230)
         }
             .padding(.top, 50)
             .overlay(NavigationBar {
-                viewModel.resetState()
-                viewModel.pauseCameraSession()
+                // viewModel.resetState()
+                // viewModel.pauseCameraSession()
                 router.pop()
             })
             .edgesIgnoringSafeArea(.all)
     }
 
     func handleBackButtonTap() {
-        viewModel.pauseCameraSession()
+        // viewModel.pauseCameraSession()
     }
 }
 
-struct DocumentCaptureView_Previews: PreviewProvider {
-    static var previews: some View {
-        DocumentCaptureView(
-            viewModel: DocumentCaptureViewModel(
-                userId: "",
-                jobId: "",
-                countryCode: "",
-                documentType: "",
-                captureBothSides: true,
-                showAttribution: true,
-                allowGalleryUpload: true,
-                delegate: DocPlaceHolderDelegate()
-            )
-        )
-    }
-
-    private class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
-        func didSucceed(
-            selfie: URL,
-            documentFrontImage: URL,
-            documentBackImage: URL?,
-            jobStatusResponse: JobStatusResponse
-        ) {}
-
-        func didError(error _: Error) {}
-    }
-}
+// struct DocumentCaptureView_Previews: PreviewProvider {
+//     static var previews: some View {
+//         DocumentCaptureView(
+//             viewModel: DocumentCaptureViewModel(
+//                 userId: "",
+//                 jobId: "",
+//                 countryCode: "",
+//                 documentType: "",
+//                 captureBothSides: true,
+//                 showAttribution: true,
+//                 allowGalleryUpload: true,
+//                 delegate: DocPlaceHolderDelegate()
+//             )
+//         )
+//     }
+//
+//     private class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
+//         func didSucceed(
+//             selfie: URL,
+//             documentFrontImage: URL,
+//             documentBackImage: URL?,
+//             jobStatusResponse: JobStatusResponse
+//         ) {}
+//
+//         func didError(error _: Error) {}
+//     }
+// }

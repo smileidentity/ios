@@ -27,18 +27,18 @@ public struct DocumentCaptureInstructionsView: View {
     }
 
     public var body: some View {
-        if let processingState = viewModel.processingState, processingState == .endFlow {
-            let _ = DispatchQueue.main.async {
-                router.dismiss()
-            }
-        }
+        // if let processingState = viewModel.processingState, processingState == .endFlow {
+        //     let _ = DispatchQueue.main.async {
+        //         router.dismiss()
+        //     }
+        // }
 
         VStack {
             switch side {
             case .front:
                 createFrontInstructions()
                     .onAppear {
-                        viewModel.router = router
+                        // viewModel.router = router
                     }
             case .back:
                 createBackInstructions()
@@ -54,44 +54,47 @@ public struct DocumentCaptureInstructionsView: View {
     }
 
     func createBackInstructions() -> some View {
-        CaptureInstructionView<DocumentCaptureView>(
-            image: UIImage(),
-            title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Header"),
-            callOut: SmileIDResourcesHelper.localizedString(
-                for: "Instructions.Document.Back.Callout"
-            ),
-            buttonTitle: "Action.TakePhoto",
-            instructions: [
-                CaptureInstruction(
-                    title: SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"),
-                    instruction: SmileIDResourcesHelper.localizedString(
-                        for: "Instructions.GoodLightBody"
-                    ),
-                    image: Constants.ImageName.light
-                ),
-                CaptureInstruction(
-                    title: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
-                    instruction: SmileIDResourcesHelper.localizedString(
-                        for: "Instructions.ClearImageBody"
-                    ),
-                    image: Constants.ImageName.clearImage)
-            ],
-            captureType: .document(.back),
-            destination: .documentCaptureScreen(
-                documentCaptureViewModel: viewModel
-            ),
-            secondaryDestination: .imagePicker(viewModel: viewModel),
-            skipDestination: skipDestination,
-            showAttribution: viewModel.showAttribution,
-            allowGalleryUpload: viewModel.allowGalleryUpload)
-            .padding(.top, 50)
+        Text("hello")
+        // CaptureInstructionView<DocumentCaptureView>(
+        //     image: UIImage(),
+        //     title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Back.Header"),
+        //     callOut: SmileIDResourcesHelper.localizedString(
+        //         for: "Instructions.Document.Back.Callout"
+        //     ),
+        //     buttonTitle: "Action.TakePhoto",
+        //     instructions: [
+        //         CaptureInstruction(
+        //             title: SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"),
+        //             instruction: SmileIDResourcesHelper.localizedString(
+        //                 for: "Instructions.GoodLightBody"
+        //             ),
+        //             image: Constants.ImageName.light
+        //         ),
+        //         CaptureInstruction(
+        //             title: SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"),
+        //             instruction: SmileIDResourcesHelper.localizedString(
+        //                 for: "Instructions.ClearImageBody"
+        //             ),
+        //             image: Constants.ImageName.clearImage)
+        //     ],
+        //     captureType: .document(.back),
+        //     destination: .documentCaptureScreen(
+        //         documentCaptureViewModel: viewModel
+        //     ),
+        //     secondaryDestination: .imagePicker(viewModel: viewModel),
+        //     skipDestination: skipDestination,
+        //     showAttribution: viewModel.showAttribution,
+        //     allowGalleryUpload: viewModel.allowGalleryUpload)
+        //     .padding(.top, 50)
     }
 
     func createFrontInstructions() -> some View {
         CaptureInstructionView<DocumentCaptureView>(
             image: SmileIDResourcesHelper.InstructionsHeaderDocumentIcon,
-            title: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Header"),
-            callOut: SmileIDResourcesHelper.localizedString(for: "Instructions.Document.Callout"),
+            title: SmileIDResourcesHelper.localizedString(for:
+                                                          "Instructions.Document.Front.Header"),
+            callOut: SmileIDResourcesHelper.localizedString(for:
+                                                            "Instructions.Document.Front.Callout"),
             buttonTitle: "Action.TakePhoto",
             instructions: [
                 CaptureInstruction(
@@ -114,36 +117,36 @@ public struct DocumentCaptureInstructionsView: View {
                 documentCaptureViewModel: viewModel
             ),
             secondaryDestination: .imagePicker(viewModel: viewModel),
-            showAttribution: viewModel.showAttribution,
-            allowGalleryUpload: viewModel.allowGalleryUpload
+            showAttribution: true,
+            allowGalleryUpload: true
         ).padding(.top, 50)
     }
 }
 
-struct DocumentCaptureInstructionsView_Previews: PreviewProvider {
-    static var previews: some View {
-        DocumentCaptureInstructionsView(
-            viewModel: DocumentCaptureViewModel(
-                userId: "",
-                jobId: "",
-                countryCode: "",
-                documentType: "",
-                captureBothSides: true,
-                showAttribution: true,
-                allowGalleryUpload: true,
-                delegate: DocPlaceHolderDelegate()
-            )
-        ).environment(\.locale, Locale(identifier: "en"))
-    }
-
-    private class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
-        func didSucceed(
-            selfie: URL,
-            documentFrontImage: URL,
-            documentBackImage: URL?,
-            jobStatusResponse: JobStatusResponse
-        ) {}
-
-        func didError(error _: Error) {}
-    }
-}
+// struct DocumentCaptureInstructionsView_Previews: PreviewProvider {
+//     static var previews: some View {
+//         DocumentCaptureInstructionsView(
+//             viewModel: DocumentCaptureViewModel(
+//                 userId: "",
+//                 jobId: "",
+//                 countryCode: "",
+//                 documentType: "",
+//                 captureBothSides: true,
+//                 showAttribution: true,
+//                 allowGalleryUpload: true,
+//                 delegate: DocPlaceHolderDelegate()
+//             )
+//         ).environment(\.locale, Locale(identifier: "en"))
+//     }
+//
+//     private class DocPlaceHolderDelegate: DocumentCaptureResultDelegate {
+//         func didSucceed(
+//             selfie: URL,
+//             documentFrontImage: URL,
+//             documentBackImage: URL?,
+//             jobStatusResponse: JobStatusResponse
+//         ) {}
+//
+//         func didError(error _: Error) {}
+//     }
+// }
