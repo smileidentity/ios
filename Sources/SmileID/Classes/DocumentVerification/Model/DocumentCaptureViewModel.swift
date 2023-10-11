@@ -2,13 +2,13 @@ import Combine
 import SwiftUI
 
 enum DocumentDirective: String {
-    // todo: well lit and in focus directives
     case defaultInstructions = "Document.Directive.Default"
     case capturing = "Document.Directive.Capturing"
 }
 
 private let correctAspectRatioTolerance = 0.1
 private let centeredTolerance = 30.0
+private let documentAutoCaptureWaitTimeSecs = 1.0
 
 class DocumentCaptureViewModel: ObservableObject {
     // Initializer properties
@@ -16,11 +16,12 @@ class DocumentCaptureViewModel: ObservableObject {
 
     // Other properties
     private let defaultAspectRatio: Double
-    private var isCapturing = false
     private let textDetector = TextDetector()
     private var imageCaptureSubscriber: AnyCancellable?
     private var cameraBufferSubscriber: AnyCancellable?
     private var processingImage = false
+    private var documentFirstDetectedAtTime: TimeInterval?
+    private var areEdgesDetectedSubscriber: AnyCancellable?
 
     // UI properties
     // TODO: Mark these as @MainActor?
@@ -32,13 +33,15 @@ class DocumentCaptureViewModel: ObservableObject {
     @Published var showManualCaptureButton = false
     @Published var documentImageToConfirm: Data?
     @Published var captureError: Error?
-    @Published var showCaptureInProgress = false
+    @Published var isCapturing = false
     @Published var cameraManager = CameraManager(orientation: .portrait)
 
     init(knownAspectRatio: Double? = nil) {
         self.knownAspectRatio = knownAspectRatio
         defaultAspectRatio = knownAspectRatio ?? 1.0
-        idAspectRatio = defaultAspectRatio
+        DispatchQueue.main.async { [self] in
+            idAspectRatio = defaultAspectRatio
+        }
 
         imageCaptureSubscriber = cameraManager.capturedImagePublisher
             .receive(on: DispatchQueue.global())
@@ -58,6 +61,23 @@ class DocumentCaptureViewModel: ObservableObject {
             userInfo: nil,
             repeats: false
         )
+
+        // Auto capture after 1 second of edges detected
+        areEdgesDetectedSubscriber = $areEdgesDetected.sink(receiveValue: { areEdgesDetected in
+            if areEdgesDetected {
+                if let documentFirstDetectedAtTime = self.documentFirstDetectedAtTime {
+                    let now = Date().timeIntervalSince1970
+                    let elapsedTime = now - documentFirstDetectedAtTime
+                    if elapsedTime > documentAutoCaptureWaitTimeSecs && !self.isCapturing {
+                        self.captureDocument()
+                    }
+                } else {
+                    self.documentFirstDetectedAtTime = Date().timeIntervalSince1970
+                }
+            } else {
+                self.documentFirstDetectedAtTime = nil
+            }
+        })
     }
 
     @objc func showManualCapture() {
@@ -69,7 +89,10 @@ class DocumentCaptureViewModel: ObservableObject {
     /// Called when the user taps the "Take Photo" button on the instructions screen. This is NOT
     /// the same as the manual capture button.
     func onTakePhotoClick() {
-        acknowledgedInstructions = true
+        DispatchQueue.main.async {
+            self.isCapturing = false
+            self.acknowledgedInstructions = true
+        }
     }
 
     /// Called when the user taps the "Select from Gallery" button on the instructions screen
@@ -98,26 +121,17 @@ class DocumentCaptureViewModel: ObservableObject {
             print("Already capturing. Skipping duplicate capture request")
             return
         }
-        isCapturing = true
         DispatchQueue.main.async {
-            self.showCaptureInProgress = true
+            self.isCapturing = true
             self.directive = .capturing
         }
         cameraManager.capturePhoto()
     }
 
-    func onCaptureComplete(image: Data) {
-        isCapturing = false
-        DispatchQueue.main.async { [self] in
-            documentImageToConfirm = image
-            showCaptureInProgress = false
-        }
-    }
-
     /// Called if the user declines the image in the capture confirmation dialog.
     func onRetry() {
-        isCapturing = false
         DispatchQueue.main.async {
+            self.isCapturing = false
             self.acknowledgedInstructions = false
             self.documentImageToConfirm = nil
             self.captureError = nil
@@ -126,9 +140,21 @@ class DocumentCaptureViewModel: ObservableObject {
         }
     }
 
-    // TODO: Luminance and focus detection
+    private func onCaptureComplete(image: Data) {
+        DispatchQueue.main.async { [self] in
+            documentImageToConfirm = image
+            isCapturing = false
+        }
+    }
 
-    func analyzeImage(buffer: CVPixelBuffer) {
+    /// Analyzes a single frame from the camera. No other frame will be processed until this one
+    /// completes. This is to prevent the UI from flickering between different states.
+    ///
+    /// Unlike Android, we don't perform focus and luminance detection, as text detection serves as
+    /// a better proxy for image quality.
+    ///
+    /// - Parameter buffer: The pixel buffer to analyze
+    private func analyzeImage(buffer: CVPixelBuffer) {
         if (processingImage) {
             return
         }
@@ -169,11 +195,7 @@ class DocumentCaptureViewModel: ObservableObject {
         }
     }
 
-    func calculateLuminance(buffer: CVPixelBuffer) {
-
-    }
-
-    func resetBoundingBox() {
+    private func resetBoundingBox() {
         DispatchQueue.main.async {
             self.areEdgesDetected = false
             self.idAspectRatio = self.defaultAspectRatio
@@ -188,7 +210,7 @@ class DocumentCaptureViewModel: ObservableObject {
         return abs(detectedAspectRatio - expectedAspectRatio) < tolerance
     }
 
-    func isRectCentered(
+    private func isRectCentered(
         detectedRect: Quadrilateral?,
         imageWidth: Double,
         imageHeight: Double,
@@ -299,7 +321,7 @@ struct DocumentCaptureScreen: View {
                 subtitle: SmileIDResourcesHelper.localizedString(for: viewModel.directive.rawValue),
                 idAspectRatio: viewModel.idAspectRatio,
                 areEdgesDetected: viewModel.areEdgesDetected,
-                showCaptureInProgress: viewModel.showCaptureInProgress,
+                showCaptureInProgress: viewModel.isCapturing,
                 showManualCaptureButton: viewModel.showManualCaptureButton,
                 cameraManager: viewModel.cameraManager,
                 onCaptureClick: viewModel.captureDocument

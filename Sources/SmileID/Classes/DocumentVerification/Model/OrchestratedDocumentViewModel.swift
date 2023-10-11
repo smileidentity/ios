@@ -90,6 +90,16 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
         }
     }
 
+    func onDocumentBackSkip() {
+        if selfieFile == nil {
+            DispatchQueue.main.async {
+                self.step = .selfieCapture
+            }
+        } else {
+            submitJob()
+        }
+    }
+
     func onFinished(delegate: DocumentCaptureResultDelegate) {
         if let jobStatusResponse = jobStatusResponse,
            let selfieFile = selfieFile,
@@ -234,7 +244,8 @@ struct OrchestratedDocumentVerificationScreen: View {
                 captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
                 knownIdAspectRatio: idAspectRatio,
                 onConfirm: viewModel.onBackDocumentImageConfirmed,
-                onError: viewModel.onError
+                onError: viewModel.onError,
+                onSkip: viewModel.onDocumentBackSkip
             )
         case .selfieCapture:
             SelfieCaptureView(

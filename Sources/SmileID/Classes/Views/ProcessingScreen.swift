@@ -76,8 +76,9 @@ private struct ProcessingInProgressScreen: View {
         }
             .padding()
             .background(SmileID.theme.backgroundMain)
-            .cornerRadius(20)
-            .shadow(radius: 20)
+            .cornerRadius(24)
+            .shadow(radius: 16)
+            .padding(32)
     }
 }
 
@@ -117,8 +118,9 @@ private struct ProcessingSuccessScreen: View {
         }
             .padding()
             .background(SmileID.theme.backgroundMain)
-            .cornerRadius(20)
-            .shadow(radius: 20)
+            .cornerRadius(24)
+            .shadow(radius: 16)
+            .padding(32)
     }
 }
 
@@ -169,7 +171,8 @@ private struct ProcessingErrorScreen: View {
         }
             .padding()
             .background(SmileID.theme.backgroundMain)
-            .cornerRadius(20)
-            .shadow(radius: 20)
+            .cornerRadius(24)
+            .shadow(radius: 16)
+            .padding(32)
     }
 }
