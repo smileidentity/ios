@@ -1,4 +1,4 @@
-import Foundation
+import Combine
 import SwiftUI
 
 enum DocumentProcessingState {
@@ -16,19 +16,22 @@ enum DocumentCaptureFlow: Equatable {
 
 class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegate {
     // Input properties
-    private var userId: String
-    private var jobId: String
-    private var countryCode: String
-    private var documentType: String?
-    private var captureBothSides: Bool
-    private var selfieFile: URL?
+    private let userId: String
+    private let jobId: String
+    private let countryCode: String
+    private let documentType: String?
+    private let captureBothSides: Bool
+    private var selfieFile: Data?
 
     // Other properties
-    private var documentFrontFile: URL?
-    private var documentBackFile: URL?
-    private var livenessFiles: [URL]?
+    private var documentFrontFile: Data?
+    private var documentBackFile: Data?
+    private var livenessFiles: [Data]?
     private var jobStatusResponse: JobStatusResponse?
+    private var savedFiles: DocumentCaptureResultStore?
+    private var networkingSubscriber: AnyCancellable?
     private var stepToRetry: DocumentCaptureFlow?
+    private var error: Error?
 
     // UI properties
     // TODO: Mark these as @MainActor?
@@ -40,39 +43,33 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
         countryCode: String,
         documentType: String?,
         captureBothSides: Bool,
-        selfieFile: URL?
+        selfieFile: URL?,
+        jobType: JobType = .documentVerification
     ) {
         self.userId = userId
         self.jobId = jobId
         self.countryCode = countryCode
         self.documentType = documentType
         self.captureBothSides = captureBothSides
-        self.selfieFile = selfieFile
+        self.selfieFile = selfieFile.flatMap { try? Data(contentsOf: $0) }
     }
 
     func onFrontDocumentImageConfirmed(data: Data) {
-        guard let file = try? LocalStorage.saveImage(image: data, name: "doc_front") else {
-            onError(error: SmileIDError.unknown("Error saving front document image"))
-            return
-        }
-        documentFrontFile = file
+        documentFrontFile = data
         DispatchQueue.main.async {
             self.step = .backDocumentCapture
         }
     }
 
     func onBackDocumentImageConfirmed(data: Data) {
-        guard let file = try? LocalStorage.saveImage(image: data, name: "doc_back") else {
-            onError(error: SmileIDError.unknown("Error saving back document image"))
-            return
-        }
-        documentBackFile = file
+        documentBackFile = data
         DispatchQueue.main.async {
             self.step = .selfieCapture
         }
     }
 
     func onError(error: Error) {
+        self.error = error
         stepToRetry = step
         DispatchQueue.main.async {
             self.step = .processing(.error)
@@ -89,19 +86,27 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
         }
     }
 
+    /// On Selfie Capture complete
+    func didCapture(selfie: Data, livenessImages: [Data]) {
+        selfieFile = selfie
+        livenessFiles = livenessImages
+        submitJob()
+    }
+
     func onFinished(delegate: DocumentCaptureResultDelegate) {
-        if let jobStatusResponse = jobStatusResponse,
-           let selfieFile = selfieFile,
-           let documentFrontFile = documentFrontFile {
+        if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
             delegate.didSucceed(
-                selfie: selfieFile,
-                documentFrontImage: documentFrontFile,
-                documentBackImage: documentBackFile,
+                selfie: savedFiles.selfie,
+                documentFrontImage: savedFiles.documentFront,
+                documentBackImage: savedFiles.documentBack,
                 jobStatusResponse: jobStatusResponse
             )
+        } else if let error = error {
+            // We check error as the 2nd case because as long as jobStatusResponse is not nil, it
+            // was a success
+            delegate.didError(error: error)
         } else {
-            // TODO: Send actual error, if one was saved/exists
-            delegate.didError(error: SmileIDError.unknown("Error getting job status response"))
+            delegate.didError(error: SmileIDError.unknown("Unknown error"))
         }
     }
 
@@ -123,29 +128,88 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
 
     func submitJob() {
         guard let documentFrontFile = documentFrontFile else {
+            // Set step to .frontDocumentCapture so that the Retry button goes back to this step
+            step = .frontDocumentCapture
             onError(error: SmileIDError.unknown("Error getting document front file"))
+            return
+        }
+        guard let selfieFile = selfieFile else {
+            // Set step to .selfieCapture so that the Retry button goes back to this step
+            step = .selfieCapture
+            onError(error: SmileIDError.unknown("Error getting selfie file"))
             return
         }
         DispatchQueue.main.async {
             self.step = .processing(.inProgress)
         }
 
-        // TODO: Perform network request
-    }
-
-    // On Selfie Capture complete
-    func didCapture(selfie: Data, livenessImages: [Data]) {
+        let zip: Data
         do {
-            let imageUrls = try LocalStorage.saveImageJpg(
-                livenessImages: livenessImages,
-                previewImage: selfie
+            let savedFiles = try LocalStorage.saveDocumentImages(
+                front: documentFrontFile,
+                back: documentBackFile,
+                selfie: selfieFile,
+                livenessImages: livenessFiles,
+                countryCode: countryCode,
+                documentType: documentType
             )
-            selfieFile = imageUrls.selfie
-            livenessFiles = imageUrls.livenessImages
-            submitJob()
+            let zipUrl = try LocalStorage.zipFiles(at: savedFiles.allFiles)
+            zip = try Data(contentsOf: zipUrl)
+            self.savedFiles = savedFiles
         } catch {
-            print(error)
-            onError(error: SmileIDError.unknown("Error saving image capture"))
+            print("Error saving document images: \(error)")
+            onError(error: SmileIDError.unknown("Error saving document images"))
+            return
         }
+
+        let authRequest = AuthenticationRequest(
+            jobType: .documentVerification,
+            enrollment: false,
+            jobId: jobId,
+            userId: userId
+        )
+
+        let auth = SmileID.api.authenticate(request: authRequest)
+        networkingSubscriber = auth.flatMap { authResponse in
+                let prepUploadRequest = PrepUploadRequest(
+                    partnerParams: authResponse.partnerParams,
+                    timestamp: authResponse.timestamp,
+                    signature: authResponse.signature
+                )
+                return SmileID.api.prepUpload(request: prepUploadRequest)
+            }
+            .flatMap { prepUploadResponse in
+                SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
+            }
+            .zip(auth)
+            .flatMap { uploadResponse, authResponse in
+                let jobStatusRequest = JobStatusRequest(
+                    userId: authResponse.partnerParams.userId,
+                    jobId: authResponse.partnerParams.jobId,
+                    includeImageLinks: false,
+                    includeHistory: false,
+                    timestamp: authResponse.timestamp,
+                    signature: authResponse.signature
+                )
+                return SmileID.api.getJobStatus(request: jobStatusRequest)
+            }
+            .sink(
+                receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("Error submitting job: \(error)")
+                        self.onError(error: SmileIDError.unknown("Network error"))
+                    default:
+                        break
+                    }
+
+                },
+                receiveValue: { response in
+                    self.jobStatusResponse = response
+                    DispatchQueue.main.async {
+                        self.step = .processing(.success)
+                    }
+                }
+            )
     }
 }
