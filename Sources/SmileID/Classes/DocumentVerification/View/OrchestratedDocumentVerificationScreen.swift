@@ -107,7 +107,7 @@ struct OrchestratedDocumentVerificationScreen: View {
                 inProgressSubtitle: SmileIDResourcesHelper.localizedString(
                     for: "Document.Processing.Callout"
                 ),
-                inProgressIcon: SmileIDResourcesHelper.Scan,
+                inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
                 successTitle: SmileIDResourcesHelper.localizedString(
                     for: "Document.Complete.Header"
                 ),
@@ -119,7 +119,6 @@ struct OrchestratedDocumentVerificationScreen: View {
                 errorSubtitle: SmileIDResourcesHelper.localizedString(
                     for: "Confirmation.FailureReason"
                 ),
-                // TODO: Replace this with the actual error icon
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(
                     for: "Confirmation.Continue"

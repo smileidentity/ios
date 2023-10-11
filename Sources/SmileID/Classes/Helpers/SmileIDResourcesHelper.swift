@@ -66,6 +66,7 @@ public class SmileIDResourcesHelper {
     public static var Light = SmileIDResourcesHelper.image("Light")!
     public static var SmileEmblem = SmileIDResourcesHelper.image("SmileEmblem")!
     public static var FaceOutline = SmileIDResourcesHelper.image("FaceOutline")!
+    public static var DocumentProcessing = SmileIDResourcesHelper.image("DocumentProcessing")!
     public static var Scan = SmileIDResourcesHelper.image("scan")!
     public static var CheckBold = SmileIDResourcesHelper.image("CheckBold")!
     public static var Close = SmileIDResourcesHelper.image("Close")!
