@@ -1,5 +1,6 @@
 import SwiftUI
 
+// TODO: Remove
 struct DocumentCaptureView: View {
     @ObservedObject var viewModel: DocumentCaptureViewModel
     @EnvironmentObject var router: Router<NavigationDestination>
