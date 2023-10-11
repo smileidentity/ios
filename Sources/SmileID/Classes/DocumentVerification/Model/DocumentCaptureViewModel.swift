@@ -24,7 +24,6 @@ class DocumentCaptureViewModel: ObservableObject {
     private var areEdgesDetectedSubscriber: AnyCancellable?
 
     // UI properties
-    // TODO: Mark these as @MainActor?
     @Published var acknowledgedInstructions = false
     @Published var showPhotoPicker = false
     @Published var directive: DocumentDirective = .defaultInstructions

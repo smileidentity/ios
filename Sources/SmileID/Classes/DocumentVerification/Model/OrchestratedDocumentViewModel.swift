@@ -34,7 +34,6 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
     private var error: Error?
 
     // UI properties
-    // TODO: Mark these as @MainActor?
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
     init(
