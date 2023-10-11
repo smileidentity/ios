@@ -13,7 +13,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
 
     init(
         viewModel: SelfieCaptureViewModel,
-        delegate: SmartSelfieResultDelegate
+        delegate: SmartSelfieResultDelegate?
     ) {
         self.delegate = delegate
         self.viewModel = viewModel

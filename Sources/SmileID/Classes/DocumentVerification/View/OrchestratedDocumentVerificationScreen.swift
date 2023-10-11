@@ -96,7 +96,7 @@ struct OrchestratedDocumentVerificationScreen: View {
                     // imageCaptureDelegate is just for image capture, not job result
                     imageCaptureDelegate: viewModel
                 ),
-                delegate: SelfiePlaceHolderDelegate()
+                delegate: nil
             )
         case .processing(let state):
             ProcessingScreen(

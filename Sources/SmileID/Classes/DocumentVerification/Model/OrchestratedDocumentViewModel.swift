@@ -14,17 +14,6 @@ enum DocumentCaptureFlow: Equatable {
     case processing(DocumentProcessingState)
 }
 
-// TODO: Remove
-class SelfiePlaceHolderDelegate: SmartSelfieResultDelegate {
-    func didSucceed(
-        selfieImage _: URL,
-        livenessImages _: [URL],
-        jobStatusResponse _: JobStatusResponse
-    ) {}
-
-    func didError(error _: Error) {}
-}
-
 class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegate {
     // Input properties
     private var userId: String
