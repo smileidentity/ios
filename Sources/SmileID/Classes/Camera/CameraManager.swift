@@ -8,7 +8,7 @@ protocol CameraManageable: AnyObject {
     func pauseSession()
     func resumeSession()
     var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher {get}
-    var capturedImagePublisher: Published<UIImage?>.Publisher {get}
+    var capturedImagePublisher: Published<Data?>.Publisher {get}
     var session: AVCaptureSession { get }
     var cameraPosition: AVCaptureDevice.Position? {get}
 }
@@ -30,10 +30,10 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
     @Environment(\.isPreview) var isPreview
     @Published var error: CameraError?
     @Published var sampleBuffer: CVPixelBuffer?
-    @Published var capturedImage: UIImage?
+    @Published var capturedImage: Data?
 
     var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher { $sampleBuffer }
-    var capturedImagePublisher: Published<UIImage?>.Publisher { $capturedImage }
+    var capturedImagePublisher: Published<Data?>.Publisher { $capturedImage }
     let videoOutputQueue = DispatchQueue(
         label: "com.smileidentity.videooutput",
         qos: .userInitiated,
@@ -217,8 +217,8 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
             set(error: .cannotCaptureImage(error!))
             return
         }
-        if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
-            capturedImage  = image
+        if let imageData = photo.fileDataRepresentation() {
+            capturedImage = imageData
         } else {
             set(error: .cannotCaptureImage(nil))
         }

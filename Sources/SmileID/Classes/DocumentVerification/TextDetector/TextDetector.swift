@@ -2,32 +2,20 @@ import Foundation
 import Vision
 import CoreImage
 
-protocol TextDetectionDelegate: AnyObject {
-    func noTextDetected()
-    func onTextDetected()
-}
-
 class TextDetector {
-    let sequenceHandler = VNSequenceRequestHandler()
-    weak var delegate: TextDetectionDelegate?
+    private let sequenceHandler = VNSequenceRequestHandler()
 
-    func detectText(buffer: CVPixelBuffer) {
-        let request = VNRecognizeTextRequest(completionHandler: recognizeTextHandler)
+    func detectText(buffer: CVPixelBuffer, onDetectionResult: @escaping (_ hasText: Bool) -> Void) {
+        let request = VNRecognizeTextRequest { request, error in
+            guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                onDetectionResult(false)
+                return
+            }
+
+            let recognisedString = observations.compactMap { $0.topCandidates(1).first?.string }
+
+            onDetectionResult(!recognisedString.isEmpty)
+        }
         try? sequenceHandler.perform([request], on: buffer)
-    }
-
-    func recognizeTextHandler(request: VNRequest, error: Error?) {
-        guard let observations = request.results as? [VNRecognizedTextObservation] else {
-            delegate?.noTextDetected()
-            return
-        }
-
-        let recognisedString = observations.compactMap { $0.topCandidates(1).first?.string }
-
-        if recognisedString.isEmpty {
-            delegate?.noTextDetected()
-        } else {
-            delegate?.onTextDetected()
-        }
     }
 }

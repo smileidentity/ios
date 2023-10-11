@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 
 enum DocumentDirective: String {
@@ -7,6 +8,7 @@ enum DocumentDirective: String {
 }
 
 private let correctAspectRatioTolerance = 0.1
+private let centeredTolerance = 30.0
 
 class DocumentCaptureViewModel: ObservableObject {
     // Initializer properties
@@ -15,6 +17,10 @@ class DocumentCaptureViewModel: ObservableObject {
     // Other properties
     private let defaultAspectRatio: Double
     private var isCapturing = false
+    private let textDetector = TextDetector()
+    private var imageCaptureSubscriber: AnyCancellable?
+    private var cameraBufferSubscriber: AnyCancellable?
+    private var processingImage = false
 
     // UI properties
     // TODO: Mark these as @MainActor?
@@ -29,12 +35,20 @@ class DocumentCaptureViewModel: ObservableObject {
     @Published var showCaptureInProgress = false
     @Published var cameraManager = CameraManager(orientation: .portrait)
 
-    init(
-        knownAspectRatio: Double? = nil
-    ) {
+    init(knownAspectRatio: Double? = nil) {
         self.knownAspectRatio = knownAspectRatio
         defaultAspectRatio = knownAspectRatio ?? 1.0
         idAspectRatio = defaultAspectRatio
+
+        imageCaptureSubscriber = cameraManager.capturedImagePublisher
+            .receive(on: DispatchQueue.global())
+            .compactMap { $0 }
+            .sink(receiveValue: onCaptureComplete)
+
+        cameraBufferSubscriber = cameraManager.sampleBufferPublisher
+            .receive(on: DispatchQueue(label: "com.smileidentity.receivebuffer"))
+            .compactMap { $0 }
+            .sink(receiveValue: analyzeImage)
 
         // Show Manual Capture button after 10 seconds
         Timer.scheduledTimer(
@@ -52,10 +66,13 @@ class DocumentCaptureViewModel: ObservableObject {
         }
     }
 
+    /// Called when the user taps the "Take Photo" button on the instructions screen. This is NOT
+    /// the same as the manual capture button.
     func onTakePhotoClick() {
         acknowledgedInstructions = true
     }
 
+    /// Called when the user taps the "Select from Gallery" button on the instructions screen
     func onGalleryClick() {
         showPhotoPicker = true
     }
@@ -72,20 +89,9 @@ class DocumentCaptureViewModel: ObservableObject {
             self.documentImageToConfirm = image
             self.showPhotoPicker = false
         }
-        // do {
-        //     let url = try LocalStorage.saveImage(image: image, name: "test")
-        //     DispatchQueue.main.async {
-        //         self.documentImageToConfirm = url
-        //     }
-        // } catch {
-        //     print(error)
-        //     DispatchQueue.main.async {
-        //         self.captureError = SmileIDError.unknown("Error saving image")
-        //     }
-        // }
     }
 
-    /// Called when auto capture determines the image quality is sufficient or when the user taps
+    /// Called when auto capture determines the image quality is sufficient OR when the user taps
     /// the manual capture button.
     func captureDocument() {
         if (isCapturing) {
@@ -98,7 +104,14 @@ class DocumentCaptureViewModel: ObservableObject {
             self.directive = .capturing
         }
         cameraManager.capturePhoto()
-        // TODO: Take the picture
+    }
+
+    func onCaptureComplete(image: Data) {
+        isCapturing = false
+        DispatchQueue.main.async { [self] in
+            documentImageToConfirm = image
+            showCaptureInProgress = false
+        }
     }
 
     /// Called if the user declines the image in the capture confirmation dialog.
@@ -113,7 +126,48 @@ class DocumentCaptureViewModel: ObservableObject {
         }
     }
 
-    // TODO: image analysis
+    // TODO: Luminance and focus detection
+
+    func analyzeImage(buffer: CVPixelBuffer) {
+        if (processingImage) {
+            return
+        }
+        processingImage = true
+        let imageSize = CGSize(
+            width: CVPixelBufferGetWidth(buffer),
+            height: CVPixelBufferGetHeight(buffer)
+        )
+        RectangleDetector.rectangle(
+            forPixelBuffer: buffer,
+            aspectRatio: knownAspectRatio
+        ) { [self] rect in
+            if rect == nil {
+                resetBoundingBox()
+                processingImage = false
+                return
+            }
+            let detectedAspectRatio = 1 / (rect?.aspectRatio ?? defaultAspectRatio)
+            let isCorrectAspectRatio = isCorrectAspectRatio(
+                detectedAspectRatio: detectedAspectRatio
+            )
+            let idAspectRatio = knownAspectRatio ?? detectedAspectRatio
+            let isCentered = isRectCentered(
+                detectedRect: rect,
+                imageWidth: Double(imageSize.width),
+                imageHeight: Double(imageSize.height)
+            )
+            DispatchQueue.main.async { [self] in
+                self.idAspectRatio = idAspectRatio
+            }
+            textDetector.detectText(buffer: buffer) { [self] hasText in
+                processingImage = false
+                let areEdgesDetected = isCentered && isCorrectAspectRatio && hasText
+                DispatchQueue.main.async { [self] in
+                    self.areEdgesDetected = areEdgesDetected
+                }
+            }
+        }
+    }
 
     func resetBoundingBox() {
         DispatchQueue.main.async {
@@ -126,8 +180,41 @@ class DocumentCaptureViewModel: ObservableObject {
         detectedAspectRatio: Double,
         tolerance: Double = correctAspectRatioTolerance
     ) -> Bool {
-        let expectedAspectRatio = knownAspectRatio ?? defaultAspectRatio
+        let expectedAspectRatio = knownAspectRatio ?? detectedAspectRatio
         return abs(detectedAspectRatio - expectedAspectRatio) < tolerance
+    }
+
+    func isRectCentered(
+        detectedRect: Quadrilateral?,
+        imageWidth: Double,
+        imageHeight: Double,
+        tolerance: Double = centeredTolerance
+    ) -> Bool {
+        guard let detectedRect = detectedRect else { return false }
+
+        // Sometimes, the bounding box is out of frame. This cannot be considered centered
+        // We check only left and right because the document should always fill the width but may
+        // not fill the height
+        if detectedRect.topLeft.x < tolerance || detectedRect.topRight.x > imageWidth - tolerance {
+            return false
+        }
+
+        let imageCenterX = imageWidth / 2
+        let imageCenterY = imageHeight / 2
+
+        let rectCenterX = (detectedRect.topLeft.x + detectedRect.topRight.x) / 2
+        let rectCenterY = (detectedRect.topLeft.y + detectedRect.bottomLeft.y) / 2
+
+        let deltaX = abs(imageCenterX - rectCenterX)
+        let deltaY = abs(imageCenterY - rectCenterY)
+
+        let isCenteredHorizontally = deltaX < tolerance
+        let isCenteredVertically = deltaY < tolerance
+
+        print("Centered horizontally: \(isCenteredHorizontally)")
+        print("Centered vertically: \(isCenteredVertically)")
+
+        return isCenteredHorizontally && isCenteredVertically
     }
 }
 
@@ -205,7 +292,6 @@ struct DocumentCaptureScreen: View {
                 ),
                 onRetake: viewModel.onRetry
             )
-
         } else {
             CaptureScreenContent(
                 title: captureTitleText,
@@ -230,28 +316,16 @@ struct CaptureScreenContent: View {
     let showManualCaptureButton: Bool
     let cameraManager: CameraManager
     let onCaptureClick: () -> Void
-    // let rectangleDelegate: RectangleDetectionDelegate
-
-    // private var currentBuffer: CVPixelBuffer? = nil
-    // private let textDetector = TextDetector()
-    // private var cameraManager = CameraManager(orientation: .portrait)
 
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             ZStack {
-                CameraView(cameraManager: cameraManager).onAppear {
-                    cameraManager.switchCamera(to: .back)
-                    cameraManager.sampleBufferPublisher
-                        .receive(on: DispatchQueue(label: "com.smileidentity.receivebuffer"))
-                        .compactMap { $0 }
-                        .sink(receiveValue: { [self] buffer in
-                            // TODO: Rectangle detection
-                        })
-                }
-                let borderColor = areEdgesDetected ? SmileID.theme.success : .gray
-                DocumentOverlayView(
+                CameraView(cameraManager: cameraManager)
+                    .onAppear { cameraManager.switchCamera(to: .back) }
+                    .onDisappear(perform: cameraManager.pauseSession)
+                DocumentShapedBoundingBox(
                     aspectRatio: idAspectRatio,
-                    borderColor: borderColor.uiColor()
+                    borderColor: areEdgesDetected ? SmileID.theme.success : .gray
                 )
             }
             Text(title)
