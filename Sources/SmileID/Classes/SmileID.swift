@@ -212,7 +212,7 @@ public class SmileID {
             allowGalleryUpload: allowGalleryUpload,
             showInstructions: showInstructions,
             onResult: delegate
-        )
+        ).environmentObject(router)
     }
 
     /// Perform an Enhanced Document Verification
@@ -263,6 +263,6 @@ public class SmileID {
             showInstructions: showInstructions,
             showAttribution: showAttribution,
             delegate: delegate
-        )
+        ).environmentObject(router)
     }
 }

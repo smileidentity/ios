@@ -61,15 +61,25 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
         self.selfieFile = selfieFile
     }
 
-    func onFrontDocumentImageConfirmed(url: URL) {
+    func onFrontDocumentImageConfirmed(data: Data) {
         print("onFrontDocumentImageConfirmed")
+        guard let file = try? LocalStorage.saveImage(image: data, name: "doc_front") else {
+            onError(error: SmileIDError.unknown("Error saving front document image"))
+            return
+        }
+        documentFrontFile = file
         DispatchQueue.main.async {
             self.step = .backDocumentCapture
         }
     }
 
-    func onBackDocumentImageConfirmed(url: URL) {
+    func onBackDocumentImageConfirmed(data: Data) {
         print("onBackDocumentImageConfirmed")
+        guard let file = try? LocalStorage.saveImage(image: data, name: "doc_back") else {
+            onError(error: SmileIDError.unknown("Error saving back document image"))
+            return
+        }
+        documentBackFile = file
         DispatchQueue.main.async {
             self.step = .selfieCapture
         }

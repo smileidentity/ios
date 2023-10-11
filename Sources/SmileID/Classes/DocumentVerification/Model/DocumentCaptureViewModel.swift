@@ -1,4 +1,3 @@
-import Foundation
 import SwiftUI
 
 enum DocumentDirective: String {
@@ -20,13 +19,15 @@ class DocumentCaptureViewModel: ObservableObject {
     // UI properties
     // TODO: Mark these as @MainActor?
     @Published var acknowledgedInstructions = false
+    @Published var showPhotoPicker = false
     @Published var directive: DocumentDirective = .defaultInstructions
     @Published var areEdgesDetected = false
     @Published var idAspectRatio = 1.0
     @Published var showManualCaptureButton = false
-    @Published var documentImageToConfirm: URL?
+    @Published var documentImageToConfirm: Data?
     @Published var captureError: Error?
     @Published var showCaptureInProgress = false
+    @Published var cameraManager = CameraManager(orientation: .portrait)
 
     init(
         knownAspectRatio: Double? = nil
@@ -55,14 +56,33 @@ class DocumentCaptureViewModel: ObservableObject {
         acknowledgedInstructions = true
     }
 
-    func onGallerySelectionClick() {
-        // TODO
-        print("TODO")
+    func onGalleryClick() {
+        showPhotoPicker = true
     }
 
     func onPhotoSelectedFromGallery(_ image: UIImage) {
-        // TODO: Save image to documentImageToConfirm (write to file and return URL?) maybe the
-        //  input param is wrong
+        guard let image = image.jpegData(compressionQuality: 1.0) else {
+            DispatchQueue.main.async {
+                self.captureError = SmileIDError.unknown("Error saving image")
+            }
+            return
+        }
+        DispatchQueue.main.async {
+            self.acknowledgedInstructions = true
+            self.documentImageToConfirm = image
+            self.showPhotoPicker = false
+        }
+        // do {
+        //     let url = try LocalStorage.saveImage(image: image, name: "test")
+        //     DispatchQueue.main.async {
+        //         self.documentImageToConfirm = url
+        //     }
+        // } catch {
+        //     print(error)
+        //     DispatchQueue.main.async {
+        //         self.captureError = SmileIDError.unknown("Error saving image")
+        //     }
+        // }
     }
 
     /// Called when auto capture determines the image quality is sufficient or when the user taps
@@ -77,12 +97,12 @@ class DocumentCaptureViewModel: ObservableObject {
             self.showCaptureInProgress = true
             self.directive = .capturing
         }
+        cameraManager.capturePhoto()
         // TODO: Take the picture
     }
 
     /// Called if the user declines the image in the capture confirmation dialog.
     func onRetry() {
-        // TODO: Delete capture file
         isCapturing = false
         DispatchQueue.main.async {
             self.acknowledgedInstructions = false
@@ -120,7 +140,7 @@ struct DocumentCaptureScreen: View {
     let instructionsSubtitleText: String
     let captureTitleText: String
     let knownIdAspectRatio: Double?
-    let onConfirm: (URL) -> Void
+    let onConfirm: (Data) -> Void
     let onError: (Error) -> Void
     let onSkip: () -> Void
     @ObservedObject private var viewModel: DocumentCaptureViewModel
@@ -134,7 +154,7 @@ struct DocumentCaptureScreen: View {
         instructionsSubtitleText: String,
         captureTitleText: String,
         knownIdAspectRatio: Double?,
-        onConfirm: @escaping (URL) -> Void,
+        onConfirm: @escaping (Data) -> Void,
         onError: @escaping (Error) -> Void,
         onSkip: @escaping () -> Void = {}
     ) {
@@ -153,7 +173,9 @@ struct DocumentCaptureScreen: View {
     }
 
     var body: some View {
-        if showInstructions && !viewModel.acknowledgedInstructions {
+        if let captureError = viewModel.captureError {
+            let _ = onError(captureError)
+        } else if showInstructions && !viewModel.acknowledgedInstructions {
             DocumentCaptureInstructionsScreen(
                 title: instructionsTitleText,
                 subtitle: instructionsSubtitleText,
@@ -161,11 +183,29 @@ struct DocumentCaptureScreen: View {
                 allowPhotoFromGallery: allowGallerySelection,
                 showSkipButton: showSkipButton,
                 onSkip: onSkip,
-                onInstructionsAcknowledgedSelectFromGallery: viewModel.onGallerySelectionClick,
+                onInstructionsAcknowledgedSelectFromGallery: viewModel.onGalleryClick,
                 onInstructionsAcknowledgedTakePhoto: viewModel.onTakePhotoClick
             )
+                .sheet(isPresented: $viewModel.showPhotoPicker) {
+                    ImagePicker(onImageSelected: viewModel.onPhotoSelectedFromGallery)
+                }
         } else if let imageToConfirm = viewModel.documentImageToConfirm {
-            // TODO: Image Confirmation Dialog
+            ImageCaptureConfirmationDialog(
+                title: SmileIDResourcesHelper.localizedString(for: "Document.Confirmation.Header"),
+                subtitle: SmileIDResourcesHelper.localizedString(
+                    for: "Document.Confirmation.Callout"
+                ),
+                image: UIImage(data: imageToConfirm) ?? UIImage(),
+                confirmationButtonText: SmileIDResourcesHelper.localizedString(
+                    for: "Document.Confirmation.Accept"
+                ),
+                onConfirm: { onConfirm(imageToConfirm) },
+                retakeButtonText: SmileIDResourcesHelper.localizedString(
+                    for: "Document.Confirmation.Decline"
+                ),
+                onRetake: viewModel.onRetry
+            )
+
         } else {
             CaptureScreenContent(
                 title: captureTitleText,
@@ -174,114 +214,10 @@ struct DocumentCaptureScreen: View {
                 areEdgesDetected: viewModel.areEdgesDetected,
                 showCaptureInProgress: viewModel.showCaptureInProgress,
                 showManualCaptureButton: viewModel.showManualCaptureButton,
+                cameraManager: viewModel.cameraManager,
                 onCaptureClick: viewModel.captureDocument
             )
-            // TODO: Capture Screen
         }
-    }
-}
-
-private struct DocumentCaptureInstructionsScreen: View {
-    let title: String
-    let subtitle: String
-    let showAttribution: Bool
-    let allowPhotoFromGallery: Bool
-    let showSkipButton: Bool
-    let onSkip: () -> Void
-    let onInstructionsAcknowledgedSelectFromGallery: () -> Void
-    let onInstructionsAcknowledgedTakePhoto: () -> Void
-
-    var body: some View {
-        VStack {
-            ScrollView {
-                VStack {
-                    Image(uiImage: SmileIDResourcesHelper.InstructionsHeaderDocumentIcon)
-                        .padding(.bottom, 24)
-                    VStack(spacing: 16) {
-                        Text(title)
-                            .multilineTextAlignment(.center)
-                            .font(SmileID.theme.header1)
-                            .foregroundColor(SmileID.theme.accent)
-                            .lineSpacing(0.98)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Text(subtitle)
-                            .multilineTextAlignment(.center)
-                            .font(SmileID.theme.header5)
-                            .foregroundColor(SmileID.theme.tertiary)
-                            .lineSpacing(1.3)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                        .padding(.bottom, 16)
-
-                    VStack(alignment: .leading, spacing: 32) {
-                        HStack(spacing: 16) {
-                            Image(uiImage: SmileIDResourcesHelper.image(Constants.ImageName.light)!)
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"))
-                                    .font(SmileID.theme.header4)
-                                    .foregroundColor(SmileID.theme.accent)
-                                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLightBody"))
-                                    .multilineTextAlignment(.leading)
-                                    .font(SmileID.theme.header5)
-                                    .foregroundColor(SmileID.theme.tertiary)
-                                    .lineSpacing(1.3)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                        }
-                        HStack(spacing: 16) {
-                            Image(uiImage: SmileIDResourcesHelper.image(Constants.ImageName.clearImage)!)
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"))
-                                    .font(SmileID.theme.header4)
-                                    .foregroundColor(SmileID.theme.accent)
-                                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"))
-                                    .multilineTextAlignment(.leading)
-                                    .font(SmileID.theme.header5)
-                                    .foregroundColor(SmileID.theme.tertiary)
-                                    .lineSpacing(1.3)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                        }
-                    }
-                }
-            }
-            VStack(spacing: 4) {
-                if showSkipButton {
-                    Button(
-                        action: onSkip,
-                        label: {
-                            Text(SmileIDResourcesHelper.localizedString(for: "Action.Skip"))
-                                .multilineTextAlignment(.center)
-                                .font(SmileID.theme.button)
-                                .foregroundColor(SmileID.theme.tertiary.opacity(0.8))
-                        }
-                    )
-                        .frame(height: 48)
-                }
-
-                SmileButton(
-                    title: "Action.TakePhoto",
-                    clicked: onInstructionsAcknowledgedTakePhoto
-                )
-
-                if allowPhotoFromGallery {
-                    SmileButton(
-                        style: .alternate,
-                        title: "Action.UploadPhoto",
-                        clicked: onInstructionsAcknowledgedSelectFromGallery
-                    )
-                }
-                if showAttribution {
-                    Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
-                }
-            }
-        }
-            .padding(EdgeInsets(
-                top: 0,
-                leading: 24,
-                bottom: 16,
-                trailing: 24
-            ))
     }
 }
 
@@ -292,6 +228,7 @@ struct CaptureScreenContent: View {
     let areEdgesDetected: Bool
     let showCaptureInProgress: Bool
     let showManualCaptureButton: Bool
+    let cameraManager: CameraManager
     let onCaptureClick: () -> Void
     // let rectangleDelegate: RectangleDetectionDelegate
 
@@ -300,7 +237,6 @@ struct CaptureScreenContent: View {
     // private var cameraManager = CameraManager(orientation: .portrait)
 
     var body: some View {
-        let cameraManager = CameraManager(orientation: .portrait)
         VStack(alignment: .center, spacing: 16) {
             ZStack {
                 CameraView(cameraManager: cameraManager).onAppear {
@@ -317,33 +253,34 @@ struct CaptureScreenContent: View {
                     aspectRatio: idAspectRatio,
                     borderColor: borderColor.uiColor()
                 )
-            }.frame(maxWidth: .infinity, maxHeight: .infinity)
-            VStack(alignment: .center, spacing: 16) {
-                Text(title)
-                    .multilineTextAlignment(.center)
-                    .font(SmileID.theme.header4)
-                    .foregroundColor(SmileID.theme.accent)
-                    .frame(alignment: .center)
-                    .padding()
-                Text(subtitle)
-                    .multilineTextAlignment(.center)
-                    .font(SmileID.theme.body)
-                    .foregroundColor(SmileID.theme.accent)
-                    .frame(alignment: .center)
-                    .padding()
-                Spacer()
-                ZStack {
-                    if showCaptureInProgress {
-                        ActivityIndicator(isAnimating: true).padding()
-                    } else if showManualCaptureButton {
-                        CaptureButton(action: onCaptureClick).padding()
-                    }
-                    // By using a fixed size here, we ensure the UI doesn't move around when the
-                    // manual capture button becomes visible
-                }.frame(height: 64)
-                Spacer()
             }
+            Text(title)
+                .multilineTextAlignment(.center)
+                .font(SmileID.theme.header4)
+                .foregroundColor(SmileID.theme.accent)
+                .frame(alignment: .center)
+                .padding()
+            Text(subtitle)
+                .multilineTextAlignment(.center)
+                .font(SmileID.theme.body)
+                .foregroundColor(SmileID.theme.accent)
+                .frame(alignment: .center)
+                .padding()
+            Spacer()
+            VStack(alignment: .center, spacing: 16) {
+                if showCaptureInProgress {
+                    ActivityIndicator(isAnimating: true).padding()
+                } else if showManualCaptureButton {
+                    CaptureButton(action: onCaptureClick).padding()
+                } else {
+                    Spacer()
+                }
+                // By using a fixed size here, we ensure the UI doesn't move around when the
+                // manual capture button becomes visible
+            }
+                .frame(height: 64)
+            Spacer()
         }
-            // .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

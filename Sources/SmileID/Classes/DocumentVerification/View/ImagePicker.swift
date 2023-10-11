@@ -1,15 +1,10 @@
 import Foundation
-import UIKit
 import SwiftUI
-
-protocol ImagePickerDelegate: AnyObject {
-    func didSelect(image: UIImage)
-}
+import UIKit
 
 struct ImagePicker: UIViewControllerRepresentable {
     @Environment(\.presentationMode) private var presentationMode
-    var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    weak var delegate: ImagePickerDelegate?
+    let onImageSelected: (UIImage) -> Void
 
     func makeUIViewController(
         context: UIViewControllerRepresentableContext<ImagePicker>
@@ -17,7 +12,7 @@ struct ImagePicker: UIViewControllerRepresentable {
 
         let imagePicker = UIImagePickerController()
         imagePicker.allowsEditing = false
-        imagePicker.sourceType = sourceType
+        imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = context.coordinator
 
         return imagePicker
@@ -39,9 +34,9 @@ struct ImagePicker: UIViewControllerRepresentable {
         UIImagePickerControllerDelegate,
         UINavigationControllerDelegate {
 
-        var parent: ImagePicker
+        private var parent: ImagePicker
 
-        init(_ parent: ImagePicker) {
+        fileprivate init(_ parent: ImagePicker) {
             self.parent = parent
         }
 
@@ -50,7 +45,7 @@ struct ImagePicker: UIViewControllerRepresentable {
             didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
         ) {
             if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-                parent.delegate?.didSelect(image: image)
+                parent.onImageSelected(image)
                 parent.presentationMode.wrappedValue.dismiss()
             }
         }
