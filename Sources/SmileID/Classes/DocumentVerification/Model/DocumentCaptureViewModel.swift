@@ -169,6 +169,10 @@ class DocumentCaptureViewModel: ObservableObject {
         }
     }
 
+    func calculateLuminance(buffer: CVPixelBuffer) {
+
+    }
+
     func resetBoundingBox() {
         DispatchQueue.main.async {
             self.areEdgesDetected = false
@@ -210,9 +214,6 @@ class DocumentCaptureViewModel: ObservableObject {
 
         let isCenteredHorizontally = deltaX < tolerance
         let isCenteredVertically = deltaY < tolerance
-
-        print("Centered horizontally: \(isCenteredHorizontally)")
-        print("Centered vertically: \(isCenteredVertically)")
 
         return isCenteredHorizontally && isCenteredVertically
     }

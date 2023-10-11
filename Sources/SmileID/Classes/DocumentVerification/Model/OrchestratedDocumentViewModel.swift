@@ -62,7 +62,6 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
     }
 
     func onFrontDocumentImageConfirmed(data: Data) {
-        print("onFrontDocumentImageConfirmed")
         guard let file = try? LocalStorage.saveImage(image: data, name: "doc_front") else {
             onError(error: SmileIDError.unknown("Error saving front document image"))
             return
@@ -74,7 +73,6 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
     }
 
     func onBackDocumentImageConfirmed(data: Data) {
-        print("onBackDocumentImageConfirmed")
         guard let file = try? LocalStorage.saveImage(image: data, name: "doc_back") else {
             onError(error: SmileIDError.unknown("Error saving back document image"))
             return
@@ -138,7 +136,6 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
 
     // On Selfie Capture complete
     func didCapture(selfie: Data, livenessImages: [Data]) {
-        print("onSelfieConfirmed")
         do {
             let imageUrls = try LocalStorage.saveImageJpg(
                 livenessImages: livenessImages,
