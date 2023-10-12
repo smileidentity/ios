@@ -10,13 +10,16 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
     var camera: CameraView?
     let arView: ARView?
     let faceOverlay: FaceOverlayView
+    let showBackButton: Bool
 
     init(
         viewModel: SelfieCaptureViewModel,
+        showBackButton: Bool = true,
         delegate: SmartSelfieResultDelegate?
     ) {
         self.delegate = delegate
         self.viewModel = viewModel
+        self.showBackButton = showBackButton
         faceOverlay = FaceOverlayView(model: viewModel)
         viewModel.smartSelfieResultDelegate = delegate
         UIScreen.main.brightness = 1
@@ -83,22 +86,18 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                     Color.clear
                 }
             }
-                .overlay(NavigationBar {
-                    viewModel.resetState()
-                    viewModel.pauseCameraSession()
-                    router.pop()
+                .overlay(ZStack {
+                    if (showBackButton) {
+                        NavigationBar {
+                            viewModel.resetState()
+                            viewModel.pauseCameraSession()
+                            router.pop()
+                        }
+                    }
                 })
         }
             .edgesIgnoringSafeArea(.all)
             .navigationBarBackButtonHidden(true)
-            .navigationBarItems(
-                leading: Button {
-                    viewModel.resetState()
-                    viewModel.pauseCameraSession()
-                    presentationMode.wrappedValue.dismiss()
-                }
-                label: { Image(uiImage: SmileIDResourcesHelper.ArrowLeft).padding() }
-            )
             .background(SmileID.theme.backgroundMain)
             .onDisappear {
                 viewModel.cameraManager.pauseSession()
