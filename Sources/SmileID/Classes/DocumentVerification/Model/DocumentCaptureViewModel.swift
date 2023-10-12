@@ -154,7 +154,7 @@ class DocumentCaptureViewModel: ObservableObject {
     ///
     /// - Parameter buffer: The pixel buffer to analyze
     private func analyzeImage(buffer: CVPixelBuffer) {
-        if (processingImage) {
+        if processingImage {
             return
         }
         processingImage = true
