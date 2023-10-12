@@ -11,7 +11,7 @@ struct OrchestratedDocumentVerificationScreen: View {
     let showAttribution: Bool
     let allowGalleryUpload: Bool
     let showInstructions: Bool
-    let onResult: DocumentCaptureResultDelegate
+    let onResult: DocumentVerificationResultDelegate
 
     @ObservedObject private var viewModel: OrchestratedDocumentViewModel
 
@@ -26,7 +26,7 @@ struct OrchestratedDocumentVerificationScreen: View {
         showAttribution: Bool,
         allowGalleryUpload: Bool,
         showInstructions: Bool,
-        onResult: DocumentCaptureResultDelegate
+        onResult: DocumentVerificationResultDelegate
     ) {
         self.countryCode = countryCode
         self.documentType = documentType

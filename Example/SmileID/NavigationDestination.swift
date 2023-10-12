@@ -5,7 +5,7 @@ enum NavigationDestination: ReflectiveEquatable {
         countryCode: String,
         documentType: String,
         captureBothSides: Bool,
-        delegate: DocumentCaptureResultDelegate
+        delegate: DocumentVerificationResultDelegate
     )
     case countrySelectorScreen(homeVieModel: HomeViewModel)
     case documentSelectorScreen(document: ValidDocument, homeViewModel: HomeViewModel)

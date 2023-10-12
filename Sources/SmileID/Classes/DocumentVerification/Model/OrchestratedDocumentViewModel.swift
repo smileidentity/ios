@@ -97,7 +97,7 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
         submitJob()
     }
 
-    func onFinished(delegate: DocumentCaptureResultDelegate) {
+    func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
             delegate.didSucceed(
                 selfie: savedFiles.selfie,

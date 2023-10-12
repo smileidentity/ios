@@ -1,10 +1,14 @@
+
 ## 10.0.0-beta10 (unreleased)
 
 ### Added
+- Enhanced Document Verification
 
 ### Changed
+- Renamed `DocumentCaptureResultDelegate` -> `DocumentVerificationResultDelegate`
 
 ### Fixed
+- Document Verification UI bugs
 
 ### Removed
 

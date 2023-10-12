@@ -3,7 +3,7 @@ import Combine
 import UIKit
 import SmileID
 
-class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptureResultDelegate {
+class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentVerificationResultDelegate {
     @Published var product: JobType? {
         didSet {
             switch product {
