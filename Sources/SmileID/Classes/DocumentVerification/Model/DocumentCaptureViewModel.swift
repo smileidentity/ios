@@ -116,7 +116,7 @@ class DocumentCaptureViewModel: ObservableObject {
     /// Called when auto capture determines the image quality is sufficient OR when the user taps
     /// the manual capture button.
     func captureDocument() {
-        if (isCapturing) {
+        if isCapturing {
             print("Already capturing. Skipping duplicate capture request")
             return
         }
