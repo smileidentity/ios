@@ -198,7 +198,7 @@ public class SmileID {
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
         showAttribution: Bool = true,
-        delegate: DocumentCaptureResultDelegate
+        delegate: DocumentVerificationResultDelegate
     ) -> some View {
         OrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
@@ -248,7 +248,7 @@ public class SmileID {
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
         showAttribution: Bool = true,
-        delegate: DocumentCaptureResultDelegate
+        delegate: DocumentVerificationResultDelegate
     ) -> some View {
         // TODO: parametrize
         documentVerificationScreen(
