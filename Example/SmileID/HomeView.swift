@@ -45,32 +45,53 @@ struct HomeView: View {
                         })
                 }
                 HStack(spacing: 15) {
-                    GeometryReader { geo in
-                        Button(
-                            action: viewModel.handleDocumentVerificationTap,
-                            label: {
-                                ProductCell(
-                                    productImage: "document",
-                                    productName: "Document Verification"
+                    Button(
+                        action: viewModel.handleDocumentVerificationTap,
+                        label: {
+                            ProductCell(
+                                productImage: "document",
+                                productName: "Document Verification"
+                            )
+                        }
+                    )
+                        .fullScreenCover(
+                            isPresented: $viewModel.presentDocumentVerification,
+                            content: {
+                                let _ = router.push(
+                                    .countrySelectorScreen(homeVieModel: viewModel),
+                                    animated: false
                                 )
-                            }
-                        )
-                            .fullScreenCover(
-                                isPresented: $viewModel.presentDocumentVerification,
-                                content: {
-                                    let _ = router.push(
-                                        .countrySelectorScreen(homeVieModel: viewModel),
-                                        animated: false
-                                    )
-                                    NavigationControllerHost(
-                                        navTitle: "",
-                                        navHidden: true,
-                                        router: router,
-                                        routeMap: ViewFactory().makeView(_:)
-                                    ).environmentObject(router)
-                                })
-                            .frame(width: (geo.size.width / 2) - 7.5)
-                    }
+                                NavigationControllerHost(
+                                    navTitle: "",
+                                    navHidden: true,
+                                    router: router,
+                                    routeMap: ViewFactory().makeView(_:)
+                                ).environmentObject(router)
+                            })
+
+                    Button(
+                        action: viewModel.handleEnhancedDocumentVerificationTap,
+                        label: {
+                            ProductCell(
+                                productImage: "document",
+                                productName: "Enhanced Document Verification"
+                            )
+                        }
+                    )
+                        .fullScreenCover(
+                            isPresented: $viewModel.presentEnhancedDocumentVerification,
+                            content: {
+                                let _ = router.push(
+                                    .countrySelectorScreen(homeVieModel: viewModel),
+                                    animated: false
+                                )
+                                NavigationControllerHost(
+                                    navTitle: "",
+                                    navHidden: true,
+                                    router: router,
+                                    routeMap: ViewFactory().makeView(_:)
+                                ).environmentObject(router)
+                            })
                 }
                 Spacer()
                 let partner = "Partner \(SmileID.configuration.partnerId)"

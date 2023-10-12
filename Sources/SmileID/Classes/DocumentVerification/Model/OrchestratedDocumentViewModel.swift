@@ -22,6 +22,7 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
     private let documentType: String?
     private let captureBothSides: Bool
     private var selfieFile: Data?
+    private let jobType: JobType
 
     // Other properties
     private var documentFrontFile: Data?
@@ -51,6 +52,10 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
         self.documentType = documentType
         self.captureBothSides = captureBothSides
         self.selfieFile = selfieFile.flatMap { try? Data(contentsOf: $0) }
+        if jobType != .documentVerification && jobType != .enhancedDocumentVerification {
+            fatalError("jobType must be documentVerification or enhancedDocumentVerification")
+        }
+        self.jobType = jobType
     }
 
     func onFrontDocumentImageConfirmed(data: Data) {
@@ -162,7 +167,7 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
         }
 
         let authRequest = AuthenticationRequest(
-            jobType: .documentVerification,
+            jobType: jobType,
             enrollment: false,
             jobId: jobId,
             userId: userId
@@ -201,7 +206,6 @@ class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegat
                     default:
                         break
                     }
-
                 },
                 receiveValue: { response in
                     self.jobStatusResponse = response

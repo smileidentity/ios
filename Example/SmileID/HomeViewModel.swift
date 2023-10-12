@@ -11,24 +11,34 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
                 presentSmartSelfieAuth = false
                 presentSmartSelfieEnrollment = true
                 presentDocumentVerification = false
+                presentEnhancedDocumentVerification = false
             case .smartSelfieAuthentication:
                 presentSmartSelfieAuth = true
                 presentSmartSelfieEnrollment = false
                 presentDocumentVerification = false
+                presentEnhancedDocumentVerification = false
             case .documentVerification:
                 presentSmartSelfieAuth = false
                 presentSmartSelfieEnrollment = false
                 presentDocumentVerification = true
+                presentEnhancedDocumentVerification = false
+            case .enhancedDocumentVerification:
+                presentSmartSelfieAuth = false
+                presentSmartSelfieEnrollment = false
+                presentDocumentVerification = false
+                presentEnhancedDocumentVerification = true
             default:
                 presentSmartSelfieAuth = false
                 presentSmartSelfieEnrollment = false
                 presentDocumentVerification = false
+                presentEnhancedDocumentVerification = false
             }
         }
     }
     @Published var presentSmartSelfieAuth = false
     @Published var presentSmartSelfieEnrollment = false
     @Published var presentDocumentVerification = false
+    @Published var presentEnhancedDocumentVerification = false
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
@@ -49,6 +59,10 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
 
     func handleDocumentVerificationTap() {
         product = .documentVerification
+    }
+
+    func handleEnhancedDocumentVerificationTap() {
+        product = .enhancedDocumentVerification
     }
 
     func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {
@@ -93,6 +107,7 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
     ) {
         showToast = true
         toastMessage = "Document Verification submitted successfully, results processing"
+        print("Document Verification jobStatusResponse: \(jobStatusResponse)")
     }
 
     @objc func handleAuthCompletion(_ notification: NSNotification) {
