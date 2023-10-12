@@ -213,14 +213,14 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
         didFinishProcessingPhoto photo: AVCapturePhoto,
         error: Error?
     ) {
-        guard error == nil else {
-            set(error: .cannotCaptureImage(error!))
+        if let error = error {
+            set(error: .cannotCaptureImage(error))
             return
         }
-        if let imageData = photo.fileDataRepresentation() {
-            capturedImage = imageData
-        } else {
+        guard let imageData = photo.fileDataRepresentation() else {
             set(error: .cannotCaptureImage(nil))
+            return
         }
+        capturedImage = imageData
     }
 }
