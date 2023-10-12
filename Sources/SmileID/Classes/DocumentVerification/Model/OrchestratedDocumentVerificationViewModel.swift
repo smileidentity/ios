@@ -14,7 +14,7 @@ enum DocumentCaptureFlow: Equatable {
     case processing(DocumentProcessingState)
 }
 
-class OrchestratedDocumentViewModel: ObservableObject, SelfieImageCaptureDelegate {
+class OrchestratedDocumentVerificationViewModel<T>: ObservableObject, SelfieImageCaptureDelegate {
     // Input properties
     private let userId: String
     private let jobId: String

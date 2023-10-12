@@ -13,7 +13,7 @@ struct OrchestratedDocumentVerificationScreen: View {
     let showInstructions: Bool
     let onResult: DocumentVerificationResultDelegate
 
-    @ObservedObject private var viewModel: OrchestratedDocumentViewModel
+    @ObservedObject private var viewModel: OrchestratedDocumentVerificationViewModel
 
     init(
         countryCode: String,
@@ -39,7 +39,7 @@ struct OrchestratedDocumentVerificationScreen: View {
         self.allowGalleryUpload = allowGalleryUpload
         self.showInstructions = showInstructions
         self.onResult = onResult
-        viewModel = OrchestratedDocumentViewModel(
+        viewModel = OrchestratedDocumentVerificationViewModel(
             userId: userId,
             jobId: jobId,
             countryCode: countryCode,
