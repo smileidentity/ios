@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OrchestratedDocumentVerificationScreen: View {
+struct OrchestratedDocumentVerificationScreen<T>: View {
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
@@ -11,9 +11,9 @@ struct OrchestratedDocumentVerificationScreen: View {
     let showAttribution: Bool
     let allowGalleryUpload: Bool
     let showInstructions: Bool
-    let onResult: DocumentVerificationResultDelegate
+    let onResult: T
 
-    @ObservedObject private var viewModel: OrchestratedDocumentVerificationViewModel
+    @ObservedObject private var viewModel: OrchestratedDocumentVerificationViewModel<T>
 
     init(
         countryCode: String,
@@ -26,7 +26,8 @@ struct OrchestratedDocumentVerificationScreen: View {
         showAttribution: Bool,
         allowGalleryUpload: Bool,
         showInstructions: Bool,
-        onResult: DocumentVerificationResultDelegate
+        jobType: JobType,
+        onResult: T
     ) {
         self.countryCode = countryCode
         self.documentType = documentType
@@ -39,14 +40,29 @@ struct OrchestratedDocumentVerificationScreen: View {
         self.allowGalleryUpload = allowGalleryUpload
         self.showInstructions = showInstructions
         self.onResult = onResult
-        viewModel = OrchestratedDocumentVerificationViewModel(
-            userId: userId,
-            jobId: jobId,
-            countryCode: countryCode,
-            documentType: documentType,
-            captureBothSides: captureBothSides,
-            selfieFile: bypassSelfieCaptureWithFile
-        )
+        // swiftlint:disable force_cast
+        if jobType == .enhancedDocumentVerification {
+            viewModel = OrchestratedEnhancedDocumentVerificationViewModel(
+                userId: userId,
+                jobId: jobId,
+                countryCode: countryCode,
+                documentType: documentType,
+                captureBothSides: captureBothSides,
+                selfieFile: bypassSelfieCaptureWithFile,
+                jobType: jobType
+            ) as! OrchestratedDocumentVerificationViewModel<T>
+        } else {
+            viewModel = OrchestratedDocumentVerificationViewModelImpl(
+                userId: userId,
+                jobId: jobId,
+                countryCode: countryCode,
+                documentType: documentType,
+                captureBothSides: captureBothSides,
+                selfieFile: bypassSelfieCaptureWithFile,
+                jobType: jobType
+            ) as! OrchestratedDocumentVerificationViewModel<T>
+        }
+        // swiftlint:enable force_cast
     }
 
     var body: some View {

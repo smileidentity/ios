@@ -14,37 +14,39 @@ enum DocumentCaptureFlow: Equatable {
     case processing(DocumentProcessingState)
 }
 
-class OrchestratedDocumentVerificationViewModel<T>: ObservableObject, SelfieImageCaptureDelegate {
+internal class OrchestratedDocumentVerificationViewModel<T>:
+    ObservableObject,
+    SelfieImageCaptureDelegate {
     // Input properties
-    private let userId: String
-    private let jobId: String
-    private let countryCode: String
-    private let documentType: String?
-    private let captureBothSides: Bool
-    private var selfieFile: Data?
-    private let jobType: JobType
+    internal let userId: String
+    internal let jobId: String
+    internal let countryCode: String
+    internal let documentType: String?
+    internal let captureBothSides: Bool
+    internal var selfieFile: Data?
+    internal let jobType: JobType
 
     // Other properties
-    private var documentFrontFile: Data?
-    private var documentBackFile: Data?
-    private var livenessFiles: [Data]?
-    private var jobStatusResponse: JobStatusResponse?
-    private var savedFiles: DocumentCaptureResultStore?
-    private var networkingSubscriber: AnyCancellable?
-    private var stepToRetry: DocumentCaptureFlow?
-    private var error: Error?
+    internal var documentFrontFile: Data?
+    internal var documentBackFile: Data?
+    internal var livenessFiles: [Data]?
+    internal var jobStatusResponse: JobStatusResponse?
+    internal var savedFiles: DocumentCaptureResultStore?
+    internal var networkingSubscriber: AnyCancellable?
+    internal var stepToRetry: DocumentCaptureFlow?
+    internal var error: Error?
 
     // UI properties
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
-    init(
+    internal init(
         userId: String,
         jobId: String,
         countryCode: String,
         documentType: String?,
         captureBothSides: Bool,
         selfieFile: URL?,
-        jobType: JobType = .documentVerification
+        jobType: JobType
     ) {
         self.userId = userId
         self.jobId = jobId
@@ -52,9 +54,6 @@ class OrchestratedDocumentVerificationViewModel<T>: ObservableObject, SelfieImag
         self.documentType = documentType
         self.captureBothSides = captureBothSides
         self.selfieFile = selfieFile.flatMap { try? Data(contentsOf: $0) }
-        if jobType != .documentVerification && jobType != .enhancedDocumentVerification {
-            fatalError("jobType must be documentVerification or enhancedDocumentVerification")
-        }
         self.jobType = jobType
     }
 
@@ -97,37 +96,8 @@ class OrchestratedDocumentVerificationViewModel<T>: ObservableObject, SelfieImag
         submitJob()
     }
 
-    func onFinished(delegate: DocumentVerificationResultDelegate) {
-        if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
-            delegate.didSucceed(
-                selfie: savedFiles.selfie,
-                documentFrontImage: savedFiles.documentFront,
-                documentBackImage: savedFiles.documentBack,
-                jobStatusResponse: jobStatusResponse
-            )
-        } else if let error = error {
-            // We check error as the 2nd case because as long as jobStatusResponse is not nil, it
-            // was a success
-            delegate.didError(error: error)
-        } else {
-            delegate.didError(error: SmileIDError.unknown("Unknown error"))
-        }
-    }
-
-    /// If stepToRetry is ProcessingScreen, we're retrying a network issue, so we need to kick off
-    /// the resubmission manually. Otherwise, we're retrying a capture error, so we just need to
-    /// reset the UI state
-    func onRetry() {
-        let step = stepToRetry
-        stepToRetry = nil
-        if let stepToRetry = step {
-            DispatchQueue.main.async {
-                self.step = stepToRetry
-            }
-            if case .processing = stepToRetry {
-                submitJob()
-            }
-        }
+    func onFinished(delegate: T) {
+        fatalError("Must override onFinished")
     }
 
     func submitJob() {
@@ -214,5 +184,61 @@ class OrchestratedDocumentVerificationViewModel<T>: ObservableObject, SelfieImag
                     }
                 }
             )
+    }
+
+    /// If stepToRetry is ProcessingScreen, we're retrying a network issue, so we need to kick off
+    /// the resubmission manually. Otherwise, we're retrying a capture error, so we just need to
+    /// reset the UI state
+    func onRetry() {
+        let step = stepToRetry
+        stepToRetry = nil
+        if let stepToRetry = step {
+            DispatchQueue.main.async {
+                self.step = stepToRetry
+            }
+            if case .processing = stepToRetry {
+                submitJob()
+            }
+        }
+    }
+}
+
+internal class OrchestratedDocumentVerificationViewModelImpl:
+    OrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate> {
+    override func onFinished(delegate: DocumentVerificationResultDelegate) {
+        if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
+            delegate.didSucceed(
+                selfie: savedFiles.selfie,
+                documentFrontImage: savedFiles.documentFront,
+                documentBackImage: savedFiles.documentBack,
+                jobStatusResponse: jobStatusResponse
+            )
+        } else if let error = error {
+            // We check error as the 2nd case because as long as jobStatusResponse is not nil, it
+            // was a success
+            delegate.didError(error: error)
+        } else {
+            delegate.didError(error: SmileIDError.unknown("Unknown error"))
+        }
+    }
+}
+
+internal class OrchestratedEnhancedDocumentVerificationViewModel:
+    OrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate> {
+    override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
+        if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
+            delegate.didSucceed(
+                selfie: savedFiles.selfie,
+                documentFrontImage: savedFiles.documentFront,
+                documentBackImage: savedFiles.documentBack,
+                jobStatusResponse: jobStatusResponse
+            )
+        } else if let error = error {
+            // We check error as the 2nd case because as long as jobStatusResponse is not nil, it
+            // was a success
+            delegate.didError(error: error)
+        } else {
+            delegate.didError(error: SmileIDError.unknown("Unknown error"))
+        }
     }
 }
