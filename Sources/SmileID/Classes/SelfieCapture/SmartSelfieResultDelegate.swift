@@ -10,7 +10,7 @@ public protocol SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        jobStatusResponse: JobStatusResponse
+        jobStatusResponse: SmartSelfieJobStatusResponse
     )
 
     /// An error occurred during the selfie capture session

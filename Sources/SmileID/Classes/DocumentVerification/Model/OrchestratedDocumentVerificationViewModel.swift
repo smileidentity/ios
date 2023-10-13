@@ -14,7 +14,7 @@ enum DocumentCaptureFlow: Equatable {
     case processing(DocumentProcessingState)
 }
 
-internal class OrchestratedDocumentVerificationViewModel<T>:
+internal class OrchestratedDocumentVerificationViewModel<T, U: JobResult>:
     ObservableObject,
     SelfieImageCaptureDelegate {
     // Input properties
@@ -30,7 +30,7 @@ internal class OrchestratedDocumentVerificationViewModel<T>:
     internal var documentFrontFile: Data?
     internal var documentBackFile: Data?
     internal var livenessFiles: [Data]?
-    internal var jobStatusResponse: JobStatusResponse?
+    internal var jobStatusResponse: JobStatusResponse<U>?
     internal var savedFiles: DocumentCaptureResultStore?
     internal var networkingSubscriber: AnyCancellable?
     internal var stepToRetry: DocumentCaptureFlow?
@@ -156,7 +156,7 @@ internal class OrchestratedDocumentVerificationViewModel<T>:
                 SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
             }
             .zip(auth)
-            .flatMap { uploadResponse, authResponse in
+            .flatMap { uploadResponse, authResponse -> AnyPublisher<JobStatusResponse<U>, Error> in
                 let jobStatusRequest = JobStatusRequest(
                     userId: authResponse.partnerParams.userId,
                     jobId: authResponse.partnerParams.jobId,
@@ -204,7 +204,7 @@ internal class OrchestratedDocumentVerificationViewModel<T>:
 }
 
 internal class OrchestratedDocumentVerificationViewModelImpl:
-    OrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate> {
+    OrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
             delegate.didSucceed(
@@ -224,7 +224,7 @@ internal class OrchestratedDocumentVerificationViewModelImpl:
 }
 
 internal class OrchestratedEnhancedDocumentVerificationViewModel:
-    OrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate> {
+    OrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
             delegate.didSucceed(

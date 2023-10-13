@@ -200,7 +200,7 @@ public class SmileID {
         showAttribution: Bool = true,
         delegate: DocumentVerificationResultDelegate
     ) -> some View {
-        OrchestratedDocumentVerificationScreen(
+        OrchestratedDocumentVerificationScreenImpl(
             countryCode: countryCode,
             documentType: documentType,
             captureBothSides: captureBothSides,
@@ -211,7 +211,6 @@ public class SmileID {
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
             showInstructions: showInstructions,
-            jobType: .documentVerification,
             onResult: delegate
         ).environmentObject(router)
     }
@@ -249,9 +248,9 @@ public class SmileID {
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
         showAttribution: Bool = true,
-        delegate: DocumentVerificationResultDelegate
+        delegate: EnhancedDocumentVerificationResultDelegate
     ) -> some View {
-        OrchestratedDocumentVerificationScreen(
+        OrchestratedEnhancedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
             captureBothSides: captureBothSides,
@@ -262,7 +261,6 @@ public class SmileID {
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
             showInstructions: showInstructions,
-            jobType: .enhancedDocumentVerification,
             onResult: delegate
         ).environmentObject(router)
     }

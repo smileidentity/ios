@@ -38,26 +38,6 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func pollJobStatus(
-        request: JobStatusRequest,
-        interval: TimeInterval,
-        numAttempts: Int
-    ) -> AnyPublisher<JobStatusResponse, Error> {
-        let response = JobStatusResponse(
-            timestamp: "timestamp",
-            jobComplete: MockHelper.jobComplete,
-            jobSuccess: true,
-            code: "2322"
-        )
-        if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
-        } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
-        }
-    }
-
     func getServices() -> AnyPublisher<ServicesResponse, Error> {
         var response: ServicesResponse
         do {
@@ -70,22 +50,6 @@ class MockSmileIdentityService: SmileIDServiceable {
                 .eraseToAnyPublisher()
         }
 
-        if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
-        } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
-        }
-    }
-
-    func getJobStatus(request _: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
-        let response = JobStatusResponse(
-            timestamp: "timestamp",
-            jobComplete: MockHelper.jobComplete,
-            jobSuccess: true,
-            code: "2322"
-        )
         if MockHelper.shouldFail {
             return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
                 .eraseToAnyPublisher()
@@ -143,6 +107,19 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
+    func getJobStatus<T: JobResult>(
+        request _: JobStatusRequest
+    ) -> AnyPublisher<JobStatusResponse<T>, Error> {
+        let response = try! JobStatusResponse<T>(from: JSONDecoder() as! Decoder)
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
     func doEnhancedKycAsync(
         request _: EnhancedKycRequest
     ) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
@@ -165,7 +142,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        jobStatusResponse _: JobStatusResponse
+        jobStatusResponse _: JobStatusResponse<SmartSelfieJobResult>
     ) {
         successExpectation?.fulfill()
     }

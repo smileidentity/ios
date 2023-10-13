@@ -3,9 +3,11 @@
 
 ### Added
 - Enhanced Document Verification
+- New JobStatusResponses that depend on the job type
 
 ### Changed
 - Renamed `DocumentCaptureResultDelegate` -> `DocumentVerificationResultDelegate`
+- Delegate types updated to accept generic `JobStatusResponse` objects
 
 ### Fixed
 - Document Verification UI bugs

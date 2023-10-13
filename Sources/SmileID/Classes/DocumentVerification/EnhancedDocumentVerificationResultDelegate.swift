@@ -13,7 +13,7 @@ public protocol EnhancedDocumentVerificationResultDelegate: AnyObject {
         selfie: URL,
         documentFrontImage: URL,
         documentBackImage: URL?,
-        jobStatusResponse: JobStatusResponse
+        jobStatusResponse: EnhancedDocumentVerificationJobStatusResponse
     )
 
     /// Delegate method called when an error occurs during Document Verification. This may

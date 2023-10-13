@@ -5,7 +5,9 @@ public protocol SmileIDServiceable {
     func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error>
     func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error>
     func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error>
-    func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error>
+    func getJobStatus<T: JobResult>(
+        request: JobStatusRequest
+    ) -> AnyPublisher<JobStatusResponse<T>, Error>
     func getServices() -> AnyPublisher<ServicesResponse, Error>
 
     /// Query the Identity Information of an individual using their ID number from a supported ID
@@ -25,7 +27,9 @@ public protocol SmileIDServiceable {
     func getValidDocuments(
         request: ProductsConfigRequest
     ) -> AnyPublisher<ValidDocumentsResponse, Error>
+}
 
+extension SmileIDServiceable {
     /// Polls the server for the status of a Job until it is complete. This should be called after
     /// the  Job has been submitted to the server. The returned flow will be updated with every job
     /// status response. The flow will complete when the job is complete, or the attempt limit is
@@ -35,11 +39,46 @@ public protocol SmileIDServiceable {
     ///   - request: The JobStatus request to made
     ///   - interval: The time interval in seconds between each poll
     ///   - numAttempts: The maximum number of polls before ending the flow
-    func pollJobStatus(
+    public func pollJobStatus<T: JobResult>(
         request: JobStatusRequest,
         interval: TimeInterval,
         numAttempts: Int
-    ) -> AnyPublisher<JobStatusResponse, Error>
+    ) -> AnyPublisher<JobStatusResponse<T>, Error> {
+
+        var lastError: Error?
+        var attemptCount = 0
+
+        func makeRequest() -> AnyPublisher<JobStatusResponse<T>, Error> {
+            attemptCount += 1
+
+            return SmileID.api.getJobStatus(request: request)
+                .delay(for: .seconds(interval), scheduler: RunLoop.main)
+                // swiftlint:disable force_cast
+                .map { response in response as! JobStatusResponse<T> }
+                // swiftlint:disable force_cast
+                .flatMap { response -> AnyPublisher<JobStatusResponse<T>, Error> in
+                    if response.jobComplete {
+                        return Just(response).setFailureType(to: Error.self)
+                            .eraseToAnyPublisher()
+                    } else if attemptCount < numAttempts {
+                        return makeRequest()
+                    } else {
+                        return Fail(error: SmileIDError.jobStatusTimeOut).eraseToAnyPublisher()
+                    }
+                }
+                .catch { error -> AnyPublisher<JobStatusResponse<T>, Error> in
+                    lastError = error
+                    if attemptCount < numAttempts {
+                        return makeRequest()
+                    } else {
+                        return Fail(error: lastError ?? error).eraseToAnyPublisher()
+                    }
+                }
+                .eraseToAnyPublisher()
+        }
+
+        return makeRequest()
+    }
 }
 
 public class SmileIDService: SmileIDServiceable, ServiceRunnable {
@@ -64,7 +103,9 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         upload(data: zip, to: url, with: .put)
     }
 
-    public func getJobStatus(request: JobStatusRequest) -> AnyPublisher<JobStatusResponse, Error> {
+    public func getJobStatus<T>(
+        request: JobStatusRequest
+    ) -> AnyPublisher<JobStatusResponse<T>, Error> {
         post(to: "job_status", with: request)
     }
 
@@ -78,19 +119,5 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         request: ProductsConfigRequest
     ) -> AnyPublisher<ValidDocumentsResponse, Error> {
         post(to: "valid_documents", with: request)
-    }
-
-    public func pollJobStatus(
-        request: JobStatusRequest,
-        interval: TimeInterval,
-        numAttempts: Int
-    ) -> AnyPublisher<JobStatusResponse, Error> {
-        poll(
-            service: SmileID.api,
-            request: { SmileID.api.getJobStatus(request: request) },
-            isComplete: { $0.jobComplete },
-            interval: interval,
-            numAttempts: numAttempts
-        )
     }
 }

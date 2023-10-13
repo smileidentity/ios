@@ -3,7 +3,11 @@ import Combine
 import UIKit
 import SmileID
 
-class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentVerificationResultDelegate {
+class HomeViewModel:
+    ObservableObject,
+    SmartSelfieResultDelegate,
+    DocumentVerificationResultDelegate,
+    EnhancedDocumentVerificationResultDelegate {
     @Published var product: JobType? {
         didSet {
             switch product {
@@ -65,8 +69,12 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentVerifi
         product = .enhancedDocumentVerification
     }
 
-    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {
-        returnedUserID = jobStatusResponse.result?.partnerParams?.userId ?? ""
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
+    ) {
+        returnedUserID = jobStatusResponse.result?.partnerParams.userId ?? ""
         UIPasteboard.general.string = returnedUserID
         showToast = true
         if jobStatusResponse.jobSuccess {
@@ -103,10 +111,21 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentVerifi
         selfie: URL,
         documentFrontImage: URL,
         documentBackImage: URL?,
-        jobStatusResponse: JobStatusResponse
+        jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
     ) {
         showToast = true
         toastMessage = "Document Verification submitted successfully, results processing"
+        print("Document Verification jobStatusResponse: \(jobStatusResponse)")
+    }
+
+    func didSucceed(
+        selfie: URL,
+        documentFrontImage: URL,
+        documentBackImage: URL?,
+        jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
+    ) {
+        showToast = true
+        toastMessage = "Enhanced Document Verification submitted successfully, results processing"
         print("Document Verification jobStatusResponse: \(jobStatusResponse)")
     }
 

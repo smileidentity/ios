@@ -60,7 +60,11 @@ struct EnterUserIDView_Previews: PreviewProvider {
 class UserIDViewModel: ObservableObject, SmartSelfieResultDelegate {
     @Published var shouldDismiss = false
 
-    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
+    ) {
         shouldDismiss = true
         NotificationCenter.default.post(Notification(
             name: Notification.Name(rawValue: "SelfieCaptureComplete"),
