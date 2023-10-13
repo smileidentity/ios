@@ -200,7 +200,7 @@ public class SmileID {
         showAttribution: Bool = true,
         delegate: DocumentVerificationResultDelegate
     ) -> some View {
-        OrchestratedDocumentVerificationScreenImpl(
+        OrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
             captureBothSides: captureBothSides,

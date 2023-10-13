@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OrchestratedDocumentVerificationScreenImpl: View {
+struct OrchestratedDocumentVerificationScreen: View {
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
@@ -14,7 +14,7 @@ struct OrchestratedDocumentVerificationScreenImpl: View {
     let onResult: DocumentVerificationResultDelegate
 
     var body: some View {
-        OrchestratedDocumentVerificationScreen(
+        IOrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
             captureBothSides: captureBothSides,
@@ -26,7 +26,7 @@ struct OrchestratedDocumentVerificationScreenImpl: View {
             allowGalleryUpload: allowGalleryUpload,
             showInstructions: showInstructions,
             onResult: onResult,
-            viewModel: OrchestratedDocumentVerificationViewModelImpl(
+            viewModel: OrchestratedDocumentVerificationViewModel(
                 userId: userId,
                 jobId: jobId,
                 countryCode: countryCode,
@@ -53,7 +53,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     let onResult: EnhancedDocumentVerificationResultDelegate
 
     var body: some View {
-        OrchestratedDocumentVerificationScreen(
+        IOrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
             captureBothSides: captureBothSides,
@@ -78,7 +78,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     }
 }
 
-private struct OrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
+private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
@@ -90,7 +90,7 @@ private struct OrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let allowGalleryUpload: Bool
     let showInstructions: Bool
     let onResult: T
-    @ObservedObject var viewModel: OrchestratedDocumentVerificationViewModel<T, U>
+    @ObservedObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
 
     init(
         countryCode: String,
@@ -104,7 +104,7 @@ private struct OrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         allowGalleryUpload: Bool,
         showInstructions: Bool,
         onResult: T,
-        viewModel: OrchestratedDocumentVerificationViewModel<T, U>
+        viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
     ) {
         self.countryCode = countryCode
         self.documentType = documentType

@@ -3,8 +3,7 @@ import Combine
 import UIKit
 import SmileID
 
-class HomeViewModel:
-    ObservableObject,
+class HomeViewModel: ObservableObject,
     SmartSelfieResultDelegate,
     DocumentVerificationResultDelegate,
     EnhancedDocumentVerificationResultDelegate {

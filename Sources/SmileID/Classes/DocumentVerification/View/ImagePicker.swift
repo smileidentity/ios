@@ -29,8 +29,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         Coordinator(self)
     }
 
-    final class Coordinator:
-        NSObject,
+    final class Coordinator: NSObject,
         UIImagePickerControllerDelegate,
         UINavigationControllerDelegate {
 

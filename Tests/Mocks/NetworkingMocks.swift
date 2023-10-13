@@ -110,7 +110,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     func getJobStatus<T: JobResult>(
         request _: JobStatusRequest
     ) -> AnyPublisher<JobStatusResponse<T>, Error> {
-        let response = try! JobStatusResponse<T>(jobComplete: MockHelper.jobComplete)
+        let response = JobStatusResponse<T>(jobComplete: MockHelper.jobComplete)
         if MockHelper.shouldFail {
             return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
                 .eraseToAnyPublisher()
