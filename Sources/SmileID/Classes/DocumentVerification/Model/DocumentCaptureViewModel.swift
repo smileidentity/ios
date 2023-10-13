@@ -8,7 +8,8 @@ enum DocumentDirective: String {
 
 private let correctAspectRatioTolerance = 0.1
 private let centeredTolerance = 30.0
-private let documentAutoCaptureWaitTimeSecs = 1.0
+private let documentAutoCaptureWaitTime: TimeInterval = 1.0
+private let analysisSampleInterval: TimeInterval = 0.350
 
 class DocumentCaptureViewModel: ObservableObject {
     // Initializer properties
@@ -21,6 +22,7 @@ class DocumentCaptureViewModel: ObservableObject {
     private var cameraBufferSubscriber: AnyCancellable?
     private var processingImage = false
     private var documentFirstDetectedAtTime: TimeInterval?
+    private var lastAnalysisTime: TimeInterval = 0
     private var areEdgesDetectedSubscriber: AnyCancellable?
 
     // UI properties
@@ -67,7 +69,7 @@ class DocumentCaptureViewModel: ObservableObject {
                 if let documentFirstDetectedAtTime = self.documentFirstDetectedAtTime {
                     let now = Date().timeIntervalSince1970
                     let elapsedTime = now - documentFirstDetectedAtTime
-                    if elapsedTime > documentAutoCaptureWaitTimeSecs && !self.isCapturing {
+                    if elapsedTime > documentAutoCaptureWaitTime && !self.isCapturing {
                         self.captureDocument()
                     }
                 } else {
@@ -154,9 +156,13 @@ class DocumentCaptureViewModel: ObservableObject {
     ///
     /// - Parameter buffer: The pixel buffer to analyze
     private func analyzeImage(buffer: CVPixelBuffer) {
-        if processingImage {
+        let now = Date().timeIntervalSince1970
+        let elapsedTime = now - lastAnalysisTime
+        let enoughTimeHasPassed = elapsedTime > analysisSampleInterval
+        if processingImage || isCapturing || !enoughTimeHasPassed {
             return
         }
+        lastAnalysisTime = now
         processingImage = true
         let imageSize = CGSize(
             width: CVPixelBufferGetWidth(buffer),

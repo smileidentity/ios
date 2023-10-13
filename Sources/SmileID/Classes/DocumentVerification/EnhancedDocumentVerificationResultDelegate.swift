@@ -1,9 +1,9 @@
-/// The result of a Document Verification
-public protocol DocumentVerificationResultDelegate: AnyObject {
-    /// Delegate method called after a successful Document Verification capture and submission.
-    /// It indicates that the capture and network requests were successful. The job may or may not
-    /// be complete. Use `jobStatusResponse.jobComplete` to check if a job is complete and
-    /// `jobStatusResponse.jobSuccess` to check if a job is successful.
+/// The result of an Enhanced Document Verification
+public protocol EnhancedDocumentVerificationResultDelegate: AnyObject {
+    /// Delegate method called after a successful Enhanced Document Verification capture and
+    /// submission. It indicates that the capture and network requests were successful. The job
+    /// may or may not be complete. Use `jobStatusResponse.jobComplete` to check if a job is
+    /// complete and `jobStatusResponse.jobSuccess` to check if a job is successful.
     /// - Parameters:
     ///   - selfie: URL of captured selfie JPEG
     ///   - documentFrontImage: URL of captured front document image JPEG

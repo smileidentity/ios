@@ -136,7 +136,7 @@ public enum ActionResult: String, Codable {
     case rejected = "Rejected"
     case underReview = "Under Review"
     case unableToDetermine = "Unable To Determine"
-    case notApplicable = "Not Applicaple"
+    case notApplicable = "Not Applicable"
     case notVerified = "Not Verified"
     case notDone = "Not Done"
     case issuerUnavailable = "Issuer Unavailable"
