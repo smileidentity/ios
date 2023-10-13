@@ -11,6 +11,9 @@ class TextDetector {
                 onDetectionResult(false)
                 return
             }
+            if let error = error {
+                print("Text Detection Error: \(error)")
+            }
 
             let recognisedString = observations.compactMap { $0.topCandidates(1).first?.string }
 

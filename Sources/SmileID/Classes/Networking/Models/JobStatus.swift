@@ -26,7 +26,7 @@ public typealias DocumentVerificationJobStatusResponse =
 public typealias EnhancedDocumentVerificationJobStatusResponse =
     JobStatusResponse<EnhancedDocumentVerificationJobResult>
 
-public class JobStatusResponse<T: JobResult>: Codable {
+public final class JobStatusResponse<T: JobResult>: Codable {
     public let timestamp: String
     public let jobComplete: Bool
     public let jobSuccess: Bool
@@ -36,7 +36,18 @@ public class JobStatusResponse<T: JobResult>: Codable {
     public let history: [T]?
     public let imageLinks: ImageLinks?
 
-    required public init(from decoder: Decoder) throws {
+    internal init(jobComplete: Bool = true) {
+        self.jobComplete = jobComplete
+        timestamp = ""
+        jobSuccess = true
+        code = "0"
+        result = nil
+        resultString = nil
+        history = nil
+        imageLinks = nil
+    }
+
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         timestamp = try container.decode(String.self, forKey: .timestamp)
         jobComplete = try container.decode(Bool.self, forKey: .jobComplete)

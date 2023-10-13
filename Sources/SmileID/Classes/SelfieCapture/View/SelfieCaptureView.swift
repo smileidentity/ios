@@ -87,7 +87,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                 }
             }
                 .overlay(ZStack {
-                    if (showBackButton) {
+                    if showBackButton {
                         NavigationBar {
                             viewModel.resetState()
                             viewModel.pauseCameraSession()

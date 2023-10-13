@@ -52,10 +52,9 @@ extension SmileIDServiceable {
             attemptCount += 1
 
             return SmileID.api.getJobStatus(request: request)
-                .delay(for: .seconds(interval), scheduler: RunLoop.main)
                 // swiftlint:disable force_cast
                 .map { response in response as! JobStatusResponse<T> }
-                // swiftlint:disable force_cast
+                // swiftlint:enable force_cast
                 .flatMap { response -> AnyPublisher<JobStatusResponse<T>, Error> in
                     if response.jobComplete {
                         return Just(response).setFailureType(to: Error.self)
