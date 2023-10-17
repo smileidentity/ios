@@ -265,7 +265,3 @@ public class SmileID {
         ).environmentObject(router)
     }
 }
-
-// 4. Refactor screens to use router @EnvironmentObject
-// 5. Refactor navigation destinations to take individual arguments instead of ViewModels
-//

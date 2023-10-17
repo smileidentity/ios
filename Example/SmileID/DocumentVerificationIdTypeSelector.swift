@@ -1,17 +1,25 @@
 import SmileID
 import SwiftUI
 
+typealias OnIdTypeSelectedCallback = (
+    _ countryCode: String,
+    _ idType: String,
+    _ captureBothSides: Bool
+) -> Void
 struct DocumentVerificationIdTypeSelector: View {
-    let onIdTypeSelected: (
-        _ countryCode: String,
-        _ idType: String,
-        _ captureBothSides: Bool
-    ) -> Void
+    let jobType: JobType
+    let onIdTypeSelected: OnIdTypeSelectedCallback
 
-    @ObservedObject private var viewModel = DocumentSelectorViewModel()
+    @ObservedObject private var viewModel: DocumentSelectorViewModel
 
     @State private var selectedCountry: ValidDocument?
     private var idTypesForCountry: [IdType]? { selectedCountry?.idTypes }
+
+    init(jobType: JobType, onIdTypeSelected: @escaping OnIdTypeSelectedCallback) {
+        self.jobType = jobType
+        self.onIdTypeSelected = onIdTypeSelected
+        viewModel = DocumentSelectorViewModel(jobType: jobType)
+    }
 
     var body: some View {
         VStack {

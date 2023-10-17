@@ -106,7 +106,8 @@ private struct DocumentVerificationWithSelector: View {
                 delegate: delegate
             )
         } else {
-            DocumentVerificationIdTypeSelector { countryCode, documentType, captureBothSides in
+            DocumentVerificationIdTypeSelector(jobType: .documentVerification) {
+                countryCode, documentType, captureBothSides in
                 self.countryCode = countryCode
                 self.documentType = documentType
                 self.captureBothSides = captureBothSides
@@ -133,7 +134,8 @@ private struct EnhancedDocumentVerificationWithSelector: View {
                 delegate: delegate
             )
         } else {
-            DocumentVerificationIdTypeSelector { countryCode, documentType, captureBothSides in
+            DocumentVerificationIdTypeSelector(jobType: .enhancedDocumentVerification) {
+                countryCode, documentType, captureBothSides in
                 self.countryCode = countryCode
                 self.documentType = documentType
                 self.captureBothSides = captureBothSides

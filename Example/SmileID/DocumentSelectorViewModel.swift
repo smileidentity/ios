@@ -3,18 +3,29 @@ import Foundation
 import SmileID
 
 class DocumentSelectorViewModel: ObservableObject {
+    // Input Properties
+    let jobType: JobType
+
+    // Other Properties
     private var subscriber: AnyCancellable?
 
     // UI Properties
     @Published @MainActor var idTypes: [ValidDocument] = []
     @Published @MainActor var errorMessage: String?
 
-    init() {
+    init(
+        jobType: JobType
+    ) {
+        if jobType != .documentVerification && jobType != .enhancedDocumentVerification {
+            fatalError("Only Document Verification jobs are supported")
+        }
+        self.jobType = jobType
         let authRequest = AuthenticationRequest(
-            jobType: .documentVerification,
+            jobType: jobType,
             enrollment: false,
             userId: generateUserId()
         )
+        let services = SmileID.api.getServices()
         subscriber = SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in
                 let productRequest = ProductsConfigRequest(
@@ -24,6 +35,7 @@ class DocumentSelectorViewModel: ObservableObject {
                 )
                 return SmileID.api.getValidDocuments(request: productRequest)
             }
+            .zip(services)
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
@@ -35,11 +47,40 @@ class DocumentSelectorViewModel: ObservableObject {
                         break
                     }
                 },
-                receiveValue: { response in
+                receiveValue: { (validDocumentsResponse, servicesResponse) in
+                    let supportedDocuments = servicesResponse.hostedWeb.enhancedDocumentVerification
                     DispatchQueue.main.async {
-                        self.idTypes = response.validDocuments
+                        if jobType == .enhancedDocumentVerification {
+                            self.idTypes = self.filteredForEnhancedDocumentVerification(
+                                allDocuments: validDocumentsResponse.validDocuments,
+                                supportedDocuments: supportedDocuments
+                            )
+                        } else {
+                            self.idTypes = validDocumentsResponse.validDocuments
+                        }
                     }
                 }
             )
+    }
+
+    private func filteredForEnhancedDocumentVerification(
+        allDocuments: [ValidDocument],
+        supportedDocuments: [CountryInfo]
+    ) -> [ValidDocument] {
+        supportedDocuments.compactMap { country in
+            let validDocumentForCountry = allDocuments.first {
+                $0.country.code == country.countryCode
+            }
+            if let validDocumentForCountry = validDocumentForCountry {
+                return ValidDocument(
+                    country: Country(code: country.countryCode, continent: "", name: country.name),
+                    idTypes: country.availableIdTypes.flatMap { idType in
+                        validDocumentForCountry.idTypes.filter { $0.code == idType.idTypeKey }
+                    }
+                )
+            } else {
+                return nil
+            }
+        }
     }
 }
