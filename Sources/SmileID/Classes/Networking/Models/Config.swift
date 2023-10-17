@@ -7,6 +7,22 @@ public struct Config: Decodable {
     public var testUrl: String
     public var prodLambdaUrl: String
     public var testLambdaUrl: String
+
+    public init(
+        partnerId: String,
+        authToken: String,
+        prodUrl: String,
+        testUrl: String,
+        prodLambdaUrl: String,
+        testLambdaUrl: String
+    ) {
+        self.partnerId = partnerId
+        self.authToken = authToken
+        self.prodUrl = prodUrl
+        self.testUrl = testUrl
+        self.prodLambdaUrl = prodLambdaUrl
+        self.testLambdaUrl = testLambdaUrl
+    }
 }
 
 public extension Config {

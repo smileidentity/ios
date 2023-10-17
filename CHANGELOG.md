@@ -8,6 +8,7 @@
 ### Changed
 - Renamed `DocumentCaptureResultDelegate` -> `DocumentVerificationResultDelegate`
 - Delegate types updated to accept generic `JobStatusResponse` objects
+- Provide `nil` as default values for `userId` and `jobId` on `AuthenticationRequest`
 
 ### Fixed
 - Document Verification UI bugs

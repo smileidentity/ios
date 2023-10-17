@@ -15,7 +15,7 @@ struct DocumentCaptureInstructionsScreen: View {
             ScrollView {
                 VStack {
                     Image(uiImage: SmileIDResourcesHelper.InstructionsHeaderDocumentIcon)
-                        .padding(.bottom, 24)
+                        .padding(24)
                     VStack(spacing: 16) {
                         Text(title)
                             .multilineTextAlignment(.center)
@@ -30,16 +30,20 @@ struct DocumentCaptureInstructionsScreen: View {
                             .lineSpacing(1.3)
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                        .padding(.bottom, 16)
+                        .padding(.bottom, 48)
 
                     VStack(alignment: .leading, spacing: 32) {
                         HStack(spacing: 16) {
                             Image(uiImage: SmileIDResourcesHelper.image(Constants.ImageName.light)!)
                             VStack(alignment: .leading, spacing: 8) {
-                                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLight"))
+                                Text(SmileIDResourcesHelper.localizedString(
+                                    for: "Instructions.GoodLight"
+                                ))
                                     .font(SmileID.theme.header4)
                                     .foregroundColor(SmileID.theme.accent)
-                                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.GoodLightBody"))
+                                Text(SmileIDResourcesHelper.localizedString(
+                                    for: "Instructions.GoodLightBody"
+                                ))
                                     .multilineTextAlignment(.leading)
                                     .font(SmileID.theme.header5)
                                     .foregroundColor(SmileID.theme.tertiary)
@@ -48,12 +52,18 @@ struct DocumentCaptureInstructionsScreen: View {
                             }
                         }
                         HStack(spacing: 16) {
-                            Image(uiImage: SmileIDResourcesHelper.image(Constants.ImageName.clearImage)!)
+                            Image(uiImage: SmileIDResourcesHelper.image(
+                                Constants.ImageName.clearImage
+                            )!)
                             VStack(alignment: .leading, spacing: 8) {
-                                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImage"))
+                                Text(SmileIDResourcesHelper.localizedString(
+                                    for: "Instructions.ClearImage"
+                                ))
                                     .font(SmileID.theme.header4)
                                     .foregroundColor(SmileID.theme.accent)
-                                Text(SmileIDResourcesHelper.localizedString(for: "Instructions.ClearImageBody"))
+                                Text(SmileIDResourcesHelper.localizedString(
+                                    for: "Instructions.ClearImageBody"
+                                ))
                                     .multilineTextAlignment(.leading)
                                     .font(SmileID.theme.header5)
                                     .foregroundColor(SmileID.theme.tertiary)
@@ -95,11 +105,6 @@ struct DocumentCaptureInstructionsScreen: View {
                 }
             }
         }
-            .padding(EdgeInsets(
-                top: 0,
-                leading: 24,
-                bottom: 16,
-                trailing: 24
-            ))
+            .padding(.horizontal, 16)
     }
 }

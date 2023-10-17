@@ -11,14 +11,12 @@ struct MainView: View {
     }
 
     var body: some View {
-
         TabView {
             HomeView()
                 .tabItem {
                     Image(systemName: "house")
                     Text("Home")
                 }
-                .edgesIgnoringSafeArea(.all)
 
             ResourcesView()
                 .tabItem {
