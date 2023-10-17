@@ -197,7 +197,7 @@ struct CountrySelectorUnselected_Previews: PreviewProvider {
                         IdType(code: "id2", example: [], hasBack: false, name: "ID 2"),
                         IdType(code: "id3", example: [], hasBack: true, name: "ID 3")
                     ]
-                ),
+                )
             ],
             selectedCountry: nil,
             onCountrySelected: { _ in }
