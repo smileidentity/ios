@@ -12,7 +12,7 @@ class HomeViewModel: ObservableObject,
     @Published var toastMessage = ""
     @Published var showToast = false
 
-    var returnedUserID = ""
+    var returnedUserID: String?
 
     init() {
         subscribeToAuthCompletion()

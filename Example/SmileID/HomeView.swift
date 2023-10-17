@@ -30,9 +30,9 @@ struct HomeView: View {
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Authentication",
-                            content: EnterUserIDView(
-                                userId: viewModel.returnedUserID,
-                                viewModel: UserIDViewModel()
+                            content: SmartSelfieAuthWithUserIdEntry(
+                                initialUserId: viewModel.returnedUserID,
+                                delegate: viewModel
                             )
                         ),
                         ProductCell(
@@ -68,21 +68,23 @@ struct HomeView: View {
     }
 }
 
-@available(iOS 14.0, *)
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        let _ = SmileID.initialize(
-            config: Config(
-                partnerId: "",
-                authToken: "",
-                prodUrl: "",
-                testUrl: "",
-                prodLambdaUrl: "",
-                testLambdaUrl: ""
-            ),
-            useSandbox: true
-        )
-        HomeView()
+private struct SmartSelfieAuthWithUserIdEntry: View {
+    let initialUserId: String?
+    let delegate: SmartSelfieResultDelegate
+    @State private var userId: String?
+
+    var body: some View {
+        if let userId = userId {
+            SmileID.smartSelfieAuthenticationScreen(
+                userId: userId,
+                allowAgentMode: true,
+                delegate: delegate
+            )
+        } else {
+            EnterUserIDView(initialUserId: initialUserId) { userId in
+                self.userId = userId
+            }
+        }
     }
 }
 
@@ -143,7 +145,7 @@ private struct EnhancedDocumentVerificationWithSelector: View {
 /// A view that displays a grid of items in a vertical layout. It first fills up all items in the
 /// first row before moving on to the next row. If the number of items is not a multiple of the
 /// number of columns, the last row is filled from left to right with the remaining items.
-struct MyVerticalGrid: View {
+private struct MyVerticalGrid: View {
     let maxColumns: Int
     let items: [AnyView]
 
@@ -162,40 +164,20 @@ struct MyVerticalGrid: View {
     }
 }
 
-struct NavigationBarModifier: ViewModifier {
-    var backgroundColor: Color = .clear
-
-    init(backgroundColor: Color) {
-        self.backgroundColor = backgroundColor
-        let coloredAppearance = UINavigationBarAppearance()
-        coloredAppearance.configureWithTransparentBackground()
-        coloredAppearance.backgroundColor = .clear
-        coloredAppearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-        coloredAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
-
-        UINavigationBar.appearance().standardAppearance = coloredAppearance
-        UINavigationBar.appearance().compactAppearance = coloredAppearance
-        UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
-        UINavigationBar.appearance().tintColor = .white
-    }
-
-    func body(content: Content) -> some View {
-        ZStack {
-            content
-            VStack {
-                GeometryReader { geometry in
-                    backgroundColor
-                        .frame(height: geometry.safeAreaInsets.top)
-                        .edgesIgnoringSafeArea(.top)
-                    Spacer()
-                }
-            }
-        }
-    }
-}
-
-extension View {
-    func navigationBarColor(_ backgroundColor: Color) -> some View {
-        modifier(NavigationBarModifier(backgroundColor: backgroundColor))
+@available(iOS 14.0, *)
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        let _ = SmileID.initialize(
+            config: Config(
+                partnerId: "",
+                authToken: "",
+                prodUrl: "",
+                testUrl: "",
+                prodLambdaUrl: "",
+                testLambdaUrl: ""
+            ),
+            useSandbox: true
+        )
+        HomeView()
     }
 }
