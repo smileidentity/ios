@@ -20,6 +20,18 @@ class LocalStorage {
         }
     }
 
+    static func saveImage(
+        image: Data,
+        to folder: String = "sid-\(UUID().uuidString)",
+        name: String
+    ) throws -> URL {
+        try createDefaultDirectory()
+        let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
+        try createDirectory(at: destinationFolder, overwrite: false)
+        let fileName = filename(for: name)
+        return try write(image, to: destinationFolder.appendingPathComponent(fileName))
+    }
+
     static func saveImageJpg(
         livenessImages: [Data],
         previewImage: Data,

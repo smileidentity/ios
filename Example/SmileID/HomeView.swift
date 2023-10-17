@@ -3,80 +3,54 @@ import SwiftUI
 
 @available(iOS 14.0, *)
 struct HomeView: View {
-    var userID = ""
-    let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
+    let partner = SmileID.configuration.partnerId
+    let version = SmileID.version
+    let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @ObservedObject var viewModel = HomeViewModel()
-    @ObservedObject var router = Router<NavigationDestination>()
+
     var body: some View {
         NavigationView {
             VStack(spacing: 24) {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
-                HStack(spacing: 16) {
-                    Button(
-                        action: viewModel.handleSmartSelfieEnrolmentTap,
-                        label: {
-                            ProductCell(
-                                productImage: "userauth",
-                                productName: "SmartSelfie™ Enrollment"
+
+                MyVerticalGrid(
+                    maxColumns: 2,
+                    items: [
+                        ProductCell(
+                            image: "userauth",
+                            name: "SmartSelfie™ Enrollment",
+                            content: SmileID.smartSelfieEnrollmentScreen(
+                                userId: generateUserId(),
+                                allowAgentMode: true,
+                                delegate: viewModel
                             )
-                        })
-                        .sheet(isPresented: $viewModel.presentSmartSelfieEnrollment,
-                               content: {
-                                   SmileID.smartSelfieEnrollmentScreen(
-                                       userId: generateUserId(),
-                                       allowAgentMode: true,
-                                       delegate: viewModel
-                                   )
-                               })
-                    Button(action: viewModel.handleSmartSelfieAuthTap,
-                           label: {
-                               ProductCell(
-                                   productImage: "userauth",
-                                   productName: "SmartSelfie™ Authentication"
-                               )
-                           })
-                        .sheet(isPresented: $viewModel.presentSmartSelfieAuth, content: {
-                            EnterUserIDView(
-                                userId: viewModel.returnedUserID,
-                                viewModel: UserIDViewModel()
+                        ),
+                        ProductCell(
+                            image: "userauth",
+                            name: "SmartSelfie™ Authentication",
+                            content: SmartSelfieAuthWithUserIdEntry(
+                                initialUserId: viewModel.returnedUserID,
+                                delegate: viewModel
                             )
-                        })
-                }
-                HStack(spacing: 15) {
-                    GeometryReader { geo in
-                        Button(
-                            action: viewModel.handleDocumentVerificationTap,
-                            label: {
-                                ProductCell(
-                                    productImage: "document",
-                                    productName: "Document Verification"
-                                )
-                            }
+                        ),
+                        ProductCell(
+                            image: "document",
+                            name: "Document Verification",
+                            content: DocumentVerificationWithSelector(delegate: viewModel)
+                        ),
+                        ProductCell(
+                            image: "document",
+                            name: "Enhanced Document Verification",
+                            content: EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                         )
-                            .fullScreenCover(
-                                isPresented: $viewModel.presentDocumentVerification,
-                                content: {
-                                    let _ = router.push(
-                                        .countrySelectorScreen(homeVieModel: viewModel),
-                                        animated: false
-                                    )
-                                    NavigationControllerHost(
-                                        navTitle: "",
-                                        navHidden: true,
-                                        router: router,
-                                        routeMap: ViewFactory().makeView(_:)
-                                    ).environmentObject(router)
-                                })
-                            .frame(width: (geo.size.width / 2) - 7.5)
-                    }
-                }
+                    ].map { AnyView($0) }
+                )
+
                 Spacer()
-                let partner = "Partner \(SmileID.configuration.partnerId)"
-                let version = "Version \(SmileID.version)"
-                let build = "Build \(build ?? "")"
-                Text("\(partner) - \(version) - \(build)")
+
+                Text("Partner \(partner) - Version \(version) - Build \(build)")
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }
@@ -89,7 +63,105 @@ struct HomeView: View {
                 .padding()
                 .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
                 .navigationBarItems(trailing: ToggleButton())
-                .background(offWhite.edgesIgnoringSafeArea(.all))
+                .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
+        }
+    }
+}
+
+private struct SmartSelfieAuthWithUserIdEntry: View {
+    let initialUserId: String?
+    let delegate: SmartSelfieResultDelegate
+    @State private var userId: String?
+
+    var body: some View {
+        if let userId = userId {
+            SmileID.smartSelfieAuthenticationScreen(
+                userId: userId,
+                allowAgentMode: true,
+                delegate: delegate
+            )
+        } else {
+            EnterUserIDView(initialUserId: initialUserId) { userId in
+                self.userId = userId
+            }
+        }
+    }
+}
+
+private struct DocumentVerificationWithSelector: View {
+    @State private var countryCode: String?
+    @State private var documentType: String?
+    @State private var captureBothSides: Bool?
+    let delegate: DocumentVerificationResultDelegate
+
+    var body: some View {
+        if let countryCode = countryCode,
+           let documentType = documentType,
+           let captureBothSides = captureBothSides {
+            SmileID.documentVerificationScreen(
+                countryCode: countryCode,
+                documentType: documentType,
+                captureBothSides: captureBothSides,
+                allowGalleryUpload: true,
+                delegate: delegate
+            )
+        } else {
+            DocumentVerificationIdTypeSelector(jobType: .documentVerification) {
+                countryCode, documentType, captureBothSides in
+                self.countryCode = countryCode
+                self.documentType = documentType
+                self.captureBothSides = captureBothSides
+            }
+        }
+    }
+}
+
+private struct EnhancedDocumentVerificationWithSelector: View {
+    @State private var countryCode: String?
+    @State private var documentType: String?
+    @State private var captureBothSides: Bool?
+    let delegate: EnhancedDocumentVerificationResultDelegate
+
+    var body: some View {
+        if let countryCode = countryCode,
+           let documentType = documentType,
+           let captureBothSides = captureBothSides {
+            SmileID.enhancedDocumentVerificationScreen(
+                countryCode: countryCode,
+                documentType: documentType,
+                captureBothSides: captureBothSides,
+                allowGalleryUpload: true,
+                delegate: delegate
+            )
+        } else {
+            DocumentVerificationIdTypeSelector(jobType: .enhancedDocumentVerification) {
+                countryCode, documentType, captureBothSides in
+                self.countryCode = countryCode
+                self.documentType = documentType
+                self.captureBothSides = captureBothSides
+            }
+        }
+    }
+}
+
+/// A view that displays a grid of items in a vertical layout. It first fills up all items in the
+/// first row before moving on to the next row. If the number of items is not a multiple of the
+/// number of columns, the last row is filled from left to right with the remaining items.
+private struct MyVerticalGrid: View {
+    let maxColumns: Int
+    let items: [AnyView]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            ForEach(0..<items.count / maxColumns + 1) { rowIndex in
+                HStack(spacing: 24) {
+                    let numRemainingItems = items.count - rowIndex * maxColumns
+                    let numColumns = min(numRemainingItems, maxColumns)
+                    ForEach(0..<numColumns) { columnIndex in
+                        items[rowIndex * numColumns + columnIndex]
+                    }
+                }
+            }
         }
     }
 }
@@ -97,44 +169,17 @@ struct HomeView: View {
 @available(iOS 14.0, *)
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
+        let _ = SmileID.initialize(
+            config: Config(
+                partnerId: "",
+                authToken: "",
+                prodUrl: "",
+                testUrl: "",
+                prodLambdaUrl: "",
+                testLambdaUrl: ""
+            ),
+            useSandbox: true
+        )
         HomeView()
-    }
-}
-
-struct NavigationBarModifier: ViewModifier {
-    var backgroundColor: Color = .clear
-
-    init(backgroundColor: Color) {
-        self.backgroundColor = backgroundColor
-        let coloredAppearance = UINavigationBarAppearance()
-        coloredAppearance.configureWithTransparentBackground()
-        coloredAppearance.backgroundColor = .clear
-        coloredAppearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-        coloredAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
-
-        UINavigationBar.appearance().standardAppearance = coloredAppearance
-        UINavigationBar.appearance().compactAppearance = coloredAppearance
-        UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
-        UINavigationBar.appearance().tintColor = .white
-    }
-
-    func body(content: Content) -> some View {
-        ZStack {
-            content
-            VStack {
-                GeometryReader { geometry in
-                    backgroundColor
-                        .frame(height: geometry.safeAreaInsets.top)
-                        .edgesIgnoringSafeArea(.top)
-                    Spacer()
-                }
-            }
-        }
-    }
-}
-
-extension View {
-    func navigationBarColor(_ backgroundColor: Color) -> some View {
-        modifier(NavigationBarModifier(backgroundColor: backgroundColor))
     }
 }

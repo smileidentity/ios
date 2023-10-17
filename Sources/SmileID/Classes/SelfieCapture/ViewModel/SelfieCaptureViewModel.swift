@@ -39,7 +39,7 @@ enum ProcessingState {
 
     case confirmation(UIImage)
     case inProgress
-    case complete(JobStatusResponse?, SmileIDError?)
+    case complete(JobStatusResponse<SmartSelfieJobResult>?, SmileIDError?)
     case endFlow
     case error(Error)
 }
@@ -447,7 +447,9 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
                             .map { _ in authResponse }
                     }
             }
-            .flatMap(getJobStatus)
+            .flatMap {
+                self.getJobStatus($0) as AnyPublisher<JobStatusResponse<SmartSelfieJobResult>, Error>
+            }
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):

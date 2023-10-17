@@ -3,71 +3,93 @@ import Combine
 import UIKit
 import SmileID
 
-class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptureResultDelegate {
-    @Published var product: JobType? {
-        didSet {
-            switch product {
-            case .smartSelfieEnrollment:
-                presentSmartSelfieAuth = false
-                presentSmartSelfieEnrollment = true
-                presentDocumentVerification = false
-            case .smartSelfieAuthentication:
-                presentSmartSelfieAuth = true
-                presentSmartSelfieEnrollment = false
-                presentDocumentVerification = false
-            case .documentVerification:
-                presentSmartSelfieAuth = false
-                presentSmartSelfieEnrollment = false
-                presentDocumentVerification = true
-            default:
-                presentSmartSelfieAuth = false
-                presentSmartSelfieEnrollment = false
-                presentDocumentVerification = false
-            }
-        }
-    }
-    @Published var presentSmartSelfieAuth = false
-    @Published var presentSmartSelfieEnrollment = false
-    @Published var presentDocumentVerification = false
+class HomeViewModel: ObservableObject,
+    SmartSelfieResultDelegate,
+    DocumentVerificationResultDelegate,
+    EnhancedDocumentVerificationResultDelegate {
+
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
 
-    var returnedUserID = ""
+    var returnedUserID: String?
 
     init() {
         subscribeToAuthCompletion()
     }
 
-    func handleSmartSelfieEnrolmentTap() {
-        product = .smartSelfieEnrollment
-    }
-
-    func handleSmartSelfieAuthTap() {
-        product = .smartSelfieAuthentication
-    }
-
-    func handleDocumentVerificationTap() {
-        product = .documentVerification
-    }
-
-    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: JobStatusResponse) {
-        returnedUserID = jobStatusResponse.result?.partnerParams?.userId ?? ""
-        UIPasteboard.general.string = returnedUserID
+    @objc func didError(error: Error) {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         showToast = true
-        if jobStatusResponse.jobSuccess {
-            toastMessage = """
-                           SmartSelfie Enrollment completed successfully. User ID has been copied to
-                            the clipboard
-                           """
+        toastMessage = error.localizedDescription
+    }
+
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
+    ) {
+        showToast = true
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        let partnerParams = jobStatusResponse.result?.partnerParams
+        if partnerParams?.jobType == .smartSelfieEnrollment {
+            returnedUserID = partnerParams?.userId
+            UIPasteboard.general.string = returnedUserID
+            toastMessage = jobResultMessageBuilder(
+                jobName: "SmartSelfie Enrollment",
+                jobComplete: jobStatusResponse.jobComplete,
+                jobSuccess: jobStatusResponse.jobSuccess,
+                code: jobStatusResponse.code,
+                resultCode: jobStatusResponse.result?.resultCode,
+                resultText: jobStatusResponse.result?.resultText,
+                suffix: "The User ID has been copied to your clipboard"
+            )
         } else {
-            toastMessage = "Job submitted successfully, results processing"
+            toastMessage = jobResultMessageBuilder(
+                jobName: "SmartSelfie Authentication",
+                jobComplete: jobStatusResponse.jobComplete,
+                jobSuccess: jobStatusResponse.jobSuccess,
+                code: jobStatusResponse.code,
+                resultCode: jobStatusResponse.result?.resultCode,
+                resultText: jobStatusResponse.result?.resultText
+            )
         }
     }
 
-    @objc func didError(error: Error) {
-        toastMessage = error.localizedDescription
+    func didSucceed(
+        selfie: URL,
+        documentFrontImage: URL,
+        documentBackImage: URL?,
+        jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
+    ) {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         showToast = true
+        toastMessage = jobResultMessageBuilder(
+            jobName: "Document Verification",
+            jobComplete: jobStatusResponse.jobComplete,
+            jobSuccess: jobStatusResponse.jobSuccess,
+            code: jobStatusResponse.code,
+            resultCode: jobStatusResponse.result?.resultCode,
+            resultText: jobStatusResponse.result?.resultText
+        )
+    }
+
+    func didSucceed(
+        selfie: URL,
+        documentFrontImage: URL,
+        documentBackImage: URL?,
+        jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
+    ) {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        showToast = true
+        toastMessage = jobResultMessageBuilder(
+            jobName: "Enhanced Document Verification",
+            jobComplete: jobStatusResponse.jobComplete,
+            jobSuccess: jobStatusResponse.jobSuccess,
+            code: jobStatusResponse.code,
+            resultCode: jobStatusResponse.result?.resultCode,
+            resultText: jobStatusResponse.result?.resultText
+        )
     }
 
     func subscribeToAuthCompletion() {
@@ -83,16 +105,6 @@ class HomeViewModel: ObservableObject, SmartSelfieResultDelegate, DocumentCaptur
             name: Notification.Name(rawValue: "SelfieCaptureError"),
             object: nil
         )
-    }
-
-    func didSucceed(
-        selfie: URL,
-        documentFrontImage: URL,
-        documentBackImage: URL?,
-        jobStatusResponse: JobStatusResponse
-    ) {
-        showToast = true
-        toastMessage = "Document Verification submitted successfully, results processing"
     }
 
     @objc func handleAuthCompletion(_ notification: NSNotification) {

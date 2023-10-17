@@ -1,9 +1,9 @@
 import Combine
 
 protocol JobSubmittable {
-    func getJobStatus(
+    func getJobStatus<T: JobResult>(
         _ authResponse: AuthenticationResponse
-    ) -> AnyPublisher<JobStatusResponse, Error>
+    ) -> AnyPublisher<JobStatusResponse<T>, Error>
     func upload(
         _ prepUploadResponse: PrepUploadResponse, zip: Data
     ) -> AnyPublisher<UploadResponse, Error>
@@ -34,9 +34,9 @@ extension JobSubmittable {
             .eraseToAnyPublisher()
     }
 
-    func getJobStatus(
+    func getJobStatus<T: JobResult>(
         _ authResponse: AuthenticationResponse
-    ) -> AnyPublisher<JobStatusResponse, Error> {
+    ) -> AnyPublisher<JobStatusResponse<T>, Error> {
         let jobStatusRequest = JobStatusRequest(
             userId: authResponse.partnerParams.userId,
             jobId: authResponse.partnerParams.jobId,

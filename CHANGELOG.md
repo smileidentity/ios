@@ -1,10 +1,19 @@
+
 ## 10.0.0-beta10 (unreleased)
 
 ### Added
+- Enhanced Document Verification
+- New JobStatusResponses that depend on the job type
 
 ### Changed
+- Renamed `DocumentCaptureResultDelegate` -> `DocumentVerificationResultDelegate`
+- Delegate types updated to accept generic `JobStatusResponse` objects
+- Provide `nil` as default values for `userId` and `jobId` on `AuthenticationRequest`
+- Made public the properties in `ServicesResponse` and its nested classes
 
 ### Fixed
+- Document Verification UI bugs
+- Fixed a bug where Services models would have incorrect or duplicate data
 
 ### Removed
 

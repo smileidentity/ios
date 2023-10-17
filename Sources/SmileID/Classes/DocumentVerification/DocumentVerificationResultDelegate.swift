@@ -1,7 +1,5 @@
-import Foundation
-
-/// The result of a document capture session
-public protocol DocumentCaptureResultDelegate: AnyObject {
+/// The result of a Document Verification
+public protocol DocumentVerificationResultDelegate: AnyObject {
     /// Delegate method called after a successful Document Verification capture and submission.
     /// It indicates that the capture and network requests were successful. The job may or may not
     /// be complete. Use `jobStatusResponse.jobComplete` to check if a job is complete and
@@ -15,12 +13,12 @@ public protocol DocumentCaptureResultDelegate: AnyObject {
         selfie: URL,
         documentFrontImage: URL,
         documentBackImage: URL?,
-        jobStatusResponse: JobStatusResponse
+        jobStatusResponse: DocumentVerificationJobStatusResponse
     )
 
-    /// Delegate method called when an error occurs during the selfie capture session. This may
+    /// Delegate method called when an error occurs during Document Verification. This may
     /// be as a result of a network failure or an error that occurs during capture, for example not
     /// not having camera permissions.
-    /// - Parameter error: The error returned from a failed selfie capture
+    /// - Parameter error: The error returned from a failed Document Verification
     func didError(error: Error)
 }

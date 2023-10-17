@@ -36,13 +36,7 @@ final class PollingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Polling completes successfully")
         MockHelper.shouldFail = false
         MockHelper.jobComplete = true
-        mockService.poll(
-                service: mockService,
-                request: { self.mockService.getJobStatus(request: mockJobStatusRequest) },
-                isComplete: { $0.jobComplete },
-                interval: 1.0,
-                numAttempts: 3
-            )
+        mockService.pollJobStatus(request: mockJobStatusRequest, interval: 1, numAttempts: 3)
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
@@ -75,13 +69,8 @@ final class PollingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Polling fails due to an error")
         MockHelper.shouldFail = true
         MockHelper.jobComplete = false
-        mockService.poll(
-                service: mockService,
-                request: { self.mockService.getJobStatus(request: mockJobStatusRequest) },
-                isComplete: {
-                    print("is complete \($0.jobComplete)")
-                    return $0.jobComplete
-                },
+        mockService.pollJobStatus(
+                request: mockJobStatusRequest,
                 interval: 0.1,
                 numAttempts: 5
             )
@@ -118,10 +107,8 @@ final class PollingTests: XCTestCase {
 
         MockHelper.shouldFail = false
         MockHelper.jobComplete = false
-        mockService.poll(
-                service: mockService,
-                request: { self.mockService.getJobStatus(request: mockJobStatusRequest) },
-                isComplete: { $0.jobComplete },
+        mockService.pollJobStatus(
+                request: mockJobStatusRequest,
                 interval: 0.1,
                 numAttempts: 5
             )

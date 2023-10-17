@@ -3,9 +3,8 @@ import SmileID
 import SwiftUI
 import netfox
 
-@available(iOS 14.0, *)
 @UIApplicationMain
-
+@available(iOS 14.0, *)
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?

@@ -7,7 +7,7 @@ public struct SmartSelfieInstructionsView: View {
     @State private var goesToDetail: Bool = false
     @State var viewModel: SelfieCaptureViewModel
 
-    init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate) {
+    init(viewModel: SelfieCaptureViewModel, delegate: SmartSelfieResultDelegate?) {
         selfieCaptureDelegate = delegate
         _viewModel = State(initialValue: viewModel)
     }
