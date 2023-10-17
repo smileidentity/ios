@@ -1,5 +1,15 @@
+## 10.0.0-beta11
 
-## 10.0.0-beta10 (unreleased)
+### Added
+- BVN OTP API calls and models
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## 10.0.0-beta10
 
 ### Added
 - Enhanced Document Verification
@@ -14,8 +24,6 @@
 ### Fixed
 - Document Verification UI bugs
 - Fixed a bug where Services models would have incorrect or duplicate data
-
-### Removed
 
 ## 10.0.0-beta09
 
