@@ -25,40 +25,6 @@ class MockURLSessionPublisher: URLSessionPublisher {
 }
 
 class MockSmileIdentityService: SmileIDServiceable {
-    func getValidDocuments(
-        request: ProductsConfigRequest
-    ) -> AnyPublisher<ValidDocumentsResponse, Error> {
-        let response = ValidDocumentsResponse(validDocuments: [ValidDocument]())
-        if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
-        } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
-        }
-    }
-
-    func getServices() -> AnyPublisher<ServicesResponse, Error> {
-        var response: ServicesResponse
-        do {
-            response = try ServicesResponse(
-                bankCodes: [],
-                hostedWeb: HostedWeb(from: JSONDecoder() as! Decoder)
-            )
-        } catch {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
-        }
-
-        if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
-        } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
-        }
-    }
-
     func authenticate(request _: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error> {
         let params = PartnerParams(
             jobId: "jobid",
@@ -107,6 +73,20 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
+    func doEnhancedKycAsync(
+        request _: EnhancedKycRequest
+    ) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
+        if MockHelper.shouldFail {
+            let error = SmileIDError.request(URLError(.resourceUnavailable))
+            return Fail(error: error)
+                .eraseToAnyPublisher()
+        } else {
+            let response = EnhancedKycAsyncResponse(success: true)
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
     func getJobStatus<T: JobResult>(
         request _: JobStatusRequest
     ) -> AnyPublisher<JobStatusResponse<T>, Error> {
@@ -120,15 +100,91 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func doEnhancedKycAsync(
-        request _: EnhancedKycRequest
-    ) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
+    func getServices() -> AnyPublisher<ServicesResponse, Error> {
+        var response: ServicesResponse
+        do {
+            response = try ServicesResponse(
+                bankCodes: [],
+                hostedWeb: HostedWeb(from: JSONDecoder() as! Decoder)
+            )
+        } catch {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        }
+
         if MockHelper.shouldFail {
-            let error = SmileIDError.request(URLError(.resourceUnavailable))
-            return Fail(error: error)
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
                 .eraseToAnyPublisher()
         } else {
-            let response = EnhancedKycAsyncResponse(success: true)
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    func getValidDocuments(
+        request: ProductsConfigRequest
+    ) -> AnyPublisher<ValidDocumentsResponse, Error> {
+        let response = ValidDocumentsResponse(validDocuments: [ValidDocument]())
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    public func requestBvnTotpMode(
+        request: BvnTotpRequest
+    ) -> AnyPublisher<BvnTotpResponse, Error> {
+        let response = BvnTotpResponse(
+            success: true,
+            message: "success",
+            modes: [],
+            sessionId: "sessionId",
+            timestamp: "timestamp",
+            signature: "signature"
+        )
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    public func requestBvnOtp(
+        request: BvnTotpModeRequest
+    ) -> AnyPublisher<BvnTotpModeResponse, Error> {
+        let response = BvnTotpModeResponse(
+            success: true,
+            message: "success",
+            timestamp: "timestamp",
+            signature: "signature"
+        )
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    public func submitBvnOtp(
+        request: SubmitBvnTotpRequest
+    ) -> AnyPublisher<SubmitBvnTotpResponse, Error> {
+        let response = SubmitBvnTotpResponse(
+            success: true,
+            message: "success",
+            timestamp: "timestamp",
+            signature: "signature"
+        )
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
             return Result.Publisher(response)
                 .eraseToAnyPublisher()
         }

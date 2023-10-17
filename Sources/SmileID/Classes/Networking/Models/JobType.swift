@@ -5,5 +5,6 @@ public enum JobType: Int, Codable {
     case smartSelfieEnrollment = 4
     case enhancedKyc = 5
     case documentVerification = 6
+    case bvn = 7
     case enhancedDocumentVerification = 11
 }
