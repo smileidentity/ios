@@ -14,23 +14,26 @@ struct ProductCell: View {
     }
 
     public var body: some View {
-        Button(action: { isPresented = true }) {
-            VStack(spacing: 24) {
-                Image(image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 48)
-                Text(name)
-                    .multilineTextAlignment(.center)
-                    .font(SmileID.theme.header4)
-                    .foregroundColor(SmileID.theme.backgroundLight)
+        Button(
+            action: { isPresented = true },
+            label: {
+                VStack(spacing: 24) {
+                    Image(image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 48)
+                    Text(name)
+                        .multilineTextAlignment(.center)
+                        .font(SmileID.theme.header4)
+                        .foregroundColor(SmileID.theme.backgroundLight)
+                }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(SmileID.theme.accent)
+                    .cornerRadius(8)
+                    .sheet(isPresented: $isPresented, content: { AnyView(content) })
             }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(SmileID.theme.accent)
-                .cornerRadius(8)
-                .sheet(isPresented: $isPresented, content: { AnyView(content) })
-        }
+        )
     }
 }
 

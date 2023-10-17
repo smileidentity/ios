@@ -2,7 +2,11 @@ import SmileID
 import SwiftUI
 
 struct DocumentVerificationIdTypeSelector: View {
-    let onIdTypeSelected: (_ countryCode: String, _ idType: String, _ captureBothSides: Bool) -> ()
+    let onIdTypeSelected: (
+        _ countryCode: String,
+        _ idType: String,
+        _ captureBothSides: Bool
+    ) -> Void
 
     @ObservedObject private var viewModel = DocumentSelectorViewModel()
 
@@ -45,7 +49,7 @@ struct DocumentVerificationIdTypeSelector: View {
 private struct CountrySelector: View {
     let countries: [ValidDocument]
     let selectedCountry: String?
-    let onCountrySelected: (ValidDocument?) -> ()
+    let onCountrySelected: (ValidDocument?) -> Void
 
     @State private var query: String
     private var filteredCountries: [ValidDocument] {
@@ -57,7 +61,7 @@ private struct CountrySelector: View {
     init(
         countries: [ValidDocument],
         selectedCountry: String?,
-        onCountrySelected: @escaping (ValidDocument?) -> ()
+        onCountrySelected: @escaping (ValidDocument?) -> Void
     ) {
         self.countries = countries
         self.selectedCountry = selectedCountry
@@ -96,11 +100,14 @@ private struct CountrySelector: View {
 
             if selectedCountry == nil {
                 List(filteredCountries) { country in
-                    Button(action: { onCountrySelected(country) }) {
-                        Text(country.country.name)
-                            .multilineTextAlignment(.leading)
-                            .foregroundColor(SmileID.theme.accent)
-                    }
+                    Button(
+                        action: { onCountrySelected(country) },
+                        label: {
+                            Text(country.country.name)
+                                .multilineTextAlignment(.leading)
+                                .foregroundColor(SmileID.theme.accent)
+                        }
+                    )
                 }
             }
         }
@@ -111,7 +118,7 @@ private let othersIdType = IdType(code: "", example: [], hasBack: true, name: "O
 
 private struct IdTypeSelector: View {
     let idTypesForCountry: [IdType]
-    let onIdTypeSelected: (IdType) -> ()
+    let onIdTypeSelected: (IdType) -> Void
 
     @State private var selectedIdType: IdType?
 
@@ -138,12 +145,15 @@ private struct IdTypeSelector: View {
             Spacer()
 
             // Button is always enabled, because we can default to Others
-            Button(action: { onIdTypeSelected(selectedIdType ?? othersIdType) }) {
-                Text("Continue")
-                    .padding(16)
-                    .font(SmileID.theme.button)
-                    .frame(maxWidth: .infinity)
-            }
+            Button(
+                action: { onIdTypeSelected(selectedIdType ?? othersIdType) },
+                label: {
+                    Text("Continue")
+                        .padding(16)
+                        .font(SmileID.theme.button)
+                        .frame(maxWidth: .infinity)
+                }
+            )
                 .background(SmileID.theme.accent)
                 .foregroundColor(SmileID.theme.onDark)
                 .cornerRadius(60)
@@ -160,7 +170,7 @@ struct IdTypeSelector_Previews: PreviewProvider {
             idTypesForCountry: [
                 IdType(code: "id1", example: [], hasBack: true, name: "ID 1"),
                 IdType(code: "id2", example: [], hasBack: false, name: "ID 2"),
-                IdType(code: "id3", example: [], hasBack: true, name: "ID 3"),
+                IdType(code: "id3", example: [], hasBack: true, name: "ID 3")
             ],
             onIdTypeSelected: { _ in }
         )
@@ -177,7 +187,7 @@ struct CountrySelectorUnselected_Previews: PreviewProvider {
                     idTypes: [
                         IdType(code: "id1", example: [], hasBack: true, name: "ID 1"),
                         IdType(code: "id2", example: [], hasBack: false, name: "ID 2"),
-                        IdType(code: "id3", example: [], hasBack: true, name: "ID 3"),
+                        IdType(code: "id3", example: [], hasBack: true, name: "ID 3")
                     ]
                 ),
                 ValidDocument(
@@ -185,7 +195,7 @@ struct CountrySelectorUnselected_Previews: PreviewProvider {
                     idTypes: [
                         IdType(code: "id1", example: [], hasBack: true, name: "ID 1"),
                         IdType(code: "id2", example: [], hasBack: false, name: "ID 2"),
-                        IdType(code: "id3", example: [], hasBack: true, name: "ID 3"),
+                        IdType(code: "id3", example: [], hasBack: true, name: "ID 3")
                     ]
                 ),
             ],
