@@ -43,7 +43,7 @@ struct ResourcesView: View {
             Spacer()
         }
             .padding()
-            .background(offWhite.edgesIgnoringSafeArea(.all))
+            .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
             .navigationBarTitle("Resources", displayMode: .inline)
     }
 }

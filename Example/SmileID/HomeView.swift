@@ -63,7 +63,7 @@ struct HomeView: View {
                 .padding()
                 .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
                 .navigationBarItems(trailing: ToggleButton())
-                .background(offWhite.edgesIgnoringSafeArea(.all))
+                .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
         }
     }
 }

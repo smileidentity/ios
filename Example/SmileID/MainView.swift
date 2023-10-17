@@ -5,7 +5,7 @@ import SmileID
 struct MainView: View {
 
     init() {
-        UITabBar.appearance().barTintColor = offWhiteUIColor
+        UITabBar.appearance().barTintColor = UIColor(SmileID.theme.backgroundLight)
         UITabBar.appearance().tintColor = UIColor(SmileID.theme.accent)
         UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont(name: "Georgia-Bold", size: 30)!]
     }
@@ -25,7 +25,7 @@ struct MainView: View {
                 }
         }
             .accentColor(SmileID.theme.accent)
-            .background(offWhite.edgesIgnoringSafeArea(.all))
+            .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
             .edgesIgnoringSafeArea(.all)
             .preferredColorScheme(.light)
     }

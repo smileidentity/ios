@@ -37,7 +37,7 @@ struct EnterUserIDView: View {
                 Spacer()
             }
                 .padding(.top, 50)
-                .background(offWhite.edgesIgnoringSafeArea(.all))
+                .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
                 .navigationBarItems(
                     leading: Button { presentationMode.wrappedValue.dismiss() }
                     label: {
