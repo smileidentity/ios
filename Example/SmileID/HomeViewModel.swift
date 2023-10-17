@@ -7,41 +7,7 @@ class HomeViewModel: ObservableObject,
     SmartSelfieResultDelegate,
     DocumentVerificationResultDelegate,
     EnhancedDocumentVerificationResultDelegate {
-    @Published var product: JobType? {
-        didSet {
-            switch product {
-            case .smartSelfieEnrollment:
-                presentSmartSelfieAuth = false
-                presentSmartSelfieEnrollment = true
-                presentDocumentVerification = false
-                presentEnhancedDocumentVerification = false
-            case .smartSelfieAuthentication:
-                presentSmartSelfieAuth = true
-                presentSmartSelfieEnrollment = false
-                presentDocumentVerification = false
-                presentEnhancedDocumentVerification = false
-            case .documentVerification:
-                presentSmartSelfieAuth = false
-                presentSmartSelfieEnrollment = false
-                presentDocumentVerification = true
-                presentEnhancedDocumentVerification = false
-            case .enhancedDocumentVerification:
-                presentSmartSelfieAuth = false
-                presentSmartSelfieEnrollment = false
-                presentDocumentVerification = false
-                presentEnhancedDocumentVerification = true
-            default:
-                presentSmartSelfieAuth = false
-                presentSmartSelfieEnrollment = false
-                presentDocumentVerification = false
-                presentEnhancedDocumentVerification = false
-            }
-        }
-    }
-    @Published var presentSmartSelfieAuth = false
-    @Published var presentSmartSelfieEnrollment = false
-    @Published var presentDocumentVerification = false
-    @Published var presentEnhancedDocumentVerification = false
+
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
@@ -52,20 +18,10 @@ class HomeViewModel: ObservableObject,
         subscribeToAuthCompletion()
     }
 
-    func handleSmartSelfieEnrolmentTap() {
-        product = .smartSelfieEnrollment
-    }
-
-    func handleSmartSelfieAuthTap() {
-        product = .smartSelfieAuthentication
-    }
-
-    func handleDocumentVerificationTap() {
-        product = .documentVerification
-    }
-
-    func handleEnhancedDocumentVerificationTap() {
-        product = .enhancedDocumentVerification
+    @objc func didError(error: Error) {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        toastMessage = error.localizedDescription
+        showToast = true
     }
 
     func didSucceed(
@@ -73,6 +29,7 @@ class HomeViewModel: ObservableObject,
         livenessImages: [URL],
         jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
     ) {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         returnedUserID = jobStatusResponse.result?.partnerParams.userId ?? ""
         UIPasteboard.general.string = returnedUserID
         showToast = true
@@ -86,9 +43,28 @@ class HomeViewModel: ObservableObject,
         }
     }
 
-    @objc func didError(error: Error) {
-        toastMessage = error.localizedDescription
+    func didSucceed(
+        selfie: URL,
+        documentFrontImage: URL,
+        documentBackImage: URL?,
+        jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
+    ) {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         showToast = true
+        toastMessage = "Document Verification submitted successfully, results processing"
+        print("Document Verification jobStatusResponse: \(jobStatusResponse)")
+    }
+
+    func didSucceed(
+        selfie: URL,
+        documentFrontImage: URL,
+        documentBackImage: URL?,
+        jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
+    ) {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        showToast = true
+        toastMessage = "Enhanced Document Verification submitted successfully, results processing"
+        print("Document Verification jobStatusResponse: \(jobStatusResponse)")
     }
 
     func subscribeToAuthCompletion() {
@@ -104,28 +80,6 @@ class HomeViewModel: ObservableObject,
             name: Notification.Name(rawValue: "SelfieCaptureError"),
             object: nil
         )
-    }
-
-    func didSucceed(
-        selfie: URL,
-        documentFrontImage: URL,
-        documentBackImage: URL?,
-        jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
-    ) {
-        showToast = true
-        toastMessage = "Document Verification submitted successfully, results processing"
-        print("Document Verification jobStatusResponse: \(jobStatusResponse)")
-    }
-
-    func didSucceed(
-        selfie: URL,
-        documentFrontImage: URL,
-        documentBackImage: URL?,
-        jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
-    ) {
-        showToast = true
-        toastMessage = "Enhanced Document Verification submitted successfully, results processing"
-        print("Document Verification jobStatusResponse: \(jobStatusResponse)")
     }
 
     @objc func handleAuthCompletion(_ notification: NSNotification) {

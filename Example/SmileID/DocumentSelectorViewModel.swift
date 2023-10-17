@@ -1,21 +1,21 @@
-import SmileID
 import Combine
+import Foundation
+import SmileID
 
-class CountryListViewModel: ObservableObject {
-    @Published var validDocuments = [ValidDocument]()
-    @Published var isLoading = false
-    private var subscribers = Set<AnyCancellable>()
+class DocumentSelectorViewModel: ObservableObject {
+    private var subscriber: AnyCancellable?
 
-    func getValidDocuments() {
-        isLoading = true
+    // UI Properties
+    @Published @MainActor var idTypes: [ValidDocument] = []
+    @Published @MainActor var errorMessage: String?
+
+    init() {
         let authRequest = AuthenticationRequest(
             jobType: .documentVerification,
             enrollment: false,
-            jobId: nil,
-            userId: UUID().uuidString
+            userId: generateUserId()
         )
-
-        SmileID.api.authenticate(request: authRequest)
+        subscriber = SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in
                 let productRequest = ProductsConfigRequest(
                     partnerId: SmileID.config.partnerId,
@@ -24,19 +24,24 @@ class CountryListViewModel: ObservableObject {
                 )
                 return SmileID.api.getValidDocuments(request: productRequest)
             }
-            .receive(on: RunLoop.main)
             .sink(
                 receiveCompletion: { completion in
-                    self.isLoading = false
                     switch completion {
                     case .failure(let error):
-                        print(error.localizedDescription)
+                        DispatchQueue.main.async {
+                            self.errorMessage = error.localizedDescription
+                        }
                     default:
                         break
                     }
                 },
-                receiveValue: { self.validDocuments = $0.validDocuments }
+                receiveValue: { response in
+                    DispatchQueue.main.async {
+                        self.idTypes = response.validDocuments
+                    }
+                }
             )
-            .store(in: &subscribers)
     }
+
+
 }

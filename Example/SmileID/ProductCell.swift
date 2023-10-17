@@ -2,32 +2,44 @@ import SwiftUI
 import SmileID
 
 struct ProductCell: View {
-    let productImage: String
-    let productName: String
+    let image: String
+    let name: String
+    let content: any View
+    @State private var isPresented: Bool = false
 
-    var body: some View {
-        VStack(spacing: 24) {
-            Image(productImage)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 48)
-            Text(productName)
-                .multilineTextAlignment(.center)
-                .font(SmileID.theme.header4)
-                .foregroundColor(offWhite)
+    init(image: String, name: String, content: any View) {
+        self.image = image
+        self.name = name
+        self.content = content
+    }
+
+    public var body: some View {
+        Button(action: { isPresented = true }) {
+            VStack(spacing: 24) {
+                Image(image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 48)
+                Text(name)
+                    .multilineTextAlignment(.center)
+                    .font(SmileID.theme.header4)
+                    .foregroundColor(offWhite)
+            }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(SmileID.theme.accent)
+                .cornerRadius(8)
+                .sheet(isPresented: $isPresented, content: { AnyView(content) })
         }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(SmileID.theme.accent)
-            .cornerRadius(8)
     }
 }
 
 struct ProductCell_Previews: PreviewProvider {
     static var previews: some View {
         ProductCell(
-            productImage: "userauth",
-            productName: "SmartSelfie™ \nAuthentication"
+            image: "userauth",
+            name: "SmartSelfie™ Authentication",
+            content: Text("Hello")
         )
     }
 }
