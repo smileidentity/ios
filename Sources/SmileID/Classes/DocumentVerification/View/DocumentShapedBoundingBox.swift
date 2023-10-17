@@ -3,15 +3,16 @@ import SwiftUI
 struct DocumentShapedBoundingBox: View {
     let aspectRatio: Double
     let borderColor: Color
+    let cornerRadius = RoundedRectangle(cornerRadius: 16)
 
     var body: some View {
         ZStack {
-            Rectangle().foregroundColor(Color.black.opacity(0.5))
-            Rectangle()
+            Rectangle().foregroundColor(Color.black.opacity(0.7))
+            cornerRadius
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .aspectRatio(aspectRatio, contentMode: .fit)
                 .blendMode(.destinationOut)
-                .overlay(RoundedRectangle(cornerRadius: 4).stroke(borderColor, lineWidth: 4))
+                .overlay(cornerRadius.stroke(borderColor, lineWidth: 4))
                 .padding(32)
         }
     }
