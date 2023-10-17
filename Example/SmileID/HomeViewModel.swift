@@ -20,8 +20,8 @@ class HomeViewModel: ObservableObject,
 
     @objc func didError(error: Error) {
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
-        toastMessage = error.localizedDescription
         showToast = true
+        toastMessage = error.localizedDescription
     }
 
     func didSucceed(
@@ -29,17 +29,30 @@ class HomeViewModel: ObservableObject,
         livenessImages: [URL],
         jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
     ) {
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
-        returnedUserID = jobStatusResponse.result?.partnerParams.userId ?? ""
-        UIPasteboard.general.string = returnedUserID
         showToast = true
-        if jobStatusResponse.jobSuccess {
-            toastMessage = """
-                           SmartSelfie Enrollment completed successfully. User ID has been copied to
-                            the clipboard
-                           """
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        let partnerParams = jobStatusResponse.result?.partnerParams
+        if partnerParams?.jobType == .smartSelfieEnrollment {
+            returnedUserID = partnerParams?.userId
+            UIPasteboard.general.string = returnedUserID
+            toastMessage = jobResultMessageBuilder(
+                jobName: "SmartSelfie Enrollment",
+                jobComplete: jobStatusResponse.jobComplete,
+                jobSuccess: jobStatusResponse.jobSuccess,
+                code: jobStatusResponse.code,
+                resultCode: jobStatusResponse.result?.resultCode,
+                resultText: jobStatusResponse.result?.resultText,
+                suffix: "The User ID has been copied to your clipboard"
+            )
         } else {
-            toastMessage = "Job submitted successfully, results processing"
+            toastMessage = jobResultMessageBuilder(
+                jobName: "SmartSelfie Authentication",
+                jobComplete: jobStatusResponse.jobComplete,
+                jobSuccess: jobStatusResponse.jobSuccess,
+                code: jobStatusResponse.code,
+                resultCode: jobStatusResponse.result?.resultCode,
+                resultText: jobStatusResponse.result?.resultText
+            )
         }
     }
 
@@ -51,8 +64,14 @@ class HomeViewModel: ObservableObject,
     ) {
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         showToast = true
-        toastMessage = "Document Verification submitted successfully, results processing"
-        print("Document Verification jobStatusResponse: \(jobStatusResponse)")
+        toastMessage = jobResultMessageBuilder(
+            jobName: "Document Verification",
+            jobComplete: jobStatusResponse.jobComplete,
+            jobSuccess: jobStatusResponse.jobSuccess,
+            code: jobStatusResponse.code,
+            resultCode: jobStatusResponse.result?.resultCode,
+            resultText: jobStatusResponse.result?.resultText
+        )
     }
 
     func didSucceed(
@@ -63,8 +82,14 @@ class HomeViewModel: ObservableObject,
     ) {
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         showToast = true
-        toastMessage = "Enhanced Document Verification submitted successfully, results processing"
-        print("Document Verification jobStatusResponse: \(jobStatusResponse)")
+        toastMessage = jobResultMessageBuilder(
+            jobName: "Enhanced Document Verification",
+            jobComplete: jobStatusResponse.jobComplete,
+            jobSuccess: jobStatusResponse.jobSuccess,
+            code: jobStatusResponse.code,
+            resultCode: jobStatusResponse.result?.resultCode,
+            resultText: jobStatusResponse.result?.resultText
+        )
     }
 
     func subscribeToAuthCompletion() {
