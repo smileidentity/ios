@@ -62,11 +62,5 @@ public struct SmartSelfieInstructionsView: View {
             )
                 .padding(.top, 50)
         }
-            .overlay(
-                NavigationBar {
-                    viewModel.handleClose()
-                    router.dismiss()
-                }
-            )
     }
 }
