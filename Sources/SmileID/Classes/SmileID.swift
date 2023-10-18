@@ -22,7 +22,7 @@ public class SmileID {
 
     public private(set) static var config: Config!
     public private(set) static var useSandbox = true
-    public private(set) static var callbackUrl: URL?
+    public private(set) static var callbackUrl: String = ""
     internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
@@ -69,7 +69,7 @@ public class SmileID {
     /// from the partner portal will be used.
     /// - Parameter url: A valid URL pointing to your server
     public class func setCallbackUrl(url: URL?) {
-        SmileID.callbackUrl = url
+        SmileID.callbackUrl = url?.absoluteString ?? ""
     }
 
     /// Apply theme

@@ -3,7 +3,7 @@ import Foundation
 public struct PrepUploadRequest: Codable {
     var partnerParams: PartnerParams
     // Callback URL *must* be defined either within your Partner Portal or here
-    var callbackUrl: String? = SmileID.callbackUrl?.absoluteString ?? ""
+    var callbackUrl: String? = SmileID.callbackUrl
     var partnerId = SmileID.config.partnerId
     var sourceSdk = "ios"
     var sourceSdkVersion = SmileID.version
