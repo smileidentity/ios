@@ -7,21 +7,20 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
     @EnvironmentObject var router: Router<NavigationDestination>
     @ObservedObject var viewModel: SelfieCaptureViewModel
     private var delegate: SmartSelfieResultDelegate?
+    private var originalBrightness: CGFloat
     var camera: CameraView?
     let arView: ARView?
     let faceOverlay: FaceOverlayView
-    let showBackButton: Bool
 
     init(
         viewModel: SelfieCaptureViewModel,
-        showBackButton: Bool = true,
         delegate: SmartSelfieResultDelegate?
     ) {
         self.delegate = delegate
         self.viewModel = viewModel
-        self.showBackButton = showBackButton
         faceOverlay = FaceOverlayView(model: viewModel)
         viewModel.smartSelfieResultDelegate = delegate
+        originalBrightness = UIScreen.main.brightness
         UIScreen.main.brightness = 1
         if ARFaceTrackingConfiguration.isSupported {
             arView = ARView()
@@ -86,20 +85,10 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                     Color.clear
                 }
             }
-                .overlay(ZStack {
-                    if showBackButton {
-                        NavigationBar {
-                            viewModel.resetState()
-                            viewModel.pauseCameraSession()
-                            router.pop()
-                        }
-                    }
-                })
         }
-            .edgesIgnoringSafeArea(.all)
-            .navigationBarBackButtonHidden(true)
             .background(SmileID.theme.backgroundMain)
             .onDisappear {
+                UIScreen.main.brightness = originalBrightness
                 viewModel.cameraManager.pauseSession()
             }
     }
