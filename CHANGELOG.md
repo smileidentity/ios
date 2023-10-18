@@ -1,9 +1,9 @@
-
-## 10.0.0-beta10 (unreleased)
+## 10.0.0-beta10
 
 ### Added
 - Enhanced Document Verification
 - New JobStatusResponses that depend on the job type
+- Set the callback URL by calling `SmileID.setCallbackURL(_:)`
 
 ### Changed
 - Renamed `DocumentCaptureResultDelegate` -> `DocumentVerificationResultDelegate`
@@ -14,8 +14,6 @@
 ### Fixed
 - Document Verification UI bugs
 - Fixed a bug where Services models would have incorrect or duplicate data
-
-### Removed
 
 ## 10.0.0-beta09
 

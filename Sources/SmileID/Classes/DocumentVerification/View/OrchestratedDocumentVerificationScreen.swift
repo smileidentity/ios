@@ -167,7 +167,6 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     // imageCaptureDelegate is just for image capture, not job result
                     imageCaptureDelegate: viewModel
                 ),
-                showBackButton: false,
                 delegate: nil
             )
         case .processing(let state):

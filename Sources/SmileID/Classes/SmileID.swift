@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.0.0-beta09"
+    public static let version = "10.0.0-beta10"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -22,6 +22,7 @@ public class SmileID {
 
     public private(set) static var config: Config!
     public private(set) static var useSandbox = true
+    public private(set) static var callbackUrl: String = ""
     internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
@@ -62,6 +63,13 @@ public class SmileID {
     /// - Parameter useSandbox: A boolean to enable the sandbox environment or not
     public class func setEnvironment(useSandbox: Bool) {
         SmileID.useSandbox = useSandbox
+    }
+
+    /// Set the callback URL for all submitted jobs. If no value is set, the default callback URL
+    /// from the partner portal will be used.
+    /// - Parameter url: A valid URL pointing to your server
+    public class func setCallbackUrl(url: URL?) {
+        SmileID.callbackUrl = url?.absoluteString ?? ""
     }
 
     /// Apply theme
