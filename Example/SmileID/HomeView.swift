@@ -1,7 +1,6 @@
 import SmileID
 import SwiftUI
 
-@available(iOS 14.0, *)
 struct HomeView: View {
     let partner = SmileID.configuration.partnerId
     let version = SmileID.version

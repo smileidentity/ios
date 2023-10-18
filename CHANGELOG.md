@@ -3,6 +3,7 @@
 ### Added
 - Enhanced Document Verification
 - New JobStatusResponses that depend on the job type
+- Set the callback URL by calling `SmileID.setCallbackURL(_:)`
 
 ### Changed
 - Renamed `DocumentCaptureResultDelegate` -> `DocumentVerificationResultDelegate`

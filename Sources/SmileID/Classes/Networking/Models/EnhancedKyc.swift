@@ -28,7 +28,7 @@ public struct EnhancedKycRequest: Codable {
         dob: String? = nil,
         phoneNumber: String? = nil,
         bankCode: String? = nil,
-        callbackUrl: String?,
+        callbackUrl: String? = SmileID.callbackUrl?.absoluteString ?? "",
         partnerParams: PartnerParams,
         sourceSdk: String = "ios",
         sourceSdkVersion: String = SmileID.version,
