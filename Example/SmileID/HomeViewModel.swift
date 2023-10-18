@@ -14,10 +14,6 @@ class HomeViewModel: ObservableObject,
 
     var returnedUserID: String?
 
-    init() {
-        subscribeToAuthCompletion()
-    }
-
     @objc func didError(error: Error) {
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         showToast = true
@@ -90,47 +86,5 @@ class HomeViewModel: ObservableObject,
             resultCode: jobStatusResponse.result?.resultCode,
             resultText: jobStatusResponse.result?.resultText
         )
-    }
-
-    func subscribeToAuthCompletion() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleAuthCompletion),
-            name: Notification.Name(rawValue: "SelfieCaptureComplete"),
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleAuthCompletion),
-            name: Notification.Name(rawValue: "SelfieCaptureError"),
-            object: nil
-        )
-    }
-
-    @objc func handleAuthCompletion(_ notification: NSNotification) {
-        if let dict = notification.userInfo as? NSDictionary {
-            showToast = true
-            if let error = dict["Error"] as? Error {
-                toastMessage = error.localizedDescription
-                return
-            }
-            if let response = dict["Response"] as? JobStatusResponse {
-                if response.jobSuccess == true {
-                    toastMessage = "Smart Selfie Authentication completed successfully"
-                    return
-                }
-
-                if response.jobComplete == false {
-                    toastMessage = "Job submitted successfully, results processing"
-                    return
-                }
-            } else {
-                toastMessage = "Job submitted successfully, results processing"
-                return
-            }
-        } else {
-            toastMessage = "Job submitted successfully, results processing"
-            return
-        }
     }
 }

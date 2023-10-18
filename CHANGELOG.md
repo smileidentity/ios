@@ -1,3 +1,14 @@
+## 10.0.0-beta11 (unreleased)
+
+### Added
+- BVN OTP API calls and models
+
+### Changed
+
+### Fixed
+
+### Removed
+
 ## 10.0.0-beta10
 
 ### Added
