@@ -43,8 +43,24 @@ struct HomeView: View {
                             image: "document",
                             name: "Enhanced Document Verification",
                             content: EnhancedDocumentVerificationWithSelector(delegate: viewModel)
+                        ),
+                        ProductCell(
+                            image: "document",
+                            name: "BVN Consent",
+                            content: SmileID.bvnConsentScreen(
+                                partnerIcon: UIImage(systemName: "person.fill")!,
+                                partnerName: "Smile ID",
+                                partnerPrivacyPolicy: URL(string: "https://usesmileid.com/privacy")!,
+                                onConsentGranted: {
+                                    print("Consent granted")
+                                },
+                                onConsentDenied: {
+                                    print("Consent declined")
+                                }
+                            )
                         )
-                    ].map { AnyView($0) }
+                    ]
+                        .map { AnyView($0) }
                 )
 
                 Spacer()

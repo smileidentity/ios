@@ -272,4 +272,40 @@ public class SmileID {
             onResult: delegate
         ).environmentObject(router)
     }
+
+
+    /// Perform BVN verification: Verify the BVN information of your user and confirm that the ID
+    /// actually belongs to the user by requesting an OTP.
+    ///
+    /// [Docs](https://docs.usesmileid.com/integration-options/mobile/android/consent-screen#bvn-consent-screen)
+    ///
+    /// - Parameters:
+    ///  - partnerIcon: Your own icon to display on the BVN Consent screen (i.e. company logo)
+    /// - partnerName: Your own name to display on the BVN Consent screen (i.e. company name)
+    /// - partnerPrivacyPolicy: A link to your own privacy policy to display
+    /// - onConsentGranted: Callback to be invoked when the user denies consent to BVN verification.
+    /// - onConsentDenied: Callback to be invoked when the BVN verification job is complete
+    /// - userId: The user ID to associate with the BVN verification. Most often, this will
+    ///  correspond to a unique User ID within your system. If not provided, a random user ID will
+    ///  be generated.
+    /// - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
+    public class func bvnConsentScreen(
+        partnerIcon: UIImage,
+        partnerName: String,
+        partnerPrivacyPolicy: URL,
+        onConsentGranted: @escaping () -> Void,
+        onConsentDenied: @escaping () -> Void,
+        userId: String = generateUserId(),
+        showAttribution: Bool = true
+    ) -> some View {
+        OrchestratedBvnConsentScreen(
+            userId: userId,
+            partnerIcon: partnerIcon,
+            partnerName: partnerName,
+            partnerPrivacyPolicy: partnerPrivacyPolicy,
+            onConsentGranted: onConsentGranted,
+            onConsentDenied: onConsentDenied,
+            showAttribution: showAttribution
+        )
+    }
 }
