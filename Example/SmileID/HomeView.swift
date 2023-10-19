@@ -5,6 +5,7 @@ struct HomeView: View {
     let partner = SmileID.configuration.partnerId
     let version = SmileID.version
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
+    @State private var smartSelfieEnrollmentUserId: String = ""
     @ObservedObject var viewModel = HomeViewModel()
 
     var body: some View {
@@ -20,17 +21,30 @@ struct HomeView: View {
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Enrollment",
+                            onClick: { smartSelfieEnrollmentUserId = generateUserId() },
                             content: SmileID.smartSelfieEnrollmentScreen(
-                                userId: generateUserId(),
+                                userId: smartSelfieEnrollmentUserId,
                                 allowAgentMode: true,
-                                delegate: viewModel
+                                delegate: SmartSelfieEnrollmentDelegate(
+                                    userId: smartSelfieEnrollmentUserId,
+                                    onEnrollmentSuccess: {
+                                        userId, selfieFile, livenessImages, jobStatusResponse in
+                                        viewModel.onSmartSelfieEnrollment(
+                                            userId: userId,
+                                            selfieImage: selfieFile,
+                                            livenessImages: livenessImages,
+                                            jobStatusResponse: jobStatusResponse
+                                        )
+                                    },
+                                    onError: viewModel.didError
+                                )
                             )
                         ),
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Authentication",
                             content: SmartSelfieAuthWithUserIdEntry(
-                                initialUserId: viewModel.returnedUserID,
+                                initialUserId: smartSelfieEnrollmentUserId,
                                 delegate: viewModel
                             )
                         ),
@@ -67,8 +81,35 @@ struct HomeView: View {
     }
 }
 
+// We need to define a separate proxy delegate because it's the same protocol for both Enrollment
+// and Authentication. However, since the result is still processing, the result parameter is not
+// yet populated (which is what contains the jobType). On Enroll, we need to perform a different
+// action (namely, save userId to clipboard)
+struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
+    let userId: String
+    let onEnrollmentSuccess: (
+        _ userId: String,
+        _ selfieFile: URL,
+        _ livenessImages: [URL],
+        _ jobStatusResponse: SmartSelfieJobStatusResponse
+    ) -> Void
+    let onError: (Error) -> Void
+
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: SmartSelfieJobStatusResponse
+    ) {
+        onEnrollmentSuccess(userId, selfieImage, livenessImages, jobStatusResponse)
+    }
+
+    func didError(error: Error) {
+        onError(error)
+    }
+}
+
 private struct SmartSelfieAuthWithUserIdEntry: View {
-    let initialUserId: String?
+    let initialUserId: String
     let delegate: SmartSelfieResultDelegate
     @State private var userId: String?
 
