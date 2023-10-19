@@ -17,11 +17,11 @@ struct ProductCell: View {
         Button(
             action: { isPresented = true },
             label: {
-                VStack(spacing: 24) {
+                VStack(spacing: 16) {
                     Image(image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 48)
+                        .frame(width: 42)
                     Text(name)
                         .multilineTextAlignment(.center)
                         .font(SmileID.theme.header4)
