@@ -34,7 +34,7 @@ struct DocumentCaptureInstructionsScreen: View {
 
                     VStack(alignment: .leading, spacing: 32) {
                         HStack(spacing: 16) {
-                            Image(uiImage: SmileIDResourcesHelper.image(Constants.ImageName.light)!)
+                            Image(uiImage: SmileIDResourcesHelper.Light)
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(SmileIDResourcesHelper.localizedString(
                                     for: "Instructions.GoodLight"
@@ -52,9 +52,7 @@ struct DocumentCaptureInstructionsScreen: View {
                             }
                         }
                         HStack(spacing: 16) {
-                            Image(uiImage: SmileIDResourcesHelper.image(
-                                Constants.ImageName.clearImage
-                            )!)
+                            Image(uiImage: SmileIDResourcesHelper.ClearImage)
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(SmileIDResourcesHelper.localizedString(
                                     for: "Instructions.ClearImage"
