@@ -158,7 +158,6 @@ struct ConsentDeniedScreen: View {
                 .font(.system(size: 100))
                 .padding()
                 .padding(.bottom, 32)
-            Text(LocalizedStringKey(""))
             Text(SmileIDResourcesHelper.localizedString(for: "Consent.Denied"))
                 .font(SmileID.theme.header1)
                 .foregroundColor(SmileID.theme.error)
