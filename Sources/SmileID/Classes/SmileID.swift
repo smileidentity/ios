@@ -21,7 +21,7 @@ public class SmileID {
     private init() {}
 
     public private(set) static var config: Config!
-    public private(set) static var useSandbox = true
+    public private(set) static var useSandbox = false
     public private(set) static var callbackUrl: String = ""
     internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
@@ -51,7 +51,7 @@ public class SmileID {
     public class func initialize(
         apiKey: String? = nil,
         config: Config = getConfig(),
-        useSandbox: Bool = true
+        useSandbox: Bool = false
     ) {
         self.config = config
         self.useSandbox = useSandbox
