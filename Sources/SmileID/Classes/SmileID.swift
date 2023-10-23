@@ -51,7 +51,7 @@ public class SmileID {
     public class func initialize(
         apiKey: String? = nil,
         config: Config = getConfig(),
-        useSandbox: Bool = true
+        useSandbox: Bool = false
     ) {
         self.config = config
         self.useSandbox = useSandbox
