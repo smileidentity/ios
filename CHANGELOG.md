@@ -1,6 +1,7 @@
 ## 10.0.0-beta11 (unreleased)
 
 ### Added
+- Consent Screen
 - BVN OTP API calls and models
 
 ### Changed
