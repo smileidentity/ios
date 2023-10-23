@@ -154,7 +154,6 @@ struct ConsentDeniedScreen: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            // TODO: Replace image
             Image(uiImage: SmileIDResourcesHelper.ConsentDenied)
                 .font(.system(size: 100))
                 .padding()
