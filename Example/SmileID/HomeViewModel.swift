@@ -15,7 +15,7 @@ class HomeViewModel: ObservableObject,
     var returnedUserID: String?
 
     @objc func didError(error: Error) {
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        dismissModal()
         showToast = true
         toastMessage = error.localizedDescription
     }
@@ -25,8 +25,8 @@ class HomeViewModel: ObservableObject,
         livenessImages: [URL],
         jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
     ) {
+        dismissModal()
         showToast = true
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         let partnerParams = jobStatusResponse.result?.partnerParams
         if partnerParams?.jobType == .smartSelfieEnrollment {
             returnedUserID = partnerParams?.userId
@@ -58,7 +58,7 @@ class HomeViewModel: ObservableObject,
         documentBackImage: URL?,
         jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
     ) {
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Document Verification",
@@ -76,7 +76,7 @@ class HomeViewModel: ObservableObject,
         documentBackImage: URL?,
         jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
     ) {
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Enhanced Document Verification",
@@ -86,5 +86,21 @@ class HomeViewModel: ObservableObject,
             resultCode: jobStatusResponse.result?.resultCode,
             resultText: jobStatusResponse.result?.resultText
         )
+    }
+
+    func onConsentGranted() {
+        dismissModal()
+        showToast = true
+        toastMessage = "Consent Granted"
+    }
+
+    func onConsentDenied() {
+        dismissModal()
+        showToast = true
+        toastMessage = "Consent Denied"
+    }
+
+    private func dismissModal() {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
     }
 }
