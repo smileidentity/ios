@@ -69,6 +69,10 @@ public class SmileIDResourcesHelper {
     public static var ArrowLeft = SmileIDResourcesHelper.image("ArrowLeft")!
     public static var Capture = SmileIDResourcesHelper.image("Capture")!
     public static var ConsentDenied = SmileIDResourcesHelper.image("ConsentDenied")!
+    public static var Biometric = SmileIDResourcesHelper.image("Biometric")!
+    public static var ConsentContactDetails = SmileIDResourcesHelper.image("ConsentContactDetails")!
+    public static var ConsentDocumentInfo = SmileIDResourcesHelper.image("ConsentDocumentInfo")!
+    public static var ConsentPersonalInfo = SmileIDResourcesHelper.image("ConsentPersonalInfo")!
 
     /// Size of font.
     public static let pointSize: CGFloat = 16
