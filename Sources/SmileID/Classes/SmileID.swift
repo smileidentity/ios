@@ -272,24 +272,4 @@ public class SmileID {
             onResult: delegate
         ).environmentObject(router)
     }
-
-    public class func consentScreen(
-        partnerIcon: UIImage,
-        partnerName: String,
-        productName: String,
-        partnerPrivacyPolicy: URL,
-        onConsentGranted: @escaping () -> Void,
-        onConsentDenied: @escaping () -> Void,
-        showAttribution: Bool = true
-    ) -> some View {
-        OrchestratedConsentScreen(
-            partnerIcon: partnerIcon,
-            partnerName: partnerName,
-            productName: productName,
-            partnerPrivacyPolicy: partnerPrivacyPolicy,
-            onConsentGranted: onConsentGranted,
-            onConsentDenied: onConsentDenied,
-            showAttribution: showAttribution
-        )
-    }
 }
