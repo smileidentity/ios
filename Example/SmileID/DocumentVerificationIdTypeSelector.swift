@@ -39,6 +39,7 @@ struct DocumentVerificationIdTypeSelector: View {
 
                 if let idTypesForCountry = idTypesForCountry {
                     IdTypeSelector(
+                        allowOthersAsDefault: jobType == .documentVerification,
                         idTypesForCountry: idTypesForCountry,
                         onIdTypeSelected: { idType in
                             onIdTypeSelected(
@@ -125,6 +126,7 @@ private struct CountrySelector: View {
 private let othersIdType = IdType(code: "", example: [], hasBack: true, name: "Others")
 
 private struct IdTypeSelector: View {
+    let allowOthersAsDefault: Bool
     let idTypesForCountry: [IdType]
     let onIdTypeSelected: (IdType) -> Void
 
@@ -162,6 +164,7 @@ private struct IdTypeSelector: View {
                         .frame(maxWidth: .infinity)
                 }
             )
+                .disabled(selectedIdType == nil && !allowOthersAsDefault)
                 .background(SmileID.theme.accent)
                 .foregroundColor(SmileID.theme.onDark)
                 .cornerRadius(60)
@@ -175,6 +178,7 @@ private struct IdTypeSelector: View {
 struct IdTypeSelector_Previews: PreviewProvider {
     static var previews: some View {
         IdTypeSelector(
+            allowOthersAsDefault: true,
             idTypesForCountry: [
                 IdType(code: "id1", example: [], hasBack: true, name: "ID 1"),
                 IdType(code: "id2", example: [], hasBack: false, name: "ID 2"),

@@ -57,3 +57,17 @@
 "Document.Error.Header" = "Your document verification failed to process";
 "Document.Directive.Default" = "Please fill the frame with your ID. Ensure all corners are visible and there is no glare";
 "Document.Directive.Capturing" = "Capturing…";
+
+"Consent.Denied" = "Consent Denied";
+"Consent.DeniedTitle" = "We cannot verify without your consent";
+"Consent.DeniedDescription" = "Do you wish to go back and correct that?";
+"Consent.GoBack" = "Yes, go back";
+"Consent.CancelVerification" = "No, cancel verification";
+"Consent.Allow" = "Allow";
+"Consent.Cancel" = "Cancel";
+"Consent.PersonalDetailsTitle" = "Process your personal details";
+"Consent.PersonalDetailsSubtitle" = "Partner can provide your names, DoB, and gender";
+"Consent.ContactInfoTitle" = "Process your contact information";
+"Consent.ContactInfoSubtitle" = "Partner can process your phone numbers and address";
+"Consent.DocumentInfoTitle" = "Process your document information";
+"Consent.DocumentInfoSubtitle" = "Partner can process your photo, ID expiration date, country of issuance and document number";

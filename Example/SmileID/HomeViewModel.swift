@@ -13,6 +13,12 @@ class HomeViewModel: ObservableObject,
     @Published var toastMessage = ""
     @Published var showToast = false
 
+    @objc func didError(error: Error) {
+        dismissModal()
+        showToast = true
+        toastMessage = error.localizedDescription
+    }
+
     // Called for SmartSelfie Enrollment by a proxy delegate in HomeView
     func onSmartSelfieEnrollment(
         userId: String,
@@ -20,8 +26,8 @@ class HomeViewModel: ObservableObject,
         livenessImages: [URL],
         jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
     ) {
+        dismissModal()
         showToast = true
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         UIPasteboard.general.string = userId
         toastMessage = jobResultMessageBuilder(
             jobName: "SmartSelfie Enrollment",
@@ -40,8 +46,8 @@ class HomeViewModel: ObservableObject,
         livenessImages: [URL],
         jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
     ) {
+        dismissModal()
         showToast = true
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
         toastMessage = jobResultMessageBuilder(
             jobName: "SmartSelfie Authentication",
             jobComplete: jobStatusResponse.jobComplete,
@@ -58,7 +64,7 @@ class HomeViewModel: ObservableObject,
         documentBackImage: URL?,
         jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
     ) {
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Document Verification",
@@ -76,7 +82,7 @@ class HomeViewModel: ObservableObject,
         documentBackImage: URL?,
         jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
     ) {
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Enhanced Document Verification",
@@ -88,9 +94,19 @@ class HomeViewModel: ObservableObject,
         )
     }
 
-    @objc func didError(error: Error) {
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+    func onConsentGranted() {
+        dismissModal()
         showToast = true
-        toastMessage = error.localizedDescription
+        toastMessage = "Consent Granted"
+    }
+
+    func onConsentDenied() {
+        dismissModal()
+        showToast = true
+        toastMessage = "Consent Denied"
+    }
+
+    private func dismissModal() {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
     }
 }

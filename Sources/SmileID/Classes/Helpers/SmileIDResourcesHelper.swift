@@ -38,17 +38,13 @@ public class SmileIDResourcesHelper {
     }
 
     /// Get localized strings
-    public static func localizedString(for key: String?) -> String {
-
-        if let localizedKey = key {
-            return NSLocalizedString(
-                localizedKey,
-                tableName: SmileID.localizableStrings?.tablename,
-                bundle: SmileID.localizableStrings?.bundle ?? bundle,
-                comment: ""
-            )
-        }
-        return "" // we'll return empty I think this will be easier to notice
+    public static func localizedString(for key: String) -> String {
+        NSLocalizedString(
+            key,
+            tableName: SmileID.localizableStrings?.tablename,
+            bundle: SmileID.localizableStrings?.bundle ?? bundle,
+            comment: ""
+        )
     }
 
     /// Get the image by the file name.
@@ -71,7 +67,12 @@ public class SmileIDResourcesHelper {
     public static var CheckBold = SmileIDResourcesHelper.image("CheckBold")!
     public static var Close = SmileIDResourcesHelper.image("Close")!
     public static var ArrowLeft = SmileIDResourcesHelper.image("ArrowLeft")!
-    public static var Capture = SmileIDResourcesHelper.image(Constants.ImageName.capture)!
+    public static var Capture = SmileIDResourcesHelper.image("Capture")!
+    public static var ConsentDenied = SmileIDResourcesHelper.image("ConsentDenied")!
+    public static var Biometric = SmileIDResourcesHelper.image("Biometric")!
+    public static var ConsentContactDetails = SmileIDResourcesHelper.image("ConsentContactDetails")!
+    public static var ConsentDocumentInfo = SmileIDResourcesHelper.image("ConsentDocumentInfo")!
+    public static var ConsentPersonalInfo = SmileIDResourcesHelper.image("ConsentPersonalInfo")!
 
     /// Size of font.
     public static let pointSize: CGFloat = 16

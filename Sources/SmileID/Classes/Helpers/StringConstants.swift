@@ -5,8 +5,5 @@ struct Constants {
         static let face = "Face"
         static let clearImage = "ClearImage"
         static let light = "Light"
-        static let instructionsHeader = "InstructionsHeaderIcon"
-        static let smileEmblem = "SmileEmblem"
-        static let capture = "Capture"
     }
 }

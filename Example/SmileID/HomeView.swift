@@ -192,16 +192,27 @@ private struct MyVerticalGrid: View {
     let items: [AnyView]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            ForEach(0..<items.count / maxColumns + 1) { rowIndex in
-                HStack(spacing: 24) {
-                    let numRemainingItems = items.count - rowIndex * maxColumns
-                    let numColumns = min(numRemainingItems, maxColumns)
-                    ForEach(0..<numColumns) { columnIndex in
-                        items[rowIndex * numColumns + columnIndex]
+        GeometryReader { geo in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    let numRows = (items.count + maxColumns - 1) / maxColumns
+                    ForEach(0..<numRows) { rowIndex in
+                        HStack(spacing: 16) {
+                            ForEach(0..<maxColumns) { columnIndex in
+                                let itemIndex = rowIndex * maxColumns + columnIndex
+                                let width = geo.size.width / CGFloat(maxColumns)
+                                if itemIndex < items.count {
+                                    // Use the item at the calculated index
+                                    items[itemIndex].frame(width: width)
+                                } else {
+                                    Spacer().frame(width: width)
+                                }
+                            }
+                        }
                     }
                 }
             }
+                .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 }
