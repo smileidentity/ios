@@ -20,6 +20,7 @@ struct SmileTextField: View {
             .font(SmileID.theme.button)
             .padding()
             .background(RoundedRectangle(cornerRadius: 10).fill(backgroundColor))
+            .textFieldStyle(.roundedBorder)
             .foregroundColor(textColor)
             .padding()
     }
