@@ -4,18 +4,28 @@ import SmileID
 struct ProductCell: View {
     let image: String
     let name: String
+    let onClick: (() -> Void)?
     let content: any View
     @State private var isPresented: Bool = false
 
-    init(image: String, name: String, content: any View) {
+    init(
+        image: String,
+        name: String,
+        onClick: (() -> Void)? = nil,
+        content: any View
+    ) {
         self.image = image
         self.name = name
+        self.onClick = onClick
         self.content = content
     }
 
     public var body: some View {
         Button(
-            action: { isPresented = true },
+            action: {
+                onClick?()
+                isPresented = true
+            },
             label: {
                 VStack(spacing: 16) {
                     Image(image)

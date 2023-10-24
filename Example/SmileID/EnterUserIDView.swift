@@ -3,16 +3,14 @@ import SmileID
 
 struct EnterUserIDView: View {
     let onContinue: (_ userId: String) -> Void
-    @State private var userId: String = ""
+    @State private var userId: String
 
     init(
-        initialUserId: String? = nil,
+        initialUserId: String = "",
         onContinue: @escaping (String) -> Void
     ) {
         self.onContinue = onContinue
-        if let initialUserId = initialUserId {
-            userId = initialUserId
-        }
+        userId = initialUserId
     }
 
     var body: some View {

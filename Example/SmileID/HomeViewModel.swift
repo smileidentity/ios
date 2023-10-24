@@ -8,11 +8,10 @@ class HomeViewModel: ObservableObject,
     DocumentVerificationResultDelegate,
     EnhancedDocumentVerificationResultDelegate {
 
+    // MARK: - UI Properties
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
-
-    var returnedUserID: String?
 
     @objc func didError(error: Error) {
         dismissModal()
@@ -20,6 +19,28 @@ class HomeViewModel: ObservableObject,
         toastMessage = error.localizedDescription
     }
 
+    // Called for SmartSelfie Enrollment by a proxy delegate in HomeView
+    func onSmartSelfieEnrollment(
+        userId: String,
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
+    ) {
+        dismissModal()
+        showToast = true
+        UIPasteboard.general.string = userId
+        toastMessage = jobResultMessageBuilder(
+            jobName: "SmartSelfie Enrollment",
+            jobComplete: jobStatusResponse.jobComplete,
+            jobSuccess: jobStatusResponse.jobSuccess,
+            code: jobStatusResponse.code,
+            resultCode: jobStatusResponse.result?.resultCode,
+            resultText: jobStatusResponse.result?.resultText,
+            suffix: "The User ID has been copied to your clipboard"
+        )
+    }
+
+    // Called only for SmartSelfie Authentication
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
@@ -27,29 +48,14 @@ class HomeViewModel: ObservableObject,
     ) {
         dismissModal()
         showToast = true
-        let partnerParams = jobStatusResponse.result?.partnerParams
-        if partnerParams?.jobType == .smartSelfieEnrollment {
-            returnedUserID = partnerParams?.userId
-            UIPasteboard.general.string = returnedUserID
-            toastMessage = jobResultMessageBuilder(
-                jobName: "SmartSelfie Enrollment",
-                jobComplete: jobStatusResponse.jobComplete,
-                jobSuccess: jobStatusResponse.jobSuccess,
-                code: jobStatusResponse.code,
-                resultCode: jobStatusResponse.result?.resultCode,
-                resultText: jobStatusResponse.result?.resultText,
-                suffix: "The User ID has been copied to your clipboard"
-            )
-        } else {
-            toastMessage = jobResultMessageBuilder(
-                jobName: "SmartSelfie Authentication",
-                jobComplete: jobStatusResponse.jobComplete,
-                jobSuccess: jobStatusResponse.jobSuccess,
-                code: jobStatusResponse.code,
-                resultCode: jobStatusResponse.result?.resultCode,
-                resultText: jobStatusResponse.result?.resultText
-            )
-        }
+        toastMessage = jobResultMessageBuilder(
+            jobName: "SmartSelfie Authentication",
+            jobComplete: jobStatusResponse.jobComplete,
+            jobSuccess: jobStatusResponse.jobSuccess,
+            code: jobStatusResponse.code,
+            resultCode: jobStatusResponse.result?.resultCode,
+            resultText: jobStatusResponse.result?.resultText
+        )
     }
 
     func didSucceed(
