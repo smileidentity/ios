@@ -31,7 +31,7 @@ func jobResultMessageBuilder(
         message += "still pending"
     }
     if let suffix = suffix {
-        message += " \(suffix)"
+        message += ". \(suffix)"
     }
     return message
 }
