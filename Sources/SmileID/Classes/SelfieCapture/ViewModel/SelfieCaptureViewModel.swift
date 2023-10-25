@@ -344,9 +344,9 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
 
         while (livenessImages.count < numberOfLivenessImages) &&
                   ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
-            guard let image = ImageUtils.resizePixelBufferToWidth(
+            guard let image = ImageUtils.resizePixelBufferToHeight(
                 currentBuffer,
-                width: 350,
+                height: 320,
                 exif: currentExif,
                 orientation: orientation
             )
@@ -373,8 +373,9 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
             else {
                 return
             }
-            guard let selfieImage = ImageUtils.resizePixelBufferToWidth(
-                currentBuffer, width: 600,
+            guard let selfieImage = ImageUtils.resizePixelBufferToHeight(
+                currentBuffer,
+                height: 640,
                 exif: currentExif,
                 orientation: orientation
             )

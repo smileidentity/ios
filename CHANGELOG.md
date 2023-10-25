@@ -7,6 +7,7 @@
 
 ### Changed
 - Default to `production` on `SmileID.initialize()`
+- Increased selfie capture resolution to 640px
 
 ### Fixed
 - Fixed missing `IdInfo` initializer
