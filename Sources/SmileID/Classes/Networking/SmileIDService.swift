@@ -31,6 +31,12 @@ public protocol SmileIDServiceable {
     /// Returns supported products and metadata
     func getServices() -> AnyPublisher<ServicesResponse, Error>
 
+    /// Returns the ID types that are enabled for authenticated partner and which of those require
+    /// consent
+    func getProductsConfig(
+        request: ProductsConfigRequest
+    ) -> AnyPublisher<ProductsConfigResponse, Error>
+
     /// Gets supported documents and metadata for Document Verification
     func getValidDocuments(
         request: ProductsConfigRequest
@@ -129,6 +135,12 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
 
     public func getServices() -> AnyPublisher<ServicesResponse, Error> {
         get(to: "services")
+    }
+
+    public func getProductsConfig(
+        request: ProductsConfigRequest
+    ) -> AnyPublisher<ProductsConfigResponse, Error> {
+        post(to: "products_config", with: request)
     }
 
     public func getValidDocuments(

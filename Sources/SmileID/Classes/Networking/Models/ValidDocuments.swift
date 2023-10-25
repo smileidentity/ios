@@ -91,3 +91,29 @@ public struct ProductsConfigRequest: Encodable {
         case signature
     }
 }
+
+/// Country Code to ID Type (e.g. {"ZA": ["NATIONAL_ID_NO_PHOTO"]}
+public typealias IdTypes = [String: [String]]
+public struct ProductsConfigResponse: Decodable {
+    public let consentRequired: IdTypes
+    public let idSelection: IdSelection
+
+    enum CodingKeys: String, CodingKey {
+        case consentRequired = "consentRequired"
+        case idSelection = "idSelection"
+    }
+}
+
+public struct IdSelection: Decodable {
+    public let basicKyc: IdTypes
+    public let biometricKyc: IdTypes
+    public let enhancedKyc: IdTypes
+    public let documentVerification: IdTypes
+
+    enum CodingKeys: String, CodingKey {
+        case basicKyc = "basic_kyc"
+        case biometricKyc = "biometric_kyc"
+        case enhancedKyc = "enhanced_kyc"
+        case documentVerification = "doc_verification"
+    }
+}
