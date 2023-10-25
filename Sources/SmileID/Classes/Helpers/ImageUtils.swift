@@ -80,7 +80,7 @@ class ImageUtils {
             aspectRatio = 1 / aspectRatio
         }
 
-        let newWidth = Int(CGFloat(height) * aspectRatio)
+        let newWidth = Int(CGFloat(height) / aspectRatio)
 
         guard let resizedImage = resizeCGImage(
             cgImage,
