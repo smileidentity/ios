@@ -4,6 +4,8 @@
 - Consent Screen
 - BVN OTP API calls and models
 - Default to `production` on `SmileID.initialize()`
+- `IdInfo` initializer
+- Biometric KYC
 
 ### Changed
 
