@@ -1,13 +1,15 @@
 ## 10.0.0-beta11 (unreleased)
 
 ### Added
+- Biometric KYC
 - Consent Screen
 - BVN OTP API calls and models
-- Default to `production` on `SmileID.initialize()`
 
 ### Changed
+- Default to `production` on `SmileID.initialize()`
 
 ### Fixed
+- Fixed missing `IdInfo` initializer
 
 ### Removed
 

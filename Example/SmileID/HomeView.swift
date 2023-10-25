@@ -27,15 +27,7 @@ struct HomeView: View {
                                 allowAgentMode: true,
                                 delegate: SmartSelfieEnrollmentDelegate(
                                     userId: smartSelfieEnrollmentUserId,
-                                    onEnrollmentSuccess: {
-                                        userId, selfieFile, livenessImages, jobStatusResponse in
-                                        viewModel.onSmartSelfieEnrollment(
-                                            userId: userId,
-                                            selfieImage: selfieFile,
-                                            livenessImages: livenessImages,
-                                            jobStatusResponse: jobStatusResponse
-                                        )
-                                    },
+                                    onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                                     onError: viewModel.didError
                                 )
                             )
@@ -57,6 +49,18 @@ struct HomeView: View {
                             image: "document",
                             name: "Enhanced Document Verification",
                             content: EnhancedDocumentVerificationWithSelector(delegate: viewModel)
+                        ),
+                        ProductCell(
+                            image: "biometric",
+                            name: "Biometric KYC",
+                            content: SmileID.biometricKycScreen(
+                                idInfo: IdInfo(country: "NG", idType: "PASSPORT"),
+                                partnerIcon: UIImage(named: "SmileLogo")!,
+                                partnerName: "Smile ID",
+                                productName: "Consent Demo",
+                                partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
+                                delegate: viewModel
+                            )
                         )
                     ].map { AnyView($0) }
                 )
@@ -146,8 +150,9 @@ private struct DocumentVerificationWithSelector: View {
                 delegate: delegate
             )
         } else {
-            DocumentVerificationIdTypeSelector(jobType: .documentVerification) {
-                countryCode, documentType, captureBothSides in
+            DocumentVerificationIdTypeSelector(
+                jobType: .documentVerification
+            ) { countryCode, documentType, captureBothSides in
                 self.countryCode = countryCode
                 self.documentType = documentType
                 self.captureBothSides = captureBothSides
@@ -174,8 +179,9 @@ private struct EnhancedDocumentVerificationWithSelector: View {
                 delegate: delegate
             )
         } else {
-            DocumentVerificationIdTypeSelector(jobType: .enhancedDocumentVerification) {
-                countryCode, documentType, captureBothSides in
+            DocumentVerificationIdTypeSelector(
+                jobType: .enhancedDocumentVerification
+            ) { countryCode, documentType, captureBothSides in
                 self.countryCode = countryCode
                 self.documentType = documentType
                 self.captureBothSides = captureBothSides

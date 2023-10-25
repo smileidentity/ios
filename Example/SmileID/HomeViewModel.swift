@@ -6,7 +6,8 @@ import SmileID
 class HomeViewModel: ObservableObject,
     SmartSelfieResultDelegate,
     DocumentVerificationResultDelegate,
-    EnhancedDocumentVerificationResultDelegate {
+    EnhancedDocumentVerificationResultDelegate,
+    BiometricKycResultDelegate {
 
     // MARK: - UI Properties
     @Published var dismissed = false
@@ -50,6 +51,23 @@ class HomeViewModel: ObservableObject,
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "SmartSelfie Authentication",
+            jobComplete: jobStatusResponse.jobComplete,
+            jobSuccess: jobStatusResponse.jobSuccess,
+            code: jobStatusResponse.code,
+            resultCode: jobStatusResponse.result?.resultCode,
+            resultText: jobStatusResponse.result?.resultText
+        )
+    }
+
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: JobStatusResponse<BiometricKycJobResult>
+    ) {
+        dismissModal()
+        showToast = true
+        toastMessage = jobResultMessageBuilder(
+            jobName: "Biometric KYC",
             jobComplete: jobStatusResponse.jobComplete,
             jobSuccess: jobStatusResponse.jobSuccess,
             code: jobStatusResponse.code,

@@ -121,6 +121,34 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
+    func getProductsConfig(
+        request: ProductsConfigRequest
+    ) -> AnyPublisher<ProductsConfigResponse, Error> {
+        var response: ProductsConfigResponse
+        do {
+            response = try ProductsConfigResponse(
+                consentRequired: [:],
+                idSelection: IdSelection(
+                    basicKyc: [:],
+                    biometricKyc: [:],
+                    enhancedKyc: [:],
+                    documentVerification: [:]
+                )
+            )
+        } catch {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        }
+
+        if MockHelper.shouldFail {
+            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
+                .eraseToAnyPublisher()
+        } else {
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
     func getValidDocuments(
         request: ProductsConfigRequest
     ) -> AnyPublisher<ValidDocumentsResponse, Error> {

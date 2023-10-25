@@ -1,6 +1,7 @@
 import Foundation
 
 public enum JobType: Int, Codable {
+    case biometricKyc = 1
     case smartSelfieAuthentication = 2
     case smartSelfieEnrollment = 4
     case enhancedKyc = 5
