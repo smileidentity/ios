@@ -670,7 +670,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = 99P7YGX9Q6;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileID/Info.plist;
@@ -697,7 +697,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileID/Info.plist;
