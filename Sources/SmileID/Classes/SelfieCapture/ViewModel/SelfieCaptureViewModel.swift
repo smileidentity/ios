@@ -19,7 +19,7 @@ enum SelfieCaptureViewModelAction {
     case faceQualityObservationDetected(FaceQualityModel)
 }
 
-private enum SelfieProcessingState {
+enum SelfieProcessingState {
     static func == (lhs: SelfieProcessingState, rhs: SelfieProcessingState) -> Bool {
         switch (lhs, rhs) {
         case (.complete, .complete):
