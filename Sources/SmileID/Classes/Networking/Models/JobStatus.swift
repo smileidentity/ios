@@ -25,6 +25,7 @@ public typealias DocumentVerificationJobStatusResponse =
     JobStatusResponse<DocumentVerificationJobResult>
 public typealias EnhancedDocumentVerificationJobStatusResponse =
     JobStatusResponse<EnhancedDocumentVerificationJobResult>
+public typealias BiometricKycJobStatusResponse = JobStatusResponse<BiometricKycJobResult>
 
 public final class JobStatusResponse<T: JobResult>: Codable {
     public let timestamp: String
@@ -135,6 +136,76 @@ public class SmartSelfieJobResult: JobResult {
     public override func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(confidence, forKey: .confidence)
+        try super.encode(to: encoder)
+    }
+}
+
+public class BiometricKycJobResult: JobResult {
+    let antifraud: Antifraud?
+    let dob: String?
+    let photoBase64: String?
+    let gender: String?
+    let idType: String?
+    let address: String?
+    let country: String?
+    let documentImageBase64: String?
+    let fullData: [String: String]?
+    let fullName: String?
+    let idNumber: String?
+    let phoneNumber: String?
+    let phoneNumber2: String?
+    let expirationDate: String?
+    let secondaryIdNumber: String?
+    let idNumberPreviouslyRegistered: Bool?
+    let previousRegistrantsUserIds: [String]?
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        antifraud = try container.decodeIfPresent(Antifraud.self, forKey: .antifraud)
+        dob = try container.decodeIfPresent(String.self, forKey: .dob)
+        photoBase64 = try container.decodeIfPresent(String.self, forKey: .photoBase64)
+        gender = try container.decodeIfPresent(String.self, forKey: .gender)
+        idType = try container.decodeIfPresent(String.self, forKey: .idType)
+        address = try container.decodeIfPresent(String.self, forKey: .address)
+        country = try container.decodeIfPresent(String.self, forKey: .country)
+        documentImageBase64 = try container.decodeIfPresent(
+            String.self, forKey: .documentImageBase64
+        )
+        fullData = try container.decodeIfPresent([String: String].self, forKey: .fullData)
+        fullName = try container.decodeIfPresent(String.self, forKey: .fullName)
+        idNumber = try container.decodeIfPresent(String.self, forKey: .idNumber)
+        phoneNumber = try container.decodeIfPresent(String.self, forKey: .phoneNumber)
+        phoneNumber2 = try container.decodeIfPresent(String.self, forKey: .phoneNumber2)
+        expirationDate = try container.decodeIfPresent(String.self, forKey: .expirationDate)
+        secondaryIdNumber = try container.decodeIfPresent(String.self, forKey: .secondaryIdNumber)
+        idNumberPreviouslyRegistered = try container.decodeIfPresent(
+            Bool.self, forKey: .idNumberPreviouslyRegistered
+        )
+        previousRegistrantsUserIds = try container.decodeIfPresent(
+            [String].self, forKey: .previousRegistrantsUserIds
+        )
+        try super.init(from: decoder)
+    }
+
+    public override func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(antifraud, forKey: .antifraud)
+        try container.encode(dob, forKey: .dob)
+        try container.encode(photoBase64, forKey: .photoBase64)
+        try container.encode(gender, forKey: .gender)
+        try container.encode(idType, forKey: .idType)
+        try container.encode(address, forKey: .address)
+        try container.encode(country, forKey: .country)
+        try container.encode(documentImageBase64, forKey: .documentImageBase64)
+        try container.encode(fullData, forKey: .fullData)
+        try container.encode(fullName, forKey: .fullName)
+        try container.encode(idNumber, forKey: .idNumber)
+        try container.encode(phoneNumber, forKey: .phoneNumber)
+        try container.encode(phoneNumber2, forKey: .phoneNumber2)
+        try container.encode(expirationDate, forKey: .expirationDate)
+        try container.encode(secondaryIdNumber, forKey: .secondaryIdNumber)
+        try container.encode(idNumberPreviouslyRegistered, forKey: .idNumberPreviouslyRegistered)
+        try container.encode(previousRegistrantsUserIds, forKey: .previousRegistrantsUserIds)
         try super.encode(to: encoder)
     }
 }
