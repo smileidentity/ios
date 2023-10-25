@@ -1,5 +1,3 @@
-import Foundation
-
 /// The result of a selfie capture session and job submission
 public protocol SmartSelfieResultDelegate {
     /// This function is called as a result of a successful selfie capture
