@@ -11,26 +11,48 @@ public struct UploadRequest: Codable {
 }
 
 public struct IdInfo: Codable {
-    var country: String
-    var idType: String?
-    var idNumber: String?
-    var firstName: String?
-    var middleName: String?
-    var lastName: String?
-    var dob: String?
-    var bankCode: String?
-    var entered: Bool?
+    let country: String
+    let idType: String?
+    let idNumber: String?
+    let firstName: String?
+    let middleName: String?
+    let lastName: String?
+    let dob: String?
+    let bankCode: String?
+    let entered: Bool?
+
+    public init(
+        country: String,
+        idType: String? = nil,
+        idNumber: String? = nil,
+        firstName: String? = nil,
+        middleName: String? = nil,
+        lastName: String? = nil,
+        dob: String? = nil,
+        bankCode: String? = nil,
+        entered: Bool? = nil
+    ) {
+        self.country = country
+        self.idType = idType
+        self.idNumber = idNumber
+        self.firstName = firstName
+        self.middleName = middleName
+        self.lastName = lastName
+        self.dob = dob
+        self.bankCode = bankCode
+        self.entered = entered
+    }
 
     enum CodingKeys: String, CodingKey {
-        case country
+        case country = "country"
         case idType = "id_type"
         case idNumber = "id_number"
         case firstName = "first_name"
         case middleName = "middle_name"
         case lastName = "last_name"
-        case dob
+        case dob = "dob"
         case bankCode = "bank_code"
-        case entered
+        case entered = "entered"
     }
 }
 
