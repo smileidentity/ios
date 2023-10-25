@@ -58,9 +58,9 @@ class ImageUtils {
                         scaleSize: finalSize, orientation: orientation)
     }
 
-    class func resizePixelBufferToWidth(
+    class func resizePixelBufferToHeight(
         _ pixelBuffer: CVPixelBuffer,
-        width: Int,
+        height: Int,
         exif: [String: Any]?,
         orientation: CGImagePropertyOrientation = .right
     ) -> Data? {
@@ -80,12 +80,12 @@ class ImageUtils {
             aspectRatio = 1 / aspectRatio
         }
 
-        let newHeight = Int(CGFloat(width) * aspectRatio)
+        let newWidth = Int(CGFloat(height) * aspectRatio)
 
         guard let resizedImage = resizeCGImage(
             cgImage,
-            newWidth: width,
-            newHeight: newHeight
+            newWidth: newWidth,
+            newHeight: height
         )
         else {
             return nil
