@@ -1,8 +1,14 @@
 import Foundation
 import SwiftUI
 
+enum ProcessingState {
+    case inProgress
+    case success
+    case error
+}
+
 struct ProcessingScreen: View {
-    let processingState: DocumentProcessingState
+    let processingState: ProcessingState
     let inProgressTitle: String
     let inProgressSubtitle: String
     let inProgressIcon: UIImage

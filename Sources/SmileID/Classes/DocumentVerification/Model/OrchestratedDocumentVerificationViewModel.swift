@@ -1,17 +1,11 @@
 import Combine
 import SwiftUI
 
-enum DocumentProcessingState {
-    case inProgress
-    case success
-    case error
-}
-
 enum DocumentCaptureFlow: Equatable {
     case frontDocumentCapture
     case backDocumentCapture
     case selfieCapture
-    case processing(DocumentProcessingState)
+    case processing(ProcessingState)
 }
 
 internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject,

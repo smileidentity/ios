@@ -19,8 +19,8 @@ enum SelfieCaptureViewModelAction {
     case faceQualityObservationDetected(FaceQualityModel)
 }
 
-enum ProcessingState {
-    static func == (lhs: ProcessingState, rhs: ProcessingState) -> Bool {
+private enum SelfieProcessingState {
+    static func == (lhs: SelfieProcessingState, rhs: SelfieProcessingState) -> Bool {
         switch (lhs, rhs) {
         case (.complete, .complete):
             return false
@@ -52,7 +52,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     }
     @Published private(set) var progress: CGFloat = 0
     @Published var directive: String = "Instructions.Start"
-    @Published private(set) var processingState: ProcessingState? {
+    @Published private(set) var processingState: SelfieProcessingState? {
         didSet {
             switch processingState {
             case .none:

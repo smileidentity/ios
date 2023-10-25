@@ -46,7 +46,7 @@ private let consentInfos = [(
     "Consent.DocumentInfoSubtitle"
 )]
 
-struct ConsentScreen: View {
+private struct ConsentScreen: View {
     let partnerIcon: UIImage
     let partnerName: String
     let productName: String
@@ -147,7 +147,7 @@ struct ConsentScreen: View {
     }
 }
 
-struct ConsentDeniedScreen: View {
+private struct ConsentDeniedScreen: View {
     let showAttribution: Bool
     let onGoBack: () -> Void
     let onCancel: () -> Void
