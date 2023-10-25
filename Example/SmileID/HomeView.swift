@@ -57,6 +57,18 @@ struct HomeView: View {
                             image: "document",
                             name: "Enhanced Document Verification",
                             content: EnhancedDocumentVerificationWithSelector(delegate: viewModel)
+                        ),
+                        ProductCell(
+                            image: "biometric",
+                            name: "Biometric KYC",
+                            content: SmileID.biometricKycScreen(
+                                idInfo: IdInfo(country: "NG", idType: "PASSPORT"),
+                                partnerIcon: UIImage(named: "SmileLogo")!,
+                                partnerName: "Smile ID",
+                                productName: "Consent Demo",
+                                partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
+                                delegate: viewModel
+                            )
                         )
                     ].map { AnyView($0) }
                 )
