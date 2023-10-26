@@ -8,6 +8,7 @@ disabled_rules:
   - large_tuple
   - class_delegate_protocol
   - type_name
+  - redundant_string_enum_value
 
 excluded:
   - Pods
