@@ -13,9 +13,7 @@ class DocumentSelectorViewModel: ObservableObject {
     @Published @MainActor var idTypes: [ValidDocument] = []
     @Published @MainActor var errorMessage: String?
 
-    init(
-        jobType: JobType
-    ) {
+    init(jobType: JobType) {
         if jobType != .documentVerification && jobType != .enhancedDocumentVerification {
             fatalError("Only Document Verification jobs are supported")
         }
