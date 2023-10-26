@@ -11,8 +11,8 @@ public struct RadioGroupSelector<T>: View where T: Identifiable & Equatable {
     public init(
         title: String,
         items: [T],
-        itemDisplayName: @escaping (T) -> String,
         initialSelection: T? = nil,
+        itemDisplayName: @escaping (T) -> String,
         onItemSelected: @escaping (T) -> Void
     ) {
         self.title = title
@@ -84,8 +84,8 @@ struct RadioGroupSelector_Previews: PreviewProvider {
                 IdType(code: "id2", example: [], hasBack: false, name: "ID 2"),
                 IdType(code: "id3", example: [], hasBack: true, name: "ID 3")
             ],
-            itemDisplayName: { $0.name },
             initialSelection: first,
+            itemDisplayName: { $0.name },
             onItemSelected: { _ in }
         )
     }
