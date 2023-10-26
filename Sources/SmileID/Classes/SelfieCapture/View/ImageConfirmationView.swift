@@ -31,6 +31,7 @@ struct ImageConfirmationView: View {
             VStack {
                 Image(uiImage: image)
                     .resizable()
+                    .scaleEffect(1.25)
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 200)
                     .cornerRadius(16)
