@@ -6,6 +6,14 @@ typealias OnIdTypeSelectedCallback = (
     _ idType: String,
     _ captureBothSides: Bool
 ) -> Void
+
+private let othersIdType = IdType(
+    code: "",
+    example: ["My document is not listed"],
+    hasBack: true,
+    name: "Others"
+)
+
 struct DocumentVerificationIdTypeSelector: View {
     let jobType: JobType
     let onIdTypeSelected: OnIdTypeSelectedCallback
@@ -38,10 +46,12 @@ struct DocumentVerificationIdTypeSelector: View {
                 )
 
                 if let idTypesForCountry = idTypesForCountry {
-                    IdTypeSelector(
-                        allowOthersAsDefault: jobType == .documentVerification,
-                        idTypesForCountry: idTypesForCountry,
-                        onIdTypeSelected: { idType in
+                    RadioGroupSelector(
+                        title: "Select ID Type",
+                        items: idTypesForCountry,
+                        itemDisplayName: { $0.name },
+                        initialSelection: jobType == .documentVerification ? othersIdType : nil,
+                        onItemSelected: { idType in
                             onIdTypeSelected(
                                 selectedCountry!.country.code,
                                 idType.code,
@@ -84,16 +94,19 @@ private struct CountrySelector: View {
                 if let selectedCountry = selectedCountry {
                     HStack {
                         Image(systemName: "mappin.and.ellipse")
+                            .foregroundColor(SmileID.theme.accent)
                         Spacer()
                         Text(selectedCountry)
                             .foregroundColor(SmileID.theme.accent)
                             .onTapGesture { onCountrySelected(nil) }
                         Spacer()
                         Image(systemName: "arrowtriangle.down.circle.fill")
+                            .foregroundColor(SmileID.theme.accent)
                     }
                 } else {
                     ZStack(alignment: .leading) {
                         Image(systemName: "magnifyingglass")
+                            .foregroundColor(SmileID.theme.accent)
                         TextField("Search", text: $query)
                             .autocapitalization(.words)
                             .disableAutocorrection(true)
@@ -120,72 +133,6 @@ private struct CountrySelector: View {
                 }
             }
         }
-    }
-}
-
-private let othersIdType = IdType(code: "", example: [], hasBack: true, name: "Others")
-
-private struct IdTypeSelector: View {
-    let allowOthersAsDefault: Bool
-    let idTypesForCountry: [IdType]
-    let onIdTypeSelected: (IdType) -> Void
-
-    @State private var selectedIdType: IdType?
-
-    var body: some View {
-        VStack {
-            Text("Select ID Type")
-                .font(SmileID.theme.header2)
-                .foregroundColor(SmileID.theme.onLight)
-                .fontWeight(.bold)
-                .padding(16)
-
-            List(idTypesForCountry) { idType in
-                HStack {
-                    Text(idType.name)
-                    Spacer()
-                    Image(systemName: selectedIdType == idType ? "checkmark.circle" : "circle")
-                        .foregroundColor(SmileID.theme.accent)
-                        .padding()
-                }
-                    .contentShape(Rectangle())
-                    .onTapGesture { selectedIdType = idType }
-            }
-
-            Spacer()
-
-            // Button is always enabled, because we can default to Others
-            Button(
-                action: { onIdTypeSelected(selectedIdType ?? othersIdType) },
-                label: {
-                    Text("Continue")
-                        .padding(16)
-                        .font(SmileID.theme.button)
-                        .frame(maxWidth: .infinity)
-                }
-            )
-                .disabled(selectedIdType == nil && !allowOthersAsDefault)
-                .background(SmileID.theme.accent)
-                .foregroundColor(SmileID.theme.onDark)
-                .cornerRadius(60)
-                .frame(maxWidth: .infinity)
-                .padding()
-        }
-    }
-}
-
-@available(iOS 14.0, *)
-struct IdTypeSelector_Previews: PreviewProvider {
-    static var previews: some View {
-        IdTypeSelector(
-            allowOthersAsDefault: true,
-            idTypesForCountry: [
-                IdType(code: "id1", example: [], hasBack: true, name: "ID 1"),
-                IdType(code: "id2", example: [], hasBack: false, name: "ID 2"),
-                IdType(code: "id3", example: [], hasBack: true, name: "ID 3")
-            ],
-            onIdTypeSelected: { _ in }
-        )
     }
 }
 
