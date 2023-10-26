@@ -83,7 +83,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     private var isEnroll: Bool
     private var shouldSubmitJob: Bool
     private (set) var showAttribution: Bool
-    private var selfieImage: Data?
+    internal var selfieImage: Data?
     private var currentExif: [String: Any]?
     private (set) var allowsAgentMode: Bool
     private let subject = PassthroughSubject<String, Never>()
@@ -398,12 +398,16 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
             processingState = .complete(nil, nil)
             return
         }
+        guard let selfieImage = selfieImage else {
+            processingState = .error(SmileIDError.unknown("Error getting selfie image"))
+            return
+        }
         processingState = .inProgress
         var zip: Data
         do {
             savedFiles = try LocalStorage.saveImageJpg(
                 livenessImages: livenessImages,
-                previewImage: selfieImage!
+                previewImage: selfieImage
             )
             let zipUrl = try LocalStorage.zipFiles(at: savedFiles!.allFiles)
             zip = try Data(contentsOf: zipUrl)

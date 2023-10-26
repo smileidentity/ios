@@ -99,6 +99,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
 
     func testSubmitFunctionPublishesExpectedValuesOnSuccess() {
         let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true)
+        viewModel.selfieImage = Data()
 
         MockHelper.shouldFail = false
         let expectation = XCTestExpectation()
