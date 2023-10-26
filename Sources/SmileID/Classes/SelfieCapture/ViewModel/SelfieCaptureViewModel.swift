@@ -37,7 +37,7 @@ enum SelfieProcessingState {
         }
     }
 
-    case confirmation(UIImage)
+    case confirmation(Data)
     case inProgress
     case complete(JobStatusResponse<SmartSelfieJobResult>?, SmileIDError?)
     case endFlow
@@ -68,7 +68,6 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     // MARK: Public Properties
     var faceLayoutGuideFrame = CGRect.zero
     var viewFinderSize = CGSize.zero
-    var displayedImage: Data?
     var selfieViewDelegate: SelfieViewDelegate?
     var smartSelfieResultDelegate: SmartSelfieResultDelegate?
     weak var imageCaptureDelegate: SelfieImageCaptureDelegate?
@@ -84,7 +83,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     private var isEnroll: Bool
     private var shouldSubmitJob: Bool
     private (set) var showAttribution: Bool
-    private var selfieImage: Data?
+    internal var selfieImage: Data?
     private var currentExif: [String: Any]?
     private (set) var allowsAgentMode: Bool
     private let subject = PassthroughSubject<String, Never>()
@@ -94,7 +93,8 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     private var faceDetectionSubscribers: AnyCancellable?
     private var throttleSubscription: AnyCancellable?
     private let numberOfLivenessImages = 7
-    private let selfieImageSize = CGSize(width: 320, height: 320)
+    private let selfieImageSize = CGSize(width: 640, height: 640)
+    private let livenessImageSize = CGSize(width: 320, height: 320)
     private var currentBuffer: CVPixelBuffer?
     private(set) var faceDetectionState: FaceDetectionState = .noFaceDetected
     private var fallbackTimer: Timer?
@@ -344,9 +344,9 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
 
         while (livenessImages.count < numberOfLivenessImages) &&
                   ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) {
-            guard let image = ImageUtils.resizePixelBufferToWidth(
+            guard let image = ImageUtils.resizePixelBufferToHeight(
                 currentBuffer,
-                width: 350,
+                height: Int(livenessImageSize.height),
                 exif: currentExif,
                 orientation: orientation
             )
@@ -362,19 +362,9 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
                ((Date().millisecondsSince1970 - lastCaptureTime) > interCaptureDelay) &&
                selfieImage == nil {
             publishFaceObservation(.finalFrame)
-            guard let displayedImage = ImageUtils.captureFace(
-                from: currentBuffer,
-                faceGeometry: faceGeometry,
-                agentMode: agentMode,
-                finalSize: selfieImageSize,
-                screenImageSize: viewFinderSize,
-                orientation: orientation
-            )
-            else {
-                return
-            }
-            guard let selfieImage = ImageUtils.resizePixelBufferToWidth(
-                currentBuffer, width: 600,
+            guard let selfieImage = ImageUtils.resizePixelBufferToHeight(
+                currentBuffer,
+                height: Int(selfieImageSize.height),
                 exif: currentExif,
                 orientation: orientation
             )
@@ -383,10 +373,9 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
             }
             lastCaptureTime = Date().millisecondsSince1970
             self.selfieImage = selfieImage
-            self.displayedImage = displayedImage
             updateProgress()
             DispatchQueue.main.async {
-                self.processingState = .confirmation(UIImage(data: displayedImage) ?? UIImage())
+                self.processingState = .confirmation(selfieImage)
             }
         }
     }
@@ -409,12 +398,16 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
             processingState = .complete(nil, nil)
             return
         }
+        guard let selfieImage = selfieImage else {
+            processingState = .error(SmileIDError.unknown("Error getting selfie image"))
+            return
+        }
         processingState = .inProgress
         var zip: Data
         do {
             savedFiles = try LocalStorage.saveImageJpg(
                 livenessImages: livenessImages,
-                previewImage: selfieImage ?? Data()
+                previewImage: selfieImage
             )
             let zipUrl = try LocalStorage.zipFiles(at: savedFiles!.allFiles)
             zip = try Data(contentsOf: zipUrl)
