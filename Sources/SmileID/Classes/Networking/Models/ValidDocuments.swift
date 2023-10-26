@@ -42,11 +42,12 @@ public struct Country: Codable {
 }
 
 public struct IdType: Codable, Identifiable, Equatable {
-    public let id = UUID()
     public let code: String
     public let example: [String]
     public let hasBack: Bool
     public let name: String
+
+    public var id: String { code }
 
     public init(
         code: String,

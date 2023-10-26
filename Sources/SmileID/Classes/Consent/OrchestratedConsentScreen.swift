@@ -6,9 +6,9 @@ struct OrchestratedConsentScreen: View {
     let partnerName: String
     let productName: String
     let partnerPrivacyPolicy: URL
+    let showAttribution: Bool
     let onConsentGranted: () -> Void
     let onConsentDenied: () -> Void
-    let showAttribution: Bool
     @State private var showTryAgain = false
 
     var body: some View {

@@ -46,6 +46,7 @@
 "Action.TakePhoto" = "Take Photo";
 "Action.UploadPhoto" = "Upload Photo";
 "Action.Skip" = "Skip back of ID";
+
 "Document.Confirmation.Header" = "Is the document clear and readable?";
 "Document.Confirmation.Callout" = "Make sure all corners of the document are visible and there is no glare";
 "Document.Confirmation.Accept" = "Yes, my ID is readable";
