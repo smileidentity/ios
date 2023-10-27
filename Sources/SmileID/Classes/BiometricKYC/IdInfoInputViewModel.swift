@@ -31,12 +31,7 @@ class IdInfoInputViewModel: ObservableObject {
         self.selectedIdType = selectedIdType
 
         // We've already asked for these fields as input on the ID Selection screen
-        let ignoredFields: [RequiredField] = [
-            .country,
-            .idType,
-            .userId,
-            .jobId,
-        ]
+        let ignoredFields: [RequiredField] = [.country, .idType, .userId, .jobId]
         requiredFields
             .filter { !ignoredFields.contains($0) }
             .forEach { inputs[$0] = "" }
@@ -44,7 +39,7 @@ class IdInfoInputViewModel: ObservableObject {
 }
 
 /// An extension to RequiredField which provides a mapping to the input field label and keyboard
-// type
+/// type
 extension RequiredField {
     struct InputField {
         let key: RequiredField
