@@ -36,7 +36,7 @@ struct SuccessView: View {
     }
 }
 
-struct SuccessView_Previews: PreviewProvider {
+private struct SuccessView_Previews: PreviewProvider {
     static var previews: some View {
         SuccessView(
             titleKey: "Confirmation.SelfieCaptureComplete",

@@ -47,7 +47,7 @@ struct ProductCell: View {
     }
 }
 
-struct ProductCell_Previews: PreviewProvider {
+private struct ProductCell_Previews: PreviewProvider {
     static var previews: some View {
         ProductCell(
             image: "userauth",

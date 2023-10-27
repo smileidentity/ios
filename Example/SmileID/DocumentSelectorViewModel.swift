@@ -27,7 +27,6 @@ class DocumentSelectorViewModel: ObservableObject {
         subscriber = SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in
                 let productRequest = ProductsConfigRequest(
-                    partnerId: SmileID.config.partnerId,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )

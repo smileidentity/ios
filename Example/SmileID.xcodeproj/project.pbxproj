@@ -19,7 +19,7 @@
 		1ED53F6D2A2F28590020BEFB /* SmileTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F632A2F28590020BEFB /* SmileTextField.swift */; };
 		1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F642A2F28590020BEFB /* ResourcesView.swift */; };
 		1ED53F712A2F28590020BEFB /* EnterUserIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */; };
-		1ED53F722A2F28590020BEFB /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F682A2F28590020BEFB /* ToggleButton.swift */; };
+		1ED53F722A2F28590020BEFB /* SmileEnvironmentToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */; };
 		1ED53F732A2F28590020BEFB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F692A2F28590020BEFB /* HomeView.swift */; };
 		1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */; };
@@ -67,7 +67,7 @@
 		1ED53F632A2F28590020BEFB /* SmileTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileTextField.swift; sourceTree = "<group>"; };
 		1ED53F642A2F28590020BEFB /* ResourcesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourcesView.swift; sourceTree = "<group>"; };
 		1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterUserIDView.swift; sourceTree = "<group>"; };
-		1ED53F682A2F28590020BEFB /* ToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
+		1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileEnvironmentToggleButton.swift; sourceTree = "<group>"; };
 		1ED53F692A2F28590020BEFB /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
 		287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,7 +157,7 @@
 				1ED53F612A2F28590020BEFB /* ProductCell.swift */,
 				1ED53F642A2F28590020BEFB /* ResourcesView.swift */,
 				1ED53F632A2F28590020BEFB /* SmileTextField.swift */,
-				1ED53F682A2F28590020BEFB /* ToggleButton.swift */,
+				1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */,
 				916E487A2A4057B400C589FE /* smile_config.json */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				1E60ED352A29C306002695FF /* AppDelegate.swift */,
@@ -495,7 +495,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */,
-				1ED53F722A2F28590020BEFB /* ToggleButton.swift in Sources */,
+				1ED53F722A2F28590020BEFB /* SmileEnvironmentToggleButton.swift in Sources */,
 				1ED53F6C2A2F28590020BEFB /* MainView.swift in Sources */,
 				1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */,
 				1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */,

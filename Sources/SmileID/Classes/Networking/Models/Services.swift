@@ -72,10 +72,12 @@ public struct HostedWeb: Codable {
  * mutable. However, it should be populated before usage of this class/when the response gets decoded.
  * The same applies to availableIdTypes
  */
-public struct CountryInfo: Codable {
+public struct CountryInfo: Codable, Identifiable {
     public var countryCode = ""
     public let name: String
     public let availableIdTypes: [AvailableIdType]
+
+    public var id: String { countryCode }
 
     private enum CodingKeys: String, CodingKey {
         case name
@@ -97,12 +99,14 @@ public struct CountryInfo: Codable {
  * The  idTypeKey field is not populated/returned by the API response, hence it being marked as
  * mutable. However, it should be populated before usage of this class/when the response gets decoded
  */
-public struct AvailableIdType: Codable {
+public struct AvailableIdType: Codable, Identifiable, Equatable {
     public var idTypeKey = ""
     public let label: String
-    public let requiredFields: [RequiredField] = []
+    public let requiredFields: [RequiredField]?
     public let testData: String?
     public let idNumberRegex: String?
+
+    public var id: String { idTypeKey }
 
     private enum CodingKeys: String, CodingKey {
         case label

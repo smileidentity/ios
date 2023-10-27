@@ -24,7 +24,7 @@ struct SmileTextField: View {
     }
 }
 
-struct SmileTextField_Previews: PreviewProvider {
+private struct SmileTextField_Previews: PreviewProvider {
     static var previews: some View {
         SmileTextField(field: .constant("Some user"))
     }

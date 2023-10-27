@@ -17,7 +17,7 @@ struct InstructionsView: View {
     }
 }
 
-struct InstructionsView_Previews: PreviewProvider {
+private struct InstructionsView_Previews: PreviewProvider {
     static var previews: some View {
         InstructionsView(
             model: SelfieCaptureViewModel(

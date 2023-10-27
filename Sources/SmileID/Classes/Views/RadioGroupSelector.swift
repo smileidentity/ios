@@ -74,7 +74,7 @@ public struct RadioGroupSelector<T>: View where T: Identifiable & Equatable {
 }
 
 @available(iOS 14.0, *)
-struct RadioGroupSelector_Previews: PreviewProvider {
+private struct RadioGroupSelector_Previews: PreviewProvider {
     static var previews: some View {
         let first = IdType(code: "id1", example: [], hasBack: true, name: "ID 1")
         RadioGroupSelector(

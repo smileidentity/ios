@@ -307,6 +307,18 @@ public class SmileID {
         showInstructions: Bool = true,
         delegate: BiometricKycResultDelegate
     ) -> some View {
-        Text("Under Construction")
+        OrchestratedBiometricKycScreen(
+            idInfo: idInfo,
+            userId: userId,
+            jobId: jobId,
+            partnerIcon: partnerIcon,
+            partnerName: partnerName,
+            productName: productName,
+            partnerPrivacyPolicy: partnerPrivacyPolicy,
+            showInstructions: showInstructions,
+            showAttribution: showAttribution,
+            allowAgentMode: allowAgentMode,
+            delegate: delegate
+        )
     }
 }

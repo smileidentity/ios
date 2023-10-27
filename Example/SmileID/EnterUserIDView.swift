@@ -34,7 +34,7 @@ struct EnterUserIDView: View {
 }
 
 @available(iOS 14.0, *)
-struct EnterUserIDView_Previews: PreviewProvider {
+private struct EnterUserIDView_Previews: PreviewProvider {
     static var previews: some View {
         EnterUserIDView(initialUserId: "initialValue") { _ in }
     }

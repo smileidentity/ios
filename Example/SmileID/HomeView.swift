@@ -42,7 +42,7 @@ struct HomeView: View {
                         ),
                         ProductCell(
                             image: "document",
-                            name: "Document Verification",
+                            name: "\nDocument Verification",
                             content: DocumentVerificationWithSelector(delegate: viewModel)
                         ),
                         ProductCell(
@@ -78,7 +78,7 @@ struct HomeView: View {
                 }
                 .padding()
                 .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
-                .navigationBarItems(trailing: ToggleButton())
+                .navigationBarItems(trailing: SmileEnvironmentToggleButton())
                 .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
         }
     }
@@ -199,7 +199,7 @@ private struct MyVerticalGrid: View {
     var body: some View {
         GeometryReader { geo in
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
                     let numRows = (items.count + maxColumns - 1) / maxColumns
                     ForEach(0..<numRows) { rowIndex in
                         HStack(spacing: 16) {
@@ -223,7 +223,7 @@ private struct MyVerticalGrid: View {
 }
 
 @available(iOS 14.0, *)
-struct HomeView_Previews: PreviewProvider {
+private struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         let _ = SmileID.initialize(
             config: Config(
