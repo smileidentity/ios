@@ -54,7 +54,6 @@ struct HomeView: View {
                             image: "biometric",
                             name: "Biometric KYC",
                             content: SmileID.biometricKycScreen(
-                                idInfo: IdInfo(country: "NG", idType: "PASSPORT"),
                                 partnerIcon: UIImage(named: "SmileLogo")!,
                                 partnerName: "Smile ID",
                                 productName: "Consent Demo",

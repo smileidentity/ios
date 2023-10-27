@@ -11,8 +11,6 @@ struct SmileTextField: View {
     // The @State Object
     @Binding var field: String
 
-    // A custom variable for a "TextField"
-    @State var isHighlighted = false
     var placeholder = ""
 
     var body: some View {

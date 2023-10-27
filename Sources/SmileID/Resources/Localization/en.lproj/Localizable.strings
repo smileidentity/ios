@@ -72,3 +72,13 @@
 "Consent.ContactInfoSubtitle" = "Partner can process your phone numbers and address";
 "Consent.DocumentInfoTitle" = "Process your document information";
 "Consent.DocumentInfoSubtitle" = "Partner can process your photo, ID expiration date, country of issuance and document number";
+
+"IdInfo.IdNumber" = "ID Number";
+"IdInfo.FirstName" = "First Name";
+"IdInfo.LastName" = "Last Name";
+"IdInfo.DOB" = "Date of Birth";
+"IdInfo.Day" = "Day";
+"IdInfo.Month" = "Month";
+"IdInfo.Year" = "Year";
+"IdInfo.BankCode" = "Bank Code";
+"IdInfo.Citizenship" = "Citizenship";

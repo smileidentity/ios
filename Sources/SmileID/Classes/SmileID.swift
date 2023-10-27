@@ -277,11 +277,13 @@ public class SmileID {
     /// actually belongs to the user. This is achieved by comparing the user's SmartSelfie™ to the
     /// user's photo in an ID authority database
     /// - Parameters:
-    ///  - idInfo: The ID information to look up in the ID Authority
     ///  - partnerIcon: Your own icon to display on the Biometric KYC screen (i.e. company logo)
     ///  - partnerName: Your own name to display on the Biometric KYC screen (i.e. company name)
     ///  - productName: The type of information you are trying to access (i.e. ID type)
     ///  - partnerPrivacyPolicy: A link to your own privacy policy to display
+    ///  - idInfo: The ID information to look up in the ID Authority. If nil (default), an ID type
+    ///  selector and input fields will be displayed. If provided, it is assumed that ALL required
+    ///  information has already been provided
     ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
     ///  to a unique User ID within your own system. If not provided, a random user ID is generated
     ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
@@ -293,11 +295,11 @@ public class SmileID {
     ///  - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
-        idInfo: IdInfo,
         partnerIcon: UIImage,
         partnerName: String,
         productName: String,
         partnerPrivacyPolicy: URL,
+        idInfo: IdInfo? = nil,
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
         allowAgentMode: Bool = false,

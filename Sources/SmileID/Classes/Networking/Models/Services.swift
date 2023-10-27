@@ -128,7 +128,29 @@ public enum RequiredField: String, Codable {
     case idType = "id_type"
     case userId = "user_id"
     case jobId = "job_id"
-    case unknown = "Unknown"
+
+    // To allow displaying inputs in some logical+consistent order
+    private static let sortedCases: [RequiredField] = [
+        .idNumber,
+        .firstName,
+        .lastName,
+        .dateOfBirth,
+        .day,
+        .month,
+        .year,
+        .bankCode,
+        .citizenship,
+        .country,
+        .idType,
+        .userId,
+        .jobId,
+    ]
+
+    static func sorter(this: RequiredField, that: RequiredField) -> Bool {
+        let thisIndex = sortedCases.firstIndex(of: this) ?? 0
+        let thatIndex = sortedCases.firstIndex(of: that) ?? 0
+        return thisIndex < thatIndex
+    }
 }
 
 // MARK: - CountryCodeToCountryInfo
