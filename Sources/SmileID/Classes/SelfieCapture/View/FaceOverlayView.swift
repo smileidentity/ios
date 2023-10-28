@@ -20,7 +20,11 @@ struct FaceOverlayView: View {
                                 .frame(width: faceWidth, height: faceHeight)
                                 .background(GeometryReader { localGeometry in
                                     Color.clear.onReceive(
+                                        // The delay is needed for when the view could be going
+                                        // through a transition (i.e. resizing because the keyboard
+                                        // is in the process of getting dismissed)
                                         Just(localGeometry.frame(in: .global))
+                                            .delay(for: 0.5, scheduler: DispatchQueue.main)
                                     ) { globalFrame in
                                         let globalOriginX = globalFrame.origin.x
                                         let faceOriginX = model.faceLayoutGuideFrame.origin.x
