@@ -56,7 +56,7 @@ struct HomeView: View {
                             content: SmileID.biometricKycScreen(
                                 partnerIcon: UIImage(named: "SmileLogo")!,
                                 partnerName: "Smile ID",
-                                productName: "Consent Demo",
+                                productName: "ID",
                                 partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
                                 delegate: viewModel
                             )
