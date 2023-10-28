@@ -81,7 +81,7 @@ public struct AuthenticationResponse: Decodable {
     public var signature: String
     public var timestamp: String
     public var partnerParams: PartnerParams
-    public var consentInfo: ConsentInfo? = nil
+    public var consentInfo: ConsentInfo?
 
     public init(
         success: Bool,

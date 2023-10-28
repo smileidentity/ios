@@ -126,7 +126,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
     func onConsentGranted(country: String, idType: String, requiredFields: [RequiredField]) {
         // If idInfo is already set, it was passed in, so we skip straight to selfie capture -- the
         // partner is required to pass in all required inputs
-        if let _ = idInfo {
+        if idInfo != nil {
             DispatchQueue.main.async { self.step = .selfie }
         } else {
             DispatchQueue.main.async {

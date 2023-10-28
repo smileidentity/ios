@@ -14,7 +14,7 @@ struct OrchestratedBiometricKycScreen: View {
     let delegate: BiometricKycResultDelegate
     @ObservedObject private var viewModel: OrchestratedBiometricKycViewModel
 
-    @State private var selectedCountry: CountryInfo? = nil
+    @State private var selectedCountry: CountryInfo?
 
     init(
         idInfo: IdInfo?,
