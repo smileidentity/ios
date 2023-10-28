@@ -21,51 +21,54 @@ struct HomeView: View {
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Enrollment",
-                            onClick: { smartSelfieEnrollmentUserId = generateUserId() }
-                        ) {
-                            SmileID.smartSelfieEnrollmentScreen(
-                                userId: smartSelfieEnrollmentUserId,
-                                allowAgentMode: true,
-                                delegate: SmartSelfieEnrollmentDelegate(
+                            onClick: { smartSelfieEnrollmentUserId = generateUserId() },
+                            content: {
+                                SmileID.smartSelfieEnrollmentScreen(
                                     userId: smartSelfieEnrollmentUserId,
-                                    onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                                    onError: viewModel.didError
+                                    allowAgentMode: true,
+                                    delegate: SmartSelfieEnrollmentDelegate(
+                                        userId: smartSelfieEnrollmentUserId,
+                                        onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                                        onError: viewModel.didError
+                                    )
                                 )
-                            )
-                        },
+                            }
+                        ),
                         ProductCell(
                             image: "userauth",
-                            name: "SmartSelfie™ Authentication"
-                        ) {
-                            SmartSelfieAuthWithUserIdEntry(
-                                initialUserId: smartSelfieEnrollmentUserId,
-                                delegate: viewModel
-                            )
-                        },
+                            name: "SmartSelfie™ Authentication",
+                            content: {
+                                SmartSelfieAuthWithUserIdEntry(
+                                    initialUserId: smartSelfieEnrollmentUserId,
+                                    delegate: viewModel
+                                )
+                            }
+                        ),
                         ProductCell(
                             image: "document",
-                            name: "\nDocument Verification"
-                        ) {
-                            DocumentVerificationWithSelector(delegate: viewModel)
-                        },
+                            name: "\nDocument Verification",
+                            content: { DocumentVerificationWithSelector(delegate: viewModel) }
+                        ),
                         ProductCell(
                             image: "document",
-                            name: "Enhanced Document Verification"
-                        ) {
-                            EnhancedDocumentVerificationWithSelector(delegate: viewModel)
-                        },
+                            name: "Enhanced Document Verification",
+                            content: {
+                                EnhancedDocumentVerificationWithSelector(delegate: viewModel)
+                            }
+                        ),
                         ProductCell(
                             image: "biometric",
-                            name: "Biometric KYC"
-                        ) {
-                            SmileID.biometricKycScreen(
-                                partnerIcon: UIImage(named: "SmileLogo")!,
-                                partnerName: "Smile ID",
-                                productName: "ID",
-                                partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
-                                delegate: viewModel
-                            )
-                        }
+                            name: "Biometric KYC",
+                            content: {
+                                SmileID.biometricKycScreen(
+                                    partnerIcon: UIImage(named: "SmileLogo")!,
+                                    partnerName: "Smile ID",
+                                    productName: "ID",
+                                    partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
+                                    delegate: viewModel
+                                )
+                            }
+                        )
                     ].map { AnyView($0) }
                 )
 
