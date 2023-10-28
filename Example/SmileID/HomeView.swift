@@ -21,8 +21,9 @@ struct HomeView: View {
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Enrollment",
-                            onClick: { smartSelfieEnrollmentUserId = generateUserId() },
-                            content: SmileID.smartSelfieEnrollmentScreen(
+                            onClick: { smartSelfieEnrollmentUserId = generateUserId() }
+                        ) {
+                            SmileID.smartSelfieEnrollmentScreen(
                                 userId: smartSelfieEnrollmentUserId,
                                 allowAgentMode: true,
                                 delegate: SmartSelfieEnrollmentDelegate(
@@ -31,36 +32,40 @@ struct HomeView: View {
                                     onError: viewModel.didError
                                 )
                             )
-                        ),
+                        },
                         ProductCell(
                             image: "userauth",
-                            name: "SmartSelfie™ Authentication",
-                            content: SmartSelfieAuthWithUserIdEntry(
+                            name: "SmartSelfie™ Authentication"
+                        ) {
+                            SmartSelfieAuthWithUserIdEntry(
                                 initialUserId: smartSelfieEnrollmentUserId,
                                 delegate: viewModel
                             )
-                        ),
+                        },
                         ProductCell(
                             image: "document",
-                            name: "\nDocument Verification",
-                            content: DocumentVerificationWithSelector(delegate: viewModel)
-                        ),
+                            name: "\nDocument Verification"
+                        ) {
+                            DocumentVerificationWithSelector(delegate: viewModel)
+                        },
                         ProductCell(
                             image: "document",
-                            name: "Enhanced Document Verification",
-                            content: EnhancedDocumentVerificationWithSelector(delegate: viewModel)
-                        ),
+                            name: "Enhanced Document Verification"
+                        ) {
+                            EnhancedDocumentVerificationWithSelector(delegate: viewModel)
+                        },
                         ProductCell(
                             image: "biometric",
-                            name: "Biometric KYC",
-                            content: SmileID.biometricKycScreen(
+                            name: "Biometric KYC"
+                        ) {
+                            SmileID.biometricKycScreen(
                                 partnerIcon: UIImage(named: "SmileLogo")!,
                                 partnerName: "Smile ID",
                                 productName: "ID",
                                 partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
                                 delegate: viewModel
                             )
-                        )
+                        }
                     ].map { AnyView($0) }
                 )
 
