@@ -30,8 +30,17 @@ class IdInfoInputViewModel: ObservableObject {
         self.selectedCountry = selectedCountry
         self.selectedIdType = selectedIdType
 
-        // We've already asked for these fields as input on the ID Selection screen
-        let ignoredFields: [RequiredField] = [.country, .idType, .userId, .jobId]
+        // We've already asked for these fields as input on the ID Selection screen. Day/month/year
+        // are ignored because they are duplicated by the dob field
+        let ignoredFields: [RequiredField] = [
+            .country,
+            .idType,
+            .userId,
+            .jobId,
+            .day,
+            .month,
+            .year
+        ]
         requiredFields
             .filter { !ignoredFields.contains($0) }
             .forEach { inputs[$0] = "" }
@@ -46,6 +55,7 @@ extension RequiredField {
         let label: String
         let keyboardType: UIKeyboardType
     }
+
     var inputField: InputField {
         switch self {
         case .idNumber:
