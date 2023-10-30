@@ -22,44 +22,52 @@ struct HomeView: View {
                             image: "userauth",
                             name: "SmartSelfie™ Enrollment",
                             onClick: { smartSelfieEnrollmentUserId = generateUserId() },
-                            content: SmileID.smartSelfieEnrollmentScreen(
-                                userId: smartSelfieEnrollmentUserId,
-                                allowAgentMode: true,
-                                delegate: SmartSelfieEnrollmentDelegate(
+                            content: {
+                                SmileID.smartSelfieEnrollmentScreen(
                                     userId: smartSelfieEnrollmentUserId,
-                                    onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                                    onError: viewModel.didError
+                                    allowAgentMode: true,
+                                    delegate: SmartSelfieEnrollmentDelegate(
+                                        userId: smartSelfieEnrollmentUserId,
+                                        onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                                        onError: viewModel.didError
+                                    )
                                 )
-                            )
+                            }
                         ),
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Authentication",
-                            content: SmartSelfieAuthWithUserIdEntry(
-                                initialUserId: smartSelfieEnrollmentUserId,
-                                delegate: viewModel
-                            )
+                            content: {
+                                SmartSelfieAuthWithUserIdEntry(
+                                    initialUserId: smartSelfieEnrollmentUserId,
+                                    delegate: viewModel
+                                )
+                            }
                         ),
                         ProductCell(
                             image: "document",
-                            name: "Document Verification",
-                            content: DocumentVerificationWithSelector(delegate: viewModel)
+                            name: "\nDocument Verification",
+                            content: { DocumentVerificationWithSelector(delegate: viewModel) }
                         ),
                         ProductCell(
                             image: "document",
                             name: "Enhanced Document Verification",
-                            content: EnhancedDocumentVerificationWithSelector(delegate: viewModel)
+                            content: {
+                                EnhancedDocumentVerificationWithSelector(delegate: viewModel)
+                            }
                         ),
                         ProductCell(
                             image: "biometric",
                             name: "Biometric KYC",
-                            content: SmileID.biometricKycScreen(
-                                partnerIcon: UIImage(named: "SmileLogo")!,
-                                partnerName: "Smile ID",
-                                productName: "Consent Demo",
-                                partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
-                                delegate: viewModel
-                            )
+                            content: {
+                                SmileID.biometricKycScreen(
+                                    partnerIcon: UIImage(named: "SmileLogo")!,
+                                    partnerName: "Smile ID",
+                                    productName: "ID",
+                                    partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
+                                    delegate: viewModel
+                                )
+                            }
                         )
                     ].map { AnyView($0) }
                 )
@@ -78,7 +86,7 @@ struct HomeView: View {
                 }
                 .padding()
                 .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
-                .navigationBarItems(trailing: ToggleButton())
+                .navigationBarItems(trailing: SmileEnvironmentToggleButton())
                 .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
         }
     }
@@ -199,7 +207,7 @@ private struct MyVerticalGrid: View {
     var body: some View {
         GeometryReader { geo in
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
                     let numRows = (items.count + maxColumns - 1) / maxColumns
                     ForEach(0..<numRows) { rowIndex in
                         HStack(spacing: 16) {
@@ -223,7 +231,7 @@ private struct MyVerticalGrid: View {
 }
 
 @available(iOS 14.0, *)
-struct HomeView_Previews: PreviewProvider {
+private struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         let _ = SmileID.initialize(
             config: Config(

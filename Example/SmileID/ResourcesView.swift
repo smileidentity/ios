@@ -97,7 +97,7 @@ struct AboutUsCell: View {
     }
 }
 
-struct ResourcesView_Previews: PreviewProvider {
+private struct ResourcesView_Previews: PreviewProvider {
     static var previews: some View {
         ResourcesView()
     }

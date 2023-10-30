@@ -37,13 +37,16 @@ public class SmileIDResourcesHelper {
         }
     }
 
-    /// Get localized strings
-    public static func localizedString(for key: String) -> String {
-        NSLocalizedString(
-            key,
-            tableName: SmileID.localizableStrings?.tablename,
-            bundle: SmileID.localizableStrings?.bundle ?? bundle,
-            comment: ""
+    /// Get localized, parametrized strings
+    public static func localizedString(for key: String, _ args: CVarArg...) -> String {
+        String(
+            format: NSLocalizedString(
+                key,
+                tableName: SmileID.localizableStrings?.tablename,
+                bundle: SmileID.localizableStrings?.bundle ?? bundle,
+                comment: ""
+            ),
+            arguments: args
         )
     }
 

@@ -15,7 +15,7 @@ struct NavigationBar: View {
     }
 }
 
-struct NavigationBar_Previews: PreviewProvider {
+private struct NavigationBar_Previews: PreviewProvider {
     static var previews: some View {
         NavigationBar(backButtonHandler: {})
     }

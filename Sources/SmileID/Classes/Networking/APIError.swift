@@ -8,6 +8,7 @@ public enum SmileIDError: Error {
     case api(String, String)
     case httpError(Int, Data)
     case jobStatusTimeOut
+    case consentDenied
 }
 
 extension SmileIDError: LocalizedError {
@@ -27,6 +28,8 @@ extension SmileIDError: LocalizedError {
             return message
         case .jobStatusTimeOut:
             return "Job submitted successfully but polling job status timed out"
+        case .consentDenied:
+            return "Consent Denied"
         }
     }
 }

@@ -56,7 +56,7 @@ struct FaceShape: Shape {
     }
 }
 
-struct FaceShape_Previews: PreviewProvider {
+private struct FaceShape_Previews: PreviewProvider {
     static var previews: some View {
         FaceShape()
     }

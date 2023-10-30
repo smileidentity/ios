@@ -405,11 +405,13 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         processingState = .inProgress
         var zip: Data
         do {
-            savedFiles = try LocalStorage.saveImageJpg(
-                livenessImages: livenessImages,
-                previewImage: selfieImage
+            savedFiles = try LocalStorage.saveSelfieImages(
+                selfieImage: selfieImage,
+                livenessImages: livenessImages
             )
-            let zipUrl = try LocalStorage.zipFiles(at: savedFiles!.allFiles)
+            let zipUrl = try LocalStorage.zipFiles(
+                at: savedFiles!.livenessImages + [savedFiles!.selfie]
+            )
             zip = try Data(contentsOf: zipUrl)
         } catch {
             processingState = .error(error)
@@ -487,7 +489,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
             selfieImage = nil
         }
         if let savedFiles = savedFiles {
-            try? LocalStorage.delete(at: savedFiles.allFiles)
+            try? LocalStorage.delete(at: savedFiles.livenessImages + [savedFiles.selfie])
         }
     }
 

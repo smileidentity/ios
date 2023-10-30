@@ -33,7 +33,7 @@ struct ProcessingView: View {
     }
 }
 
-struct ProcessingView_Previews: PreviewProvider {
+private struct ProcessingView_Previews: PreviewProvider {
     static var previews: some View {
         ProcessingView(
             image: SmileIDResourcesHelper.FaceOutline,

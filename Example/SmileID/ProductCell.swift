@@ -5,14 +5,14 @@ struct ProductCell: View {
     let image: String
     let name: String
     let onClick: (() -> Void)?
-    let content: any View
+    @ViewBuilder let content: () -> any View
     @State private var isPresented: Bool = false
 
     init(
         image: String,
         name: String,
         onClick: (() -> Void)? = nil,
-        content: any View
+        @ViewBuilder content: @escaping () -> any View
     ) {
         self.image = image
         self.name = name
@@ -41,18 +41,18 @@ struct ProductCell: View {
                     .frame(maxWidth: .infinity)
                     .background(SmileID.theme.accent)
                     .cornerRadius(8)
-                    .sheet(isPresented: $isPresented, content: { AnyView(content) })
+                    .sheet(isPresented: $isPresented, content: { AnyView(content()) })
             }
         )
     }
 }
 
-struct ProductCell_Previews: PreviewProvider {
+private struct ProductCell_Previews: PreviewProvider {
     static var previews: some View {
         ProductCell(
             image: "userauth",
             name: "SmartSelfie™ Authentication",
-            content: Text("Hello")
+            content: { Text("Hello") }
         )
     }
 }

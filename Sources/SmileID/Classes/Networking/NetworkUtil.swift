@@ -1,5 +1,6 @@
-import Foundation
+import Combine
 import CommonCrypto
+import Foundation
 
 func calculateSignature(timestamp: String) throws -> String {
     guard let apiKey = SmileID.apiKey else {
@@ -53,6 +54,32 @@ enum CryptoAlgorithm {
         switch self {
         case .SHA256:
             return Int(CC_SHA256_DIGEST_LENGTH)
+        }
+    }
+}
+
+internal extension AnyPublisher {
+    func async() async throws -> Output {
+        try await withCheckedThrowingContinuation { continuation in
+            var cancellable: AnyCancellable?
+            var finishedWithoutValue = true
+            cancellable = first()
+                .sink { result in
+                    switch result {
+                    case .finished:
+                        if finishedWithoutValue {
+                            continuation.resume(
+                                throwing: SmileIDError.unknown("Publisher finished without value")
+                            )
+                        }
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                    }
+                    cancellable?.cancel()
+                } receiveValue: { value in
+                    finishedWithoutValue = false
+                    continuation.resume(with: .success(value))
+                }
         }
     }
 }

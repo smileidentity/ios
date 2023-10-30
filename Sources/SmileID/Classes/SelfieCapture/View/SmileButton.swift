@@ -78,7 +78,7 @@ public struct SmileButton: View {
     }
 }
 
-struct SmileButton_Previews: PreviewProvider {
+private struct SmileButton_Previews: PreviewProvider {
     static var previews: some View {
         SmileButton(
             title: "Instructions.Action",

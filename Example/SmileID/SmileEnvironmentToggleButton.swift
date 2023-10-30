@@ -1,7 +1,7 @@
 import SwiftUI
 import SmileID
 
-struct ToggleButton: View {
+struct SmileEnvironmentToggleButton: View {
     @State private var isProduction: Bool = false
 
     var body: some View {
@@ -30,8 +30,8 @@ extension Color {
     static let amberColor = Color(red: 45 / 255, green: 43 / 255, blue: 42 / 255)
 }
 
-struct ToggleButton_Previews: PreviewProvider {
+private struct SmileEnvironmentToggleButton_Previews: PreviewProvider {
     static var previews: some View {
-        ToggleButton()
+        SmileEnvironmentToggleButton()
     }
 }

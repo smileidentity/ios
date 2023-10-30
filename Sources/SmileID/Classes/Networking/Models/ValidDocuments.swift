@@ -80,10 +80,14 @@ public struct ProductsConfigRequest: Encodable {
         signature = try? calculateSignature(timestamp: timestamp)
     }
 
-    public init(partnerId: String, timestamp: String, signature: String) {
-        self.partnerId = partnerId
+    public init(
+        timestamp: String,
+        signature: String,
+        partnerId: String = SmileID.config.partnerId
+    ) {
         self.signature = signature
         self.timestamp = timestamp
+        self.partnerId = partnerId
     }
 
     enum CodingKeys: String, CodingKey {

@@ -11,7 +11,7 @@ struct CaptureButton: View {
     }
 }
 
-struct CaptureButton_Previews: PreviewProvider {
+private struct CaptureButton_Previews: PreviewProvider {
     static var previews: some View {
         CaptureButton {}
     }

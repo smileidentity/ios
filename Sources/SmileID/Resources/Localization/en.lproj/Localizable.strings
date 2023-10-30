@@ -59,6 +59,8 @@
 "Document.Directive.Default" = "Please fill the frame with your ID. Ensure all corners are visible and there is no glare";
 "Document.Directive.Capturing" = "Capturing…";
 
+"Consent.ViewPrivacyPolicy" = "You can view %@'s privacy policy here";
+"Consent.Disclaimer" = "By choosing 'Allow' you grant %@ consent to process your personal data to offer you this service";
 "Consent.Denied" = "Consent Denied";
 "Consent.DeniedTitle" = "We cannot verify without your consent";
 "Consent.DeniedDescription" = "Do you wish to go back and correct that?";
@@ -82,3 +84,14 @@
 "IdInfo.Year" = "Year";
 "IdInfo.BankCode" = "Bank Code";
 "IdInfo.Citizenship" = "Citizenship";
+
+"BiometricKYC.Loading.IdTypes" = "Loading ID Types…";
+"BiometricKYC.SelectIdType" = "Select ID Type";
+"BiometricKYC.Loading.Consent" = "Loading…";
+"BiometricKYC.EnterIdInfoTitle" = "Enter ID Information";
+"BiometricKYC.Processing.Title" = "Processing your Selfie and ID";
+"BiometricKYC.Processing.Subtitle" = "Just a few more seconds";
+"BiometricKYC.Success.Title" = "Submission Complete";
+"BiometricKYC.Success.Subtitle" = "You may now proceed";
+"BiometricKYC.Error.Title" = "Your submission failed to process";
+"BiometricKYC.Error.Subtitle" = "This could be because of image quality or internet connectivity";

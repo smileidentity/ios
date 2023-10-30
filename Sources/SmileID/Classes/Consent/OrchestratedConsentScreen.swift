@@ -104,11 +104,16 @@ private struct ConsentScreen: View {
 
             Spacer()
             Divider()
-            Text("You can view \(partnerName)'s Privacy Policy here")
+            Text(
+                SmileIDResourcesHelper.localizedString(
+                    for: "Consent.ViewPrivacyPolicy",
+                    partnerName
+                )
+            )
                 .foregroundColor(SmileID.theme.accent)
                 .font(SmileID.theme.body)
                 .onTapGesture { UIApplication.shared.open(partnerPrivacyPolicy) }
-            Text("By choosing 'Allow' you grant \(partnerName) consent to process your personal data to offer you this service")
+            Text(SmileIDResourcesHelper.localizedString(for: "Consent.Disclaimer", partnerName))
                 .foregroundColor(SmileID.theme.onLight)
                 .font(SmileID.theme.body)
             VStack(spacing: 8) {
