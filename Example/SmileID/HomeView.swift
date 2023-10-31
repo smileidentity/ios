@@ -72,8 +72,6 @@ struct HomeView: View {
                     ].map { AnyView($0) }
                 )
 
-                Spacer()
-
                 Text("Partner \(partner) - Version \(version) - Build \(build)")
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)

@@ -8,7 +8,7 @@ struct MainView: View {
         UITabBar.appearance().barTintColor = UIColor(SmileID.theme.backgroundLight)
         UITabBar.appearance().tintColor = UIColor(SmileID.theme.accent)
         UINavigationBar.appearance().largeTitleTextAttributes = [
-            .font: UIFont(name: "Georgia-Bold", size: 30)!
+            .font: UIFont(name: "Epilogue-Bold", size: 30)!
         ]
     }
 
