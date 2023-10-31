@@ -53,12 +53,15 @@ struct SmileConfigEntryView: View {
 
             Spacer()
 
-            Button(action: { onNewSmileConfig(smileConfigTextFieldValue) }) {
-                Text("Update Smile Config")
-                    .padding()
-                    .font(SmileID.theme.button)
-                    .frame(maxWidth: .infinity)
-            }
+            Button(
+                action: { onNewSmileConfig(smileConfigTextFieldValue) },
+                label: {
+                    Text("Update Smile Config")
+                        .padding()
+                        .font(SmileID.theme.button)
+                        .frame(maxWidth: .infinity)
+                }
+            )
                 .foregroundColor(SmileID.theme.onDark)
                 .background(SmileID.theme.accent)
                 .cornerRadius(60)
@@ -66,12 +69,15 @@ struct SmileConfigEntryView: View {
                 .padding(.horizontal)
                 .padding(.vertical, 2)
 
-            Button(action: { print("Scan QR Code from Portal") }) {
-                Text("Scan QR Code from Portal")
-                    .padding()
-                    .font(SmileID.theme.button)
-                    .frame(maxWidth: .infinity)
-            }
+            Button(
+                action: { print("TODO") },
+                label: {
+                    Text("Scan QR Code from Portal")
+                        .padding()
+                        .font(SmileID.theme.button)
+                        .frame(maxWidth: .infinity)
+                }
+            )
                 .foregroundColor(SmileID.theme.accent)
                 .background(Color.clear)
                 .overlay(
