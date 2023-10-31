@@ -99,8 +99,11 @@ private struct SmileConfigEntryView: View {
             }
             textField
                 .autocorrectionDisabled(true)
-                // .textFieldStyle(.roundedBorder)
                 .foregroundColor(SmileID.theme.onLight)
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10).stroke(SmileID.theme.accent, lineWidth: 2)
+                )
                 .padding()
 
             Spacer()
