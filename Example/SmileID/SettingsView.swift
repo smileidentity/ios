@@ -171,10 +171,11 @@ class SettingsViewModel: ObservableObject {
         DispatchQueue.main.async { self.showSheet = true }
     }
 
-    func updateSmileConfig(_ newConfig: String) {
+    func updateSmileConfig(_ configJson: String) {
         do {
-            let config = try jsonDecoder.decode(Config.self, from: newConfig.data(using: .utf8)!)
+            let config = try jsonDecoder.decode(Config.self, from: configJson.data(using: .utf8)!)
             SmileID.initialize(config: config)
+            UserDefaults.standard.set(configJson, forKey: "smileConfig")
             DispatchQueue.main.async {
                 self.errorMessage = nil
                 self.showSheet = false

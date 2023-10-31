@@ -2,11 +2,14 @@ import SmileID
 import SwiftUI
 
 struct HomeView: View {
-    let partner = SmileID.configuration.partnerId
     let version = SmileID.version
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @State private var smartSelfieEnrollmentUserId: String = ""
-    @ObservedObject var viewModel = HomeViewModel()
+    @ObservedObject var viewModel: HomeViewModel
+
+    init(config: Config) {
+        viewModel = HomeViewModel(config: config)
+    }
 
     var body: some View {
         NavigationView {
@@ -72,7 +75,7 @@ struct HomeView: View {
                     ].map { AnyView($0) }
                 )
 
-                Text("Partner \(partner) - Version \(version) - Build \(build)")
+                Text("Partner \(viewModel.partnerId) - Version \(version) - Build \(build)")
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }
@@ -242,6 +245,13 @@ private struct HomeView_Previews: PreviewProvider {
             ),
             useSandbox: true
         )
-        HomeView()
+        HomeView(config: Config(
+            partnerId: "1000",
+            authToken: "",
+            prodUrl: "",
+            testUrl: "",
+            prodLambdaUrl: "",
+            testLambdaUrl: ""
+        ))
     }
 }

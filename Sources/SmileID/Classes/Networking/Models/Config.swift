@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Config: Decodable {
+public struct Config: Codable {
     public var partnerId: String
     public var authToken: String
     public var prodUrl: String
