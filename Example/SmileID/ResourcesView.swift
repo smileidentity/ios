@@ -3,48 +3,50 @@ import SwiftUI
 
 struct ResourcesView: View {
     var body: some View {
-        VStack(spacing: 16) {
-            ResourceCell(
-                title: "Explore Documentation",
-                caption: "Read everything relating to our stack"
-            ) {
-                openUrl("https://docs.usesmileid.com/")
-            }
+        NavigationView {
+            VStack(spacing: 16) {
+                ResourceCell(
+                    title: "Explore Documentation",
+                    caption: "Read everything relating to our stack"
+                ) {
+                    openUrl("https://docs.usesmileid.com/")
+                }
 
-            ResourceCell(
-                title: "Privacy Policy",
-                caption: "Learn more about how we handle data"
-            ) {
-                openUrl("https://usesmileid.com/privacy-policy")
-            }
+                ResourceCell(
+                    title: "Privacy Policy",
+                    caption: "Learn more about how we handle data"
+                ) {
+                    openUrl("https://usesmileid.com/privacy-policy")
+                }
 
-            ResourceCell(title: "View FAQs", caption: "Explore frequently asked questions") {
-                openUrl("https://docs.usesmileid.com/further-reading/faqs")
-            }
+                ResourceCell(title: "View FAQs", caption: "Explore frequently asked questions") {
+                    openUrl("https://docs.usesmileid.com/further-reading/faqs")
+                }
 
-            ResourceCell(
-                title: "Supported ID Types and Documents",
-                caption: "See our coverage range across the continent"
-            ) {
-                openUrl("https://docs.usesmileid.com/supported-id-types/for-individuals-kyc")
-            }
+                ResourceCell(
+                    title: "Supported ID Types and Documents",
+                    caption: "See our coverage range across the continent"
+                ) {
+                    openUrl("https://docs.usesmileid.com/supported-id-types/for-individuals-kyc")
+                }
 
-            AboutUsCell(imageName: "info.circle.fill", title: "About Us") {
-                openUrl("https://usesmileid.com/about-us")
-            }
+                AboutUsCell(imageName: "info.circle.fill", title: "About Us") {
+                    openUrl("https://usesmileid.com/about-us")
+                }
 
-            AboutUsCell(imageName: "star.fill", title: "Visit our website") {
-                openUrl("https://usesmileid.com")
-            }
+                AboutUsCell(imageName: "star.fill", title: "Visit our website") {
+                    openUrl("https://usesmileid.com")
+                }
 
-            AboutUsCell(imageName: "envelope.fill", title: "Contact support") {
-                openUrl("https://usesmileid.com/contact-us")
+                AboutUsCell(imageName: "envelope.fill", title: "Contact support") {
+                    openUrl("https://usesmileid.com/contact-us")
+                }
+                Spacer()
             }
-            Spacer()
+                .padding()
+                .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
+                .navigationBarTitle("Resources", displayMode: .large)
         }
-            .padding()
-            .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
-            .navigationBarTitle("Resources", displayMode: .inline)
     }
 }
 
