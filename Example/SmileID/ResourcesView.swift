@@ -52,8 +52,9 @@ struct ResourcesView: View {
 
             if #available(iOS 16.0, *) {
                 scrollView.toolbarBackground(SmileID.theme.backgroundLight, for: .navigationBar)
+            } else {
+                scrollView
             }
-            scrollView
         }
     }
 }
