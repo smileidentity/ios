@@ -17,8 +17,9 @@ struct SmileConfigEntryView: View {
     var body: some View {
         VStack {
             Spacer()
-            let textField = if #available(iOS 16.0, *) {
-                AnyView(
+            let textField: AnyView
+            if #available(iOS 16.0, *) {
+                textField = AnyView(
                     TextField(
                         "Paste your Smile Config from the Portal here",
                         text: $smileConfigTextFieldValue,
@@ -28,7 +29,7 @@ struct SmileConfigEntryView: View {
                         .lineLimit(10, reservesSpace: true)
                 )
             } else {
-                AnyView(
+                textField = AnyView(
                     TextField(
                         "Paste your Smile Config from the Portal here",
                         text: $smileConfigTextFieldValue
