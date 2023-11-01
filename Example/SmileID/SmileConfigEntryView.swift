@@ -17,25 +17,29 @@ struct SmileConfigEntryView: View {
     var body: some View {
         VStack {
             Spacer()
-            let textField: AnyView
-            if #available(iOS 16.0, *) {
-                textField = AnyView(
-                    TextField(
-                        "Paste your Smile Config from the Portal here",
-                        text: $smileConfigTextFieldValue,
-                        axis: .vertical
+            // textField is defined as a getter for compatibility with the #available macro. An
+            // alternative would be to use the new Swift feature of if-expressions, but our CI
+            // doesn't support Xcode 15 just yet.
+            var textField: AnyView {
+                if #available(iOS 16.0, *) {
+                    return AnyView(
+                        TextField(
+                            "Paste your Smile Config from the Portal here",
+                            text: $smileConfigTextFieldValue,
+                            axis: .vertical
+                        )
+                            .textInputAutocapitalization(.none)
+                            .lineLimit(10, reservesSpace: true)
                     )
-                        .textInputAutocapitalization(.none)
-                        .lineLimit(10, reservesSpace: true)
-                )
-            } else {
-                textField = AnyView(
-                    TextField(
-                        "Paste your Smile Config from the Portal here",
-                        text: $smileConfigTextFieldValue
+                } else {
+                    return AnyView(
+                        TextField(
+                            "Paste your Smile Config from the Portal here",
+                            text: $smileConfigTextFieldValue
+                        )
+                            .lineLimit(10)
                     )
-                        .lineLimit(10)
-                )
+                }
             }
             let strokeColor = errorMessage == nil ? SmileID.theme.accent : SmileID.theme.error
             textField
