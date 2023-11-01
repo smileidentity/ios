@@ -33,7 +33,7 @@ jobs:
     name: "Build App and Run Unit Tests"
     # TODO: Change back to macos-latest once it points to macOS 13
     runs-on: macos-13
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v3
