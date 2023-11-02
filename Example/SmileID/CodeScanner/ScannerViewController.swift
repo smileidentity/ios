@@ -159,7 +159,7 @@ extension CodeScannerView {
 
         private lazy var manualCaptureButton: UIButton = {
             let button = UIButton(type: .system)
-            let image = UIImage(named: "capture")
+            let image = UIImage(systemName: "camera.aperture")
             button.setBackgroundImage(image, for: .normal)
             button.addTarget(self, action: #selector(manualCapturePressed), for: .touchUpInside)
             button.translatesAutoresizingMaskIntoConstraints = false

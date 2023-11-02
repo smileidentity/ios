@@ -100,7 +100,11 @@ struct SmileConfigEntryView: View {
         }
             .background(SmileID.theme.backgroundLightest.ignoresSafeArea())
             .sheet(isPresented: $showQrCodeScanner) {
-                CodeScannerView(codeTypes: [.qr]) { response in
+                CodeScannerView(
+                    codeTypes: [.qr],
+                    scanInterval: 1,
+                    showViewfinder: true
+                ) { response in
                     if case let .success(result) = response {
                         let configJson = result.string
                         onNewSmileConfig(configJson)

@@ -94,7 +94,11 @@ struct OnboardingScreen: View {
                 }
             }
             .sheet(isPresented: $showQrCodeScanner) {
-                CodeScannerView(codeTypes: [.qr]) { response in
+                CodeScannerView(
+                    codeTypes: [.qr],
+                    scanInterval: 1,
+                    showViewfinder: true
+                ) { response in
                     if case let .success(result) = response {
                         let configJson = result.string
                         if updateSmileConfig(configJson) {
