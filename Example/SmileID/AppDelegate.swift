@@ -4,7 +4,6 @@ import SwiftUI
 import netfox
 
 @UIApplicationMain
-@available(iOS 14.0, *)
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?

@@ -1,7 +1,6 @@
 import SmileID
 import SwiftUI
 
-@available(iOS 14.0, *)
 struct OnboardingScreen: View {
     @State private var showManualEntrySheet = false
     @State private var errorMessage: String?

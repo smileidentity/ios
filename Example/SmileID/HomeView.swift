@@ -231,7 +231,6 @@ private struct MyVerticalGrid: View {
     }
 }
 
-@available(iOS 14.0, *)
 private struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         let _ = SmileID.initialize(

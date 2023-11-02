@@ -1,7 +1,6 @@
 import SwiftUI
 import SmileID
 
-@available(iOS 14.0, *)
 struct RootView: View {
     // This is set by the SettingsView
     @AppStorage("smileConfig") private var configJson = (
@@ -57,7 +56,6 @@ struct RootView: View {
     }
 }
 
-@available(iOS 14.0, *)
 private struct RootView_Previews: PreviewProvider {
     static var previews: some View {
         RootView()

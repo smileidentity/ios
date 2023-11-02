@@ -692,7 +692,7 @@
 				INFOPLIST_FILE = SmileID/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Smile ID";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.2;
 				MODULE_NAME = ExampleApp;
@@ -719,7 +719,7 @@
 				INFOPLIST_FILE = SmileID/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Smile ID";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.2;
 				MODULE_NAME = ExampleApp;
