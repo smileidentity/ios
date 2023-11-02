@@ -88,7 +88,7 @@ struct HomeView: View {
                 .padding()
                 .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
                 .navigationBarItems(trailing: SmileEnvironmentToggleButton())
-                .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
+                .background(SmileID.theme.backgroundLight.ignoresSafeArea())
         }
     }
 }
@@ -231,7 +231,6 @@ private struct MyVerticalGrid: View {
     }
 }
 
-@available(iOS 14.0, *)
 private struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         let _ = SmileID.initialize(

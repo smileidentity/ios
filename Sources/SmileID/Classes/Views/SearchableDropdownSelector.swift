@@ -74,7 +74,6 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
     }
 }
 
-@available(iOS 14.0, *)
 private struct SearchableDropdownSelectorUnselected_Previews: PreviewProvider {
     static var previews: some View {
         SearchableDropdownSelector(
@@ -95,7 +94,6 @@ private struct SearchableDropdownSelectorUnselected_Previews: PreviewProvider {
     }
 }
 
-@available(iOS 14.0, *)
 private struct SearchableDropdownSelectorSelected_Previews: PreviewProvider {
     static var previews: some View {
         let first = ValidDocument(

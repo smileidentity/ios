@@ -4,7 +4,6 @@ import SwiftUI
 import netfox
 
 @UIApplicationMain
-@available(iOS 14.0, *)
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
@@ -21,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // NOTE TO PARTNERS: Normally, you would call SmileID.initialize() here
 
-        window?.rootViewController = UIHostingController(rootView: MainView())
+        window?.rootViewController = UIHostingController(rootView: RootView())
         window?.makeKeyAndVisible()
         return true
     }

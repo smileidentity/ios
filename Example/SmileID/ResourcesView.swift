@@ -46,9 +46,9 @@ struct ResourcesView: View {
                 }
                     .padding()
                     .navigationBarTitle("Resources", displayMode: .large)
-                    .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
+                    .background(SmileID.theme.backgroundLight.ignoresSafeArea())
             }
-                .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
+                .background(SmileID.theme.backgroundLight.ignoresSafeArea())
 
             if #available(iOS 16.0, *) {
                 scrollView.toolbarBackground(SmileID.theme.backgroundLight, for: .navigationBar)

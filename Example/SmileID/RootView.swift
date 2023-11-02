@@ -1,8 +1,7 @@
 import SwiftUI
 import SmileID
 
-@available(iOS 14.0, *)
-struct MainView: View {
+struct RootView: View {
     // This is set by the SettingsView
     @AppStorage("smileConfig") private var configJson = (
         UserDefaults.standard.string(forKey: "smileConfig") ?? ""
@@ -15,8 +14,9 @@ struct MainView: View {
     }
 
     var body: some View {
-        let configUrl = Bundle.main.url(forResource: "smile_config", withExtension: "json")!
-        let builtInConfig = try? jsonDecoder.decode(Config.self, from: Data(contentsOf: configUrl))
+        // It is possible the app was built without a smile_config, so it may be null
+        let builtInConfig = Bundle.main.url(forResource: "smile_config", withExtension: "json")
+            .flatMap { try? jsonDecoder.decode(Config.self, from: Data(contentsOf: $0)) }
         let configFromUserStorage = try? jsonDecoder.decode(
             Config.self,
             from: configJson.data(using: .utf8)!
@@ -47,19 +47,18 @@ struct MainView: View {
                     }
             }
                 .accentColor(SmileID.theme.accent)
-                .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
-                .edgesIgnoringSafeArea(.all)
+                .background(SmileID.theme.backgroundLight.ignoresSafeArea())
+                .ignoresSafeArea()
                 .preferredColorScheme(.light)
 
         } else {
-            Text("Under Construction")
+            OnboardingScreen()
         }
     }
 }
 
-@available(iOS 14.0, *)
-private struct MainView_Previews: PreviewProvider {
+private struct RootView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView()
+        RootView()
     }
 }

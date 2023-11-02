@@ -112,7 +112,6 @@ struct IdInfoInputScreen: View {
     }
 }
 
-@available(iOS 14.0, *)
 private struct IdInfoInputScreen_Previews: PreviewProvider {
     static var previews: some View {
         IdInfoInputScreen(

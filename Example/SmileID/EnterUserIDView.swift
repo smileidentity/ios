@@ -29,11 +29,10 @@ struct EnterUserIDView: View {
             Spacer()
         }
             .padding(.top, 50)
-            .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
+            .background(SmileID.theme.backgroundLight.ignoresSafeArea())
     }
 }
 
-@available(iOS 14.0, *)
 private struct EnterUserIDView_Previews: PreviewProvider {
     static var previews: some View {
         EnterUserIDView(initialUserId: "initialValue") { _ in }
