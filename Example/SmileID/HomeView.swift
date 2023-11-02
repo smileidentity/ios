@@ -88,7 +88,7 @@ struct HomeView: View {
                 .padding()
                 .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
                 .navigationBarItems(trailing: SmileEnvironmentToggleButton())
-                .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
+                .background(SmileID.theme.backgroundLight.ignoresSafeArea())
         }
     }
 }

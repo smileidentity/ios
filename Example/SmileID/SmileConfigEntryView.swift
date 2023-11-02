@@ -97,7 +97,7 @@ struct SmileConfigEntryView: View {
                 .padding(.horizontal)
                 .padding(.vertical, 2)
         }
-            .background(SmileID.theme.backgroundLightest.edgesIgnoringSafeArea(.all))
+            .background(SmileID.theme.backgroundLightest.ignoresSafeArea())
     }
 }
 

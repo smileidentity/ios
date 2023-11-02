@@ -46,8 +46,8 @@ struct RootView: View {
                     }
             }
                 .accentColor(SmileID.theme.accent)
-                .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
-                .edgesIgnoringSafeArea(.all)
+                .background(SmileID.theme.backgroundLight.ignoresSafeArea())
+                .ignoresSafeArea()
                 .preferredColorScheme(.light)
 
         } else {

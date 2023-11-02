@@ -29,7 +29,7 @@ struct EnterUserIDView: View {
             Spacer()
         }
             .padding(.top, 50)
-            .background(SmileID.theme.backgroundLight.edgesIgnoringSafeArea(.all))
+            .background(SmileID.theme.backgroundLight.ignoresSafeArea())
     }
 }
 
