@@ -23,7 +23,6 @@ struct OnboardingScreen: View {
                 .font(SmileID.theme.header4)
                 .padding(.vertical)
 
-            // Create a clickable link that points to https://portal.usesmileid.com/sdk
             Link(
                 "https://portal.usesmileid.com/sdk",
                 destination: URL(string: "https://portal.usesmileid.com/sdk")!
