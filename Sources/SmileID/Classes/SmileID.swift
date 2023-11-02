@@ -285,7 +285,8 @@ public class SmileID {
     ///  - partnerPrivacyPolicy: A link to your own privacy policy to display
     ///  - idInfo: The ID information to look up in the ID Authority. If nil (default), an ID type
     ///  selector and input fields will be displayed. If provided, it is assumed that ALL required
-    ///  information has already been provided
+    ///  information has already been provided. If provided, but consent is required, we will ask
+    ///  the user to input their ID information again. It is best to omit this field.
     ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
     ///  to a unique User ID within your own system. If not provided, a random user ID is generated
     ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
