@@ -85,10 +85,10 @@
 "IdInfo.BankCode" = "Bank Code";
 "IdInfo.Citizenship" = "Citizenship";
 
-"BiometricKYC.Loading.IdTypes" = "Loading ID Types…";
+"BiometricKYC.Loading" = "Loading…";
 "BiometricKYC.SelectIdType" = "Select ID Type";
-"BiometricKYC.Loading.Consent" = "Loading…";
 "BiometricKYC.EnterIdInfoTitle" = "Enter ID Information";
+"BiometricKYC.EnterIdInfo.ReEntrySubtitle" = "Regulators require us to request your ID information again";
 "BiometricKYC.Processing.Title" = "Processing your Selfie and ID";
 "BiometricKYC.Processing.Subtitle" = "Just a few more seconds";
 "BiometricKYC.Success.Title" = "Submission Complete";

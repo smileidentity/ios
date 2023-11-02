@@ -7,12 +7,14 @@ import SwiftUI
 /// - Parameters:
 ///  - selectedCountry: The country code of the selected country
 ///  - selectedIdType: The ID type code of the selected ID type
-///  - header: The header to display at the top of the screen
+///  - title: The header to display at the top of the screen
+///  - subtitle: The subheader to display at the top of the screen
 ///  - requiredFields: The fields that the user must enter
 ///  - onResult: The callback to invoke when the user taps the Continue button. The result will be
 ///  delivered as an `IdInfo` object.
 struct IdInfoInputScreen: View {
-    let header: String
+    let title: String
+    let subtitle: String?
     let onResult: (IdInfo) -> Void
     let dateFormatter = DateFormatter()
     @ObservedObject var viewModel: IdInfoInputViewModel
@@ -20,11 +22,13 @@ struct IdInfoInputScreen: View {
     init(
         selectedCountry: String,
         selectedIdType: String,
-        header: String,
+        title: String,
+        subtitle: String? = nil,
         requiredFields: [RequiredField],
         onResult: @escaping (IdInfo) -> Void
     ) {
-        self.header = header
+        self.title = title
+        self.subtitle = subtitle
         self.onResult = onResult
         dateFormatter.dateFormat = "yyyy-MM-dd"
         viewModel = IdInfoInputViewModel(
@@ -38,11 +42,17 @@ struct IdInfoInputScreen: View {
         VStack(alignment: .center) {
             Form {
                 Section(
-                    header: Text(header)
+                    header: Text(title)
                         .font(SmileID.theme.header2)
                         .foregroundColor(SmileID.theme.onLight)
                         .padding(.vertical, 8)
                 ) {
+                    if let subtitle = subtitle {
+                        Text(subtitle)
+                            .font(SmileID.theme.body)
+                            .foregroundColor(SmileID.theme.onLight)
+                            .padding(.vertical, 8)
+                    }
                     let sortedKeys = viewModel.inputs.keys.sorted(by: RequiredField.sorter)
                     ForEach(sortedKeys, id: \.self) { key in
                         let localizedLabel = SmileIDResourcesHelper.localizedString(
@@ -117,7 +127,7 @@ private struct IdInfoInputScreen_Previews: PreviewProvider {
         IdInfoInputScreen(
             selectedCountry: "US",
             selectedIdType: "Driver's License",
-            header: "Enter ID Info",
+            title: "Enter ID Info",
             requiredFields: [.idNumber, .firstName, .lastName, .dateOfBirth, .bankCode],
             onResult: { _ in }
         )

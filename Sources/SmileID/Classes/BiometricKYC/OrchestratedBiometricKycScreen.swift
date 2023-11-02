@@ -88,13 +88,16 @@ struct OrchestratedBiometricKycScreen: View {
                 },
                 onConsentDenied: { delegate.didError(error: SmileIDError.consentDenied) }
             )
-        case .idInput(let country, let idType, let requiredFields):
+        case .idInput(let country, let idType, let requiredFields, let showReEntryBlurb):
             IdInfoInputScreen(
                 selectedCountry: country,
                 selectedIdType: idType,
-                header: SmileIDResourcesHelper.localizedString(
+                title: SmileIDResourcesHelper.localizedString(
                     for: "BiometricKYC.EnterIdInfoTitle"
                 ),
+                subtitle: showReEntryBlurb ? SmileIDResourcesHelper.localizedString(
+                    for: "BiometricKYC.EnterIdInfo.ReEntrySubtitle"
+                ) : nil,
                 requiredFields: requiredFields,
                 onResult: viewModel.onIdFieldsEntered
             ).frame(maxWidth: .infinity)

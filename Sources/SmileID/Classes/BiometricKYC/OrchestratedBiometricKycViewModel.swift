@@ -4,7 +4,12 @@ internal enum BiometricKycStep {
     case loading(messageKey: String)
     case idTypeSelection([CountryInfo])
     case consent(country: String, idType: String, requiredFields: [RequiredField])
-    case idInput(country: String, idType: String, requiredFields: [RequiredField])
+    case idInput(
+        country: String,
+        idType: String,
+        requiredFields: [RequiredField],
+        showReEntryBlurb: Bool
+    )
     case selfie
     case processing(ProcessingState)
 }
@@ -19,61 +24,70 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
     private var error: Error?
     private var selfieCaptureResultStore: SelfieCaptureResultStore?
     private var jobStatusResponse: BiometricKycJobStatusResponse?
+    private var countryList: [CountryInfo] = []
 
     // MARK: - UI Properties
     @Published @MainActor private (set) var step: BiometricKycStep = .loading(
-        messageKey: "BiometricKYC.Loading.IdTypes"
+        messageKey: "BiometricKYC.Loading"
     )
 
     init(userId: String, jobId: String, idInfo: IdInfo?) {
         self.userId = userId
         self.jobId = jobId
         self.idInfo = idInfo
-        if let idInfo = idInfo {
-            guard let idType = idInfo.idType else {
-                fatalError("You are expected to pass in the idType if you pass in idInfo")
-            }
-            // On this code path, we don't need to load services, ever, at all
-            loadConsent(country: idInfo.country, idType: idType, requiredFields: [])
-        } else {
-            loadIdTypes()
-        }
-    }
-
-    private func loadIdTypes() {
-        let authRequest = AuthenticationRequest(
-            jobType: .biometricKyc,
-            enrollment: false,
-            jobId: jobId,
-            userId: userId
-        )
-        DispatchQueue.main.async {
-            self.step = .loading(messageKey: "BiometricKYC.Loading.IdTypes")
-        }
+        DispatchQueue.main.async { self.step = .loading(messageKey: "BiometricKYC.Loading") }
         Task {
             do {
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
-                let productsConfigRequest = ProductsConfigRequest(
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                let productsConfigResponse = try await SmileID.api.getProductsConfig(
-                    request: productsConfigRequest
-                ).async()
-                let supportedCountries = productsConfigResponse.idSelection.biometricKyc
-                let servicesResponse = try await SmileID.api.getServices().async()
-                let servicesCountryInfo = servicesResponse.hostedWeb.biometricKyc
-                // sort by country name
-                let countryList = servicesCountryInfo
-                    .filter { supportedCountries.keys.contains($0.countryCode) }
-                    .sorted { $0.name < $1.name }
-                DispatchQueue.main.async { self.step = .idTypeSelection(countryList) }
+                self.countryList = try await getCountryList()
+                if let idInfo = idInfo {
+                    guard let idType = idInfo.idType else {
+                        fatalError("You are expected to pass in the idType if you pass in idInfo")
+                    }
+
+                    let requiredFields = self.countryList
+                        .first { $0.countryCode == idInfo.country }?
+                        .availableIdTypes
+                        .first { $0.idTypeKey == idType }?
+                        .requiredFields ?? []
+
+                    loadConsent(
+                        country: idInfo.country,
+                        idType: idType,
+                        requiredFields: requiredFields
+                    )
+                } else {
+                    DispatchQueue.main.async { self.step = .idTypeSelection(self.countryList) }
+                }
             } catch {
                 print("Error loading id types: \(error)")
                 self.error = error
                 DispatchQueue.main.async { self.step = .processing(.error) }
             }
         }
+    }
+
+    private func getCountryList() async throws -> [CountryInfo] {
+        let authRequest = AuthenticationRequest(
+            jobType: .biometricKyc,
+            enrollment: false,
+            jobId: jobId,
+            userId: userId
+        )
+        let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+        let productsConfigRequest = ProductsConfigRequest(
+            timestamp: authResponse.timestamp,
+            signature: authResponse.signature
+        )
+        let productsConfigResponse = try await SmileID.api.getProductsConfig(
+            request: productsConfigRequest
+        ).async()
+        let supportedCountries = productsConfigResponse.idSelection.biometricKyc
+        let servicesResponse = try await SmileID.api.getServices().async()
+        let servicesCountryInfo = servicesResponse.hostedWeb.biometricKyc
+        // sort by country name
+        return servicesCountryInfo
+            .filter { supportedCountries.keys.contains($0.countryCode) }
+            .sorted { $0.name < $1.name }
     }
 
     private func loadConsent(
@@ -89,9 +103,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
             country: country,
             idType: idType
         )
-        DispatchQueue.main.async {
-            self.step = .loading(messageKey: "BiometricKYC.Loading.Consent")
-        }
+        DispatchQueue.main.async { self.step = .loading(messageKey: "BiometricKYC.Loading") }
         Task {
             do {
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
@@ -104,8 +116,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
                         )
                     }
                 } else {
-                    // We don't need consent. Proceed forward as if consent has already been granted
-                    onConsentGranted(
+                    onConsentNotRequired(
                         country: country,
                         idType: idType,
                         requiredFields: requiredFields
@@ -124,6 +135,23 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
     }
 
     func onConsentGranted(country: String, idType: String, requiredFields: [RequiredField]) {
+        if idInfo != nil {
+            // Proactive explanation for partners so that this situation can be avoided
+            print("Consent was required, so we will ignore the passed in idInfo. Inputs will be asked from the user again.")
+        }
+        DispatchQueue.main.async {
+            self.step = .idInput(
+                country: country,
+                idType: idType,
+                requiredFields: requiredFields,
+                // If idInfo was passed in, BUT consent was required, we need to ask for the ID info
+                // ourselves (can't use the information passed by partner) as a legal requirement
+                showReEntryBlurb: self.idInfo != nil
+            )
+        }
+    }
+
+    func onConsentNotRequired(country: String, idType: String, requiredFields: [RequiredField]) {
         // If idInfo is already set, it was passed in, so we skip straight to selfie capture -- the
         // partner is required to pass in all required inputs
         if idInfo != nil {
@@ -133,7 +161,8 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
                 self.step = .idInput(
                     country: country,
                     idType: idType,
-                    requiredFields: requiredFields
+                    requiredFields: requiredFields,
+                    showReEntryBlurb: false
                 )
             }
         }
@@ -159,7 +188,17 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
 
     func onRetry() {
         if idInfo == nil {
-            loadIdTypes()
+            DispatchQueue.main.async { self.step = .loading(messageKey: "BiometricKYC.Loading") }
+            Task {
+                do {
+                    self.countryList = try await getCountryList()
+                    DispatchQueue.main.async { self.step = .idTypeSelection(self.countryList) }
+                } catch {
+                    print("Error loading id types: \(error)")
+                    self.error = error
+                    DispatchQueue.main.async { self.step = .processing(.error) }
+                }
+            }
         } else if selfieCaptureResultStore == nil {
             DispatchQueue.main.async { self.step = .selfie }
         } else {
