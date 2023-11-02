@@ -3,6 +3,7 @@ import SwiftUI
 
 struct OnboardingScreen: View {
     @State private var showManualEntrySheet = false
+    @State private var showQrCodeScanner = false
     @State private var errorMessage: String?
 
     var body: some View {
@@ -21,6 +22,7 @@ struct OnboardingScreen: View {
 
             Text("To begin testing, you need to add a configuration from the Smile Portal")
                 .font(SmileID.theme.header4)
+                .foregroundColor(SmileID.theme.onLight)
                 .padding(.vertical)
 
             Link(
@@ -34,7 +36,7 @@ struct OnboardingScreen: View {
             Spacer()
 
             Button(
-                action: { print("TODO") },
+                action: { showQrCodeScanner = true },
                 label: {
                     Spacer()
                     HStack {
@@ -89,6 +91,16 @@ struct OnboardingScreen: View {
                         .presentationDragIndicator(.visible)
                 } else {
                     content
+                }
+            }
+            .sheet(isPresented: $showQrCodeScanner) {
+                CodeScannerView(codeTypes: [.qr]) { response in
+                    if case let .success(result) = response {
+                        let configJson = result.string
+                        if updateSmileConfig(configJson) {
+                            showQrCodeScanner = false
+                        }
+                    }
                 }
             }
     }

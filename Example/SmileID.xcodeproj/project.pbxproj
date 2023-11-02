@@ -26,7 +26,9 @@
 		58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
+		6AC9802B9D1A630961B5454B /* CodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC98436935FFEA40E632182 /* CodeScanner.swift */; };
 		6AC983F056A8F9088D6CF3F7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC982147640002B81F72DEC /* SettingsView.swift */; };
+		6AC984526F49F4E8F52C7494 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */; };
 		6AC9870BB28E40FCACC75947 /* DocumentVerificationIdTypeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC9868BCF06ECE5F65DF248 /* DocumentVerificationIdTypeSelector.swift */; };
 		6AC98856053013D0E8ABB188 /* OnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC982F34F80CAE1AA5569AB /* OnboardingScreen.swift */; };
 		6AC98990097662789B0107EB /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */; };
@@ -34,7 +36,6 @@
 		6AC98C0E9305B4B3EB66ED35 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC980584C522B17A099E098 /* Util.swift */; };
 		6AC98F5682012E19C815AE70 /* DocumentSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */; };
 		915748532AA09A1F004A9F23 /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915748522AA09A1F004A9F23 /* RouterTests.swift */; };
-		916E487B2A4057B400C589FE /* smile_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 916E487A2A4057B400C589FE /* smile_config.json */; };
 		918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */; };
 		918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E12A52E36A00D6FB7F /* XCTestExtension.swift */; };
 		918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */; };
@@ -89,12 +90,13 @@
 		6AC980584C522B17A099E098 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		6AC982147640002B81F72DEC /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		6AC982F34F80CAE1AA5569AB /* OnboardingScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
+		6AC98436935FFEA40E632182 /* CodeScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeScanner.swift; sourceTree = "<group>"; };
 		6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileConfigEntryView.swift; sourceTree = "<group>"; };
 		6AC9868BCF06ECE5F65DF248 /* DocumentVerificationIdTypeSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentVerificationIdTypeSelector.swift; sourceTree = "<group>"; };
 		6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentSelectorViewModel.swift; sourceTree = "<group>"; };
+		6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		915748522AA09A1F004A9F23 /* RouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
-		916E487A2A4057B400C589FE /* smile_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = smile_config.json; sourceTree = "<group>"; };
 		918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionRestServiceClientTests.swift; sourceTree = "<group>"; };
 		918321E12A52E36A00D6FB7F /* XCTestExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XCTestExtension.swift; path = ../../Tests/XCTestExtension.swift; sourceTree = "<group>"; };
 		918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyContainerTests.swift; sourceTree = "<group>"; };
@@ -166,7 +168,6 @@
 				1ED53F642A2F28590020BEFB /* ResourcesView.swift */,
 				1ED53F632A2F28590020BEFB /* SmileTextField.swift */,
 				1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */,
-				916E487A2A4057B400C589FE /* smile_config.json */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				1E60ED352A29C306002695FF /* AppDelegate.swift */,
 				1E60ED332A29C306002695FF /* Constants.swift */,
@@ -183,6 +184,7 @@
 				6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */,
 				6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */,
 				6AC982F34F80CAE1AA5569AB /* OnboardingScreen.swift */,
+				6AC98DDBE27D169AF8DB4B98 /* CodeScanner */,
 			);
 			name = Example;
 			path = SmileID;
@@ -236,6 +238,15 @@
 				287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6AC98DDBE27D169AF8DB4B98 /* CodeScanner */ = {
+			isa = PBXGroup;
+			children = (
+				6AC98436935FFEA40E632182 /* CodeScanner.swift */,
+				6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */,
+			);
+			path = CodeScanner;
 			sourceTree = "<group>";
 		};
 		828BF541E068101B2E6ED55F /* Pods */ = {
@@ -400,7 +411,6 @@
 			files = (
 				1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
-				916E487B2A4057B400C589FE /* smile_config.json in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -527,6 +537,8 @@
 				6AC98990097662789B0107EB /* SettingsViewModel.swift in Sources */,
 				6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */,
 				6AC98856053013D0E8ABB188 /* OnboardingScreen.swift in Sources */,
+				6AC9802B9D1A630961B5454B /* CodeScanner.swift in Sources */,
+				6AC984526F49F4E8F52C7494 /* ScannerViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,6 +2,7 @@ import SmileID
 import SwiftUI
 
 struct SmileConfigEntryView: View {
+    @State private var showQrCodeScanner = false
     private let errorMessage: String?
     private let onNewSmileConfig: (_ newConfig: String) -> Void
 
@@ -75,7 +76,7 @@ struct SmileConfigEntryView: View {
                 .padding(.vertical, 2)
 
             Button(
-                action: { print("TODO") },
+                action: { showQrCodeScanner = true },
                 label: {
                     HStack {
                         Image(systemName: "qrcode")
@@ -98,6 +99,14 @@ struct SmileConfigEntryView: View {
                 .padding(.vertical, 2)
         }
             .background(SmileID.theme.backgroundLightest.ignoresSafeArea())
+            .sheet(isPresented: $showQrCodeScanner) {
+                CodeScannerView(codeTypes: [.qr]) { response in
+                    if case let .success(result) = response {
+                        let configJson = result.string
+                        onNewSmileConfig(configJson)
+                    }
+                }
+            }
     }
 }
 

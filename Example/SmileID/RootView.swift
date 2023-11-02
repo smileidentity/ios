@@ -14,8 +14,8 @@ struct RootView: View {
     }
 
     var body: some View {
-        let configUrl = Bundle.main.url(forResource: "smile_config", withExtension: "json")!
-        let builtInConfig = try? jsonDecoder.decode(Config.self, from: Data(contentsOf: configUrl))
+        let builtInConfig = Bundle.main.url(forResource: "smile_config", withExtension: "json")
+            .flatMap { try? jsonDecoder.decode(Config.self, from: Data(contentsOf: $0)) }
         let configFromUserStorage = try? jsonDecoder.decode(
             Config.self,
             from: configJson.data(using: .utf8)!
