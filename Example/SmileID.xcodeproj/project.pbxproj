@@ -15,7 +15,7 @@
 		1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECAE3862A2F69BC00653FCA /* ToastView.swift */; };
 		1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F602A2F28590020BEFB /* HomeViewModel.swift */; };
 		1ED53F6B2A2F28590020BEFB /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F612A2F28590020BEFB /* ProductCell.swift */; };
-		1ED53F6C2A2F28590020BEFB /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F622A2F28590020BEFB /* MainView.swift */; };
+		1ED53F6C2A2F28590020BEFB /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F622A2F28590020BEFB /* RootView.swift */; };
 		1ED53F6D2A2F28590020BEFB /* SmileTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F632A2F28590020BEFB /* SmileTextField.swift */; };
 		1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F642A2F28590020BEFB /* ResourcesView.swift */; };
 		1ED53F712A2F28590020BEFB /* EnterUserIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */; };
@@ -66,7 +66,7 @@
 		1ECAE3862A2F69BC00653FCA /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		1ED53F602A2F28590020BEFB /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		1ED53F612A2F28590020BEFB /* ProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
-		1ED53F622A2F28590020BEFB /* MainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		1ED53F622A2F28590020BEFB /* RootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		1ED53F632A2F28590020BEFB /* SmileTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileTextField.swift; sourceTree = "<group>"; };
 		1ED53F642A2F28590020BEFB /* ResourcesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourcesView.swift; sourceTree = "<group>"; };
 		1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterUserIDView.swift; sourceTree = "<group>"; };
@@ -159,7 +159,7 @@
 				1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */,
 				1ED53F692A2F28590020BEFB /* HomeView.swift */,
 				1ED53F602A2F28590020BEFB /* HomeViewModel.swift */,
-				1ED53F622A2F28590020BEFB /* MainView.swift */,
+				1ED53F622A2F28590020BEFB /* RootView.swift */,
 				1ED53F612A2F28590020BEFB /* ProductCell.swift */,
 				1ED53F642A2F28590020BEFB /* ResourcesView.swift */,
 				1ED53F632A2F28590020BEFB /* SmileTextField.swift */,
@@ -505,7 +505,7 @@
 			files = (
 				1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */,
 				1ED53F722A2F28590020BEFB /* SmileEnvironmentToggleButton.swift in Sources */,
-				1ED53F6C2A2F28590020BEFB /* MainView.swift in Sources */,
+				1ED53F6C2A2F28590020BEFB /* RootView.swift in Sources */,
 				1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */,
 				1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */,
 				1E60ED372A29C306002695FF /* HomeViewController.swift in Sources */,
