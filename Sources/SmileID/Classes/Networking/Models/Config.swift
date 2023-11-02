@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Config: Decodable {
+public struct Config: Codable {
     public var partnerId: String
     public var authToken: String
     public var prodUrl: String
@@ -23,19 +23,13 @@ public struct Config: Decodable {
         self.prodLambdaUrl = prodLambdaUrl
         self.testLambdaUrl = testLambdaUrl
     }
-}
 
-public extension Config {
-    init(url: URL) throws {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let data = try Data(contentsOf: url)
-        let decodedConfig = try decoder.decode(Config.self, from: data)
-        partnerId = decodedConfig.partnerId
-        authToken = decodedConfig.authToken
-        prodUrl = decodedConfig.prodUrl
-        testUrl = decodedConfig.testUrl
-        prodLambdaUrl = decodedConfig.prodLambdaUrl
-        testLambdaUrl = decodedConfig.testLambdaUrl
+    enum CodingKeys: String, CodingKey {
+        case partnerId = "partner_id"
+        case authToken = "auth_token"
+        case prodUrl = "prod_url"
+        case testUrl = "test_url"
+        case prodLambdaUrl = "prod_lambda_url"
+        case testLambdaUrl = "test_lambda_url"
     }
 }

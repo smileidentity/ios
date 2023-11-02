@@ -13,6 +13,12 @@ class HomeViewModel: ObservableObject,
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
+    @Published var partnerId: String
+
+    init(config: Config) {
+        partnerId = config.partnerId
+        SmileID.initialize(config: config, useSandbox: SmileID.useSandbox)
+    }
 
     @objc func didError(error: Error) {
         dismissModal()

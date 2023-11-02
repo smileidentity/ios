@@ -90,8 +90,10 @@ public class SmileID {
     /// - Parameter resourceName: The name of the json file. Defaults to `smile_config`
     /// - Returns: A `Config` object
     public static func getConfig(from resourceName: String = "smile_config") -> Config {
+        let decoder = JSONDecoder()
+        let configUrl = Bundle.main.url(forResource: resourceName, withExtension: "json")!
         // swiftlint:disable force_try
-        try! Config(url: Bundle.main.url(forResource: resourceName, withExtension: "json")!)
+        return try! decoder.decode(Config.self, from: Data(contentsOf: configUrl))
         // swiftlint:enable force_try
     }
 

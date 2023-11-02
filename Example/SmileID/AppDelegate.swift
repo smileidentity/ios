@@ -18,7 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NSAttributedString.Key.foregroundColor: UIColor.black
         ]
         NFX.sharedInstance().start()
-        SmileID.initialize()
+
+        // NOTE TO PARTNERS: Normally, you would call SmileID.initialize() here
+
         window?.rootViewController = UIHostingController(rootView: MainView())
         window?.makeKeyAndVisible()
         return true
