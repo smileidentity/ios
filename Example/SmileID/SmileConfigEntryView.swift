@@ -77,9 +77,12 @@ struct SmileConfigEntryView: View {
             Button(
                 action: { print("TODO") },
                 label: {
-                    Text("Scan QR Code from Portal")
+                    HStack {
+                        Image(systemName: "qrcode")
+                        Text("Scan QR Code from Portal")
+                            .font(SmileID.theme.button)
+                    }
                         .padding()
-                        .font(SmileID.theme.button)
                         .frame(maxWidth: .infinity)
                 }
             )
@@ -94,6 +97,7 @@ struct SmileConfigEntryView: View {
                 .padding(.horizontal)
                 .padding(.vertical, 2)
         }
+            .background(SmileID.theme.backgroundLightest.edgesIgnoringSafeArea(.all))
     }
 }
 

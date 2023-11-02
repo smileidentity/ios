@@ -52,7 +52,7 @@ struct RootView: View {
                 .preferredColorScheme(.light)
 
         } else {
-            Text("Under Construction")
+            OnboardingScreen()
         }
     }
 }
