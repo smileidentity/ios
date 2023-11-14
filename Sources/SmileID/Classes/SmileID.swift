@@ -221,6 +221,7 @@ public class SmileID {
             jobId: jobId,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
+            allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
             onResult: delegate
         ).environmentObject(router)
@@ -275,6 +276,7 @@ public class SmileID {
             jobId: jobId,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
+            allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
             onResult: delegate
         ).environmentObject(router)

@@ -25,6 +25,7 @@ struct OrchestratedDocumentVerificationScreen: View {
             jobId: jobId,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
+            allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
             onResult: onResult,
             viewModel: OrchestratedDocumentVerificationViewModel(
@@ -65,6 +66,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
             jobId: jobId,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
+            allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
             onResult: onResult,
             viewModel: OrchestratedEnhancedDocumentVerificationViewModel(
