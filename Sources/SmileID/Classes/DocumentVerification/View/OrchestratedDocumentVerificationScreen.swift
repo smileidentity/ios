@@ -10,6 +10,7 @@ struct OrchestratedDocumentVerificationScreen: View {
     let jobId: String
     let showAttribution: Bool
     let allowGalleryUpload: Bool
+    let allowAgentMode: Bool
     let showInstructions: Bool
     let onResult: DocumentVerificationResultDelegate
 
@@ -49,6 +50,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     let jobId: String
     let showAttribution: Bool
     let allowGalleryUpload: Bool
+    let allowAgentMode: Bool
     let showInstructions: Bool
     let onResult: EnhancedDocumentVerificationResultDelegate
 
@@ -88,6 +90,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let jobId: String
     let showAttribution: Bool
     let allowGalleryUpload: Bool
+    let allowAgentMode: Bool
     let showInstructions: Bool
     let onResult: T
     @ObservedObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
@@ -102,6 +105,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         jobId: String,
         showAttribution: Bool,
         allowGalleryUpload: Bool,
+        allowAgentMode: Bool,
         showInstructions: Bool,
         onResult: T,
         viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
@@ -115,6 +119,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.jobId = jobId
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
+        self.allowAgentMode = allowAgentMode
         self.showInstructions = showInstructions
         self.onResult = onResult
         self.viewModel = viewModel
@@ -163,6 +168,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     userId: userId,
                     jobId: jobId,
                     isEnroll: false,
+                    allowsAgentMode: allowAgentMode,
                     shouldSubmitJob: false,
                     // imageCaptureDelegate is just for image capture, not job result
                     imageCaptureDelegate: viewModel

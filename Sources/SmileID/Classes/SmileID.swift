@@ -205,6 +205,7 @@ public class SmileID {
         idAspectRatio: Double? = nil,
         bypassSelfieCaptureWithFile: URL? = nil,
         captureBothSides: Bool = true,
+        allowAgentMode: Bool = false,
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
         showAttribution: Bool = true,
@@ -242,6 +243,9 @@ public class SmileID {
     ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
     ///   front side will be captured. If this is true, an option to skip back side will still be
     ///   shown
+    ///  - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
+    ///   displayed allowing toggling between the back camera and front camera. If not allowed, only
+    ///   the front camera will be used.
     ///   - allowGalleryUpload: Whether to allow the user to upload images from their gallery or not
     ///   - showInstructions: Whether to deactivate capture screen's instructions for Document
     ///   Verification (NB! If instructions are disabled, gallery upload won't be possible)
@@ -255,6 +259,7 @@ public class SmileID {
         idAspectRatio: Double? = nil,
         bypassSelfieCaptureWithFile: URL? = nil,
         captureBothSides: Bool = true,
+        allowAgentMode: Bool = false,
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
         showAttribution: Bool = true,

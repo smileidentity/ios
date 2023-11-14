@@ -4,6 +4,7 @@
 - Biometric KYC
 - Consent Screen
 - BVN OTP API calls and models
+- Added `allowAgentMode` option on Document Verification and Enhanced Document Verification
 
 ### Changed
 - Default to `production` on `SmileID.initialize()`
