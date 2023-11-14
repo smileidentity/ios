@@ -23,6 +23,7 @@ public class SmileIDResourcesHelper {
         for candidate in candidates {
             let bundlePath = candidate?.appendingPathComponent(bundleName + ".bundle")
             if let bundle = bundlePath.flatMap(Bundle.init(url:)) {
+                bundle.load()
                 return bundle
             }
         }

@@ -3,6 +3,7 @@
 //  Source: https://github.com/WeTransfer/WeScan
 
 import Vision
+import UIKit
 
 struct Quadrilateral: Transformable {
     var topLeft: CGPoint
