@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 
 protocol JobSubmittable {
     func getJobStatus<T: JobResult>(

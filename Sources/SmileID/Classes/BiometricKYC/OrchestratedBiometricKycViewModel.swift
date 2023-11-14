@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 
 internal enum BiometricKycStep {
     case loading(messageKey: String)

@@ -20,7 +20,7 @@ let package = Package(
             name: "SmileID",
             dependencies: ["Zip"],
             path: "Sources/SmileID",
-            resources: [.copy("Resources")]
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "SmileIDTests",

@@ -1,3 +1,7 @@
+import Combine
+import SwiftUI
+import UIKit
+
 class IdInfoInputViewModel: ObservableObject {
     // MARK: - Input Properties
     private let selectedCountry: String

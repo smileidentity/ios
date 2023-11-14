@@ -2,6 +2,8 @@
 /// or may not be complete yet. This can be checked with `jobStatusResponse.jobComplete`. If not
 /// yet complete, the job status will need to be fetched again later. If the job is complete, the
 /// final job success can be checked with `jobStatusResponse.jobSuccess`.
+
+import Foundation
 public protocol BiometricKycResultDelegate {
     /// This function is called as a result of a successful selfie capture and job submission
     /// - Parameters:

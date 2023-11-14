@@ -1,4 +1,6 @@
 /// The result of an Enhanced Document Verification
+
+import Foundation
 public protocol EnhancedDocumentVerificationResultDelegate: AnyObject {
     /// Delegate method called after a successful Enhanced Document Verification capture and
     /// submission. It indicates that the capture and network requests were successful. The job
