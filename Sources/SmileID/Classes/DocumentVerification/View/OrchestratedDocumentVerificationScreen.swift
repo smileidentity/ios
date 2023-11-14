@@ -12,6 +12,7 @@ struct OrchestratedDocumentVerificationScreen: View {
     let allowGalleryUpload: Bool
     let allowAgentMode: Bool
     let showInstructions: Bool
+    let partnerParams: [String: String]
     let onResult: DocumentVerificationResultDelegate
 
     var body: some View {
@@ -27,6 +28,7 @@ struct OrchestratedDocumentVerificationScreen: View {
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
+            partnerParams: partnerParams,
             onResult: onResult,
             viewModel: OrchestratedDocumentVerificationViewModel(
                 userId: userId,
@@ -35,7 +37,8 @@ struct OrchestratedDocumentVerificationScreen: View {
                 documentType: documentType,
                 captureBothSides: captureBothSides,
                 selfieFile: bypassSelfieCaptureWithFile,
-                jobType: .documentVerification
+                jobType: .documentVerification,
+                partnerParams: partnerParams
             )
         )
     }
@@ -53,6 +56,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     let allowGalleryUpload: Bool
     let allowAgentMode: Bool
     let showInstructions: Bool
+    let partnerParams: [String: String]
     let onResult: EnhancedDocumentVerificationResultDelegate
 
     var body: some View {
@@ -68,6 +72,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
+            partnerParams: partnerParams,
             onResult: onResult,
             viewModel: OrchestratedEnhancedDocumentVerificationViewModel(
                 userId: userId,
@@ -76,7 +81,8 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
                 documentType: documentType,
                 captureBothSides: captureBothSides,
                 selfieFile: bypassSelfieCaptureWithFile,
-                jobType: .enhancedDocumentVerification
+                jobType: .enhancedDocumentVerification,
+                partnerParams: partnerParams
             )
         )
     }
@@ -94,6 +100,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let allowGalleryUpload: Bool
     let allowAgentMode: Bool
     let showInstructions: Bool
+    var partnerParams: [String: String]
     let onResult: T
     @ObservedObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
 
@@ -109,6 +116,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         allowGalleryUpload: Bool,
         allowAgentMode: Bool,
         showInstructions: Bool,
+        partnerParams: [String: String],
         onResult: T,
         viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
     ) {
@@ -123,6 +131,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.allowGalleryUpload = allowGalleryUpload
         self.allowAgentMode = allowAgentMode
         self.showInstructions = showInstructions
+        self.partnerParams = partnerParams
         self.onResult = onResult
         self.viewModel = viewModel
     }

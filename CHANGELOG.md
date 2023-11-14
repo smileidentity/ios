@@ -1,9 +1,20 @@
-## 10.0.0-beta11 (unreleased)
+## 10.0.0-beta12 (unreleased)
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## 10.0.0-beta11
 
 ### Added
 - Biometric KYC
 - Consent Screen
 - BVN OTP API calls and models
+- Added `extras` as optional params on all job types
 - Added `allowAgentMode` option on Document Verification and Enhanced Document Verification
 
 ### Changed

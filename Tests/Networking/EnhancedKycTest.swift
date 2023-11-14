@@ -24,7 +24,9 @@ class EnhancedKycTest: BaseTestCase {
             idType: "idType",
             idNumber: "idNumber",
             callbackUrl: "callbackUrl",
-            partnerParams: PartnerParams(jobId: "", userId: "", jobType: .enhancedKyc),
+            partnerParams: PartnerParams(
+                jobId: "", userId: "", jobType: .enhancedKyc, extras: ["key1" : "value1"]
+            ),
             sourceSdk: "ios",
             sourceSdkVersion: "10.0.0-beta05",
             timestamp: "timestamp",

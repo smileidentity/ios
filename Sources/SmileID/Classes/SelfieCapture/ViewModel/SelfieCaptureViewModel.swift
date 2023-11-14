@@ -81,6 +81,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
     private var userId: String
     private var jobId: String
     private var isEnroll: Bool
+    private var partnerParams: [String: String]
     private var shouldSubmitJob: Bool
     private (set) var showAttribution: Bool
     internal var selfieImage: Data?
@@ -135,6 +136,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         userId: String,
         jobId: String,
         isEnroll: Bool,
+        partnerParams: [String: String] = [:],
         allowsAgentMode: Bool = false,
         showAttribution: Bool = true,
         cameraManager: CameraManageable? = nil,
@@ -144,6 +146,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         self.userId = userId
         self.isEnroll = isEnroll
         self.jobId = jobId
+        self.partnerParams = partnerParams
         self.shouldSubmitJob = shouldSubmitJob
         self.showAttribution = showAttribution
         self.allowsAgentMode = allowsAgentMode
@@ -428,7 +431,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
 
         SmileID.api.authenticate(request: authRequest)
             .flatMap { authResponse in
-                self.prepUpload(authResponse)
+                self.prepUpload(authResponse: authResponse, partnerParams: self.partnerParams)
                     .flatMap { prepUploadResponse in
                         self.upload(prepUploadResponse, zip: zip)
                             .filter { result in

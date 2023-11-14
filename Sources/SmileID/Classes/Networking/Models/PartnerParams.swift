@@ -4,20 +4,31 @@ public struct PartnerParams: Codable {
     public var jobId: String
     public var userId: String
     public var jobType: JobType?
+    public var extras: [String: String]?
 
     public init(
         jobId: String,
         userId: String,
-        jobType: JobType?
+        jobType: JobType?,
+        extras: [String: String]?
     ) {
         self.jobId = jobId
         self.userId = userId
         self.jobType = jobType
+        self.extras = extras
     }
 
     enum CodingKeys: String, CodingKey {
         case jobId = "job_id"
         case userId = "user_id"
         case jobType = "job_type"
+        case extras = "extras"
+    }
+    
+    // Method for copying with modified properties
+    func copy(partnerParams: [String: String]?) -> PartnerParams {
+        return PartnerParams(
+            jobId: self.jobId, userId: self.userId, jobType: self.jobType, extras: partnerParams
+        )
     }
 }
