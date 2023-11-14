@@ -29,7 +29,8 @@ class MockSmileIdentityService: SmileIDServiceable {
         let params = PartnerParams(
             jobId: "jobid",
             userId: "userid",
-            jobType: .enhancedKyc
+            jobType: .enhancedKyc,
+            extras: ["key1" : "value1"]
         )
         let response = AuthenticationResponse(
             success: true,

@@ -18,6 +18,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal let captureBothSides: Bool
     internal var selfieFile: Data?
     internal let jobType: JobType
+    internal let partnerParams: [String: String]
 
     // Other properties
     internal var documentFrontFile: Data?
@@ -39,7 +40,8 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         documentType: String?,
         captureBothSides: Bool,
         selfieFile: URL?,
-        jobType: JobType
+        jobType: JobType,
+        partnerParams: [String: String] = [:]
     ) {
         self.userId = userId
         self.jobId = jobId
@@ -48,6 +50,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         self.captureBothSides = captureBothSides
         self.selfieFile = selfieFile.flatMap { try? Data(contentsOf: $0) }
         self.jobType = jobType
+        self.partnerParams = partnerParams
     }
 
     func onFrontDocumentImageConfirmed(data: Data) {
@@ -139,7 +142,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         let auth = SmileID.api.authenticate(request: authRequest)
         networkingSubscriber = auth.flatMap { authResponse in
                 let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams,
+                    partnerParams: authResponse.partnerParams.copy(partnerParams: self.partnerParams),
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )

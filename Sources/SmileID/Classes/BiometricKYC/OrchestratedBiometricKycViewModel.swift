@@ -14,6 +14,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
     // MARK: - Input Properties
     private let userId: String
     private let jobId: String
+    private var partnerParams: [String: String]
     private var idInfo: IdInfo?
 
     // MARK: - Other Properties
@@ -26,10 +27,11 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
         messageKey: "BiometricKYC.Loading.IdTypes"
     )
 
-    init(userId: String, jobId: String, idInfo: IdInfo?) {
+    init(userId: String, jobId: String, idInfo: IdInfo?, partnerParams: [String: String] = [:]) {
         self.userId = userId
         self.jobId = jobId
         self.idInfo = idInfo
+        self.partnerParams = partnerParams
         if let idInfo = idInfo {
             guard let idType = idInfo.idType else {
                 fatalError("You are expected to pass in the idType if you pass in idInfo")
@@ -212,7 +214,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
                 )
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams,
+                    partnerParams: authResponse.partnerParams.copy(partnerParams: partnerParams),
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
