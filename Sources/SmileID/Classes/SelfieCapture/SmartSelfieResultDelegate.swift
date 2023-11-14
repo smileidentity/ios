@@ -1,4 +1,6 @@
 /// The result of a selfie capture session and job submission
+
+import Foundation
 public protocol SmartSelfieResultDelegate {
     /// This function is called as a result of a successful selfie capture
     /// - Parameters:

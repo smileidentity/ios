@@ -1,3 +1,4 @@
+import Foundation
 private let nigeriaCountryCode = "NG"
 private let bvnIdType = "BVN_MFA"
 
