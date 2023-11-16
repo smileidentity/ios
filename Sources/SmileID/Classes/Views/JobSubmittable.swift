@@ -10,7 +10,7 @@ protocol JobSubmittable {
     ) -> AnyPublisher<UploadResponse, Error>
     func prepUpload(
         authResponse: AuthenticationResponse,
-        partnerParams: [String: String]
+        extraPartnerParams: [String: String]
     ) -> AnyPublisher<PrepUploadResponse, Error>
     func handleRetry()
     func handleClose()
@@ -19,10 +19,10 @@ protocol JobSubmittable {
 extension JobSubmittable {
     func prepUpload(
         authResponse: AuthenticationResponse,
-        partnerParams: [String: String]
+        extraPartnerParams: [String: String]
     ) -> AnyPublisher<PrepUploadResponse, Error> {
         let prepUploadRequest = PrepUploadRequest(
-            partnerParams: authResponse.partnerParams.copy(partnerParams: partnerParams),
+            partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
             timestamp: authResponse.timestamp,
             signature: authResponse.signature
         )
