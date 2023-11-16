@@ -1,12 +1,11 @@
 ## 10.0.0-beta12
 
 ### Added
-
-### Changed
-
-### Fixed
+- Consent Screen SwiftUI View
 
 ### Removed
+- Biometric KYC no longer bundles the Consent Screen
+- Biometric KYC no longer bundles an ID Type selector or input
 
 ## 10.0.0-beta11
 

@@ -198,6 +198,9 @@ public class SmileID {
     ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
     ///   front side will be captured. If this is true, an option to skip back side will still be
     ///   shown
+    ///   - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
+    ///   displayed allowing toggling between the back camera and front camera. If not allowed, only
+    ///   the front camera will be used.
     ///   - allowGalleryUpload: Whether to allow the user to upload images from their gallery or not
     ///   - showInstructions: Whether to deactivate capture screen's instructions for Document
     ///   Verification (NB! If instructions are disabled, gallery upload won't be possible)
@@ -294,17 +297,31 @@ public class SmileID {
         ).environmentObject(router)
     }
 
+    public class func consentScreen(
+        partnerIcon: UIImage,
+        partnerName: String,
+        productName: String,
+        partnerPrivacyPolicy: URL,
+        showAttribution: Bool = true,
+        onConsentGranted: @escaping () -> Void,
+        onConsentDenied: @escaping () -> Void
+    ) -> some View {
+        OrchestratedConsentScreen(
+            partnerIcon: partnerIcon,
+            partnerName: partnerName,
+            productName: productName,
+            partnerPrivacyPolicy: partnerPrivacyPolicy,
+            showAttribution: showAttribution,
+            onConsentGranted: onConsentGranted,
+            onConsentDenied: onConsentDenied
+        )
+    }
+
     /// Perform a Biometric KYC: Verify the ID information of your user and confirm that the ID
     /// actually belongs to the user. This is achieved by comparing the user's SmartSelfie™ to the
     /// user's photo in an ID authority database
     /// - Parameters:
-    ///  - partnerIcon: Your own icon to display on the Biometric KYC screen (i.e. company logo)
-    ///  - partnerName: Your own name to display on the Biometric KYC screen (i.e. company name)
-    ///  - productName: The type of information you are trying to access (i.e. ID type)
-    ///  - partnerPrivacyPolicy: A link to your own privacy policy to display
-    ///  - idInfo: The ID information to look up in the ID Authority. If nil (default), an ID type
-    ///  selector and input fields will be displayed. If provided, it is assumed that ALL required
-    ///  information has already been provided
+    ///  - idInfo: The ID information to look up in the ID Authority
     ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
     ///  to a unique User ID within your own system. If not provided, a random user ID is generated
     ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
@@ -317,11 +334,7 @@ public class SmileID {
     ///  - extraPartnerParams: Custom values specific to partners
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
-        partnerIcon: UIImage,
-        partnerName: String,
-        productName: String,
-        partnerPrivacyPolicy: URL,
-        idInfo: IdInfo? = nil,
+        idInfo: IdInfo,
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
         allowAgentMode: Bool = false,
@@ -334,10 +347,6 @@ public class SmileID {
             idInfo: idInfo,
             userId: userId,
             jobId: jobId,
-            partnerIcon: partnerIcon,
-            partnerName: partnerName,
-            productName: productName,
-            partnerPrivacyPolicy: partnerPrivacyPolicy,
             showInstructions: showInstructions,
             showAttribution: showAttribution,
             allowAgentMode: allowAgentMode,

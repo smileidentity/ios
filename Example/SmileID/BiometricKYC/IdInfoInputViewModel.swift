@@ -1,4 +1,5 @@
 import Combine
+import SmileID
 import SwiftUI
 import UIKit
 
