@@ -10,7 +10,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
     // MARK: - Input Properties
     private let userId: String
     private let jobId: String
-    private var partnerParams: [String: String]
+    private var extraPartnerParams: [String: String]
     private var idInfo: IdInfo
 
     // MARK: - Other Properties
@@ -21,11 +21,11 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
     // MARK: - UI Properties
     @Published @MainActor private (set) var step: BiometricKycStep = .selfie
 
-    init(userId: String, jobId: String, idInfo: IdInfo, partnerParams: [String: String] = [:]) {
+    init(userId: String, jobId: String, idInfo: IdInfo, extraPartnerParams: [String: String] = [:]) {
         self.userId = userId
         self.jobId = jobId
         self.idInfo = idInfo
-        self.partnerParams = partnerParams
+        self.extraPartnerParams = extraPartnerParams
     }
 
     func didCapture(selfie: Data, livenessImages: [Data]) {
@@ -89,7 +89,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
                 )
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(partnerParams: partnerParams),
+                    partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )

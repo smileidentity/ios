@@ -114,7 +114,7 @@ public class SmileID {
     ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
     ///     screen
     ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
-    ///   - partnerParams: Custom values specific to partners
+    ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
     public class func smartSelfieEnrollmentScreen(
         userId: String = generateUserId(),
@@ -122,14 +122,14 @@ public class SmileID {
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
-        partnerParams: [String: String] = [:],
+        extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
         let viewModel = SelfieCaptureViewModel(
             userId: userId,
             jobId: jobId,
             isEnroll: true,
-            partnerParams: partnerParams,
+            extraPartnerParams: extraPartnerParams,
             allowsAgentMode: allowAgentMode,
             showAttribution: showAttribution
         )
@@ -156,7 +156,7 @@ public class SmileID {
     ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
     ///     screen
     ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
-    ///   - partnerParams: Custom values specific to partners
+    ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
     public class func smartSelfieAuthenticationScreen(
         userId: String,
@@ -164,14 +164,14 @@ public class SmileID {
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
-        partnerParams: [String: String] = [:],
+        extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
         let viewModel = SelfieCaptureViewModel(
             userId: userId,
             jobId: jobId,
             isEnroll: false,
-            partnerParams: partnerParams,
+            extraPartnerParams: extraPartnerParams,
             allowsAgentMode: allowAgentMode,
             showAttribution: showAttribution
         )
@@ -205,7 +205,7 @@ public class SmileID {
     ///   - showInstructions: Whether to deactivate capture screen's instructions for Document
     ///   Verification (NB! If instructions are disabled, gallery upload won't be possible)
     ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
-    ///   - partnerParams: Custom values specific to partners
+    ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func documentVerificationScreen(
         userId: String = generateUserId(),
@@ -219,7 +219,7 @@ public class SmileID {
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
         showAttribution: Bool = true,
-        partnerParams: [String: String] = [:],
+        extraPartnerParams: [String: String] = [:],
         delegate: DocumentVerificationResultDelegate
     ) -> some View {
         OrchestratedDocumentVerificationScreen(
@@ -234,7 +234,7 @@ public class SmileID {
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
-            partnerParams: partnerParams,
+            extraPartnerParams: extraPartnerParams,
             onResult: delegate
         ).environmentObject(router)
     }
@@ -263,7 +263,7 @@ public class SmileID {
     ///   - showInstructions: Whether to deactivate capture screen's instructions for Document
     ///   Verification (NB! If instructions are disabled, gallery upload won't be possible)
     ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
-    ///   - partnerParams: Custom values specific to partners
+    ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func enhancedDocumentVerificationScreen(
         userId: String = generateUserId(),
@@ -277,7 +277,7 @@ public class SmileID {
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
         showAttribution: Bool = true,
-        partnerParams: [String: String] = [:],
+        extraPartnerParams: [String: String] = [:],
         delegate: EnhancedDocumentVerificationResultDelegate
     ) -> some View {
         OrchestratedEnhancedDocumentVerificationScreen(
@@ -292,7 +292,7 @@ public class SmileID {
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
-            partnerParams: partnerParams,
+            extraPartnerParams: extraPartnerParams,
             onResult: delegate
         ).environmentObject(router)
     }
@@ -331,7 +331,7 @@ public class SmileID {
     ///   the front camera will be used.
     ///  - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
     ///  - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
-    ///  - partnerParams: Custom values specific to partners
+    ///  - extraPartnerParams: Custom values specific to partners
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
         idInfo: IdInfo,
@@ -340,7 +340,7 @@ public class SmileID {
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
-        partnerParams: [String: String] = [:],
+        extraPartnerParams: [String: String] = [:],
         delegate: BiometricKycResultDelegate
     ) -> some View {
         OrchestratedBiometricKycScreen(
@@ -350,7 +350,7 @@ public class SmileID {
             showInstructions: showInstructions,
             showAttribution: showAttribution,
             allowAgentMode: allowAgentMode,
-            partnerParams: partnerParams,
+            extraPartnerParams: extraPartnerParams,
             delegate: delegate
         )
     }

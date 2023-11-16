@@ -7,6 +7,7 @@ struct OrchestratedBiometricKycScreen: View {
     let showInstructions: Bool
     let showAttribution: Bool
     let allowAgentMode: Bool
+    let extraPartnerParams: [String: String] = [:]
     let delegate: BiometricKycResultDelegate
     @ObservedObject private var viewModel: OrchestratedBiometricKycViewModel
 
@@ -17,7 +18,7 @@ struct OrchestratedBiometricKycScreen: View {
         showInstructions: Bool,
         showAttribution: Bool,
         allowAgentMode: Bool,
-        partnerParams: [String: String] = [:],
+        extraPartnerParams: [String: String] = [:],
         delegate: BiometricKycResultDelegate
     ) {
         self.userId = userId
@@ -27,7 +28,7 @@ struct OrchestratedBiometricKycScreen: View {
         self.allowAgentMode = allowAgentMode
         self.delegate = delegate
         viewModel = OrchestratedBiometricKycViewModel(
-            userId: userId, jobId: jobId, idInfo: idInfo, partnerParams: partnerParams
+            userId: userId, jobId: jobId, idInfo: idInfo, extraPartnerParams: extraPartnerParams
         )
     }
 

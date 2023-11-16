@@ -26,9 +26,9 @@ public struct PartnerParams: Codable {
     }
     
     // Method for copying with modified properties
-    func copy(partnerParams: [String: String]?) -> PartnerParams {
+    func copy(extras: [String: String]?) -> PartnerParams {
         return PartnerParams(
-            jobId: self.jobId, userId: self.userId, jobType: self.jobType, extras: partnerParams
+            jobId: self.jobId, userId: self.userId, jobType: self.jobType, extras: extras
         )
     }
 }
