@@ -63,13 +63,7 @@ struct HomeView: View {
                             image: "biometric",
                             name: "Biometric KYC",
                             content: {
-                                SmileID.biometricKycScreen(
-                                    partnerIcon: UIImage(named: "SmileLogo")!,
-                                    partnerName: "Smile ID",
-                                    productName: "ID",
-                                    partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
-                                    delegate: viewModel
-                                )
+                                BiometricKycWithIdInputScreen(delegate: viewModel)
                             }
                         )
                     ].map { AnyView($0) }

@@ -150,7 +150,7 @@ public enum RequiredField: String, Codable {
         .jobId
     ]
 
-    static func sorter(this: RequiredField, that: RequiredField) -> Bool {
+    public static func sorter(this: RequiredField, that: RequiredField) -> Bool {
         let thisIndex = sortedCases.firstIndex(of: this) ?? 0
         let thatIndex = sortedCases.firstIndex(of: that) ?? 0
         return thisIndex < thatIndex

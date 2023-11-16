@@ -2,10 +2,6 @@ import Combine
 import Foundation
 
 internal enum BiometricKycStep {
-    case loading(messageKey: String)
-    case idTypeSelection([CountryInfo])
-    case consent(country: String, idType: String, requiredFields: [RequiredField])
-    case idInput(country: String, idType: String, requiredFields: [RequiredField])
     case selfie
     case processing(ProcessingState)
 }
@@ -15,7 +11,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
     private let userId: String
     private let jobId: String
     private var partnerParams: [String: String]
-    private var idInfo: IdInfo?
+    private var idInfo: IdInfo
 
     // MARK: - Other Properties
     private var error: Error?
@@ -23,128 +19,13 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
     private var jobStatusResponse: BiometricKycJobStatusResponse?
 
     // MARK: - UI Properties
-    @Published @MainActor private (set) var step: BiometricKycStep = .loading(
-        messageKey: "BiometricKYC.Loading.IdTypes"
-    )
+    @Published @MainActor private (set) var step: BiometricKycStep = .selfie
 
-    init(userId: String, jobId: String, idInfo: IdInfo?, partnerParams: [String: String] = [:]) {
+    init(userId: String, jobId: String, idInfo: IdInfo, partnerParams: [String: String] = [:]) {
         self.userId = userId
         self.jobId = jobId
         self.idInfo = idInfo
         self.partnerParams = partnerParams
-        if let idInfo = idInfo {
-            guard let idType = idInfo.idType else {
-                fatalError("You are expected to pass in the idType if you pass in idInfo")
-            }
-            // On this code path, we don't need to load services, ever, at all
-            loadConsent(country: idInfo.country, idType: idType, requiredFields: [])
-        } else {
-            loadIdTypes()
-        }
-    }
-
-    private func loadIdTypes() {
-        let authRequest = AuthenticationRequest(
-            jobType: .biometricKyc,
-            enrollment: false,
-            jobId: jobId,
-            userId: userId
-        )
-        DispatchQueue.main.async {
-            self.step = .loading(messageKey: "BiometricKYC.Loading.IdTypes")
-        }
-        Task {
-            do {
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
-                let productsConfigRequest = ProductsConfigRequest(
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                let productsConfigResponse = try await SmileID.api.getProductsConfig(
-                    request: productsConfigRequest
-                ).async()
-                let supportedCountries = productsConfigResponse.idSelection.biometricKyc
-                let servicesResponse = try await SmileID.api.getServices().async()
-                let servicesCountryInfo = servicesResponse.hostedWeb.biometricKyc
-                // sort by country name
-                let countryList = servicesCountryInfo
-                    .filter { supportedCountries.keys.contains($0.countryCode) }
-                    .sorted { $0.name < $1.name }
-                DispatchQueue.main.async { self.step = .idTypeSelection(countryList) }
-            } catch {
-                print("Error loading id types: \(error)")
-                self.error = error
-                DispatchQueue.main.async { self.step = .processing(.error) }
-            }
-        }
-    }
-
-    private func loadConsent(
-        country: String,
-        idType: String,
-        requiredFields: [RequiredField]
-    ) {
-        let authRequest = AuthenticationRequest(
-            jobType: .biometricKyc,
-            enrollment: false,
-            jobId: jobId,
-            userId: userId,
-            country: country,
-            idType: idType
-        )
-        DispatchQueue.main.async {
-            self.step = .loading(messageKey: "BiometricKYC.Loading.Consent")
-        }
-        Task {
-            do {
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
-                if authResponse.consentInfo?.consentRequired == true {
-                    DispatchQueue.main.async {
-                        self.step = .consent(
-                            country: country,
-                            idType: idType,
-                            requiredFields: requiredFields
-                        )
-                    }
-                } else {
-                    // We don't need consent. Proceed forward as if consent has already been granted
-                    onConsentGranted(
-                        country: country,
-                        idType: idType,
-                        requiredFields: requiredFields
-                    )
-                }
-            } catch {
-                print("Error loading consent: \(error)")
-                self.error = error
-                DispatchQueue.main.async { self.step = .processing(.error) }
-            }
-        }
-    }
-
-    func onIdTypeSelected(country: String, idType: String, requiredFields: [RequiredField]) {
-        loadConsent(country: country, idType: idType, requiredFields: requiredFields)
-    }
-
-    func onConsentGranted(country: String, idType: String, requiredFields: [RequiredField]) {
-        // If idInfo is already set, it was passed in, so we skip straight to selfie capture -- the
-        // partner is required to pass in all required inputs
-        if idInfo != nil {
-            DispatchQueue.main.async { self.step = .selfie }
-        } else {
-            DispatchQueue.main.async {
-                self.step = .idInput(
-                    country: country,
-                    idType: idType,
-                    requiredFields: requiredFields
-                )
-            }
-        }
-    }
-
-    func onIdFieldsEntered(idInfo: IdInfo) {
-        self.idInfo = idInfo
-        DispatchQueue.main.async { self.step = .selfie }
     }
 
     func didCapture(selfie: Data, livenessImages: [Data]) {
@@ -161,9 +42,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
     }
 
     func onRetry() {
-        if idInfo == nil {
-            loadIdTypes()
-        } else if selfieCaptureResultStore == nil {
+        if selfieCaptureResultStore == nil {
             DispatchQueue.main.async { self.step = .selfie }
         } else {
             submitJob(selfieCaptureResultStore: selfieCaptureResultStore!)
@@ -187,12 +66,6 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
 
     func submitJob(selfieCaptureResultStore: SelfieCaptureResultStore) {
         DispatchQueue.main.async { self.step = .processing(.inProgress) }
-        guard let idInfo = idInfo else {
-            print("idInfo is nil")
-            error = SmileIDError.unknown("idInfo is nil")
-            DispatchQueue.main.async { self.step = .processing(.error) }
-            return
-        }
         Task {
             do {
                 let livenessImages = selfieCaptureResultStore.livenessImages
@@ -210,7 +83,9 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
                     jobType: .biometricKyc,
                     enrollment: false,
                     jobId: jobId,
-                    userId: userId
+                    userId: userId,
+                    country: idInfo.country,
+                    idType: idInfo.idType
                 )
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(

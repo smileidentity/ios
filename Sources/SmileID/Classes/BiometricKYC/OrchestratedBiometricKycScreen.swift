@@ -4,27 +4,16 @@ import SwiftUI
 struct OrchestratedBiometricKycScreen: View {
     let userId: String
     let jobId: String
-    let partnerIcon: UIImage
-    let partnerName: String
-    let productName: String
-    let partnerPrivacyPolicy: URL
     let showInstructions: Bool
     let showAttribution: Bool
     let allowAgentMode: Bool
-    let partnerParams: [String: String] = [:]
     let delegate: BiometricKycResultDelegate
     @ObservedObject private var viewModel: OrchestratedBiometricKycViewModel
 
-    @State private var selectedCountry: CountryInfo?
-
     init(
-        idInfo: IdInfo?,
+        idInfo: IdInfo,
         userId: String,
         jobId: String,
-        partnerIcon: UIImage,
-        partnerName: String,
-        productName: String,
-        partnerPrivacyPolicy: URL,
         showInstructions: Bool,
         showAttribution: Bool,
         allowAgentMode: Bool,
@@ -33,10 +22,6 @@ struct OrchestratedBiometricKycScreen: View {
     ) {
         self.userId = userId
         self.jobId = jobId
-        self.partnerIcon = partnerIcon
-        self.partnerName = partnerName
-        self.productName = productName
-        self.partnerPrivacyPolicy = partnerPrivacyPolicy
         self.showInstructions = showInstructions
         self.showAttribution = showAttribution
         self.allowAgentMode = allowAgentMode
@@ -48,60 +33,6 @@ struct OrchestratedBiometricKycScreen: View {
 
     var body: some View {
         switch viewModel.step {
-        case .loading(let messageKey):
-            VStack {
-                ActivityIndicator(isAnimating: true).padding()
-                Text(SmileIDResourcesHelper.localizedString(for: messageKey))
-                    .font(SmileID.theme.body)
-                    .foregroundColor(SmileID.theme.onLight)
-            }
-                .frame(maxWidth: .infinity)
-        case .idTypeSelection(let countryList):
-            SearchableDropdownSelector(
-                items: countryList,
-                selectedItem: selectedCountry,
-                itemDisplayName: { $0.name },
-                onItemSelected: { selectedCountry = $0 }
-            )
-            if let selectedCountry = selectedCountry {
-                RadioGroupSelector(
-                    title: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.SelectIdType"),
-                    items: selectedCountry.availableIdTypes,
-                    itemDisplayName: { $0.label },
-                    onItemSelected: { idType in
-                        viewModel.onIdTypeSelected(
-                            country: selectedCountry.countryCode,
-                            idType: idType.idTypeKey,
-                            requiredFields: idType.requiredFields ?? []
-                        )
-                    }
-                )
-            }
-        case .consent(let country, let idType, let requiredFields):
-            OrchestratedConsentScreen(
-                partnerIcon: partnerIcon,
-                partnerName: partnerName,
-                productName: productName,
-                partnerPrivacyPolicy: partnerPrivacyPolicy,
-                showAttribution: showAttribution,
-                onConsentGranted: {
-                    viewModel.onConsentGranted(
-                        country: country,
-                        idType: idType,
-                        requiredFields: requiredFields)
-                },
-                onConsentDenied: { delegate.didError(error: SmileIDError.consentDenied) }
-            )
-        case .idInput(let country, let idType, let requiredFields):
-            IdInfoInputScreen(
-                selectedCountry: country,
-                selectedIdType: idType,
-                header: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.EnterIdInfoTitle"
-                ),
-                requiredFields: requiredFields,
-                onResult: viewModel.onIdFieldsEntered
-            ).frame(maxWidth: .infinity)
         case .selfie:
             SelfieCaptureView(
                 viewModel: SelfieCaptureViewModel(
