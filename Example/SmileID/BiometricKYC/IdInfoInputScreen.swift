@@ -1,3 +1,4 @@
+import SmileID
 import SwiftUI
 
 /// Allows user to enter ID info. Requires that the user has already selected a country and ID type.
