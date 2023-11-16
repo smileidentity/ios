@@ -2,7 +2,7 @@ import Foundation
 import SmileID
 
 enum BiometricKycWithIdInputScreenStep {
-    case loading(messageKey: String)
+    case loading(String)
     case idTypeSelection([CountryInfo])
     case consent(country: String, idType: String, requiredFields: [RequiredField])
     case idInput(country: String, idType: String, requiredFields: [RequiredField])
@@ -13,9 +13,7 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
     private let userId = generateUserId()
     private let jobId = generateJobId()
 
-    @Published @MainActor var step = BiometricKycWithIdInputScreenStep.loading(
-        messageKey: "BiometricKYC.Loading.IdTypes"
-    )
+    @Published @MainActor var step = BiometricKycWithIdInputScreenStep.loading("Loading ID Types…")
 
     init() {
         loadIdTypes()
@@ -29,7 +27,7 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
             userId: userId
         )
         DispatchQueue.main.async {
-            self.step = .loading(messageKey: "BiometricKYC.Loading.IdTypes")
+            self.step = .loading("Loading ID Types…")
         }
         Task {
             do {
@@ -51,7 +49,9 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
                 DispatchQueue.main.async { self.step = .idTypeSelection(countryList) }
             } catch {
                 print("Error loading id types: \(error)")
-                // TODO: Error handling
+                DispatchQueue.main.async {
+                    self.step = .loading("Error loading ID Types. Please try again.")
+                }
             }
         }
     }
@@ -70,7 +70,7 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
             idType: idType
         )
         DispatchQueue.main.async {
-            self.step = .loading(messageKey: "BiometricKYC.Loading.Consent")
+            self.step = .loading("Loading Consent…")
         }
         Task {
             do {
@@ -93,7 +93,9 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
                 }
             } catch {
                 print("Error loading consent: \(error)")
-                // TODO: Error handling
+                DispatchQueue.main.async {
+                    self.step = .loading("Error loading consent. Please try again.")
+                }
             }
         }
     }

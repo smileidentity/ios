@@ -27,7 +27,7 @@ struct BiometricKycWithIdInputScreen: View {
             )
             if let selectedCountry = selectedCountry {
                 RadioGroupSelector(
-                    title: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.SelectIdType"),
+                    title: "Select ID Type",
                     items: selectedCountry.availableIdTypes,
                     itemDisplayName: { $0.label },
                     onItemSelected: { idType in
@@ -58,9 +58,7 @@ struct BiometricKycWithIdInputScreen: View {
             IdInfoInputScreen(
                 selectedCountry: country,
                 selectedIdType: idType,
-                header: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.EnterIdInfoTitle"
-                ),
+                header: "Enter ID Information",
                 requiredFields: requiredFields,
                 onResult: viewModel.onIdFieldsEntered
             ).frame(maxWidth: .infinity)
