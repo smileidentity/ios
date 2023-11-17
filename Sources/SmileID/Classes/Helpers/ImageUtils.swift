@@ -174,4 +174,43 @@ class ImageUtils {
 
         return dstPixelBuffer
     }
+
+    /// Crop height to match desired aspect ratio. This specific behavior is because we force
+    /// portrait mode when doing document captures, so the image should always be taller than it is
+    /// wide. If the image is wider than it is tall, then we return as-is
+    /// For reference, the default aspect ratio of an ID card is around ~1.6
+    /// NB! This assumes that the portrait mode pic will be taller than it is wide
+    class func cropImageToAspectRatio(imageData: Data, aspectRatio: Double) -> Data? {
+        // Convert Data to UIImage
+        guard let image = UIImage(data: imageData) else { return nil }
+        print("height: \(image.size.height), width: \(image.size.width)")
+
+        if image.size.width > image.size.height {
+            // Image is wider than it is tall, so return as is
+            return imageData
+        }
+
+        let currentAspectRatio = image.size.height / image.size.width
+        if currentAspectRatio <= CGFloat(aspectRatio) {
+            // If current aspect ratio is less than or equal to desired, return the image as is
+            return imageData
+        }
+
+        let newHeight = image.size.width * CGFloat(aspectRatio)
+        let yPosition = (image.size.height - newHeight) / 2
+        let cropRect = CGRect(
+            x: 0,
+            y: yPosition,
+            width: image.size.width,
+            height: newHeight
+        )
+
+        // Perform cropping in a graphics context to handle the orientation correctly
+        UIGraphicsBeginImageContextWithOptions(cropRect.size, false, image.scale)
+        image.draw(at: CGPoint(x: -cropRect.origin.x, y: -cropRect.origin.y))
+        let croppedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return croppedImage?.jpegData(compressionQuality: 1.0)
+    }
 }

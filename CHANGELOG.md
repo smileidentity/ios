@@ -3,6 +3,7 @@
 ### Added
 
 ### Changed
+- Updated document capture to preserve aspect ratio in preview
 
 ### Fixed
 
