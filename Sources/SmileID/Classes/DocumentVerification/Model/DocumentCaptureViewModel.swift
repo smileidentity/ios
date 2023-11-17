@@ -142,8 +142,12 @@ class DocumentCaptureViewModel: ObservableObject {
     }
 
     private func onCaptureComplete(image: Data) {
+        let croppedImage = ImageUtils.cropImageToAspectRatio(
+            imageData: image,
+            aspectRatio: 1 / idAspectRatio
+        )
         DispatchQueue.main.async { [self] in
-            documentImageToConfirm = image
+            documentImageToConfirm = croppedImage
             isCapturing = false
         }
     }
