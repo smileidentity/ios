@@ -48,6 +48,20 @@ struct HomeView: View {
                             }
                         ),
                         ProductCell(
+                            image: "biometric",
+                            name: "Enhanced KYC",
+                            content: {
+                                EnhancedKycWithIdInputScreen(delegate: viewModel)
+                            }
+                        ),
+                        ProductCell(
+                            image: "biometric",
+                            name: "Biometric KYC",
+                            content: {
+                                BiometricKycWithIdInputScreen(delegate: viewModel)
+                            }
+                        ),
+                        ProductCell(
                             image: "document",
                             name: "\nDocument Verification",
                             content: { DocumentVerificationWithSelector(delegate: viewModel) }
@@ -59,13 +73,6 @@ struct HomeView: View {
                                 EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                             }
                         ),
-                        ProductCell(
-                            image: "biometric",
-                            name: "Biometric KYC",
-                            content: {
-                                BiometricKycWithIdInputScreen(delegate: viewModel)
-                            }
-                        )
                     ].map { AnyView($0) }
                 )
 
