@@ -24,7 +24,7 @@ public struct PartnerParams: Codable {
         case jobType = "job_type"
         case extras = "extras"
     }
-    
+
     // Method for copying with modified properties
     func copy(extras: [String: String]?) -> PartnerParams {
         return PartnerParams(

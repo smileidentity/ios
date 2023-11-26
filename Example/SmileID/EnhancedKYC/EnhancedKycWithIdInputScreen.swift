@@ -1,7 +1,6 @@
 import Foundation
 import SmileID
 import SwiftUI
-
 struct EnhancedKycWithIdInputScreen: View {
     let delegate: EnhancedKycResultDelegate
     
@@ -62,27 +61,17 @@ struct EnhancedKycWithIdInputScreen: View {
                 requiredFields: requiredFields,
                 onResult: viewModel.onIdFieldsEntered
             ).frame(maxWidth: .infinity)
-        case .processing(let state):
+        case .processing(let state):  
             ProcessingScreen(
                 processingState: state,
-                inProgressTitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Processing.Title"
-                ),
-                inProgressSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Processing.Subtitle"
-                ),
+                inProgressTitle: "Processing Enhanced KYC…",
+                inProgressSubtitle: "Just a few more seconds",
                 inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
-                successTitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Success.Title"
-                ),
-                successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Success.Subtitle"
-                ),
+                successTitle: "Enhanced KYC Complete",
+                successSubtitle: "You can now proceed",
                 successIcon: SmileIDResourcesHelper.CheckBold,
-                errorTitle: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.Error.Title"),
-                errorSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Error.Subtitle"
-                ),
+                errorTitle: "Enhanced KYC Failed",
+                errorSubtitle: "This could be because of internet connectivity",
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(
                     for: "Confirmation.Continue"

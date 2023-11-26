@@ -12,8 +12,12 @@ enum EnhancedKycWithIdInputScreenStep {
 class EnhancedKycWithIdInputScreenViewModel : ObservableObject {
     private let userId = generateUserId()
     private let jobId = generateJobId()
-    
+    private var error: Error?
+    private var enhancedKycResponse: EnhancedKycResponse?
     @Published @MainActor var step = EnhancedKycWithIdInputScreenStep.loading("Loading ID Types…")
+    
+    @Published @MainActor var idInfo = IdInfo(country: "")
+    
     
     init() {
         loadIdTypes()
@@ -101,7 +105,7 @@ class EnhancedKycWithIdInputScreenViewModel : ObservableObject {
     func onIdTypeSelected(country: String, idType: String, requiredFields: [RequiredField]) {
         loadConsent(country: country, idType: idType, requiredFields: requiredFields)
     }
-
+    
     func onConsentGranted(country: String, idType: String, requiredFields: [RequiredField]) {
         DispatchQueue.main.async {
             self.step = .idInput(
@@ -111,9 +115,12 @@ class EnhancedKycWithIdInputScreenViewModel : ObservableObject {
             )
         }
     }
-
+    
     func onIdFieldsEntered(idInfo: IdInfo) {
-        DispatchQueue.main.async { self.step = .processing(ProcessingState.inProgress) }
+        DispatchQueue.main.async {
+            self.idInfo = idInfo
+            self.step = .processing(ProcessingState.inProgress) }
+        doEnhancedKyc(idInfo: idInfo)
     }
     
     func doEnhancedKyc(idInfo: IdInfo) {
@@ -139,9 +146,26 @@ class EnhancedKycWithIdInputScreenViewModel : ObservableObject {
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
-                let response = try await SmileID.api.doEnhancedKyc(request: enhancedKycRequest)
-                
+                enhancedKycResponse = try await SmileID.api.doEnhancedKyc(
+                    request: enhancedKycRequest
+                ).async()
+                DispatchQueue.main.async { self.step = .processing(.success) }
+            } catch {
+                self.error = error
+                DispatchQueue.main.async { self.step = .processing(.error) }
             }
+        }
+    }
+    
+    @MainActor func onRetry(){
+        doEnhancedKyc(idInfo: self.idInfo)
+    }
+    
+    func onFinished(delegate: EnhancedKycResultDelegate) {
+        if let enhancedKycResponse = enhancedKycResponse {
+            delegate.didSucceed(enhancedKycResponse: enhancedKycResponse)
+        } else if let error = error {
+            delegate.didError(error: error)
         }
     }
 }

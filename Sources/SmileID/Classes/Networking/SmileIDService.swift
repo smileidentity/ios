@@ -21,8 +21,6 @@ public protocol SmileIDServiceable {
     func doEnhancedKycAsync(
         request: EnhancedKycRequest
     ) -> AnyPublisher<EnhancedKycAsyncResponse, Error>
-    
-
     /// Query the Identity Information of an individual using their ID number from a supported ID
     /// Type. Return the personal information of the individual found in the database of the ID authority.
     /// This will be done synchronously, and the result will be returned in the response. If the ID
@@ -135,7 +133,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     ) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
         post(to: "async_id_verification", with: request)
     }
-    
+
     public func doEnhancedKyc(
         request: EnhancedKycRequest
     ) -> AnyPublisher<EnhancedKycResponse, Error> {

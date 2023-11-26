@@ -1,13 +1,47 @@
 import Foundation
 import SwiftUI
 
-enum ProcessingState {
+public enum ProcessingState {
     case inProgress
     case success
     case error
 }
 
-struct ProcessingScreen: View {
+public struct ProcessingScreen: View {
+    public init(
+        processingState: ProcessingState,
+        inProgressTitle: String,
+        inProgressSubtitle: String,
+        inProgressIcon: UIImage,
+        successTitle: String,
+        successSubtitle: String,
+        successIcon: UIImage,
+        errorTitle: String,
+        errorSubtitle: String,
+        errorIcon: UIImage,
+        continueButtonText: String,
+        onContinue: @escaping () -> Void,
+        retryButtonText: String,
+        onRetry: @escaping () -> Void,
+        closeButtonText: String,
+        onClose: @escaping () -> Void) {
+            self.processingState = processingState
+            self.inProgressTitle = inProgressTitle
+            self.inProgressSubtitle = inProgressSubtitle
+            self.inProgressIcon = inProgressIcon
+            self.successTitle = successTitle
+            self.successSubtitle = successSubtitle
+            self.successIcon = successIcon
+            self.errorTitle = errorTitle
+            self.errorSubtitle = errorSubtitle
+            self.errorIcon = errorIcon
+            self.continueButtonText = continueButtonText
+            self.onContinue = onContinue
+            self.retryButtonText = retryButtonText
+            self.onRetry = onRetry
+            self.closeButtonText = closeButtonText
+            self.onClose = onClose
+        }
     let processingState: ProcessingState
     let inProgressTitle: String
     let inProgressSubtitle: String
@@ -24,8 +58,7 @@ struct ProcessingScreen: View {
     let onRetry: () -> Void
     let closeButtonText: String
     let onClose: () -> Void
-
-    var body: some View {
+    public var body: some View {
         switch processingState {
         case .inProgress:
             ProcessingInProgressScreen(
@@ -55,12 +88,11 @@ struct ProcessingScreen: View {
     }
 }
 
-private struct ProcessingInProgressScreen: View {
+public struct ProcessingInProgressScreen: View {
     let icon: UIImage
     let title: String
     let subtitle: String
-
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 20) {
             InfiniteProgressBar()
                 .frame(width: 60)
@@ -70,21 +102,20 @@ private struct ProcessingInProgressScreen: View {
                     .multilineTextAlignment(.center)
                     .font(SmileID.theme.header4)
                     .foregroundColor(SmileID.theme.accent)
-
                 Text(subtitle)
                     .multilineTextAlignment(.center)
                     .font(SmileID.theme.header5)
                     .foregroundColor(SmileID.theme.tertiary)
                     .lineSpacing(1.3)
             }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 80)
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 80)
         }
-            .padding()
-            .background(SmileID.theme.backgroundMain)
-            .cornerRadius(24)
-            .shadow(radius: 16)
-            .padding(32)
+        .padding()
+        .background(SmileID.theme.backgroundMain)
+        .cornerRadius(24)
+        .shadow(radius: 16)
+        .padding(32)
     }
 }
 
@@ -94,7 +125,6 @@ private struct ProcessingSuccessScreen: View {
     let subtitle: String
     let continueButtonText: String
     let onContinue: () -> Void
-
     var body: some View {
         VStack(spacing: 20) {
             Image(uiImage: icon)
@@ -110,8 +140,8 @@ private struct ProcessingSuccessScreen: View {
                     .foregroundColor(SmileID.theme.tertiary)
                     .lineSpacing(1.3)
             }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 80)
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 80)
             Button(action: onContinue) {
                 Text(continueButtonText)
                     .font(SmileID.theme.button)
@@ -122,15 +152,15 @@ private struct ProcessingSuccessScreen: View {
                     .cornerRadius(20)
             }
         }
-            .padding()
-            .background(SmileID.theme.backgroundMain)
-            .cornerRadius(24)
-            .shadow(radius: 16)
-            .padding(32)
+        .padding()
+        .background(SmileID.theme.backgroundMain)
+        .cornerRadius(24)
+        .shadow(radius: 16)
+        .padding(32)
     }
 }
 
-private struct ProcessingErrorScreen: View {
+public struct ProcessingErrorScreen: View {
     let icon: UIImage
     let title: String
     let subtitle: String
@@ -139,7 +169,7 @@ private struct ProcessingErrorScreen: View {
     let closeButtonText: String
     let onClose: () -> Void
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 20) {
             Image(uiImage: icon)
             VStack(spacing: 16) {
@@ -154,8 +184,8 @@ private struct ProcessingErrorScreen: View {
                     .foregroundColor(SmileID.theme.tertiary)
                     .lineSpacing(1.3)
             }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 80)
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 80)
             Button(action: onRetry) {
                 Text(retryButtonText)
                     .font(SmileID.theme.button)
@@ -175,10 +205,10 @@ private struct ProcessingErrorScreen: View {
                     .cornerRadius(20)
             }
         }
-            .padding()
-            .background(SmileID.theme.backgroundMain)
-            .cornerRadius(24)
-            .shadow(radius: 16)
-            .padding(32)
+        .padding()
+        .background(SmileID.theme.backgroundMain)
+        .cornerRadius(24)
+        .shadow(radius: 16)
+        .padding(32)
     }
 }
