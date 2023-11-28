@@ -16,7 +16,6 @@ public struct PrepUploadRequest: Codable {
     var useEnrolledImage = false
     var retry = "false" /// backend is broken needs these as strings
 
-
     public init(
         partnerParams: PartnerParams,
         callbackUrl: String? = "",
