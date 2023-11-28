@@ -9,7 +9,7 @@ enum EnhancedKycWithIdInputScreenStep {
     case processing(ProcessingState)
 }
 
-class EnhancedKycWithIdInputScreenViewModel : ObservableObject {
+class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     private let userId = generateUserId()
     private let jobId = generateJobId()
     private var error: Error?

@@ -3,7 +3,7 @@ import SmileID
 import SwiftUI
 struct EnhancedKycWithIdInputScreen: View {
     let delegate: EnhancedKycResultDelegate
-    
+
     @State private var selectedCountry: CountryInfo?
     @ObservedObject private var viewModel = EnhancedKycWithIdInputScreenViewModel()
     

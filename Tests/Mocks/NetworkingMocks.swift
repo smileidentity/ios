@@ -102,7 +102,22 @@ class MockSmileIdentityService: SmileIDServiceable {
                 resultText: "",
                 resultCode: "",
                 country: "",
-                actions: Actions(humanReviewCompare: .approved, humanReviewLivenessCheck: .approved, humanReviewSelfieCheck: .approved, humanReviewUpdateSelfie: .approved, livenessCheck: .approved, selfieCheck: .approved, registerSelfie: .approved, returnPersonalInfo: .approved, selfieProvided: .approved, selfieToIdAuthorityCapture: .approved, selfieToIdCardCompare: .approved, selfieToRegisteredSelfieCompare: .approved, updateRegisteredSelfieOnFile: .approved, verifyIdNumber: .approved),
+                actions: Actions(
+                    humanReviewCompare: .approved,
+                    humanReviewLivenessCheck: .approved,
+                    humanReviewSelfieCheck: .approved,
+                    humanReviewUpdateSelfie: .approved,
+                    livenessCheck: .approved,
+                    selfieCheck: .approved,
+                    registerSelfie: .approved,
+                    returnPersonalInfo: .approved,
+                    selfieProvided: .approved,
+                    selfieToIdAuthorityCapture: .approved,
+                    selfieToIdCardCompare: .approved,
+                    selfieToRegisteredSelfieCompare: .approved,
+                    updateRegisteredSelfieOnFile: .approved,
+                    verifyIdNumber: .approved
+                ),
                 idType: "",
                 idNumber: ""
             )
