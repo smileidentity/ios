@@ -1,6 +1,7 @@
 ## 10.0.0-beta13
 
 ### Added
+- Enhanced KYC (synchronous)
 
 ### Changed
 - Updated document capture to preserve aspect ratio in preview
