@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.0.0-beta12"
+    public static let version = "10.0.0-beta13"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
