@@ -1,8 +1,16 @@
 import Foundation
 
 public struct UploadRequest: Codable {
-    var images: [UploadImageInfo]
-    var idInfo: IdInfo?
+    public var images: [UploadImageInfo]
+    public var idInfo: IdInfo?
+
+    public init(
+        images: [UploadImageInfo],
+        idInfo: IdInfo? = nil
+    ) {
+        self.images = images
+        self.idInfo = idInfo
+    }
 
     enum CodingKeys: String, CodingKey {
         case images
@@ -57,8 +65,16 @@ public struct IdInfo: Codable {
 }
 
 public struct UploadImageInfo: Codable {
-    var imageTypeId: ImageType
-    var fileName: String
+    public var imageTypeId: ImageType
+    public var fileName: String
+
+    public init(
+        imageTypeId: ImageType,
+        fileName: String
+    ) {
+        self.imageTypeId = imageTypeId
+        self.fileName = fileName
+    }
 
     enum CodingKeys: String, CodingKey {
         case imageTypeId = "image_type_id"

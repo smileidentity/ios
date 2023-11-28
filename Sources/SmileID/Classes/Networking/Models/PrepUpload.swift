@@ -16,6 +16,31 @@ public struct PrepUploadRequest: Codable {
     var useEnrolledImage = false
     var retry = "false" /// backend is broken needs these as strings
 
+
+    public init(
+        partnerParams: PartnerParams,
+        callbackUrl: String? = "",
+        partnerId: String = SmileID.config.partnerId,
+        sourceSdk: String = "ios",
+        sourceSdkVersion: String = SmileID.version,
+        timestamp: String = String(Date().millisecondsSince1970),
+        signature: String = "",
+        allowNewEnroll: String = "false",
+        useEnrolledImage: Bool = false,
+        retry: String = "false"
+    ) {
+        self.partnerParams = partnerParams
+        self.callbackUrl = callbackUrl
+        self.partnerId = partnerId
+        self.sourceSdk = sourceSdk
+        self.sourceSdkVersion = sourceSdkVersion
+        self.timestamp = timestamp
+        self.signature = signature
+        self.allowNewEnroll = allowNewEnroll
+        self.useEnrolledImage = useEnrolledImage
+        self.retry = retry
+    }
+
     enum CodingKeys: String, CodingKey {
         case partnerParams = "partner_params"
         case callbackUrl = "callback_url"
@@ -31,11 +56,11 @@ public struct PrepUploadRequest: Codable {
 }
 
 public struct PrepUploadResponse: Codable {
-    var code: String
-    var refId: String
-    var uploadUrl: String
-    var smileJobId: String
-    var cameraConfig: String?
+    public var code: String
+    public var refId: String
+    public var uploadUrl: String
+    public var smileJobId: String
+    public var cameraConfig: String?
 
     enum CodingKeys: String, CodingKey {
         case code

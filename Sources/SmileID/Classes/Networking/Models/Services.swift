@@ -15,7 +15,7 @@ public struct ServicesResponse: Codable {
 // MARK: - BankCode
 
 public struct BankCode: Codable {
-    let name, code: String
+    public let name, code: String
 }
 
 // MARK: - HostedWeb

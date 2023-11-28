@@ -1,7 +1,7 @@
 import Foundation
 import Zip
 
-class LocalStorage {
+public class LocalStorage {
     private static let defaultFolderName = "sid_jobs"
     private static let imagePrefix = "si_"
     private static let fileManager = FileManager.default
@@ -193,7 +193,21 @@ class LocalStorage {
         }
     }
 
-    static func zipFiles(at urls: [URL]) throws -> URL {
+    public static func toZip(
+        uploadRequest: UploadRequest,
+        to folder: String = "sid-\(UUID().uuidString)"
+    ) throws -> URL {
+        try createDefaultDirectory()
+        let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
+        let jsonData = try jsonEncoder.encode(uploadRequest)
+        let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
+        let imageUrls = uploadRequest.images.map { imageInfo in
+            destinationFolder.appendingPathComponent(imageInfo.fileName)
+        }
+        return try zipFiles(at: [jsonUrl] + imageUrls)
+    }
+
+    public static func zipFiles(at urls: [URL]) throws -> URL {
         try Zip.quickZipFiles(urls, fileName: "upload")
     }
 
@@ -216,7 +230,7 @@ class LocalStorage {
     }
 }
 
-extension Date {
+public extension Date {
     var millisecondsSince1970: Int64 {
         Int64((timeIntervalSince1970 * 1000.0).rounded())
     }

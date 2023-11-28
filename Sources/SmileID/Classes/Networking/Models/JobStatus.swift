@@ -9,6 +9,24 @@ public struct JobStatusRequest: Codable {
     public var timestamp: String
     public var signature: String
 
+    public init(
+        userId: String,
+        jobId: String,
+        includeImageLinks: Bool = false,
+        includeHistory: Bool = false,
+        partnerId: String = SmileID.config.partnerId,
+        timestamp: String = String(Date().millisecondsSince1970),
+        signature: String = ""
+    ) {
+        self.userId = userId
+        self.jobId = jobId
+        self.includeImageLinks = includeImageLinks
+        self.includeHistory = includeHistory
+        self.partnerId = partnerId
+        self.timestamp = timestamp
+        self.signature = signature
+    }
+
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
         case jobId = "job_id"
@@ -125,7 +143,7 @@ public class JobResult: Codable {
 }
 
 public class SmartSelfieJobResult: JobResult {
-    let confidence: Double?
+    public let confidence: Double?
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -141,23 +159,23 @@ public class SmartSelfieJobResult: JobResult {
 }
 
 public class BiometricKycJobResult: JobResult {
-    let antifraud: Antifraud?
-    let dob: String?
-    let photoBase64: String?
-    let gender: String?
-    let idType: String?
-    let address: String?
-    let country: String?
-    let documentImageBase64: String?
-    let fullData: [String: String]?
-    let fullName: String?
-    let idNumber: String?
-    let phoneNumber: String?
-    let phoneNumber2: String?
-    let expirationDate: String?
-    let secondaryIdNumber: String?
-    let idNumberPreviouslyRegistered: Bool?
-    let previousRegistrantsUserIds: [String]?
+    public let antifraud: Antifraud?
+    public let dob: String?
+    public let photoBase64: String?
+    public let gender: String?
+    public let idType: String?
+    public let address: String?
+    public let country: String?
+    public let documentImageBase64: String?
+    public let fullData: [String: String]?
+    public let fullName: String?
+    public let idNumber: String?
+    public let phoneNumber: String?
+    public let phoneNumber2: String?
+    public let expirationDate: String?
+    public let secondaryIdNumber: String?
+    public let idNumberPreviouslyRegistered: Bool?
+    public let previousRegistrantsUserIds: [String]?
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -211,17 +229,17 @@ public class BiometricKycJobResult: JobResult {
 }
 
 public class DocumentVerificationJobResult: JobResult {
-    let country: String?
-    let idType: String?
-    let idNumber: String?
-    let fullName: String?
-    let dob: String?
-    let gender: String?
-    let expirationDate: String?
-    let documentImageBase64: String?
-    let phoneNumber: String?
-    let phoneNumber2: String?
-    let address: String?
+    public let country: String?
+    public let idType: String?
+    public let idNumber: String?
+    public let fullName: String?
+    public let dob: String?
+    public let gender: String?
+    public let expirationDate: String?
+    public let documentImageBase64: String?
+    public let phoneNumber: String?
+    public let phoneNumber2: String?
+    public let address: String?
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -259,23 +277,23 @@ public class DocumentVerificationJobResult: JobResult {
 }
 
 public class EnhancedDocumentVerificationJobResult: JobResult {
-    let antifraud: Antifraud?
-    let dob: String?
-    let photoBase64: String?
-    let gender: String?
-    let idType: String?
-    let address: String?
-    let country: String?
-    let documentImageBase64: String?
-    let fullData: [String: String]?
-    let fullName: String?
-    let idNumber: String?
-    let phoneNumber: String?
-    let phoneNumber2: String?
-    let expirationDate: String?
-    let secondaryIdNumber: String?
-    let idNumberPreviouslyRegistered: Bool?
-    let previousRegistrantsUserIds: [String]?
+    public let antifraud: Antifraud?
+    public let dob: String?
+    public let photoBase64: String?
+    public let gender: String?
+    public let idType: String?
+    public let address: String?
+    public let country: String?
+    public let documentImageBase64: String?
+    public let fullData: [String: String]?
+    public let fullName: String?
+    public let idNumber: String?
+    public let phoneNumber: String?
+    public let phoneNumber2: String?
+    public let expirationDate: String?
+    public let secondaryIdNumber: String?
+    public let idNumberPreviouslyRegistered: Bool?
+    public let previousRegistrantsUserIds: [String]?
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -347,7 +365,9 @@ public struct SuspectUser: Codable {
 }
 
 public struct Actions: Codable {
+    public var documentCheck: ActionResult
     public var humanReviewCompare: ActionResult
+    public var humanReviewDocumentCheck: ActionResult
     public var humanReviewLivenessCheck: ActionResult
     public var humanReviewSelfieCheck: ActionResult
     public var humanReviewUpdateSelfie: ActionResult
@@ -356,14 +376,17 @@ public struct Actions: Codable {
     public var registerSelfie: ActionResult
     public var returnPersonalInfo: ActionResult
     public var selfieProvided: ActionResult
-    public var selfieToIdAuthorityCapture: ActionResult
+    public var selfieToIdAuthorityCompare: ActionResult
     public var selfieToIdCardCompare: ActionResult
     public var selfieToRegisteredSelfieCompare: ActionResult
     public var updateRegisteredSelfieOnFile: ActionResult
+    public var verifyDocument: ActionResult
     public var verifyIdNumber: ActionResult
 
     enum CodingKeys: String, CodingKey {
+        case documentCheck = "Document_Check"
         case humanReviewCompare = "Human_Review_Compare"
+        case humanReviewDocumentCheck = "Human_Review_Document_Check"
         case humanReviewLivenessCheck = "Human_Review_Liveness_Check"
         case humanReviewSelfieCheck = "Human_Review_Selfie_Check"
         case humanReviewUpdateSelfie = "Human_Review_Update_Selfie"
@@ -372,10 +395,11 @@ public struct Actions: Codable {
         case registerSelfie = "Register_Selfie"
         case returnPersonalInfo = "Return_Personal_Info"
         case selfieProvided = "Selfie_Provided"
-        case selfieToIdAuthorityCapture = "Selfie_To_ID_Authority_Compare"
+        case selfieToIdAuthorityCompare = "Selfie_To_ID_Authority_Compare"
         case selfieToIdCardCompare = "Selfie_To_ID_Card_Compare"
         case selfieToRegisteredSelfieCompare = "Selfie_To_Registered_Selfie_Compare"
         case updateRegisteredSelfieOnFile = "Update_Registered_Selfie_On_File"
+        case verifyDocument = "Verify_Document"
         case verifyIdNumber = "Verify_ID_Number"
     }
 }
