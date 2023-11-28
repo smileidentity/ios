@@ -347,20 +347,20 @@ public struct SuspectUser: Codable {
 }
 
 public struct Actions: Codable {
-    public var humanReviewCompare: ActionResult
-    public var humanReviewLivenessCheck: ActionResult
-    public var humanReviewSelfieCheck: ActionResult
-    public var humanReviewUpdateSelfie: ActionResult
-    public var livenessCheck: ActionResult
-    public var selfieCheck: ActionResult
-    public var registerSelfie: ActionResult
-    public var returnPersonalInfo: ActionResult
-    public var selfieProvided: ActionResult
-    public var selfieToIdAuthorityCapture: ActionResult
-    public var selfieToIdCardCompare: ActionResult
-    public var selfieToRegisteredSelfieCompare: ActionResult
-    public var updateRegisteredSelfieOnFile: ActionResult
-    public var verifyIdNumber: ActionResult
+    public var humanReviewCompare: ActionResult = ActionResult.notApplicable
+    public var humanReviewLivenessCheck: ActionResult = ActionResult.notApplicable
+    public var humanReviewSelfieCheck: ActionResult = ActionResult.notApplicable
+    public var humanReviewUpdateSelfie: ActionResult = ActionResult.notApplicable
+    public var livenessCheck: ActionResult = ActionResult.notApplicable
+    public var selfieCheck: ActionResult = ActionResult.notApplicable
+    public var registerSelfie: ActionResult = ActionResult.notApplicable
+    public var returnPersonalInfo: ActionResult = ActionResult.notApplicable
+    public var selfieProvided: ActionResult = ActionResult.notApplicable
+    public var selfieToIdAuthorityCapture: ActionResult = ActionResult.notApplicable
+    public var selfieToIdCardCompare: ActionResult = ActionResult.notApplicable
+    public var selfieToRegisteredSelfieCompare: ActionResult = ActionResult.notApplicable
+    public var updateRegisteredSelfieOnFile: ActionResult = ActionResult.notApplicable
+    public var verifyIdNumber: ActionResult = ActionResult.notApplicable
 
     enum CodingKeys: String, CodingKey {
         case humanReviewCompare = "Human_Review_Compare"
