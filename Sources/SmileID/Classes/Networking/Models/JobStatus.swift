@@ -405,51 +405,98 @@ public struct Actions: Codable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        humanReviewCompare = try
-        container.decodeIfPresent(ActionResult.self, forKey: .humanReviewCompare) ?? .notApplicable
-        humanReviewLivenessCheck = try
-        container.decodeIfPresent(ActionResult.self, forKey: .humanReviewLivenessCheck) ?? .notApplicable
-        humanReviewSelfieCheck = try
-        container.decodeIfPresent(ActionResult.self, forKey: .humanReviewSelfieCheck) ?? .notApplicable
-        humanReviewUpdateSelfie = try
-        container.decodeIfPresent(ActionResult.self, forKey: .humanReviewUpdateSelfie) ?? .notApplicable
-        livenessCheck = try
-        container.decodeIfPresent(ActionResult.self, forKey: .livenessCheck) ?? .notApplicable
-        selfieCheck = try
-        container.decodeIfPresent(ActionResult.self, forKey: .selfieCheck) ?? .notApplicable
-        registerSelfie = try
-        container.decodeIfPresent(ActionResult.self, forKey: .registerSelfie) ?? .notApplicable
-        returnPersonalInfo = try
-        container.decodeIfPresent(ActionResult.self, forKey: .returnPersonalInfo) ?? .notApplicable
-        selfieProvided = try
-        container.decodeIfPresent(ActionResult.self, forKey: .selfieProvided) ?? .notApplicable
-        selfieToIdAuthorityCompare = try
-        container.decodeIfPresent(ActionResult.self, forKey: .selfieToIdAuthorityCompare) ?? .notApplicable
-        selfieToIdCardCompare = try
-        container.decodeIfPresent(ActionResult.self, forKey: .selfieToIdCardCompare) ?? .notApplicable
-        selfieToRegisteredSelfieCompare = try
-        container.decodeIfPresent(ActionResult.self, forKey: .selfieToRegisteredSelfieCompare) ?? .notApplicable
-        updateRegisteredSelfieOnFile = try
-        container.decodeIfPresent(ActionResult.self, forKey: .updateRegisteredSelfieOnFile) ?? .notApplicable
-        verifyIdNumber = try
-        container.decodeIfPresent(ActionResult.self, forKey: .verifyIdNumber) ?? .notApplicable
+        documentCheck = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .documentCheck
+        ) ?? .notApplicable
+        humanReviewCompare = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .humanReviewCompare
+        ) ?? .notApplicable
+        humanReviewDocumentCheck = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .humanReviewDocumentCheck
+        ) ?? .notApplicable
+        humanReviewLivenessCheck = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .humanReviewLivenessCheck
+        ) ?? .notApplicable
+        humanReviewSelfieCheck = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .humanReviewSelfieCheck
+        ) ?? .notApplicable
+        humanReviewUpdateSelfie = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .humanReviewUpdateSelfie
+        ) ?? .notApplicable
+        livenessCheck = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .livenessCheck
+        ) ?? .notApplicable
+        selfieCheck = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .selfieCheck
+        ) ?? .notApplicable
+        registerSelfie = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .registerSelfie
+        ) ?? .notApplicable
+        returnPersonalInfo = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .returnPersonalInfo
+        ) ?? .notApplicable
+        selfieProvided = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .selfieProvided
+        ) ?? .notApplicable
+        selfieToIdAuthorityCompare = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .selfieToIdAuthorityCompare
+        ) ?? .notApplicable
+        selfieToIdCardCompare = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .selfieToIdCardCompare
+        ) ?? .notApplicable
+        selfieToRegisteredSelfieCompare = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .selfieToRegisteredSelfieCompare
+        ) ?? .notApplicable
+        updateRegisteredSelfieOnFile = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .updateRegisteredSelfieOnFile
+        ) ?? .notApplicable
+        verifyDocument = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .verifyDocument
+        ) ?? .notApplicable
+        verifyIdNumber = try container.decodeIfPresent(
+            ActionResult.self,
+            forKey: .verifyIdNumber
+        ) ?? .notApplicable
     }
 
-    init(humanReviewCompare: ActionResult = ActionResult.notApplicable,
-         humanReviewLivenessCheck: ActionResult = ActionResult.notApplicable,
-         humanReviewSelfieCheck: ActionResult = ActionResult.notApplicable,
-         humanReviewUpdateSelfie: ActionResult = ActionResult.notApplicable,
-         livenessCheck: ActionResult = ActionResult.notApplicable,
-         selfieCheck: ActionResult = ActionResult.notApplicable,
-         registerSelfie: ActionResult = ActionResult.notApplicable,
-         returnPersonalInfo: ActionResult = ActionResult.notApplicable,
-         selfieProvided: ActionResult = ActionResult.notApplicable,
-         selfieToIdAuthorityCompare: ActionResult = ActionResult.notApplicable,
-         selfieToIdCardCompare: ActionResult = ActionResult.notApplicable,
-         selfieToRegisteredSelfieCompare: ActionResult = ActionResult.notApplicable,
-         updateRegisteredSelfieOnFile: ActionResult = ActionResult.notApplicable,
-         verifyIdNumber: ActionResult = ActionResult.notApplicable) {
+    init(
+        documentCheck: ActionResult = ActionResult.notApplicable,
+        humanReviewCompare: ActionResult = ActionResult.notApplicable,
+        humanReviewDocumentCheck: ActionResult = ActionResult.notApplicable,
+        humanReviewLivenessCheck: ActionResult = ActionResult.notApplicable,
+        humanReviewSelfieCheck: ActionResult = ActionResult.notApplicable,
+        humanReviewUpdateSelfie: ActionResult = ActionResult.notApplicable,
+        livenessCheck: ActionResult = ActionResult.notApplicable,
+        selfieCheck: ActionResult = ActionResult.notApplicable,
+        registerSelfie: ActionResult = ActionResult.notApplicable,
+        returnPersonalInfo: ActionResult = ActionResult.notApplicable,
+        selfieProvided: ActionResult = ActionResult.notApplicable,
+        selfieToIdAuthorityCompare: ActionResult = ActionResult.notApplicable,
+        selfieToIdCardCompare: ActionResult = ActionResult.notApplicable,
+        selfieToRegisteredSelfieCompare: ActionResult = ActionResult.notApplicable,
+        updateRegisteredSelfieOnFile: ActionResult = ActionResult.notApplicable,
+        verifyDocument: ActionResult = ActionResult.notApplicable,
+        verifyIdNumber: ActionResult = ActionResult.notApplicable
+    ) {
+        self.documentCheck = documentCheck
         self.humanReviewCompare = humanReviewCompare
+        self.humanReviewDocumentCheck = humanReviewDocumentCheck
         self.humanReviewLivenessCheck = humanReviewLivenessCheck
         self.humanReviewSelfieCheck = humanReviewSelfieCheck
         self.humanReviewUpdateSelfie = humanReviewUpdateSelfie
@@ -462,6 +509,7 @@ public struct Actions: Codable {
         self.selfieToIdCardCompare = selfieToIdCardCompare
         self.selfieToRegisteredSelfieCompare = selfieToRegisteredSelfieCompare
         self.updateRegisteredSelfieOnFile = updateRegisteredSelfieOnFile
+        self.verifyDocument = verifyDocument
         self.verifyIdNumber = verifyIdNumber
     }
 }
