@@ -40,9 +40,9 @@ public struct JobStatusRequest: Codable {
 
 public typealias SmartSelfieJobStatusResponse = JobStatusResponse<SmartSelfieJobResult>
 public typealias DocumentVerificationJobStatusResponse =
-    JobStatusResponse<DocumentVerificationJobResult>
+JobStatusResponse<DocumentVerificationJobResult>
 public typealias EnhancedDocumentVerificationJobStatusResponse =
-    JobStatusResponse<EnhancedDocumentVerificationJobResult>
+JobStatusResponse<EnhancedDocumentVerificationJobResult>
 public typealias BiometricKycJobStatusResponse = JobStatusResponse<BiometricKycJobResult>
 
 public final class JobStatusResponse<T: JobResult>: Codable {
@@ -54,7 +54,6 @@ public final class JobStatusResponse<T: JobResult>: Codable {
     public let resultString: String?
     public let history: [T]?
     public let imageLinks: ImageLinks?
-
     internal init(jobComplete: Bool = true) {
         self.jobComplete = jobComplete
         timestamp = ""
@@ -65,7 +64,6 @@ public final class JobStatusResponse<T: JobResult>: Codable {
         history = nil
         imageLinks = nil
     }
-
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         timestamp = try container.decode(String.self, forKey: .timestamp)
@@ -77,7 +75,6 @@ public final class JobStatusResponse<T: JobResult>: Codable {
         history = try container.decodeIfPresent([T].self, forKey: .history)
         imageLinks = try container.decodeIfPresent(ImageLinks.self, forKey: .imageLinks)
     }
-
     enum CodingKeys: String, CodingKey {
         case timestamp = "timestamp"
         case jobComplete = "job_complete"
@@ -96,7 +93,6 @@ public class JobResult: Codable {
     public let resultText: String
     public let smileJobId: String
     public let partnerParams: PartnerParams
-
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         actions = try container.decode(Actions.self, forKey: .actions)
@@ -105,7 +101,6 @@ public class JobResult: Codable {
         smileJobId = try container.decode(String.self, forKey: .smileJobId)
         partnerParams = try container.decode(PartnerParams.self, forKey: .partnerParams)
     }
-
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(actions, forKey: .actions)
@@ -114,7 +109,6 @@ public class JobResult: Codable {
         try container.encode(smileJobId, forKey: .smileJobId)
         try container.encode(partnerParams, forKey: .partnerParams)
     }
-
     enum CodingKeys: String, CodingKey {
         case actions = "Actions"
         case resultCode = "ResultCode"
@@ -204,7 +198,6 @@ public class BiometricKycJobResult: JobResult {
         )
         try super.init(from: decoder)
     }
-
     public override func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(antifraud, forKey: .antifraud)
@@ -258,7 +251,6 @@ public class DocumentVerificationJobResult: JobResult {
         address = try container.decodeIfPresent(String.self, forKey: .address)
         try super.init(from: decoder)
     }
-
     override public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(country, forKey: .country)
@@ -322,7 +314,7 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
         )
         try super.init(from: decoder)
     }
-
+    
     public override func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(antifraud, forKey: .antifraud)
@@ -348,7 +340,6 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
 
 public struct Antifraud: Codable {
     public let suspectUsers: [SuspectUser]?
-
     enum CodingKeys: String, CodingKey {
         case suspectUsers = "SuspectUsers"
     }
@@ -357,7 +348,6 @@ public struct Antifraud: Codable {
 public struct SuspectUser: Codable {
     public let userId: String?
     public let reason: String?
-
     enum CodingKeys: String, CodingKey {
         case reason = "reason"
         case userId = "user_id"
@@ -382,7 +372,6 @@ public struct Actions: Codable {
     public var updateRegisteredSelfieOnFile: ActionResult
     public var verifyDocument: ActionResult
     public var verifyIdNumber: ActionResult
-
     enum CodingKeys: String, CodingKey {
         case documentCheck = "Document_Check"
         case humanReviewCompare = "Human_Review_Compare"
@@ -401,6 +390,66 @@ public struct Actions: Codable {
         case updateRegisteredSelfieOnFile = "Update_Registered_Selfie_On_File"
         case verifyDocument = "Verify_Document"
         case verifyIdNumber = "Verify_ID_Number"
+    }
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        humanReviewCompare = try
+        container.decodeIfPresent(ActionResult.self, forKey: .humanReviewCompare) ?? .notApplicable
+        humanReviewLivenessCheck = try
+        container.decodeIfPresent(ActionResult.self, forKey: .humanReviewLivenessCheck) ?? .notApplicable
+        humanReviewSelfieCheck = try
+        container.decodeIfPresent(ActionResult.self, forKey: .humanReviewSelfieCheck) ?? .notApplicable
+        humanReviewUpdateSelfie = try
+        container.decodeIfPresent(ActionResult.self, forKey: .humanReviewUpdateSelfie) ?? .notApplicable
+        livenessCheck = try
+        container.decodeIfPresent(ActionResult.self, forKey: .livenessCheck) ?? .notApplicable
+        selfieCheck = try
+        container.decodeIfPresent(ActionResult.self, forKey: .selfieCheck) ?? .notApplicable
+        registerSelfie = try
+        container.decodeIfPresent(ActionResult.self, forKey: .registerSelfie) ?? .notApplicable
+        returnPersonalInfo = try
+        container.decodeIfPresent(ActionResult.self, forKey: .returnPersonalInfo) ?? .notApplicable
+        selfieProvided = try
+        container.decodeIfPresent(ActionResult.self, forKey: .selfieProvided) ?? .notApplicable
+        selfieToIdAuthorityCapture = try
+        container.decodeIfPresent(ActionResult.self, forKey: .selfieToIdAuthorityCapture) ?? .notApplicable
+        selfieToIdCardCompare = try
+        container.decodeIfPresent(ActionResult.self, forKey: .selfieToIdCardCompare) ?? .notApplicable
+        selfieToRegisteredSelfieCompare = try
+        container.decodeIfPresent(ActionResult.self, forKey: .selfieToRegisteredSelfieCompare) ?? .notApplicable
+        updateRegisteredSelfieOnFile = try
+        container.decodeIfPresent(ActionResult.self, forKey: .updateRegisteredSelfieOnFile) ?? .notApplicable
+        verifyIdNumber = try
+        container.decodeIfPresent(ActionResult.self, forKey: .verifyIdNumber) ?? .notApplicable
+    }
+    init(humanReviewCompare: ActionResult = ActionResult.notApplicable,
+         humanReviewLivenessCheck: ActionResult = ActionResult.notApplicable,
+         humanReviewSelfieCheck: ActionResult = ActionResult.notApplicable,
+         humanReviewUpdateSelfie: ActionResult = ActionResult.notApplicable,
+         livenessCheck: ActionResult = ActionResult.notApplicable,
+         selfieCheck: ActionResult = ActionResult.notApplicable,
+         registerSelfie: ActionResult = ActionResult.notApplicable,
+         returnPersonalInfo: ActionResult = ActionResult.notApplicable,
+         selfieProvided: ActionResult = ActionResult.notApplicable,
+         selfieToIdAuthorityCapture: ActionResult = ActionResult.notApplicable,
+         selfieToIdCardCompare: ActionResult = ActionResult.notApplicable,
+         selfieToRegisteredSelfieCompare: ActionResult = ActionResult.notApplicable,
+         updateRegisteredSelfieOnFile: ActionResult = ActionResult.notApplicable,
+         verifyIdNumber: ActionResult = ActionResult.notApplicable) {
+        self.humanReviewCompare = humanReviewCompare
+        self.humanReviewLivenessCheck = humanReviewLivenessCheck
+        self.humanReviewSelfieCheck = humanReviewSelfieCheck
+        self.humanReviewUpdateSelfie = humanReviewUpdateSelfie
+        self.livenessCheck = livenessCheck
+        self.selfieCheck = selfieCheck
+        self.registerSelfie = registerSelfie
+        self.returnPersonalInfo = returnPersonalInfo
+        self.selfieProvided = selfieProvided
+        self.selfieToIdAuthorityCapture = selfieToIdAuthorityCapture
+        self.selfieToIdCardCompare = selfieToIdCardCompare
+        self.selfieToRegisteredSelfieCompare = selfieToRegisteredSelfieCompare
+        self.updateRegisteredSelfieOnFile = updateRegisteredSelfieOnFile
+        self.verifyIdNumber = verifyIdNumber
     }
 }
 
@@ -425,7 +474,6 @@ public enum ActionResult: String, Codable {
 public struct ImageLinks: Codable {
     public var selfieImageUrl: String?
     public var error: String?
-
     enum CodingKeys: String, CodingKey {
         case selfieImageUrl = "selfie_image"
         case error

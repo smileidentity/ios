@@ -199,7 +199,8 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     }
 }
 
-internal class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
+internal class OrchestratedDocumentVerificationViewModel:
+    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
             delegate.didSucceed(

@@ -7,6 +7,7 @@ class HomeViewModel: ObservableObject,
     SmartSelfieResultDelegate,
     DocumentVerificationResultDelegate,
     EnhancedDocumentVerificationResultDelegate,
+    EnhancedKycResultDelegate,
     BiometricKycResultDelegate {
 
     // MARK: - UI Properties
@@ -79,6 +80,21 @@ class HomeViewModel: ObservableObject,
             code: jobStatusResponse.code,
             resultCode: jobStatusResponse.result?.resultCode,
             resultText: jobStatusResponse.result?.resultText
+        )
+    }
+    
+    func didSucceed(
+        enhancedKycResponse: EnhancedKycResponse
+    ) {
+        dismissModal()
+        showToast = true
+        toastMessage = jobResultMessageBuilder(
+            jobName: "Enhanced KYC",
+            jobComplete: true,
+            jobSuccess: true,
+            code: nil,
+            resultCode: enhancedKycResponse.resultCode,
+            resultText: enhancedKycResponse.resultText
         )
     }
 
