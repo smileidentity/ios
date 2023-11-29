@@ -11,15 +11,15 @@ public struct UploadRequest: Codable {
 }
 
 public struct IdInfo: Codable {
-    let country: String
-    let idType: String?
-    let idNumber: String?
-    let firstName: String?
-    let middleName: String?
-    let lastName: String?
-    let dob: String?
-    let bankCode: String?
-    let entered: Bool?
+    public let country: String
+    public let idType: String?
+    public let idNumber: String?
+    public let firstName: String?
+    public let middleName: String?
+    public let lastName: String?
+    public let dob: String?
+    public let bankCode: String?
+    public let entered: Bool?
 
     public init(
         country: String,

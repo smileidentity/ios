@@ -88,6 +88,45 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
+    func doEnhancedKyc(
+        request _: EnhancedKycRequest
+    ) -> AnyPublisher<EnhancedKycResponse, Error> {
+        if MockHelper.shouldFail {
+            let error = SmileIDError.request(URLError(.resourceUnavailable))
+            return Fail(error: error)
+                .eraseToAnyPublisher()
+        } else {
+            let response = EnhancedKycResponse(
+                smileJobId: "",
+                partnerParams: PartnerParams(jobId: "", userId: "", jobType: .enhancedKyc, extras: [:]),
+                resultText: "",
+                resultCode: "",
+                country: "",
+                actions: Actions(
+                    humanReviewCompare: .approved,
+                    humanReviewLivenessCheck: .approved,
+                    humanReviewSelfieCheck: .approved,
+                    humanReviewUpdateSelfie: .approved,
+                    livenessCheck: .approved,
+                    selfieCheck: .approved,
+                    registerSelfie: .approved,
+                    returnPersonalInfo: .approved,
+                    selfieProvided: .approved,
+                    selfieToIdAuthorityCapture: .approved,
+                    selfieToIdCardCompare: .approved,
+                    selfieToRegisteredSelfieCompare: .approved,
+                    updateRegisteredSelfieOnFile: .approved,
+                    verifyIdNumber: .approved
+                ),
+                idType: "",
+                idNumber: ""
+            )
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    
     func getJobStatus<T: JobResult>(
         request _: JobStatusRequest
     ) -> AnyPublisher<JobStatusResponse<T>, Error> {
