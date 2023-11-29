@@ -1,20 +1,44 @@
 import Foundation
 
 public struct PrepUploadRequest: Codable {
-    var partnerParams: PartnerParams
+    public var partnerParams: PartnerParams
     // Callback URL *must* be defined either within your Partner Portal or here
-    var callbackUrl: String? = SmileID.callbackUrl
-    var partnerId = SmileID.config.partnerId
-    var sourceSdk = "ios"
-    var sourceSdkVersion = SmileID.version
-    var timestamp = String(Date().millisecondsSince1970)
-    var signature = ""
+    public var callbackUrl: String? = SmileID.callbackUrl
+    public var partnerId = SmileID.config.partnerId
+    public var sourceSdk = "ios"
+    public var sourceSdkVersion = SmileID.version
+    public var timestamp = String(Date().millisecondsSince1970)
+    public var signature = ""
     /// backend is broken needs these as strings
     /// I've also made this false until we have this properly
     /// documented and done on both android and iOS
-    var allowNewEnroll = "false"
-    var useEnrolledImage = false
-    var retry = "false" /// backend is broken needs these as strings
+    public var allowNewEnroll = "false"
+    public var useEnrolledImage = false
+    public var retry = "false" /// backend is broken needs these as strings
+
+    public init(
+        partnerParams: PartnerParams,
+        callbackUrl: String? = "",
+        partnerId: String = SmileID.config.partnerId,
+        sourceSdk: String = "ios",
+        sourceSdkVersion: String = SmileID.version,
+        timestamp: String = String(Date().millisecondsSince1970),
+        signature: String = "",
+        allowNewEnroll: String = "false",
+        useEnrolledImage: Bool = false,
+        retry: String = "false"
+    ) {
+        self.partnerParams = partnerParams
+        self.callbackUrl = callbackUrl
+        self.partnerId = partnerId
+        self.sourceSdk = sourceSdk
+        self.sourceSdkVersion = sourceSdkVersion
+        self.timestamp = timestamp
+        self.signature = signature
+        self.allowNewEnroll = allowNewEnroll
+        self.useEnrolledImage = useEnrolledImage
+        self.retry = retry
+    }
 
     enum CodingKeys: String, CodingKey {
         case partnerParams = "partner_params"
@@ -31,11 +55,11 @@ public struct PrepUploadRequest: Codable {
 }
 
 public struct PrepUploadResponse: Codable {
-    var code: String
-    var refId: String
-    var uploadUrl: String
-    var smileJobId: String
-    var cameraConfig: String?
+    public var code: String
+    public var refId: String
+    public var uploadUrl: String
+    public var smileJobId: String
+    public var cameraConfig: String?
 
     enum CodingKeys: String, CodingKey {
         case code

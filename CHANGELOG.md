@@ -1,13 +1,21 @@
-## 10.0.0-beta13 (unreleased)
+## 10.0.0-beta14 (unreleased)
 
 ### Added
 
 ### Changed
-- Updated document capture to preserve aspect ratio in preview
 
 ### Fixed
 
 ### Removed
+
+## 10.0.0-beta13
+
+### Added
+- Enhanced KYC (synchronous)
+
+### Changed
+- Updated document capture to preserve aspect ratio in preview
+- Updated visibility of networking models to public
 
 ## 10.0.0-beta12
 
