@@ -112,7 +112,7 @@ class MockSmileIdentityService: SmileIDServiceable {
                     registerSelfie: .approved,
                     returnPersonalInfo: .approved,
                     selfieProvided: .approved,
-                    selfieToIdAuthorityCapture: .approved,
+                    selfieToIdAuthorityCompare: .approved,
                     selfieToIdCardCompare: .approved,
                     selfieToRegisteredSelfieCompare: .approved,
                     updateRegisteredSelfieOnFile: .approved,
@@ -126,7 +126,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    
+
     func getJobStatus<T: JobResult>(
         request _: JobStatusRequest
     ) -> AnyPublisher<JobStatusResponse<T>, Error> {
