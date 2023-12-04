@@ -1,7 +1,7 @@
 /// The result of an Enhanced Document Verification
 
 import Foundation
-public protocol EnhancedDocumentVerificationResultDelegate: AnyObject {
+public protocol EnhancedDocumentVerificationResultDelegate {
     /// Delegate method called after a successful Enhanced Document Verification capture and
     /// submission. It indicates that the capture and network requests were successful. The job
     /// may or may not be complete. Use `jobStatusResponse.jobComplete` to check if a job is

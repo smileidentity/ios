@@ -1,7 +1,7 @@
 /// The result of a Document Verification
 
 import Foundation
-public protocol DocumentVerificationResultDelegate: AnyObject {
+public protocol DocumentVerificationResultDelegate {
     /// Delegate method called after a successful Document Verification capture and submission.
     /// It indicates that the capture and network requests were successful. The job may or may not
     /// be complete. Use `jobStatusResponse.jobComplete` to check if a job is complete and
