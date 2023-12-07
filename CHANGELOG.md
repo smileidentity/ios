@@ -1,20 +1,12 @@
-## 10.0.0-beta15 (unreleased)
+## 10.0.0
 
-### Added
-
-### Changed
-
-### Fixed
-
-### Removed
+- No changes
 
 ## 10.0.0-beta14
 
 ### Changed
 - Removed DocumentVerificationResultDelegate from extending AnyObject so it doesn't have to always be used in classes
 - Removed EnhancedDocumentVerificationResultDelegate from extending AnyObject so it doesn't have to always be used in classes
-
-### Removed
 
 ## 10.0.0-beta13
 
