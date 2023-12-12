@@ -62,7 +62,7 @@ public class LocalStorage {
     static func createInfoJson(
         selfie: URL,
         livenessImages: [URL],
-        idInfo: IdInfo,
+        idInfo: IdInfo? = nil,
         to folder: String = "sid-\(UUID().uuidString)"
     ) throws -> URL {
         try createDefaultDirectory()
