@@ -1,3 +1,19 @@
+## 10.0.2 (unrleased)
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+
+## 10.0.1
+
+### Fixed
+- Fixed missing info.json issue on Smartselfie Enrollment and Smartselfie Authentication
+
 ## 10.0.0
 
 - No changes
