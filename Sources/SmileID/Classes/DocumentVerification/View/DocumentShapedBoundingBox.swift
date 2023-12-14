@@ -18,6 +18,8 @@ struct DocumentShapedBoundingBox: View {
     var body: some View {
         ZStack {
             Color.black.opacity(0.7)
+                // We use cutout here instead of .blendMode(.destinationOut) because that causes
+                // issues on iOS 14 devices
                 .cutout(cutoutShape)
                 .overlay(cutoutShape.stroke(borderColor, lineWidth: 4))
         }

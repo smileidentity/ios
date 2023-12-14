@@ -1,10 +1,11 @@
-## 10.0.2 (unrleased)
+## 10.0.2 (unreleased)
 
 ### Added
 
 ### Changed
 
 ### Fixed
+- Fixed a bug on iOS 14 devices where the document cutout showed a white box instead
 
 ### Removed
 
