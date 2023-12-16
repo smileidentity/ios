@@ -50,8 +50,8 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                         )
                     }
                 }
-                
-                faceOverlay
+
+                faceOverlay.frame(width: geometry.size.width)
 
                 switch viewModel.processingState {
                 case .confirmation(let selfieImage):
