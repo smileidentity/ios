@@ -657,7 +657,7 @@ extension SelfieCaptureViewModel {
         } else if boundingBox.width > (0.7 * faceLayoutGuideFrame.width) {
             isAcceptableBounds = .detectedFaceTooLarge
             subject.send("Instructions.FaceClose")
-        } else if boundingBox.width < (faceLayoutGuideFrame.width * 0.65) {
+        } else if boundingBox.width < (0.5 * faceLayoutGuideFrame.width) {
             isAcceptableBounds = .detectedFaceTooSmall
             subject.send("Instructions.FaceFar")
         } else {
