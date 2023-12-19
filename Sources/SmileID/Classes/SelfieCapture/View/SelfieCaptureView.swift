@@ -29,18 +29,31 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
             camera = CameraView(cameraManager: viewModel.cameraManager)
             arView = nil
         }
+
+        let window = UIApplication
+            .shared
+            .connectedScenes
+            .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+            .last { $0.isKeyWindow }
+        if let rootView = window {
+            viewModel.faceLayoutGuideFrame = rootView.screen.bounds
+        } else {
+            print("window was unexpectedly null -- selfie capture will not work")
+            viewModel.handleError(SmileIDError.unknown("Unable to capture selfie"))
+        }
     }
 
     public var body: some View {
         GeometryReader { geometry in
             ZStack {
-                if ARFaceTrackingConfiguration.isSupported && viewModel.agentMode == false {
+                let didDetectBounds = viewModel.faceLayoutGuideFrame != CGRect.zero
+                if didDetectBounds && ARFaceTrackingConfiguration.isSupported && !viewModel.agentMode {
                     arView.onAppear {
                         arView?.preview.model = viewModel
                         viewModel.viewFinderSize = geometry.size
                         viewModel.selfieViewDelegate = self
                     }
-                } else {
+                } else if didDetectBounds {
                     camera.onAppear {
                         viewModel.smartSelfieResultDelegate = delegate
                         viewModel.viewDelegate = camera!.preview

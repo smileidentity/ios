@@ -10,20 +10,6 @@ struct FaceOverlayView: View {
     private let faceShape = FaceShape().scale(x: 0.8, y: 0.7).offset(y: -20)
     private let bgColor = Color.white.opacity(0.8)
 
-    init(model: SelfieCaptureViewModel) {
-        self.model = model
-        let window = UIApplication
-            .shared
-            .connectedScenes
-            .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
-            .last { $0.isKeyWindow }
-        if let rootView = window {
-            model.faceLayoutGuideFrame = rootView.screen.bounds
-        } else {
-            print("window was (unexpectedly) null -- selfie capture will not work")
-        }
-    }
-
     var body: some View {
         let view = VStack(spacing: 0) {
             bgColor

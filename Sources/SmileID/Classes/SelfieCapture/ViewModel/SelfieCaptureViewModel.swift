@@ -394,7 +394,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         }
     }
 
-    private func handleError(_ error: SmileIDError) {
+    func handleError(_ error: SmileIDError) {
         switch error {
         case let .request(urlError):
             processingState = .error(urlError)
@@ -516,9 +516,15 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         submit()
     }
 
+    /// Called on Error Close only
     func handleClose() {
         pauseCameraSession()
-        processingState = .endFlow
+        switch processingState {
+        case .error(let error):
+            smartSelfieResultDelegate?.didError(error: error)
+        default:
+            handleCompletion()
+        }
     }
 
     func handleCompletion() {
