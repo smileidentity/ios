@@ -1,14 +1,17 @@
-## 10.0.2 (unreleased)
+## 10.0.3 (unreleased)
 
 ### Added
 
+### Fixed
+
 ### Changed
 
+### Remved
+
+## 10.0.2
+
 ### Fixed
-- Fixed a bug on iOS 14 devices where the document cutout showed a white box instead
-
-### Removed
-
+- Fixed a bug on iOS 14 devices where the document and selfie cutouts were white insteaad of transparent
 
 ## 10.0.1
 
