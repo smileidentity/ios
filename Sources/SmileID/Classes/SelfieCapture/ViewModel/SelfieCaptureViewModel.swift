@@ -636,24 +636,32 @@ extension SelfieCaptureViewModel {
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
-        if boundingBox.width > (0.80 * faceLayoutGuideFrame.width) {
+        let faceCenter = CGPoint(x: faceLayoutGuideFrame.midX, y: faceLayoutGuideFrame.midY)
+        let boxCenter = CGPoint(x: boundingBox.midX, y: boundingBox.midY)
+        let xOffset = abs(faceCenter.x - boxCenter.x)
+        let yOffset = abs(faceCenter.y - boxCenter.y)
+        let widthMargin = faceLayoutGuideFrame.width * 0.15
+        let heightMargin = faceLayoutGuideFrame.height * 0.15
+        let isFaceInFrame = boundingBox.minX >= faceLayoutGuideFrame.minX &&
+            boundingBox.maxX <= faceLayoutGuideFrame.maxX &&
+            boundingBox.maxY <= faceLayoutGuideFrame.maxY &&
+            boundingBox.minY >= faceLayoutGuideFrame.minY
+
+        if !isFaceInFrame {
+            isAcceptableBounds = .detectedFaceOffCentre
+            subject.send("Instructions.Start")
+            resetCapture()
+        } else if xOffset > widthMargin || yOffset > heightMargin {
+            isAcceptableBounds = .detectedFaceOffCentre
+            subject.send("Instructions.Start")
+        } else if boundingBox.width > (0.7 * faceLayoutGuideFrame.width) {
             isAcceptableBounds = .detectedFaceTooLarge
             subject.send("Instructions.FaceClose")
-        } else if boundingBox.width < (faceLayoutGuideFrame.width * 0.25) {
+        } else if boundingBox.width < (faceLayoutGuideFrame.width * 0.65) {
             isAcceptableBounds = .detectedFaceTooSmall
             subject.send("Instructions.FaceFar")
         } else {
-            let isFaceInFrame = boundingBox.minX >= faceLayoutGuideFrame.minX &&
-                boundingBox.maxX <= faceLayoutGuideFrame.maxX &&
-                boundingBox.maxY <= faceLayoutGuideFrame.maxY &&
-                boundingBox.minY >= faceLayoutGuideFrame.minY
-            if !isFaceInFrame {
-                isAcceptableBounds = .detectedFaceOffCentre
-                subject.send("Instructions.Start")
-                resetCapture()
-            } else {
-                isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
-            }
+            isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
         }
     }
 

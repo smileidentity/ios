@@ -5,8 +5,9 @@ import SwiftUI
 struct FaceOverlayView: View {
     @ObservedObject private(set) var model: SelfieCaptureViewModel
 
+    private let agentModeHeight = 48.0
     private let strokeWidth = 10
-    private let faceShape = FaceShape().scale(x: 0.85, y: 0.75).offset(y: -25)
+    private let faceShape = FaceShape().scale(x: 0.8, y: 0.7).offset(y: -20)
     private let bgColor = Color.white.opacity(0.8)
 
     init(model: SelfieCaptureViewModel) {
@@ -51,15 +52,16 @@ struct FaceOverlayView: View {
                             .font(SmileID.theme.header4)
                         Toggle("", isOn: $model.agentMode).labelsHidden()
                     }
-                        .frame(width: 188, height: 48)
+                        .frame(width: 188, height: agentModeHeight)
                         .background(agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain)
                         .cornerRadius(25)
                         .shadow(radius: 25)
-                        .padding(.bottom, 25)
                         .animation(.default)
                 }
             }
-                .frame(maxWidth: .infinity)
+                // Fixed height to accomodate for scaling based face outline
+                .frame(maxWidth: .infinity, maxHeight: agentModeHeight)
+                .padding(.bottom, 25)
                 .background(bgColor)
         }
 
