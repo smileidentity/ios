@@ -5,118 +5,148 @@ struct OnboardingScreen: View {
     @State private var showManualEntrySheet = false
     @State private var showQrCodeScanner = false
     @State private var errorMessage: String?
+    @Binding var showSuccess: Bool
+    @State private var partnerId = ""
+
 
     var body: some View {
         VStack(alignment: .leading) {
             Image("SmileLogo")
-                .resizable()
-                .scaledToFit()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: .infinity, maxHeight: 64)
-                .padding(.vertical, 100)
+                    .resizable()
+                    .scaledToFit()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity, maxHeight: 64)
+                    .padding(.vertical, 100)
 
             Text("Welcome to our sample App!")
-                .font(SmileID.theme.header1)
-                .foregroundColor(SmileID.theme.accent)
-                .padding(.vertical)
+                    .font(SmileID.theme.header1)
+                    .foregroundColor(SmileID.theme.accent)
+                    .padding(.vertical)
 
             Text("To begin testing, you need to add a configuration from the Smile Portal")
-                .font(SmileID.theme.header4)
-                .foregroundColor(SmileID.theme.onLight)
-                .padding(.vertical)
+                    .font(EpilogueFont.regular(with: 16))
+                    .foregroundColor(SmileID.theme.onLight)
+                    .padding(.vertical)
 
             Link(
-                "https://portal.usesmileid.com/sdk",
-                destination: URL(string: "https://portal.usesmileid.com/sdk")!
+                    "https://portal.usesmileid.com/sdk",
+                    destination: URL(string: "https://portal.usesmileid.com/sdk")!
             )
-                .font(SmileID.theme.body)
-                .foregroundColor(SmileID.theme.accent)
-                .padding(.vertical)
+                    .font(SmileID.theme.body)
+                    .foregroundColor(SmileID.theme.accent)
+                    .padding(.vertical)
 
             Spacer()
 
             Button(
-                action: { showQrCodeScanner = true },
-                label: {
-                    Spacer()
-                    HStack {
-                        Image(systemName: "qrcode")
-                            .foregroundColor(SmileID.theme.onDark)
-                        Text("Scan Configuration QR Code")
-                            .font(SmileID.theme.button)
+                    action: { showQrCodeScanner = true },
+                    label: {
+                        Spacer()
+                        HStack {
+                            Image(systemName: "qrcode")
+                                    .foregroundColor(SmileID.theme.onDark)
+                            Text("Scan Configuration QR Code")
+                                    .font(SmileID.theme.button)
+                        }
+                                .padding()
+                                .frame(maxWidth: .infinity)
                     }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                }
             )
-                .foregroundColor(SmileID.theme.onDark)
-                .background(SmileID.theme.accent)
-                .cornerRadius(60)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal)
-                .padding(.vertical, 4)
+                    .foregroundColor(SmileID.theme.onDark)
+                    .background(SmileID.theme.accent)
+                    .cornerRadius(60)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal)
+                    .padding(.vertical, 4)
 
             Button(
-                action: { showManualEntrySheet = true },
-                label: {
-                    Text("Enter Configuration Manually")
-                        .padding()
-                        .font(SmileID.theme.button)
-                        .frame(maxWidth: .infinity)
-                }
+                    action: { showManualEntrySheet = true },
+                    label: {
+                        Text("Enter Configuration Manually")
+                                .padding()
+                                .font(SmileID.theme.button)
+                                .frame(maxWidth: .infinity)
+                    }
             )
-                .foregroundColor(SmileID.theme.accent)
-                .background(Color.clear)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 60)
-                        .stroke(SmileID.theme.accent, lineWidth: 4)
-                )
-                .cornerRadius(60)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal)
+                    .foregroundColor(SmileID.theme.accent)
+                    .background(Color.clear)
+                    .overlay(
+                            RoundedRectangle(cornerRadius: 60)
+                                    .stroke(SmileID.theme.accent, lineWidth: 4)
+                    )
+                    .cornerRadius(60)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal)
         }
-            .padding()
-            .background(SmileID.theme.backgroundLightest.ignoresSafeArea())
-            .sheet(isPresented: $showManualEntrySheet) {
-                let content = SmileConfigEntryView(errorMessage: errorMessage) { smileConfig in
-                    if updateSmileConfig(smileConfig) {
-                        showManualEntrySheet = false
+                .padding()
+                .background(SmileID.theme.backgroundLightest.ignoresSafeArea())
+                .sheet(isPresented: $showManualEntrySheet) {
+                    let content = SmileConfigEntryView(errorMessage: errorMessage) { smileConfig in
+                        let updateResult = updateSmileConfig(smileConfig)
+                        partnerId = updateResult.1
+                        if updateResult.0 {
+                            showSuccess = true
+                            showManualEntrySheet = false
+
+                        } else {
+                            errorMessage = "Invalid Smile Config"
+                        }
+                    }
+                    if #available(iOS 16.0, *) {
+                        content
+                                .presentationDetents([.medium])
+                                .presentationDragIndicator(.visible)
                     } else {
-                        errorMessage = "Invalid Smile Config"
+                        content
                     }
                 }
-                if #available(iOS 16.0, *) {
-                    content
-                        .presentationDetents([.medium])
-                        .presentationDragIndicator(.visible)
-                } else {
-                    content
-                }
-            }
-            .sheet(isPresented: $showQrCodeScanner) {
-                CodeScannerView(
-                    codeTypes: [.qr],
-                    scanInterval: 1,
-                    showViewfinder: true
-                ) { response in
-                    if case let .success(result) = response {
-                        let configJson = result.string
-                        if updateSmileConfig(configJson) {
-                            showQrCodeScanner = false
+                .sheet(isPresented: $showQrCodeScanner) {
+                    CodeScannerView(
+                            codeTypes: [.qr],
+                            scanInterval: 1,
+                            showViewfinder: true
+                    ) { response in
+                        if case let .success(result) = response {
+                            let configJson = result.string
+                            let updateResult = updateSmileConfig(configJson)
+                            partnerId = updateResult.1
+                            if updateResult.0 {
+                                showSuccess = true
+                                showQrCodeScanner = false
+                            }
                         }
                     }
                 }
-            }
+                .overlay(
+                        Group {
+                            if showSuccess {
+                                Color.black.opacity(0.3)
+                                        .edgesIgnoringSafeArea(.all)
+                                        .overlay(
+                                                AlertView(
+                                                        icon: Image(systemName: "checkmark.circle.fill"),
+                                                        title: "Configuration Added",
+                                                        description: "Welcome partner \(partnerId), you can now proceed to the home screen of the Sample App",
+                                                        buttonTitle: "Continue",
+                                                        onClick: {
+                                                            showSuccess = false
+                                                        }
+                                                )
+                                                        .padding([.leading, .trailing], 20)
+                                        )
+                            }
+                        }
+                )
     }
 }
 
-private func updateSmileConfig(_ configJson: String) -> Bool {
+private func updateSmileConfig(_ configJson: String) -> (Bool, String) {
     do {
-        let _ = try JSONDecoder().decode(Config.self, from: configJson.data(using: .utf8)!)
+        let config = try JSONDecoder().decode(Config.self, from: configJson.data(using: .utf8)!)
         UserDefaults.standard.set(configJson, forKey: "smileConfig")
-        return true
+        return (true, config.partnerId)
     } catch {
         print("Error decoding new config: \(error)")
-        return false
+        return (false, "")
     }
 }
