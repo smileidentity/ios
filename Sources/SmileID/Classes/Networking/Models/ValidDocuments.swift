@@ -99,7 +99,7 @@ public struct ProductsConfigRequest: Encodable {
 
 /// Country Code to ID Type (e.g. {"ZA": ["NATIONAL_ID_NO_PHOTO"]}
 public typealias IdTypes = [String: [String]]
-public struct ProductsConfigResponse: Decodable {
+public struct ProductsConfigResponse: Codable {
     public let consentRequired: IdTypes
     public let idSelection: IdSelection
 
@@ -109,7 +109,7 @@ public struct ProductsConfigResponse: Decodable {
     }
 }
 
-public struct IdSelection: Decodable {
+public struct IdSelection: Codable {
     public let basicKyc: IdTypes
     public let biometricKyc: IdTypes
     public let enhancedKyc: IdTypes
