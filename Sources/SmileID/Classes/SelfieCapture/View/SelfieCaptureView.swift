@@ -29,18 +29,31 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
             camera = CameraView(cameraManager: viewModel.cameraManager)
             arView = nil
         }
+
+        let window = UIApplication
+            .shared
+            .connectedScenes
+            .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+            .last { $0.isKeyWindow }
+        if let rootView = window {
+            viewModel.faceLayoutGuideFrame = rootView.screen.bounds
+        } else {
+            print("window was unexpectedly null -- selfie capture will not work")
+            viewModel.handleError(SmileIDError.unknown("Unable to capture selfie"))
+        }
     }
 
     public var body: some View {
         GeometryReader { geometry in
             ZStack {
-                if ARFaceTrackingConfiguration.isSupported && viewModel.agentMode == false {
+                let didDetectBounds = viewModel.faceLayoutGuideFrame != CGRect.zero
+                if didDetectBounds && ARFaceTrackingConfiguration.isSupported && !viewModel.agentMode {
                     arView.onAppear {
                         arView?.preview.model = viewModel
                         viewModel.viewFinderSize = geometry.size
                         viewModel.selfieViewDelegate = self
                     }
-                } else {
+                } else if didDetectBounds {
                     camera.onAppear {
                         viewModel.smartSelfieResultDelegate = delegate
                         viewModel.viewDelegate = camera!.preview
@@ -50,7 +63,9 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                         )
                     }
                 }
-                faceOverlay
+
+                faceOverlay.frame(width: geometry.size.width)
+
                 switch viewModel.processingState {
                 case .confirmation(let selfieImage):
                     ModalPresenter {
@@ -64,7 +79,7 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
                         )
                     }
                 case .inProgress:
-                    ModalPresenter(centered: true) {
+                    ModalPresenter {
                         ProcessingView(
                             image: SmileIDResourcesHelper.FaceOutline,
                             titleKey: "Confirmation.ProcessingSelfie",
@@ -93,32 +108,11 @@ public struct SelfieCaptureView: View, SelfieViewDelegate {
             }
     }
 
-    private func ovalSize(from geometry: GeometryProxy) -> CGSize {
-        CGSize(width: geometry.size.width * 0.6, height: geometry.size.width * 0.6 / 0.7)
-    }
-
     func pauseARSession() {
         arView?.preview.pauseSession()
     }
 
     func resumeARSession() {
         arView?.preview.resumeSession()
-    }
-}
-
-struct FaceBoundingBoxView: View {
-    @ObservedObject private(set) var model: SelfieCaptureViewModel
-
-    var body: some View {
-        switch model.faceGeometryState {
-        case .faceNotFound:
-            Rectangle().fill(Color.clear)
-        case .faceFound(let faceGeometryModel):
-            Rectangle()
-                .path(in: faceGeometryModel.boundingBox)
-                .stroke(Color.yellow, lineWidth: 2.0)
-        case .errored:
-            Rectangle().fill(Color.yellow)
-        }
     }
 }
