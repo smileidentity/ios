@@ -17,8 +17,3 @@ public protocol SmartSelfieResultDelegate {
     /// - Parameter error: The error returned from a failed selfie capture
     func didError(error: Error)
 }
-
-/// The result of a smart selfie capture without job submission
-internal protocol SelfieImageCaptureDelegate: AnyObject {
-    func didCapture(selfie: Data, livenessImages: [Data])
-}

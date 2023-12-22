@@ -8,8 +8,7 @@ enum DocumentCaptureFlow: Equatable {
     case processing(ProcessingState)
 }
 
-internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject,
-    SelfieImageCaptureDelegate {
+internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject {
     // Input properties
     internal let userId: String
     internal let jobId: String
@@ -83,13 +82,6 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         } else {
             submitJob()
         }
-    }
-
-    /// On Selfie Capture complete
-    func didCapture(selfie: Data, livenessImages: [Data]) {
-        selfieFile = selfie
-        livenessFiles = livenessImages
-        submitJob()
     }
 
     func onFinished(delegate: T) {
@@ -197,6 +189,20 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             }
         }
     }
+}
+
+extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate {
+    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: SmartSelfieJobStatusResponse) {
+        selfieFile = try? Data(contentsOf: selfieImage)
+        livenessFiles = livenessImages.compactMap { try? Data(contentsOf: $0) }
+        submitJob()
+    }
+    
+    func didError(error: Error) {
+        onError(error: SmileIDError.unknown("Error capturing selfie"))
+    }
+    
+    
 }
 
 internal class OrchestratedDocumentVerificationViewModel:

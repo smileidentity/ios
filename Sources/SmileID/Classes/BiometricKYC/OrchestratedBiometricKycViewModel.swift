@@ -6,7 +6,7 @@ internal enum BiometricKycStep {
     case processing(ProcessingState)
 }
 
-internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageCaptureDelegate {
+internal class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - Input Properties
     private let userId: String
     private let jobId: String
@@ -26,19 +26,6 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
         self.jobId = jobId
         self.idInfo = idInfo
         self.extraPartnerParams = extraPartnerParams
-    }
-
-    func didCapture(selfie: Data, livenessImages: [Data]) {
-        selfieCaptureResultStore = try? LocalStorage.saveSelfieImages(
-            selfieImage: selfie,
-            livenessImages: livenessImages
-        )
-        if let selfieCaptureResultStore = selfieCaptureResultStore {
-            submitJob(selfieCaptureResultStore: selfieCaptureResultStore)
-        } else {
-            error = SmileIDError.unknown("Failed to save selfie capture result")
-            DispatchQueue.main.async { self.step = .processing(.error) }
-        }
     }
 
     func onRetry() {
@@ -118,5 +105,29 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject, SelfieImageC
                 DispatchQueue.main.async { self.step = .processing(.error) }
             }
         }
+    }
+}
+
+extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        jobStatusResponse: SmartSelfieJobStatusResponse
+    ) {
+        selfieCaptureResultStore = SelfieCaptureResultStore(
+            selfie: selfieImage, 
+            livenessImages: livenessImages
+        )
+        if let selfieCaptureResultStore = selfieCaptureResultStore {
+            submitJob(selfieCaptureResultStore: selfieCaptureResultStore)
+        } else {
+            error = SmileIDError.unknown("Failed to save selfie capture result")
+            DispatchQueue.main.async { self.step = .processing(.error) }
+        }
+    }
+    
+    func didError(error: Error) {
+        self.error = SmileIDError.unknown("Failed to capture selfie")
+        DispatchQueue.main.async { self.step = .processing(.error) }
     }
 }

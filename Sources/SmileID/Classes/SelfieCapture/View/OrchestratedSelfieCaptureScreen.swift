@@ -218,6 +218,7 @@ struct SelfieCaptureScreen: View {
 
     var body: some View {
         ZStack {
+            // TODO: ARView?
             CameraView(cameraManager: viewModel.cameraManager)
                 .onAppear { viewModel.cameraManager.switchCamera(to: .front) }
                 .onDisappear { viewModel.cameraManager.pauseSession() }

@@ -35,16 +35,16 @@ struct OrchestratedBiometricKycScreen: View {
     var body: some View {
         switch viewModel.step {
         case .selfie:
-            SelfieCaptureView(
-                viewModel: SelfieCaptureViewModel(
-                    userId: userId,
-                    jobId: jobId,
-                    isEnroll: false,
-                    shouldSubmitJob: false,
-                    // imageCaptureDelegate is just for image capture, not job result
-                    imageCaptureDelegate: viewModel
-                ),
-                delegate: nil
+            OrchestratedSelfieCaptureScreen(
+                userId: userId,
+                jobId: jobId,
+                isEnroll: false,
+                allowAgentMode: allowAgentMode,
+                showAttribution: showAttribution,
+                showInstructions: showInstructions,
+                extraPartnerParams: extraPartnerParams,
+                skipApiSubmission: true,
+                onResult: viewModel
             )
         case .processing(let state):
             ProcessingScreen(
