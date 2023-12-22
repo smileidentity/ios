@@ -76,7 +76,7 @@ public struct AuthenticationRequest: Codable {
     }
 }
 
-public struct AuthenticationResponse: Decodable {
+public struct AuthenticationResponse: Codable {
     public var success: Bool
     public var signature: String
     public var timestamp: String
@@ -104,7 +104,7 @@ public struct AuthenticationResponse: Decodable {
     }
 }
 
-public struct ConsentInfo: Decodable {
+public struct ConsentInfo: Codable {
     public var canAccess: Bool
     public var consentRequired: Bool
 
