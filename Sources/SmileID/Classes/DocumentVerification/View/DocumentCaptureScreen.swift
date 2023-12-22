@@ -72,7 +72,8 @@ struct DocumentCaptureScreen: View {
                 retakeButtonText: SmileIDResourcesHelper.localizedString(
                     for: "Document.Confirmation.Decline"
                 ),
-                onRetake: viewModel.onRetry
+                onRetake: viewModel.onRetry,
+                scaleFactor: 1.0
             )
         } else {
             CaptureScreenContent(

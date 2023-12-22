@@ -8,7 +8,7 @@ struct ImageCaptureConfirmationDialog: View {
     let onConfirm: () -> Void
     let retakeButtonText: String
     let onRetake: () -> Void
-    let scaleFactor: Double = 1
+    let scaleFactor: Double
 
     var body: some View {
         VStack(spacing: 32) {

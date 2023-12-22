@@ -2,7 +2,6 @@ import SwiftUI
 
 struct InstructionsView: View {
     @ObservedObject private(set) var model: SelfieCaptureViewModel
-    @State private var debounceTimer: Timer?
     @State private var directive: String = "Instructions.Start"
     var body: some View {
         Text(SmileIDResourcesHelper.localizedString(for: directive))

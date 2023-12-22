@@ -125,18 +125,17 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        let viewModel = SelfieCaptureViewModel(
+        OrchestratedSelfieCaptureScreen(
             userId: userId,
             jobId: jobId,
             isEnroll: true,
+            allowAgentMode: allowAgentMode,
+            showAttribution: showAttribution,
+            showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            allowsAgentMode: allowAgentMode,
-            showAttribution: showAttribution
+            skipApiSubmission: false,
+            onResult: delegate
         )
-        let destination: NavigationDestination = showInstructions ?
-            .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
-            .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
-        return SmileView(initialDestination: destination).environmentObject(router)
     }
 
     /// Perform a SmartSelfie™ Authentication

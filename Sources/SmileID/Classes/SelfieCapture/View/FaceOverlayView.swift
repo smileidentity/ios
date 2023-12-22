@@ -22,7 +22,7 @@ struct FaceOverlayView: View {
                             SmileID.theme.success,
                             style: StrokeStyle(lineWidth: 10, lineCap: .round)
                         )
-                        .animation(.easeOut, value: model.progress)
+                        .animation(.easeInOut, value: model.progress)
                 )
 
             VStack(spacing: 25) {

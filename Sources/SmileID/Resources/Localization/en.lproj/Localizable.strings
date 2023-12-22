@@ -10,7 +10,7 @@
 "Instructions.RemoveObstructions" = "Remove Obstructions";
 "Instructions.RemoveObstructionsBody" = "Remove anything that covers your face, such glasses, masks, hats and scarves";
 "Instructions.Header" = "Next, we’ll take a quick selfie";
-"Instructions.Callout" = "We'll use it to verify your Identity. \n Please follow the instructions below.";
+"Instructions.Callout" = "We'll use it to verify your Identity. Please follow the instructions below.";
 "Instructions.Action" = "I'm Ready";
 "Instructions.UnableToDetectFace" = "Unable to detect face. Please ensure your face is in the oval";
 "Instructions.FaceFar" = "Move closer";
@@ -24,28 +24,30 @@
 "Instructions.Quality" = "Move to well lit area";
 "Instructions.Unstable" = "Put your face inside the oval frame and wait until it turns green";
 "Instructions.Document.Front.Header" = "Submit Front of ID";
-"Instructions.Document.Front.Callout" = "We'll use it to verify your identity. \nPlease follow the instructions below";
+"Instructions.Document.Front.Callout" = "We'll use it to verify your identity. Please follow the instructions below";
 "Instructions.Document.GoodLightBody" = "Make sure your ID image is taken in a well-lit environment. Ensure the ID is clear and visible.";
 "Instructions.Document.ClearImageBody" = "Take clear photos. Ensure the photo or scan of the ID card you submit is clear and not blurry";
 "Instructions.Document.Back.Header" = "Submit Back of ID";
 "Instructions.Document.Back.Callout" = "For this ID type, we require that you submit the back of the ID ";
 "Error.JobStatusTimeOut" = "Job status timed out";
 "Confirmation.GoodSelfie" = "Is this a good quality selfie?";
-"Confirmation.FaceClear" = "Make sure your whole face is \n visible and clear";
+"Confirmation.FaceClear" = "Make sure your whole face is visible and clear";
 "Confirmation.YesUse" = "Yes, use this";
 "Confirmation.Retake" = "No, retake Selfie";
 "Confirmation.ProcessingSelfie" = "Processing Selfie";
 "Confirmation.Time" = "Just a few more seconds";
 "Confirmation.SelfieCaptureComplete" = "Selfie Capture Complete";
-"Confirmation.SuccessBody" = "Your selfie was successfully taken. \n You can now proceed.";
+"Confirmation.SuccessBody" = "Your selfie was successfully taken. You can now proceed.";
 "Confirmation.Continue" = "Continue";
 "Confirmation.Failure" = "Your selfie failed to process";
-"Confirmation.FailureReason" = "This could be because of image quality \n or internet connectivity.";
+"Confirmation.FailureReason" = "This could be because of image quality or internet connectivity.";
 "Confirmation.Retry" = "Retry";
 "Confirmation.Close" = "Close";
 "Action.TakePhoto" = "Take Photo";
 "Action.UploadPhoto" = "Upload Photo";
 "Action.Skip" = "Skip back of ID";
+
+"Camera.AgentMode" = "Agent Mode";
 
 "Document.Confirmation.Header" = "Is the document clear and readable?";
 "Document.Confirmation.Callout" = "Make sure all corners of the document are visible and there is no glare";
