@@ -18,7 +18,7 @@ public struct PrepUploadRequest: Codable {
 
     public init(
         partnerParams: PartnerParams,
-        callbackUrl: String? = "",
+        callbackUrl: String? = SmileID.callbackUrl,
         partnerId: String = SmileID.config.partnerId,
         sourceSdk: String = "ios",
         sourceSdkVersion: String = SmileID.version,
