@@ -4,38 +4,37 @@ public struct PrepUploadRequest: Codable {
     public var partnerParams: PartnerParams
     // Callback URL *must* be defined either within your Partner Portal or here
     public var callbackUrl: String? = SmileID.callbackUrl
+    // TODO - Michael will change this to a boolean
+    public var allowNewEnroll: String
     public var partnerId = SmileID.config.partnerId
     public var sourceSdk = "ios"
     public var sourceSdkVersion = SmileID.version
     public var timestamp = String(Date().millisecondsSince1970)
     public var signature = ""
-    /// backend is broken needs these as strings
-    /// I've also made this false until we have this properly
-    /// documented and done on both android and iOS
-    public var allowNewEnroll = "false"
     public var useEnrolledImage = false
     public var retry = "false" /// backend is broken needs these as strings
 
     public init(
         partnerParams: PartnerParams,
         callbackUrl: String? = "",
+        allowNewEnroll: String,
         partnerId: String = SmileID.config.partnerId,
         sourceSdk: String = "ios",
         sourceSdkVersion: String = SmileID.version,
         timestamp: String = String(Date().millisecondsSince1970),
         signature: String = "",
-        allowNewEnroll: String = "false",
         useEnrolledImage: Bool = false,
         retry: String = "false"
     ) {
         self.partnerParams = partnerParams
         self.callbackUrl = callbackUrl
+        self.allowNewEnroll = allowNewEnroll
+        self.partnerId = partnerId
         self.partnerId = partnerId
         self.sourceSdk = sourceSdk
         self.sourceSdkVersion = sourceSdkVersion
         self.timestamp = timestamp
         self.signature = signature
-        self.allowNewEnroll = allowNewEnroll
         self.useEnrolledImage = useEnrolledImage
         self.retry = retry
     }

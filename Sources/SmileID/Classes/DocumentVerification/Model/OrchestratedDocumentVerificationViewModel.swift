@@ -13,6 +13,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     // Input properties
     internal let userId: String
     internal let jobId: String
+    internal let allowNewEnroll: Bool
     internal let countryCode: String
     internal let documentType: String?
     internal let captureBothSides: Bool
@@ -36,6 +37,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal init(
         userId: String,
         jobId: String,
+        allowNewEnroll: Bool,
         countryCode: String,
         documentType: String?,
         captureBothSides: Bool,
@@ -45,6 +47,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     ) {
         self.userId = userId
         self.jobId = jobId
+        self.allowNewEnroll = allowNewEnroll
         self.countryCode = countryCode
         self.documentType = documentType
         self.captureBothSides = captureBothSides
@@ -140,9 +143,10 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         )
 
         let auth = SmileID.api.authenticate(request: authRequest)
-        networkingSubscriber = auth.flatMap { authResponse in
+        networkingSubscriber = auth.flatMap { [self] authResponse in
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
+                    allowNewEnroll: String(allowNewEnroll), // TODO - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
