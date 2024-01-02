@@ -1,4 +1,4 @@
-## 10.0.3 (unreleased)
+## 10.0.4 (unreleased)
 
 ### Added
 
@@ -6,7 +6,15 @@
 
 ### Changed
 
-### Remved
+### Removed
+
+## 10.0.3
+
+### Added
+- Added allowNewEnroll on SmartSelfie, BiometricKYC, DocV and EnhancedDocV
+
+### Fixed
+- Fixed missing callbackUrl  
 
 ## 10.0.2
 
