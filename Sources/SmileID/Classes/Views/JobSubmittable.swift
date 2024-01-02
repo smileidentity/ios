@@ -10,6 +10,7 @@ protocol JobSubmittable {
     ) -> AnyPublisher<UploadResponse, Error>
     func prepUpload(
         authResponse: AuthenticationResponse,
+        allowNewEnroll: Bool,
         extraPartnerParams: [String: String]
     ) -> AnyPublisher<PrepUploadResponse, Error>
     func handleRetry()
@@ -19,10 +20,12 @@ protocol JobSubmittable {
 extension JobSubmittable {
     func prepUpload(
         authResponse: AuthenticationResponse,
+        allowNewEnroll: Bool,
         extraPartnerParams: [String: String]
     ) -> AnyPublisher<PrepUploadResponse, Error> {
         let prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
+            allowNewEnroll: String(allowNewEnroll), // TODO - Fix when Michael changes this to boolean
             timestamp: authResponse.timestamp,
             signature: authResponse.signature
         )

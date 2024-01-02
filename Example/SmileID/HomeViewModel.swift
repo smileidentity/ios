@@ -18,7 +18,7 @@ class HomeViewModel: ObservableObject,
 
     init(config: Config) {
         partnerId = config.partnerId
-        SmileID.initialize(config: config, useSandbox: SmileID.useSandbox)
+        SmileID.initialize(config: config, useSandbox: true)
     }
 
     @objc func didError(error: Error) {

@@ -23,7 +23,8 @@ private struct InstructionsView_Previews: PreviewProvider {
             model: SelfieCaptureViewModel(
                 userId: UUID().uuidString,
                 jobId: UUID().uuidString,
-                isEnroll: false
+                isEnroll: false,
+                allowNewEnroll: false
             )
         )
     }

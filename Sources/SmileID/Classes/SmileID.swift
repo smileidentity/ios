@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.0.2"
+    public static let version = "10.0.3"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -36,7 +36,7 @@ public class SmileID {
     ///   - useSandbox: A boolean to enable the sandbox environment or not
     public class func initialize(
         config: Config = getConfig(),
-        useSandbox: Bool = true
+        useSandbox: Bool = false
     ) {
         initialize(apiKey: nil, config: config, useSandbox: useSandbox)
     }
@@ -108,6 +108,7 @@ public class SmileID {
     ///   - jobId: The job ID to associate with the SmartSelfie™ Enrollment. Most often, this will
     ///     correspond to a unique Job ID within your own system. If not provided, a random job ID
     ///     will be generated.
+    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
     ///   - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
     ///     displayed allowing toggling between the back camera and front camera. If not allowed,
     ///     only the front camera will be used.
@@ -119,6 +120,7 @@ public class SmileID {
     public class func smartSelfieEnrollmentScreen(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
+        allowNewEnroll: Bool = false,
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
@@ -129,6 +131,7 @@ public class SmileID {
             userId: userId,
             jobId: jobId,
             isEnroll: true,
+            allowNewEnroll: allowNewEnroll,
             extraPartnerParams: extraPartnerParams,
             allowsAgentMode: allowAgentMode,
             showAttribution: showAttribution
@@ -150,6 +153,7 @@ public class SmileID {
     ///   - jobId: The job ID to associate with the SmartSelfie™ Enrollment. Most often, this will
     ///     correspond to a unique Job ID within your own system. If not provided, a random job ID
     ///     will be generated.
+    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
     ///   - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
     ///     displayed allowing toggling between the back camera and front camera. If not allowed,
     ///     only the front camera will be used.
@@ -161,6 +165,7 @@ public class SmileID {
     public class func smartSelfieAuthenticationScreen(
         userId: String,
         jobId: String = generateJobId(),
+        allowNewEnroll: Bool = false,
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
@@ -171,6 +176,7 @@ public class SmileID {
             userId: userId,
             jobId: jobId,
             isEnroll: false,
+            allowNewEnroll: allowNewEnroll,
             extraPartnerParams: extraPartnerParams,
             allowsAgentMode: allowAgentMode,
             showAttribution: showAttribution
@@ -189,6 +195,7 @@ public class SmileID {
     ///   - jobId: The job ID to associate with the Document Verification. Most often, this will
     ///   correspond to unique Job ID within your system. If not provided, a random job ID will
     ///   be generated.
+    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
     ///   - countryCode: The ISO 3166-1 alpha-3 country code of the document
     ///   - documentType: An optional string for the type of document to be captured
     ///   - idAspectRatio: An optional value for the aspect ratio of the document. If no value is,
@@ -210,6 +217,7 @@ public class SmileID {
     public class func documentVerificationScreen(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
+        allowNewEnroll: Bool = false,
         countryCode: String,
         documentType: String? = nil,
         idAspectRatio: Double? = nil,
@@ -230,6 +238,7 @@ public class SmileID {
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
             jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
@@ -247,6 +256,7 @@ public class SmileID {
     ///   - jobId: The job ID to associate with the Document Verification. Most often, this will
     ///   correspond to unique Job ID within your system. If not provided, a random job ID will
     ///   be generated.
+    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
     ///   - countryCode: The ISO 3166-1 alpha-3 country code of the document
     ///   - documentType: An optional string for the type of document to be captured
     ///   - idAspectRatio: An optional value for the aspect ratio of the document. If no value is,
@@ -268,6 +278,7 @@ public class SmileID {
     public class func enhancedDocumentVerificationScreen(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
+        allowNewEnroll: Bool = false,
         countryCode: String,
         documentType: String? = nil,
         idAspectRatio: Double? = nil,
@@ -288,6 +299,7 @@ public class SmileID {
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
             jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
@@ -325,6 +337,7 @@ public class SmileID {
     ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
     ///  to a unique User ID within your own system. If not provided, a random user ID is generated
     ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
+    ///  - allowNewEnroll:  Allows a partner to enroll the same user id again
     ///  to a unique Job ID within your own system. If not provided, a random job ID is generated
     ///  - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
     ///   displayed allowing toggling between the back camera and front camera. If not allowed, only
@@ -337,6 +350,7 @@ public class SmileID {
         idInfo: IdInfo,
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
+        allowNewEnroll: Bool = false,
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
@@ -347,6 +361,7 @@ public class SmileID {
             idInfo: idInfo,
             userId: userId,
             jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
             showInstructions: showInstructions,
             showAttribution: showAttribution,
             allowAgentMode: allowAgentMode,

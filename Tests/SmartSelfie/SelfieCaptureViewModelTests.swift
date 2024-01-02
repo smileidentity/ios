@@ -24,7 +24,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     }
 
     func testPublishedValuesAreExpectedValuesAtInit() {
-        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true)
+        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true, allowNewEnroll: false)
         XCTAssertFalse(viewModel.isAcceptableRoll)
         XCTAssertFalse(viewModel.isAcceptableYaw)
         // XCTAssertFalse(viewModel.isAcceptableQuality)
@@ -36,7 +36,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     }
 
     func testPerformActionWhenSceneIsUnstablePublishesExpectedValues() throws {
-        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true)
+        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true, allowNewEnroll: false)
         viewModel.perform(action: .sceneUnstable)
         let expectation = XCTestExpectation()
         XCTAssertEqual(viewModel.faceDetectionState, .sceneUnstable)
@@ -50,7 +50,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     }
 
     func testPerformActionWhenNoFaceIsDetectedPublishesExpectedValues() throws {
-        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true)
+        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true, allowNewEnroll: false)
         viewModel.perform(action: .noFaceDetected)
         XCTAssertEqual(viewModel.faceDetectionState, .noFaceDetected)
         XCTAssertEqual(viewModel.faceGeometryState, .faceNotFound)
@@ -67,7 +67,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     }
 
     func testPerformActionWhenMultipleFacesDetectedPublishesExpectedValues() throws {
-        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true)
+        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true, allowNewEnroll: false)
         viewModel.perform(action: .multipleFacesDetected)
         XCTAssertEqual(viewModel.faceDetectionState, .multipleFacesDetected)
 
@@ -83,7 +83,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
 
     func testPerformActionWhenFaceDetectedPublishesExpectedValues() throws {
         let frameLayout = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
-        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true)
+        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true, allowNewEnroll: false)
         viewModel.faceLayoutGuideFrame = frameLayout
         let boundingRect = CGRect(
             origin: .zero,
@@ -98,7 +98,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     }
 
     func testSubmitFunctionPublishesExpectedValuesOnSuccess() {
-        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true)
+        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true, allowNewEnroll: false)
         viewModel.selfieImage = Data()
 
         MockHelper.shouldFail = false
@@ -119,7 +119,7 @@ final class SelfieCaptureViewModelTests: XCTestCase {
     }
 
     func testSubmitFunctionPublishesErrorOnFailure() {
-        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true)
+        let viewModel = SelfieCaptureViewModel(userId: "testUserId", jobId: "jobId", isEnroll: true, allowNewEnroll: false)
         MockHelper.shouldFail = true
         let expectation = XCTestExpectation()
         viewModel.smartSelfieResultDelegate = mockResult
