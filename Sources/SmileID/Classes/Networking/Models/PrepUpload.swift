@@ -30,7 +30,6 @@ public struct PrepUploadRequest: Codable {
         self.callbackUrl = callbackUrl
         self.allowNewEnroll = allowNewEnroll
         self.partnerId = partnerId
-        self.partnerId = partnerId
         self.sourceSdk = sourceSdk
         self.sourceSdkVersion = sourceSdkVersion
         self.timestamp = timestamp
