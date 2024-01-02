@@ -36,7 +36,7 @@ public class SmileID {
     ///   - useSandbox: A boolean to enable the sandbox environment or not
     public class func initialize(
         config: Config = getConfig(),
-        useSandbox: Bool = true
+        useSandbox: Bool = false
     ) {
         initialize(apiKey: nil, config: config, useSandbox: useSandbox)
     }
