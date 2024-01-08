@@ -176,7 +176,7 @@ final class SelfieCaptureViewModel: ObservableObject, JobSubmittable, Confirmati
         }
         setupDirectiveSubscription()
     }
-
+ 
     func resetState() {
         agentMode = false
         resetCapture()
