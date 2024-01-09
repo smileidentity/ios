@@ -31,7 +31,11 @@ struct OrchestratedBiometricKycScreen: View {
         self.allowAgentMode = allowAgentMode
         self.delegate = delegate
         viewModel = OrchestratedBiometricKycViewModel(
-            userId: userId, jobId: jobId, allowNewEnroll: allowNewEnroll,  idInfo: idInfo, extraPartnerParams: extraPartnerParams
+            userId: userId, 
+            jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
+            idInfo: idInfo,
+            extraPartnerParams: extraPartnerParams
         )
     }
 

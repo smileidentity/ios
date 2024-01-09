@@ -169,7 +169,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 showInstructions: showInstructions,
                 showAttribution: showAttribution,
                 allowGallerySelection: allowGalleryUpload,
-                showSkipButton: true,
+                showSkipButton: captureBothSides,
                 instructionsTitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Back.Header"
                 ),
@@ -183,19 +183,26 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 onSkip: viewModel.onDocumentBackSkip
             )
         case .selfieCapture:
-            SelfieCaptureView(
-                viewModel: SelfieCaptureViewModel(
-                    userId: userId,
-                    jobId: jobId,
-                    isEnroll: false,
-                    allowNewEnroll: allowNewEnroll,
-                    allowsAgentMode: allowAgentMode,
-                    shouldSubmitJob: false,
-                    // imageCaptureDelegate is just for image capture, not job result
-                    imageCaptureDelegate: viewModel
-                ),
-                delegate: nil
-            )
+            if showInstructions && !viewModel.acknowledgedInstructions {
+                SelfieCaptureInstructionsScreen(
+                    showAttribution: showAttribution,
+                    onInstructionsAcknowledged: viewModel.acknowledgeInstructions
+                )
+            } else {
+                SelfieCaptureView(
+                    viewModel: SelfieCaptureViewModel(
+                        userId: userId,
+                        jobId: jobId,
+                        isEnroll: false,
+                        allowNewEnroll: allowNewEnroll,
+                        allowsAgentMode: allowAgentMode,
+                        shouldSubmitJob: false,
+                        // imageCaptureDelegate is just for image capture, not job result
+                        imageCaptureDelegate: viewModel
+                    ),
+                    delegate: nil
+                )
+            }
         case .processing(let state):
             ProcessingScreen(
                 processingState: state,

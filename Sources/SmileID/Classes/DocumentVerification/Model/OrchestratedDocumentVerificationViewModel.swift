@@ -32,6 +32,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal var error: Error?
 
     // UI properties
+    @Published var acknowledgedInstructions = false
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
     internal init(
@@ -58,8 +59,14 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
     func onFrontDocumentImageConfirmed(data: Data) {
         documentFrontFile = data
-        DispatchQueue.main.async {
-            self.step = .backDocumentCapture
+        if captureBothSides {
+            DispatchQueue.main.async {
+                self.step = .selfieCapture
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.step = .backDocumentCapture
+            }
         }
     }
 
@@ -69,6 +76,10 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             self.step = .selfieCapture
         }
     }
+    
+    func acknowledgeInstructions() {
+        self.acknowledgedInstructions = true
+    }
 
     func onError(error: Error) {
         self.error = error
@@ -77,7 +88,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             self.step = .processing(.error)
         }
     }
-
+    
     func onDocumentBackSkip() {
         if selfieFile == nil {
             DispatchQueue.main.async {
