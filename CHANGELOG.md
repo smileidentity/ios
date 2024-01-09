@@ -1,4 +1,4 @@
-## 10.0.4 (unreleased)
+## 10.0.5 (unreleased)
 
 ### Added
 
@@ -7,6 +7,13 @@
 ### Changed
 
 ### Removed
+
+## 10.0.4
+
+### Fixed
+- Fixed missing selfie instructions screen on DocV and EnhancedDocV
+- Fixed broken disable capture both sides flag
+- Fixed show skip button on capture both sides
 
 ## 10.0.3
 
