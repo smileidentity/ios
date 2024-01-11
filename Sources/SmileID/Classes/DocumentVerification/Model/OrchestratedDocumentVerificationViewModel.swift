@@ -61,11 +61,11 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         documentFrontFile = data
         if captureBothSides {
             DispatchQueue.main.async {
-                self.step = .selfieCapture
+                self.step = .backDocumentCapture
             }
         } else {
             DispatchQueue.main.async {
-                self.step = .backDocumentCapture
+                self.step = .selfieCapture
             }
         }
     }
