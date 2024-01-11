@@ -1,4 +1,4 @@
-## 10.0.5 (unreleased)
+## 10.0.6 (unreleased)
 
 ### Added
 
@@ -7,6 +7,11 @@
 ### Changed
 
 ### Removed
+
+## 10.0.5
+### Fixed
+- Fixed captureBothSides on iOS being inverted
+
 
 ## 10.0.4
 
