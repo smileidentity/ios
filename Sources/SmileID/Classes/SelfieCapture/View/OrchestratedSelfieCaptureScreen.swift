@@ -5,10 +5,13 @@ public struct OrchestratedSelfieCaptureScreen: View {
     public let userId: String
     public let jobId: String
     public let isEnroll: Bool
+    // TODO: pass allowNewEnroll through
+    public let allowNewEnroll: Bool
     public let allowAgentMode: Bool
     public let showAttribution: Bool
     public let showInstructions: Bool
     public let extraPartnerParams: [String: String]
+    // TODO: make use of skipApiSubmission
     public let skipApiSubmission: Bool
     public let onResult: SmartSelfieResultDelegate
     @ObservedObject var viewModel: SelfieViewModel
@@ -20,6 +23,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
         userId: String,
         jobId: String,
         isEnroll: Bool,
+        allowNewEnroll: Bool,
         allowAgentMode: Bool,
         showAttribution: Bool,
         showInstructions: Bool,
@@ -30,6 +34,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
         self.userId = userId
         self.jobId = jobId
         self.isEnroll = isEnroll
+        self.allowNewEnroll = allowNewEnroll
         self.allowAgentMode = allowAgentMode
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions

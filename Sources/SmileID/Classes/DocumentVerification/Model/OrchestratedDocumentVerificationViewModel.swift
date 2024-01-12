@@ -12,6 +12,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     // Input properties
     internal let userId: String
     internal let jobId: String
+    internal let allowNewEnroll: Bool
     internal let countryCode: String
     internal let documentType: String?
     internal let captureBothSides: Bool
@@ -30,11 +31,13 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal var error: Error?
 
     // UI properties
+    @Published var acknowledgedInstructions = false
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
     internal init(
         userId: String,
         jobId: String,
+        allowNewEnroll: Bool,
         countryCode: String,
         documentType: String?,
         captureBothSides: Bool,
@@ -44,6 +47,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     ) {
         self.userId = userId
         self.jobId = jobId
+        self.allowNewEnroll = allowNewEnroll
         self.countryCode = countryCode
         self.documentType = documentType
         self.captureBothSides = captureBothSides
@@ -54,8 +58,14 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
     func onFrontDocumentImageConfirmed(data: Data) {
         documentFrontFile = data
-        DispatchQueue.main.async {
-            self.step = .backDocumentCapture
+        if captureBothSides {
+            DispatchQueue.main.async {
+                self.step = .backDocumentCapture
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.step = .selfieCapture
+            }
         }
     }
 
@@ -65,6 +75,10 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             self.step = .selfieCapture
         }
     }
+    
+    func acknowledgeInstructions() {
+        self.acknowledgedInstructions = true
+    }
 
     func onError(error: Error) {
         self.error = error
@@ -73,7 +87,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             self.step = .processing(.error)
         }
     }
-
+    
     func onDocumentBackSkip() {
         if selfieFile == nil {
             DispatchQueue.main.async {
@@ -132,9 +146,10 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         )
 
         let auth = SmileID.api.authenticate(request: authRequest)
-        networkingSubscriber = auth.flatMap { authResponse in
+        networkingSubscriber = auth.flatMap { [self] authResponse in
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
+                    allowNewEnroll: String(allowNewEnroll), // TODO - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )

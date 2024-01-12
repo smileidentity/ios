@@ -4,6 +4,7 @@ import SwiftUI
 struct OrchestratedBiometricKycScreen: View {
     let userId: String
     let jobId: String
+    let allowNewEnroll: Bool
     let showInstructions: Bool
     let showAttribution: Bool
     let allowAgentMode: Bool
@@ -15,6 +16,7 @@ struct OrchestratedBiometricKycScreen: View {
         idInfo: IdInfo,
         userId: String,
         jobId: String,
+        allowNewEnroll: Bool,
         showInstructions: Bool,
         showAttribution: Bool,
         allowAgentMode: Bool,
@@ -23,12 +25,17 @@ struct OrchestratedBiometricKycScreen: View {
     ) {
         self.userId = userId
         self.jobId = jobId
+        self.allowNewEnroll = allowNewEnroll
         self.showInstructions = showInstructions
         self.showAttribution = showAttribution
         self.allowAgentMode = allowAgentMode
         self.delegate = delegate
         viewModel = OrchestratedBiometricKycViewModel(
-            userId: userId, jobId: jobId, idInfo: idInfo, extraPartnerParams: extraPartnerParams
+            userId: userId, 
+            jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
+            idInfo: idInfo,
+            extraPartnerParams: extraPartnerParams
         )
     }
 
@@ -39,6 +46,7 @@ struct OrchestratedBiometricKycScreen: View {
                 userId: userId,
                 jobId: jobId,
                 isEnroll: false,
+                allowNewEnroll: allowNewEnroll,
                 allowAgentMode: allowAgentMode,
                 showAttribution: showAttribution,
                 showInstructions: showInstructions,

@@ -12,6 +12,7 @@ struct DocumentCaptureScreen: View {
     let onConfirm: (Data) -> Void
     let onError: (Error) -> Void
     let onSkip: () -> Void
+    
     @ObservedObject private var viewModel: DocumentCaptureViewModel
 
     init(

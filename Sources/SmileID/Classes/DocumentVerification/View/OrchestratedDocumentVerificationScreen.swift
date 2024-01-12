@@ -8,6 +8,7 @@ struct OrchestratedDocumentVerificationScreen: View {
     let bypassSelfieCaptureWithFile: URL?
     let userId: String
     let jobId: String
+    let allowNewEnroll: Bool
     let showAttribution: Bool
     let allowGalleryUpload: Bool
     let allowAgentMode: Bool
@@ -24,6 +25,7 @@ struct OrchestratedDocumentVerificationScreen: View {
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
             jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
@@ -33,6 +35,7 @@ struct OrchestratedDocumentVerificationScreen: View {
             viewModel: OrchestratedDocumentVerificationViewModel(
                 userId: userId,
                 jobId: jobId,
+                allowNewEnroll: allowNewEnroll,
                 countryCode: countryCode,
                 documentType: documentType,
                 captureBothSides: captureBothSides,
@@ -52,6 +55,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     let bypassSelfieCaptureWithFile: URL?
     let userId: String
     let jobId: String
+    let allowNewEnroll: Bool
     let showAttribution: Bool
     let allowGalleryUpload: Bool
     let allowAgentMode: Bool
@@ -68,6 +72,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
             jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
@@ -77,6 +82,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
             viewModel: OrchestratedEnhancedDocumentVerificationViewModel(
                 userId: userId,
                 jobId: jobId,
+                allowNewEnroll: allowNewEnroll,
                 countryCode: countryCode,
                 documentType: documentType,
                 captureBothSides: captureBothSides,
@@ -96,6 +102,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let bypassSelfieCaptureWithFile: URL?
     let userId: String
     let jobId: String
+    let allowNewEnroll: Bool
     let showAttribution: Bool
     let allowGalleryUpload: Bool
     let allowAgentMode: Bool
@@ -112,6 +119,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         bypassSelfieCaptureWithFile: URL?,
         userId: String,
         jobId: String,
+        allowNewEnroll: Bool,
         showAttribution: Bool,
         allowGalleryUpload: Bool,
         allowAgentMode: Bool,
@@ -127,6 +135,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.bypassSelfieCaptureWithFile = bypassSelfieCaptureWithFile
         self.userId = userId
         self.jobId = jobId
+        self.allowNewEnroll = allowNewEnroll
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
         self.allowAgentMode = allowAgentMode
@@ -160,7 +169,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 showInstructions: showInstructions,
                 showAttribution: showAttribution,
                 allowGallerySelection: allowGalleryUpload,
-                showSkipButton: true,
+                showSkipButton: captureBothSides,
                 instructionsTitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Back.Header"
                 ),
@@ -174,18 +183,26 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 onSkip: viewModel.onDocumentBackSkip
             )
         case .selfieCapture:
-            SelfieCaptureView(
-                viewModel: SelfieCaptureViewModel(
-                    userId: userId,
-                    jobId: jobId,
-                    isEnroll: false,
-                    allowsAgentMode: allowAgentMode,
-                    shouldSubmitJob: false,
-                    // imageCaptureDelegate is just for image capture, not job result
-                    imageCaptureDelegate: viewModel
-                ),
-                delegate: nil
-            )
+            if showInstructions && !viewModel.acknowledgedInstructions {
+                SelfieCaptureInstructionsScreen(
+                    showAttribution: showAttribution,
+                    onInstructionsAcknowledged: viewModel.acknowledgeInstructions
+                )
+            } else {
+                SelfieCaptureView(
+                    viewModel: SelfieCaptureViewModel(
+                        userId: userId,
+                        jobId: jobId,
+                        isEnroll: false,
+                        allowNewEnroll: allowNewEnroll,
+                        allowsAgentMode: allowAgentMode,
+                        shouldSubmitJob: false,
+                        // imageCaptureDelegate is just for image capture, not job result
+                        imageCaptureDelegate: viewModel
+                    ),
+                    delegate: nil
+                )
+            }
         case .processing(let state):
             ProcessingScreen(
                 processingState: state,

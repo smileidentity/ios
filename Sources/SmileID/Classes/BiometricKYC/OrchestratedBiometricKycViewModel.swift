@@ -10,6 +10,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - Input Properties
     private let userId: String
     private let jobId: String
+    private let allowNewEnroll: Bool
     private var extraPartnerParams: [String: String]
     private var idInfo: IdInfo
 
@@ -21,9 +22,10 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - UI Properties
     @Published @MainActor private (set) var step: BiometricKycStep = .selfie
 
-    init(userId: String, jobId: String, idInfo: IdInfo, extraPartnerParams: [String: String] = [:]) {
+    init(userId: String, jobId: String, allowNewEnroll: Bool, idInfo: IdInfo, extraPartnerParams: [String: String] = [:]) {
         self.userId = userId
         self.jobId = jobId
+        self.allowNewEnroll = allowNewEnroll
         self.idInfo = idInfo
         self.extraPartnerParams = extraPartnerParams
     }
@@ -77,6 +79,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
+                    allowNewEnroll: String(allowNewEnroll), // TODO - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
