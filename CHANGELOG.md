@@ -12,6 +12,7 @@
 
 ### Fixed
 - Allow agent mode in biometric kyc
+
 ## 10.0.5
 ### Fixed
 - Fixed captureBothSides on iOS being inverted
