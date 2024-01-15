@@ -48,6 +48,7 @@ struct OrchestratedBiometricKycScreen: View {
                     jobId: jobId,
                     isEnroll: false,
                     allowNewEnroll: allowNewEnroll,
+                    allowsAgentMode: allowAgentMode,
                     shouldSubmitJob: false,
                     // imageCaptureDelegate is just for image capture, not job result
                     imageCaptureDelegate: viewModel
