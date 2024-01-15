@@ -1,4 +1,4 @@
-## 10.0.6 (unreleased)
+## 10.0.7 (unreleased)
 
 ### Added
 
@@ -7,7 +7,11 @@
 ### Changed
 
 ### Removed
+## 10.0.6 
 
+
+### Fixed
+- Allow agent mode in biometric kyc
 ## 10.0.5
 ### Fixed
 - Fixed captureBothSides on iOS being inverted
