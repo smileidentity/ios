@@ -115,7 +115,7 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        jobStatusResponse: SmartSelfieJobStatusResponse
+        jobStatusResponse: SmartSelfieJobStatusResponse?
     ) {
         selfieCaptureResultStore = SelfieCaptureResultStore(
             selfie: selfieImage, 

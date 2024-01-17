@@ -6,11 +6,11 @@ public protocol SmartSelfieResultDelegate {
     /// - Parameters:
     ///   - selfieImage: The local url of the colour selfie image captured
     ///   - livenessImages: An array of local urls of images captured for liveness checks
-    ///   - jobStatusResponse: The response object after submitting the jib
+    ///   - jobStatusResponse: The response object after submitting the job. If nil, it means API submission was skipped
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        jobStatusResponse: SmartSelfieJobStatusResponse
+        jobStatusResponse: SmartSelfieJobStatusResponse?
     )
 
     /// An error occurred during the selfie capture session
