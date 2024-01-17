@@ -183,26 +183,18 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 onSkip: viewModel.onDocumentBackSkip
             )
         case .selfieCapture:
-            if showInstructions && !viewModel.acknowledgedInstructions {
-                SelfieCaptureInstructionsScreen(
-                    showAttribution: showAttribution,
-                    onInstructionsAcknowledged: viewModel.acknowledgeInstructions
-                )
-            } else {
-                SelfieCaptureView(
-                    viewModel: SelfieCaptureViewModel(
-                        userId: userId,
-                        jobId: jobId,
-                        isEnroll: false,
-                        allowNewEnroll: allowNewEnroll,
-                        allowsAgentMode: allowAgentMode,
-                        shouldSubmitJob: false,
-                        // imageCaptureDelegate is just for image capture, not job result
-                        imageCaptureDelegate: viewModel
-                    ),
-                    delegate: nil
-                )
-            }
+            OrchestratedSelfieCaptureScreen(
+                userId: userId,
+                jobId: jobId,
+                isEnroll: false,
+                allowNewEnroll: allowNewEnroll,
+                allowAgentMode: allowAgentMode,
+                showAttribution: showAttribution,
+                showInstructions: showInstructions,
+                extraPartnerParams: extraPartnerParams,
+                skipApiSubmission: true,
+                onResult: viewModel
+            )
         case .processing(let state):
             ProcessingScreen(
                 processingState: state,

@@ -7,7 +7,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     var sceneView: ARSCNView!
     private var detectedFaces = 0
-    weak var model: SelfieCaptureViewModel?
+    // weak var model: SelfieCaptureViewModel?
     private var faceNode: SCNNode?
 
     override func viewDidLoad() {
@@ -58,7 +58,8 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         guard let faceAnchor = anchor as? ARFaceAnchor else {
-            model?.perform(action: .noFaceDetected)
+            // model?.perform(action: .noFaceDetected)
+            print("no face detectedd")
             return
         }
         updateFeatures(for: faceAnchor)
@@ -68,7 +69,8 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox,
                                                      roll: angles.roll as NSNumber,
                                                      yaw: angles.yaw as NSNumber)
-        model?.perform(action: .faceObservationDetected(faceObservationModel))
+        // model?.perform(action: .faceObservationDetected(faceObservationModel))
+        print("face observation detected:: \(faceObservationModel)")
     }
 
     func getEulerAngles(from faceAnchor: ARFaceAnchor) -> (roll: Float, pitch: Float, yaw: Float) {
@@ -108,7 +110,8 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             detectedFaces += 1
 
             if detectedFaces > 1 {
-                model?.perform(action: .multipleFacesDetected)
+                print("more than one face")
+                // model?.perform(action: .multipleFacesDetected)
             }
             updateFeatures(for: faceAnchor)
             let projectedPoints = faceAnchor.verticesAndProjection(to: sceneView)
@@ -119,9 +122,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                 roll: angles.roll as NSNumber,
                 yaw: angles.yaw as NSNumber
             )
-            model?.perform(action: .faceObservationDetected(faceObservationModel))
+            print("face observation detected: \(faceObservationModel)")
+            // model?.perform(action: .faceObservationDetected(faceObservationModel))
         } else {
-            model?.perform(action: .noFaceDetected)
+            print("No face detected")
+            // model?.perform(action: .noFaceDetected)
             return
         }
     }
@@ -150,9 +155,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         if let smileL = smileLeft,
            let smileR = smileRight,
            smileL.floatValue > 0.5 && smileR.floatValue > 0.5 {
-            model?.perform(action: .smileAction)
+            print("smile")
+            // model?.perform(action: .smileAction)
         } else {
-            model?.perform(action: .noSmile)
+            print("no smile")
+            // model?.perform(action: .noSmile)
         }
     }
 }

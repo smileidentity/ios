@@ -32,18 +32,18 @@ class HomeViewModel: ObservableObject,
         userId: String,
         selfieImage: URL,
         livenessImages: [URL],
-        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
+        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>?
     ) {
         dismissModal()
         showToast = true
         UIPasteboard.general.string = userId
         toastMessage = jobResultMessageBuilder(
             jobName: "SmartSelfie Enrollment",
-            jobComplete: jobStatusResponse.jobComplete,
-            jobSuccess: jobStatusResponse.jobSuccess,
-            code: jobStatusResponse.code,
-            resultCode: jobStatusResponse.result?.resultCode,
-            resultText: jobStatusResponse.result?.resultText,
+            jobComplete: jobStatusResponse?.jobComplete,
+            jobSuccess: jobStatusResponse?.jobSuccess,
+            code: jobStatusResponse?.code,
+            resultCode: jobStatusResponse?.result?.resultCode,
+            resultText: jobStatusResponse?.result?.resultText,
             suffix: "The User ID has been copied to your clipboard"
         )
     }
@@ -52,17 +52,17 @@ class HomeViewModel: ObservableObject,
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
+        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>?
     ) {
         dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "SmartSelfie Authentication",
-            jobComplete: jobStatusResponse.jobComplete,
-            jobSuccess: jobStatusResponse.jobSuccess,
-            code: jobStatusResponse.code,
-            resultCode: jobStatusResponse.result?.resultCode,
-            resultText: jobStatusResponse.result?.resultText
+            jobComplete: jobStatusResponse?.jobComplete,
+            jobSuccess: jobStatusResponse?.jobSuccess,
+            code: jobStatusResponse?.code,
+            resultCode: jobStatusResponse?.result?.resultCode,
+            resultText: jobStatusResponse?.result?.resultText
         )
     }
 

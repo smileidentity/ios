@@ -1,3 +1,4 @@
+import ARKit
 import Foundation
 import SwiftUI
 
@@ -7,10 +8,13 @@ struct SelfieCaptureScreen: View {
 
     var body: some View {
         ZStack {
-            // TODO: ARView?
+            let agentMode = viewModel.useBackCamera
             CameraView(cameraManager: viewModel.cameraManager)
                 .onAppear { viewModel.cameraManager.switchCamera(to: .front) }
                 .onDisappear { viewModel.cameraManager.pauseSession() }
+            if ARFaceTrackingConfiguration.isSupported && !agentMode {
+                ARView()
+            }
             FaceShapedProgressIndicator(progress: viewModel.captureProgress)
             VStack(spacing: 24) {
                 Spacer()
@@ -21,7 +25,6 @@ struct SelfieCaptureScreen: View {
                     .transition(.slide)
 
                 if allowAgentMode {
-                    let agentMode = viewModel.useBackCamera
                     let textColor = agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent
                     let bgColor = agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain
                     Toggle(isOn: $viewModel.useBackCamera) {

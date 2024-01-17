@@ -1,6 +1,6 @@
 import Foundation
 
-let INTRA_IMAGE_MIN_DELAY: TimeInterval = 0.35
+// let INTRA_IMAGE_MIN_DELAY: TimeInterval = 0.35
 
 class SelfieViewModel: ObservableObject {
     private let isEnroll: Bool
@@ -51,7 +51,7 @@ class SelfieViewModel: ObservableObject {
     
     func analyzeImage(image: CVImageBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
-        if (!shouldAnalyzeImages || elapsedtime < INTRA_IMAGE_MIN_DELAY) {
+        if (!shouldAnalyzeImages || elapsedtime < 0.35) {
             return
         }
         FaceDetector().detect(pixelBuffer: image)

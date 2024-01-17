@@ -58,7 +58,7 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>
+        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>?
     ) {
         cameraVC?.dismiss(animated: true, completion: {
             switch self.currentJob {
