@@ -1,14 +1,15 @@
+import Combine
 import Foundation
 
-// let INTRA_IMAGE_MIN_DELAY: TimeInterval = 0.35
-
 class SelfieViewModel: ObservableObject {
+    private let intraImageMinDelay: TimeInterval = 0.35
     private let isEnroll: Bool
     private let userId: String
     private let jobId: String
     private let allowNewEnroll: Bool
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
+    private let faceDetector = FaceDetector()
 
     var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
@@ -17,6 +18,7 @@ class SelfieViewModel: ObservableObject {
     var livenessImages: [URL]?
     var jobStatusResponse: SmartSelfieJobStatusResponse?
     var error: Error?
+    var cancellables: Set<AnyCancellable> = []
 
     // UI Properties
     @Published var directive: String = "Instructions.Unstable"
@@ -27,7 +29,7 @@ class SelfieViewModel: ObservableObject {
         // This is toggled by a Binding
         didSet { switchCamera() }
     }
-    
+
     init(
         isEnroll: Bool,
         userId: String,
@@ -42,19 +44,19 @@ class SelfieViewModel: ObservableObject {
         self.allowNewEnroll = allowNewEnroll
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
-        // TODO: Save this to AnyCancellable
-        let cancellable = self.cameraManager.sampleBufferPublisher
+        self.cameraManager.sampleBufferPublisher
             .receive(on: DispatchQueue.global())
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
+            .store(in: &cancellables)
     }
-    
+
     func analyzeImage(image: CVImageBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
-        if (!shouldAnalyzeImages || elapsedtime < 0.35) {
+        if !shouldAnalyzeImages || elapsedtime < intraImageMinDelay {
             return
         }
-        FaceDetector().detect(pixelBuffer: image)
+        faceDetector.detect(pixelBuffer: image)
     }
 
     func switchCamera() {
@@ -75,7 +77,7 @@ class SelfieViewModel: ObservableObject {
 
     func onRetry() {
         // If selfie file is present, all captures were completed, so we're retrying a network issue
-        if let _ = selfieImage, let _ = livenessImages {
+        if selfieImage != nil && livenessImages != nil {
             submitJob()
         } else {
             shouldAnalyzeImages = true
@@ -84,7 +86,7 @@ class SelfieViewModel: ObservableObject {
     }
 
     func submitJob() {
-        if (skipApiSubmission) {
+        if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }
             return
         }
