@@ -6,7 +6,7 @@ struct SelfieCaptureScreen: View {
     let allowAgentMode: Bool
     @ObservedObject var viewModel: SelfieViewModel
     private let arView: ARView = ARView()
-    
+
     init(allowAgentMode: Bool, viewModel: SelfieViewModel) {
         self.allowAgentMode = allowAgentMode
         self.viewModel = viewModel
