@@ -8,6 +8,7 @@ class FaceDetector: NSObject {
     weak var viewDelegate: FaceDetectorDelegate?
     private var transpositionHistoryPoints = [CGPoint]()
     private var previousPixelBuffer: CVPixelBuffer?
+    var delegate: FaceDetectionDelegate?
 
     func detectFaces(imageBuffer: CVImageBuffer) {
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(
@@ -55,8 +56,7 @@ class FaceDetector: NSObject {
         detectFaces(imageBuffer: pixelBuffer)
     }
 
-    func runSequenceHandler(with requests: [VNRequest],
-                            imageBuffer: CVImageBuffer) {
+    func runSequenceHandler(with requests: [VNRequest], imageBuffer: CVImageBuffer) {
         do {
             try sequenceHandler.perform(
                 requests,
@@ -75,15 +75,18 @@ extension FaceDetector {
               let viewDelegate = viewDelegate
         else {
             // model?.perform(action: .noFaceDetected)
+            delegate?.onFaceObservation(observation: nil)
             return
         }
 
         if results.count > 1 {
-            // model?.perform(action: .multipleFacesDetected)
+            delegate?.onMultipleFaces()
+            print("FaceDetector - Multiple faces detected")
             return
         }
         guard let result = results.first, !result.boundingBox.isNaN else {
-            // model?.perform(action: .noFaceDetected)
+            print("FaceDetector - No face detected")
+            delegate?.onFaceObservation(observation: nil)
             return
         }
         let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(
@@ -95,23 +98,21 @@ extension FaceDetector {
             roll: result.roll ?? 0,
             yaw: result.yaw ?? 0
         )
-        // model?.perform(action: .faceObservationDetected(faceObservationModel))
+        delegate?.onFaceObservation(observation: faceObservationModel)
+        print("FaceDetector - Face observation detected: \(faceObservationModel)")
     }
 
     func detectedFaceQualityRequest(request: VNRequest, error: Error?) {
-//        guard let model = model else {
-//            return
-//        }
-
         guard let results = request.results as? [VNFaceObservation],
               let result = results.first
         else {
-            // model.perform(action: .noFaceDetected)
+            delegate?.onFaceObservation(observation: nil)
+            print("FaceDetector - No face detected")
             return
         }
 
-        let faceQualityModel = FaceQualityModel(quality: result.faceCaptureQuality ?? 0)
-        // model.perform(action: .faceQualityObservationDetected(faceQualityModel))
+        let faceQuality = result.faceCaptureQuality ?? 0
+        print("FaceDetector - Face Quality: \(faceQuality)")
     }
 }
 

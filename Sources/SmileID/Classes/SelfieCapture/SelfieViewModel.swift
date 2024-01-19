@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-class SelfieViewModel: ObservableObject {
+class SelfieViewModel: ObservableObject, FaceDetectionDelegate {
     private let intraImageMinDelay: TimeInterval = 0.35
     private let isEnroll: Bool
     private let userId: String
@@ -18,7 +18,7 @@ class SelfieViewModel: ObservableObject {
     var livenessImages: [URL]?
     var jobStatusResponse: SmartSelfieJobStatusResponse?
     var error: Error?
-    var cancellables: Set<AnyCancellable> = []
+    private var subscriber: AnyCancellable?
 
     // UI Properties
     @Published var directive: String = "Instructions.Unstable"
@@ -44,19 +44,38 @@ class SelfieViewModel: ObservableObject {
         self.allowNewEnroll = allowNewEnroll
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
-        self.cameraManager.sampleBufferPublisher
+        subscriber = self.cameraManager.sampleBufferPublisher
             .receive(on: DispatchQueue.global())
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
-            .store(in: &cancellables)
+        faceDetector.delegate = self
     }
 
     func analyzeImage(image: CVImageBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
         if !shouldAnalyzeImages || elapsedtime < intraImageMinDelay {
+            print("Skipping image analysis")
             return
         }
+//        shouldAnalyzeImages = false
         faceDetector.detect(pixelBuffer: image)
+//        shouldAnalyzeImages = true
+    }
+
+    func onSmiling(isSmiling: Bool) {
+        print("isSmiling: \(isSmiling)")
+    }
+
+    func onFaceObservation(observation: FaceGeometryModel?) {
+        if let observation {
+            print("onFaceObservation: \(observation)")
+        } else {
+            print("onFaceObservation: nil")
+        }
+    }
+
+    func onMultipleFaces() {
+        print("onMultipleFaces")
     }
 
     func switchCamera() {

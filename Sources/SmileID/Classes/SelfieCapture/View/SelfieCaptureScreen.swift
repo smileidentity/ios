@@ -5,6 +5,13 @@ import SwiftUI
 struct SelfieCaptureScreen: View {
     let allowAgentMode: Bool
     @ObservedObject var viewModel: SelfieViewModel
+    private let arView: ARView = ARView()
+    
+    init(allowAgentMode: Bool, viewModel: SelfieViewModel) {
+        self.allowAgentMode = allowAgentMode
+        self.viewModel = viewModel
+        arView.preview.delegate = viewModel
+    }
 
     var body: some View {
         ZStack {
@@ -13,7 +20,7 @@ struct SelfieCaptureScreen: View {
                 .onAppear { viewModel.cameraManager.switchCamera(to: .front) }
                 .onDisappear { viewModel.cameraManager.pauseSession() }
             if ARFaceTrackingConfiguration.isSupported && !agentMode {
-                ARView()
+                arView
             }
             FaceShapedProgressIndicator(progress: viewModel.captureProgress)
             VStack(spacing: 24) {

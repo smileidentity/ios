@@ -10,7 +10,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
 
     @State private var acknowledgedInstructions = false
     private var originalBrightness = UIScreen.main.brightness
-    
+
     public init(
         userId: String,
         jobId: String,
@@ -28,7 +28,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
         self.showInstructions = showInstructions
         self.onResult = onResult
         self.viewModel = SelfieViewModel(
-            isEnroll: isEnroll, 
+            isEnroll: isEnroll,
             userId: userId,
             jobId: jobId,
             allowNewEnroll: allowNewEnroll,

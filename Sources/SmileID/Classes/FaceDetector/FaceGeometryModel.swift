@@ -5,7 +5,3 @@ struct FaceGeometryModel: Equatable {
     let roll: NSNumber
     let yaw: NSNumber
 }
-
-struct FaceQualityModel: Equatable {
-    let quality: Float
-}

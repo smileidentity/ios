@@ -4,10 +4,9 @@ import SwiftUI
 import ARKit
 
 class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
-
+    var delegate: FaceDetectionDelegate?
     var sceneView: ARSCNView!
     private var detectedFaces = 0
-    // weak var model: SelfieCaptureViewModel?
     private var faceNode: SCNNode?
 
     override func viewDidLoad() {
@@ -27,23 +26,17 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if sceneView != nil {
-            sceneView.session.pause()
-        }
+        sceneView?.session.pause()
     }
 
     func pauseSession() {
-        if sceneView != nil {
-            sceneView.session.pause()
-        }
+        sceneView?.session.pause()
     }
 
     func resumeSession() {
         let configuration = ARFaceTrackingConfiguration()
         configuration.worldAlignment = .gravity
-        if sceneView != nil {
-            sceneView.session.run(configuration)
-        }
+        sceneView?.session.run(configuration)
     }
 
     // ARSCNViewDelegate methods
@@ -58,8 +51,8 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         guard let faceAnchor = anchor as? ARFaceAnchor else {
-            // model?.perform(action: .noFaceDetected)
-            print("no face detectedd")
+            print("No Face Detected")
+            delegate?.onFaceObservation(observation: nil)
             return
         }
         updateFeatures(for: faceAnchor)
@@ -69,8 +62,8 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         let faceObservationModel = FaceGeometryModel(boundingBox: boundingBox,
                                                      roll: angles.roll as NSNumber,
                                                      yaw: angles.yaw as NSNumber)
-        // model?.perform(action: .faceObservationDetected(faceObservationModel))
-        print("face observation detected:: \(faceObservationModel)")
+        print("ARKit - Face Observation Detected (didUpdate): \(faceObservationModel)")
+        delegate?.onFaceObservation(observation: faceObservationModel)
     }
 
     func getEulerAngles(from faceAnchor: ARFaceAnchor) -> (roll: Float, pitch: Float, yaw: Float) {
@@ -104,14 +97,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-
         if let faceAnchor = anchor as? ARFaceAnchor {
-
             detectedFaces += 1
-
             if detectedFaces > 1 {
-                print("more than one face")
-                // model?.perform(action: .multipleFacesDetected)
+                delegate?.onMultipleFaces()
+                print("More than one face")
             }
             updateFeatures(for: faceAnchor)
             let projectedPoints = faceAnchor.verticesAndProjection(to: sceneView)
@@ -122,11 +112,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                 roll: angles.roll as NSNumber,
                 yaw: angles.yaw as NSNumber
             )
-            print("face observation detected: \(faceObservationModel)")
-            // model?.perform(action: .faceObservationDetected(faceObservationModel))
+            print("ARKit - Face Observation Detected (didAdd): \(faceObservationModel)")
+            delegate?.onFaceObservation(observation: faceObservationModel)
         } else {
             print("No face detected")
-            // model?.perform(action: .noFaceDetected)
+            delegate?.onFaceObservation(observation: nil)
             return
         }
     }
@@ -155,11 +145,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         if let smileL = smileLeft,
            let smileR = smileRight,
            smileL.floatValue > 0.5 && smileR.floatValue > 0.5 {
-            print("smile")
-            // model?.perform(action: .smileAction)
+            print("Smiling")
+            delegate?.onSmiling(isSmiling: true)
         } else {
-            print("no smile")
-            // model?.perform(action: .noSmile)
+            print("Not Smiling")
+            delegate?.onSmiling(isSmiling: false)
         }
     }
 }
@@ -242,4 +232,10 @@ extension matrix_float4x4 {
         /// return array containing ypr values
         return (yaw, pitch, roll)
     }
+}
+
+protocol FaceDetectionDelegate {
+    func onSmiling(isSmiling: Bool)
+    func onFaceObservation(observation: FaceGeometryModel?)
+    func onMultipleFaces()
 }
