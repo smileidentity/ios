@@ -11,7 +11,7 @@ class ImageUtils {
     class func resizePixelBufferToHeight(
         _ pixelBuffer: CVPixelBuffer,
         height: Int,
-        exif: [String: Any]?,
+        exif: [String: Any]? = nil,
         orientation: CGImagePropertyOrientation = .right
     ) -> Data? {
         var image = CIImage(cvPixelBuffer: pixelBuffer)

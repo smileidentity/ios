@@ -5,12 +5,12 @@ import SwiftUI
 struct SelfieCaptureScreen: View {
     let allowAgentMode: Bool
     @ObservedObject var viewModel: SelfieViewModel
-    private let arView: ARView = ARView()
+    private let arView: ARView
 
     init(allowAgentMode: Bool, viewModel: SelfieViewModel) {
         self.allowAgentMode = allowAgentMode
         self.viewModel = viewModel
-        arView.preview.delegate = viewModel
+        self.arView = ARView(delegate: viewModel)
     }
 
     var body: some View {
