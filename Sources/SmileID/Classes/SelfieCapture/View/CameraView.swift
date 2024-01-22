@@ -2,10 +2,6 @@ import SwiftUI
 import AVFoundation
 import Vision
 
-protocol FaceDetectorDelegate: AnyObject {
-    func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect
-}
-
 struct CameraView: UIViewControllerRepresentable {
     typealias UIViewType = PreviewView
     let preview: PreviewView

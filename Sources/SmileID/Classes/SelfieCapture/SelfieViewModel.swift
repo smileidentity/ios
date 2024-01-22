@@ -4,17 +4,17 @@ import Foundation
 
 class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     // Constants
-    // TODO: Some of the thresholds may need to be tuned
     private let intraImageMinDelay: TimeInterval = 0.35
     private let noFaceResetDelay: TimeInterval = 3
+    private let faceCaptureQualityThreshold: Float = 0.25
     private let minFaceAreaThreshold = 0.15
     private let maxFaceAreaThreshold = 0.25
-    private let faceRotationThreshold = 0.75
+    private let faceRotationThreshold = 0.035
     private let numLivenessImages = 7
     private let numTotalSteps = 8 // numLivenessImages + 1 selfie image
     private let livenessImageSize = 320
     private let selfieImageSize = 640
-    
+
     private let isEnroll: Bool
     private let userId: String
     private let jobId: String
@@ -25,7 +25,6 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
-    var currentlyAnalyzingImage = false
     var lastAutoCaptureTime = Date()
     var previousHeadRoll = Double.infinity
     var previousHeadPitch = Double.infinity
@@ -38,7 +37,7 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private var subscriber: AnyCancellable?
 
     // UI Properties
-    @Published var directive: String = "Instructions.Unstable"
+    @Published var directive: String = "Instructions.Start"
     @Published var processingState: ProcessingState?
     @Published var selfieToConfirm: Data?
     @Published var captureProgress: Double = 0
@@ -62,90 +61,100 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
         subscriber = self.cameraManager.sampleBufferPublisher
-            .receive(on: DispatchQueue.global())
+            .throttle(for: 0.35, scheduler: DispatchQueue.global(), latest: true)
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
     }
 
     func analyzeImage(image: CVImageBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
-        print("In here")
-        if !shouldAnalyzeImages || currentlyAnalyzingImage || elapsedtime < intraImageMinDelay {
-            print("Skipping image analysis")
+        if !shouldAnalyzeImages || elapsedtime < intraImageMinDelay {
             return
         }
-        currentlyAnalyzingImage = true
+
         do {
             try faceDetector.detect(imageBuffer: image) { [self] request, error in
                 if let error = error {
                     print("Error analyzing image: \(error.localizedDescription)")
                     self.error = error
-                    currentlyAnalyzingImage = false
                     return
                 }
+
                 guard let results = request.results as? [VNFaceObservation] else {
                     print("Did not receive the expected [VNFaceObservation]")
-                    currentlyAnalyzingImage = false
                     return
                 }
+
                 if results.count == 0 {
-                    print("No faces")
                     DispatchQueue.main.async { self.directive = "Instructions.UnableToDetectFace" }
-                    currentlyAnalyzingImage = false
+                    // If no faces are detected for a while, reset the state
+                    if elapsedtime > noFaceResetDelay {
+                        DispatchQueue.main.async {
+                            self.captureProgress = 0
+                            self.selfieToConfirm = nil
+                            self.processingState = nil
+                        }
+                        self.selfieImage = nil
+                        self.livenessImages = []
+                    }
                     return
                 }
-                
+
+                // Ensure only 1 face is in frame
                 if results.count > 1 {
-                    print("Too many faces")
                     DispatchQueue.main.async { self.directive = "Instructions.MultipleFaces" }
-                    currentlyAnalyzingImage = false
                     return
                 }
-                
+
                 guard let face = results.first else {
                     print("Unexpectedly got an empty face array")
-                    currentlyAnalyzingImage = false
                     return
                 }
-                
-        //        let boundingBox = face.boundingBox
-                //        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(
-                //            rect: result.boundingBox
-                //        )
 
-                //        if !faceInFrame(analysisResult.boundingBox) {
-        //            DispatchQueue.main.async { self.directive = "Instructions.Start" }
-                // self.currentlyAnalyzingImage = false
-        //            return
-        //        }
-                
-        //        let faceFillRatio = calculateFaceFill(boundingBox)
-        //        if faceFillRatio < minFaceAreaThreshold {
-        //            DispatchQueue.main.async { self.directive = "Instructions.FaceFar" }
-                // self.currentlyAnalyzingImage = false
-        //            return
-        //        }
-        //
-        //        if faceFillRatio > maxFaceAreaThreshold {
-        //            DispatchQueue.main.async { self.directive = "Instructions.FaceClose" }
-                // self.currentlyAnalyzingImage = false
-        //            return
-        //        }
-                
-                // Need to say Smile as the directive regardless because it is possible Smile detection is not possible
-                DispatchQueue.main.async { self.directive = "Instructions.Smile" }
-                
-        //        if !analysisResult.isSmiling && livenessImages.count < numLivenessImages {
-                // self.currentlyAnalyzingImage = false
-        //            return
-        //        }
-            
-                
+                // The coordinate system of the bounding box in VNFaceObservation is such that
+                // the camera view spans [0-1]x[0-1] and the face is within that. Since we don't
+                // need to draw on the camera view, we don't need to convert this to the view's
+                // coordinate system. We can calculate out of bounds and face area directly on this
+                let boundingBox = face.boundingBox
+
+                // Check that the corners of the face bounding box are within frame
+                let isXInBounds = boundingBox.minX > 0 && boundingBox.maxX < 1
+                let isYInBounds = boundingBox.minY > 0 && boundingBox.maxY < 1
+                let isFaceInFrame = isXInBounds && isYInBounds
+                if !isFaceInFrame {
+                    DispatchQueue.main.async { self.directive = "Instructions.PutFaceInOval" }
+                    return
+                }
+
+                // image's area is equal to 1. so (bbox area / image area) == bbox area
+                let faceFillRatio = boundingBox.width * boundingBox.height
+                if faceFillRatio < minFaceAreaThreshold {
+                    DispatchQueue.main.async { self.directive = "Instructions.MoveCloser" }
+                    return
+                }
+
+                if faceFillRatio > maxFaceAreaThreshold {
+                    DispatchQueue.main.async { self.directive = "Instructions.MoveFarther" }
+                    return
+                }
+
+                if let quality = face.faceCaptureQuality, quality < faceCaptureQualityThreshold {
+                    DispatchQueue.main.async { self.directive = "Instructions.Quality" }
+                    return
+                }
+
+                // TODO: Need to know whether smiling signal is coming from ARKit. If not, we can probably use mouth deformation as an alternate signal
+                if livenessImages.count > numLivenessImages / 2 && !(isSmiling || true) {
+                    DispatchQueue.main.async { self.directive = "Instructions.Smile" }
+                    return
+                }
+
+                DispatchQueue.main.async { self.directive = "Instructions.Capturing" }
+
                 // Perform the rotation checks *after* changing directive to Capturing -- we don't want
                 // to explicitly tell the user to move their head
                 if !hasFaceRotatedEnough(face: face) {
                     print("Not enough face rotation between captures. Waiting...")
-                    currentlyAnalyzingImage = false
                     return
                 }
                 previousHeadRoll = face.roll?.doubleValue ?? Double.infinity
@@ -157,7 +166,6 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 lastAutoCaptureTime = Date()
                 do {
                     if livenessImages.count < numLivenessImages {
-                        print("Saving liveness image")
                         guard let imageData = ImageUtils.resizePixelBufferToHeight(
                             image,
                             height: livenessImageSize
@@ -170,7 +178,6 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             self.captureProgress = Double(self.livenessImages.count) / Double(self.numTotalSteps)
                         }
                     } else {
-                        print("Saving selfie image")
                         shouldAnalyzeImages = false
                         guard let imageData = ImageUtils.resizePixelBufferToHeight(
                             image,
@@ -185,23 +192,19 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             self.selfieToConfirm = imageData
                         }
                     }
-                    currentlyAnalyzingImage = false
                 } catch {
                     print("Error saving image: \(error.localizedDescription)")
                     self.error = error
                     DispatchQueue.main.async { self.processingState = .error }
-                    currentlyAnalyzingImage = false
                     return
                 }
-                
             }
         } catch {
             print("Error analyzing image: \(error.localizedDescription)")
-            currentlyAnalyzingImage = false
             return
         }
     }
-    
+
     func hasFaceRotatedEnough(face: VNFaceObservation) -> Bool {
         guard let roll = face.roll?.doubleValue, let yaw = face.yaw?.doubleValue else {
             print("Roll and yaw unexpectedly nil")
@@ -223,6 +226,7 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     func switchCamera() {
+        // TODO: Switch ARKit camera
         self.cameraManager.switchCamera(to: useBackCamera ? .back : .front)
     }
 

@@ -5,18 +5,13 @@ import UIKit
 
 class FaceDetector: NSObject {
     var sequenceHandler = VNSequenceRequestHandler()
-    weak var viewDelegate: FaceDetectorDelegate?
 
     /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
     func detect(
         imageBuffer: CVPixelBuffer,
         completionHandler: @escaping VNRequestCompletionHandler
     ) throws {
-        // Since we submit both requests at the same time, the response is a fused result
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(
-            completionHandler: completionHandler
-        )
-        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(
             completionHandler: completionHandler
         )
 
@@ -29,22 +24,10 @@ class FaceDetector: NSObject {
             VNDetectFaceCaptureQualityRequestRevision1
         }
 
-        detectFaceRectanglesRequest.revision = if #available(iOS 15.0, *) {
-            VNDetectFaceRectanglesRequestRevision3
-        } else {
-            VNDetectFaceRectanglesRequestRevision2
-        }
-
         try sequenceHandler.perform(
-            [detectFaceRectanglesRequest, detectCaptureQualityRequest],
+            [detectCaptureQualityRequest],
             on: imageBuffer,
             orientation: .leftMirrored
         )
-    }
-}
-
-extension CGRect {
-    var isNaN: Bool {
-        origin.x.isNaN || origin.y.isNaN || size.width.isNaN || size.height.isNaN
     }
 }

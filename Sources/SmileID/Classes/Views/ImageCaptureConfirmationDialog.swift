@@ -27,10 +27,10 @@ struct ImageCaptureConfirmationDialog: View {
             Image(uiImage: image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .cornerRadius(16)
-                .frame(height: 256)
                 .scaleEffect(scaleFactor, anchor: .center)
                 .clipped()
+                .cornerRadius(16)
+                .frame(height: 256)
             VStack(spacing: 16) {
                 Button(action: onConfirm) {
                     Text(confirmationButtonText)

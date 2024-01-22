@@ -37,15 +37,6 @@ extension PreviewView {
     }
 }
 
-extension PreviewView: FaceDetectorDelegate {
-    func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
-      guard let previewLayer = previewLayer else {
-          return .zero
-      }
-        return previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
-    }
-}
-
 extension PreviewView: RectangleDetectionDelegate {
     func didDetectQuad(
         quad: Quadrilateral?,
