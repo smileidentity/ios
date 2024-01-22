@@ -30,6 +30,9 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     var previousHeadPitch = Double.infinity
     var previousHeadYaw = Double.infinity
     var isSmiling = false
+    var isReceivingSmilingSignalFromARKit: Bool {
+        get { ARFaceTrackingConfiguration.isSupported && !useBackCamera }
+    }
     var selfieImage: URL?
     var livenessImages: [URL] = []
     var jobStatusResponse: SmartSelfieJobStatusResponse?
@@ -143,16 +146,19 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     return
                 }
 
-                // TODO: Need to know whether smiling signal is coming from ARKit. If not, we can probably use mouth deformation as an alternate signal
-                if livenessImages.count > numLivenessImages / 2 && !(isSmiling || true) {
-                    DispatchQueue.main.async { self.directive = "Instructions.Smile" }
+                let userNeedsToSmile = livenessImages.count > numLivenessImages / 2
+
+                DispatchQueue.main.async { [self] in
+                    directive = userNeedsToSmile ? "Instructions.Smile" : "Instructions.Capturing"
+                }
+
+                // TODO: Use mouth deformation as an alternate signal for non-ARKit capture
+                if userNeedsToSmile && isReceivingSmilingSignalFromARKit && !isSmiling {
                     return
                 }
 
-                DispatchQueue.main.async { self.directive = "Instructions.Capturing" }
-
-                // Perform the rotation checks *after* changing directive to Capturing -- we don't want
-                // to explicitly tell the user to move their head
+                // Perform the rotation checks *after* changing directive to Capturing -- we don't
+                // want to explicitly tell the user to move their head
                 if !hasFaceRotatedEnough(face: face) {
                     print("Not enough face rotation between captures. Waiting...")
                     return
@@ -226,7 +232,6 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     func switchCamera() {
-        // TODO: Switch ARKit camera
         self.cameraManager.switchCamera(to: useBackCamera ? .back : .front)
     }
 
