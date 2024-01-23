@@ -31,7 +31,8 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     var previousHeadYaw = Double.infinity
     var isSmiling = false
     var isReceivingSmilingSignalFromARKit: Bool {
-        // swiftlint:disable implicit_getter (false positive)
+        // false positive swift lint rule
+        // swiftlint:disable implicit_getter
         get { ARFaceTrackingConfiguration.isSupported && !useBackCamera }
     }
     var selfieImage: URL?

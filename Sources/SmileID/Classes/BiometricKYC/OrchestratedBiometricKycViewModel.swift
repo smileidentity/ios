@@ -124,7 +124,7 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
         jobStatusResponse: SmartSelfieJobStatusResponse?
     ) {
         selfieCaptureResultStore = SelfieCaptureResultStore(
-            selfie: selfieImage, 
+            selfie: selfieImage,
             livenessImages: livenessImages
         )
         if let selfieCaptureResultStore = selfieCaptureResultStore {
@@ -134,7 +134,7 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
             DispatchQueue.main.async { self.step = .processing(.error) }
         }
     }
-    
+
     func didError(error: Error) {
         self.error = SmileIDError.unknown("Failed to capture selfie")
         DispatchQueue.main.async { self.step = .processing(.error) }

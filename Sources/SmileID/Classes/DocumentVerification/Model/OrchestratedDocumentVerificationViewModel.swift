@@ -238,7 +238,7 @@ internal class OrchestratedDocumentVerificationViewModel:
     }
 }
 
-internal class OrchestratedEnhancedDocumentVerificationViewModel: 
+internal class OrchestratedEnhancedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
