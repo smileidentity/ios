@@ -72,6 +72,8 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.cameraManager.sampleBufferPublisher
             .merge(with: arKitFramePublisher)
             .throttle(for: 0.35, scheduler: DispatchQueue.global(qos: .userInitiated), latest: true)
+            // Drop the first ~2 seconds to allow the user to settle in
+            .dropFirst(5)
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
