@@ -14,12 +14,13 @@ struct SelfieCaptureScreen: View {
     var body: some View {
         ZStack {
             let agentMode = viewModel.useBackCamera
-            CameraView(cameraManager: viewModel.cameraManager)
-                .onAppear { viewModel.cameraManager.switchCamera(to: agentMode ? .back : .front) }
-                .onDisappear { viewModel.cameraManager.pauseSession() }
-            // TODO: Fix this. When adding arView, it makes cameraSampleBuffer stop working
             if ARFaceTrackingConfiguration.isSupported && !agentMode {
                 ARView(delegate: viewModel)
+            } else {
+                CameraView(cameraManager: viewModel.cameraManager)
+                    .onAppear {
+                        viewModel.cameraManager.switchCamera(to: agentMode ? .back : .front)
+                    }
             }
             FaceShapedProgressIndicator(progress: viewModel.captureProgress)
             VStack(spacing: 24) {

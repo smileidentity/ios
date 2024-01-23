@@ -35,6 +35,7 @@ class CameraManager: NSObject, ObservableObject {
         (session.inputs.first as? AVCaptureDeviceInput)?.device.position
     }
 
+    // Used to queue and then resume tasks while waiting for Camera permissions
     private let sessionQueue = DispatchQueue(label: "com.smileidentity.ios")
     private let videoOutput = AVCaptureVideoDataOutput()
     private let photoOutput = AVCapturePhotoOutput()
@@ -44,21 +45,14 @@ class CameraManager: NSObject, ObservableObject {
     init(orientation: Orientation) {
         self.orientation = orientation
         super.init()
-        set(self, queue: videoOutputQueue)
+        sessionQueue.async {
+            self.videoOutput.setSampleBufferDelegate(self, queue: self.videoOutputQueue)
+        }
     }
 
     private func set(error: CameraError?) {
         DispatchQueue.main.async {
             self.error = error
-        }
-    }
-
-    private func set(
-        _ delegate: AVCaptureVideoDataOutputSampleBufferDelegate,
-        queue: DispatchQueue
-    ) {
-        sessionQueue.async {
-            self.videoOutput.setSampleBufferDelegate(delegate, queue: queue)
         }
     }
 

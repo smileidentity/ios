@@ -28,9 +28,6 @@ class PreviewView: UIViewController {
         view.layer.addSublayer(previewLayer!)
     }
 
-}
-
-extension PreviewView {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         previewLayer?.frame = view.bounds

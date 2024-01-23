@@ -7,7 +7,9 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let intraImageMinDelay: TimeInterval = 0.35
     private let noFaceResetDelay: TimeInterval = 3
     private let faceCaptureQualityThreshold: Float = 0.25
-    private let minFaceAreaThreshold = 0.15
+    private let minFaceCenteredThreshold = 0.1
+    private let maxFaceCenteredThreshold = 0.9
+    private let minFaceAreaThreshold = 0.125
     private let maxFaceAreaThreshold = 0.25
     private let faceRotationThreshold = 0.035
     private let numLivenessImages = 7
@@ -30,7 +32,7 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     var previousHeadPitch = Double.infinity
     var previousHeadYaw = Double.infinity
     var isSmiling = false
-    var isReceivingSmilingSignalFromARKit: Bool {
+    var currentlyUsingArKit: Bool {
         // false positive swift lint rule
         // swiftlint:disable implicit_getter
         get { ARFaceTrackingConfiguration.isSupported && !useBackCamera }
@@ -39,7 +41,9 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     var livenessImages: [URL] = []
     var jobStatusResponse: SmartSelfieJobStatusResponse?
     var error: Error?
-    private var subscriber: AnyCancellable?
+
+    private let arKitFramePublisher = PassthroughSubject<CVPixelBuffer?, Never>()
+    private var subscribers = Set<AnyCancellable>()
 
     // UI Properties
     @Published var directive: String = "Instructions.Start"
@@ -65,14 +69,16 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.allowNewEnroll = allowNewEnroll
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
-        subscriber = self.cameraManager.sampleBufferPublisher
-            .throttle(for: 0.35, scheduler: DispatchQueue.global(), latest: true)
+        self.cameraManager.sampleBufferPublisher
+            .merge(with: arKitFramePublisher)
+            .throttle(for: 0.35, scheduler: DispatchQueue.global(qos: .userInitiated), latest: true)
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
+            .store(in: &subscribers)
     }
 
     // swiftlint:disable cyclomatic_complexity
-    func analyzeImage(image: CVImageBuffer) {
+    func analyzeImage(image: CVPixelBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
         if !shouldAnalyzeImages || elapsedtime < intraImageMinDelay {
             return
@@ -124,10 +130,10 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 let boundingBox = face.boundingBox
 
                 // Check that the corners of the face bounding box are within frame
-                let isXInBounds = boundingBox.minX > 0 && boundingBox.maxX < 1
-                let isYInBounds = boundingBox.minY > 0 && boundingBox.maxY < 1
-                let isFaceInFrame = isXInBounds && isYInBounds
-                if !isFaceInFrame {
+                if boundingBox.minX < minFaceCenteredThreshold
+                    || boundingBox.minY < minFaceCenteredThreshold
+                    || boundingBox.maxX > maxFaceCenteredThreshold
+                    || boundingBox.maxY > maxFaceCenteredThreshold {
                     DispatchQueue.main.async { self.directive = "Instructions.PutFaceInOval" }
                     return
                 }
@@ -156,7 +162,7 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
 
                 // TODO: Use mouth deformation as an alternate signal for non-ARKit capture
-                if userNeedsToSmile && isReceivingSmilingSignalFromARKit && !isSmiling {
+                if userNeedsToSmile && currentlyUsingArKit && !isSmiling {
                     return
                 }
 
@@ -166,18 +172,15 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     print("Not enough face rotation between captures. Waiting...")
                     return
                 }
-                previousHeadRoll = face.roll?.doubleValue ?? Double.infinity
-                previousHeadYaw = face.yaw?.doubleValue ?? Double.infinity
-                if #available(iOS 15, *) {
-                    self.previousHeadPitch = face.pitch?.doubleValue ?? Double.infinity
-                }
 
+                let orientation = currentlyUsingArKit ? CGImagePropertyOrientation.right : .up
                 lastAutoCaptureTime = Date()
                 do {
                     if livenessImages.count < numLivenessImages {
                         guard let imageData = ImageUtils.resizePixelBufferToHeight(
                             image,
-                            height: livenessImageSize
+                            height: livenessImageSize,
+                            orientation: orientation
                         ) else {
                             throw SmileIDError.unknown("Error resizing liveness image")
                         }
@@ -190,7 +193,8 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         shouldAnalyzeImages = false
                         guard let imageData = ImageUtils.resizePixelBufferToHeight(
                             image,
-                            height: selfieImageSize
+                            height: selfieImageSize,
+                            orientation: orientation
                         ) else {
                             throw SmileIDError.unknown("Error resizing selfie image")
                         }
@@ -227,11 +231,22 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
         let rollDelta = abs(roll - previousHeadRoll)
         let yawDelta = abs(yaw - previousHeadYaw)
+
+        previousHeadRoll = face.roll?.doubleValue ?? Double.infinity
+        previousHeadYaw = face.yaw?.doubleValue ?? Double.infinity
+        if #available(iOS 15, *) {
+            self.previousHeadPitch = face.pitch?.doubleValue ?? Double.infinity
+        }
+
         return didPitchChange || rollDelta > faceRotationThreshold || yawDelta > faceRotationThreshold
     }
 
     func onSmiling(isSmiling: Bool) {
         self.isSmiling = isSmiling
+    }
+
+    func onARKitFrame(frame: ARFrame) {
+        arKitFramePublisher.send(frame.capturedImage)
     }
 
     func switchCamera() {

@@ -10,6 +10,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         sceneView = ARSCNView(frame: view.frame)
+        sceneView.rendersCameraGrain = false
         view.addSubview(sceneView)
     }
 
@@ -22,13 +23,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         sceneView.session.run(configuration)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         sceneView?.session.pause()
-    }
-
-    deinit {
-        sceneView?.session.pause()
+        delegate?.onSmiling(isSmiling: false)
     }
 
     // ARSCNViewDelegate methods
@@ -58,6 +56,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         let isSmileRight = smileRight > smileThreshold
         delegate?.onSmiling(isSmiling: isSmileLeft || isSmileRight)
     }
+
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        delegate?.onARKitFrame(frame: frame)
+    }
 }
 
 struct ARView: UIViewControllerRepresentable {
@@ -78,4 +80,5 @@ struct ARView: UIViewControllerRepresentable {
 
 protocol ARKitSmileDelegate {
     func onSmiling(isSmiling: Bool)
+    func onARKitFrame(frame: ARFrame)
 }

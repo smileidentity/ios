@@ -228,7 +228,6 @@
 				918321E22A52E36A00D6FB7F /* DependencyContainer */,
 				918321E52A52E36A00D6FB7F /* Mocks */,
 				918321DF2A52E36A00D6FB7F /* Networking */,
-				918321E72A52E36A00D6FB7F /* SmartSelfie */,
 				918321E12A52E36A00D6FB7F /* XCTestExtension.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 				585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */,
@@ -322,14 +321,6 @@
 			);
 			name = Mocks;
 			path = ../../Tests/Mocks;
-			sourceTree = "<group>";
-		};
-		918321E72A52E36A00D6FB7F /* SmartSelfie */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = SmartSelfie;
-			path = ../../Tests/SmartSelfie;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
