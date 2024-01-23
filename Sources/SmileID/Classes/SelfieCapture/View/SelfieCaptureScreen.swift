@@ -21,6 +21,7 @@ struct SelfieCaptureScreen: View {
             cameraView
                 .onAppear { viewModel.cameraManager.switchCamera(to: agentMode ? .back : .front) }
                 .onDisappear { viewModel.cameraManager.pauseSession() }
+            // TODO: Fix this. When adding arView, it makes cameraSampleBuffer stop working
 //            if ARFaceTrackingConfiguration.isSupported && !agentMode {
 //                arView
 //            }
