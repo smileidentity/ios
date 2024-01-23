@@ -218,6 +218,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
     }
 }
 
+// swiftlint:disable colon
 internal class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
@@ -238,7 +239,9 @@ internal class OrchestratedDocumentVerificationViewModel:
     }
 }
 
+// swiftlint:disable colon
 internal class OrchestratedEnhancedDocumentVerificationViewModel:
+    // swiftlint:disable line_length
     IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
