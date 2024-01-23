@@ -2,18 +2,7 @@ import Foundation
 import AVFoundation
 import SwiftUI
 
-protocol CameraManageable: AnyObject {
-    func switchCamera(to position: AVCaptureDevice.Position)
-    func capturePhoto()
-    func pauseSession()
-    func resumeSession()
-    var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher {get}
-    var capturedImagePublisher: Published<Data?>.Publisher {get}
-    var session: AVCaptureSession { get }
-    var cameraPosition: AVCaptureDevice.Position? {get}
-}
-
-class CameraManager: NSObject, ObservableObject, CameraManageable {
+class CameraManager: NSObject, ObservableObject {
 
     enum Orientation {
         case portrait

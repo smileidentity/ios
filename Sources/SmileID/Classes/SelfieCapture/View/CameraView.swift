@@ -6,7 +6,7 @@ struct CameraView: UIViewControllerRepresentable {
     typealias UIViewType = PreviewView
     let preview: PreviewView
 
-    init(cameraManager: CameraManageable) {
+    init(cameraManager: CameraManager) {
         preview = PreviewView(cameraManager: cameraManager)
     }
 

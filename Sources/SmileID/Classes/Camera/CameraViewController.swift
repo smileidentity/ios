@@ -4,9 +4,9 @@ import AVFoundation
 
 class PreviewView: UIViewController {
     var previewLayer: AVCaptureVideoPreviewLayer?
-    private weak var cameraManager: CameraManageable?
+    private weak var cameraManager: CameraManager?
 
-    init(cameraManager: CameraManageable) {
+    init(cameraManager: CameraManager) {
         self.cameraManager = cameraManager
         super.init(nibName: nil, bundle: nil)
     }

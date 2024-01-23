@@ -5,26 +5,22 @@ import SwiftUI
 struct SelfieCaptureScreen: View {
     let allowAgentMode: Bool
     @ObservedObject var viewModel: SelfieViewModel
-    private let arView: ARView
-    private let cameraView: CameraView
 
     init(allowAgentMode: Bool, viewModel: SelfieViewModel) {
         self.allowAgentMode = allowAgentMode
         self.viewModel = viewModel
-        self.arView = ARView(delegate: viewModel)
-        self.cameraView = CameraView(cameraManager: viewModel.cameraManager)
     }
 
     var body: some View {
         ZStack {
             let agentMode = viewModel.useBackCamera
-            cameraView
+            CameraView(cameraManager: viewModel.cameraManager)
                 .onAppear { viewModel.cameraManager.switchCamera(to: agentMode ? .back : .front) }
                 .onDisappear { viewModel.cameraManager.pauseSession() }
             // TODO: Fix this. When adding arView, it makes cameraSampleBuffer stop working
-//            if ARFaceTrackingConfiguration.isSupported && !agentMode {
-//                arView
-//            }
+            if ARFaceTrackingConfiguration.isSupported && !agentMode {
+                ARView(delegate: viewModel)
+            }
             FaceShapedProgressIndicator(progress: viewModel.captureProgress)
             VStack(spacing: 24) {
                 Spacer()
