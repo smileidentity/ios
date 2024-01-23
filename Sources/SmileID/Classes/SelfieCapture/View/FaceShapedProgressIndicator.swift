@@ -22,4 +22,3 @@ struct FaceShapedProgressIndicator: View {
             )
     }
 }
-

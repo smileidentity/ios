@@ -82,7 +82,7 @@ class HomeViewModel: ObservableObject,
             resultText: jobStatusResponse.result?.resultText
         )
     }
-    
+
     func didSucceed(
         enhancedKycResponse: EnhancedKycResponse
     ) {

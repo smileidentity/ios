@@ -75,7 +75,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             self.step = .selfieCapture
         }
     }
-    
+
     func acknowledgeInstructions() {
         self.acknowledgedInstructions = true
     }
@@ -87,7 +87,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             self.step = .processing(.error)
         }
     }
-    
+
     func onDocumentBackSkip() {
         if selfieFile == nil {
             DispatchQueue.main.async {
@@ -212,12 +212,10 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
         livenessFiles = livenessImages.compactMap { try? Data(contentsOf: $0) }
         submitJob()
     }
-    
+
     func didError(error: Error) {
         onError(error: SmileIDError.unknown("Error capturing selfie"))
     }
-    
-    
 }
 
 internal class OrchestratedDocumentVerificationViewModel:
@@ -240,7 +238,8 @@ internal class OrchestratedDocumentVerificationViewModel:
     }
 }
 
-internal class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
+internal class OrchestratedEnhancedDocumentVerificationViewModel: 
+    IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
             delegate.didSucceed(

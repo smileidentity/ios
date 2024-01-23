@@ -31,6 +31,7 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     var previousHeadYaw = Double.infinity
     var isSmiling = false
     var isReceivingSmilingSignalFromARKit: Bool {
+        // swiftlint:disable implicit_getter (false positive)
         get { ARFaceTrackingConfiguration.isSupported && !useBackCamera }
     }
     var selfieImage: URL?
@@ -69,6 +70,7 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             .sink(receiveValue: analyzeImage)
     }
 
+    // swiftlint:disable cyclomatic_complexity
     func analyzeImage(image: CVImageBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
         if !shouldAnalyzeImages || elapsedtime < intraImageMinDelay {

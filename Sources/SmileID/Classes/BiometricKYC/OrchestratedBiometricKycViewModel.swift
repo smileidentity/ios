@@ -22,7 +22,13 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - UI Properties
     @Published @MainActor private (set) var step: BiometricKycStep = .selfie
 
-    init(userId: String, jobId: String, allowNewEnroll: Bool, idInfo: IdInfo, extraPartnerParams: [String: String] = [:]) {
+    init(
+        userId: String,
+        jobId: String,
+        allowNewEnroll: Bool,
+        idInfo: IdInfo,
+        extraPartnerParams: [String: String] = [:]
+    ) {
         self.userId = userId
         self.jobId = jobId
         self.allowNewEnroll = allowNewEnroll

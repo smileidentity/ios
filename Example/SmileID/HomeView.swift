@@ -72,7 +72,7 @@ struct HomeView: View {
                             content: {
                                 EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                             }
-                        ),
+                        )
                     ].map { AnyView($0) }
                 )
 
