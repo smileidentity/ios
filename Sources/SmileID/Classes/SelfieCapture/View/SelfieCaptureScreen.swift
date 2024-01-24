@@ -2,6 +2,7 @@ import ARKit
 import Foundation
 import SwiftUI
 
+
 /// The actual selfie capture screen, which shows the camera preview and the progress indicator
 public struct SelfieCaptureScreen: View {
     let allowAgentMode: Bool
