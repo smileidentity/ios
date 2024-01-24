@@ -1,4 +1,4 @@
-## 10.0.7 (unreleased)
+## 10.0.8 (unreleased)
 
 ### Added
 
@@ -6,9 +6,17 @@
 
 ### Changed
 
-### Removed
-## 10.0.6 
+## 10.0.7
 
+### Added
+- Exposed individual components as Swift UI Components
+
+### Fixed
+
+### Changed
+
+### Removed
+## 10.0.6
 
 ### Fixed
 - Allow agent mode in biometric kyc

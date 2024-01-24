@@ -8,7 +8,7 @@ import SwiftUI
 public struct SelfieCaptureInstructionsScreen: View {
     let showAttribution: Bool
     let onInstructionsAcknowledged: () -> Void
-    
+
     public var body: some View {
         VStack {
             ScrollView {
