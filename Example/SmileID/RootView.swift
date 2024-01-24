@@ -10,7 +10,6 @@ struct RootView: View {
     @State private var showSuccess = false
     @State private var partnerId = ""
 
-
     init() {
         UITabBar.appearance().barTintColor = UIColor(SmileID.theme.backgroundLight)
         UITabBar.appearance().tintColor = UIColor(SmileID.theme.accent)
@@ -57,7 +56,7 @@ struct RootView: View {
                     .preferredColorScheme(.light)
 
         } else {
-            OnboardingScreen(showSuccess: $showSuccess)
+            WelcomeScreen(showSuccess: $showSuccess)
         }
     }
 }

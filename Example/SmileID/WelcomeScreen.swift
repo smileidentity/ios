@@ -1,13 +1,12 @@
 import SmileID
 import SwiftUI
 
-struct OnboardingScreen: View {
+struct WelcomeScreen: View {
     @State private var showManualEntrySheet = false
     @State private var showQrCodeScanner = false
     @State private var errorMessage: String?
     @Binding var showSuccess: Bool
-    @State private var partnerId = ""
-
+    @State private var partnerId: String?
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -45,7 +44,7 @@ struct OnboardingScreen: View {
                         HStack {
                             Image(systemName: "qrcode")
                                     .foregroundColor(SmileID.theme.onDark)
-                            Text("Scan Configuration QR Code")
+                            Text("Scan Configuration QR")
                                     .font(SmileID.theme.button)
                         }
                                 .padding()
@@ -62,7 +61,7 @@ struct OnboardingScreen: View {
             Button(
                     action: { showManualEntrySheet = true },
                     label: {
-                        Text("Enter Configuration Manually")
+                        Text("Add Config Manually")
                                 .padding()
                                 .font(SmileID.theme.button)
                                 .frame(maxWidth: .infinity)
@@ -82,12 +81,11 @@ struct OnboardingScreen: View {
                 .background(SmileID.theme.backgroundLightest.ignoresSafeArea())
                 .sheet(isPresented: $showManualEntrySheet) {
                     let content = SmileConfigEntryView(errorMessage: errorMessage) { smileConfig in
-                        let updateResult = updateSmileConfig(smileConfig)
-                        partnerId = updateResult.1
-                        if updateResult.0 {
+                        let response = updateSmileConfig(smileConfig)
+                        if let smilePartnerId = response {
+                            partnerId = smilePartnerId
                             showSuccess = true
                             showManualEntrySheet = false
-
                         } else {
                             errorMessage = "Invalid Smile Config"
                         }
@@ -108,9 +106,10 @@ struct OnboardingScreen: View {
                     ) { response in
                         if case let .success(result) = response {
                             let configJson = result.string
-                            let updateResult = updateSmileConfig(configJson)
-                            partnerId = updateResult.1
-                            if updateResult.0 {
+                            let response = updateSmileConfig(configJson)
+
+                            if let smilePartnerId = response {
+                                partnerId = smilePartnerId
                                 showSuccess = true
                                 showQrCodeScanner = false
                             }
@@ -126,7 +125,7 @@ struct OnboardingScreen: View {
                                                 AlertView(
                                                         icon: Image(systemName: "checkmark.circle.fill"),
                                                         title: "Configuration Added",
-                                                        description: "Welcome partner \(partnerId), you can now proceed to the home screen of the Sample App",
+                                                        description: "Welcome partner \(String(describing: partnerId)), you can now proceed to the home screen of the Sample App",
                                                         buttonTitle: "Continue",
                                                         onClick: {
                                                             showSuccess = false
@@ -140,13 +139,13 @@ struct OnboardingScreen: View {
     }
 }
 
-private func updateSmileConfig(_ configJson: String) -> (Bool, String) {
+private func updateSmileConfig(_ configJson: String) -> String? {
     do {
         let config = try JSONDecoder().decode(Config.self, from: configJson.data(using: .utf8)!)
         UserDefaults.standard.set(configJson, forKey: "smileConfig")
-        return (true, config.partnerId)
+        return config.partnerId
     } catch {
         print("Error decoding new config: \(error)")
-        return (false, "")
+        return nil
     }
 }

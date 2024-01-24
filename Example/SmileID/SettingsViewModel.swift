@@ -13,7 +13,7 @@ class SettingsViewModel: ObservableObject {
 
     func updateSmileConfig(_ configJson: String) {
         do {
-            let _ = try jsonDecoder.decode(Config.self, from: configJson.data(using: .utf8)!)
+            _ = try jsonDecoder.decode(Config.self, from: configJson.data(using: .utf8)!)
             UserDefaults.standard.set(configJson, forKey: "smileConfig")
             DispatchQueue.main.async {
                 self.errorMessage = nil
