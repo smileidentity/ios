@@ -8,8 +8,7 @@ enum DocumentCaptureFlow: Equatable {
     case processing(ProcessingState)
 }
 
-internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject,
-    SelfieImageCaptureDelegate {
+internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject {
     // Input properties
     internal let userId: String
     internal let jobId: String
@@ -76,7 +75,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             self.step = .selfieCapture
         }
     }
-    
+
     func acknowledgeInstructions() {
         self.acknowledgedInstructions = true
     }
@@ -88,7 +87,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             self.step = .processing(.error)
         }
     }
-    
+
     func onDocumentBackSkip() {
         if selfieFile == nil {
             DispatchQueue.main.async {
@@ -97,13 +96,6 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         } else {
             submitJob()
         }
-    }
-
-    /// On Selfie Capture complete
-    func didCapture(selfie: Data, livenessImages: [Data]) {
-        selfieFile = selfie
-        livenessFiles = livenessImages
-        submitJob()
     }
 
     func onFinished(delegate: T) {
@@ -214,6 +206,19 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     }
 }
 
+extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate {
+    func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: SmartSelfieJobStatusResponse?) {
+        selfieFile = try? Data(contentsOf: selfieImage)
+        livenessFiles = livenessImages.compactMap { try? Data(contentsOf: $0) }
+        submitJob()
+    }
+
+    func didError(error: Error) {
+        onError(error: SmileIDError.unknown("Error capturing selfie"))
+    }
+}
+
+// swiftlint:disable colon
 internal class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
@@ -234,7 +239,10 @@ internal class OrchestratedDocumentVerificationViewModel:
     }
 }
 
-internal class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
+// swiftlint:disable colon
+internal class OrchestratedEnhancedDocumentVerificationViewModel:
+    // swiftlint:disable line_length
+    IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
             delegate.didSucceed(

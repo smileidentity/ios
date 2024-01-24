@@ -42,15 +42,12 @@
 		6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */; };
 		6AC98C0E9305B4B3EB66ED35 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC980584C522B17A099E098 /* Util.swift */; };
 		6AC98F5682012E19C815AE70 /* DocumentSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */; };
-		915748532AA09A1F004A9F23 /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915748522AA09A1F004A9F23 /* RouterTests.swift */; };
 		916E487B2A4057B400C589FE /* smile_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 916E487A2A4057B400C589FE /* smile_config.json */; };
 		918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */; };
 		918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E12A52E36A00D6FB7F /* XCTestExtension.swift */; };
 		918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */; };
 		918321ED2A52E36A00D6FB7F /* BaseTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E42A52E36A00D6FB7F /* BaseTestCase.swift */; };
 		918321EE2A52E36A00D6FB7F /* NetworkingMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */; };
-		918321EF2A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E82A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift */; };
-		918321F02A52E36A00D6FB7F /* FaceDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E92A52E36A00D6FB7F /* FaceDetectorTests.swift */; };
 		91CB21A52AC10C61005AEBF5 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */; };
 		91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC32AB481FE00A8D36B /* PollingTests.swift */; };
 		91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */; };
@@ -111,15 +108,12 @@
 		6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentSelectorViewModel.swift; sourceTree = "<group>"; };
 		6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		915748522AA09A1F004A9F23 /* RouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
 		916E487A2A4057B400C589FE /* smile_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = smile_config.json; sourceTree = "<group>"; };
 		918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionRestServiceClientTests.swift; sourceTree = "<group>"; };
 		918321E12A52E36A00D6FB7F /* XCTestExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XCTestExtension.swift; path = ../../Tests/XCTestExtension.swift; sourceTree = "<group>"; };
 		918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyContainerTests.swift; sourceTree = "<group>"; };
 		918321E42A52E36A00D6FB7F /* BaseTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTestCase.swift; sourceTree = "<group>"; };
 		918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingMocks.swift; sourceTree = "<group>"; };
-		918321E82A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfieCaptureViewModelTests.swift; sourceTree = "<group>"; };
-		918321E92A52E36A00D6FB7F /* FaceDetectorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceDetectorTests.swift; sourceTree = "<group>"; };
 		91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		91D9FBC32AB481FE00A8D36B /* PollingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingTests.swift; sourceTree = "<group>"; };
 		91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateSignatureTests.swift; sourceTree = "<group>"; };
@@ -231,11 +225,9 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				915748512AA099FB004A9F23 /* Router */,
 				918321E22A52E36A00D6FB7F /* DependencyContainer */,
 				918321E52A52E36A00D6FB7F /* Mocks */,
 				918321DF2A52E36A00D6FB7F /* Networking */,
-				918321E72A52E36A00D6FB7F /* SmartSelfie */,
 				918321E12A52E36A00D6FB7F /* XCTestExtension.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 				585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */,
@@ -300,14 +292,6 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		915748512AA099FB004A9F23 /* Router */ = {
-			isa = PBXGroup;
-			children = (
-				915748522AA09A1F004A9F23 /* RouterTests.swift */,
-			);
-			path = Router;
-			sourceTree = "<group>";
-		};
 		918321DF2A52E36A00D6FB7F /* Networking */ = {
 			isa = PBXGroup;
 			children = (
@@ -337,16 +321,6 @@
 			);
 			name = Mocks;
 			path = ../../Tests/Mocks;
-			sourceTree = "<group>";
-		};
-		918321E72A52E36A00D6FB7F /* SmartSelfie */ = {
-			isa = PBXGroup;
-			children = (
-				918321E82A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift */,
-				918321E92A52E36A00D6FB7F /* FaceDetectorTests.swift */,
-			);
-			name = SmartSelfie;
-			path = ../../Tests/SmartSelfie;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -588,15 +562,12 @@
 			files = (
 				918321EE2A52E36A00D6FB7F /* NetworkingMocks.swift in Sources */,
 				91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */,
-				918321F02A52E36A00D6FB7F /* FaceDetectorTests.swift in Sources */,
 				918321ED2A52E36A00D6FB7F /* BaseTestCase.swift in Sources */,
 				918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */,
-				918321EF2A52E36A00D6FB7F /* SelfieCaptureViewModelTests.swift in Sources */,
 				91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */,
 				585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */,
 				58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */,
 				918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */,
-				915748532AA09A1F004A9F23 /* RouterTests.swift in Sources */,
 				918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -737,9 +708,11 @@
 			baseConfigurationReference = 67420F8D15457A4FC46AFB84 /* Pods-SmileID_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 29;
-				DEVELOPMENT_TEAM = 99P7YGX9Q6;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 31;
+				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileID/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Smile ID";
@@ -765,7 +738,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 31;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
 				INFOPLIST_FILE = SmileID/Info.plist;
@@ -789,12 +762,11 @@
 			baseConfigurationReference = F7E93DC564F4962974BFA3CB /* Pods-SmileID_Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -810,7 +782,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
@@ -823,12 +794,11 @@
 			baseConfigurationReference = FE4071A6FC696DDB1E5382FA /* Pods-SmileID_Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -840,7 +810,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Smile ID.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Smile ID";

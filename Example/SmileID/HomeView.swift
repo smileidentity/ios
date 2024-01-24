@@ -72,7 +72,7 @@ struct HomeView: View {
                             content: {
                                 EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                             }
-                        ),
+                        )
                     ].map { AnyView($0) }
                 )
 
@@ -104,14 +104,14 @@ struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
         _ userId: String,
         _ selfieFile: URL,
         _ livenessImages: [URL],
-        _ jobStatusResponse: SmartSelfieJobStatusResponse
+        _ jobStatusResponse: SmartSelfieJobStatusResponse?
     ) -> Void
     let onError: (Error) -> Void
 
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        jobStatusResponse: SmartSelfieJobStatusResponse
+        jobStatusResponse: SmartSelfieJobStatusResponse?
     ) {
         onEnrollmentSuccess(userId, selfieImage, livenessImages, jobStatusResponse)
     }
