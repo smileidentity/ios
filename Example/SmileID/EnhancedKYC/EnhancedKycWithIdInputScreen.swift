@@ -6,7 +6,7 @@ struct EnhancedKycWithIdInputScreen: View {
 
     @State private var selectedCountry: CountryInfo?
     @ObservedObject private var viewModel = EnhancedKycWithIdInputScreenViewModel()
-    
+
     var body: some View {
         switch viewModel.step {
         case .loading(let messageKey):
@@ -61,7 +61,7 @@ struct EnhancedKycWithIdInputScreen: View {
                 requiredFields: requiredFields,
                 onResult: viewModel.onIdFieldsEntered
             ).frame(maxWidth: .infinity)
-        case .processing(let state):  
+        case .processing(let state):
             ProcessingScreen(
                 processingState: state,
                 inProgressTitle: "Processing Enhanced KYC…",
