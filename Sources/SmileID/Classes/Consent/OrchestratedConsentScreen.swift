@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Responsible for showing the consent screen and the consent denied (try again) screens.
-struct OrchestratedConsentScreen: View {
+public struct OrchestratedConsentScreen: View {
     let partnerIcon: UIImage
     let partnerName: String
     let productName: String
@@ -11,7 +11,7 @@ struct OrchestratedConsentScreen: View {
     let onConsentDenied: () -> Void
     @State private var showTryAgain = false
 
-    var body: some View {
+    public var body: some View {
         if showTryAgain {
             ConsentDeniedScreen(
                 showAttribution: showAttribution,
@@ -46,7 +46,8 @@ private let consentInfos = [(
     "Consent.DocumentInfoSubtitle"
 )]
 
-private struct ConsentScreen: View {
+/// Consent screen for SmileID
+public struct ConsentScreen: View {
     let partnerIcon: UIImage
     let partnerName: String
     let productName: String
@@ -55,7 +56,7 @@ private struct ConsentScreen: View {
     let onConsentGranted: () -> Void
     let onCancel: () -> Void
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 16) {
             Image(uiImage: partnerIcon)
                 .resizable()
@@ -152,12 +153,13 @@ private struct ConsentScreen: View {
     }
 }
 
-private struct ConsentDeniedScreen: View {
+/// Asks user to confirm that they do actually want to deny consent
+public struct ConsentDeniedScreen: View {
     let showAttribution: Bool
     let onGoBack: () -> Void
     let onCancel: () -> Void
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 8) {
             Image(uiImage: SmileIDResourcesHelper.ConsentDenied)
                 .font(.system(size: 100))

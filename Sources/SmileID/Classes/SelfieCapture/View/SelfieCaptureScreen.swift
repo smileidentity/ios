@@ -2,16 +2,17 @@ import ARKit
 import Foundation
 import SwiftUI
 
-struct SelfieCaptureScreen: View {
+/// The actual selfie capture screen, which shows the camera preview and the progress indicator
+public struct SelfieCaptureScreen: View {
     let allowAgentMode: Bool
     @ObservedObject var viewModel: SelfieViewModel
 
-    init(allowAgentMode: Bool, viewModel: SelfieViewModel) {
+    public init(allowAgentMode: Bool, viewModel: SelfieViewModel) {
         self.allowAgentMode = allowAgentMode
         self.viewModel = viewModel
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             let agentMode = viewModel.useBackCamera
             if ARFaceTrackingConfiguration.isSupported && !agentMode {

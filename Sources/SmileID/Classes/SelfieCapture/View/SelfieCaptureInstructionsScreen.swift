@@ -1,10 +1,15 @@
 import SwiftUI
 
-struct SelfieCaptureInstructionsScreen: View {
+/// Displays instructions to the user for how to take a good quality selfie
+///
+/// - Parameters:
+///    - showAttribution: Whether or not to show the SmileID attribution
+///    - onInstructionsAcknowledged: The callback to invoke when the user acknowledges the instructions
+public struct SelfieCaptureInstructionsScreen: View {
     let showAttribution: Bool
     let onInstructionsAcknowledged: () -> Void
     
-    var body: some View {
+    public var body: some View {
         VStack {
             ScrollView {
                 VStack {
