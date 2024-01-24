@@ -8,7 +8,7 @@ struct RootView: View {
     )
     private let jsonDecoder = JSONDecoder()
     @State private var showSuccess = false
-    @State private var partnerId = ""
+    @State private var partnerId: String?
 
     init() {
         UITabBar.appearance().barTintColor = UIColor(SmileID.theme.backgroundLight)
