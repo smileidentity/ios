@@ -12,6 +12,7 @@
 		1E60ED382A29C306002695FF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED332A29C306002695FF /* Constants.swift */; };
 		1E60ED3A2A29C306002695FF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED352A29C306002695FF /* AppDelegate.swift */; };
 		1E60ED3B2A29C306002695FF /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED362A29C306002695FF /* CopyableLabel.swift */; };
+		1EA026BC2B63F3390039B08D /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */; };
 		1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECAE3862A2F69BC00653FCA /* ToastView.swift */; };
 		1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F602A2F28590020BEFB /* HomeViewModel.swift */; };
 		1ED53F6B2A2F28590020BEFB /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F612A2F28590020BEFB /* ProductCell.swift */; };
@@ -70,6 +71,7 @@
 		1E60ED332A29C306002695FF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1E60ED352A29C306002695FF /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E60ED362A29C306002695FF /* CopyableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
+		1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		1ECAE3862A2F69BC00653FCA /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		1ED53F602A2F28590020BEFB /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		1ED53F612A2F28590020BEFB /* ProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				58C5F1D62B05922100A6080C /* BiometricKYC */,
 				91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */,
 				1ECAE3862A2F69BC00653FCA /* ToastView.swift */,
+				1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */,
 				1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */,
 				1ED53F692A2F28590020BEFB /* HomeView.swift */,
 				1ED53F602A2F28590020BEFB /* HomeViewModel.swift */,
@@ -546,6 +549,7 @@
 				1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */,
 				1ED53F722A2F28590020BEFB /* SmileEnvironmentToggleButton.swift in Sources */,
 				1ED53F6C2A2F28590020BEFB /* RootView.swift in Sources */,
+				1EA026BC2B63F3390039B08D /* NetworkMonitor.swift in Sources */,
 				1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */,
 				1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */,
 				1E60ED372A29C306002695FF /* HomeViewController.swift in Sources */,
