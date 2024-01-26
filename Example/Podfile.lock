@@ -1,6 +1,6 @@
 PODS:
   - netfox (1.21.0)
-  - SmileID (10.0.6):
+  - SmileID (10.0.7):
     - Zip (~> 2.1.0)
   - SwiftLint (0.54.0)
   - Zip (2.1.2)
@@ -22,7 +22,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
-  SmileID: 2d013156c65093640ccbce84af8218d47c11ac61
+  SmileID: 25aca0c4b5e47813030f5b22e8ae5056ba6f2317
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
