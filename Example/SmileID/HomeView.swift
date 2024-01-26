@@ -6,6 +6,7 @@ struct HomeView: View {
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @State private var smartSelfieEnrollmentUserId: String = ""
     @ObservedObject var viewModel: HomeViewModel
+    @ObservedObject var networkMonitor = NetworkMonitor.shared
 
     init(config: Config) {
         viewModel = HomeViewModel(config: config)
@@ -25,6 +26,9 @@ struct HomeView: View {
                             image: "userauth",
                             name: "SmartSelfie™ Enrollment",
                             onClick: { smartSelfieEnrollmentUserId = generateUserId() },
+                            onNoConnection: {
+                                showNetworkError()
+                            },
                             content: {
                                 SmileID.smartSelfieEnrollmentScreen(
                                     userId: smartSelfieEnrollmentUserId,
@@ -40,6 +44,9 @@ struct HomeView: View {
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Authentication",
+                            onNoConnection: {
+                                showNetworkError()
+                            },
                             content: {
                                 SmartSelfieAuthWithUserIdEntry(
                                     initialUserId: smartSelfieEnrollmentUserId,
@@ -50,6 +57,9 @@ struct HomeView: View {
                         ProductCell(
                             image: "biometric",
                             name: "Enhanced KYC",
+                            onNoConnection: {
+                                showNetworkError()
+                            },
                             content: {
                                 EnhancedKycWithIdInputScreen(delegate: viewModel)
                             }
@@ -57,6 +67,9 @@ struct HomeView: View {
                         ProductCell(
                             image: "biometric",
                             name: "Biometric KYC",
+                            onNoConnection: {
+                                showNetworkError()
+                            },
                             content: {
                                 BiometricKycWithIdInputScreen(delegate: viewModel)
                             }
@@ -64,15 +77,21 @@ struct HomeView: View {
                         ProductCell(
                             image: "document",
                             name: "\nDocument Verification",
+                            onNoConnection: {
+                                showNetworkError()
+                            },
                             content: { DocumentVerificationWithSelector(delegate: viewModel) }
                         ),
                         ProductCell(
                             image: "document",
                             name: "Enhanced Document Verification",
+                            onNoConnection: {
+                                showNetworkError()
+                            },
                             content: {
                                 EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                             }
-                        )
+                        ),
                     ].map { AnyView($0) }
                 )
 
@@ -80,17 +99,24 @@ struct HomeView: View {
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }
-                .toast(isPresented: $viewModel.showToast) {
-                    Text(viewModel.toastMessage)
-                        .font(SmileID.theme.body)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                }
-                .padding()
-                .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
-                .navigationBarItems(trailing: SmileEnvironmentToggleButton())
-                .background(SmileID.theme.backgroundLight.ignoresSafeArea())
+            .toast(isPresented: $viewModel.showToast) {
+                Text(viewModel.toastMessage)
+                    .font(SmileID.theme.body)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
+            .padding()
+            .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
+            .navigationBarItems(trailing: SmileEnvironmentToggleButton())
+            .background(SmileID.theme.backgroundLight.ignoresSafeArea())
         }
+    }
+}
+
+extension HomeView {
+    func showNetworkError() {
+        viewModel.toastMessage = "No internet connection"
+        viewModel.showToast = true
     }
 }
 
@@ -127,7 +153,7 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
     @State private var userId: String?
 
     var body: some View {
-        if let userId = userId {
+        if let userId {
             SmileID.smartSelfieAuthenticationScreen(
                 userId: userId,
                 allowAgentMode: true,
@@ -148,9 +174,10 @@ private struct DocumentVerificationWithSelector: View {
     let delegate: DocumentVerificationResultDelegate
 
     var body: some View {
-        if let countryCode = countryCode,
-           let documentType = documentType,
-           let captureBothSides = captureBothSides {
+        if let countryCode,
+           let documentType,
+           let captureBothSides
+        {
             SmileID.documentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
@@ -177,9 +204,10 @@ private struct EnhancedDocumentVerificationWithSelector: View {
     let delegate: EnhancedDocumentVerificationResultDelegate
 
     var body: some View {
-        if let countryCode = countryCode,
-           let documentType = documentType,
-           let captureBothSides = captureBothSides {
+        if let countryCode,
+           let documentType,
+           let captureBothSides
+        {
             SmileID.enhancedDocumentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
@@ -211,9 +239,9 @@ private struct MyVerticalGrid: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
                     let numRows = (items.count + maxColumns - 1) / maxColumns
-                    ForEach(0..<numRows) { rowIndex in
+                    ForEach(0 ..< numRows) { rowIndex in
                         HStack(spacing: 16) {
-                            ForEach(0..<maxColumns) { columnIndex in
+                            ForEach(0 ..< maxColumns) { columnIndex in
                                 let itemIndex = rowIndex * maxColumns + columnIndex
                                 let width = geo.size.width / CGFloat(maxColumns)
                                 if itemIndex < items.count {
@@ -227,7 +255,7 @@ private struct MyVerticalGrid: View {
                     }
                 }
             }
-                .frame(width: geo.size.width, height: geo.size.height)
+            .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 }
