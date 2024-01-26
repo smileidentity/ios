@@ -746,7 +746,7 @@
 				PRODUCT_NAME = "Smile ID";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
-				SENTRY_DSN = "";
+				SENTRY_DSN = "$(SENTRY_DSN)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 			};
@@ -775,7 +775,7 @@
 				PRODUCT_NAME = "Smile ID";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
-				SENTRY_DSN = "";
+				SENTRY_DSN = "$(SENTRY_DSN)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 			};
