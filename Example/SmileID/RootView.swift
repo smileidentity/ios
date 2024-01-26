@@ -12,11 +12,13 @@ struct RootView: View {
     init() {
         UITabBar.appearance().barTintColor = UIColor(SmileID.theme.backgroundLight)
         UITabBar.appearance().tintColor = UIColor(SmileID.theme.accent)
-        SentrySDK.start { options in
-            options.dsn = "https://d81c446178994daaa52af05a8b3072b9@o1154186.ingest.sentry.io/4504162971353088"
-            options.debug = true
-            options.tracesSampleRate = 1.0
-            options.profilesSampleRate = 1.0
+        if let dsn = Bundle.main.object(forInfoDictionaryKey: "SentryDSN") as? String {
+            SentrySDK.start { options in
+                options.dsn = dsn
+                options.debug = true
+                options.tracesSampleRate = 1.0
+                options.profilesSampleRate = 1.0
+            }
         }
     }
 
