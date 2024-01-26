@@ -43,7 +43,6 @@
 		6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */; };
 		6AC98C0E9305B4B3EB66ED35 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC980584C522B17A099E098 /* Util.swift */; };
 		6AC98F5682012E19C815AE70 /* DocumentSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */; };
-		916E487B2A4057B400C589FE /* smile_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 916E487A2A4057B400C589FE /* smile_config.json */; };
 		918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */; };
 		918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E12A52E36A00D6FB7F /* XCTestExtension.swift */; };
 		918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */; };
@@ -110,7 +109,6 @@
 		6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentSelectorViewModel.swift; sourceTree = "<group>"; };
 		6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		916E487A2A4057B400C589FE /* smile_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = smile_config.json; sourceTree = "<group>"; };
 		918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionRestServiceClientTests.swift; sourceTree = "<group>"; };
 		918321E12A52E36A00D6FB7F /* XCTestExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XCTestExtension.swift; path = ../../Tests/XCTestExtension.swift; sourceTree = "<group>"; };
 		918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyContainerTests.swift; sourceTree = "<group>"; };
@@ -194,7 +192,6 @@
 				1ED53F642A2F28590020BEFB /* ResourcesView.swift */,
 				1ED53F632A2F28590020BEFB /* SmileTextField.swift */,
 				1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */,
-				916E487A2A4057B400C589FE /* smile_config.json */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				1E60ED352A29C306002695FF /* AppDelegate.swift */,
 				1E60ED332A29C306002695FF /* Constants.swift */,
@@ -421,7 +418,6 @@
 			files = (
 				1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
-				916E487B2A4057B400C589FE /* smile_config.json in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
