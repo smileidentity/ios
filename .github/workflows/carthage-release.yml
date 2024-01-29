@@ -16,6 +16,12 @@ jobs:
       with:
         xcode-version: latest
 
+    - name: Install xcodeproj
+      run: sudo gem install xcodeproj
+
+    - name: Update Compile Sources
+      run: ruby ./Scripts/update_compile_sources.rb
+
     - name: Build Framework
       run: |
         chmod +x ./Scripts/build_frameworks.sh
@@ -23,7 +29,6 @@ jobs:
     
     - name: Archive Framework
       run: zip -r ./SmileID.xcframework.zip ./Frameworks/SmileID.xcframework
-
 
     - name: Upload Framework to Release
       uses: actions/upload-release-asset@v1
