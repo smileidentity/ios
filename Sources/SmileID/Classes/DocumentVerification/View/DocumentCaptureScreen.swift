@@ -12,7 +12,7 @@ struct DocumentCaptureScreen: View {
     let onConfirm: (Data) -> Void
     let onError: (Error) -> Void
     let onSkip: () -> Void
-    
+
     @ObservedObject private var viewModel: DocumentCaptureViewModel
 
     init(
@@ -73,7 +73,8 @@ struct DocumentCaptureScreen: View {
                 retakeButtonText: SmileIDResourcesHelper.localizedString(
                     for: "Document.Confirmation.Decline"
                 ),
-                onRetake: viewModel.onRetry
+                onRetake: viewModel.onRetry,
+                scaleFactor: 1.0
             )
         } else {
             CaptureScreenContent(

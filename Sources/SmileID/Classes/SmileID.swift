@@ -26,7 +26,6 @@ public class SmileID {
     internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
-    @ObservedObject internal static var router = Router<NavigationDestination>()
 
     /// This method initializes SmileID. Invoke this method once in your application lifecylce
     /// before calling any other SmileID methods.
@@ -127,19 +126,18 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        let viewModel = SelfieCaptureViewModel(
+        OrchestratedSelfieCaptureScreen(
             userId: userId,
             jobId: jobId,
             isEnroll: true,
             allowNewEnroll: allowNewEnroll,
+            allowAgentMode: allowAgentMode,
+            showAttribution: showAttribution,
+            showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            allowsAgentMode: allowAgentMode,
-            showAttribution: showAttribution
+            skipApiSubmission: false,
+            onResult: delegate
         )
-        let destination: NavigationDestination = showInstructions ?
-            .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
-            .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
-        return SmileView(initialDestination: destination).environmentObject(router)
     }
 
     /// Perform a SmartSelfie™ Authentication
@@ -172,19 +170,18 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        let viewModel = SelfieCaptureViewModel(
+        OrchestratedSelfieCaptureScreen(
             userId: userId,
             jobId: jobId,
             isEnroll: false,
             allowNewEnroll: allowNewEnroll,
+            allowAgentMode: allowAgentMode,
+            showAttribution: showAttribution,
+            showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            allowsAgentMode: allowAgentMode,
-            showAttribution: showAttribution
+            skipApiSubmission: false,
+            onResult: delegate
         )
-        let destination: NavigationDestination = showInstructions ?
-            .selfieInstructionScreen(selfieCaptureViewModel: viewModel, delegate: delegate) :
-            .selfieCaptureScreen(selfieCaptureViewModel: viewModel, delegate: delegate)
-        return SmileView(initialDestination: destination).environmentObject(router)
     }
 
     /// Perform a Document Verification
@@ -245,7 +242,7 @@ public class SmileID {
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
             onResult: delegate
-        ).environmentObject(router)
+        )
     }
 
     /// Perform an Enhanced Document Verification
@@ -306,7 +303,7 @@ public class SmileID {
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
             onResult: delegate
-        ).environmentObject(router)
+        )
     }
 
     public class func consentScreen(

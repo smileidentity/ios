@@ -4,9 +4,9 @@ import AVFoundation
 
 class PreviewView: UIViewController {
     var previewLayer: AVCaptureVideoPreviewLayer?
-    private weak var cameraManager: CameraManageable?
+    private weak var cameraManager: CameraManager?
 
-    init(cameraManager: CameraManageable) {
+    init(cameraManager: CameraManager) {
         self.cameraManager = cameraManager
         super.init(nibName: nil, bundle: nil)
     }
@@ -28,21 +28,9 @@ class PreviewView: UIViewController {
         view.layer.addSublayer(previewLayer!)
     }
 
-}
-
-extension PreviewView {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         previewLayer?.frame = view.bounds
-    }
-}
-
-extension PreviewView: FaceDetectorDelegate {
-    func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
-      guard let previewLayer = previewLayer else {
-          return .zero
-      }
-        return previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
     }
 }
 

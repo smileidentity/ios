@@ -30,7 +30,7 @@ class MockSmileIdentityService: SmileIDServiceable {
             jobId: "jobid",
             userId: "userid",
             jobType: .enhancedKyc,
-            extras: ["key1" : "value1"]
+            extras: ["key1": "value1"]
         )
         let response = AuthenticationResponse(
             success: true,
@@ -125,7 +125,6 @@ class MockSmileIdentityService: SmileIDServiceable {
                 .eraseToAnyPublisher()
         }
     }
-
 
     func getJobStatus<T: JobResult>(
         request _: JobStatusRequest
@@ -266,7 +265,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        jobStatusResponse _: JobStatusResponse<SmartSelfieJobResult>
+        jobStatusResponse _: JobStatusResponse<SmartSelfieJobResult>?
     ) {
         successExpectation?.fulfill()
     }

@@ -2,18 +2,7 @@ import Foundation
 import AVFoundation
 import SwiftUI
 
-protocol CameraManageable: AnyObject {
-    func switchCamera(to position: AVCaptureDevice.Position)
-    func capturePhoto()
-    func pauseSession()
-    func resumeSession()
-    var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher {get}
-    var capturedImagePublisher: Published<Data?>.Publisher {get}
-    var session: AVCaptureSession { get }
-    var cameraPosition: AVCaptureDevice.Position? {get}
-}
-
-class CameraManager: NSObject, ObservableObject, CameraManageable {
+class CameraManager: NSObject, ObservableObject {
 
     enum Orientation {
         case portrait
@@ -46,6 +35,7 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
         (session.inputs.first as? AVCaptureDeviceInput)?.device.position
     }
 
+    // Used to queue and then resume tasks while waiting for Camera permissions
     private let sessionQueue = DispatchQueue(label: "com.smileidentity.ios")
     private let videoOutput = AVCaptureVideoDataOutput()
     private let photoOutput = AVCapturePhotoOutput()
@@ -55,21 +45,14 @@ class CameraManager: NSObject, ObservableObject, CameraManageable {
     init(orientation: Orientation) {
         self.orientation = orientation
         super.init()
-        set(self, queue: videoOutputQueue)
+        sessionQueue.async {
+            self.videoOutput.setSampleBufferDelegate(self, queue: self.videoOutputQueue)
+        }
     }
 
     private func set(error: CameraError?) {
         DispatchQueue.main.async {
             self.error = error
-        }
-    }
-
-    private func set(
-        _ delegate: AVCaptureVideoDataOutputSampleBufferDelegate,
-        queue: DispatchQueue
-    ) {
-        sessionQueue.async {
-            self.videoOutput.setSampleBufferDelegate(delegate, queue: queue)
         }
     }
 
