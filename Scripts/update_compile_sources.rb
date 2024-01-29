@@ -1,6 +1,6 @@
 require 'xcodeproj'
 
-project_path = 'SmileID.xcodeproj'
+project_path = '../SmileID.xcodeproj'
 project = Xcodeproj::Project.open(project_path)
 
 target = project.targets.find { |t| t.name == 'SmileIDFramework' }
