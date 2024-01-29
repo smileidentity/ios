@@ -1,4 +1,4 @@
-#we use the Example/SmileID.xcworkspace when
+# We use the Example/SmileID.xcworkspace when
 # updating that it may not update the
 # SmileID.xcodeproj on the root f the project
 require 'xcodeproj'
