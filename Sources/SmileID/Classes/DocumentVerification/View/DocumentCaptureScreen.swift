@@ -1,6 +1,7 @@
 import SwiftUI
 
-struct DocumentCaptureScreen: View {
+/// This handles Instructions + Capture + Confirmation for a single side of a document
+public struct DocumentCaptureScreen: View {
     let showInstructions: Bool
     let showAttribution: Bool
     let allowGallerySelection: Bool
@@ -15,7 +16,7 @@ struct DocumentCaptureScreen: View {
 
     @ObservedObject private var viewModel: DocumentCaptureViewModel
 
-    init(
+    public init(
         showInstructions: Bool,
         showAttribution: Bool,
         allowGallerySelection: Bool,
@@ -42,7 +43,7 @@ struct DocumentCaptureScreen: View {
         viewModel = DocumentCaptureViewModel(knownAspectRatio: knownIdAspectRatio)
     }
 
-    var body: some View {
+    public var body: some View {
         if let captureError = viewModel.captureError {
             let _ = onError(captureError)
         } else if showInstructions && !viewModel.acknowledgedInstructions {

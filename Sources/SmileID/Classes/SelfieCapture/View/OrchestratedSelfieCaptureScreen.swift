@@ -1,6 +1,8 @@
 import Foundation
 import SwiftUI
 
+/// Orchestrates the selfie capture flow - navigates between instructions, requesting permissions,
+/// showing camera view, and displaying processing screen
 public struct OrchestratedSelfieCaptureScreen: View {
     public let allowAgentMode: Bool
     public let showAttribution: Bool

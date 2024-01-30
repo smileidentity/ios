@@ -7,6 +7,26 @@ public enum ProcessingState {
     case error
 }
 
+/// This screen represents a generic Processing state. It has 3 sub-states: In Progress, Success, and
+/// Error. These sub-states are represented by the [processingState] parameter.
+///
+/// - Parameters:
+///   - processingState: The state of the processing.
+///   - inProgressTitle: The title to display when the processing is in progress.
+///   - inProgressSubtitle: The subtitle to display when the processing is in progress.
+///   - inProgressIcon: The icon to display when the processing is in progress.
+///   - successTitle: The title to display when the processing is successful.
+///   - successSubtitle: The subtitle to display when the processing is successful.
+///   - successIcon: The icon to display when the processing is successful.
+///   - errorTitle: The title to display when the processing is unsuccessful.
+///   - errorSubtitle: The subtitle to display when the processing is unsuccessful.
+///   - errorIcon: The icon to display when the processing is unsuccessful.
+///   - continueButtonText: The text to display on the continue button when the processing is successful.
+///   - onContinue: The callback to invoke when the continue button is clicked.
+///   - retryButtonText: The text to display on the retry button when the processing is unsuccessful.
+///   - onRetry: The callback to invoke when the retry button is clicked.
+///   - closeButtonText: The text to display on the close button when the processing is unsuccessful.
+///   - onClose: The callback to invoke when the close button is clicked.
 public struct ProcessingScreen: View {
     public init(
         processingState: ProcessingState,

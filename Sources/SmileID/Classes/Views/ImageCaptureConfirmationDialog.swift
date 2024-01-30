@@ -1,6 +1,17 @@
 import SwiftUI
 
-struct ImageCaptureConfirmationDialog: View {
+/// A dialog that shows a preview of the image captured by the camera and asks the user to confirm
+/// that the image is of acceptable quality.
+///
+/// - Parameters:
+///    - titleText: The title of the dialog
+///    - subtitleText: The subtitle of the dialog
+///    - painter: The image that the user captured and needs to confirm
+///    - confirmButtonText: The text of the button that confirms the image is of acceptable quality
+///    - onConfirm: The callback to invoke when the user confirms the image is of acceptable quality
+///    - retakeButtonText: The text of the button that allows the user to retake the image
+///    -  onRetake: The callback to invoke when the user wants to retake the image
+public struct ImageCaptureConfirmationDialog: View {
     let title: String
     let subtitle: String
     let image: UIImage
@@ -10,7 +21,7 @@ struct ImageCaptureConfirmationDialog: View {
     let onRetake: () -> Void
     let scaleFactor: Double
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 32) {
             VStack(spacing: 16) {
                 Text(title)

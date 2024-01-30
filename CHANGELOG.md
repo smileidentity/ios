@@ -1,14 +1,20 @@
-## 10.0.7 (unreleased)
+## 10.0.8 (unreleased)
 
 ### Added
+- Exposed individual components as Swift UI Components
 
 ### Fixed
 
 ### Changed
 
 ### Removed
-## 10.0.6 
 
+## 10.0.7
+
+### Fixed
+- Improvements to the selfie capture experience
+
+## 10.0.6 
 
 ### Fixed
 - Allow agent mode in biometric kyc
@@ -16,7 +22,6 @@
 ## 10.0.5
 ### Fixed
 - Fixed captureBothSides on iOS being inverted
-
 
 ## 10.0.4
 
