@@ -29,6 +29,9 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		620F1E982B69194900185CD2 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620F1E972B69194900185CD2 /* AlertView.swift */; };
 		620F1E9A2B691ABB00185CD2 /* icsmilelogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 620F1E992B691ABB00185CD2 /* icsmilelogo.png */; };
+		620FFF092B69ABE300016893 /* SmileID in Resources */ = {isa = PBXBuildFile; fileRef = 620FFF082B69ABE300016893 /* SmileID */; };
+		620FFF0B2B69ABF300016893 /* SmileID in Resources */ = {isa = PBXBuildFile; fileRef = 620FFF0A2B69ABF300016893 /* SmileID */; };
+		620FFF0C2B69ABF300016893 /* SmileID in Resources */ = {isa = PBXBuildFile; fileRef = 620FFF0A2B69ABF300016893 /* SmileID */; };
 		624777D02B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624777CF2B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift */; };
 		62F6766F2B0D173600417419 /* EnhancedKycWithIdInputScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F6766E2B0D173600417419 /* EnhancedKycWithIdInputScreenViewModel.swift */; };
 		62F676712B0E00E800417419 /* EnhancedKycResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F676702B0E00E800417419 /* EnhancedKycResultDelegate.swift */; };
@@ -95,6 +98,8 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		620F1E972B69194900185CD2 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		620F1E992B691ABB00185CD2 /* icsmilelogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icsmilelogo.png; path = ../../../../../Downloads/icsmilelogo.png; sourceTree = "<group>"; };
+		620FFF082B69ABE300016893 /* SmileID */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SmileID; sourceTree = "<group>"; };
+		620FFF0A2B69ABF300016893 /* SmileID */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SmileID; sourceTree = "<group>"; };
 		624777CF2B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycWithIdInputScreen.swift; sourceTree = "<group>"; };
 		62F6766E2B0D173600417419 /* EnhancedKycWithIdInputScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycWithIdInputScreenViewModel.swift; sourceTree = "<group>"; };
 		62F676702B0E00E800417419 /* EnhancedKycResultDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycResultDelegate.swift; sourceTree = "<group>"; };
@@ -198,6 +203,8 @@
 				1E60ED332A29C306002695FF /* Constants.swift */,
 				1E60ED362A29C306002695FF /* CopyableLabel.swift */,
 				620F1E992B691ABB00185CD2 /* icsmilelogo.png */,
+				620FFF082B69ABE300016893 /* SmileID */,
+				620FFF0A2B69ABF300016893 /* SmileID */,
 				1E60ED322A29C306002695FF /* HomeViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
@@ -418,9 +425,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				620FFF0B2B69ABF300016893 /* SmileID in Resources */,
 				1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */,
 				620F1E9A2B691ABB00185CD2 /* icsmilelogo.png in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
+				620FFF092B69ABE300016893 /* SmileID in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,6 +438,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				620FFF0C2B69ABF300016893 /* SmileID in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
