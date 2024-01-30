@@ -26,9 +26,6 @@ struct HomeView: View {
                             image: "userauth",
                             name: "SmartSelfie™ Enrollment",
                             onClick: { smartSelfieEnrollmentUserId = generateUserId() },
-                            onNoConnection: {
-                                showNetworkError()
-                            },
                             content: {
                                 SmileID.smartSelfieEnrollmentScreen(
                                     userId: smartSelfieEnrollmentUserId,
@@ -44,9 +41,6 @@ struct HomeView: View {
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Authentication",
-                            onNoConnection: {
-                                showNetworkError()
-                            },
                             content: {
                                 SmartSelfieAuthWithUserIdEntry(
                                     initialUserId: smartSelfieEnrollmentUserId,
@@ -57,9 +51,6 @@ struct HomeView: View {
                         ProductCell(
                             image: "biometric",
                             name: "Enhanced KYC",
-                            onNoConnection: {
-                                showNetworkError()
-                            },
                             content: {
                                 EnhancedKycWithIdInputScreen(delegate: viewModel)
                             }
@@ -67,9 +58,6 @@ struct HomeView: View {
                         ProductCell(
                             image: "biometric",
                             name: "Biometric KYC",
-                            onNoConnection: {
-                                showNetworkError()
-                            },
                             content: {
                                 BiometricKycWithIdInputScreen(delegate: viewModel)
                             }
@@ -77,21 +65,15 @@ struct HomeView: View {
                         ProductCell(
                             image: "document",
                             name: "\nDocument Verification",
-                            onNoConnection: {
-                                showNetworkError()
-                            },
                             content: { DocumentVerificationWithSelector(delegate: viewModel) }
                         ),
                         ProductCell(
                             image: "document",
                             name: "Enhanced Document Verification",
-                            onNoConnection: {
-                                showNetworkError()
-                            },
                             content: {
                                 EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                             }
-                        )
+                        ),
                     ].map { AnyView($0) }
                 )
 
@@ -110,13 +92,6 @@ struct HomeView: View {
             .navigationBarItems(trailing: SmileEnvironmentToggleButton())
             .background(SmileID.theme.backgroundLight.ignoresSafeArea())
         }
-    }
-}
-
-extension HomeView {
-    func showNetworkError() {
-        viewModel.toastMessage = "No internet connection"
-        viewModel.showToast = true
     }
 }
 
@@ -176,7 +151,8 @@ private struct DocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides {
+           let captureBothSides
+        {
             SmileID.documentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
@@ -205,7 +181,8 @@ private struct EnhancedDocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides {
+           let captureBothSides
+        {
             SmileID.enhancedDocumentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,

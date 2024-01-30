@@ -1,4 +1,3 @@
-import Sentry
 import SmileID
 import SwiftUI
 
@@ -12,14 +11,6 @@ struct RootView: View {
     init() {
         UITabBar.appearance().barTintColor = UIColor(SmileID.theme.backgroundLight)
         UITabBar.appearance().tintColor = UIColor(SmileID.theme.accent)
-        if let dsn = Bundle.main.object(forInfoDictionaryKey: "SentryDSN") as? String {
-            SentrySDK.start { options in
-                options.dsn = dsn
-                options.debug = true
-                options.tracesSampleRate = 1.0
-                options.profilesSampleRate = 1.0
-            }
-        }
     }
 
     var body: some View {

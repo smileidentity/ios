@@ -1,16 +1,18 @@
-import Foundation
 import Combine
-import UIKit
+import Foundation
+import Sentry
 import SmileID
+import UIKit
 
 class HomeViewModel: ObservableObject,
     SmartSelfieResultDelegate,
     DocumentVerificationResultDelegate,
     EnhancedDocumentVerificationResultDelegate,
     EnhancedKycResultDelegate,
-    BiometricKycResultDelegate {
-
+    BiometricKycResultDelegate
+{
     // MARK: - UI Properties
+
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
@@ -19,6 +21,12 @@ class HomeViewModel: ObservableObject,
     init(config: Config) {
         partnerId = config.partnerId
         SmileID.initialize(config: config, useSandbox: true)
+        SentrySDK.configureScope { scope in
+            scope.setTag(value: "partner_id", key: self.partnerId)
+            let user = User()
+            user.email = self.partnerId
+            scope.setUser(user)
+        }
     }
 
     @objc func didError(error: Error) {
@@ -30,8 +38,8 @@ class HomeViewModel: ObservableObject,
     // Called for SmartSelfie Enrollment by a proxy delegate in HomeView
     func onSmartSelfieEnrollment(
         userId: String,
-        selfieImage: URL,
-        livenessImages: [URL],
+        selfieImage _: URL,
+        livenessImages _: [URL],
         jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>?
     ) {
         dismissModal()
@@ -50,8 +58,8 @@ class HomeViewModel: ObservableObject,
 
     // Called only for SmartSelfie Authentication
     func didSucceed(
-        selfieImage: URL,
-        livenessImages: [URL],
+        selfieImage _: URL,
+        livenessImages _: [URL],
         jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>?
     ) {
         dismissModal()
@@ -67,8 +75,8 @@ class HomeViewModel: ObservableObject,
     }
 
     func didSucceed(
-        selfieImage: URL,
-        livenessImages: [URL],
+        selfieImage _: URL,
+        livenessImages _: [URL],
         jobStatusResponse: JobStatusResponse<BiometricKycJobResult>
     ) {
         dismissModal()
@@ -99,9 +107,9 @@ class HomeViewModel: ObservableObject,
     }
 
     func didSucceed(
-        selfie: URL,
-        documentFrontImage: URL,
-        documentBackImage: URL?,
+        selfie _: URL,
+        documentFrontImage _: URL,
+        documentBackImage _: URL?,
         jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
     ) {
         dismissModal()
@@ -117,9 +125,9 @@ class HomeViewModel: ObservableObject,
     }
 
     func didSucceed(
-        selfie: URL,
-        documentFrontImage: URL,
-        documentBackImage: URL?,
+        selfie _: URL,
+        documentFrontImage _: URL,
+        documentBackImage _: URL?,
         jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
     ) {
         dismissModal()
