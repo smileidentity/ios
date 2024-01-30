@@ -97,7 +97,6 @@
 		607FACE51AFB9204008FA782 /* SmileID_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmileID_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		620F1E972B69194900185CD2 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
-		620F1E992B691ABB00185CD2 /* icsmilelogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icsmilelogo.png; path = ../../../../../Downloads/icsmilelogo.png; sourceTree = "<group>"; };
 		620FFF082B69ABE300016893 /* SmileID */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SmileID; sourceTree = "<group>"; };
 		620FFF0A2B69ABF300016893 /* SmileID */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SmileID; sourceTree = "<group>"; };
 		624777CF2B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycWithIdInputScreen.swift; sourceTree = "<group>"; };
