@@ -45,6 +45,8 @@ release
 Pods
 archives
 *.mobileprovision
+*.sentryclirc
+.sentryclirc
 
 # JetBrains/AppCode
 .idea
