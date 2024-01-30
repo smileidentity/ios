@@ -23,7 +23,8 @@ struct AlertView: View {
             
             Text(description)
                 .font(SmileID.theme.body)
-                .foregroundColor(SmileID.theme.onLight)                .multilineTextAlignment(.center)
+                .foregroundColor(SmileID.theme.onLight)           
+                .multilineTextAlignment(.center)
                 .padding(.bottom, 20)
             
             Button(action: {
