@@ -5,7 +5,6 @@ target 'SmileID_Example' do
   pod 'SmileID', :path => '../'
   pod 'netfox'
   pod 'Sentry'
-
   pod 'SwiftLint'
 
   target 'SmileID_Tests' do
