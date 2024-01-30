@@ -25,7 +25,10 @@ struct HomeView: View {
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Enrollment",
-                            onClick: { smartSelfieEnrollmentUserId = generateUserId() },
+                            onClick: {
+                                viewModel.onProductClicked()
+                                smartSelfieEnrollmentUserId = generateUserId()
+                            },
                             content: {
                                 SmileID.smartSelfieEnrollmentScreen(
                                     userId: smartSelfieEnrollmentUserId,
@@ -41,6 +44,9 @@ struct HomeView: View {
                         ProductCell(
                             image: "userauth",
                             name: "SmartSelfie™ Authentication",
+                            onClick: {
+                                viewModel.onProductClicked()
+                            },
                             content: {
                                 SmartSelfieAuthWithUserIdEntry(
                                     initialUserId: smartSelfieEnrollmentUserId,
@@ -51,6 +57,9 @@ struct HomeView: View {
                         ProductCell(
                             image: "biometric",
                             name: "Enhanced KYC",
+                            onClick: {
+                                viewModel.onProductClicked()
+                            },
                             content: {
                                 EnhancedKycWithIdInputScreen(delegate: viewModel)
                             }
@@ -58,6 +67,9 @@ struct HomeView: View {
                         ProductCell(
                             image: "biometric",
                             name: "Biometric KYC",
+                            onClick: {
+                                viewModel.onProductClicked()
+                            },
                             content: {
                                 BiometricKycWithIdInputScreen(delegate: viewModel)
                             }
@@ -65,11 +77,17 @@ struct HomeView: View {
                         ProductCell(
                             image: "document",
                             name: "\nDocument Verification",
+                            onClick: {
+                                viewModel.onProductClicked()
+                            },
                             content: { DocumentVerificationWithSelector(delegate: viewModel) }
                         ),
                         ProductCell(
                             image: "document",
                             name: "Enhanced Document Verification",
+                            onClick: {
+                                viewModel.onProductClicked()
+                            },
                             content: {
                                 EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                             }

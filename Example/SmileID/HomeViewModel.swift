@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Sentry
 import SmileID
+import SwiftUI
 import UIKit
 
 class HomeViewModel: ObservableObject,
@@ -17,6 +18,7 @@ class HomeViewModel: ObservableObject,
     @Published var toastMessage = ""
     @Published var showToast = false
     @Published var partnerId: String
+    @ObservedObject var networkMonitor = NetworkMonitor.shared
 
     init(config: Config) {
         partnerId = config.partnerId
@@ -26,6 +28,13 @@ class HomeViewModel: ObservableObject,
             let user = User()
             user.email = self.partnerId
             scope.setUser(user)
+        }
+    }
+
+    func onProductClicked() {
+        if !networkMonitor.isConnected {
+            toastMessage = "No internet connection"
+            showToast = true
         }
     }
 
