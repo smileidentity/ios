@@ -6,7 +6,8 @@ on:
 
 jobs:
   build-and-release:
-    runs-on: macos-latest
+    # TODO: Change back to macos-latest once it points to macOS 14 (Q2 '24)
+    runs-on: macos-14
 
     steps:
     - uses: actions/checkout@v4
