@@ -531,7 +531,7 @@
 			name = "Upload Debug Symbols to Sentry";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=smile-identity\nexport SENTRY_PROJECT=apple-ios\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
 		};
