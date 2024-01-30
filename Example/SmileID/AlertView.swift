@@ -15,21 +15,16 @@ struct AlertView: View {
                 .frame(width: 40, height: 40)
                 .padding(.bottom, 10)
                 .foregroundColor(SmileID.theme.accent)
-            
             Text(title)
                 .font(SmileID.theme.header4)
                 .padding(.bottom, 5)
                 .foregroundColor(SmileID.theme.accent)
-            
             Text(description)
                 .font(SmileID.theme.body)
-                .foregroundColor(SmileID.theme.onLight)           
+                .foregroundColor(SmileID.theme.onLight)
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 20)
-            
-            Button(action: {
-                onClick()
-            }) {
+            Button(action: { onClick() }) {
                 Text(buttonTitle)
                     .font(SmileID.theme.header4)
                     .foregroundColor(.white)
@@ -43,8 +38,6 @@ struct AlertView: View {
         .background(Color.white)
         .cornerRadius(16)
         .shadow(radius: 5)
-        
-        
     }
 }
 

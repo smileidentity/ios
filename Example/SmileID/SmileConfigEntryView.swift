@@ -4,7 +4,7 @@ import SwiftUI
 struct SmileConfigEntryView: View {
     private let errorMessage: String?
     private let onNewSmileConfig: (_ newConfig: String) -> Void
-
+    
     init(
         errorMessage: String? = nil,
         onNewSmileConfig: @escaping (_ newConfig: String) -> Void
@@ -12,7 +12,7 @@ struct SmileConfigEntryView: View {
         self.errorMessage = errorMessage
         self.onNewSmileConfig = onNewSmileConfig
     }
-
+    
     @State private var smileConfigTextFieldValue = ""
     var body: some View {
         VStack {
@@ -28,8 +28,8 @@ struct SmileConfigEntryView: View {
                             text: $smileConfigTextFieldValue,
                             axis: .vertical
                         )
-                            .textInputAutocapitalization(.none)
-                            .lineLimit(10, reservesSpace: true)
+                        .textInputAutocapitalization(.none)
+                        .lineLimit(10, reservesSpace: true)
                     )
                 } else {
                     return AnyView(
@@ -37,7 +37,7 @@ struct SmileConfigEntryView: View {
                             "Paste your Smile Config from the Portal here",
                             text: $smileConfigTextFieldValue
                         )
-                            .lineLimit(10)
+                        .lineLimit(10)
                     )
                 }
             }
@@ -55,7 +55,7 @@ struct SmileConfigEntryView: View {
                     .foregroundColor(SmileID.theme.error)
                     .padding()
             }
-
+            
             Button(
                 action: { onNewSmileConfig(smileConfigTextFieldValue) },
                 label: {
@@ -65,14 +65,14 @@ struct SmileConfigEntryView: View {
                         .frame(maxWidth: .infinity)
                 }
             )
-                .foregroundColor(SmileID.theme.onDark)
-                .background(SmileID.theme.accent)
-                .cornerRadius(60)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal)
-                .padding(.vertical, 2)
+            .foregroundColor(SmileID.theme.onDark)
+            .background(SmileID.theme.accent)
+            .cornerRadius(60)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal)
+            .padding(.vertical, 2)
         }
-            .background(SmileID.theme.backgroundLightest.ignoresSafeArea())
+        .background(SmileID.theme.backgroundLightest.ignoresSafeArea())
     }
 }
 
