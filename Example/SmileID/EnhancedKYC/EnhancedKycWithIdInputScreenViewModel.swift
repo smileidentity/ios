@@ -15,14 +15,13 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     private var error: Error?
     private var enhancedKycResponse: EnhancedKycResponse?
     @Published @MainActor var step = EnhancedKycWithIdInputScreenStep.loading("Loading ID Types…")
-    
+
     @Published @MainActor var idInfo = IdInfo(country: "")
-    
-    
+
     init() {
         loadIdTypes()
     }
-    
+
     private func loadIdTypes() {
         let authRequest = AuthenticationRequest(
             jobType: .biometricKyc,
@@ -57,7 +56,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
             }
         }
     }
-    
+
     private func loadConsent(
         country: String,
         idType: String,
@@ -101,11 +100,11 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
             }
         }
     }
-    
+
     func onIdTypeSelected(country: String, idType: String, requiredFields: [RequiredField]) {
         loadConsent(country: country, idType: idType, requiredFields: requiredFields)
     }
-    
+
     func onConsentGranted(country: String, idType: String, requiredFields: [RequiredField]) {
         DispatchQueue.main.async {
             self.step = .idInput(
@@ -115,14 +114,14 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
             )
         }
     }
-    
+
     func onIdFieldsEntered(idInfo: IdInfo) {
         DispatchQueue.main.async {
             self.idInfo = idInfo
             self.step = .processing(ProcessingState.inProgress) }
         doEnhancedKyc(idInfo: idInfo)
     }
-    
+
     func doEnhancedKyc(idInfo: IdInfo) {
         DispatchQueue.main.async { self.step = .loading("Loading...") }
         Task {
@@ -156,11 +155,11 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
             }
         }
     }
-    
-    @MainActor func onRetry(){
+
+    @MainActor func onRetry() {
         doEnhancedKyc(idInfo: self.idInfo)
     }
-    
+
     func onFinished(delegate: EnhancedKycResultDelegate) {
         if let enhancedKycResponse = enhancedKycResponse {
             delegate.didSucceed(enhancedKycResponse: enhancedKycResponse)

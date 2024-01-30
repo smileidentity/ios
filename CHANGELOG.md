@@ -1,6 +1,7 @@
-## Unreleased
+## 10.0.8 (unreleased)
 
 ### Added
+- Exposed individual components as Swift UI Components
 
 ### Fixed
 

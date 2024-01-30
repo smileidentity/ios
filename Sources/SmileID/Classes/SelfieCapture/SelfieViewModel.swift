@@ -2,7 +2,7 @@ import ARKit
 import Combine
 import Foundation
 
-class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
+public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     // Constants
     private let intraImageMinDelay: TimeInterval = 0.35
     private let noFaceResetDelay: TimeInterval = 3
@@ -55,7 +55,7 @@ class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         didSet { switchCamera() }
     }
 
-    init(
+    public init(
         isEnroll: Bool,
         userId: String,
         jobId: String,

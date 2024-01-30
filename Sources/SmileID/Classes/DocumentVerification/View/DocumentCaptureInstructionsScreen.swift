@@ -1,6 +1,7 @@
 import SwiftUI
 
-struct DocumentCaptureInstructionsScreen: View {
+/// Instructions for taking a good quality document photo. Optionally, allows user to select a photo from their gallery.
+public struct DocumentCaptureInstructionsScreen: View {
     let title: String
     let subtitle: String
     let showAttribution: Bool
@@ -10,7 +11,7 @@ struct DocumentCaptureInstructionsScreen: View {
     let onInstructionsAcknowledgedSelectFromGallery: () -> Void
     let onInstructionsAcknowledgedTakePhoto: () -> Void
 
-    var body: some View {
+    public var body: some View {
         VStack {
             ScrollView {
                 VStack {

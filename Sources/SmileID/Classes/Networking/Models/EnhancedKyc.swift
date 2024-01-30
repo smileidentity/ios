@@ -85,7 +85,7 @@ public struct EnhancedKycResponse: Codable {
     public let expirationDate: String?
     public let dob: String?
     public let photo: String?
-    
+
     init(
         smileJobId: String,
         partnerParams: PartnerParams,
@@ -113,7 +113,7 @@ public struct EnhancedKycResponse: Codable {
         self.dob = dob
         self.photo = photo
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case smileJobId = "SmileJobID"
         case partnerParams = "PartnerParams"
