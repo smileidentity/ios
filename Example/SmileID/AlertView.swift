@@ -24,7 +24,7 @@ struct AlertView: View {
                 .foregroundColor(SmileID.theme.onLight)
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 20)
-            Button(action: { onClick() }) {
+            Button(action: onClick) {
                 Text(buttonTitle)
                     .font(SmileID.theme.header4)
                     .foregroundColor(.white)

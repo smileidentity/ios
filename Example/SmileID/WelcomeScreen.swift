@@ -7,7 +7,7 @@ struct WelcomeScreen: View {
     @State private var errorMessage: String?
     @Binding var showSuccess: Bool
     @State private var partnerId: String?
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             Image("SmileLogo")
@@ -34,9 +34,9 @@ struct WelcomeScreen: View {
             .font(SmileID.theme.body)
             .foregroundColor(SmileID.theme.accent)
             .padding(.vertical)
-            
+
             Spacer()
-            
+
             Button(
                 action: { showQrCodeScanner = true },
                 label: {
@@ -57,7 +57,7 @@ struct WelcomeScreen: View {
             .frame(maxWidth: .infinity)
             .padding(.horizontal)
             .padding(.vertical, 4)
-            
+
             Button(
                 action: { showManualEntrySheet = true },
                 label: {
@@ -107,7 +107,6 @@ struct WelcomeScreen: View {
                 if case let .success(result) = response {
                     let configJson = result.string
                     let response = updateSmileConfig(configJson)
-                    
                     if let smilePartnerId = response {
                         partnerId = smilePartnerId
                         showSuccess = true
