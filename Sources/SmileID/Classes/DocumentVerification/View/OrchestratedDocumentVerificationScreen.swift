@@ -51,6 +51,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
+    let allowUserToSkipBackCapture: Bool
     let idAspectRatio: Double?
     let bypassSelfieCaptureWithFile: URL?
     let userId: String
@@ -68,6 +69,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
             countryCode: countryCode,
             documentType: documentType,
             captureBothSides: captureBothSides,
+            allowUserToSkipBackCapture: allowUserToSkipBackCapture,
             idAspectRatio: idAspectRatio,
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
@@ -98,6 +100,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
+    let allowUserToSkipBackCapture: Bool
     let idAspectRatio: Double?
     let bypassSelfieCaptureWithFile: URL?
     let userId: String
@@ -115,6 +118,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         countryCode: String,
         documentType: String?,
         captureBothSides: Bool,
+        allowUserToSkipBackCapture: Bool,
         idAspectRatio: Double?,
         bypassSelfieCaptureWithFile: URL?,
         userId: String,
@@ -131,6 +135,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.countryCode = countryCode
         self.documentType = documentType
         self.captureBothSides = captureBothSides
+        self.allowUserToSkipBackCapture = allowUserToSkipBackCapture
         self.idAspectRatio = idAspectRatio
         self.bypassSelfieCaptureWithFile = bypassSelfieCaptureWithFile
         self.userId = userId
@@ -169,7 +174,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 showInstructions: showInstructions,
                 showAttribution: showAttribution,
                 allowGallerySelection: allowGalleryUpload,
-                showSkipButton: captureBothSides,
+                showSkipButton: allowUserToSkipBackCapture,
                 instructionsTitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Back.Header"
                 ),
