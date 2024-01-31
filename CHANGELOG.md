@@ -2,6 +2,9 @@
 
 ### Added
 - Exposed individual components as Swift UI Components
+- Added a new parameter, `allowUserToSkipBackCapture`, to DocumentVerification and
+  EnhancedDocumentVerification to enforce the user to capture the back of the document. The default
+  value is `true`. This parameter is only relevant when `captureBothSides` is also `true`
 
 ### Fixed
 
