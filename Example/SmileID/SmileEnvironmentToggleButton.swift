@@ -2,7 +2,7 @@ import SwiftUI
 import SmileID
 
 struct SmileEnvironmentToggleButton: View {
-    @State private var isProduction: Bool = false
+    @State private var isProduction: Bool = true
 
     var body: some View {
         Button(
