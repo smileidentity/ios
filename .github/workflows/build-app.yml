@@ -12,8 +12,8 @@ concurrency:
 
 jobs:
   build:
-    # TODO: Change back to macos-latest once it points to macOS 13
-    runs-on: macos-13
+    # TODO: Change back to macos-latest once it points to macOS 14 (Q2 '24)
+    runs-on: macos-14
     timeout-minutes: 15
     steps:
       - name: Checkout

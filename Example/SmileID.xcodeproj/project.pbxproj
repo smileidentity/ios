@@ -28,6 +28,8 @@
 		58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
+		620F1E982B69194900185CD2 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620F1E972B69194900185CD2 /* AlertView.swift */; };
+		620F1E9A2B691ABB00185CD2 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		624777D02B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624777CF2B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift */; };
 		62F6766F2B0D173600417419 /* EnhancedKycWithIdInputScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F6766E2B0D173600417419 /* EnhancedKycWithIdInputScreenViewModel.swift */; };
 		62F676712B0E00E800417419 /* EnhancedKycResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F676702B0E00E800417419 /* EnhancedKycResultDelegate.swift */; };
@@ -36,7 +38,7 @@
 		6AC984526F49F4E8F52C7494 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */; };
 		6AC984F8CA1753050C98F14B /* IdInfoInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC987C6B5794E2B1241AA51 /* IdInfoInputViewModel.swift */; };
 		6AC9870BB28E40FCACC75947 /* DocumentVerificationIdTypeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC9868BCF06ECE5F65DF248 /* DocumentVerificationIdTypeSelector.swift */; };
-		6AC98856053013D0E8ABB188 /* OnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC982F34F80CAE1AA5569AB /* OnboardingScreen.swift */; };
+		6AC98856053013D0E8ABB188 /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC982F34F80CAE1AA5569AB /* WelcomeScreen.swift */; };
 		6AC9886EEE4DE8AE1A31896A /* IdInfoInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC980D3CB9C357AD1B13D80 /* IdInfoInputScreen.swift */; };
 		6AC98976E04EBF5C45A2E857 /* BiometricKycWithIdInputScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC988EEBD0EAB45DC9AC13B /* BiometricKycWithIdInputScreenViewModel.swift */; };
 		6AC98990097662789B0107EB /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */; };
@@ -93,6 +95,7 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* SmileID_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmileID_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		620F1E972B69194900185CD2 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		624777CF2B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycWithIdInputScreen.swift; sourceTree = "<group>"; };
 		62F6766E2B0D173600417419 /* EnhancedKycWithIdInputScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycWithIdInputScreenViewModel.swift; sourceTree = "<group>"; };
 		62F676702B0E00E800417419 /* EnhancedKycResultDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycResultDelegate.swift; sourceTree = "<group>"; };
@@ -100,7 +103,7 @@
 		6AC980584C522B17A099E098 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		6AC980D3CB9C357AD1B13D80 /* IdInfoInputScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdInfoInputScreen.swift; sourceTree = "<group>"; };
 		6AC982147640002B81F72DEC /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		6AC982F34F80CAE1AA5569AB /* OnboardingScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
+		6AC982F34F80CAE1AA5569AB /* WelcomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		6AC98436935FFEA40E632182 /* CodeScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeScanner.swift; sourceTree = "<group>"; };
 		6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileConfigEntryView.swift; sourceTree = "<group>"; };
 		6AC9868BCF06ECE5F65DF248 /* DocumentVerificationIdTypeSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentVerificationIdTypeSelector.swift; sourceTree = "<group>"; };
@@ -207,8 +210,9 @@
 				6AC982147640002B81F72DEC /* SettingsView.swift */,
 				6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */,
 				6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */,
-				6AC982F34F80CAE1AA5569AB /* OnboardingScreen.swift */,
+				6AC982F34F80CAE1AA5569AB /* WelcomeScreen.swift */,
 				6AC98DDBE27D169AF8DB4B98 /* CodeScanner */,
+				620F1E972B69194900185CD2 /* AlertView.swift */,
 			);
 			name = Example;
 			path = SmileID;
@@ -417,6 +421,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */,
+				620F1E9A2B691ABB00185CD2 /* (null) in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 			);
@@ -547,6 +552,7 @@
 				1ED53F6C2A2F28590020BEFB /* RootView.swift in Sources */,
 				1EA026BC2B63F3390039B08D /* NetworkMonitor.swift in Sources */,
 				1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */,
+				620F1E982B69194900185CD2 /* AlertView.swift in Sources */,
 				1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */,
 				1E60ED372A29C306002695FF /* HomeViewController.swift in Sources */,
 				1E60ED3A2A29C306002695FF /* AppDelegate.swift in Sources */,
@@ -567,7 +573,7 @@
 				6AC98990097662789B0107EB /* SettingsViewModel.swift in Sources */,
 				6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */,
 				62F676712B0E00E800417419 /* EnhancedKycResultDelegate.swift in Sources */,
-				6AC98856053013D0E8ABB188 /* OnboardingScreen.swift in Sources */,
+				6AC98856053013D0E8ABB188 /* WelcomeScreen.swift in Sources */,
 				6AC9802B9D1A630961B5454B /* CodeScanner.swift in Sources */,
 				6AC984526F49F4E8F52C7494 /* ScannerViewController.swift in Sources */,
 				6AC98976E04EBF5C45A2E857 /* BiometricKycWithIdInputScreenViewModel.swift in Sources */,

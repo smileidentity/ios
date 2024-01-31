@@ -27,7 +27,7 @@ public class SmileID {
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
 
-    /// This method initializes SmileID. Invoke this method once in your application lifecylce
+    /// This method initializes SmileID. Invoke this method once in your application lifecycle
     /// before calling any other SmileID methods.
     /// - Parameters:
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
