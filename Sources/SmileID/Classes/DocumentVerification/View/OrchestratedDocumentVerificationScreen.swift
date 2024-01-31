@@ -4,6 +4,7 @@ struct OrchestratedDocumentVerificationScreen: View {
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
+    let allowUserToSkipBackCapture: Bool
     let idAspectRatio: Double?
     let bypassSelfieCaptureWithFile: URL?
     let userId: String
@@ -21,6 +22,7 @@ struct OrchestratedDocumentVerificationScreen: View {
             countryCode: countryCode,
             documentType: documentType,
             captureBothSides: captureBothSides,
+            allowUserToSkipBackCapture: allowUserToSkipBackCapture,
             idAspectRatio: idAspectRatio,
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
