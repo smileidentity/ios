@@ -30,7 +30,7 @@ class HomeViewModel: ObservableObject,
         }
     }
 
-    func onProductClicked() {
+    func    () {
         if !networkMonitor.isConnected {
             toastMessage = "No internet connection"
             showToast = true
