@@ -21,7 +21,7 @@ class HomeViewModel: ObservableObject,
 
     init(config: Config) {
         partnerId = config.partnerId
-        SmileID.initialize(config: config, useSandbox: true)
+        SmileID.initialize(config: config, useSandbox: false)
         SentrySDK.configureScope { scope in
             scope.setTag(value: "partner_id", key: self.partnerId)
             let user = User()
