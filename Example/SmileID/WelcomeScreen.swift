@@ -124,7 +124,7 @@ struct WelcomeScreen: View {
                             AlertView(
                                 icon: Image(systemName: "checkmark.circle.fill"),
                                 title: "Configuration Added",
-                                description: "Welcome Partner \(String(describing: partnerId)), you can "
+                                description: "Welcome Partner \(partnerId ?? ""), you can "
                                 + "now proceed to the home screen of the Sample App",
                                 buttonTitle: "Continue",
                                 onClick: {
