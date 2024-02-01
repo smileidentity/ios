@@ -169,7 +169,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 showInstructions: showInstructions,
                 showAttribution: showAttribution,
                 allowGallerySelection: allowGalleryUpload,
-                showSkipButton: captureBothSides,
+                showSkipButton: false,
                 instructionsTitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Back.Header"
                 ),
