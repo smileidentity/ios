@@ -16,12 +16,12 @@ struct WelcomeScreen: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: .infinity, maxHeight: 64)
                 .padding(.vertical, 100)
-            
+
             Text("Welcome to our sample App!")
                 .font(SmileID.theme.header1)
                 .foregroundColor(SmileID.theme.accent)
                 .padding(.vertical)
-            
+
             Text("To begin testing, you need to add a configuration from the Smile Portal")
                 .font(EpilogueFont.regular(with: 16))
                 .foregroundColor(SmileID.theme.onLight)

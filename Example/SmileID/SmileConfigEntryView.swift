@@ -5,7 +5,7 @@ struct SmileConfigEntryView: View {
     @State private var showQrCodeScanner = false
     private let errorMessage: String?
     private let onNewSmileConfig: (_ newConfig: String) -> Void
-    
+
     init(
         errorMessage: String? = nil,
         onNewSmileConfig: @escaping (_ newConfig: String) -> Void
@@ -13,7 +13,7 @@ struct SmileConfigEntryView: View {
         self.errorMessage = errorMessage
         self.onNewSmileConfig = onNewSmileConfig
     }
-    
+
     @State private var smileConfigTextFieldValue = ""
     var body: some View {
         VStack {
