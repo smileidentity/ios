@@ -2,9 +2,10 @@ import SmileID
 import SwiftUI
 
 struct SmileConfigEntryView: View {
+    @State private var showQrCodeScanner = false
     private let errorMessage: String?
     private let onNewSmileConfig: (_ newConfig: String) -> Void
-    
+
     init(
         errorMessage: String? = nil,
         onNewSmileConfig: @escaping (_ newConfig: String) -> Void
@@ -12,7 +13,7 @@ struct SmileConfigEntryView: View {
         self.errorMessage = errorMessage
         self.onNewSmileConfig = onNewSmileConfig
     }
-    
+
     @State private var smileConfigTextFieldValue = ""
     var body: some View {
         VStack {
@@ -71,8 +72,43 @@ struct SmileConfigEntryView: View {
             .frame(maxWidth: .infinity)
             .padding(.horizontal)
             .padding(.vertical, 2)
+
+            Button(
+                action: { showQrCodeScanner = true },
+                label: {
+                    HStack {
+                        Image(systemName: "qrcode")
+                        Text("Scan QR Code from Portal")
+                            .font(SmileID.theme.button)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                }
+            )
+            .foregroundColor(SmileID.theme.accent)
+            .background(Color.clear)
+            .overlay(
+                RoundedRectangle(cornerRadius: 60)
+                    .stroke(SmileID.theme.accent, lineWidth: 4)
+            )
+            .cornerRadius(60)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal)
+            .padding(.vertical, 2)
         }
         .background(SmileID.theme.backgroundLightest.ignoresSafeArea())
+        .sheet(isPresented: $showQrCodeScanner) {
+            CodeScannerView(
+                codeTypes: [.qr],
+                scanInterval: 1,
+                showViewfinder: true
+            ) { response in
+                if case let .success(result) = response {
+                    let configJson = result.string
+                    onNewSmileConfig(configJson)
+                }
+            }
+        }
     }
 }
 

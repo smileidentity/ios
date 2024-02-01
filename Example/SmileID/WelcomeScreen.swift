@@ -16,12 +16,12 @@ struct WelcomeScreen: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: .infinity, maxHeight: 64)
                 .padding(.vertical, 100)
-            
+
             Text("Welcome to our sample App!")
                 .font(SmileID.theme.header1)
                 .foregroundColor(SmileID.theme.accent)
                 .padding(.vertical)
-            
+
             Text("To begin testing, you need to add a configuration from the Smile Portal")
                 .font(EpilogueFont.regular(with: 16))
                 .foregroundColor(SmileID.theme.onLight)
@@ -124,7 +124,7 @@ struct WelcomeScreen: View {
                             AlertView(
                                 icon: Image(systemName: "checkmark.circle.fill"),
                                 title: "Configuration Added",
-                                description: "Welcome Partner \(String(describing: partnerId)), you can "
+                                description: "Welcome Partner \(partnerId ?? ""), you can "
                                 + "now proceed to the home screen of the Sample App",
                                 buttonTitle: "Continue",
                                 onClick: {
