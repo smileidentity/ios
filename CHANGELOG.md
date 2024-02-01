@@ -8,6 +8,7 @@
 ### Changed
 
 ### Removed
+- Removed the Skip Button from Back of ID Capture
 
 ## 10.0.7
 
