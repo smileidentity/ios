@@ -4,7 +4,7 @@ Smile ID provides the best solutions for Real Time Digital KYC, Identity Verific
 Onboarding, and User Authentication across Africa.
 
 If you haven’t already, 
-[sign up](https://www.usesmileid.com/schedule-a-demo/) for a free Smile ID account, which comes
+[sign up](https://usesmileid.com/talk-to-an-expert) for a free Smile ID account, which comes
 with Sandbox access.
 
 Please see [CHANGELOG.md](CHANGELOG.md) or 
