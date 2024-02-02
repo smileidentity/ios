@@ -9,6 +9,7 @@ public struct DocumentCaptureInstructionsScreen: View {
     let allowPhotoFromGallery: Bool
     let showSkipButton: Bool
     let onSkip: () -> Void
+    // swiftlint:disable identifier_name
     let onInstructionsAcknowledgedSelectFromGallery: () -> Void
     let onInstructionsAcknowledgedTakePhoto: () -> Void
 
