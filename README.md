@@ -4,7 +4,7 @@ Smile ID provides the best solutions for Real Time Digital KYC, Identity Verific
 Onboarding, and User Authentication across Africa.
 
 If you haven’t already, 
-[sign up](https://www.smileidentity.com/schedule-a-demo/) for a free Smile ID account, which comes
+[sign up](https://usesmileid.com/talk-to-an-expert) for a free Smile ID account, which comes
 with Sandbox access.
 
 Please see [CHANGELOG.md](CHANGELOG.md) or 
@@ -13,7 +13,7 @@ release notes
 
 ## Getting Started
 
-Full documentation is available at https://docs.smileidentity.com/integration-options/mobile
+Full documentation is available at https://docs.usesmileid.com/integration-options/mobile
 
 The [sample app](Example) included in 
 this repo is a good reference implementation
@@ -43,7 +43,7 @@ dependencies: [
 #### 2. Smile Config
 
 Please download your `smile_config.json` file from the 
-[Smile ID Portal](https://portal.smileidentity.com/sdk) and add it to your project. 
+[Smile ID Portal](https://portal.usesmileid.com/sdk) and add it to your project. 
 Ensure the file is added to your app's target.
 
 #### 3. Initialization
@@ -78,11 +78,11 @@ To make raw API requests, you can use `SmileID.api`
 
 ## Getting Help
 
-For detailed documentation, please visit https://docs.smileidentity.com/integration-options/mobile
+For detailed documentation, please visit https://docs.usesmileid.com/integration-options/mobile
 
 If you require further assistance, you can 
-[file a support ticket](https://portal.smileidentity.com/partner/support/tickets) or 
-[contact us](https://www.smileidentity.com/contact-us/)
+[file a support ticket](https://portal.usesmileid.com/partner/support/tickets) or 
+[contact us](https://www.usesmileid.com/contact-us/)
 
 ## Contributing
 
