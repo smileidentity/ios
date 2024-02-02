@@ -153,6 +153,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 showAttribution: showAttribution,
                 allowGallerySelection: allowGalleryUpload,
                 showSkipButton: false,
+                instructionsHeroImage: SmileIDResourcesHelper.DocVFrontHero,
                 instructionsTitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Front.Header"
                 ),
@@ -170,6 +171,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 showAttribution: showAttribution,
                 allowGallerySelection: allowGalleryUpload,
                 showSkipButton: false,
+                instructionsHeroImage: SmileIDResourcesHelper.DocVBackHero,
                 instructionsTitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Back.Header"
                 ),

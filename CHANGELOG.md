@@ -1,8 +1,11 @@
 # Release Notes
 
-## Unreleased
+## 10.0.8
 * Exposed individual components as Swift UI Components
 * Removed the Skip Button from Back of ID Capture
+* Added `instructionsHeroImage` as a new parameter to `DocumentCaptureScreen`
+* Added `heroImage` as a new parameter to `DocumentCaptureInstructionsScreen`
+* Updated Document Verification hero images
 
 ## 10.0.7
 
