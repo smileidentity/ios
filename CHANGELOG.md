@@ -1,188 +1,215 @@
-## 10.0.8 (unreleased)
+# Release Notes
 
-### Added
-- Exposed individual components as Swift UI Components
-
-### Fixed
-
-### Changed
-
-### Removed
-- Removed the Skip Button from Back of ID Capture
+## Unreleased
+* Exposed individual components as Swift UI Components
+* Removed the Skip Button from Back of ID Capture
 
 ## 10.0.7
 
-### Fixed
-- Improvements to the selfie capture experience
+#### Fixed
 
-## 10.0.6 
+* Improvements to the selfie capture experience
 
-### Fixed
-- Allow agent mode in biometric kyc
+## 10.0.6
+
+#### Fixed
+
+* Allow agent mode in Biometric KYC
 
 ## 10.0.5
-### Fixed
-- Fixed captureBothSides on iOS being inverted
+
+#### Fixed
+
+* Fixed captureBothSides on iOS being inverted
 
 ## 10.0.4
 
-### Fixed
-- Fixed missing selfie instructions screen on DocV and EnhancedDocV
-- Fixed broken disable capture both sides flag
-- Fixed show skip button on capture both sides
+#### Fixed
+
+* Fixed missing selfie instructions screen on DocV and EnhancedDocV
+* Fixed broken disable capture both sides flag
+* Fixed show skip button on capture both sides
 
 ## 10.0.3
 
-### Added
-- Added allowNewEnroll on SmartSelfie, BiometricKYC, DocV and EnhancedDocV
+#### Added
 
-### Fixed
-- Fixed missing callbackUrl  
+* Added allowNewEnroll on SmartSelfie, BiometricKYC, DocV and EnhancedDocV
+
+#### Fixed
+
+* Fixed missing callbackUrl
 
 ## 10.0.2
 
 ### Fixed
-- Fixed a bug on iOS 14 devices where the document and selfie cutouts were white insteaad of transparent
+
+* Fixed a bug on iOS 14 devices where the document and selfie cutouts were white insteaad of transparent
 
 ## 10.0.1
 
 ### Fixed
-- Fixed missing info.json issue on Smartselfie Enrollment and Smartselfie Authentication
+
+* Fixed missing info.json issue on Smartselfie Enrollment and Smartselfie Authentication
 
 ## 10.0.0
 
-- No changes
+* No changes
 
 ## 10.0.0-beta14
 
 ### Changed
-- Removed DocumentVerificationResultDelegate from extending AnyObject so it doesn't have to always be used in classes
-- Removed EnhancedDocumentVerificationResultDelegate from extending AnyObject so it doesn't have to always be used in classes
+
+* Removed DocumentVerificationResultDelegate from extending AnyObject so it doesn't have to always be used in classes
+* Removed EnhancedDocumentVerificationResultDelegate from extending AnyObject so it doesn't have to always be used in classes
 
 ## 10.0.0-beta13
 
 ### Added
-- Enhanced KYC (synchronous)
+
+* Enhanced KYC (synchronous)
 
 ### Changed
-- Updated document capture to preserve aspect ratio in preview
-- Updated visibility of networking models to public
+
+* Updated document capture to preserve aspect ratio in preview
+* Updated visibility of networking models to public
 
 ## 10.0.0-beta12
 
 ### Added
-- Consent Screen SwiftUI View
+
+* Consent Screen SwiftUI View
 
 ### Removed
-- Biometric KYC no longer bundles the Consent Screen
-- Biometric KYC no longer bundles an ID Type selector or input
+
+* Biometric KYC no longer bundles the Consent Screen
+* Biometric KYC no longer bundles an ID Type selector or input
 
 ## 10.0.0-beta11
 
 ### Added
-- Biometric KYC
-- Consent Screen
-- BVN OTP API calls and models
-- Added `extras` as optional params on all job types
-- Added `allowAgentMode` option on Document Verification and Enhanced Document Verification
+
+* Biometric KYC
+* Consent Screen
+* BVN OTP API calls and models
+* Added `extras` as optional params on all job types
+* Added `allowAgentMode` option on Document Verification and Enhanced Document Verification
 
 ### Changed
-- Default to `production` on `SmileID.initialize()`
-- Increased selfie capture resolution to 640px
+
+* Default to `production` on `SmileID.initialize()`
+* Increased selfie capture resolution to 640px
 
 ### Fixed
-- Fixed missing `IdInfo` initializer
 
-### Removed
+* Fixed missing `IdInfo` initializer
 
-## 10.0.0-beta10
+### 10.0.0-beta10
 
-### Added
-- Enhanced Document Verification
-- New JobStatusResponses that depend on the job type
-- Set the callback URL by calling `SmileID.setCallbackURL(_:)`
+#### Added
 
-### Changed
-- Renamed `DocumentCaptureResultDelegate` -> `DocumentVerificationResultDelegate`
-- Delegate types updated to accept generic `JobStatusResponse` objects
-- Provide `nil` as default values for `userId` and `jobId` on `AuthenticationRequest`
-- Made public the properties in `ServicesResponse` and its nested classes
+* Enhanced Document Verification
+* New JobStatusResponses that depend on the job type
+* Set the callback URL by calling `SmileID.setCallbackURL(_:)`
 
-### Fixed
-- Document Verification UI bugs
-- Fixed a bug where Services models would have incorrect or duplicate data
+#### Changed
 
-## 10.0.0-beta09
+* Renamed `DocumentCaptureResultDelegate` -> `DocumentVerificationResultDelegate`
+* Delegate types updated to accept generic `JobStatusResponse` objects
+* Provide `nil` as default values for `userId` and `jobId` on `AuthenticationRequest`
+* Made public the properties in `ServicesResponse` and its nested classes
 
-### Fixed
-- Fixed a bug where Document Verification results were not being delivered to the delegate
+#### Fixed
 
-## 10.0.0-beta08
+* Document Verification UI bugs
+* Fixed a bug where Services models would have incorrect or duplicate data
 
-### Added
-- Document Verification
-- Navigation router using `UINavigationController`
-- Convenience method for partners to poll the `jobStatus` endpoint
+### 10.0.0-beta09
 
-### Changed
-- Return images captured from selfie capture and document capture as URLs
+#### Fixed
 
-### Removed
-- `filename` property from `PrepUploadRequest`
-- `jobStatus` polling from `SmartSelfieAuthentication`, `SmartSelfieEnrollment` and `DocumentVerification`
+* Fixed a bug where Document Verification results were not being delivered to the delegate
+
+### 10.0.0-beta08
+
+#### Added
+
+* Document Verification
+* Navigation router using `UINavigationController`
+* Linting within Xcode
+* Convenience method for partners to poll the `jobStatus` endpoint
+
+#### Changed
+
+* Return images captured from selfie capture and document capture as URLs
+
+#### Removed
+
+* `filename` property from `PrepUploadRequest`
+* `jobStatus` polling from `SmartSelfieAuthentication`, `SmartSelfieEnrollment` and `DocumentVerification`
 
 ### Dependencies
-- SwiftLint
 
-## 10.0.0-beta07
+* SwiftLint
 
-### Changed
-- Declare `jobType` property of `PartnerParams` as optional
+### 10.0.0-beta07
 
-## 10.0.0-beta06
+#### Changed
 
-### Changed
-- Declare `jobType` property of `AuthenticationRequest` as optional
+* Declare `jobType` property of `PartnerParams` as optional
 
-## 10.0.0-beta05
+### 10.0.0-beta06
 
-### Changed
-- Expose `sourceSdk` and `sourceSdkVersion` initializers and properties
+#### Changed
 
-## 10.0.0-beta04
+* Declare `jobType` property of `AuthenticationRequest` as optional
 
-### Changed
-- Expose `AuthenticationRequest` and `AuthenticationResponse` initializers and properties
+### 10.0.0-beta05
 
-## 10.0.0-beta03
+#### Changed
 
-### Changed
-- Set default value for config param on `initialize` method
-- Expose initializers for `PartnerParams` and `EnhancedKycAsycResponse` models
+* Expose `sourceSdk` and `sourceSdkVersion` initializers and properties
 
-## 10.0.0-beta02
+### 10.0.0-beta04
 
-### Added
+#### Changed
 
-- Enhanced KYC Async API endpoint
+* Expose `AuthenticationRequest` and `AuthenticationResponse` initializers and properties
 
-### Changed
-- Point Podspec to public repo
-- Point Pacakge.swift to the Resource directory
-- Rename ImageType enums to drop PNG support
-- Add a `SmileID.version` constant
+### 10.0.0-beta03
 
-### Fixed
+#### Changed
 
-- Fix bug where reenroll is enabled on every job
+* Set default value for config param on `initialize` method
+* Expose initializers for `PartnerParams` and `EnhancedKycAsycResponse` models
 
-## 10.0.0-beta01
+### 10.0.0-beta02
 
-### Added
-- Initial release 🎉
-- SmartSelfie™ Authentication and Enrollment
-- Theming
-- Networking
+#### Added
 
-### Dependencies
-- Zip
+* Enhanced KYC Async API endpoint
+
+#### Changed
+
+* Point Podspec to public repo
+* Point Pacakge.swift to the Resource directory
+* Rename ImageType enums to drop PNG support
+* Add a `SmileID.version` constant
+
+#### Fixed
+
+* Fix bug where reenroll is enabled on every job
+
+### 10.0.0-beta01
+
+#### Added
+
+* Initial release 🎉
+* SmartSelfie™ Authentication and Enrollment
+* Theming
+* Networking
+
+#### Dependencies
+
+* Zip
+
