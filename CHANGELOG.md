@@ -1,14 +1,22 @@
-## 10.0.8 (unreleased)
+## 10.0.9 (unreleased)
 
 ### Added
-- Exposed individual components as Swift UI Components
+### Fixed
+### Changed
+### Removed
+
+## 10.0.8
+
+### Added
+- Automated script for handling swift files for the root XCode project
+- Sample app sentry crash reporting
+- Sample app connection detection 
 
 ### Fixed
 
 ### Changed
 
 ### Removed
-- Removed the Skip Button from Back of ID Capture
 
 ## 10.0.7
 
