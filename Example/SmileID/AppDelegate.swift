@@ -1,21 +1,28 @@
-import UIKit
+import netfox
+import Sentry
 import SmileID
 import SwiftUI
-import netfox
+import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
 
     func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions
-        launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+        _: UIApplication,
+        didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         UINavigationBar.appearance().titleTextAttributes = [
             NSAttributedString.Key.foregroundColor: UIColor.black
         ]
+        if let dsn = Bundle.main.object(forInfoDictionaryKey: "SentryDSN") as? String {
+            SentrySDK.start { options in
+                options.dsn = dsn
+                options.debug = true
+                options.tracesSampleRate = 1.0
+                options.profilesSampleRate = 1.0
+            }
+        }
         NFX.sharedInstance().start()
 
         // NOTE TO PARTNERS: Normally, you would call SmileID.initialize() here

@@ -1,7 +1,9 @@
-import Foundation
 import Combine
-import UIKit
+import Foundation
+import Sentry
 import SmileID
+import SwiftUI
+import UIKit
 
 class HomeViewModel: ObservableObject,
     SmartSelfieResultDelegate,
@@ -9,16 +11,30 @@ class HomeViewModel: ObservableObject,
     EnhancedDocumentVerificationResultDelegate,
     EnhancedKycResultDelegate,
     BiometricKycResultDelegate {
-
     // MARK: - UI Properties
+
     @Published var dismissed = false
     @Published var toastMessage = ""
     @Published var showToast = false
     @Published var partnerId: String
+    @ObservedObject var networkMonitor = NetworkMonitor.shared
 
     init(config: Config) {
         partnerId = config.partnerId
         SmileID.initialize(config: config, useSandbox: false)
+        SentrySDK.configureScope { scope in
+            scope.setTag(value: "partner_id", key: self.partnerId)
+            let user = User()
+            user.email = self.partnerId
+            scope.setUser(user)
+        }
+    }
+
+    func onProductClicked() {
+        if !networkMonitor.isConnected {
+            toastMessage = "No internet connection"
+            showToast = true
+        }
     }
 
     @objc func didError(error: Error) {
@@ -30,8 +46,8 @@ class HomeViewModel: ObservableObject,
     // Called for SmartSelfie Enrollment by a proxy delegate in HomeView
     func onSmartSelfieEnrollment(
         userId: String,
-        selfieImage: URL,
-        livenessImages: [URL],
+        selfieImage _: URL,
+        livenessImages _: [URL],
         jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>?
     ) {
         dismissModal()
@@ -50,8 +66,8 @@ class HomeViewModel: ObservableObject,
 
     // Called only for SmartSelfie Authentication
     func didSucceed(
-        selfieImage: URL,
-        livenessImages: [URL],
+        selfieImage _: URL,
+        livenessImages _: [URL],
         jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>?
     ) {
         dismissModal()
@@ -67,8 +83,8 @@ class HomeViewModel: ObservableObject,
     }
 
     func didSucceed(
-        selfieImage: URL,
-        livenessImages: [URL],
+        selfieImage _: URL,
+        livenessImages _: [URL],
         jobStatusResponse: JobStatusResponse<BiometricKycJobResult>
     ) {
         dismissModal()
@@ -99,9 +115,9 @@ class HomeViewModel: ObservableObject,
     }
 
     func didSucceed(
-        selfie: URL,
-        documentFrontImage: URL,
-        documentBackImage: URL?,
+        selfie _: URL,
+        documentFrontImage _: URL,
+        documentBackImage _: URL?,
         jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
     ) {
         dismissModal()
@@ -117,9 +133,9 @@ class HomeViewModel: ObservableObject,
     }
 
     func didSucceed(
-        selfie: URL,
-        documentFrontImage: URL,
-        documentBackImage: URL?,
+        selfie _: URL,
+        documentFrontImage _: URL,
+        documentBackImage _: URL?,
         jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
     ) {
         dismissModal()

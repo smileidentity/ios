@@ -1,5 +1,5 @@
-import SwiftUI
 import SmileID
+import SwiftUI
 
 struct RootView: View {
     // This is set by the SettingsView

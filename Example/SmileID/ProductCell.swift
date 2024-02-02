@@ -1,5 +1,5 @@
-import SwiftUI
 import SmileID
+import SwiftUI
 
 struct ProductCell: View {
     let image: String
@@ -37,11 +37,11 @@ struct ProductCell: View {
                         .font(SmileID.theme.header4)
                         .foregroundColor(SmileID.theme.backgroundLight)
                 }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(SmileID.theme.accent)
-                    .cornerRadius(8)
-                    .sheet(isPresented: $isPresented, content: { AnyView(content()) })
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(SmileID.theme.accent)
+                .cornerRadius(8)
+                .sheet(isPresented: $isPresented, content: { AnyView(content()) })
             }
         )
     }
