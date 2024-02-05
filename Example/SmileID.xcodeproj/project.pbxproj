@@ -89,7 +89,6 @@
 		58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycTest.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Smile ID.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Smile ID.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -195,7 +194,6 @@
 				1ED53F642A2F28590020BEFB /* ResourcesView.swift */,
 				1ED53F632A2F28590020BEFB /* SmileTextField.swift */,
 				1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */,
-				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				1E60ED352A29C306002695FF /* AppDelegate.swift */,
 				1E60ED332A29C306002695FF /* Constants.swift */,
 				1E60ED362A29C306002695FF /* CopyableLabel.swift */,

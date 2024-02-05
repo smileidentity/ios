@@ -60,9 +60,8 @@ public class SmileIDResourcesHelper {
     public static var ClearImage = SmileIDResourcesHelper.image("ClearImage")!
     public static var Face = SmileIDResourcesHelper.image("Face")!
     public static var InstructionsHeaderIcon = SmileIDResourcesHelper.image("auth")!
-    public static var InstructionsHeaderDocumentIcon = SmileIDResourcesHelper.image(
-        "DocumentVerificationIcon"
-    )!
+    public static var DocVFrontHero = SmileIDResourcesHelper.image("DocVFrontHero")!
+    public static var DocVBackHero = SmileIDResourcesHelper.image("DocVBackHero")!
     public static var Light = SmileIDResourcesHelper.image("Light")!
     public static var SmileEmblem = SmileIDResourcesHelper.image("SmileEmblem")!
     public static var FaceOutline = SmileIDResourcesHelper.image("FaceOutline")!

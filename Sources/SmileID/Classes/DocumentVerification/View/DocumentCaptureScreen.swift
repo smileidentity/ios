@@ -6,6 +6,7 @@ public struct DocumentCaptureScreen: View {
     let showAttribution: Bool
     let allowGallerySelection: Bool
     let showSkipButton: Bool
+    let instructionsHeroImage: UIImage
     let instructionsTitleText: String
     let instructionsSubtitleText: String
     let captureTitleText: String
@@ -21,6 +22,7 @@ public struct DocumentCaptureScreen: View {
         showAttribution: Bool,
         allowGallerySelection: Bool,
         showSkipButton: Bool,
+        instructionsHeroImage: UIImage,
         instructionsTitleText: String,
         instructionsSubtitleText: String,
         captureTitleText: String,
@@ -33,6 +35,7 @@ public struct DocumentCaptureScreen: View {
         self.showAttribution = showAttribution
         self.allowGallerySelection = allowGallerySelection
         self.showSkipButton = showSkipButton
+        self.instructionsHeroImage = instructionsHeroImage
         self.instructionsTitleText = instructionsTitleText
         self.instructionsSubtitleText = instructionsSubtitleText
         self.captureTitleText = captureTitleText
@@ -48,6 +51,7 @@ public struct DocumentCaptureScreen: View {
             let _ = onError(captureError)
         } else if showInstructions && !viewModel.acknowledgedInstructions {
             DocumentCaptureInstructionsScreen(
+                heroImage: instructionsHeroImage,
                 title: instructionsTitleText,
                 subtitle: instructionsSubtitleText,
                 showAttribution: showAttribution,

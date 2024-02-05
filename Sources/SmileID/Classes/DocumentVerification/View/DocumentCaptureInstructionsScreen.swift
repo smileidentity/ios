@@ -2,12 +2,14 @@ import SwiftUI
 
 /// Instructions for taking a good quality document photo. Optionally, allows user to select a photo from their gallery.
 public struct DocumentCaptureInstructionsScreen: View {
+    let heroImage: UIImage
     let title: String
     let subtitle: String
     let showAttribution: Bool
     let allowPhotoFromGallery: Bool
     let showSkipButton: Bool
     let onSkip: () -> Void
+    // swiftlint:disable identifier_name
     let onInstructionsAcknowledgedSelectFromGallery: () -> Void
     let onInstructionsAcknowledgedTakePhoto: () -> Void
 
@@ -15,7 +17,7 @@ public struct DocumentCaptureInstructionsScreen: View {
         VStack {
             ScrollView {
                 VStack {
-                    Image(uiImage: SmileIDResourcesHelper.InstructionsHeaderDocumentIcon)
+                    Image(uiImage: heroImage)
                         .padding(24)
                     VStack(spacing: 16) {
                         Text(title)
