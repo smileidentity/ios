@@ -3,6 +3,8 @@ import Zip
 
 public class LocalStorage {
     private static let defaultFolderName = "sid_jobs"
+    private static let pendingFolderName = "pending"
+    private static let completedFolderName = "completed"
     private static let imagePrefix = "si_"
     private static let fileManager = FileManager.default
     private static let previewImageName = "PreviewImage.jpg"
@@ -20,12 +22,24 @@ public class LocalStorage {
         }
     }
 
+    static var pendingDirectory: URL {
+        get throws {
+            return try defaultDirectory.appendingPathComponent(pendingFolderName)
+        }
+    }
+
+    static var completedDirectory: URL {
+        get throws {
+            return try defaultDirectory.appendingPathComponent(completedFolderName)
+        }
+    }
+
     static func saveImage(
         image: Data,
         to folder: String = "sid-\(UUID().uuidString)",
         name: String
     ) throws -> URL {
-        try createDefaultDirectory()
+        try createSmileDirectory(name: defaultDirectory)
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         try createDirectory(at: destinationFolder, overwrite: false)
         let fileName = filename(for: name)
@@ -35,9 +49,9 @@ public class LocalStorage {
     static func saveSelfieImages(
         selfieImage: Data,
         livenessImages: [Data],
-        to folder: String = "sid-\(UUID().uuidString)"
+        jobId folder: String
     ) throws -> SelfieCaptureResultStore {
-        try createDefaultDirectory()
+        try createSmileDirectory(name: defaultDirectory)
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         var livenessUrls = [URL]()
         try createDirectory(at: destinationFolder, overwrite: false)
@@ -63,9 +77,9 @@ public class LocalStorage {
         selfie: URL,
         livenessImages: [URL],
         idInfo: IdInfo? = nil,
-        to folder: String = "sid-\(UUID().uuidString)"
+        jobId folder: String
     ) throws -> URL {
-        try createDefaultDirectory()
+        try createSmileDirectory(name: defaultDirectory)
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         var imageInfoArray: [UploadImageInfo] = []
         imageInfoArray.append(
@@ -102,9 +116,11 @@ public class LocalStorage {
         livenessImages: [Data]?,
         countryCode: String,
         documentType: String?,
-        to folder: String = "sid-\(UUID().uuidString)"
+        jobId folder: String
     ) throws -> DocumentCaptureResultStore {
-        try createDefaultDirectory()
+        try createSmileDirectory(name: defaultDirectory)
+        try createSmileDirectory(name: pendingDirectory)
+        try createSmileDirectory(name: completedDirectory)
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         var allFiles = [URL]()
         var livenessImagesUrl = [URL]()
@@ -157,8 +173,8 @@ public class LocalStorage {
         )
     }
 
-    private static func createDefaultDirectory() throws {
-        try createDirectory(at: defaultDirectory, overwrite: false)
+    static func createSmileDirectory(name: URL) throws {
+        try createDirectory(at: name, overwrite: false)
     }
 
     private static func filename(for imageType: String) -> String {
@@ -195,9 +211,9 @@ public class LocalStorage {
 
     public static func toZip(
         uploadRequest: UploadRequest,
-        to folder: String = "sid-\(UUID().uuidString)"
+        jobId folder: String
     ) throws -> URL {
-        try createDefaultDirectory()
+        try createSmileDirectory(name: defaultDirectory)
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         let jsonData = try jsonEncoder.encode(uploadRequest)
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))

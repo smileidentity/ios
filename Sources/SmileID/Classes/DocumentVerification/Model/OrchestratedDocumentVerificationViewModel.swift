@@ -127,7 +127,8 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 selfie: selfieFile,
                 livenessImages: livenessFiles,
                 countryCode: countryCode,
-                documentType: documentType
+                documentType: documentType,
+                jobId: jobId
             )
             let zipUrl = try LocalStorage.zipFiles(at: savedFiles.allFiles)
             zip = try Data(contentsOf: zipUrl)

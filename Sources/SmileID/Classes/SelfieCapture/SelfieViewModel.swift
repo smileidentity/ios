@@ -290,7 +290,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
                 let infoJson = try LocalStorage.createInfoJson(
                     selfie: selfieImage,
-                    livenessImages: livenessImages
+                    livenessImages: livenessImages,
+                    jobId: jobId
                 )
                 let zipUrl = try LocalStorage.zipFiles(
                     at: livenessImages + [selfieImage] + [infoJson]

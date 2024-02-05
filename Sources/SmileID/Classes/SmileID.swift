@@ -23,6 +23,7 @@ public class SmileID {
     public private(set) static var config: Config!
     public private(set) static var useSandbox = false
     public private(set) static var callbackUrl: String = ""
+    public private(set) static var allowOfflineMode = false
     internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
@@ -69,6 +70,20 @@ public class SmileID {
     /// - Parameter url: A valid URL pointing to your server
     public class func setCallbackUrl(url: URL?) {
         SmileID.callbackUrl = url?.absoluteString ?? ""
+    }
+
+    /// Set offline mode on the sdkJobStatusResponse
+    /// - Parameter allowOfflineMode: A boolean to enable offline mode or not
+    public class func setAllowOfflineMode(allowOfflineMode: Bool) {
+        SmileID.allowOfflineMode = allowOfflineMode
+    }
+
+    public class func submitJob(jobId: String, deleteFilesOnSuccess: Bool = false) {}
+
+    public class func cleanUpJob(jobId: String) {}
+
+    public class func getUnsubmittedJobs() -> [String] {
+        return [String]()
     }
 
     /// Apply theme

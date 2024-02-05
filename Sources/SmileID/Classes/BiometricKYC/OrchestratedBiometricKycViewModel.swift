@@ -68,7 +68,8 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 let infoJson = try LocalStorage.createInfoJson(
                     selfie: selfieImage,
                     livenessImages: livenessImages,
-                    idInfo: idInfo
+                    idInfo: idInfo,
+                    jobId: jobId
                 )
                 let zipUrl = try LocalStorage.zipFiles(
                     at: livenessImages + [selfieImage] + [infoJson]
