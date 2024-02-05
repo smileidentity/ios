@@ -41,7 +41,7 @@ jobs:
           path: docs
           token: ${{ secrets.GH_PAT }}
       - name: Copy CHANGELOG.md to Release Notes
-        run: cp ios/CHANGELOG.md integration-options/mobile/ios-v10/release-notes.md
+        run: cp ios/CHANGELOG.md docs/integration-options/mobile/ios-v10/release-notes.md
       - name: Create docs PR
         uses: peter-evans/create-pull-request@v6
         with:
