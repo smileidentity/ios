@@ -24,7 +24,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
             -H "Accept: application/vnd.github.everest-preview+json" \
             -H "Content-Type: application/json" \
-            https://api.github.com/repos/smileidentity/react-native/actions/workflows/release_ios.yml/dispatches \
+            https://api.github.com/repos/smileidentity/react-native/actions/workflows/ios_release.yml/dispatches \
             --data '{"ref": "main","inputs": {"ios_release_version": "${{ github.event.release.tag_name }}" }}'
 
   update-docs-release-notes:
@@ -41,7 +41,7 @@ jobs:
           path: docs
           token: ${{ secrets.GH_PAT }}
       - name: Copy CHANGELOG.md to Release Notes
-        run: cp ios/CHANGELOG.md integration-options/mobile/ios-v10/release-notes.md
+        run: cp ios/CHANGELOG.md docs/integration-options/mobile/ios-v10/release-notes.md
       - name: Create docs PR
         uses: peter-evans/create-pull-request@v6
         with:
