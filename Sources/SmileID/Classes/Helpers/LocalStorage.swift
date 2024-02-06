@@ -24,14 +24,32 @@ public class LocalStorage {
 
     static var pendingDirectory: URL {
         get throws {
-            return try defaultDirectory.appendingPathComponent(pendingFolderName)
+            let documentDirectory = try FileManager.default.url(
+                for: .documentDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: true
+            )
+            return documentDirectory.appendingPathComponent(pendingFolderName)
         }
     }
 
     static var completedDirectory: URL {
         get throws {
-            return try defaultDirectory.appendingPathComponent(completedFolderName)
+            let documentDirectory = try FileManager.default.url(
+                for: .documentDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: true
+            )
+            return documentDirectory.appendingPathComponent(completedFolderName)
         }
+    }
+
+    enum SaveType {
+        case pending
+        case completed
+        case defaultSave
     }
 
     static func saveImage(
@@ -116,12 +134,21 @@ public class LocalStorage {
         livenessImages: [Data]?,
         countryCode: String,
         documentType: String?,
-        jobId folder: String
+        jobId folder: String,
+        saveStage: SaveType
     ) throws -> DocumentCaptureResultStore {
         try createSmileDirectory(name: defaultDirectory)
         try createSmileDirectory(name: pendingDirectory)
         try createSmileDirectory(name: completedDirectory)
-        let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
+        var destinationFolder: Foundation.URL
+        switch saveStage {
+            case .pending:
+                destinationFolder = try pendingDirectory.appendingPathComponent(folder)
+            case .completed:
+                destinationFolder = try completedDirectory.appendingPathComponent(folder)
+            case .defaultSave:
+                destinationFolder = try defaultDirectory.appendingPathComponent(folder)
+        }
         var allFiles = [URL]()
         var livenessImagesUrl = [URL]()
         var documentBack: URL?
@@ -164,6 +191,7 @@ public class LocalStorage {
         let jsonData = try jsonEncoder.encode(UploadRequest(images: imageInfoArray, idInfo: idInfo))
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
         allFiles.append(jsonUrl)
+
         return DocumentCaptureResultStore(
             allFiles: allFiles,
             documentFront: documentFront,

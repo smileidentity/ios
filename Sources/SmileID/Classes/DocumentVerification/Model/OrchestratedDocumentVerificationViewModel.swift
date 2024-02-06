@@ -118,24 +118,14 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         DispatchQueue.main.async {
             self.step = .processing(.inProgress)
         }
-
-        let zip: Data
-        do {
-            let savedFiles = try LocalStorage.saveDocumentImages(
-                front: documentFrontFile,
-                back: documentBackFile,
-                selfie: selfieFile,
-                livenessImages: livenessFiles,
-                countryCode: countryCode,
-                documentType: documentType,
-                jobId: jobId
-            )
-            let zipUrl = try LocalStorage.zipFiles(at: savedFiles.allFiles)
-            zip = try Data(contentsOf: zipUrl)
-            self.savedFiles = savedFiles
-        } catch {
-            print("Error saving document images: \(error)")
-            onError(error: SmileIDError.unknown("Error saving document images"))
+        guard let zip = saveDocumentImages(front: documentFrontFile,
+                                           back: documentBackFile,
+                                           selfie: selfieFile,
+                                           livenessImages: livenessFiles,
+                                           countryCode: countryCode,
+                                           documentType: documentType,
+                                           jobId: jobId,
+                                           saveStage: .defaultSave) else {
             return
         }
 
@@ -148,47 +138,94 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
         let auth = SmileID.api.authenticate(request: authRequest)
         networkingSubscriber = auth.flatMap { [self] authResponse in
-                let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
-                    allowNewEnroll: String(allowNewEnroll), // TODO - Fix when Michael changes this to boolean
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                return SmileID.api.prepUpload(request: prepUploadRequest)
-            }
-            .flatMap { prepUploadResponse in
-                SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
-            }
-            .zip(auth)
-            .flatMap { _, authResponse -> AnyPublisher<JobStatusResponse<U>, Error> in
-                let jobStatusRequest = JobStatusRequest(
-                    userId: authResponse.partnerParams.userId,
-                    jobId: authResponse.partnerParams.jobId,
-                    includeImageLinks: false,
-                    includeHistory: false,
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                return SmileID.api.getJobStatus(request: jobStatusRequest)
-            }
-            .sink(
-                receiveCompletion: { completion in
-                    switch completion {
+            let prepUploadRequest = PrepUploadRequest(
+                partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
+                allowNewEnroll: String(allowNewEnroll), // TODO - Fix when Michael changes this to boolean
+                timestamp: authResponse.timestamp,
+                signature: authResponse.signature
+            )
+            return SmileID.api.prepUpload(request: prepUploadRequest)
+        }
+        .flatMap { prepUploadResponse in
+            SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
+        }
+        .zip(auth)
+        .flatMap { _, authResponse -> AnyPublisher<JobStatusResponse<U>, Error> in
+            let jobStatusRequest = JobStatusRequest(
+                userId: authResponse.partnerParams.userId,
+                jobId: authResponse.partnerParams.jobId,
+                includeImageLinks: false,
+                includeHistory: false,
+                timestamp: authResponse.timestamp,
+                signature: authResponse.signature
+            )
+            return SmileID.api.getJobStatus(request: jobStatusRequest)
+        }
+        .sink(
+            receiveCompletion: { [weak self] completion in
+                switch completion {
                     case .failure(let error):
+                        _ = self?.saveDocumentImages(front: documentFrontFile,
+                                                     back: self?.documentBackFile,
+                                                     selfie: selfieFile,
+                                                     livenessImages: self?.livenessFiles,
+                                                     countryCode: self?.countryCode ?? "",
+                                                     documentType: self?.documentType,
+                                                     jobId: self?.jobId ?? "",
+                                                     saveStage: .pending)
                         print("Error submitting job: \(error)")
-                        self.onError(error: SmileIDError.unknown("Network error"))
+                        self?.onError(error: SmileIDError.unknown("Network error"))
                     default:
                         break
-                    }
-                },
-                receiveValue: { response in
-                    self.jobStatusResponse = response
-                    DispatchQueue.main.async {
-                        self.step = .processing(.success)
-                    }
                 }
-            )
+            },
+            receiveValue: { [weak self] response in
+                _ = self?.saveDocumentImages(front: documentFrontFile,
+                                             back: self?.documentBackFile,
+                                             selfie: selfieFile,
+                                             livenessImages: self?.livenessFiles,
+                                             countryCode: self?.countryCode ?? "",
+                                             documentType: self?.documentType,
+                                             jobId: self?.jobId ?? "",
+                                             saveStage: .completed)
+                self?.jobStatusResponse = response
+                DispatchQueue.main.async {
+                    self?.step = .processing(.success)
+                }
+            }
+        )
     }
+
+    func saveDocumentImages(
+        front: Data,
+        back: Data?,
+        selfie: Data,
+        livenessImages: [Data]?,
+        countryCode: String,
+        documentType: String?,
+        jobId: String,
+        saveStage: LocalStorage.SaveType) -> Data? {
+            let zip: Data
+            do {
+                let savedFiles = try LocalStorage.saveDocumentImages(
+                    front: front,
+                    back: back,
+                    selfie: selfie,
+                    livenessImages: livenessImages,
+                    countryCode: countryCode,
+                    documentType: documentType,
+                    jobId: jobId, saveStage: saveStage
+                )
+                let zipUrl = try LocalStorage.zipFiles(at: savedFiles.allFiles)
+                zip = try Data(contentsOf: zipUrl)
+                self.savedFiles = savedFiles
+            } catch {
+                print("Error saving document images: \(error)")
+                onError(error: SmileIDError.unknown("Error saving document images"))
+                return nil
+            }
+            return zip
+        }
 
     /// If stepToRetry is ProcessingScreen, we're retrying a network issue, so we need to kick off
     /// the resubmission manually. Otherwise, we're retrying a capture error, so we just need to
