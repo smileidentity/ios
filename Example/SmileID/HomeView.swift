@@ -55,7 +55,7 @@ struct HomeView: View {
                             }
                         ),
                         ProductCell(
-                            image: "biometric",
+                            image: "enhanced_kyc",
                             name: "Enhanced KYC",
                             onClick: {
                                 viewModel.onProductClicked()
