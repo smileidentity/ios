@@ -23,7 +23,7 @@ struct HomeView: View {
                     maxColumns: 2,
                     items: [
                         ProductCell(
-                            image: "userauth",
+                            image: "smart_selfie_enroll",
                             name: "SmartSelfie™ Enrollment",
                             onClick: {
                                 viewModel.onProductClicked()
@@ -42,7 +42,7 @@ struct HomeView: View {
                             }
                         ),
                         ProductCell(
-                            image: "userauth",
+                            image: "smart_selfie_authentication",
                             name: "SmartSelfie™ Authentication",
                             onClick: {
                                 viewModel.onProductClicked()
@@ -83,7 +83,7 @@ struct HomeView: View {
                             content: { DocumentVerificationWithSelector(delegate: viewModel) }
                         ),
                         ProductCell(
-                            image: "document",
+                            image: "enhanced_doc_v",
                             name: "Enhanced Document Verification",
                             onClick: {
                                 viewModel.onProductClicked()

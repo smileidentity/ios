@@ -50,7 +50,7 @@ struct ProductCell: View {
 private struct ProductCell_Previews: PreviewProvider {
     static var previews: some View {
         ProductCell(
-            image: "userauth",
+            image: "biometric",
             name: "SmartSelfie™ Authentication",
             content: { Text("Hello") }
         )
