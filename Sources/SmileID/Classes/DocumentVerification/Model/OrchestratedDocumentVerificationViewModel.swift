@@ -29,6 +29,8 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal var networkingSubscriber: AnyCancellable?
     internal var stepToRetry: DocumentCaptureFlow?
     internal var error: Error?
+    /// TODO - REMOVE
+    internal let offlineEnabled: Bool = false
 
     // UI properties
     @Published var acknowledgedInstructions = false
@@ -118,14 +120,16 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         DispatchQueue.main.async {
             self.step = .processing(.inProgress)
         }
-        guard let zip = saveDocumentImages(front: documentFrontFile,
-                                           back: documentBackFile,
-                                           selfie: selfieFile,
-                                           livenessImages: livenessFiles,
-                                           countryCode: countryCode,
-                                           documentType: documentType,
-                                           jobId: jobId,
-                                           saveStage: .defaultSave) else {
+        guard let zip = saveDocumentImages(
+            front: documentFrontFile,
+            back: documentBackFile,
+            selfie: selfieFile,
+            livenessImages: livenessFiles,
+            countryCode: countryCode,
+            documentType: documentType,
+            jobId: jobId,
+            saveStage:.pending
+        ) else {
             return
         }
 
@@ -165,14 +169,16 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             receiveCompletion: { [weak self] completion in
                 switch completion {
                     case .failure(let error):
-                        _ = self?.saveDocumentImages(front: documentFrontFile,
-                                                     back: self?.documentBackFile,
-                                                     selfie: selfieFile,
-                                                     livenessImages: self?.livenessFiles,
-                                                     countryCode: self?.countryCode ?? "",
-                                                     documentType: self?.documentType,
-                                                     jobId: self?.jobId ?? "",
-                                                     saveStage: .pending)
+                        _ = self?.saveDocumentImages(
+                            front: documentFrontFile,
+                            back: self?.documentBackFile,
+                            selfie: selfieFile,
+                            livenessImages: self?.livenessFiles,
+                            countryCode: self?.countryCode ?? "",
+                            documentType: self?.documentType,
+                            jobId: self?.jobId ?? "", // TODO - cannot be null, will fix
+                            saveStage: .pending
+                        )
                         print("Error submitting job: \(error)")
                         self?.onError(error: SmileIDError.unknown("Network error"))
                     default:
@@ -180,14 +186,16 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 }
             },
             receiveValue: { [weak self] response in
-                _ = self?.saveDocumentImages(front: documentFrontFile,
-                                             back: self?.documentBackFile,
-                                             selfie: selfieFile,
-                                             livenessImages: self?.livenessFiles,
-                                             countryCode: self?.countryCode ?? "",
-                                             documentType: self?.documentType,
-                                             jobId: self?.jobId ?? "",
-                                             saveStage: .completed)
+                _ = self?.saveDocumentImages(
+                    front: documentFrontFile,
+                    back: self?.documentBackFile,
+                    selfie: selfieFile,
+                    livenessImages: self?.livenessFiles,
+                    countryCode: self?.countryCode ?? "",
+                    documentType: self?.documentType,
+                    jobId: self?.jobId ?? "", // TODO - cannot be null, will fix
+                    saveStage: .completed
+                )
                 self?.jobStatusResponse = response
                 DispatchQueue.main.async {
                     self?.step = .processing(.success)
@@ -262,8 +270,8 @@ internal class OrchestratedDocumentVerificationViewModel:
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
             delegate.didSucceed(
-                selfie: savedFiles.selfie,
-                documentFrontImage: savedFiles.documentFront,
+                selfie: savedFiles.selfie!, 
+                documentFrontImage: savedFiles.documentFront!,
                 documentBackImage: savedFiles.documentBack,
                 jobStatusResponse: jobStatusResponse
             )
@@ -284,8 +292,8 @@ internal class OrchestratedEnhancedDocumentVerificationViewModel:
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let jobStatusResponse = jobStatusResponse, let savedFiles = savedFiles {
             delegate.didSucceed(
-                selfie: savedFiles.selfie,
-                documentFrontImage: savedFiles.documentFront,
+                selfie: savedFiles.selfie!,
+                documentFrontImage: savedFiles.documentFront!,
                 documentBackImage: savedFiles.documentBack,
                 jobStatusResponse: jobStatusResponse
             )
@@ -298,3 +306,4 @@ internal class OrchestratedEnhancedDocumentVerificationViewModel:
         }
     }
 }
+

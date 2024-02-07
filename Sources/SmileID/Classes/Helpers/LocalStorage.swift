@@ -2,7 +2,7 @@ import Foundation
 import Zip
 
 public class LocalStorage {
-    private static let defaultFolderName = "sid_jobs"
+    private static let defaultFolderName = "SmileID"
     private static let pendingFolderName = "pending"
     private static let completedFolderName = "completed"
     private static let imagePrefix = "si_"
@@ -24,34 +24,22 @@ public class LocalStorage {
 
     static var pendingDirectory: URL {
         get throws {
-            let documentDirectory = try FileManager.default.url(
-                for: .documentDirectory,
-                in: .userDomainMask,
-                appropriateFor: nil,
-                create: true
-            )
-            return documentDirectory.appendingPathComponent(pendingFolderName)
+            try defaultDirectory.appendingPathComponent(pendingFolderName)
         }
     }
 
     static var completedDirectory: URL {
         get throws {
-            let documentDirectory = try FileManager.default.url(
-                for: .documentDirectory,
-                in: .userDomainMask,
-                appropriateFor: nil,
-                create: true
-            )
-            return documentDirectory.appendingPathComponent(completedFolderName)
+            try defaultDirectory.appendingPathComponent(completedFolderName)
         }
     }
 
     enum SaveType {
         case pending
         case completed
-        case defaultSave
     }
 
+    /// todo - rework this logic
     static func saveImage(
         image: Data,
         to folder: String = "sid-\(UUID().uuidString)",
@@ -91,6 +79,22 @@ public class LocalStorage {
         )
     }
 
+    static func deleteFiles(at fileURLs: [URL]) throws {
+        let fileManager = FileManager.default
+
+        try fileURLs.forEach { fileURL in
+            guard fileManager.fileExists(atPath: fileURL.path) else {
+                throw FileDeletionError.fileNotFound
+            }
+
+            try fileManager.removeItem(at: fileURL)
+        }
+    }
+
+    enum FileDeletionError: Error {
+        case fileNotFound
+    }
+
     static func createInfoJson(
         selfie: URL,
         livenessImages: [URL],
@@ -121,16 +125,16 @@ public class LocalStorage {
     /// - Parameters:
     ///   - front: JPEG data representation ID image front
     ///   - back: JPEG data for the back of the ID image
-    ///   - livenessImages: The selfie capture liveness images
     ///   - selfie: The selfie capture
+    ///   - livenessImages: The selfie capture liveness images
     ///   - countryCode: The document country code
     ///   - documentType: The optional document type
     ///   - folder: The name of the folder the files should be saved
     /// - Returns: A document result store which encapsulates the urls of the saved images
     static func saveDocumentImages(
-        front: Data,
+        front: Data?,
         back: Data?,
-        selfie: Data,
+        selfie: Data?,
         livenessImages: [Data]?,
         countryCode: String,
         documentType: String?,
@@ -142,22 +146,28 @@ public class LocalStorage {
         try createSmileDirectory(name: completedDirectory)
         var destinationFolder: Foundation.URL
         switch saveStage {
-            case .pending:
-                destinationFolder = try pendingDirectory.appendingPathComponent(folder)
-            case .completed:
-                destinationFolder = try completedDirectory.appendingPathComponent(folder)
-            case .defaultSave:
-                destinationFolder = try defaultDirectory.appendingPathComponent(folder)
+                case .pending:
+                    destinationFolder = try pendingDirectory.appendingPathComponent(folder)
+                case .completed:
+                    destinationFolder = try completedDirectory.appendingPathComponent(folder)
         }
         var allFiles = [URL]()
         var livenessImagesUrl = [URL]()
+        var documentFront: URL?
         var documentBack: URL?
+        var selfieFile: URL?
         try createDirectory(at: destinationFolder, overwrite: false)
         var imageInfoArray = [UploadImageInfo]()
-        let filename = filename(for: "idFront")
-        let documentFront = try write(front, to: destinationFolder.appendingPathComponent(filename))
-        allFiles.append(documentFront)
-        imageInfoArray.append(UploadImageInfo(imageTypeId: .idCardJpgFile, fileName: filename))
+
+        if let front = front {
+            let filename = self.filename(for: "idFront")
+            let url = try write(front, to: destinationFolder.appendingPathComponent(filename))
+            documentFront = url
+            allFiles.append(url)
+            imageInfoArray.append(
+                UploadImageInfo(imageTypeId: .idCardJpgFile, fileName: filename)
+            )
+        }
 
         if let back = back {
             let filename = self.filename(for: "idBack")
@@ -168,6 +178,17 @@ public class LocalStorage {
                 UploadImageInfo(imageTypeId: .idCardRearJpgFile, fileName: filename)
             )
         }
+
+        if let selfie = selfie {
+            let selfieFileName = self.filename(for: "selfie")
+            let url = try write(selfie, to: destinationFolder.appendingPathComponent(selfieFileName))
+            selfieFile = url
+            allFiles.append(url)
+            imageInfoArray.append(
+                UploadImageInfo(imageTypeId: .selfieJpgFile, fileName: selfieFileName)
+            )
+        }
+
         let livenessInfoArray = try livenessImages?.map { [self] imageData in
             let fileName = self.filename(for: "liveness")
             let url = try write(imageData, to: destinationFolder.appendingPathComponent(fileName))
@@ -178,15 +199,7 @@ public class LocalStorage {
         if let livenessInfoArray = livenessInfoArray {
             imageInfoArray.append(contentsOf: livenessInfoArray)
         }
-        let selfieFileName = self.filename(for: "selfie")
-        let selfieUrl = try write(
-            selfie,
-            to: destinationFolder.appendingPathComponent(selfieFileName)
-        )
-        allFiles.append(selfieUrl)
-        imageInfoArray.append(
-            UploadImageInfo(imageTypeId: .selfieJpgFile, fileName: selfieFileName)
-        )
+
         let idInfo = IdInfo(country: countryCode, idType: documentType)
         let jsonData = try jsonEncoder.encode(UploadRequest(images: imageInfoArray, idInfo: idInfo))
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
@@ -196,7 +209,7 @@ public class LocalStorage {
             allFiles: allFiles,
             documentFront: documentFront,
             documentBack: documentBack,
-            selfie: selfieUrl,
+            selfie: selfieFile,
             livenessImages: livenessImagesUrl
         )
     }

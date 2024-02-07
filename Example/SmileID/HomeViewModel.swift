@@ -118,17 +118,17 @@ class HomeViewModel: ObservableObject,
         selfie _: URL,
         documentFrontImage _: URL,
         documentBackImage _: URL?,
-        jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
+        jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>?
     ) {
         dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Document Verification",
-            jobComplete: jobStatusResponse.jobComplete,
-            jobSuccess: jobStatusResponse.jobSuccess,
-            code: jobStatusResponse.code,
-            resultCode: jobStatusResponse.result?.resultCode,
-            resultText: jobStatusResponse.result?.resultText
+            jobComplete: jobStatusResponse?.jobComplete,
+            jobSuccess: jobStatusResponse?.jobSuccess,
+            code: jobStatusResponse?.code,
+            resultCode: jobStatusResponse?.result?.resultCode,
+            resultText: jobStatusResponse?.result?.resultText
         )
     }
 
@@ -136,17 +136,17 @@ class HomeViewModel: ObservableObject,
         selfie _: URL,
         documentFrontImage _: URL,
         documentBackImage _: URL?,
-        jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
+        jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>?
     ) {
         dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Enhanced Document Verification",
-            jobComplete: jobStatusResponse.jobComplete,
-            jobSuccess: jobStatusResponse.jobSuccess,
-            code: jobStatusResponse.code,
-            resultCode: jobStatusResponse.result?.resultCode,
-            resultText: jobStatusResponse.result?.resultText
+            jobComplete: jobStatusResponse?.jobComplete,
+            jobSuccess: jobStatusResponse?.jobSuccess,
+            code: jobStatusResponse?.code,
+            resultCode: jobStatusResponse?.result?.resultCode,
+            resultText: jobStatusResponse?.result?.resultText
         )
     }
 
