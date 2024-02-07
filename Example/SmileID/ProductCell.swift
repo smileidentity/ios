@@ -31,7 +31,7 @@ struct ProductCell: View {
                     Image(image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 42)
+                        .frame(width: 48, height: 64)
                     Text(name)
                         .multilineTextAlignment(.center)
                         .font(SmileID.theme.header4)
@@ -41,7 +41,8 @@ struct ProductCell: View {
                 .frame(maxWidth: .infinity)
                 .background(SmileID.theme.accent)
                 .cornerRadius(8)
-                .sheet(isPresented: $isPresented, content: { AnyView(content()) })
+                .sheet(isPresented: $isPresented, content: { AnyView(content())
+                })
             }
         )
     }
@@ -50,7 +51,7 @@ struct ProductCell: View {
 private struct ProductCell_Previews: PreviewProvider {
     static var previews: some View {
         ProductCell(
-            image: "userauth",
+            image: "biometric",
             name: "SmartSelfie™ Authentication",
             content: { Text("Hello") }
         )
