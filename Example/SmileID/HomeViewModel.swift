@@ -156,10 +156,12 @@ class HomeViewModel: ObservableObject,
         toastMessage = "Consent Granted"
     }
 
-    func onConsentDenied() {
+    func onConsentDenied() 
+    {
         dismissModal()
         showToast = true
         toastMessage = "Consent Denied"
+                                             print(toastMessage)
     }
 
     private func dismissModal() {
