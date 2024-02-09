@@ -1,10 +1,7 @@
 import SwiftUI
 
 /// This handles Instructions + Capture + Confirmation for a single side of a document
-public struct DocumentCaptureScreen:
-
-    View
-{
+public struct DocumentCaptureScreen: View {
     let showInstructions: Bool
     let showAttribution: Bool
     let allowGallerySelection: Bool
