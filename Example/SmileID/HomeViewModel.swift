@@ -163,6 +163,7 @@ class HomeViewModel: ObservableObject,
     }
 
     private func dismissModal() {
+        
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
     }
 }
