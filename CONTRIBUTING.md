@@ -42,16 +42,8 @@ To ensure our project maintains high-quality standards and consistency across co
 
     # Using pip
     pip install pre-commit
-    ```
 
-2. **Clone the Repository**: If you haven't already, clone the repository to your local machine:
-
-    ```bash
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
-
-3. **Install the Pre-commit Hooks**: Navigate to the root of the cloned repository and install the pre-commit hooks defined in our `.pre-commit-config.yaml` file:
+2. **Install the Pre-commit Hooks**: Navigate to the root of the cloned repository and install the pre-commit hooks defined in our `.pre-commit-config.yaml` file:
 
     ```bash
     pre-commit install
