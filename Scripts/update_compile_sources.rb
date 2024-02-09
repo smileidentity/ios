@@ -2,6 +2,7 @@
 # updating that it may not update the
 # SmileID.xcodeproj on the root of the project
 # this will not affect the Example project
+
 require 'xcodeproj'
 
 project_path = 'SmileID.xcodeproj'
