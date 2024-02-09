@@ -1,7 +1,10 @@
 import SwiftUI
 
 /// This handles Instructions + Capture + Confirmation for a single side of a document
-public struct DocumentCaptureScreen: View {
+public struct DocumentCaptureScreen:
+
+    View
+{
     let showInstructions: Bool
     let showAttribution: Bool
     let allowGallerySelection: Bool
@@ -15,7 +18,8 @@ public struct DocumentCaptureScreen: View {
     let onError: (Error) -> Void
     let onSkip: () -> Void
 
-    @ObservedObject private var viewModel: DocumentCaptureViewModel
+    @ObservedObject
+    private var viewModel: DocumentCaptureViewModel
 
     public init(
         showInstructions: Bool,
@@ -30,6 +34,7 @@ public struct DocumentCaptureScreen: View {
         onConfirm: @escaping (Data) -> Void,
         onError: @escaping (Error) -> Void,
         onSkip: @escaping () -> Void = {}
+
     ) {
         self.showInstructions = showInstructions
         self.showAttribution = showAttribution
@@ -49,7 +54,7 @@ public struct DocumentCaptureScreen: View {
     public var body: some View {
         if let captureError = viewModel.captureError {
             let _ = onError(captureError)
-        } else if showInstructions && !viewModel.acknowledgedInstructions {
+        } else if showInstructions, !viewModel.acknowledgedInstructions {
             DocumentCaptureInstructionsScreen(
                 heroImage: instructionsHeroImage,
                 title: instructionsTitleText,
@@ -61,9 +66,9 @@ public struct DocumentCaptureScreen: View {
                 onInstructionsAcknowledgedSelectFromGallery: viewModel.onGalleryClick,
                 onInstructionsAcknowledgedTakePhoto: viewModel.onTakePhotoClick
             )
-                .sheet(isPresented: $viewModel.showPhotoPicker) {
-                    ImagePicker(onImageSelected: viewModel.onPhotoSelectedFromGallery)
-                }
+            .sheet(isPresented: $viewModel.showPhotoPicker) {
+                ImagePicker(onImageSelected: viewModel.onPhotoSelectedFromGallery)
+            }
         } else if let imageToConfirm = viewModel.documentImageToConfirm {
             ImageCaptureConfirmationDialog(
                 title: SmileIDResourcesHelper.localizedString(for: "Document.Confirmation.Header"),
@@ -141,9 +146,9 @@ struct CaptureScreenContent: View {
                 // By using a fixed size here, we ensure the UI doesn't move around when the
                 // manual capture button becomes visible
             }
-                .frame(height: 64)
+            .frame(height: 64)
             Spacer()
         }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
