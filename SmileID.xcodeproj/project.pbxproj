@@ -21,27 +21,34 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		01BF47A7CB2099F5324E5909 /* SelfieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273CD56820F9861DC71ADF18 /* SelfieViewModel.swift */; };
-		02E168FF858667B00C7F5380 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22652A4A046BD2BF72DC0E91 /* CameraView.swift */; };
-		03DBF10A712A246DCBBF6DB5 /* ServiceRunnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846EC23D342F0CF3ADE7F7AE /* ServiceRunnable.swift */; };
-		040A728A6EBB6FC6B202E49F /* SmileIDService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5362D8201885936E9D630A20 /* SmileIDService.swift */; };
+		0190545767B35BA3C18BEE89 /* AspectRatioRoundedRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6D80FCE6745AB02E23803C /* AspectRatioRoundedRectangle.swift */; };
+		020E24EF40EA240D97D02937 /* OrchestratedConsentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662E78AA779170D8CA9EEECF /* OrchestratedConsentScreen.swift */; };
 		048700B3A53E9D7F937AECD5 /* HTTPHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE231057AA9714E2BD0C334A /* HTTPHeader.swift */; };
 		04FD39A81A9EC2B530695DFE /* SmartSelfieResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42F9CCECF77002036B86892 /* SmartSelfieResultDelegate.swift */; };
+		061E6DF374E75D4DEEADFC7F /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB458AC93326E9B45B3093A /* FaceDetector.swift */; };
 		0661654F21C35C16EFFFC48B /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E132784950CC72ECA15B2554 /* FaceDetector.swift */; };
 		06704F74006CE588CF31C8CC /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4A6D69CC6F29B15095D09E /* Authentication.swift */; };
+		067E58D351407C7C227C0747 /* HTTPHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD26B0B824BCF18ACC72C77 /* HTTPHeader.swift */; };
 		07CFDB250829DB24C623830A /* BVN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F0465FD3DA2CE6859EB059 /* BVN.swift */; };
-		09D08481E4317DAC0C365630 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825AD7AF2425D8A320CE7B94 /* ActivityIndicator.swift */; };
 		0B1E4A1BBA4E80C3CA4E66A8 /* JobStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921AE1DE1E9B98FDA31B74D2 /* JobStatus.swift */; };
 		0B5FA6BE34260EE02DEFC7D0 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7B3CE7A0775B9FF6895565 /* ActivityIndicator.swift */; };
+		0B69150801E85613A848DA17 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BBF31D938D1CCFBAAEFEFEA /* Util.swift */; };
 		0BD3D4E53EA0D9B4642390B3 /* RadioGroupSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E93D1CD541B59039CC94578 /* RadioGroupSelector.swift */; };
 		0BD45AE514CFDE9EE69576A9 /* SelfieCaptureInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F81A3B4B85FBEB6D92AD3A /* SelfieCaptureInstructionsScreen.swift */; };
 		0C17BFBD22BE8846EAA53E15 /* SmileID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A9875AF7FDE92B02A0DEB4 /* SmileID.swift */; };
+		0C463AE9B73C1525B7AEA9B6 /* JobType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762D41A77A085AEBC84865A0 /* JobType.swift */; };
+		0CE1020C7B1933CAB5C9AB89 /* DocumentCaptureInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC1FFD2FD91BA3CB173E415 /* DocumentCaptureInstructionsScreen.swift */; };
+		0E27BCDCC060B751FDCA70EF /* RestRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87FADAFBD7D0BBFD67CE9F54 /* RestRequest.swift */; };
+		0E3EC13D27EC15219452AF2F /* DependencyAutoResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A761F976500963587570159 /* DependencyAutoResolver.swift */; };
+		0EBCB1B52F03A71F3C3EB8A9 /* OrchestratedBiometricKycViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F40E1AB84DB3B7664678DD9 /* OrchestratedBiometricKycViewModel.swift */; };
 		118F4978ED8F2D6A89319450 /* NavigationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAE20D478DD83BF10E71B4A /* NavigationHelper.swift */; };
-		13D7BBC72FDBE21A26C87AD5 /* LocalizedStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00C2F196732F0CF1718B0F7 /* LocalizedStringExtensions.swift */; };
+		12E284345A1ED806FF175C70 /* EnvironmentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD1139E9C24C622EE444F3F /* EnvironmentValues.swift */; };
 		15DF2BF9DEFFD6BF8BF4ACBB /* Injected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299ECBEAB067527186176C6A /* Injected.swift */; };
-		1AA14285AC73189D51EB3D4C /* EnvironmentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E41676BEEAD8392FF63FA8D /* EnvironmentValues.swift */; };
-		1B9B96960D796D42256EC65C /* RestartableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAD7E8BA0B77C04E087886A /* RestartableTimer.swift */; };
-		1D3DA3ECE0E336A43251EBA8 /* DocumentCaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6CEAD35D08159399AE30C8 /* DocumentCaptureViewModel.swift */; };
+		163B8B8FD3D884F78AC9341A /* NetworkUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA21BC551641A05EEEF293DB /* NetworkUtil.swift */; };
+		17E9A45CA0DFC33941BFA68A /* FontType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368E70B2A1178922E417251E /* FontType.swift */; };
+		1B2095D0BC6D68FC2E1575BD /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5840763E95886E039040FA /* ImageUtils.swift */; };
+		1D3A8587AFD595C21165C5A5 /* ProcessingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B26B20284F568DB2F40D86 /* ProcessingScreen.swift */; };
+		1DE6702C16CE8EC50AAEE1DA /* ImageCaptureConfirmationDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BAE2D643E510BAEBA73C7FF /* ImageCaptureConfirmationDialog.swift */; };
 		1E60693A8A4869772CCEC3A7 /* AspectRatioRoundedRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C72AFF8AA3938F339F5DE6 /* AspectRatioRoundedRectangle.swift */; };
 		1ED676C92B5983C30046CE46 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 1ED676C82B5983C30046CE46 /* Zip */; };
 		1EEFC2252B583CFB00B8A934 /* SmileID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EEFC21A2B583CFB00B8A934 /* SmileID.framework */; };
@@ -61,162 +68,155 @@
 		1EEFC3C22B5849EA00B8A934 /* FaceDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EEFC3AD2B5849D100B8A934 /* FaceDetectorTests.swift */; };
 		1EEFC3C32B5849EA00B8A934 /* DependencyContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EEFC3AF2B5849D100B8A934 /* DependencyContainerTests.swift */; };
 		1EEFC3C42B5849EA00B8A934 /* BaseTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EEFC3B02B5849D100B8A934 /* BaseTestCase.swift */; };
+		1F268168EF48978833BF69BF /* DocumentCaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD795E719C6AD70A258C45 /* DocumentCaptureViewModel.swift */; };
 		202719D3BFB6F8E10DC070EF /* NetworkUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AED3EA08FD760DA0C5C159 /* NetworkUtil.swift */; };
 		20F0E923BCA0665D9B4C56FB /* JobType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF14E3CE346EE315BBAA06F5 /* JobType.swift */; };
 		25C4BC1BE6584FD89624C928 /* JobSubmittable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D88AE78D6084933EDB15B /* JobSubmittable.swift */; };
+		26B3F4EE0E839FE9F7496BD2 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246B7981F8E7D376B7AE5F20 /* Authentication.swift */; };
+		275A84D95391C2A8DF3002A5 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD686D6D812458D62019243 /* ARViewController.swift */; };
 		284398A61CF8B5006D10A0E3 /* FaceGeometryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF172C83AC18959B5F1986FA /* FaceGeometryModel.swift */; };
+		28537DC4D705619DD9584183 /* SmartSelfieInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E146E26B2A61AEACD05DF939 /* SmartSelfieInstructionsScreen.swift */; };
+		2894F9D32512D680F165793E /* LocalizedStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4C117632FC095ED88BC978 /* LocalizedStringExtensions.swift */; };
+		29063B2DAF506430E3FA0BF8 /* RectangleDectorFunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D169B3B9B6113A799B5599E /* RectangleDectorFunnel.swift */; };
+		292366C0330693F7591CECF9 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE38E61AB6C014EC91F6D2A3 /* CameraManager.swift */; };
+		296A715656BEF1C1C73C897C /* DocumentCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9144EA2C95DCEDB121227C4C /* DocumentCaptureScreen.swift */; };
 		2A8EE65F1961A4571BB15CD4 /* EnhancedKyc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938B101B2631CA02C382833 /* EnhancedKyc.swift */; };
-		2CD2ABDDE6E0049F6E0B137B /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BABDF4514EE91D6D3F9CDB /* Authentication.swift */; };
-		30600CF755E76849EEBF3164 /* HTTPQueryParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDC5D966F3161A1ADE431F7 /* HTTPQueryParameters.swift */; };
+		2FDBB79B29E22EAB345509E3 /* FaceShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56C25D886D54F1D3FA5FF75 /* FaceShape.swift */; };
+		2FE537D16FBFECBE88C10C6B /* RestServiceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB468FF98A1852498A2525CD /* RestServiceClient.swift */; };
 		30C8F724F0127DDD500BCEBB /* DocumentVerificationResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F52FE87C9F657E3401C5A /* DocumentVerificationResultDelegate.swift */; };
-		31D847D6F2C60F530A4FD7AF /* OrchestratedConsentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8A3B7EF2B8351E532B6AFC /* OrchestratedConsentScreen.swift */; };
-		34AEAF8441F9CAF367390267 /* DocumentVerificationResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3315B35D40754B59A1DEE4 /* DocumentVerificationResultDelegate.swift */; };
-		35153C8F81D28E067E0E09CB /* DependencyRegisterer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C109FEB2FBD5AC59719712 /* DependencyRegisterer.swift */; };
 		3717248CAC00728B9734E68C /* ServiceHeaderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79DBABE0DA9A61E289320E64 /* ServiceHeaderProvider.swift */; };
-		3773701E5E7798D7052B7B51 /* UploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6718E3DFA2D61CB505E987A0 /* UploadRequest.swift */; };
-		3A420EC8A04E76EFD6816AD8 /* CameraError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F946DE981FD7982DDB0F96 /* CameraError.swift */; };
+		383DBEF053D7C4206F98E4DB /* ServiceHeaderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530000E14C4EF9AB5A3AD76E /* ServiceHeaderProvider.swift */; };
 		3B303D1A8B361A0AABC6D74A /* SmileIDService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B43E802E066AABEBFD95DD /* SmileIDService.swift */; };
-		3BCEAA5F7D5A896BC905D8B8 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AEF5CDFF539BCA8E2BCB0D /* Colors.swift */; };
-		3C3B2E1852721D9A8F772C92 /* FontType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21305E202DCA6666BB4D95DD /* FontType.swift */; };
-		3D1145CB7D7C28A238F82DD8 /* PartnerParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19C65D3FC7D15F9E56C0F66 /* PartnerParams.swift */; };
 		3F146B9F13BEC7CE4D2AE784 /* SelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319A42474B61895F9D4AE64B /* SelfieCaptureScreen.swift */; };
-		3F744C5ADD11A010D65854E5 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF389E575E2FBFA2C77B420 /* Services.swift */; };
-		40081845950092A2470ADD72 /* DocumentCaptureInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A7FB2EBC3B8AEBABFC8C074 /* DocumentCaptureInstructionsScreen.swift */; };
 		40C99B4F0E94E7A76898DA93 /* ImageCaptureConfirmationDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828C428188F879A3060C9F7A /* ImageCaptureConfirmationDialog.swift */; };
+		421320E32A38525694990158 /* Quadrilateral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627F6102A6BF7690A1561DEC /* Quadrilateral.swift */; };
 		423467D5FDACDAC34D677EFF /* RectangleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D391125F19F14CCFE64CB6C /* RectangleDetector.swift */; };
 		433870D4F7C58C9432868A21 /* StringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EAFA186D6F61FB7F7C1CF6 /* StringConstants.swift */; };
-		4620E4BF37D348F2488E70C4 /* StringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBA5939C3FD4C25763C35B51 /* StringConstants.swift */; };
+		440D7B7A2E5558983B1E37C8 /* RectangleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CF359BCA570A2B3450418A /* RectangleDetector.swift */; };
+		44CCD0A3BFCA0310A6BF9603 /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11AB378B21162B003622538 /* CaptureButton.swift */; };
 		47AE15B0C5D49410DFE83B47 /* OrchestratedSelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F3052672AC4114131F67D7 /* OrchestratedSelfieCaptureScreen.swift */; };
-		4AB6A9F8308499507D4BFC1D /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC51403123A776F3F68B1608 /* CameraViewController.swift */; };
-		4CB624547A432FE05D07C43E /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36AB8104F1DB5632CE0F9E70 /* NavigationBar.swift */; };
-		4D04714B46BFCCB977EB678D /* OrchestratedSelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E50A8FC9F9EE55332E195C /* OrchestratedSelfieCaptureScreen.swift */; };
-		4D77A15A7C45E3658F0898E4 /* DocumentShapedBoundingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EB2A5D531980B887BF7EB9 /* DocumentShapedBoundingBox.swift */; };
-		4DD47BB15CD3146E9135FBBE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D9058BF4271D8A3E1E8F97 /* Theme.swift */; };
-		4FBF6A3CF14BFDF3EDCE3CC7 /* PrepUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ADC2E0D5A31DA83E073EC9 /* PrepUpload.swift */; };
-		500722C726B9BD57BA71C3C1 /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CA187F68B8845753FA3E9C /* ImageUtils.swift */; };
-		522AB65DAF8B4892E325046D /* OrchestratedDocumentVerificationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331F0884AADE16E48C9E7625 /* OrchestratedDocumentVerificationScreen.swift */; };
+		488DD65E9CF1D0DE6C86D729 /* EnhancedKyc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50C110D0DBCEC7A981D478E2 /* EnhancedKyc.swift */; };
+		48F005AFBBDF15EF45199995 /* StringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F13FC29FD4EC8198E308C2 /* StringConstants.swift */; };
+		502A3D2F85F1F9FEE2D9B3BF /* Injected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E388D60D8A7AA19A6301A1 /* Injected.swift */; };
 		52D9D812215568215D083200 /* DependencyResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33582BC06C5A1BF366206851 /* DependencyResolver.swift */; };
-		5385A7CC42EEC4AE76D90E83 /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014EA08D28BB5C9CA4436305 /* DependencyContainer.swift */; };
-		561C1276047F3B3034B2F09D /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8D6024F2541E350B548CF5 /* ARViewController.swift */; };
+		5353AEB9BC7E280A9586C152 /* DependencyResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81602341A63ED9B7C287B7ED /* DependencyResolver.swift */; };
+		54027837C92B5091339EB79C /* BVN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D707D4ECCE74EDB8B7AC5CF /* BVN.swift */; };
+		586707CA445035F9A3FE0548 /* SmartSelfieResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEB3F30009724EDD15E552D /* SmartSelfieResultDelegate.swift */; };
 		59A6E2C084B5D3A2E5ADC3B5 /* EpilogueFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 569F7887148BD143ED7AF657 /* EpilogueFont.swift */; };
+		5A3C1BF431FC311CC65652C6 /* TextDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C7FE537049C09FC711769A /* TextDetector.swift */; };
 		5B2B787747FCFE4D7005AE12 /* HTTPQueryParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFB121D6B221D1F3B5F983F /* HTTPQueryParameters.swift */; };
-		5B3E35CF9834C24472196C8C /* EnhancedKyc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3F332278C45AB750EA05CB /* EnhancedKyc.swift */; };
-		5BB6DD3BAAB5C472F2E3AFB1 /* OrchestratedBiometricKycScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A325ACB958A10F05B08E5D27 /* OrchestratedBiometricKycScreen.swift */; };
 		5BEC9952C5C7600E626E4609 /* DocumentShapedBoundingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E6BC388D272353332F0EF4 /* DocumentShapedBoundingBox.swift */; };
-		5D9593B1390CB76FA5F055F7 /* OrchestratedBiometricKycViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED061BAC9EA547FFBD0DB71 /* OrchestratedBiometricKycViewModel.swift */; };
+		5C3D2D1D0DAF3378375AEFA3 /* SelfieCaptureResultStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F2CB9CDBF74EA941F11AEA /* SelfieCaptureResultStore.swift */; };
+		5CA57991614BCF7C17F18F06 /* FaceDetectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5F23DAA51E1DB0B8CEF483 /* FaceDetectionState.swift */; };
 		5E1C0325508BA451248C82DD /* UploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED654DB7F5089D1879E8235 /* UploadRequest.swift */; };
+		5F6348AF4213580C524821BE /* HTTPQueryParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A373968C49082A06EC4B66D /* HTTPQueryParameters.swift */; };
 		603AB4217275BF8E936B3052 /* PrepUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A20803E7E23997726E5A02 /* PrepUpload.swift */; };
 		611A09933DF15794D832A12D /* SmileIDLocalizableStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8D3569C3E6BC1784C807B5 /* SmileIDLocalizableStrings.swift */; };
+		62ADACB4DF7F8BE8FB02EA0C /* RestartableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3C0101CA97E38DB6018CEE /* RestartableTimer.swift */; };
+		62CE5C75957D47370D70ABE6 /* SelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C315425265C2F2F3E79789 /* SelfieCaptureScreen.swift */; };
+		637AD8D54F1E6BDCF8DFEA7A /* InfiniteProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B2C6113A9EE243DC1F84A8 /* InfiniteProgressBar.swift */; };
 		63EC3FC56764F3F7A0A66ABE /* OrchestratedConsentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBEB79F66629B4E9E41A3064 /* OrchestratedConsentScreen.swift */; };
-		64959A17C0B471E5EAECB5DD /* RectangleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3C4821D003A483340C40B4 /* RectangleDetector.swift */; };
+		646C822BD287AA9993CF7FBA /* DocumentVerificationResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118C6846D94FDCC817378ED9 /* DocumentVerificationResultDelegate.swift */; };
 		6499FEF84D503F8C72CDCF4B /* FaceShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80D08503403369523E8841D /* FaceShape.swift */; };
+		662A3EF0F4B9D295D31150DD /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3AA0A1C3F3E286A03E6D81 /* Theme.swift */; };
 		687765EDCA8D250D496A56C9 /* CameraError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3FEE1F9CDD209280B1CBB5C /* CameraError.swift */; };
-		693AE9431F6984EA61A63DCE /* JobSubmittable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FDDFE72B18FFABE739908D /* JobSubmittable.swift */; };
+		69D4201F557563C93E0C32D7 /* OrchestratedDocumentVerificationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C614DB4F6AC6538F00B997A7 /* OrchestratedDocumentVerificationScreen.swift */; };
 		6AF09E71303C95027F9A803D /* InfiniteProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24CD0268DF10F21821324F21 /* InfiniteProgressBar.swift */; };
+		6B7A74192E238DC60703663A /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259C97E87D27738958DC0663 /* DependencyContainer.swift */; };
 		6BBB5D74DA61D413181FC5B2 /* SmileIDResourcesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF70843C1A1C9BD65FD2C9E /* SmileIDResourcesHelper.swift */; };
-		6D46781F6AA9F7DCE948438C /* FaceDetectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EE75A33CD21841FDF813D2 /* FaceDetectionState.swift */; };
 		6DFC2D7B4F41E78DB6B982A8 /* OrchestratedBiometricKycScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504AE68DC57C62438EB32243 /* OrchestratedBiometricKycScreen.swift */; };
-		6EBC8AF8183457376619B0FC /* OrchestratedDocumentVerificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24EBDA69FF55DCEDC5D51A07 /* OrchestratedDocumentVerificationViewModel.swift */; };
-		6F07D03EF0B1EA45335F8E46 /* HTTPHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2A0E8DBE142E3BC28EAE58 /* HTTPHeader.swift */; };
-		6F6CA91BB25446E809B080ED /* ImageCaptureConfirmationDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F37E253643A7E0D5696A3BC /* ImageCaptureConfirmationDialog.swift */; };
-		6F7ED21657EEF50D75B95A4A /* RestServiceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580583D45BD6021D8B5E98D6 /* RestServiceClient.swift */; };
-		72D7DCAB35CB811ADEA621D9 /* JobStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBDBDC6A500904B0AF088355 /* JobStatus.swift */; };
-		72F4CC52B51C8C20C972C334 /* SearchableDropdownSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5B52DE4546CEB495FBB234 /* SearchableDropdownSelector.swift */; };
-		73B8DC9DF1F98B03A5CFBDED /* SmartSelfieInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB61C71409BF586B97A8271 /* SmartSelfieInstructionsScreen.swift */; };
-		784B48708255BA4321AA65EC /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA847230BA3C1DDC27D51596 /* Util.swift */; };
+		6EA002FDFADE4CD60E9720A4 /* SmileIDResourcesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA17614820E2B67915BFA5B /* SmileIDResourcesHelper.swift */; };
+		77848DE0FEB06347A987158C /* URLSessionPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF75B363D5C888019DB2B70E /* URLSessionPublisher.swift */; };
+		7860F5EA445D929EBF769B4E /* DocumentShapedBoundingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D767AA4E5946A5798F261D /* DocumentShapedBoundingBox.swift */; };
 		79833FAB72EB73BF1718DEA8 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB650CC9A808674747B639C2 /* ImageExtensions.swift */; };
 		7A52C10929CAEE0FC02C2C4F /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD452D64185547E327245257 /* CaptureButton.swift */; };
-		7AC29206874D6FA1C81E6C4A /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EF5C146FCBDE95879F23B0 /* ImagePicker.swift */; };
-		7D2C4AD40F843295F9E8323C /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963081FC0A90F3AE4D3C2D99 /* CameraManager.swift */; };
+		7D0E7E3401C6A61C6A81B08C /* FaceGeometryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB36D21CEC924DE3B38A489 /* FaceGeometryModel.swift */; };
+		7EA9BAC2B3A8F4B695799611 /* SmileIDService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52690E5247D697E6EFCD8555 /* SmileIDService.swift */; };
+		7F314D763941DF2EAD8C174E /* JobSubmittable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9592D6D0070AF9408E1E0A66 /* JobSubmittable.swift */; };
 		7FD2EBFDAFB09C9CD77D19D0 /* FontType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AA23159E5820F8D4C205EB /* FontType.swift */; };
-		85AEC04B1E9D2969EB60AF38 /* InfiniteProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E80224C650A16AAADEEB1D2 /* InfiniteProgressBar.swift */; };
+		802C89D9025D8C23ADB0DBA3 /* ServiceRunnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2015356900AF8C78B4B37110 /* ServiceRunnable.swift */; };
+		81165F0F508EBDA9FB7631F3 /* DocumentCaptureResultStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8F08B990603D814234F449 /* DocumentCaptureResultStore.swift */; };
+		82025CD7ED0620F1FD795E7E /* OrchestratedDocumentVerificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172AAD49BB26F951CBCD8DD7 /* OrchestratedDocumentVerificationViewModel.swift */; };
+		8857EC686D799FE4F2FE6CF5 /* OrchestratedBiometricKycScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6539D3DAB8735D28692BAA85 /* OrchestratedBiometricKycScreen.swift */; };
 		8A045C11310FE0DCBAB61FE2 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA012C232A0F657C75D15FAC /* CameraView.swift */; };
+		8AA7E99ECFD82F6F36BADBEC /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292E2E5F249732B1A72307A1 /* NavigationBar.swift */; };
+		8AD6C5ACDA124A1C763E29CD /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D4158C46753BDB9943C373 /* ImagePicker.swift */; };
 		8B1D053F84AA658B59C355B2 /* DocumentCaptureInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67062D7679EB5CD55BD53E0D /* DocumentCaptureInstructionsScreen.swift */; };
 		8F449D24B46071C055F445DE /* SelfieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFDEB16E32E466235C8D561 /* SelfieViewModel.swift */; };
 		8F5469865CDE36209292DF62 /* DependencyAutoResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D837186114CE2093E36FB /* DependencyAutoResolver.swift */; };
-		904A9BF0A62EE5B07F7F5066 /* RadioGroupSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52681B655052F228966A7F41 /* RadioGroupSelector.swift */; };
-		911955122C658FD8BC9DE66D /* ValidDocuments.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24EDEB4B2DAF350BFDB27D7 /* ValidDocuments.swift */; };
-		93A563E4D15D29511C341AC3 /* URLSessionRestServiceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A8E6E9E1D396F8958810BE /* URLSessionRestServiceClient.swift */; };
+		8FF483D559EBB6385FFD8180 /* SearchableDropdownSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868885C7A087B537116774E7 /* SearchableDropdownSelector.swift */; };
+		9251FCE99511C9FAC37082ED /* CameraError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E367585FB274194C76EED6B7 /* CameraError.swift */; };
 		9433AF996CA9D998A5D49CD5 /* DocumentCaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E1AE35D85102098118F8BBE /* DocumentCaptureViewModel.swift */; };
-		9496696F82780B4321EBB81C /* SmileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69AAE5399DD0C777FEA9A0EF /* SmileButton.swift */; };
 		94A8E32BA86735EC8D969F42 /* LocalizedStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE79EF146C342833528C540 /* LocalizedStringExtensions.swift */; };
-		94B32D196AC5E7089BDB1E69 /* DocumentCaptureResultStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C166F6B5086099B4C6825E6 /* DocumentCaptureResultStore.swift */; };
+		959C5B6CCE36D48D6BE8B4C7 /* EpilogueFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF030474420A56D0062F4598 /* EpilogueFont.swift */; };
 		967477E67AD6E51D4E7EAC97 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABA2A6E374A76EBAAAA69BF /* NavigationBar.swift */; };
 		97D188E6FC299F76831D99DA /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3368B5FB6AC21FBD01A45B43 /* LocalStorage.swift */; };
-		97EC3ED05C8D317669E18F19 /* JobType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115D7A020FF8D35028091014 /* JobType.swift */; };
+		9829284460BDC59C208335CC /* PartnerParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EAFB1DF547AD3F5759D7029 /* PartnerParams.swift */; };
 		9AF0359CD83FE8EA8C022928 /* OrchestratedDocumentVerificationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B326E3749EE0FB08DD90B7E /* OrchestratedDocumentVerificationScreen.swift */; };
 		9B6CFCD8F24A5F8DD7D51EB0 /* URLSessionRestServiceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFC47EF810BF6E03BD447AE /* URLSessionRestServiceClient.swift */; };
 		9D66F03F17259881CA70595B /* RestartableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4BDD6DD049B138F0F2DED0 /* RestartableTimer.swift */; };
-		9D69874122A7764755C1E8E1 /* DependencyAutoResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0BE20E400C3D7DD753451F /* DependencyAutoResolver.swift */; };
 		9D7717BB14B4FD93FFA1DFFC /* SmartSelfieInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FD9B3B7648964BDE15DAD /* SmartSelfieInstructionsScreen.swift */; };
 		9EE44F3BA81430E9609B6588 /* TextDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8274F2A2D5C46167D8508A1E /* TextDetector.swift */; };
 		A0A784971DB973689B95EA21 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94058C8DFE03BE4445E3F6EE /* Util.swift */; };
 		A2707F73239030830B9C096A /* ServiceRunnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C048561B5993C43541042B9B /* ServiceRunnable.swift */; };
-		A381CF4B9B9EDC75B05F7064 /* NetworkUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296359521EAAB6EACF1B9C31 /* NetworkUtil.swift */; };
-		A3D1FFEC00590072EEC82D54 /* RectangleDectorFunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E85CF5853CC2B3056542211 /* RectangleDectorFunnel.swift */; };
-		A43D5D5AFD979538D112EDCC /* Quadrilateral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C591010B1563D0CB90DF8D /* Quadrilateral.swift */; };
-		A4F7394CED5AFC80D102EBAB /* NavigationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AD16851171294603D1D5FE /* NavigationHelper.swift */; };
 		A516634CE5638283CAE6B2A2 /* RestRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C9C5C6243F597728C4E70E /* RestRequest.swift */; };
-		A53284E52B9B9174639E5382 /* EpilogueFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64893634B25F8C4C6F4129FD /* EpilogueFont.swift */; };
-		A69E7B3A5CBA946B4F4DA6A8 /* ProcessingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61FF5F204BE2D6B90C625E7 /* ProcessingScreen.swift */; };
+		A775DC175D6198F47D612C17 /* SmileIDLocalizableStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDCCAAC1957DB0366962605 /* SmileIDLocalizableStrings.swift */; };
+		A8BB228CEBECE1E1F2D19FBE /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F30468E1389933FFF60B33E /* Colors.swift */; };
 		AA5B23450A374D321D055B17 /* EnvironmentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1774CBAFEEE57C55BA9FB731 /* EnvironmentValues.swift */; };
+		AA5B2DF635F325BE581885A0 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1287D78CD1177A7AC4BDF06 /* LocalStorage.swift */; };
 		AB2829252AC87A5E9C877290 /* ProcessingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCCE3F782607A038494EB9E /* ProcessingScreen.swift */; };
+		ABDA8D8159443C630B0F8340 /* DependencyRegisterer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D464F3F9CF9AAB47C713A65D /* DependencyRegisterer.swift */; };
 		ACC49BFB0CD692F08063ADB6 /* Quadrilateral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759E6844D26802A58B8712B3 /* Quadrilateral.swift */; };
 		AF1F51F0CA56E9C892968B0C /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D187C1487587F647BB70B4B /* ImageUtils.swift */; };
-		AFCBF26467542BCAABF1D2A7 /* BiometricKycResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3014AA548919004DF9338310 /* BiometricKycResultDelegate.swift */; };
-		AFD362DFDBE7038ADC90CA4D /* FaceShapedProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C85AB595CFF721215D52B07 /* FaceShapedProgressIndicator.swift */; };
+		B049221BA7097B7796C0A65B /* OrchestratedSelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BEF422CC9B584D657A1501 /* OrchestratedSelfieCaptureScreen.swift */; };
 		B1D2E43B9CAF1511BA0E6776 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7179C52BCFC08D80D0E3AE /* APIError.swift */; };
-		B7D0A15A8742122F3D4734A5 /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB2483656D7FF0D709362D /* FaceDetector.swift */; };
+		B8BE8DACE493510B1CBC88A2 /* BiometricKycResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8C925AA2998015CC9E3551 /* BiometricKycResultDelegate.swift */; };
+		BB7D8C37B5592EFB17354BC1 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98328A80C9146FF45634628 /* ImageExtensions.swift */; };
 		BC7B9A59C8BB211C86EF1C94 /* SelfieCaptureResultStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1E2B2C8760737EB7D8FF12 /* SelfieCaptureResultStore.swift */; };
 		BDCD4757BAB743EA7551DD0E /* OrchestratedBiometricKycViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818C009D5DA70CA32B2BE792 /* OrchestratedBiometricKycViewModel.swift */; };
 		C059CD0F5C10A5AAD84863DD /* RectangleDectorFunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5901A53C0384299C570536 /* RectangleDectorFunnel.swift */; };
 		C1893A9507FB641400B47012 /* OrchestratedDocumentVerificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE60DC5DC0B672C7A63EC752 /* OrchestratedDocumentVerificationViewModel.swift */; };
-		C22EADC6919399AA1EFC6A93 /* SelfieCaptureResultStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4B5C2F1153656C55F185FB /* SelfieCaptureResultStore.swift */; };
-		C23E7C44651E5B7F70A64AC2 /* DocumentCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242E7A2FFC36262B8AA6B187 /* DocumentCaptureScreen.swift */; };
-		C4A4B6695159BEC04DDB757D /* SmileIDResourcesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C6569340D21C997994AF6B /* SmileIDResourcesHelper.swift */; };
-		C4F90DAFF647AC9CAE116921 /* Transformable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F21D980A5E80AC5D92D36B /* Transformable.swift */; };
+		C5C481C2A33D5E7303C149C6 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910980450167211C1FCD8DA7 /* APIError.swift */; };
 		C6F5826E82046E3066991932 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D5576C83969B0585C43EA0 /* Config.swift */; };
-		C9C972E4151B5AF0B2540A6F /* TextDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83949D5E5B328859B829166F /* TextDetector.swift */; };
+		C7561EF7C1271398DC083605 /* SmileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE23D0387DF414944B74F45 /* SmileButton.swift */; };
+		C8990E625107AAA46968E53A /* Transformable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2084B935E486B042810884A /* Transformable.swift */; };
 		C9DF6C5C1B47089BC2671705 /* Transformable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D406EA7AFF9B769A32ABC2 /* Transformable.swift */; };
-		CC5CBED696EFAD0155448AEF /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A586DF2EB25CC57047DF2D /* ImageExtensions.swift */; };
+		CA3524DD44439E84ED23BC30 /* ValidDocuments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BAE5D82BB9F03752E005DD /* ValidDocuments.swift */; };
+		CB8279E8E2D9AF2A9E183C7D /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9179308F9AE5CC9AC630C023 /* Services.swift */; };
+		CB9F50561B02B5BD908D332B /* NavigationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 288B14DFAB6B6B6F81E11ADC /* NavigationHelper.swift */; };
 		CC6062AF38CCE8131A399208 /* DocumentCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2047B0DEBCFE1B9B5A6F8C0 /* DocumentCaptureScreen.swift */; };
 		CC79EA3CFFFF3A4196DE3771 /* URLSessionPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4853AE689089D418579411 /* URLSessionPublisher.swift */; };
-		CD4311B863FFD367EDA3B3EF /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F8FD5EA50789FE821A2E8 /* APIError.swift */; };
+		D126B0DDB0DE0FDB9A7D7A90 /* SelfieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D743D2BE12AD0B9399F9090 /* SelfieViewModel.swift */; };
 		D13A6A89009F216C56FFA75B /* FaceShapedProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ADFD9800EA0646D46B8B41 /* FaceShapedProgressIndicator.swift */; };
-		D1BE2B6F06E6FE66B876EA1D /* SmartSelfieResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01267FF8F4E9878C0A2470E8 /* SmartSelfieResultDelegate.swift */; };
-		D2AADED74B3256205CDCC58C /* ServiceHeaderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB768FEAB4D7302D9BC5E1B /* ServiceHeaderProvider.swift */; };
-		D5715C423A15822765DC0B81 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E90E6E3695F935391728FC2 /* LocalStorage.swift */; };
-		D5E092F639E960E45BA68A46 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E2FACD593D77257687BD8A /* Config.swift */; };
-		D8F4FC3379CE96B64BF4B021 /* FaceShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 467EF1C001329C965E997C06 /* FaceShape.swift */; };
-		DBA8314907AE3EE64BF651BB /* Injected.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC83E83CCDD5922A14A3196B /* Injected.swift */; };
+		DA7F0C2217315E55DD8BDCEE /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E874AD54271826F2402283D6 /* ActivityIndicator.swift */; };
+		DAC9E6A8BEEEB753473592EF /* PrepUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D027F2F51A76D5EAC13AFC9 /* PrepUpload.swift */; };
 		DBAC4FB4DB2187FE9092F5E4 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1EDF5BA9E1BE42DAD9748D /* ImagePicker.swift */; };
+		DD63545E020ACBBF7926B90B /* UploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E1B2C4F8F8F0E2EE520ECC5 /* UploadRequest.swift */; };
 		DE18740E9FDEBE1336B99F5E /* DependencyRegisterer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2406FEB60D749A0A5712754A /* DependencyRegisterer.swift */; };
-		DE2E8DEB5728C4BA829ED468 /* FaceGeometryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D5F215EB48ED82BD0E08E1 /* FaceGeometryModel.swift */; };
-		DF1301F87948A62FB76B553C /* BVN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D77E468B7CDDD916D3356E /* BVN.swift */; };
-		DF6AE6B0D01E12C68E027EC2 /* URLSessionPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B105730C600CDFD7480BD8BB /* URLSessionPublisher.swift */; };
+		DFCC1830F27EC4B23FC43341 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373E851BF47435E5CF47F354 /* CameraViewController.swift */; };
+		E01F4647C01B0A7E06A3D720 /* SmileID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E0248807FF2C27D69E0990 /* SmileID.swift */; };
 		E3A82D08DE15572BF2230DED /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB7F80D632884E739C0883 /* CameraViewController.swift */; };
 		E4D1172132D218D60A7C2C93 /* SmileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6EEF4784E4A3B31C76E379 /* SmileButton.swift */; };
-		E5253EF1579B7CEB3966B50F /* SmileID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730D7A9970FF2388CC6823DA /* SmileID.swift */; };
+		E628E89508429864C765025F /* URLSessionRestServiceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BB05531F2D59168E0F7D3CB /* URLSessionRestServiceClient.swift */; };
 		E95D183BF9026CAE15EB2576 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA32A51394C07967050A7B6 /* Services.swift */; };
+		E9B98C2F24627B69143024EF /* EnhancedDocumentVerificationResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD633BE235481354EEBD39A5 /* EnhancedDocumentVerificationResultDelegate.swift */; };
 		E9D5571E328717DC51807807 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CC886E5B36ED992409141B /* ARViewController.swift */; };
 		E9F9A15A564D921DEE374CD5 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAEC6C8BBA47851A9A17706 /* Colors.swift */; };
 		EA8281CC96085CDEF91672C1 /* EnhancedDocumentVerificationResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC22D88DBBE7F7A576791B38 /* EnhancedDocumentVerificationResultDelegate.swift */; };
 		EB643527182238D2E6093A74 /* SearchableDropdownSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE83EE7EA4BBA2D0583B0F17 /* SearchableDropdownSelector.swift */; };
+		EC33575BA57899999D4F5AD2 /* FaceShapedProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326FB7A02720CDA7C645F88D /* FaceShapedProgressIndicator.swift */; };
 		EED0E32D2F52BB1AD0E5DD02 /* DocumentCaptureResultStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E8667C9271EE8598B80899 /* DocumentCaptureResultStore.swift */; };
-		EF7E21A03AFF3E052792FCD1 /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E8A0AC725BD8A8C2F7910F /* CaptureButton.swift */; };
+		EF56C4429904722CE3D74E43 /* RadioGroupSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F717E2B5E924DB0FF33E591 /* RadioGroupSelector.swift */; };
 		F06013811903AD3C011EF267 /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9A4717B4C47BE3D1F914AA /* DependencyContainer.swift */; };
 		F1601A1125D90EF381E8340C /* RestServiceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8958BA0E66F0CAB8A45203F /* RestServiceClient.swift */; };
-		F37B5D330B383AF9F2CE4D86 /* SelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7BD0FC18ADA79CF0DE6717 /* SelfieCaptureScreen.swift */; };
-		F42FF16B1EB0509D648A2DE0 /* RestRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E16B1EE8EB57297A8D1079 /* RestRequest.swift */; };
-		F44DB3768FC7AC7443F4418B /* SmileIDLocalizableStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0FA0EAB3618789DC6765FE2 /* SmileIDLocalizableStrings.swift */; };
 		F508B0F421EDA78EDE947EBD /* FaceDetectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 198BD7560118FFB7AE6362D2 /* FaceDetectionState.swift */; };
 		F5C1FD4584457AE805D3422C /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3859922DFB35CF87B711A1 /* Theme.swift */; };
+		F7DD3DA2A4B9038A966D57C6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D297ECE2927DE4880AD3406F /* Config.swift */; };
 		F93390FD1D7668C67CCF2BB3 /* BiometricKycResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102FAD24E19BA567B8CB8498 /* BiometricKycResultDelegate.swift */; };
-		FAAE8125735BDEF82C0D99E6 /* DependencyResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8146D155AED97E954053938 /* DependencyResolver.swift */; };
+		F98180B70A397D0C73957F2E /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD6191C544958964B8E1AE8 /* CameraView.swift */; };
 		FC0C9C11FE11F23F784F7B03 /* ValidDocuments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10941E016EAA84C96E69A62B /* ValidDocuments.swift */; };
-		FE11A76757EDEF37796A0896 /* AspectRatioRoundedRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D335E01F70EEE8C23B3F09E /* AspectRatioRoundedRectangle.swift */; };
+		FD789BC25815B55493D32795 /* JobStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E3582CF1B3E2BAFF35A02F /* JobStatus.swift */; };
 		FE36BA7DC5538648655640FB /* PartnerParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = D330E1DDB7F23A8B81F92045 /* PartnerParams.swift */; };
-		FEF468CA7DC93F9BFFE99265 /* EnhancedDocumentVerificationResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC3CE74EBBA724DDA52BD21 /* EnhancedDocumentVerificationResultDelegate.swift */; };
 		FF0B4719A1790F71B97CB8D8 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EED012727F90637BCFB392 /* CameraManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -296,7 +296,12 @@
 		0BE1A1B8D3B9A6D7CF95C6E9 /* APIError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIError.swift; path = Sources/SmileID/Classes/Networking/APIError.swift; sourceTree = "<group>"; };
 		0C3E917F879C887381E9E5A1 /* DocumentCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureScreen.swift; sourceTree = "<group>"; };
 		0C5D5F4E6AB0BD84E26DF9C6 /* DependencyRegisterer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyRegisterer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyRegisterer.swift; sourceTree = "<group>"; };
+		0C8F08B990603D814234F449 /* DocumentCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureResultStore.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureResultStore.swift; sourceTree = "<group>"; };
+		0CB36D21CEC924DE3B38A489 /* FaceGeometryModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceGeometryModel.swift; path = Sources/SmileID/Classes/FaceDetector/FaceGeometryModel.swift; sourceTree = "<group>"; };
+		0D027F2F51A76D5EAC13AFC9 /* PrepUpload.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrepUpload.swift; path = Sources/SmileID/Classes/Networking/Models/PrepUpload.swift; sourceTree = "<group>"; };
 		0D335E01F70EEE8C23B3F09E /* AspectRatioRoundedRectangle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AspectRatioRoundedRectangle.swift; path = Sources/SmileID/Classes/Views/AspectRatioRoundedRectangle.swift; sourceTree = "<group>"; };
+		0D743D2BE12AD0B9399F9090 /* SelfieViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieViewModel.swift; path = Sources/SmileID/Classes/SelfieCapture/SelfieViewModel.swift; sourceTree = "<group>"; };
+		0D8C925AA2998015CC9E3551 /* BiometricKycResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BiometricKycResultDelegate.swift; path = Sources/SmileID/Classes/BiometricKYC/BiometricKycResultDelegate.swift; sourceTree = "<group>"; };
 		0D9BA709D7E2233187BA0FAF /* JobStatus.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobStatus.swift; path = Sources/SmileID/Classes/Networking/Models/JobStatus.swift; sourceTree = "<group>"; };
 		0DED4E7FED8B40841BE96900 /* StringConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StringConstants.swift; path = Sources/SmileID/Classes/Helpers/StringConstants.swift; sourceTree = "<group>"; };
 		0DEE6D845F0F3B5ABBCE06A6 /* TextDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TextDetector.swift; path = Sources/SmileID/Classes/DocumentVerification/TextDetector/TextDetector.swift; sourceTree = "<group>"; };
@@ -310,6 +315,7 @@
 		10941E016EAA84C96E69A62B /* ValidDocuments.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ValidDocuments.swift; path = Sources/SmileID/Classes/Networking/Models/ValidDocuments.swift; sourceTree = "<group>"; };
 		10D2617655CA6DFB4E050CB0 /* JobType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobType.swift; path = Sources/SmileID/Classes/Networking/Models/JobType.swift; sourceTree = "<group>"; };
 		115D7A020FF8D35028091014 /* JobType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobType.swift; path = Sources/SmileID/Classes/Networking/Models/JobType.swift; sourceTree = "<group>"; };
+		118C6846D94FDCC817378ED9 /* DocumentVerificationResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentVerificationResultDelegate.swift; path = Sources/SmileID/Classes/DocumentVerification/DocumentVerificationResultDelegate.swift; sourceTree = "<group>"; };
 		11A4B1D37F012F4EC0A46D6D /* HTTPHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPHeader.swift; path = Sources/SmileID/Classes/Networking/HTTPHeader.swift; sourceTree = "<group>"; };
 		11AA23159E5820F8D4C205EB /* FontType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FontType.swift; path = Sources/SmileID/Classes/Helpers/FontType.swift; sourceTree = "<group>"; };
 		11DA2B55CDF00CDCACB072E6 /* HTTPQueryParameters.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPQueryParameters.swift; path = Sources/SmileID/Classes/Networking/HTTPQueryParameters.swift; sourceTree = "<group>"; };
@@ -329,6 +335,7 @@
 		15C12E6415C1237AB3864760 /* RectangleDectorFunnel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDectorFunnel.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDectorFunnel.swift; sourceTree = "<group>"; };
 		1601CD86C4113E492F258475 /* SelfieCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureResultStore.swift; path = Sources/SmileID/Classes/SelfieCapture/ViewModel/SelfieCaptureResultStore.swift; sourceTree = "<group>"; };
 		1625CEFDC6A1EED8A78DDF90 /* EpilogueFont.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EpilogueFont.swift; path = Sources/SmileID/Classes/Helpers/EpilogueFont.swift; sourceTree = "<group>"; };
+		172AAD49BB26F951CBCD8DD7 /* OrchestratedDocumentVerificationViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/OrchestratedDocumentVerificationViewModel.swift; sourceTree = "<group>"; };
 		175232B6F9715ED0F59C0FF1 /* DocumentCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureScreen.swift; sourceTree = "<group>"; };
 		1774CBAFEEE57C55BA9FB731 /* EnvironmentValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnvironmentValues.swift; path = Sources/SmileID/Classes/Helpers/EnvironmentValues.swift; sourceTree = "<group>"; };
 		17EB2A5D531980B887BF7EB9 /* DocumentShapedBoundingBox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentShapedBoundingBox.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentShapedBoundingBox.swift; sourceTree = "<group>"; };
@@ -341,9 +348,12 @@
 		198BD7560118FFB7AE6362D2 /* FaceDetectionState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetectionState.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetectionState.swift; sourceTree = "<group>"; };
 		19D9058BF4271D8A3E1E8F97 /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Sources/SmileID/Classes/Helpers/Theme.swift; sourceTree = "<group>"; };
 		1A0B3DEA00DD66791A0E8A22 /* ImageCaptureConfirmationDialog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCaptureConfirmationDialog.swift; path = Sources/SmileID/Classes/Views/ImageCaptureConfirmationDialog.swift; sourceTree = "<group>"; };
+		1A373968C49082A06EC4B66D /* HTTPQueryParameters.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPQueryParameters.swift; path = Sources/SmileID/Classes/Networking/HTTPQueryParameters.swift; sourceTree = "<group>"; };
 		1A9964B09427E96E6C08BBAF /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
 		1AA7514043F93065253FD571 /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
 		1B569847D974A408D4E45651 /* FaceShapedProgressIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShapedProgressIndicator.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShapedProgressIndicator.swift; sourceTree = "<group>"; };
+		1B5840763E95886E039040FA /* ImageUtils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageUtils.swift; path = Sources/SmileID/Classes/Helpers/ImageUtils.swift; sourceTree = "<group>"; };
+		1BAE2D643E510BAEBA73C7FF /* ImageCaptureConfirmationDialog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCaptureConfirmationDialog.swift; path = Sources/SmileID/Classes/Views/ImageCaptureConfirmationDialog.swift; sourceTree = "<group>"; };
 		1C166F6B5086099B4C6825E6 /* DocumentCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureResultStore.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureResultStore.swift; sourceTree = "<group>"; };
 		1C5D837186114CE2093E36FB /* DependencyAutoResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyAutoResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyAutoResolver.swift; sourceTree = "<group>"; };
 		1CD93EA30758EE5F131BEF4D /* SelfieCaptureInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureInstructionsScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SelfieCaptureInstructionsScreen.swift; sourceTree = "<group>"; };
@@ -354,6 +364,7 @@
 		1D879DA7D74FDB72771CB9CC /* HTTPQueryParameters.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPQueryParameters.swift; path = Sources/SmileID/Classes/Networking/HTTPQueryParameters.swift; sourceTree = "<group>"; };
 		1DC43A1550C1B93B321FD025 /* DocumentCaptureViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureViewModel.swift; sourceTree = "<group>"; };
 		1DDB6BBF1EAD6513ED2D0711 /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
+		1DDCCAAC1957DB0366962605 /* SmileIDLocalizableStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDLocalizableStrings.swift; path = Sources/SmileID/Classes/Helpers/SmileIDLocalizableStrings.swift; sourceTree = "<group>"; };
 		1DE17F12C11BD3CE7E259DF5 /* OrchestratedConsentScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedConsentScreen.swift; path = Sources/SmileID/Classes/Consent/OrchestratedConsentScreen.swift; sourceTree = "<group>"; };
 		1DEA6F6E71F02ED9DB463A7C /* SmartSelfieResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieResultDelegate.swift; path = Sources/SmileID/Classes/SelfieCapture/SmartSelfieResultDelegate.swift; sourceTree = "<group>"; };
 		1DEA71C765CC4AAAAB4EB27F /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -484,6 +495,7 @@
 		1F3418DC89267BC1B48EA314 /* UploadRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UploadRequest.swift; path = Sources/SmileID/Classes/Networking/Models/UploadRequest.swift; sourceTree = "<group>"; };
 		1FC35EB3E31B90B7AC9AD9C3 /* Quadrilateral.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Quadrilateral.swift; path = Sources/SmileID/Classes/RectangleDetector/Quadrilateral.swift; sourceTree = "<group>"; };
 		1FEFA9F43D292DCA8A292A34 /* FontType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FontType.swift; path = Sources/SmileID/Classes/Helpers/FontType.swift; sourceTree = "<group>"; };
+		2015356900AF8C78B4B37110 /* ServiceRunnable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceRunnable.swift; path = Sources/SmileID/Classes/Networking/ServiceRunnable.swift; sourceTree = "<group>"; };
 		204E25AA87E9519F31645909 /* DocumentCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureScreen.swift; sourceTree = "<group>"; };
 		20BD76F142CABEAE07EF1F67 /* SmileIDService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDService.swift; path = Sources/SmileID/Classes/Networking/SmileIDService.swift; sourceTree = "<group>"; };
 		20CFB81122DB79C093EA7AF3 /* Util.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Util.swift; path = Sources/SmileID/Classes/Util.swift; sourceTree = "<group>"; };
@@ -495,8 +507,10 @@
 		221C7E8F88718056FBC8F150 /* SmileIDLocalizableStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDLocalizableStrings.swift; path = Sources/SmileID/Classes/Helpers/SmileIDLocalizableStrings.swift; sourceTree = "<group>"; };
 		22652A4A046BD2BF72DC0E91 /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
 		22873673A863CFFD382118EB /* SmartSelfieInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieInstructionsScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SmartSelfieInstructionsScreen.swift; sourceTree = "<group>"; };
+		22C315425265C2F2F3E79789 /* SelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		22C63FCBAD13E938066495D5 /* SearchableDropdownSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchableDropdownSelector.swift; path = Sources/SmileID/Classes/Views/SearchableDropdownSelector.swift; sourceTree = "<group>"; };
 		22EB778959FAD6DFD58E3565 /* ServiceHeaderProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceHeaderProvider.swift; path = Sources/SmileID/Classes/Networking/ServiceHeaderProvider.swift; sourceTree = "<group>"; };
+		22FD795E719C6AD70A258C45 /* DocumentCaptureViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureViewModel.swift; sourceTree = "<group>"; };
 		23185C65E2294762322A3BE4 /* UploadRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UploadRequest.swift; path = Sources/SmileID/Classes/Networking/Models/UploadRequest.swift; sourceTree = "<group>"; };
 		23479F19AAD8FB628DC7A8A1 /* HTTPHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPHeader.swift; path = Sources/SmileID/Classes/Networking/HTTPHeader.swift; sourceTree = "<group>"; };
 		2404725E38957427AF0DB1D9 /* ImageUtils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageUtils.swift; path = Sources/SmileID/Classes/Helpers/ImageUtils.swift; sourceTree = "<group>"; };
@@ -504,12 +518,14 @@
 		242E7A2FFC36262B8AA6B187 /* DocumentCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureScreen.swift; sourceTree = "<group>"; };
 		244DF2C44C5680B51C32DCBB /* DocumentVerificationResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentVerificationResultDelegate.swift; path = Sources/SmileID/Classes/DocumentVerification/DocumentVerificationResultDelegate.swift; sourceTree = "<group>"; };
 		24593A14F6DD68E0A9E1A65C /* SmartSelfieResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieResultDelegate.swift; path = Sources/SmileID/Classes/SelfieCapture/SmartSelfieResultDelegate.swift; sourceTree = "<group>"; };
+		246B7981F8E7D376B7AE5F20 /* Authentication.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Authentication.swift; path = Sources/SmileID/Classes/Networking/Models/Authentication.swift; sourceTree = "<group>"; };
 		24818977BA537C0183F681B7 /* ServiceRunnable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceRunnable.swift; path = Sources/SmileID/Classes/Networking/ServiceRunnable.swift; sourceTree = "<group>"; };
 		24CD0268DF10F21821324F21 /* InfiniteProgressBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InfiniteProgressBar.swift; path = Sources/SmileID/Classes/SelfieCapture/View/InfiniteProgressBar.swift; sourceTree = "<group>"; };
 		24EBDA69FF55DCEDC5D51A07 /* OrchestratedDocumentVerificationViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/OrchestratedDocumentVerificationViewModel.swift; sourceTree = "<group>"; };
 		24FDBE81851266F94058D8AC /* RestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestServiceClient.swift; path = Sources/SmileID/Classes/Networking/RestServiceClient.swift; sourceTree = "<group>"; };
 		25225C7F48E4499355846B28 /* ServiceRunnable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceRunnable.swift; path = Sources/SmileID/Classes/Networking/ServiceRunnable.swift; sourceTree = "<group>"; };
 		2590988009C4465ACBAA0C1E /* ARViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ARViewController.swift; path = Sources/SmileID/Classes/SelfieCapture/View/ARViewController.swift; sourceTree = "<group>"; };
+		259C97E87D27738958DC0663 /* DependencyContainer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyContainer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyContainer.swift; sourceTree = "<group>"; };
 		25A9861BA1499C234671C608 /* Colors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Sources/SmileID/Classes/Helpers/Colors.swift; sourceTree = "<group>"; };
 		25C9B3CF78759FB391A53F54 /* SelfieCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureResultStore.swift; path = Sources/SmileID/Classes/SelfieCapture/ViewModel/SelfieCaptureResultStore.swift; sourceTree = "<group>"; };
 		260B6EFE5EE5CFA8155DABD6 /* FaceDetectionState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetectionState.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetectionState.swift; sourceTree = "<group>"; };
@@ -521,9 +537,11 @@
 		273CD56820F9861DC71ADF18 /* SelfieViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieViewModel.swift; path = Sources/SmileID/Classes/SelfieCapture/SelfieViewModel.swift; sourceTree = "<group>"; };
 		27DECD63EDC0C8722CD23E00 /* OrchestratedDocumentVerificationViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/OrchestratedDocumentVerificationViewModel.swift; sourceTree = "<group>"; };
 		287AD43B4BC905F0AFEE70C8 /* ImageExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageExtensions.swift; path = Sources/SmileID/Classes/Helpers/ImageExtensions.swift; sourceTree = "<group>"; };
+		288B14DFAB6B6B6F81E11ADC /* NavigationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationHelper.swift; path = Sources/SmileID/Classes/Helpers/NavigationHelper.swift; sourceTree = "<group>"; };
 		28E2FACD593D77257687BD8A /* Config.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Config.swift; path = Sources/SmileID/Classes/Networking/Models/Config.swift; sourceTree = "<group>"; };
 		28F3052672AC4114131F67D7 /* OrchestratedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedSelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/OrchestratedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		291665E33628EAB6CBDD66F7 /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
+		292E2E5F249732B1A72307A1 /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
 		2938B101B2631CA02C382833 /* EnhancedKyc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedKyc.swift; path = Sources/SmileID/Classes/Networking/Models/EnhancedKyc.swift; sourceTree = "<group>"; };
 		296359521EAAB6EACF1B9C31 /* NetworkUtil.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkUtil.swift; path = Sources/SmileID/Classes/Networking/NetworkUtil.swift; sourceTree = "<group>"; };
 		299ECBEAB067527186176C6A /* Injected.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Injected.swift; path = Sources/SmileID/Classes/DependencyContainer/Injected.swift; sourceTree = "<group>"; };
@@ -538,7 +556,9 @@
 		2AD22062119B43F2ABEFC7E1 /* OrchestratedDocumentVerificationViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/OrchestratedDocumentVerificationViewModel.swift; sourceTree = "<group>"; };
 		2B5901A53C0384299C570536 /* RectangleDectorFunnel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDectorFunnel.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDectorFunnel.swift; sourceTree = "<group>"; };
 		2B5C05672E1CFD4F94DDBE33 /* SmileButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileButton.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SmileButton.swift; sourceTree = "<group>"; };
+		2BB05531F2D59168E0F7D3CB /* URLSessionRestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionRestServiceClient.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionRestServiceClient.swift; sourceTree = "<group>"; };
 		2BD706E071E3336D4C9A3B5E /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Sources/SmileID/Classes/Helpers/Theme.swift; sourceTree = "<group>"; };
+		2C4C117632FC095ED88BC978 /* LocalizedStringExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalizedStringExtensions.swift; path = Sources/SmileID/Classes/Helpers/LocalizedStringExtensions.swift; sourceTree = "<group>"; };
 		2C5BB4754B7CDBB6C65202BB /* FontType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FontType.swift; path = Sources/SmileID/Classes/Helpers/FontType.swift; sourceTree = "<group>"; };
 		2C85AB595CFF721215D52B07 /* FaceShapedProgressIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShapedProgressIndicator.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShapedProgressIndicator.swift; sourceTree = "<group>"; };
 		2CC09DC4E7CDFFAE34F97823 /* ImageCaptureConfirmationDialog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCaptureConfirmationDialog.swift; path = Sources/SmileID/Classes/Views/ImageCaptureConfirmationDialog.swift; sourceTree = "<group>"; };
@@ -552,6 +572,7 @@
 		2E71C687AE470F1FBE8599DB /* SmileIDResourcesHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDResourcesHelper.swift; path = Sources/SmileID/Classes/Helpers/SmileIDResourcesHelper.swift; sourceTree = "<group>"; };
 		2E728093340C8E686DF85F3C /* Util.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Util.swift; path = Sources/SmileID/Classes/Util.swift; sourceTree = "<group>"; };
 		2ECE2455C5A04E3B90710607 /* StringConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StringConstants.swift; path = Sources/SmileID/Classes/Helpers/StringConstants.swift; sourceTree = "<group>"; };
+		2EEB3F30009724EDD15E552D /* SmartSelfieResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieResultDelegate.swift; path = Sources/SmileID/Classes/SelfieCapture/SmartSelfieResultDelegate.swift; sourceTree = "<group>"; };
 		2F68B4471D914C2F70358E46 /* OrchestratedBiometricKycViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycViewModel.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycViewModel.swift; sourceTree = "<group>"; };
 		2F7179C52BCFC08D80D0E3AE /* APIError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIError.swift; path = Sources/SmileID/Classes/Networking/APIError.swift; sourceTree = "<group>"; };
 		2F8B1D550F6F5D398D1FC993 /* DocumentCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureResultStore.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureResultStore.swift; sourceTree = "<group>"; };
@@ -564,7 +585,9 @@
 		319A42474B61895F9D4AE64B /* SelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		31ADC2E0D5A31DA83E073EC9 /* PrepUpload.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrepUpload.swift; path = Sources/SmileID/Classes/Networking/Models/PrepUpload.swift; sourceTree = "<group>"; };
 		322E8BF756FD83742FE6D6EF /* RestRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestRequest.swift; path = Sources/SmileID/Classes/Networking/RestRequest.swift; sourceTree = "<group>"; };
+		326FB7A02720CDA7C645F88D /* FaceShapedProgressIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShapedProgressIndicator.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShapedProgressIndicator.swift; sourceTree = "<group>"; };
 		32C1212610BE6DF0C9D838EB /* DependencyRegisterer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyRegisterer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyRegisterer.swift; sourceTree = "<group>"; };
+		32C7FE537049C09FC711769A /* TextDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TextDetector.swift; path = Sources/SmileID/Classes/DocumentVerification/TextDetector/TextDetector.swift; sourceTree = "<group>"; };
 		33064243E1857C1E2EA7E7A1 /* FaceShapedProgressIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShapedProgressIndicator.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShapedProgressIndicator.swift; sourceTree = "<group>"; };
 		331F0884AADE16E48C9E7625 /* OrchestratedDocumentVerificationScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/OrchestratedDocumentVerificationScreen.swift; sourceTree = "<group>"; };
 		33582BC06C5A1BF366206851 /* DependencyResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyResolver.swift; sourceTree = "<group>"; };
@@ -585,9 +608,11 @@
 		360F8FD5EA50789FE821A2E8 /* APIError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIError.swift; path = Sources/SmileID/Classes/Networking/APIError.swift; sourceTree = "<group>"; };
 		361530ACC3C936862B6BACC4 /* RadioGroupSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RadioGroupSelector.swift; path = Sources/SmileID/Classes/Views/RadioGroupSelector.swift; sourceTree = "<group>"; };
 		361905944BB24DF762D04250 /* OrchestratedBiometricKycViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycViewModel.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycViewModel.swift; sourceTree = "<group>"; };
+		368E70B2A1178922E417251E /* FontType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FontType.swift; path = Sources/SmileID/Classes/Helpers/FontType.swift; sourceTree = "<group>"; };
 		3695021616B4329FAB1224F2 /* EnhancedKyc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedKyc.swift; path = Sources/SmileID/Classes/Networking/Models/EnhancedKyc.swift; sourceTree = "<group>"; };
 		36A00737CF0A73C660664AAE /* DependencyAutoResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyAutoResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyAutoResolver.swift; sourceTree = "<group>"; };
 		36AB8104F1DB5632CE0F9E70 /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
+		373E851BF47435E5CF47F354 /* CameraViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = Sources/SmileID/Classes/Camera/CameraViewController.swift; sourceTree = "<group>"; };
 		37434B3472BE95D02E4ACE0D /* Services.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Services.swift; path = Sources/SmileID/Classes/Networking/Models/Services.swift; sourceTree = "<group>"; };
 		376825CC5B456D8879BCC14A /* SmileIDResourcesHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDResourcesHelper.swift; path = Sources/SmileID/Classes/Helpers/SmileIDResourcesHelper.swift; sourceTree = "<group>"; };
 		377C4AD5D00075BAAF09F461 /* CaptureButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CaptureButton.swift; path = Sources/SmileID/Classes/DocumentVerification/View/CaptureButton.swift; sourceTree = "<group>"; };
@@ -595,8 +620,10 @@
 		37C605779F943DF1968F282F /* ProcessingScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProcessingScreen.swift; path = Sources/SmileID/Classes/Views/ProcessingScreen.swift; sourceTree = "<group>"; };
 		38084EC493C8C0BE75584278 /* ServiceHeaderProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceHeaderProvider.swift; path = Sources/SmileID/Classes/Networking/ServiceHeaderProvider.swift; sourceTree = "<group>"; };
 		3888174F4E411A3D3FE0B699 /* CameraManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraManager.swift; path = Sources/SmileID/Classes/Camera/CameraManager.swift; sourceTree = "<group>"; };
+		38D767AA4E5946A5798F261D /* DocumentShapedBoundingBox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentShapedBoundingBox.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentShapedBoundingBox.swift; sourceTree = "<group>"; };
 		399181464DEC8260E2C2BE01 /* EpilogueFont.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EpilogueFont.swift; path = Sources/SmileID/Classes/Helpers/EpilogueFont.swift; sourceTree = "<group>"; };
 		39A9EBE001763CBABFBC6612 /* URLSessionRestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionRestServiceClient.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionRestServiceClient.swift; sourceTree = "<group>"; };
+		39F2CB9CDBF74EA941F11AEA /* SelfieCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureResultStore.swift; path = Sources/SmileID/Classes/SelfieCapture/ViewModel/SelfieCaptureResultStore.swift; sourceTree = "<group>"; };
 		39FFD9B67C18D194EAA52B2A /* APIError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIError.swift; path = Sources/SmileID/Classes/Networking/APIError.swift; sourceTree = "<group>"; };
 		3A0BA3F6877C2D6FC22283B1 /* DocumentCaptureInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureInstructionsScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureInstructionsScreen.swift; sourceTree = "<group>"; };
 		3B10367C889253C3E02D283B /* UploadRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UploadRequest.swift; path = Sources/SmileID/Classes/Networking/Models/UploadRequest.swift; sourceTree = "<group>"; };
@@ -606,11 +633,13 @@
 		3D187C1487587F647BB70B4B /* ImageUtils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageUtils.swift; path = Sources/SmileID/Classes/Helpers/ImageUtils.swift; sourceTree = "<group>"; };
 		3D391125F19F14CCFE64CB6C /* RectangleDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDetector.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDetector.swift; sourceTree = "<group>"; };
 		3D719122A8C21DE0E53B20B8 /* DocumentCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureResultStore.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureResultStore.swift; sourceTree = "<group>"; };
+		3E1B2C4F8F8F0E2EE520ECC5 /* UploadRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UploadRequest.swift; path = Sources/SmileID/Classes/Networking/Models/UploadRequest.swift; sourceTree = "<group>"; };
 		3E2FE36EB8BF009F951CF99E /* JobStatus.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobStatus.swift; path = Sources/SmileID/Classes/Networking/Models/JobStatus.swift; sourceTree = "<group>"; };
 		3E7BC0D739268232EE73D653 /* OrchestratedConsentScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedConsentScreen.swift; path = Sources/SmileID/Classes/Consent/OrchestratedConsentScreen.swift; sourceTree = "<group>"; };
 		3E839EEC5F25A700505DB3F8 /* DocumentCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureResultStore.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureResultStore.swift; sourceTree = "<group>"; };
 		3E8B0A713282DCA56D0FAF93 /* RestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestServiceClient.swift; path = Sources/SmileID/Classes/Networking/RestServiceClient.swift; sourceTree = "<group>"; };
 		3E8D6024F2541E350B548CF5 /* ARViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ARViewController.swift; path = Sources/SmileID/Classes/SelfieCapture/View/ARViewController.swift; sourceTree = "<group>"; };
+		3EAFB1DF547AD3F5759D7029 /* PartnerParams.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PartnerParams.swift; path = Sources/SmileID/Classes/Networking/Models/PartnerParams.swift; sourceTree = "<group>"; };
 		3EB61C71409BF586B97A8271 /* SmartSelfieInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieInstructionsScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SmartSelfieInstructionsScreen.swift; sourceTree = "<group>"; };
 		3ED061BAC9EA547FFBD0DB71 /* OrchestratedBiometricKycViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycViewModel.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycViewModel.swift; sourceTree = "<group>"; };
 		3F1142641696E1C8A3300C8A /* FaceDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetector.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetector.swift; sourceTree = "<group>"; };
@@ -619,6 +648,7 @@
 		3FCFE4FAA18F743B3FDF9BD6 /* ImageExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageExtensions.swift; path = Sources/SmileID/Classes/Helpers/ImageExtensions.swift; sourceTree = "<group>"; };
 		40596C6CB8C614F41E2669BF /* LocalizedStringExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalizedStringExtensions.swift; path = Sources/SmileID/Classes/Helpers/LocalizedStringExtensions.swift; sourceTree = "<group>"; };
 		40866249C743659F132926F4 /* EpilogueFont.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EpilogueFont.swift; path = Sources/SmileID/Classes/Helpers/EpilogueFont.swift; sourceTree = "<group>"; };
+		40BAE5D82BB9F03752E005DD /* ValidDocuments.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ValidDocuments.swift; path = Sources/SmileID/Classes/Networking/Models/ValidDocuments.swift; sourceTree = "<group>"; };
 		411B583D4EA83BACEC8CE184 /* RestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestServiceClient.swift; path = Sources/SmileID/Classes/Networking/RestServiceClient.swift; sourceTree = "<group>"; };
 		411B8713BCF435546D2DCF10 /* DependencyAutoResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyAutoResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyAutoResolver.swift; sourceTree = "<group>"; };
 		4128D26CAF1A29552C094680 /* RadioGroupSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RadioGroupSelector.swift; path = Sources/SmileID/Classes/Views/RadioGroupSelector.swift; sourceTree = "<group>"; };
@@ -630,9 +660,11 @@
 		431D683324A582FB99C5C103 /* StringConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StringConstants.swift; path = Sources/SmileID/Classes/Helpers/StringConstants.swift; sourceTree = "<group>"; };
 		43A8FE17639514CC8B836AC0 /* TextDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TextDetector.swift; path = Sources/SmileID/Classes/DocumentVerification/TextDetector/TextDetector.swift; sourceTree = "<group>"; };
 		43D241D1BEF7AECDEBA8C88B /* ImagePicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImagePicker.swift; path = Sources/SmileID/Classes/DocumentVerification/View/ImagePicker.swift; sourceTree = "<group>"; };
+		43F13FC29FD4EC8198E308C2 /* StringConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StringConstants.swift; path = Sources/SmileID/Classes/Helpers/StringConstants.swift; sourceTree = "<group>"; };
 		4439C44E7E1E8A32CBFD5BAE /* CameraError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraError.swift; path = Sources/SmileID/Classes/Camera/CameraError.swift; sourceTree = "<group>"; };
 		4489A793A207A55BB0581D53 /* NavigationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationHelper.swift; path = Sources/SmileID/Classes/Helpers/NavigationHelper.swift; sourceTree = "<group>"; };
 		44D058D2BEAA02F936375B70 /* OrchestratedDocumentVerificationScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/OrchestratedDocumentVerificationScreen.swift; sourceTree = "<group>"; };
+		44E388D60D8A7AA19A6301A1 /* Injected.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Injected.swift; path = Sources/SmileID/Classes/DependencyContainer/Injected.swift; sourceTree = "<group>"; };
 		44F544D81B744D3705648C22 /* SmartSelfieResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieResultDelegate.swift; path = Sources/SmileID/Classes/SelfieCapture/SmartSelfieResultDelegate.swift; sourceTree = "<group>"; };
 		452777C9819BD47A984B02F4 /* PrepUpload.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrepUpload.swift; path = Sources/SmileID/Classes/Networking/Models/PrepUpload.swift; sourceTree = "<group>"; };
 		457A4F14B0BE72B1CE501A74 /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Sources/SmileID/Classes/Helpers/Theme.swift; sourceTree = "<group>"; };
@@ -675,6 +707,7 @@
 		4ECF1CE8478E2BA222723CC8 /* ImageExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageExtensions.swift; path = Sources/SmileID/Classes/Helpers/ImageExtensions.swift; sourceTree = "<group>"; };
 		4F120F373C51CFE98CBE169B /* FaceDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetector.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetector.swift; sourceTree = "<group>"; };
 		4F37E253643A7E0D5696A3BC /* ImageCaptureConfirmationDialog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCaptureConfirmationDialog.swift; path = Sources/SmileID/Classes/Views/ImageCaptureConfirmationDialog.swift; sourceTree = "<group>"; };
+		4F40E1AB84DB3B7664678DD9 /* OrchestratedBiometricKycViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycViewModel.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycViewModel.swift; sourceTree = "<group>"; };
 		4F48F2D68A9D94191F5255CA /* DependencyResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyResolver.swift; sourceTree = "<group>"; };
 		4F67D0589E23EC9D08555505 /* DocumentCaptureViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureViewModel.swift; sourceTree = "<group>"; };
 		4F8130A3E611F4C5FE7F0FC0 /* SmileIDLocalizableStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDLocalizableStrings.swift; path = Sources/SmileID/Classes/Helpers/SmileIDLocalizableStrings.swift; sourceTree = "<group>"; };
@@ -684,6 +717,8 @@
 		508C72492BF39044110A9EB2 /* Authentication.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Authentication.swift; path = Sources/SmileID/Classes/Networking/Models/Authentication.swift; sourceTree = "<group>"; };
 		508C97C04B770DDF154DAC6E /* DocumentCaptureViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureViewModel.swift; sourceTree = "<group>"; };
 		50A88CA5B1A6074C622BC76A /* UploadRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UploadRequest.swift; path = Sources/SmileID/Classes/Networking/Models/UploadRequest.swift; sourceTree = "<group>"; };
+		50C110D0DBCEC7A981D478E2 /* EnhancedKyc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedKyc.swift; path = Sources/SmileID/Classes/Networking/Models/EnhancedKyc.swift; sourceTree = "<group>"; };
+		50E0248807FF2C27D69E0990 /* SmileID.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileID.swift; path = Sources/SmileID/Classes/SmileID.swift; sourceTree = "<group>"; };
 		50E22EB75B16E4FCC6A0D5B0 /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
 		50E2759C51B15490C16FEDE4 /* PrepUpload.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrepUpload.swift; path = Sources/SmileID/Classes/Networking/Models/PrepUpload.swift; sourceTree = "<group>"; };
 		50EF93F841AAF3D21BFEC8C4 /* DocumentCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureResultStore.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureResultStore.swift; sourceTree = "<group>"; };
@@ -691,7 +726,9 @@
 		520DA9070F5336D23D7B69B5 /* HTTPQueryParameters.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPQueryParameters.swift; path = Sources/SmileID/Classes/Networking/HTTPQueryParameters.swift; sourceTree = "<group>"; };
 		5239EC7763C6104CDA2ED528 /* Colors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Sources/SmileID/Classes/Helpers/Colors.swift; sourceTree = "<group>"; };
 		52681B655052F228966A7F41 /* RadioGroupSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RadioGroupSelector.swift; path = Sources/SmileID/Classes/Views/RadioGroupSelector.swift; sourceTree = "<group>"; };
+		52690E5247D697E6EFCD8555 /* SmileIDService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDService.swift; path = Sources/SmileID/Classes/Networking/SmileIDService.swift; sourceTree = "<group>"; };
 		52BE2D6EA8A5FA5D878C9DC7 /* FaceDetectionState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetectionState.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetectionState.swift; sourceTree = "<group>"; };
+		530000E14C4EF9AB5A3AD76E /* ServiceHeaderProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceHeaderProvider.swift; path = Sources/SmileID/Classes/Networking/ServiceHeaderProvider.swift; sourceTree = "<group>"; };
 		5362D8201885936E9D630A20 /* SmileIDService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDService.swift; path = Sources/SmileID/Classes/Networking/SmileIDService.swift; sourceTree = "<group>"; };
 		536EA624B75FDAB91D2EB85E /* JobType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobType.swift; path = Sources/SmileID/Classes/Networking/Models/JobType.swift; sourceTree = "<group>"; };
 		5383932293711EB86D9CA58E /* Authentication.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Authentication.swift; path = Sources/SmileID/Classes/Networking/Models/Authentication.swift; sourceTree = "<group>"; };
@@ -728,11 +765,13 @@
 		5C4BDD6DD049B138F0F2DED0 /* RestartableTimer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestartableTimer.swift; path = Sources/SmileID/Classes/RestartableTimer.swift; sourceTree = "<group>"; };
 		5C61DF7867EF5DC740C737D6 /* JobSubmittable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobSubmittable.swift; path = Sources/SmileID/Classes/Views/JobSubmittable.swift; sourceTree = "<group>"; };
 		5C76BD73CD9E5E2724EE5DBB /* SelfieCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureResultStore.swift; path = Sources/SmileID/Classes/SelfieCapture/ViewModel/SelfieCaptureResultStore.swift; sourceTree = "<group>"; };
+		5D169B3B9B6113A799B5599E /* RectangleDectorFunnel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDectorFunnel.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDectorFunnel.swift; sourceTree = "<group>"; };
 		5D17F47D72ABE88ACBEB8562 /* DependencyResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyResolver.swift; sourceTree = "<group>"; };
 		5D2A0A81F268367C02C98524 /* DocumentShapedBoundingBox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentShapedBoundingBox.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentShapedBoundingBox.swift; sourceTree = "<group>"; };
 		5D4853AE689089D418579411 /* URLSessionPublisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionPublisher.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionPublisher.swift; sourceTree = "<group>"; };
 		5D49B2D9430F220A0580FDEE /* OrchestratedDocumentVerificationViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/OrchestratedDocumentVerificationViewModel.swift; sourceTree = "<group>"; };
 		5D7BD0FC18ADA79CF0DE6717 /* SelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SelfieCaptureScreen.swift; sourceTree = "<group>"; };
+		5DD26B0B824BCF18ACC72C77 /* HTTPHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPHeader.swift; path = Sources/SmileID/Classes/Networking/HTTPHeader.swift; sourceTree = "<group>"; };
 		5DEB23CFD15D148C14737562 /* EpilogueFont.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EpilogueFont.swift; path = Sources/SmileID/Classes/Helpers/EpilogueFont.swift; sourceTree = "<group>"; };
 		5F3BB76F967DDB272CC6820A /* SelfieViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieViewModel.swift; path = Sources/SmileID/Classes/SelfieCapture/SelfieViewModel.swift; sourceTree = "<group>"; };
 		5F6A66038B9F9C6011C37C59 /* OrchestratedBiometricKycScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycScreen.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycScreen.swift; sourceTree = "<group>"; };
@@ -744,6 +783,7 @@
 		60209CEB9F214D98D33308E3 /* JobStatus.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobStatus.swift; path = Sources/SmileID/Classes/Networking/Models/JobStatus.swift; sourceTree = "<group>"; };
 		611B0CBF18319B58D5D89E8D /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Sources/SmileID/Classes/Helpers/Theme.swift; sourceTree = "<group>"; };
 		612B22661FC80EDF3EA67074 /* CameraError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraError.swift; path = Sources/SmileID/Classes/Camera/CameraError.swift; sourceTree = "<group>"; };
+		627F6102A6BF7690A1561DEC /* Quadrilateral.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Quadrilateral.swift; path = Sources/SmileID/Classes/RectangleDetector/Quadrilateral.swift; sourceTree = "<group>"; };
 		62C6C57D893BE0EA63F5A5F3 /* SelfieViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieViewModel.swift; path = Sources/SmileID/Classes/SelfieCapture/SelfieViewModel.swift; sourceTree = "<group>"; };
 		62ED1026E29DA9BBD7730C48 /* SelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		62ED8BF8312D3E398B755446 /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
@@ -754,9 +794,11 @@
 		64A4B41C96338203D2F696DF /* Config.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Config.swift; path = Sources/SmileID/Classes/Networking/Models/Config.swift; sourceTree = "<group>"; };
 		64CD66FF735CDC171FDC14CA /* UploadRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UploadRequest.swift; path = Sources/SmileID/Classes/Networking/Models/UploadRequest.swift; sourceTree = "<group>"; };
 		64EAFA186D6F61FB7F7C1CF6 /* StringConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StringConstants.swift; path = Sources/SmileID/Classes/Helpers/StringConstants.swift; sourceTree = "<group>"; };
+		6539D3DAB8735D28692BAA85 /* OrchestratedBiometricKycScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycScreen.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycScreen.swift; sourceTree = "<group>"; };
 		65D9B5D54F1B9782B0C714AB /* DocumentVerificationResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentVerificationResultDelegate.swift; path = Sources/SmileID/Classes/DocumentVerification/DocumentVerificationResultDelegate.swift; sourceTree = "<group>"; };
 		662BB28CC5E203F106672B10 /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
 		662C36669474079120EEF8E9 /* DependencyAutoResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyAutoResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyAutoResolver.swift; sourceTree = "<group>"; };
+		662E78AA779170D8CA9EEECF /* OrchestratedConsentScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedConsentScreen.swift; path = Sources/SmileID/Classes/Consent/OrchestratedConsentScreen.swift; sourceTree = "<group>"; };
 		66516E66D0F136772D53A024 /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
 		667BC8E1B7CB14690BE8B64B /* OrchestratedBiometricKycScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycScreen.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycScreen.swift; sourceTree = "<group>"; };
 		66B19CD0CE06E42824CD683E /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
@@ -785,6 +827,7 @@
 		6AE98C63B87C6058F9273AE3 /* NavigationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationHelper.swift; path = Sources/SmileID/Classes/Helpers/NavigationHelper.swift; sourceTree = "<group>"; };
 		6B1B2972AAB07264B2D890F3 /* DocumentShapedBoundingBox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentShapedBoundingBox.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentShapedBoundingBox.swift; sourceTree = "<group>"; };
 		6B2BF497FB641EF2AA7E2D40 /* NavigationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationHelper.swift; path = Sources/SmileID/Classes/Helpers/NavigationHelper.swift; sourceTree = "<group>"; };
+		6B3C0101CA97E38DB6018CEE /* RestartableTimer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestartableTimer.swift; path = Sources/SmileID/Classes/RestartableTimer.swift; sourceTree = "<group>"; };
 		6B4E07596BF39F1DB9CC3751 /* OrchestratedBiometricKycScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycScreen.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycScreen.swift; sourceTree = "<group>"; };
 		6BAE20D478DD83BF10E71B4A /* NavigationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationHelper.swift; path = Sources/SmileID/Classes/Helpers/NavigationHelper.swift; sourceTree = "<group>"; };
 		6BDB229B99E1362CD28DABA6 /* BVN.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BVN.swift; path = Sources/SmileID/Classes/Networking/Models/BVN.swift; sourceTree = "<group>"; };
@@ -796,6 +839,8 @@
 		6E85CF5853CC2B3056542211 /* RectangleDectorFunnel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDectorFunnel.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDectorFunnel.swift; sourceTree = "<group>"; };
 		6E8BB609831C0247921FD6F4 /* RadioGroupSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RadioGroupSelector.swift; path = Sources/SmileID/Classes/Views/RadioGroupSelector.swift; sourceTree = "<group>"; };
 		6ECA7149B4B7A8E2F6CF5A8F /* URLSessionRestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionRestServiceClient.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionRestServiceClient.swift; sourceTree = "<group>"; };
+		6F30468E1389933FFF60B33E /* Colors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Sources/SmileID/Classes/Helpers/Colors.swift; sourceTree = "<group>"; };
+		6F717E2B5E924DB0FF33E591 /* RadioGroupSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RadioGroupSelector.swift; path = Sources/SmileID/Classes/Views/RadioGroupSelector.swift; sourceTree = "<group>"; };
 		6F91D3E006F2F690279073DB /* Util.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Util.swift; path = Sources/SmileID/Classes/Util.swift; sourceTree = "<group>"; };
 		6F95E8213242E507AAC32D8F /* ImagePicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImagePicker.swift; path = Sources/SmileID/Classes/DocumentVerification/View/ImagePicker.swift; sourceTree = "<group>"; };
 		6FF4A04BA8C53936CB6E7F7E /* DependencyContainer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyContainer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyContainer.swift; sourceTree = "<group>"; };
@@ -821,8 +866,10 @@
 		74FA15A7D2D6F4A62F58AAA1 /* DocumentCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureResultStore.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureResultStore.swift; sourceTree = "<group>"; };
 		74FF3BBCEF67196FF2182752 /* EnhancedDocumentVerificationResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedDocumentVerificationResultDelegate.swift; path = Sources/SmileID/Classes/DocumentVerification/EnhancedDocumentVerificationResultDelegate.swift; sourceTree = "<group>"; };
 		759E6844D26802A58B8712B3 /* Quadrilateral.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Quadrilateral.swift; path = Sources/SmileID/Classes/RectangleDetector/Quadrilateral.swift; sourceTree = "<group>"; };
+		75D4158C46753BDB9943C373 /* ImagePicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImagePicker.swift; path = Sources/SmileID/Classes/DocumentVerification/View/ImagePicker.swift; sourceTree = "<group>"; };
 		75F300962750649505850169 /* SmileIDResourcesHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDResourcesHelper.swift; path = Sources/SmileID/Classes/Helpers/SmileIDResourcesHelper.swift; sourceTree = "<group>"; };
 		762669476677A04BA59F98DE /* EnvironmentValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnvironmentValues.swift; path = Sources/SmileID/Classes/Helpers/EnvironmentValues.swift; sourceTree = "<group>"; };
+		762D41A77A085AEBC84865A0 /* JobType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobType.swift; path = Sources/SmileID/Classes/Networking/Models/JobType.swift; sourceTree = "<group>"; };
 		7648E909B34CC03ADF264565 /* SmartSelfieResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieResultDelegate.swift; path = Sources/SmileID/Classes/SelfieCapture/SmartSelfieResultDelegate.swift; sourceTree = "<group>"; };
 		7691CBCB811A2B02CA7280B1 /* NavigationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationHelper.swift; path = Sources/SmileID/Classes/Helpers/NavigationHelper.swift; sourceTree = "<group>"; };
 		76A20803E7E23997726E5A02 /* PrepUpload.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrepUpload.swift; path = Sources/SmileID/Classes/Networking/Models/PrepUpload.swift; sourceTree = "<group>"; };
@@ -864,6 +911,7 @@
 		8129646D11A524C06F0755B2 /* Colors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Sources/SmileID/Classes/Helpers/Colors.swift; sourceTree = "<group>"; };
 		81431493E554C91925206C87 /* JobType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobType.swift; path = Sources/SmileID/Classes/Networking/Models/JobType.swift; sourceTree = "<group>"; };
 		815649347F375E680F607997 /* RadioGroupSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RadioGroupSelector.swift; path = Sources/SmileID/Classes/Views/RadioGroupSelector.swift; sourceTree = "<group>"; };
+		81602341A63ED9B7C287B7ED /* DependencyResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyResolver.swift; sourceTree = "<group>"; };
 		818C009D5DA70CA32B2BE792 /* OrchestratedBiometricKycViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycViewModel.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycViewModel.swift; sourceTree = "<group>"; };
 		81995BE2E5C2DC6260E193C6 /* BVN.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BVN.swift; path = Sources/SmileID/Classes/Networking/Models/BVN.swift; sourceTree = "<group>"; };
 		81BDF7EC37708707EBC1ADED /* OrchestratedBiometricKycViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycViewModel.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycViewModel.swift; sourceTree = "<group>"; };
@@ -888,12 +936,14 @@
 		855995B3B44170D31F01B02C /* Services.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Services.swift; path = Sources/SmileID/Classes/Networking/Models/Services.swift; sourceTree = "<group>"; };
 		85D5AA75CD2867D70742911E /* FaceGeometryModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceGeometryModel.swift; path = Sources/SmileID/Classes/FaceDetector/FaceGeometryModel.swift; sourceTree = "<group>"; };
 		86511C3C6D657583E4160064 /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
+		868885C7A087B537116774E7 /* SearchableDropdownSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchableDropdownSelector.swift; path = Sources/SmileID/Classes/Views/SearchableDropdownSelector.swift; sourceTree = "<group>"; };
 		8692A1E77DA0029ADFF5722D /* OrchestratedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedSelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/OrchestratedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		872DDDA3A1B2001AEC05A853 /* BVN.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BVN.swift; path = Sources/SmileID/Classes/Networking/Models/BVN.swift; sourceTree = "<group>"; };
 		875C48F90B73CA8D71EED77A /* RestRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestRequest.swift; path = Sources/SmileID/Classes/Networking/RestRequest.swift; sourceTree = "<group>"; };
 		87849A14012938D8EF06C6E5 /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
 		87D191A00C3CCA7AE14E5F55 /* AspectRatioRoundedRectangle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AspectRatioRoundedRectangle.swift; path = Sources/SmileID/Classes/Views/AspectRatioRoundedRectangle.swift; sourceTree = "<group>"; };
 		87D79E709C4FA2F0C79D22F2 /* DependencyRegisterer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyRegisterer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyRegisterer.swift; sourceTree = "<group>"; };
+		87FADAFBD7D0BBFD67CE9F54 /* RestRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestRequest.swift; path = Sources/SmileID/Classes/Networking/RestRequest.swift; sourceTree = "<group>"; };
 		87FEA00E1524D299B8DC9034 /* Injected.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Injected.swift; path = Sources/SmileID/Classes/DependencyContainer/Injected.swift; sourceTree = "<group>"; };
 		88143A24C47EECA1DA26067A /* URLSessionRestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionRestServiceClient.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionRestServiceClient.swift; sourceTree = "<group>"; };
 		89476C1307676C5F5658644C /* RectangleDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDetector.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDetector.swift; sourceTree = "<group>"; };
@@ -901,11 +951,15 @@
 		89E417A364EDF34627A9CF46 /* DependencyAutoResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyAutoResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyAutoResolver.swift; sourceTree = "<group>"; };
 		89EFCD5BB08F161B69B93841 /* RestRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestRequest.swift; path = Sources/SmileID/Classes/Networking/RestRequest.swift; sourceTree = "<group>"; };
 		8A196B1C49507F3B8EAFD7FC /* CameraViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = Sources/SmileID/Classes/Camera/CameraViewController.swift; sourceTree = "<group>"; };
+		8A761F976500963587570159 /* DependencyAutoResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyAutoResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyAutoResolver.swift; sourceTree = "<group>"; };
 		8AD393970990BAED6E11121D /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
 		8B047CA281856C79A7041490 /* EnhancedKyc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedKyc.swift; path = Sources/SmileID/Classes/Networking/Models/EnhancedKyc.swift; sourceTree = "<group>"; };
+		8BBF31D938D1CCFBAAEFEFEA /* Util.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Util.swift; path = Sources/SmileID/Classes/Util.swift; sourceTree = "<group>"; };
 		8BFCE5404789315841802C5C /* Services.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Services.swift; path = Sources/SmileID/Classes/Networking/Models/Services.swift; sourceTree = "<group>"; };
+		8C3AA0A1C3F3E286A03E6D81 /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Sources/SmileID/Classes/Helpers/Theme.swift; sourceTree = "<group>"; };
 		8CFE7F396F0C2486A7CD2318 /* DocumentCaptureInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureInstructionsScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureInstructionsScreen.swift; sourceTree = "<group>"; };
 		8D3F332278C45AB750EA05CB /* EnhancedKyc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedKyc.swift; path = Sources/SmileID/Classes/Networking/Models/EnhancedKyc.swift; sourceTree = "<group>"; };
+		8D707D4ECCE74EDB8B7AC5CF /* BVN.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BVN.swift; path = Sources/SmileID/Classes/Networking/Models/BVN.swift; sourceTree = "<group>"; };
 		8D923D77701F01331222DD7B /* StringConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StringConstants.swift; path = Sources/SmileID/Classes/Helpers/StringConstants.swift; sourceTree = "<group>"; };
 		8E36E87AADBF98C282394B93 /* RadioGroupSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RadioGroupSelector.swift; path = Sources/SmileID/Classes/Views/RadioGroupSelector.swift; sourceTree = "<group>"; };
 		8E93D1CD541B59039CC94578 /* RadioGroupSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RadioGroupSelector.swift; path = Sources/SmileID/Classes/Views/RadioGroupSelector.swift; sourceTree = "<group>"; };
@@ -920,8 +974,11 @@
 		90C7CC64256067DB6622A3F7 /* DocumentShapedBoundingBox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentShapedBoundingBox.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentShapedBoundingBox.swift; sourceTree = "<group>"; };
 		90EBA940195A1938EBCE1E09 /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Sources/SmileID/Classes/Helpers/Theme.swift; sourceTree = "<group>"; };
 		90F2A21F319F934B904FD2CD /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
+		910980450167211C1FCD8DA7 /* APIError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIError.swift; path = Sources/SmileID/Classes/Networking/APIError.swift; sourceTree = "<group>"; };
 		9139B6F6D273381DBA3D9C66 /* ServiceRunnable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceRunnable.swift; path = Sources/SmileID/Classes/Networking/ServiceRunnable.swift; sourceTree = "<group>"; };
+		9144EA2C95DCEDB121227C4C /* DocumentCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureScreen.swift; sourceTree = "<group>"; };
 		915475A37FD57201EA17D5E0 /* CameraError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraError.swift; path = Sources/SmileID/Classes/Camera/CameraError.swift; sourceTree = "<group>"; };
+		9179308F9AE5CC9AC630C023 /* Services.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Services.swift; path = Sources/SmileID/Classes/Networking/Models/Services.swift; sourceTree = "<group>"; };
 		9181C36853D735BDEF9D338B /* BiometricKycResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BiometricKycResultDelegate.swift; path = Sources/SmileID/Classes/BiometricKYC/BiometricKycResultDelegate.swift; sourceTree = "<group>"; };
 		91AD7E540D4E88EC56662064 /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Sources/SmileID/Classes/Helpers/Theme.swift; sourceTree = "<group>"; };
 		91BC816D0D7F62F45950D6C2 /* EnhancedKyc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedKyc.swift; path = Sources/SmileID/Classes/Networking/Models/EnhancedKyc.swift; sourceTree = "<group>"; };
@@ -936,8 +993,10 @@
 		9412AC4346E4539479C142D3 /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
 		949F054B240E05224A4E9725 /* SelfieCaptureInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureInstructionsScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SelfieCaptureInstructionsScreen.swift; sourceTree = "<group>"; };
 		94AD2D691B898DA481E3B02A /* RectangleDectorFunnel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDectorFunnel.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDectorFunnel.swift; sourceTree = "<group>"; };
+		94B2C6113A9EE243DC1F84A8 /* InfiniteProgressBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InfiniteProgressBar.swift; path = Sources/SmileID/Classes/SelfieCapture/View/InfiniteProgressBar.swift; sourceTree = "<group>"; };
 		94E261732DD7245CFDEBF926 /* DependencyContainer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyContainer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyContainer.swift; sourceTree = "<group>"; };
 		958D233D728FC1DC7DE52AAF /* InfiniteProgressBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InfiniteProgressBar.swift; path = Sources/SmileID/Classes/SelfieCapture/View/InfiniteProgressBar.swift; sourceTree = "<group>"; };
+		9592D6D0070AF9408E1E0A66 /* JobSubmittable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobSubmittable.swift; path = Sources/SmileID/Classes/Views/JobSubmittable.swift; sourceTree = "<group>"; };
 		963081FC0A90F3AE4D3C2D99 /* CameraManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraManager.swift; path = Sources/SmileID/Classes/Camera/CameraManager.swift; sourceTree = "<group>"; };
 		9632946CE974DD04A4EF78AF /* Authentication.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Authentication.swift; path = Sources/SmileID/Classes/Networking/Models/Authentication.swift; sourceTree = "<group>"; };
 		96A4660D8A04BDAD729CB257 /* PrepUpload.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrepUpload.swift; path = Sources/SmileID/Classes/Networking/Models/PrepUpload.swift; sourceTree = "<group>"; };
@@ -950,6 +1009,8 @@
 		998F18FB7563A8ED04392576 /* SmileButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileButton.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SmileButton.swift; sourceTree = "<group>"; };
 		99973D11C42A4B627A35F2FE /* PrepUpload.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrepUpload.swift; path = Sources/SmileID/Classes/Networking/Models/PrepUpload.swift; sourceTree = "<group>"; };
 		99B7873D9AC4B94529A5391D /* FaceGeometryModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceGeometryModel.swift; path = Sources/SmileID/Classes/FaceDetector/FaceGeometryModel.swift; sourceTree = "<group>"; };
+		99CF359BCA570A2B3450418A /* RectangleDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDetector.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDetector.swift; sourceTree = "<group>"; };
+		99E3582CF1B3E2BAFF35A02F /* JobStatus.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobStatus.swift; path = Sources/SmileID/Classes/Networking/Models/JobStatus.swift; sourceTree = "<group>"; };
 		9A8048017051586567755EA7 /* FaceDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetector.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetector.swift; sourceTree = "<group>"; };
 		9A86DFDD785D8DF3D4E0521A /* LocalizedStringExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalizedStringExtensions.swift; path = Sources/SmileID/Classes/Helpers/LocalizedStringExtensions.swift; sourceTree = "<group>"; };
 		9AB94EB83073B372D60EA477 /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -963,6 +1024,7 @@
 		9DD6944616F96F2D7B02F09D /* RestRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestRequest.swift; path = Sources/SmileID/Classes/Networking/RestRequest.swift; sourceTree = "<group>"; };
 		9E21A9DD14A5FA748F29E5BF /* FontType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FontType.swift; path = Sources/SmileID/Classes/Helpers/FontType.swift; sourceTree = "<group>"; };
 		9E3B82AF24C07364E26EF5A8 /* FaceShape.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShape.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShape.swift; sourceTree = "<group>"; };
+		9E5F23DAA51E1DB0B8CEF483 /* FaceDetectionState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetectionState.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetectionState.swift; sourceTree = "<group>"; };
 		9E90E6E3695F935391728FC2 /* LocalStorage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalStorage.swift; path = Sources/SmileID/Classes/Helpers/LocalStorage.swift; sourceTree = "<group>"; };
 		9F05EC984B1319647E1FE425 /* StringConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StringConstants.swift; path = Sources/SmileID/Classes/Helpers/StringConstants.swift; sourceTree = "<group>"; };
 		9F6E83966C0F573044FAA434 /* RestartableTimer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestartableTimer.swift; path = Sources/SmileID/Classes/RestartableTimer.swift; sourceTree = "<group>"; };
@@ -1013,6 +1075,7 @@
 		A9F946DE981FD7982DDB0F96 /* CameraError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraError.swift; path = Sources/SmileID/Classes/Camera/CameraError.swift; sourceTree = "<group>"; };
 		AA94DA584A8F3BDB03E3FDEF /* RestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestServiceClient.swift; path = Sources/SmileID/Classes/Networking/RestServiceClient.swift; sourceTree = "<group>"; };
 		AA9E3B0ACA2B79D1E3A769F5 /* OrchestratedDocumentVerificationScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/OrchestratedDocumentVerificationScreen.swift; sourceTree = "<group>"; };
+		AB468FF98A1852498A2525CD /* RestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestServiceClient.swift; path = Sources/SmileID/Classes/Networking/RestServiceClient.swift; sourceTree = "<group>"; };
 		AB4C31F33E03D1B1724BE331 /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
 		AB8C731275D7D65AD9C743D4 /* SmartSelfieResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieResultDelegate.swift; path = Sources/SmileID/Classes/SelfieCapture/SmartSelfieResultDelegate.swift; sourceTree = "<group>"; };
 		AB8E374ADA8C40E1750A3235 /* DocumentCaptureViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureViewModel.swift; sourceTree = "<group>"; };
@@ -1038,6 +1101,7 @@
 		B00C2F196732F0CF1718B0F7 /* LocalizedStringExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalizedStringExtensions.swift; path = Sources/SmileID/Classes/Helpers/LocalizedStringExtensions.swift; sourceTree = "<group>"; };
 		B03055399A26A260F5AB1F42 /* OrchestratedConsentScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedConsentScreen.swift; path = Sources/SmileID/Classes/Consent/OrchestratedConsentScreen.swift; sourceTree = "<group>"; };
 		B03AE0F6769DEDA2E89F508F /* JobSubmittable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JobSubmittable.swift; path = Sources/SmileID/Classes/Views/JobSubmittable.swift; sourceTree = "<group>"; };
+		B0BEF422CC9B584D657A1501 /* OrchestratedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedSelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/OrchestratedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		B0FA7209FFD891ADCEACA35F /* NetworkUtil.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkUtil.swift; path = Sources/SmileID/Classes/Networking/NetworkUtil.swift; sourceTree = "<group>"; };
 		B105730C600CDFD7480BD8BB /* URLSessionPublisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionPublisher.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionPublisher.swift; sourceTree = "<group>"; };
 		B14596C1174A9FB45A11C8EE /* AspectRatioRoundedRectangle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AspectRatioRoundedRectangle.swift; path = Sources/SmileID/Classes/Views/AspectRatioRoundedRectangle.swift; sourceTree = "<group>"; };
@@ -1087,6 +1151,7 @@
 		BCEB657E13B58968252072CC /* RectangleDectorFunnel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDectorFunnel.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDectorFunnel.swift; sourceTree = "<group>"; };
 		BD17883ADB4F00B0AC37E98D /* OrchestratedDocumentVerificationScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/OrchestratedDocumentVerificationScreen.swift; sourceTree = "<group>"; };
 		BD452D64185547E327245257 /* CaptureButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CaptureButton.swift; path = Sources/SmileID/Classes/DocumentVerification/View/CaptureButton.swift; sourceTree = "<group>"; };
+		BD633BE235481354EEBD39A5 /* EnhancedDocumentVerificationResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedDocumentVerificationResultDelegate.swift; path = Sources/SmileID/Classes/DocumentVerification/EnhancedDocumentVerificationResultDelegate.swift; sourceTree = "<group>"; };
 		BD7A17B80BF4472F232A2901 /* ImageCaptureConfirmationDialog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCaptureConfirmationDialog.swift; path = Sources/SmileID/Classes/Views/ImageCaptureConfirmationDialog.swift; sourceTree = "<group>"; };
 		BD98686E9C99E57F0DD8E746 /* CameraViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = Sources/SmileID/Classes/Camera/CameraViewController.swift; sourceTree = "<group>"; };
 		BDCAC8CCD8A63728507B3CB4 /* FaceShapedProgressIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShapedProgressIndicator.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShapedProgressIndicator.swift; sourceTree = "<group>"; };
@@ -1097,6 +1162,8 @@
 		BE90030CBFA2A9910EE28A6F /* DocumentCaptureInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureInstructionsScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureInstructionsScreen.swift; sourceTree = "<group>"; };
 		BEC3C55801BF1472FC9F4B03 /* EnhancedKyc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedKyc.swift; path = Sources/SmileID/Classes/Networking/Models/EnhancedKyc.swift; sourceTree = "<group>"; };
 		BEE1D725DDA6D1B4D410FB80 /* CameraManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraManager.swift; path = Sources/SmileID/Classes/Camera/CameraManager.swift; sourceTree = "<group>"; };
+		BF6D80FCE6745AB02E23803C /* AspectRatioRoundedRectangle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AspectRatioRoundedRectangle.swift; path = Sources/SmileID/Classes/Views/AspectRatioRoundedRectangle.swift; sourceTree = "<group>"; };
+		BF75B363D5C888019DB2B70E /* URLSessionPublisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionPublisher.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionPublisher.swift; sourceTree = "<group>"; };
 		BF827C9B18F22F321BE13849 /* RestartableTimer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestartableTimer.swift; path = Sources/SmileID/Classes/RestartableTimer.swift; sourceTree = "<group>"; };
 		BF8D108C7B00C34B806EF566 /* CaptureButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CaptureButton.swift; path = Sources/SmileID/Classes/DocumentVerification/View/CaptureButton.swift; sourceTree = "<group>"; };
 		BFC48D448B459B7D2583EC88 /* APIError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIError.swift; path = Sources/SmileID/Classes/Networking/APIError.swift; sourceTree = "<group>"; };
@@ -1108,6 +1175,7 @@
 		C0730786ABB543B10FE28842 /* TextDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TextDetector.swift; path = Sources/SmileID/Classes/DocumentVerification/TextDetector/TextDetector.swift; sourceTree = "<group>"; };
 		C0850EFD54CAAF426BA76963 /* ARViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ARViewController.swift; path = Sources/SmileID/Classes/SelfieCapture/View/ARViewController.swift; sourceTree = "<group>"; };
 		C11E5427C87FB59BC3832E45 /* DependencyAutoResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyAutoResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyAutoResolver.swift; sourceTree = "<group>"; };
+		C1287D78CD1177A7AC4BDF06 /* LocalStorage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalStorage.swift; path = Sources/SmileID/Classes/Helpers/LocalStorage.swift; sourceTree = "<group>"; };
 		C14A71947D6DD0EF10007774 /* NavigationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationHelper.swift; path = Sources/SmileID/Classes/Helpers/NavigationHelper.swift; sourceTree = "<group>"; };
 		C18ABF299D77D37FBA90E61E /* HTTPHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPHeader.swift; path = Sources/SmileID/Classes/Networking/HTTPHeader.swift; sourceTree = "<group>"; };
 		C1A85DEDDE2DDACD9FDA6A81 /* ServiceHeaderProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceHeaderProvider.swift; path = Sources/SmileID/Classes/Networking/ServiceHeaderProvider.swift; sourceTree = "<group>"; };
@@ -1129,6 +1197,7 @@
 		C4F8E2B53AA278C54F492CD9 /* DependencyContainer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyContainer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyContainer.swift; sourceTree = "<group>"; };
 		C501099A6D568B4803DB3BD3 /* URLSessionPublisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionPublisher.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionPublisher.swift; sourceTree = "<group>"; };
 		C5E79B1D089E3DEC6563E7F4 /* CaptureButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CaptureButton.swift; path = Sources/SmileID/Classes/DocumentVerification/View/CaptureButton.swift; sourceTree = "<group>"; };
+		C614DB4F6AC6538F00B997A7 /* OrchestratedDocumentVerificationScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/OrchestratedDocumentVerificationScreen.swift; sourceTree = "<group>"; };
 		C624C581FC3B84A346E7F1BB /* AspectRatioRoundedRectangle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AspectRatioRoundedRectangle.swift; path = Sources/SmileID/Classes/Views/AspectRatioRoundedRectangle.swift; sourceTree = "<group>"; };
 		C63114F3FA744D10DEAB1235 /* SmileIDService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDService.swift; path = Sources/SmileID/Classes/Networking/SmileIDService.swift; sourceTree = "<group>"; };
 		C645D457E1EE0DCDCAB86550 /* SmileIDService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDService.swift; path = Sources/SmileID/Classes/Networking/SmileIDService.swift; sourceTree = "<group>"; };
@@ -1145,6 +1214,7 @@
 		C99DEF4D5DD09C8FF6F0F645 /* DocumentCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureResultStore.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/DocumentCaptureResultStore.swift; sourceTree = "<group>"; };
 		C9ADFD9800EA0646D46B8B41 /* FaceShapedProgressIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShapedProgressIndicator.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShapedProgressIndicator.swift; sourceTree = "<group>"; };
 		C9F1F3A8ABEAB5E04374DD85 /* SmileIDLocalizableStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDLocalizableStrings.swift; path = Sources/SmileID/Classes/Helpers/SmileIDLocalizableStrings.swift; sourceTree = "<group>"; };
+		CA21BC551641A05EEEF293DB /* NetworkUtil.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkUtil.swift; path = Sources/SmileID/Classes/Networking/NetworkUtil.swift; sourceTree = "<group>"; };
 		CA396C6EC6DAE22DE74B22EA /* SelfieViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieViewModel.swift; path = Sources/SmileID/Classes/SelfieCapture/SelfieViewModel.swift; sourceTree = "<group>"; };
 		CA7C1236AC52D9685581C585 /* OrchestratedDocumentVerificationScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/OrchestratedDocumentVerificationScreen.swift; sourceTree = "<group>"; };
 		CB0DF1814FD47F0E3527EB06 /* TextDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TextDetector.swift; path = Sources/SmileID/Classes/DocumentVerification/TextDetector/TextDetector.swift; sourceTree = "<group>"; };
@@ -1166,10 +1236,12 @@
 		CD7B3CE7A0775B9FF6895565 /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
 		CD8698C32810D8DCB742B7FE /* HTTPHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPHeader.swift; path = Sources/SmileID/Classes/Networking/HTTPHeader.swift; sourceTree = "<group>"; };
 		CDDC5D966F3161A1ADE431F7 /* HTTPQueryParameters.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPQueryParameters.swift; path = Sources/SmileID/Classes/Networking/HTTPQueryParameters.swift; sourceTree = "<group>"; };
+		CE38E61AB6C014EC91F6D2A3 /* CameraManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraManager.swift; path = Sources/SmileID/Classes/Camera/CameraManager.swift; sourceTree = "<group>"; };
 		CE5E475D56C85D622BD4534B /* SearchableDropdownSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchableDropdownSelector.swift; path = Sources/SmileID/Classes/Views/SearchableDropdownSelector.swift; sourceTree = "<group>"; };
 		CE97869D0C6269E441043B09 /* URLSessionPublisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionPublisher.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionPublisher.swift; sourceTree = "<group>"; };
 		CE99FA4F20921F1F30506BEE /* DocumentVerificationResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentVerificationResultDelegate.swift; path = Sources/SmileID/Classes/DocumentVerification/DocumentVerificationResultDelegate.swift; sourceTree = "<group>"; };
 		CEA13F4E416FC9BABE7B42EE /* DependencyRegisterer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyRegisterer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyRegisterer.swift; sourceTree = "<group>"; };
+		CEB458AC93326E9B45B3093A /* FaceDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetector.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetector.swift; sourceTree = "<group>"; };
 		CEE5C848F8BD145D0ED1A175 /* SmileIDLocalizableStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDLocalizableStrings.swift; path = Sources/SmileID/Classes/Helpers/SmileIDLocalizableStrings.swift; sourceTree = "<group>"; };
 		CEEFBBBE53D7B26044E7BBAC /* RestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestServiceClient.swift; path = Sources/SmileID/Classes/Networking/RestServiceClient.swift; sourceTree = "<group>"; };
 		CF172C83AC18959B5F1986FA /* FaceGeometryModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceGeometryModel.swift; path = Sources/SmileID/Classes/FaceDetector/FaceGeometryModel.swift; sourceTree = "<group>"; };
@@ -1185,8 +1257,10 @@
 		D0DDFD76BC19F13FA7D288C8 /* FaceShapedProgressIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShapedProgressIndicator.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShapedProgressIndicator.swift; sourceTree = "<group>"; };
 		D1BEAE8BA907C67EDDFDD942 /* ProcessingScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProcessingScreen.swift; path = Sources/SmileID/Classes/Views/ProcessingScreen.swift; sourceTree = "<group>"; };
 		D1FC449FD2514456988EF929 /* TextDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TextDetector.swift; path = Sources/SmileID/Classes/DocumentVerification/TextDetector/TextDetector.swift; sourceTree = "<group>"; };
+		D2084B935E486B042810884A /* Transformable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Transformable.swift; path = Sources/SmileID/Classes/RectangleDetector/Transformable.swift; sourceTree = "<group>"; };
 		D20FCF0D71E2DC466B48E365 /* ProcessingScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProcessingScreen.swift; path = Sources/SmileID/Classes/Views/ProcessingScreen.swift; sourceTree = "<group>"; };
 		D286EF3C0253FA814C29F31F /* RectangleDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDetector.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDetector.swift; sourceTree = "<group>"; };
+		D297ECE2927DE4880AD3406F /* Config.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Config.swift; path = Sources/SmileID/Classes/Networking/Models/Config.swift; sourceTree = "<group>"; };
 		D2A247210B8AA6542C5AEADB /* FaceShape.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShape.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShape.swift; sourceTree = "<group>"; };
 		D2A41A1610457B11934C24A0 /* ImagePicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImagePicker.swift; path = Sources/SmileID/Classes/DocumentVerification/View/ImagePicker.swift; sourceTree = "<group>"; };
 		D2C109FEB2FBD5AC59719712 /* DependencyRegisterer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyRegisterer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyRegisterer.swift; sourceTree = "<group>"; };
@@ -1199,9 +1273,11 @@
 		D42F9CCECF77002036B86892 /* SmartSelfieResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieResultDelegate.swift; path = Sources/SmileID/Classes/SelfieCapture/SmartSelfieResultDelegate.swift; sourceTree = "<group>"; };
 		D4312CFAED07AF4F65782405 /* DocumentCaptureInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureInstructionsScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureInstructionsScreen.swift; sourceTree = "<group>"; };
 		D44F473F6004A401E1D171B2 /* SmartSelfieResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieResultDelegate.swift; path = Sources/SmileID/Classes/SelfieCapture/SmartSelfieResultDelegate.swift; sourceTree = "<group>"; };
+		D464F3F9CF9AAB47C713A65D /* DependencyRegisterer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyRegisterer.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyRegisterer.swift; sourceTree = "<group>"; };
 		D470379C3D7FC44F5FC29D2C /* ServiceRunnable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceRunnable.swift; path = Sources/SmileID/Classes/Networking/ServiceRunnable.swift; sourceTree = "<group>"; };
 		D49CCD4F5F0F85C19FB148A7 /* OrchestratedConsentScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedConsentScreen.swift; path = Sources/SmileID/Classes/Consent/OrchestratedConsentScreen.swift; sourceTree = "<group>"; };
 		D4A8337C35CEF02E55C30E80 /* OrchestratedDocumentVerificationScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/OrchestratedDocumentVerificationScreen.swift; sourceTree = "<group>"; };
+		D4B26B20284F568DB2F40D86 /* ProcessingScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProcessingScreen.swift; path = Sources/SmileID/Classes/Views/ProcessingScreen.swift; sourceTree = "<group>"; };
 		D4BE70A7FFB3D953090CD7B2 /* FaceGeometryModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceGeometryModel.swift; path = Sources/SmileID/Classes/FaceDetector/FaceGeometryModel.swift; sourceTree = "<group>"; };
 		D502435CAC066ED8D4FCA892 /* ARViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ARViewController.swift; path = Sources/SmileID/Classes/SelfieCapture/View/ARViewController.swift; sourceTree = "<group>"; };
 		D56C58068F056B57966CED5F /* PartnerParams.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PartnerParams.swift; path = Sources/SmileID/Classes/Networking/Models/PartnerParams.swift; sourceTree = "<group>"; };
@@ -1222,15 +1298,19 @@
 		D8D96E0868E3D0261F925D55 /* CameraError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraError.swift; path = Sources/SmileID/Classes/Camera/CameraError.swift; sourceTree = "<group>"; };
 		D8E858384FA1FACF2032736E /* APIError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIError.swift; path = Sources/SmileID/Classes/Networking/APIError.swift; sourceTree = "<group>"; };
 		D950681016BF708B2639921D /* ImagePicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImagePicker.swift; path = Sources/SmileID/Classes/DocumentVerification/View/ImagePicker.swift; sourceTree = "<group>"; };
+		D98328A80C9146FF45634628 /* ImageExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageExtensions.swift; path = Sources/SmileID/Classes/Helpers/ImageExtensions.swift; sourceTree = "<group>"; };
 		D9EAB029857CA9F02BC0EC60 /* Services.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Services.swift; path = Sources/SmileID/Classes/Networking/Models/Services.swift; sourceTree = "<group>"; };
 		DA42800D4D93EA588F7C2500 /* CameraManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraManager.swift; path = Sources/SmileID/Classes/Camera/CameraManager.swift; sourceTree = "<group>"; };
 		DACABD31D99D0F6690D2873A /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
+		DAD686D6D812458D62019243 /* ARViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ARViewController.swift; path = Sources/SmileID/Classes/SelfieCapture/View/ARViewController.swift; sourceTree = "<group>"; };
 		DB84A9DE23FC1ABDB55132B5 /* InfiniteProgressBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InfiniteProgressBar.swift; path = Sources/SmileID/Classes/SelfieCapture/View/InfiniteProgressBar.swift; sourceTree = "<group>"; };
 		DBC388883916C07DB181F7BB /* ImageUtils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageUtils.swift; path = Sources/SmileID/Classes/Helpers/ImageUtils.swift; sourceTree = "<group>"; };
 		DC70676A552510385502B020 /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
 		DC83E83CCDD5922A14A3196B /* Injected.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Injected.swift; path = Sources/SmileID/Classes/DependencyContainer/Injected.swift; sourceTree = "<group>"; };
 		DC8F52FE87C9F657E3401C5A /* DocumentVerificationResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentVerificationResultDelegate.swift; path = Sources/SmileID/Classes/DocumentVerification/DocumentVerificationResultDelegate.swift; sourceTree = "<group>"; };
+		DCA17614820E2B67915BFA5B /* SmileIDResourcesHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDResourcesHelper.swift; path = Sources/SmileID/Classes/Helpers/SmileIDResourcesHelper.swift; sourceTree = "<group>"; };
 		DCD51FD50BF31EFFBD511186 /* LocalizedStringExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalizedStringExtensions.swift; path = Sources/SmileID/Classes/Helpers/LocalizedStringExtensions.swift; sourceTree = "<group>"; };
+		DCD6191C544958964B8E1AE8 /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
 		DCDAA4BB21E4A94062BB2757 /* FaceShapedProgressIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShapedProgressIndicator.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShapedProgressIndicator.swift; sourceTree = "<group>"; };
 		DD516DC47AD13995F6C1652B /* ImageCaptureConfirmationDialog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCaptureConfirmationDialog.swift; path = Sources/SmileID/Classes/Views/ImageCaptureConfirmationDialog.swift; sourceTree = "<group>"; };
 		DD93979E97AEAE497691B81D /* SmartSelfieResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieResultDelegate.swift; path = Sources/SmileID/Classes/SelfieCapture/SmartSelfieResultDelegate.swift; sourceTree = "<group>"; };
@@ -1240,6 +1320,7 @@
 		DEA32A51394C07967050A7B6 /* Services.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Services.swift; path = Sources/SmileID/Classes/Networking/Models/Services.swift; sourceTree = "<group>"; };
 		DEB6D7C7DB31DC29C6C451D9 /* ARViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ARViewController.swift; path = Sources/SmileID/Classes/SelfieCapture/View/ARViewController.swift; sourceTree = "<group>"; };
 		DEFC47EF810BF6E03BD447AE /* URLSessionRestServiceClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLSessionRestServiceClient.swift; path = Sources/SmileID/Classes/Networking/URLSession/URLSessionRestServiceClient.swift; sourceTree = "<group>"; };
+		DF030474420A56D0062F4598 /* EpilogueFont.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EpilogueFont.swift; path = Sources/SmileID/Classes/Helpers/EpilogueFont.swift; sourceTree = "<group>"; };
 		DF1E2B2C8760737EB7D8FF12 /* SelfieCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureResultStore.swift; path = Sources/SmileID/Classes/SelfieCapture/ViewModel/SelfieCaptureResultStore.swift; sourceTree = "<group>"; };
 		DF25708BB32228D3570BF246 /* SmileID.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileID.swift; path = Sources/SmileID/Classes/SmileID.swift; sourceTree = "<group>"; };
 		DF5E35F123C6198C90B4B2BD /* ProcessingScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProcessingScreen.swift; path = Sources/SmileID/Classes/Views/ProcessingScreen.swift; sourceTree = "<group>"; };
@@ -1249,13 +1330,16 @@
 		E06CD81A087D74E40B505B1D /* SmartSelfieInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieInstructionsScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SmartSelfieInstructionsScreen.swift; sourceTree = "<group>"; };
 		E0EE75A33CD21841FDF813D2 /* FaceDetectionState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetectionState.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetectionState.swift; sourceTree = "<group>"; };
 		E0F5F228FD9F9E0E11C2F7BD /* CameraError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraError.swift; path = Sources/SmileID/Classes/Camera/CameraError.swift; sourceTree = "<group>"; };
+		E11AB378B21162B003622538 /* CaptureButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CaptureButton.swift; path = Sources/SmileID/Classes/DocumentVerification/View/CaptureButton.swift; sourceTree = "<group>"; };
 		E132784950CC72ECA15B2554 /* FaceDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceDetector.swift; path = Sources/SmileID/Classes/FaceDetector/FaceDetector.swift; sourceTree = "<group>"; };
+		E146E26B2A61AEACD05DF939 /* SmartSelfieInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmartSelfieInstructionsScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SmartSelfieInstructionsScreen.swift; sourceTree = "<group>"; };
 		E1617947F78FBA5A39EE3E71 /* SmileID.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileID.swift; path = Sources/SmileID/Classes/SmileID.swift; sourceTree = "<group>"; };
 		E1D5F215EB48ED82BD0E08E1 /* FaceGeometryModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceGeometryModel.swift; path = Sources/SmileID/Classes/FaceDetector/FaceGeometryModel.swift; sourceTree = "<group>"; };
 		E1FFF9784ED934FBACD8DFE0 /* Util.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Util.swift; path = Sources/SmileID/Classes/Util.swift; sourceTree = "<group>"; };
 		E24B6CC9F017782928E83884 /* LocalStorage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalStorage.swift; path = Sources/SmileID/Classes/Helpers/LocalStorage.swift; sourceTree = "<group>"; };
 		E24E5D806D1800E762DE398F /* SelfieCaptureResultStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureResultStore.swift; path = Sources/SmileID/Classes/SelfieCapture/ViewModel/SelfieCaptureResultStore.swift; sourceTree = "<group>"; };
 		E27310D448E1D97563602535 /* Injected.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Injected.swift; path = Sources/SmileID/Classes/DependencyContainer/Injected.swift; sourceTree = "<group>"; };
+		E367585FB274194C76EED6B7 /* CameraError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraError.swift; path = Sources/SmileID/Classes/Camera/CameraError.swift; sourceTree = "<group>"; };
 		E36B5E9A0B957C45B4F1D1B4 /* FaceShape.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShape.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShape.swift; sourceTree = "<group>"; };
 		E3FEE1F9CDD209280B1CBB5C /* CameraError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraError.swift; path = Sources/SmileID/Classes/Camera/CameraError.swift; sourceTree = "<group>"; };
 		E400411DB58BA98A1D399791 /* RectangleDectorFunnel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RectangleDectorFunnel.swift; path = Sources/SmileID/Classes/RectangleDetector/RectangleDectorFunnel.swift; sourceTree = "<group>"; };
@@ -1268,6 +1352,7 @@
 		E664E5FF6276AFE87B2139D4 /* EnhancedKyc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedKyc.swift; path = Sources/SmileID/Classes/Networking/Models/EnhancedKyc.swift; sourceTree = "<group>"; };
 		E7C970D4F842EC096B29384D /* Quadrilateral.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Quadrilateral.swift; path = Sources/SmileID/Classes/RectangleDetector/Quadrilateral.swift; sourceTree = "<group>"; };
 		E8146D155AED97E954053938 /* DependencyResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyResolver.swift; sourceTree = "<group>"; };
+		E874AD54271826F2402283D6 /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
 		E87A4E16D2FB2F2DEAEF2533 /* DocumentShapedBoundingBox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentShapedBoundingBox.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentShapedBoundingBox.swift; sourceTree = "<group>"; };
 		E8BCB0C2F95C3B4F2E3FB256 /* ImageExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageExtensions.swift; path = Sources/SmileID/Classes/Helpers/ImageExtensions.swift; sourceTree = "<group>"; };
 		E975A55E9C338E5400EA894A /* Config.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Config.swift; path = Sources/SmileID/Classes/Networking/Models/Config.swift; sourceTree = "<group>"; };
@@ -1287,8 +1372,10 @@
 		EC4E2379A7867EAA3CA33633 /* SmileIDLocalizableStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDLocalizableStrings.swift; path = Sources/SmileID/Classes/Helpers/SmileIDLocalizableStrings.swift; sourceTree = "<group>"; };
 		EC92CA3A2987ABDBC9321A77 /* ActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActivityIndicator.swift; path = Sources/SmileID/Classes/Views/ActivityIndicator.swift; sourceTree = "<group>"; };
 		ECA680BD62BDD73A8C435522 /* CameraManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraManager.swift; path = Sources/SmileID/Classes/Camera/CameraManager.swift; sourceTree = "<group>"; };
+		ECE23D0387DF414944B74F45 /* SmileButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileButton.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SmileButton.swift; sourceTree = "<group>"; };
 		ED11CAF6B70AAE03FD9DE94E /* HTTPQueryParameters.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPQueryParameters.swift; path = Sources/SmileID/Classes/Networking/HTTPQueryParameters.swift; sourceTree = "<group>"; };
 		EDAD7E8BA0B77C04E087886A /* RestartableTimer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RestartableTimer.swift; path = Sources/SmileID/Classes/RestartableTimer.swift; sourceTree = "<group>"; };
+		EDC1FFD2FD91BA3CB173E415 /* DocumentCaptureInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureInstructionsScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureInstructionsScreen.swift; sourceTree = "<group>"; };
 		EDFFDD9D866D9B23511A6C79 /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
 		EE63441399C56A66702D1A0B /* CameraViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = Sources/SmileID/Classes/Camera/CameraViewController.swift; sourceTree = "<group>"; };
 		EEA3DBA09766DA2E2F45E276 /* FaceShape.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShape.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShape.swift; sourceTree = "<group>"; };
@@ -1318,6 +1405,7 @@
 		F4952D3A45634EB0069DEDA5 /* ARViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ARViewController.swift; path = Sources/SmileID/Classes/SelfieCapture/View/ARViewController.swift; sourceTree = "<group>"; };
 		F4B257822513DF56FFEC2D73 /* SearchableDropdownSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchableDropdownSelector.swift; path = Sources/SmileID/Classes/Views/SearchableDropdownSelector.swift; sourceTree = "<group>"; };
 		F561F129101C5152485D91B8 /* OrchestratedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedSelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/OrchestratedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
+		F56C25D886D54F1D3FA5FF75 /* FaceShape.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShape.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShape.swift; sourceTree = "<group>"; };
 		F590C51FBF4CC4D684BC98DD /* Config.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Config.swift; path = Sources/SmileID/Classes/Networking/Models/Config.swift; sourceTree = "<group>"; };
 		F5A558CAA8025891346350F4 /* OrchestratedBiometricKycScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycScreen.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycScreen.swift; sourceTree = "<group>"; };
 		F61FF5F204BE2D6B90C625E7 /* ProcessingScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProcessingScreen.swift; path = Sources/SmileID/Classes/Views/ProcessingScreen.swift; sourceTree = "<group>"; };
@@ -1343,6 +1431,7 @@
 		FD33B4BC55346876590119F1 /* DocumentVerificationResultDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentVerificationResultDelegate.swift; path = Sources/SmileID/Classes/DocumentVerification/DocumentVerificationResultDelegate.swift; sourceTree = "<group>"; };
 		FD4A6D69CC6F29B15095D09E /* Authentication.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Authentication.swift; path = Sources/SmileID/Classes/Networking/Models/Authentication.swift; sourceTree = "<group>"; };
 		FD85DD90BE897447D1AF73DD /* SmileIDLocalizableStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDLocalizableStrings.swift; path = Sources/SmileID/Classes/Helpers/SmileIDLocalizableStrings.swift; sourceTree = "<group>"; };
+		FDD1139E9C24C622EE444F3F /* EnvironmentValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnvironmentValues.swift; path = Sources/SmileID/Classes/Helpers/EnvironmentValues.swift; sourceTree = "<group>"; };
 		FE8D3569C3E6BC1784C807B5 /* SmileIDLocalizableStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDLocalizableStrings.swift; path = Sources/SmileID/Classes/Helpers/SmileIDLocalizableStrings.swift; sourceTree = "<group>"; };
 		FEE83F8757964EDF96A2DD24 /* SearchableDropdownSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchableDropdownSelector.swift; path = Sources/SmileID/Classes/Views/SearchableDropdownSelector.swift; sourceTree = "<group>"; };
 		FEF51690326D3A7CD22C9468 /* ImageCaptureConfirmationDialog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCaptureConfirmationDialog.swift; path = Sources/SmileID/Classes/Views/ImageCaptureConfirmationDialog.swift; sourceTree = "<group>"; };
@@ -2373,6 +2462,95 @@
 				F61FF5F204BE2D6B90C625E7 /* ProcessingScreen.swift */,
 				52681B655052F228966A7F41 /* RadioGroupSelector.swift */,
 				EB5B52DE4546CEB495FBB234 /* SearchableDropdownSelector.swift */,
+				0D8C925AA2998015CC9E3551 /* BiometricKycResultDelegate.swift */,
+				6539D3DAB8735D28692BAA85 /* OrchestratedBiometricKycScreen.swift */,
+				4F40E1AB84DB3B7664678DD9 /* OrchestratedBiometricKycViewModel.swift */,
+				E367585FB274194C76EED6B7 /* CameraError.swift */,
+				CE38E61AB6C014EC91F6D2A3 /* CameraManager.swift */,
+				373E851BF47435E5CF47F354 /* CameraViewController.swift */,
+				662E78AA779170D8CA9EEECF /* OrchestratedConsentScreen.swift */,
+				8A761F976500963587570159 /* DependencyAutoResolver.swift */,
+				259C97E87D27738958DC0663 /* DependencyContainer.swift */,
+				D464F3F9CF9AAB47C713A65D /* DependencyRegisterer.swift */,
+				81602341A63ED9B7C287B7ED /* DependencyResolver.swift */,
+				44E388D60D8A7AA19A6301A1 /* Injected.swift */,
+				118C6846D94FDCC817378ED9 /* DocumentVerificationResultDelegate.swift */,
+				BD633BE235481354EEBD39A5 /* EnhancedDocumentVerificationResultDelegate.swift */,
+				0C8F08B990603D814234F449 /* DocumentCaptureResultStore.swift */,
+				22FD795E719C6AD70A258C45 /* DocumentCaptureViewModel.swift */,
+				172AAD49BB26F951CBCD8DD7 /* OrchestratedDocumentVerificationViewModel.swift */,
+				32C7FE537049C09FC711769A /* TextDetector.swift */,
+				E11AB378B21162B003622538 /* CaptureButton.swift */,
+				EDC1FFD2FD91BA3CB173E415 /* DocumentCaptureInstructionsScreen.swift */,
+				9144EA2C95DCEDB121227C4C /* DocumentCaptureScreen.swift */,
+				38D767AA4E5946A5798F261D /* DocumentShapedBoundingBox.swift */,
+				75D4158C46753BDB9943C373 /* ImagePicker.swift */,
+				C614DB4F6AC6538F00B997A7 /* OrchestratedDocumentVerificationScreen.swift */,
+				9E5F23DAA51E1DB0B8CEF483 /* FaceDetectionState.swift */,
+				CEB458AC93326E9B45B3093A /* FaceDetector.swift */,
+				0CB36D21CEC924DE3B38A489 /* FaceGeometryModel.swift */,
+				6F30468E1389933FFF60B33E /* Colors.swift */,
+				FDD1139E9C24C622EE444F3F /* EnvironmentValues.swift */,
+				DF030474420A56D0062F4598 /* EpilogueFont.swift */,
+				368E70B2A1178922E417251E /* FontType.swift */,
+				D98328A80C9146FF45634628 /* ImageExtensions.swift */,
+				1B5840763E95886E039040FA /* ImageUtils.swift */,
+				C1287D78CD1177A7AC4BDF06 /* LocalStorage.swift */,
+				2C4C117632FC095ED88BC978 /* LocalizedStringExtensions.swift */,
+				288B14DFAB6B6B6F81E11ADC /* NavigationHelper.swift */,
+				1DDCCAAC1957DB0366962605 /* SmileIDLocalizableStrings.swift */,
+				DCA17614820E2B67915BFA5B /* SmileIDResourcesHelper.swift */,
+				43F13FC29FD4EC8198E308C2 /* StringConstants.swift */,
+				8C3AA0A1C3F3E286A03E6D81 /* Theme.swift */,
+				292E2E5F249732B1A72307A1 /* NavigationBar.swift */,
+				910980450167211C1FCD8DA7 /* APIError.swift */,
+				5DD26B0B824BCF18ACC72C77 /* HTTPHeader.swift */,
+				1A373968C49082A06EC4B66D /* HTTPQueryParameters.swift */,
+				246B7981F8E7D376B7AE5F20 /* Authentication.swift */,
+				8D707D4ECCE74EDB8B7AC5CF /* BVN.swift */,
+				D297ECE2927DE4880AD3406F /* Config.swift */,
+				50C110D0DBCEC7A981D478E2 /* EnhancedKyc.swift */,
+				99E3582CF1B3E2BAFF35A02F /* JobStatus.swift */,
+				762D41A77A085AEBC84865A0 /* JobType.swift */,
+				3EAFB1DF547AD3F5759D7029 /* PartnerParams.swift */,
+				0D027F2F51A76D5EAC13AFC9 /* PrepUpload.swift */,
+				9179308F9AE5CC9AC630C023 /* Services.swift */,
+				3E1B2C4F8F8F0E2EE520ECC5 /* UploadRequest.swift */,
+				40BAE5D82BB9F03752E005DD /* ValidDocuments.swift */,
+				CA21BC551641A05EEEF293DB /* NetworkUtil.swift */,
+				87FADAFBD7D0BBFD67CE9F54 /* RestRequest.swift */,
+				AB468FF98A1852498A2525CD /* RestServiceClient.swift */,
+				530000E14C4EF9AB5A3AD76E /* ServiceHeaderProvider.swift */,
+				2015356900AF8C78B4B37110 /* ServiceRunnable.swift */,
+				52690E5247D697E6EFCD8555 /* SmileIDService.swift */,
+				BF75B363D5C888019DB2B70E /* URLSessionPublisher.swift */,
+				2BB05531F2D59168E0F7D3CB /* URLSessionRestServiceClient.swift */,
+				627F6102A6BF7690A1561DEC /* Quadrilateral.swift */,
+				5D169B3B9B6113A799B5599E /* RectangleDectorFunnel.swift */,
+				99CF359BCA570A2B3450418A /* RectangleDetector.swift */,
+				D2084B935E486B042810884A /* Transformable.swift */,
+				6B3C0101CA97E38DB6018CEE /* RestartableTimer.swift */,
+				0D743D2BE12AD0B9399F9090 /* SelfieViewModel.swift */,
+				2EEB3F30009724EDD15E552D /* SmartSelfieResultDelegate.swift */,
+				DAD686D6D812458D62019243 /* ARViewController.swift */,
+				DCD6191C544958964B8E1AE8 /* CameraView.swift */,
+				F56C25D886D54F1D3FA5FF75 /* FaceShape.swift */,
+				326FB7A02720CDA7C645F88D /* FaceShapedProgressIndicator.swift */,
+				94B2C6113A9EE243DC1F84A8 /* InfiniteProgressBar.swift */,
+				B0BEF422CC9B584D657A1501 /* OrchestratedSelfieCaptureScreen.swift */,
+				22C315425265C2F2F3E79789 /* SelfieCaptureScreen.swift */,
+				E146E26B2A61AEACD05DF939 /* SmartSelfieInstructionsScreen.swift */,
+				ECE23D0387DF414944B74F45 /* SmileButton.swift */,
+				39F2CB9CDBF74EA941F11AEA /* SelfieCaptureResultStore.swift */,
+				50E0248807FF2C27D69E0990 /* SmileID.swift */,
+				8BBF31D938D1CCFBAAEFEFEA /* Util.swift */,
+				E874AD54271826F2402283D6 /* ActivityIndicator.swift */,
+				BF6D80FCE6745AB02E23803C /* AspectRatioRoundedRectangle.swift */,
+				1BAE2D643E510BAEBA73C7FF /* ImageCaptureConfirmationDialog.swift */,
+				9592D6D0070AF9408E1E0A66 /* JobSubmittable.swift */,
+				D4B26B20284F568DB2F40D86 /* ProcessingScreen.swift */,
+				6F717E2B5E924DB0FF33E591 /* RadioGroupSelector.swift */,
+				868885C7A087B537116774E7 /* SearchableDropdownSelector.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2909,95 +3087,95 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AFCBF26467542BCAABF1D2A7 /* BiometricKycResultDelegate.swift in Sources */,
-				5BB6DD3BAAB5C472F2E3AFB1 /* OrchestratedBiometricKycScreen.swift in Sources */,
-				5D9593B1390CB76FA5F055F7 /* OrchestratedBiometricKycViewModel.swift in Sources */,
-				3A420EC8A04E76EFD6816AD8 /* CameraError.swift in Sources */,
-				7D2C4AD40F843295F9E8323C /* CameraManager.swift in Sources */,
-				4AB6A9F8308499507D4BFC1D /* CameraViewController.swift in Sources */,
-				31D847D6F2C60F530A4FD7AF /* OrchestratedConsentScreen.swift in Sources */,
-				9D69874122A7764755C1E8E1 /* DependencyAutoResolver.swift in Sources */,
-				5385A7CC42EEC4AE76D90E83 /* DependencyContainer.swift in Sources */,
-				35153C8F81D28E067E0E09CB /* DependencyRegisterer.swift in Sources */,
-				FAAE8125735BDEF82C0D99E6 /* DependencyResolver.swift in Sources */,
-				DBA8314907AE3EE64BF651BB /* Injected.swift in Sources */,
-				34AEAF8441F9CAF367390267 /* DocumentVerificationResultDelegate.swift in Sources */,
-				FEF468CA7DC93F9BFFE99265 /* EnhancedDocumentVerificationResultDelegate.swift in Sources */,
-				94B32D196AC5E7089BDB1E69 /* DocumentCaptureResultStore.swift in Sources */,
-				1D3DA3ECE0E336A43251EBA8 /* DocumentCaptureViewModel.swift in Sources */,
-				6EBC8AF8183457376619B0FC /* OrchestratedDocumentVerificationViewModel.swift in Sources */,
-				C9C972E4151B5AF0B2540A6F /* TextDetector.swift in Sources */,
-				EF7E21A03AFF3E052792FCD1 /* CaptureButton.swift in Sources */,
-				40081845950092A2470ADD72 /* DocumentCaptureInstructionsScreen.swift in Sources */,
-				C23E7C44651E5B7F70A64AC2 /* DocumentCaptureScreen.swift in Sources */,
-				4D77A15A7C45E3658F0898E4 /* DocumentShapedBoundingBox.swift in Sources */,
-				7AC29206874D6FA1C81E6C4A /* ImagePicker.swift in Sources */,
-				522AB65DAF8B4892E325046D /* OrchestratedDocumentVerificationScreen.swift in Sources */,
-				6D46781F6AA9F7DCE948438C /* FaceDetectionState.swift in Sources */,
-				B7D0A15A8742122F3D4734A5 /* FaceDetector.swift in Sources */,
-				DE2E8DEB5728C4BA829ED468 /* FaceGeometryModel.swift in Sources */,
-				3BCEAA5F7D5A896BC905D8B8 /* Colors.swift in Sources */,
-				1AA14285AC73189D51EB3D4C /* EnvironmentValues.swift in Sources */,
-				A53284E52B9B9174639E5382 /* EpilogueFont.swift in Sources */,
-				3C3B2E1852721D9A8F772C92 /* FontType.swift in Sources */,
-				CC5CBED696EFAD0155448AEF /* ImageExtensions.swift in Sources */,
-				500722C726B9BD57BA71C3C1 /* ImageUtils.swift in Sources */,
-				D5715C423A15822765DC0B81 /* LocalStorage.swift in Sources */,
-				13D7BBC72FDBE21A26C87AD5 /* LocalizedStringExtensions.swift in Sources */,
-				A4F7394CED5AFC80D102EBAB /* NavigationHelper.swift in Sources */,
-				F44DB3768FC7AC7443F4418B /* SmileIDLocalizableStrings.swift in Sources */,
-				C4A4B6695159BEC04DDB757D /* SmileIDResourcesHelper.swift in Sources */,
-				4620E4BF37D348F2488E70C4 /* StringConstants.swift in Sources */,
-				4DD47BB15CD3146E9135FBBE /* Theme.swift in Sources */,
-				4CB624547A432FE05D07C43E /* NavigationBar.swift in Sources */,
-				CD4311B863FFD367EDA3B3EF /* APIError.swift in Sources */,
-				6F07D03EF0B1EA45335F8E46 /* HTTPHeader.swift in Sources */,
-				30600CF755E76849EEBF3164 /* HTTPQueryParameters.swift in Sources */,
-				2CD2ABDDE6E0049F6E0B137B /* Authentication.swift in Sources */,
-				DF1301F87948A62FB76B553C /* BVN.swift in Sources */,
-				D5E092F639E960E45BA68A46 /* Config.swift in Sources */,
-				5B3E35CF9834C24472196C8C /* EnhancedKyc.swift in Sources */,
-				72D7DCAB35CB811ADEA621D9 /* JobStatus.swift in Sources */,
-				97EC3ED05C8D317669E18F19 /* JobType.swift in Sources */,
-				3D1145CB7D7C28A238F82DD8 /* PartnerParams.swift in Sources */,
-				4FBF6A3CF14BFDF3EDCE3CC7 /* PrepUpload.swift in Sources */,
-				3F744C5ADD11A010D65854E5 /* Services.swift in Sources */,
-				3773701E5E7798D7052B7B51 /* UploadRequest.swift in Sources */,
-				911955122C658FD8BC9DE66D /* ValidDocuments.swift in Sources */,
-				A381CF4B9B9EDC75B05F7064 /* NetworkUtil.swift in Sources */,
-				F42FF16B1EB0509D648A2DE0 /* RestRequest.swift in Sources */,
-				6F7ED21657EEF50D75B95A4A /* RestServiceClient.swift in Sources */,
-				D2AADED74B3256205CDCC58C /* ServiceHeaderProvider.swift in Sources */,
-				03DBF10A712A246DCBBF6DB5 /* ServiceRunnable.swift in Sources */,
-				040A728A6EBB6FC6B202E49F /* SmileIDService.swift in Sources */,
-				DF6AE6B0D01E12C68E027EC2 /* URLSessionPublisher.swift in Sources */,
-				93A563E4D15D29511C341AC3 /* URLSessionRestServiceClient.swift in Sources */,
-				A43D5D5AFD979538D112EDCC /* Quadrilateral.swift in Sources */,
-				A3D1FFEC00590072EEC82D54 /* RectangleDectorFunnel.swift in Sources */,
-				64959A17C0B471E5EAECB5DD /* RectangleDetector.swift in Sources */,
-				C4F90DAFF647AC9CAE116921 /* Transformable.swift in Sources */,
-				1B9B96960D796D42256EC65C /* RestartableTimer.swift in Sources */,
-				01BF47A7CB2099F5324E5909 /* SelfieViewModel.swift in Sources */,
-				D1BE2B6F06E6FE66B876EA1D /* SmartSelfieResultDelegate.swift in Sources */,
-				561C1276047F3B3034B2F09D /* ARViewController.swift in Sources */,
-				02E168FF858667B00C7F5380 /* CameraView.swift in Sources */,
-				D8F4FC3379CE96B64BF4B021 /* FaceShape.swift in Sources */,
-				AFD362DFDBE7038ADC90CA4D /* FaceShapedProgressIndicator.swift in Sources */,
-				85AEC04B1E9D2969EB60AF38 /* InfiniteProgressBar.swift in Sources */,
-				4D04714B46BFCCB977EB678D /* OrchestratedSelfieCaptureScreen.swift in Sources */,
-				F37B5D330B383AF9F2CE4D86 /* SelfieCaptureScreen.swift in Sources */,
-				73B8DC9DF1F98B03A5CFBDED /* SmartSelfieInstructionsScreen.swift in Sources */,
-				9496696F82780B4321EBB81C /* SmileButton.swift in Sources */,
-				C22EADC6919399AA1EFC6A93 /* SelfieCaptureResultStore.swift in Sources */,
-				E5253EF1579B7CEB3966B50F /* SmileID.swift in Sources */,
-				784B48708255BA4321AA65EC /* Util.swift in Sources */,
-				09D08481E4317DAC0C365630 /* ActivityIndicator.swift in Sources */,
-				FE11A76757EDEF37796A0896 /* AspectRatioRoundedRectangle.swift in Sources */,
-				6F6CA91BB25446E809B080ED /* ImageCaptureConfirmationDialog.swift in Sources */,
-				693AE9431F6984EA61A63DCE /* JobSubmittable.swift in Sources */,
-				A69E7B3A5CBA946B4F4DA6A8 /* ProcessingScreen.swift in Sources */,
-				904A9BF0A62EE5B07F7F5066 /* RadioGroupSelector.swift in Sources */,
-				72F4CC52B51C8C20C972C334 /* SearchableDropdownSelector.swift in Sources */,
+				B8BE8DACE493510B1CBC88A2 /* BiometricKycResultDelegate.swift in Sources */,
+				8857EC686D799FE4F2FE6CF5 /* OrchestratedBiometricKycScreen.swift in Sources */,
+				0EBCB1B52F03A71F3C3EB8A9 /* OrchestratedBiometricKycViewModel.swift in Sources */,
+				9251FCE99511C9FAC37082ED /* CameraError.swift in Sources */,
+				292366C0330693F7591CECF9 /* CameraManager.swift in Sources */,
+				DFCC1830F27EC4B23FC43341 /* CameraViewController.swift in Sources */,
+				020E24EF40EA240D97D02937 /* OrchestratedConsentScreen.swift in Sources */,
+				0E3EC13D27EC15219452AF2F /* DependencyAutoResolver.swift in Sources */,
+				6B7A74192E238DC60703663A /* DependencyContainer.swift in Sources */,
+				ABDA8D8159443C630B0F8340 /* DependencyRegisterer.swift in Sources */,
+				5353AEB9BC7E280A9586C152 /* DependencyResolver.swift in Sources */,
+				502A3D2F85F1F9FEE2D9B3BF /* Injected.swift in Sources */,
+				646C822BD287AA9993CF7FBA /* DocumentVerificationResultDelegate.swift in Sources */,
+				E9B98C2F24627B69143024EF /* EnhancedDocumentVerificationResultDelegate.swift in Sources */,
+				81165F0F508EBDA9FB7631F3 /* DocumentCaptureResultStore.swift in Sources */,
+				1F268168EF48978833BF69BF /* DocumentCaptureViewModel.swift in Sources */,
+				82025CD7ED0620F1FD795E7E /* OrchestratedDocumentVerificationViewModel.swift in Sources */,
+				5A3C1BF431FC311CC65652C6 /* TextDetector.swift in Sources */,
+				44CCD0A3BFCA0310A6BF9603 /* CaptureButton.swift in Sources */,
+				0CE1020C7B1933CAB5C9AB89 /* DocumentCaptureInstructionsScreen.swift in Sources */,
+				296A715656BEF1C1C73C897C /* DocumentCaptureScreen.swift in Sources */,
+				7860F5EA445D929EBF769B4E /* DocumentShapedBoundingBox.swift in Sources */,
+				8AD6C5ACDA124A1C763E29CD /* ImagePicker.swift in Sources */,
+				69D4201F557563C93E0C32D7 /* OrchestratedDocumentVerificationScreen.swift in Sources */,
+				5CA57991614BCF7C17F18F06 /* FaceDetectionState.swift in Sources */,
+				061E6DF374E75D4DEEADFC7F /* FaceDetector.swift in Sources */,
+				7D0E7E3401C6A61C6A81B08C /* FaceGeometryModel.swift in Sources */,
+				A8BB228CEBECE1E1F2D19FBE /* Colors.swift in Sources */,
+				12E284345A1ED806FF175C70 /* EnvironmentValues.swift in Sources */,
+				959C5B6CCE36D48D6BE8B4C7 /* EpilogueFont.swift in Sources */,
+				17E9A45CA0DFC33941BFA68A /* FontType.swift in Sources */,
+				BB7D8C37B5592EFB17354BC1 /* ImageExtensions.swift in Sources */,
+				1B2095D0BC6D68FC2E1575BD /* ImageUtils.swift in Sources */,
+				AA5B2DF635F325BE581885A0 /* LocalStorage.swift in Sources */,
+				2894F9D32512D680F165793E /* LocalizedStringExtensions.swift in Sources */,
+				CB9F50561B02B5BD908D332B /* NavigationHelper.swift in Sources */,
+				A775DC175D6198F47D612C17 /* SmileIDLocalizableStrings.swift in Sources */,
+				6EA002FDFADE4CD60E9720A4 /* SmileIDResourcesHelper.swift in Sources */,
+				48F005AFBBDF15EF45199995 /* StringConstants.swift in Sources */,
+				662A3EF0F4B9D295D31150DD /* Theme.swift in Sources */,
+				8AA7E99ECFD82F6F36BADBEC /* NavigationBar.swift in Sources */,
+				C5C481C2A33D5E7303C149C6 /* APIError.swift in Sources */,
+				067E58D351407C7C227C0747 /* HTTPHeader.swift in Sources */,
+				5F6348AF4213580C524821BE /* HTTPQueryParameters.swift in Sources */,
+				26B3F4EE0E839FE9F7496BD2 /* Authentication.swift in Sources */,
+				54027837C92B5091339EB79C /* BVN.swift in Sources */,
+				F7DD3DA2A4B9038A966D57C6 /* Config.swift in Sources */,
+				488DD65E9CF1D0DE6C86D729 /* EnhancedKyc.swift in Sources */,
+				FD789BC25815B55493D32795 /* JobStatus.swift in Sources */,
+				0C463AE9B73C1525B7AEA9B6 /* JobType.swift in Sources */,
+				9829284460BDC59C208335CC /* PartnerParams.swift in Sources */,
+				DAC9E6A8BEEEB753473592EF /* PrepUpload.swift in Sources */,
+				CB8279E8E2D9AF2A9E183C7D /* Services.swift in Sources */,
+				DD63545E020ACBBF7926B90B /* UploadRequest.swift in Sources */,
+				CA3524DD44439E84ED23BC30 /* ValidDocuments.swift in Sources */,
+				163B8B8FD3D884F78AC9341A /* NetworkUtil.swift in Sources */,
+				0E27BCDCC060B751FDCA70EF /* RestRequest.swift in Sources */,
+				2FE537D16FBFECBE88C10C6B /* RestServiceClient.swift in Sources */,
+				383DBEF053D7C4206F98E4DB /* ServiceHeaderProvider.swift in Sources */,
+				802C89D9025D8C23ADB0DBA3 /* ServiceRunnable.swift in Sources */,
+				7EA9BAC2B3A8F4B695799611 /* SmileIDService.swift in Sources */,
+				77848DE0FEB06347A987158C /* URLSessionPublisher.swift in Sources */,
+				E628E89508429864C765025F /* URLSessionRestServiceClient.swift in Sources */,
+				421320E32A38525694990158 /* Quadrilateral.swift in Sources */,
+				29063B2DAF506430E3FA0BF8 /* RectangleDectorFunnel.swift in Sources */,
+				440D7B7A2E5558983B1E37C8 /* RectangleDetector.swift in Sources */,
+				C8990E625107AAA46968E53A /* Transformable.swift in Sources */,
+				62ADACB4DF7F8BE8FB02EA0C /* RestartableTimer.swift in Sources */,
+				D126B0DDB0DE0FDB9A7D7A90 /* SelfieViewModel.swift in Sources */,
+				586707CA445035F9A3FE0548 /* SmartSelfieResultDelegate.swift in Sources */,
+				275A84D95391C2A8DF3002A5 /* ARViewController.swift in Sources */,
+				F98180B70A397D0C73957F2E /* CameraView.swift in Sources */,
+				2FDBB79B29E22EAB345509E3 /* FaceShape.swift in Sources */,
+				EC33575BA57899999D4F5AD2 /* FaceShapedProgressIndicator.swift in Sources */,
+				637AD8D54F1E6BDCF8DFEA7A /* InfiniteProgressBar.swift in Sources */,
+				B049221BA7097B7796C0A65B /* OrchestratedSelfieCaptureScreen.swift in Sources */,
+				62CE5C75957D47370D70ABE6 /* SelfieCaptureScreen.swift in Sources */,
+				28537DC4D705619DD9584183 /* SmartSelfieInstructionsScreen.swift in Sources */,
+				C7561EF7C1271398DC083605 /* SmileButton.swift in Sources */,
+				5C3D2D1D0DAF3378375AEFA3 /* SelfieCaptureResultStore.swift in Sources */,
+				E01F4647C01B0A7E06A3D720 /* SmileID.swift in Sources */,
+				0B69150801E85613A848DA17 /* Util.swift in Sources */,
+				DA7F0C2217315E55DD8BDCEE /* ActivityIndicator.swift in Sources */,
+				0190545767B35BA3C18BEE89 /* AspectRatioRoundedRectangle.swift in Sources */,
+				1DE6702C16CE8EC50AAEE1DA /* ImageCaptureConfirmationDialog.swift in Sources */,
+				7F314D763941DF2EAD8C174E /* JobSubmittable.swift in Sources */,
+				1D3A8587AFD595C21165C5A5 /* ProcessingScreen.swift in Sources */,
+				EF56C4429904722CE3D74E43 /* RadioGroupSelector.swift in Sources */,
+				8FF483D559EBB6385FFD8180 /* SearchableDropdownSelector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
