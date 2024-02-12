@@ -1,4 +1,12 @@
 # Release Notes
+## 10.0.9
+
+### Fixed
+*  root project signing to remove organisation which breaks carthage release
+
+### Added
+Added git precommit hooks documented in Contribution section for keeping the root project in sync
+
 
 ## 10.0.8
 * Exposed individual components as Swift UI Components
