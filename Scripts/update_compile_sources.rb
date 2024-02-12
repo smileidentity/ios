@@ -1,6 +1,8 @@
 # We use the Example/SmileID.xcworkspace when
 # updating that it may not update the
-# SmileID.xcodeproj on the root f the project
+# SmileID.xcodeproj on the root of the project
+# this will not affect the Example project
+
 require 'xcodeproj'
 
 project_path = 'SmileID.xcodeproj'
