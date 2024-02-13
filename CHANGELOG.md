@@ -1,4 +1,6 @@
 # Release Notes
+## 10.0.9
+* Carthage support
 
 ## 10.0.8
 * Exposed individual components as Swift UI Components
