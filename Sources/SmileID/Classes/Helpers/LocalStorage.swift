@@ -199,6 +199,28 @@ public class LocalStorage {
         }
     }
 
+    static func getUnsubmittedJobs() -> [String] {
+        var fileNames: [String] = []
+        do {
+            let files = try fileManager.contentsOfDirectory(atPath: unsubmittedDirectory.relativePath)
+            fileNames.append(contentsOf: files)
+            return fileNames
+        } catch {
+           return fileNames
+        }
+    }
+
+    static func getSubmittedJobs() -> [String] {
+        var fileNames: [String] = []
+        do {
+            let files = try fileManager.contentsOfDirectory(atPath: submittedDirectory.relativePath)
+            fileNames.append(contentsOf: files)
+            return fileNames
+        } catch {
+            return fileNames
+        }
+    }
+
     // todo - rework this as we change zip library
     public static func toZip(
         uploadRequest: UploadRequest,
@@ -224,9 +246,12 @@ public class LocalStorage {
         }
     }
 
-    static func delete(at urls: [URL]) throws {
-        for url in urls where fileManager.fileExists(atPath: url.relativePath) {
-            try fileManager.removeItem(atPath: url.relativePath)
+    static func delete(at jobIds: [String]) throws {
+        try jobIds.forEach{
+            let unsubmittedJob = try unsubmittedDirectory.appendingPathComponent($0)
+            try delete(at: unsubmittedJob)
+            let submittedJob = try submittedDirectory.appendingPathComponent($0)
+            try delete(at: submittedJob)
         }
     }
 

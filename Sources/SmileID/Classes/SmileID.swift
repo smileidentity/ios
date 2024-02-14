@@ -22,6 +22,7 @@ public class SmileID {
 
     public private(set) static var config: Config!
     public private(set) static var useSandbox = false
+    public private(set) static var allowOfflineMode = false
     public private(set) static var callbackUrl: String = ""
     internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
@@ -62,6 +63,37 @@ public class SmileID {
     /// - Parameter useSandbox: A boolean to enable the sandbox environment or not
     public class func setEnvironment(useSandbox: Bool) {
         SmileID.useSandbox = useSandbox
+    }
+
+    /// Set offline mode on the sdkJobStatusResponse
+    /// - Parameter allowOfflineMode: A boolean to enable offline mode or not
+    public class func setAllowOfflineMode(allowOfflineMode: Bool) {
+        SmileID.allowOfflineMode = allowOfflineMode
+    }
+
+    /// Returns a list of all unsubmitted jobIds
+    public class func getUnsubmittedJobs() -> [String] {
+        LocalStorage.getUnsubmittedJobs()
+    }
+
+    /// Returns a list of all submitted jobIds
+    public class func getSubmittedJobs() -> [String] {
+        LocalStorage.getSubmittedJobs()
+    }
+
+    /// nukes all offline stored files
+    public class func cleanup() throws {
+        try LocalStorage.deleteAll()
+    }
+
+    /// deletes the passed job id, whether in unsubmitted or submitted state
+    public class func cleanup(jobId: String) throws {
+        try cleanup(jobIds: [jobId])
+    }
+
+    /// deletes the job ids list, whether in unsubmitted or submitted state
+    public class func cleanup(jobIds: [String]) throws {
+        try LocalStorage.delete(at: jobIds)
     }
 
     /// Set the callback URL for all submitted jobs. If no value is set, the default callback URL
