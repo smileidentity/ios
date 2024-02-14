@@ -200,6 +200,27 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 receiveCompletion: { completion in
                     switch completion {
                     case .failure(let error):
+                            do {
+                                _ = try LocalStorage.createPreUploadFile(
+                                    jobId: self.jobId,
+                                    partnerParams: PartnerParams(
+                                        jobId: self.jobId,
+                                        userId: self.userId,
+                                        jobType: self.jobType,
+                                        extras: self.extraPartnerParams
+                                    ),
+                                    allowNewEnroll: self.allowNewEnroll
+                                )
+                                _ = try LocalStorage.createAuthenticationRequestFile(
+                                    jobId: self.jobId,
+                                    userId: self.userId,
+                                    jobType: self.jobType,
+                                    enrollment: false
+                                )
+                            } catch {
+                                print("Error submitting job: \(error)")
+                                self.onError(error: SmileIDError.unknown("File creation error"))
+                            }
                         print("Error submitting job: \(error)")
                         self.onError(error: SmileIDError.unknown("Network error"))
                     default:

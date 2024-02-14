@@ -114,7 +114,34 @@ public class LocalStorage {
         return try createSmileFile(to: jobId, name: "info.json", file: data)
     }
 
-    private static func write(_ data: Data, to url: URL) throws -> URL {
+    static func createPreUploadFile(
+        jobId: String,
+        partnerParams: PartnerParams,
+        allowNewEnroll: Bool
+    ) throws -> URL {
+        let data = try jsonEncoder.encode(PrepUploadRequest(
+            partnerParams: partnerParams,
+            allowNewEnroll: String(allowNewEnroll) // TODO - Fix when Michael changes
+        ))
+        return try createSmileFile(to: jobId, name: "preupload.json", file: data)
+    }
+
+    static func createAuthenticationRequestFile(
+        jobId: String,
+        userId: String,
+        jobType: JobType,
+        enrollment: Bool
+    ) throws -> URL {
+        let data = try jsonEncoder.encode(AuthenticationRequest(
+            jobType: jobType,
+            enrollment: enrollment,
+            jobId: jobId,
+            userId: userId
+        ))
+        return try createSmileFile(to: jobId, name: "authenticationrequest.json", file: data)
+    }
+
+    private static func write(_ data: Data, to url: URL, options completeFileProtection: Bool = true) throws -> URL {
         let directoryURL = url.deletingLastPathComponent()
         try fileManager.createDirectory(
             at: directoryURL,
@@ -122,11 +149,11 @@ public class LocalStorage {
             attributes: nil
         )
         if !fileManager.fileExists(atPath: url.relativePath) {
-            try data.write(to: url)
+            try data.write(to: url, options: completeFileProtection ? .completeFileProtection : [])
             return url
         } else {
             try fileManager.removeItem(atPath: url.relativePath)
-            try data.write(to: url)
+            try data.write(to: url, options: completeFileProtection ? .completeFileProtection : [])
             return url
         }
     }

@@ -331,6 +331,28 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 ).async()
                 DispatchQueue.main.async { self.processingState = .success }
             } catch {
+                do {
+                    let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
+                    _ = try LocalStorage.createPreUploadFile(
+                        jobId: self.jobId,
+                        partnerParams: PartnerParams(
+                            jobId: self.jobId,
+                            userId: self.userId,
+                            jobType: jobType,
+                            extras: self.extraPartnerParams
+                        ),
+                        allowNewEnroll: self.allowNewEnroll
+                    )
+                    _ = try LocalStorage.createAuthenticationRequestFile(
+                        jobId: self.jobId,
+                        userId: self.userId,
+                        jobType: jobType,
+                        enrollment: false
+                    )
+                } catch {
+                    print("Error submitting job: \(error)")
+                    self.error = error
+                }
                 print("Error submitting job: \(error)")
                 self.error = error
                 DispatchQueue.main.async { self.processingState = .error }
