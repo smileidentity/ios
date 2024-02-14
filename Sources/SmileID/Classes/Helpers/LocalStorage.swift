@@ -148,7 +148,7 @@ public class LocalStorage {
         enrollment: Bool,
         allowNewEnroll: Bool,
         partnerParams: [String: String]
-    ) throws -> URL {
+    ) throws {
         do {
             _ = try createPreUploadFile(
                 jobId: jobId,
