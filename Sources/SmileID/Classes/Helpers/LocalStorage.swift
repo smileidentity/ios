@@ -69,6 +69,17 @@ public class LocalStorage {
         return try createSmileFile(to: jobId, name: "document", file: data)
     }
 
+    static func createInfoJsonFile(
+        idInfo: IdInfo? = nil,
+        imageInfoArray: [UploadImageInfo] = []
+    ) throws -> URL {
+        let info = try jsonEncoder.encode(UploadRequest(
+            images: imageInfoArray,
+            idInfo: idInfo
+        ))
+        return try write(info, to: unsubmittedDirectory.appendingPathComponent("info.json"))
+    }
+
     static func saveImage(
         image: Data,
         to folder: String = "sid-\(UUID().uuidString)",
