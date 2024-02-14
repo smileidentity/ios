@@ -290,17 +290,11 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 guard let selfieImage, livenessImages.count == numLivenessImages else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
-                let infoJson = try LocalStorage.createInfoJson(
-                    selfie: selfieImage,
-                    livenessImages: livenessImages
-                )
-
-                let juma = try LocalStorage.createInfoJsonFile(
+                let infoJson = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,
                     selfie: selfieImage,
                     livenessImages: livenessImages
                 )
-
                 let zipUrl = try LocalStorage.zipFiles(
                     at: livenessImages + [selfieImage] + [infoJson]
                 )

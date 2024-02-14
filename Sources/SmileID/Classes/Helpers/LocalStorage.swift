@@ -191,7 +191,7 @@ public class LocalStorage {
     ///   - documentType: The optional document type
     ///   - folder: The name of the folder the files should be saved
     /// - Returns: A document result store which encapsulates the urls of the saved images
-    static func saveDocumentImages(
+    static func saveDocumentImagess(
         front: Data,
         back: Data?,
         selfie: Data,

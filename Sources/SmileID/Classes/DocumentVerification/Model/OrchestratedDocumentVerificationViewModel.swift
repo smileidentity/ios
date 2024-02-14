@@ -121,17 +121,43 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
         let zip: Data
         do {
-            let savedFiles = try LocalStorage.saveDocumentImages(
-                front: documentFrontFile,
-                back: documentBackFile,
-                selfie: selfieFile,
-                livenessImages: livenessFiles,
-                countryCode: countryCode,
-                documentType: documentType
+            var allFiles = [URL]()
+            let frontDocumentUrl = try LocalStorage.createDocumentFile(jobId: jobId, document: documentFrontFile)
+            allFiles.append(frontDocumentUrl)
+            var backDocumentUrl: URL?
+            if let documentBackFile = documentBackFile {
+                let url = try LocalStorage.createDocumentFile(jobId: jobId, document: documentBackFile)
+                backDocumentUrl = url
+                allFiles.append(url)
+            }
+            let selfieFileUrl = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: selfieFile)
+            allFiles.append(selfieFileUrl)
+            var livenessImagesUrl = [URL]()
+            if let livenessFiles = livenessFiles {
+                let _ = try livenessFiles.map { liveness in
+                    let livenessFile = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: liveness)
+                    livenessImagesUrl.append(livenessFile)
+                    allFiles.append(livenessFile)
+                }
+            }
+            let info = try LocalStorage.createInfoJsonFile(
+                jobId: jobId,
+                idInfo: IdInfo(country: countryCode),
+                documentFront: frontDocumentUrl,
+                documentBack: backDocumentUrl,
+                selfie: selfieFileUrl,
+                livenessImages: livenessImagesUrl
             )
-            let zipUrl = try LocalStorage.zipFiles(at: savedFiles.allFiles)
+            allFiles.append(info)
+            let zipUrl = try LocalStorage.zipFiles(at: allFiles)
             zip = try Data(contentsOf: zipUrl)
-            self.savedFiles = savedFiles
+            self.savedFiles = DocumentCaptureResultStore(
+                allFiles: allFiles,
+                documentFront: frontDocumentUrl,
+                documentBack: backDocumentUrl,
+                selfie: selfieFileUrl,
+                livenessImages: livenessImagesUrl
+            )
         } catch {
             print("Error saving document images: \(error)")
             onError(error: SmileIDError.unknown("Error saving document images"))
