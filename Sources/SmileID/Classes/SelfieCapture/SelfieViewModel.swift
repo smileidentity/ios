@@ -295,17 +295,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     livenessImages: livenessImages
                 )
 
-                var imageInfoArray: [UploadImageInfo] = []
-                imageInfoArray.append(
-                    UploadImageInfo(
-                        imageTypeId: .selfieJpgFile,
-                        fileName: selfieImage.lastPathComponent
-                    )
-                )
-
                 let juma = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,
-                    imageInfoArray: imageInfoArray
+                    selfie: selfieImage,
+                    livenessImages: livenessImages
                 )
 
                 let zipUrl = try LocalStorage.zipFiles(

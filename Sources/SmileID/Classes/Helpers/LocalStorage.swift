@@ -73,8 +73,42 @@ public class LocalStorage {
     static func createInfoJsonFile(
         jobId: String,
         idInfo: IdInfo? = nil,
-        imageInfoArray: [UploadImageInfo] = []
+        documentFront: URL? = nil,
+        documentBack: URL? = nil,
+        selfie: URL? = nil,
+        livenessImages: [URL]? = nil
     ) throws -> URL {
+        var imageInfoArray = [UploadImageInfo]()
+        if let selfie = selfie {
+            imageInfoArray.append(UploadImageInfo(
+                imageTypeId: .selfieJpgFile,
+                fileName: selfie.lastPathComponent
+            ))
+
+        }
+        if let livenessImages = livenessImages {
+            let livenessImageInfos = livenessImages.map { liveness in
+                return UploadImageInfo(
+                    imageTypeId: .livenessJpgFile,
+                    fileName: liveness.lastPathComponent
+                )
+            }
+            imageInfoArray.append(contentsOf: livenessImageInfos)
+        }
+        if let documentFront = documentFront {
+            imageInfoArray.append(UploadImageInfo(
+                imageTypeId: .idCardJpgFile,
+                fileName: documentFront.lastPathComponent
+            ))
+
+        }
+        if let documentBack = documentBack {
+            imageInfoArray.append(UploadImageInfo(
+                imageTypeId: .idCardRearJpgFile,
+                fileName: documentBack.lastPathComponent
+            ))
+
+        }
         let data = try jsonEncoder.encode(UploadRequest(
             images: imageInfoArray,
             idInfo: idInfo
