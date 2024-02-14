@@ -100,14 +100,12 @@ public class LocalStorage {
                 imageTypeId: .idCardJpgFile,
                 fileName: documentFront.lastPathComponent
             ))
-
         }
         if let documentBack = documentBack {
             imageInfoArray.append(UploadImageInfo(
                 imageTypeId: .idCardRearJpgFile,
                 fileName: documentBack.lastPathComponent
             ))
-
         }
         let data = try jsonEncoder.encode(UploadRequest(
             images: imageInfoArray,
