@@ -186,7 +186,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         ) else {
                             throw SmileIDError.unknown("Error resizing liveness image")
                         }
-                        let imageUrl = try LocalStorage.saveImage(image: imageData, name: "liveness")
+//                        let imageUrl = try LocalStorage.saveImage(image: imageData, name: "liveness")
+                        let imageUrl = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: imageData)
                         livenessImages.append(imageUrl)
                         DispatchQueue.main.async {
                             self.captureProgress = Double(self.livenessImages.count) / Double(self.numTotalSteps)
@@ -200,7 +201,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         ) else {
                             throw SmileIDError.unknown("Error resizing selfie image")
                         }
-                        let selfieImage = try LocalStorage.saveImage(image: imageData, name: "selfie")
+//                        let selfieImage = try LocalStorage.saveImage(image: imageData, name: "selfie")
+                        let selfieImage = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
                         self.selfieImage = selfieImage
                         DispatchQueue.main.async {
                             self.captureProgress = 1

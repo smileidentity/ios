@@ -2,7 +2,9 @@ import Foundation
 import Zip
 
 public class LocalStorage {
-    private static let defaultFolderName = "sid_jobs"
+    private static let defaultFolderName = "SmileID"
+    private static let pendingFolderName = "unsubmitted"
+    private static let completedFolderName = "submitted"
     private static let imagePrefix = "si_"
     private static let fileManager = FileManager.default
     private static let previewImageName = "PreviewImage.jpg"
@@ -18,6 +20,53 @@ public class LocalStorage {
             )
             return documentDirectory.appendingPathComponent(defaultFolderName)
         }
+    }
+
+    static var unsubmittedDirectory: URL {
+        get throws {
+            try defaultDirectory.appendingPathComponent(pendingFolderName)
+        }
+    }
+
+    static var submittedDirectory: URL {
+        get throws {
+            try defaultDirectory.appendingPathComponent(completedFolderName)
+        }
+    }
+
+    private static func createSmileFile(
+        to folder: String,
+        name: String,
+        file data: Data
+    ) throws -> URL {
+        try createDirectory(at: defaultDirectory, overwrite: false)
+        try createDirectory(at: unsubmittedDirectory, overwrite: false)
+        return try write(data, to: unsubmittedDirectory.appendingPathComponent(filename(for: name)))
+    }
+
+    private static func filename(for name: String) -> String {
+        "\(imagePrefix)\(name)_\(Date().millisecondsSince1970).jpg"
+    }
+
+    static func createSelfieFile(
+        jobId: String,
+        selfieFile data: Data
+    ) throws -> URL {
+        return try createSmileFile(to: jobId, name: "selfie", file: data)
+    }
+
+    static func createLivenessFile(
+        jobId: String,
+        livenessFile data: Data
+    ) throws -> URL {
+        return try createSmileFile(to: jobId, name: "liveness", file: data)
+    }
+
+    static func createDocumentFile(
+        jobId: String,
+        document data: Data
+    ) throws -> URL {
+        return try createSmileFile(to: jobId, name: "document", file: data)
     }
 
     static func saveImage(
@@ -159,10 +208,6 @@ public class LocalStorage {
 
     private static func createDefaultDirectory() throws {
         try createDirectory(at: defaultDirectory, overwrite: false)
-    }
-
-    private static func filename(for imageType: String) -> String {
-        "\(imagePrefix)\(imageType)_\(Date().millisecondsSince1970).jpg"
     }
 
     static func write(_ data: Data, to url: URL) throws -> URL {
