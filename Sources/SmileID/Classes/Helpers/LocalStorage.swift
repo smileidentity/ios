@@ -221,6 +221,17 @@ public class LocalStorage {
         }
     }
 
+    static func moveToSubmittedJobs(jobId: String) throws {
+        try createDirectory(at: submittedDirectory, overwrite: false)
+        let sourceURLs = try fileManager.contentsOfDirectory(atPath: jobId).map {
+            URL(fileURLWithPath: jobId).appendingPathComponent($0)
+        }
+        for sourceURL in sourceURLs {
+            let destinationURL = try submittedDirectory.appendingPathComponent(sourceURL.lastPathComponent)
+            try fileManager.moveItem(at: sourceURL, to: destinationURL)
+        }
+    }
+
     // todo - rework this as we change zip library
     public static func toZip(
         uploadRequest: UploadRequest,
@@ -240,7 +251,7 @@ public class LocalStorage {
         try Zip.quickZipFiles(urls, fileName: "upload")
     }
 
-    static func delete(at url: URL) throws {
+    private static func delete(at url: URL) throws {
         if fileManager.fileExists(atPath: url.relativePath) {
             try fileManager.removeItem(atPath: url.relativePath)
         }
