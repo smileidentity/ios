@@ -114,7 +114,7 @@ public class LocalStorage {
         return try createSmileFile(to: jobId, name: "info.json", file: data)
     }
 
-    static func createPreUploadFile(
+    private static func createPreUploadFile(
         jobId: String,
         partnerParams: PartnerParams,
         allowNewEnroll: Bool
@@ -126,7 +126,7 @@ public class LocalStorage {
         return try createSmileFile(to: jobId, name: "preupload.json", file: data)
     }
 
-    static func createAuthenticationRequestFile(
+    private static func createAuthenticationRequestFile(
         jobId: String,
         userId: String,
         jobType: JobType,
@@ -139,6 +139,34 @@ public class LocalStorage {
             userId: userId
         ))
         return try createSmileFile(to: jobId, name: "authenticationrequest.json", file: data)
+    }
+
+    static func saveOfflineJob(
+        jobId: String,
+        userId: String,
+        jobType: JobType,
+        enrollment: Bool,
+        allowNewEnroll: Bool,
+        partnerParams: [String: String]
+    ) throws -> URL {
+        do {
+            _ = try createPreUploadFile(
+                jobId: jobId,
+                partnerParams: PartnerParams(
+                    jobId: jobId,
+                    userId: userId,
+                    jobType: jobType,
+                    extras: partnerParams
+                ),
+                allowNewEnroll: allowNewEnroll
+            )
+            _ = try createAuthenticationRequestFile(
+                jobId: jobId,
+                userId: userId,
+                jobType: jobType,
+                enrollment: enrollment
+            )
+        }
     }
 
     private static func write(_ data: Data, to url: URL, options completeFileProtection: Bool = true) throws -> URL {
