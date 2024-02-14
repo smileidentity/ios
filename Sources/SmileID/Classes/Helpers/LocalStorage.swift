@@ -41,7 +41,8 @@ public class LocalStorage {
     ) throws -> URL {
         try createDirectory(at: defaultDirectory, overwrite: false)
         try createDirectory(at: unsubmittedDirectory, overwrite: false)
-        return try write(data, to: unsubmittedDirectory.appendingPathComponent(filename(for: name)))
+        let destinationFolder = try unsubmittedDirectory.appendingPathComponent(folder)
+        return try write(data, to: destinationFolder.appendingPathComponent(name))
     }
 
     private static func filename(for name: String) -> String {
@@ -52,32 +53,33 @@ public class LocalStorage {
         jobId: String,
         selfieFile data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: "selfie", file: data)
+        return try createSmileFile(to: jobId, name: filename(for: "selfie"), file: data)
     }
 
     static func createLivenessFile(
         jobId: String,
         livenessFile data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: "liveness", file: data)
+        return try createSmileFile(to: jobId, name: filename(for: "liveness"), file: data)
     }
 
     static func createDocumentFile(
         jobId: String,
         document data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: "document", file: data)
+        return try createSmileFile(to: jobId, name: filename(for: "document"), file: data)
     }
 
     static func createInfoJsonFile(
+        jobId: String,
         idInfo: IdInfo? = nil,
         imageInfoArray: [UploadImageInfo] = []
     ) throws -> URL {
-        let info = try jsonEncoder.encode(UploadRequest(
+        let data = try jsonEncoder.encode(UploadRequest(
             images: imageInfoArray,
             idInfo: idInfo
         ))
-        return try write(info, to: unsubmittedDirectory.appendingPathComponent("info.json"))
+        return try createSmileFile(to: jobId, name: "info.json", file: data)
     }
 
     static func saveImage(
