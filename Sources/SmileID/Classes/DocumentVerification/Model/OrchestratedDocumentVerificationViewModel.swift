@@ -16,14 +16,14 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal let countryCode: String
     internal let documentType: String?
     internal let captureBothSides: Bool
-    internal var selfieFile: Data?
     internal let jobType: JobType
     internal let extraPartnerParams: [String: String]
 
     // Other properties
     internal var documentFrontFile: Data?
     internal var documentBackFile: Data?
-    internal var livenessFiles: [Data]?
+    internal var selfieFile: URL?
+    internal var livenessFiles: [URL]?
     internal var jobStatusResponse: JobStatusResponse<U>?
     internal var savedFiles: DocumentCaptureResultStore?
     internal var networkingSubscriber: AnyCancellable?
@@ -51,7 +51,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         self.countryCode = countryCode
         self.documentType = documentType
         self.captureBothSides = captureBothSides
-        self.selfieFile = selfieFile.flatMap { try? Data(contentsOf: $0) }
+        self.selfieFile = selfieFile
         self.jobType = jobType
         self.extraPartnerParams = extraPartnerParams
     }
@@ -130,22 +130,17 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 backDocumentUrl = url
                 allFiles.append(url)
             }
-            let selfieFileUrl = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: selfieFile)
-            allFiles.append(selfieFileUrl)
+            allFiles.append(selfieFile)
             var livenessImagesUrl = [URL]()
             if let livenessFiles = livenessFiles {
-                let _ = try livenessFiles.map { liveness in
-                    let livenessFile = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: liveness)
-                    livenessImagesUrl.append(livenessFile)
-                    allFiles.append(livenessFile)
-                }
+                allFiles.append(contentsOf: livenessFiles)
             }
             let info = try LocalStorage.createInfoJsonFile(
                 jobId: jobId,
                 idInfo: IdInfo(country: countryCode),
                 documentFront: frontDocumentUrl,
                 documentBack: backDocumentUrl,
-                selfie: selfieFileUrl,
+                selfie: selfieFile,
                 livenessImages: livenessImagesUrl
             )
             allFiles.append(info)
@@ -155,7 +150,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 allFiles: allFiles,
                 documentFront: frontDocumentUrl,
                 documentBack: backDocumentUrl,
-                selfie: selfieFileUrl,
+                selfie: selfieFile,
                 livenessImages: livenessImagesUrl
             )
         } catch {
@@ -247,8 +242,8 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
 extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: SmartSelfieJobStatusResponse?) {
-        selfieFile = try? Data(contentsOf: selfieImage)
-        livenessFiles = livenessImages.compactMap { try? Data(contentsOf: $0) }
+        selfieFile = selfieImage
+        livenessFiles = livenessImages
         submitJob()
     }
 

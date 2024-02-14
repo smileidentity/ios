@@ -132,12 +132,14 @@ public class LocalStorage {
         jobType: JobType,
         enrollment: Bool
     ) throws -> URL {
-        let data = try jsonEncoder.encode(AuthenticationRequest(
+        var authRequest = AuthenticationRequest(
             jobType: jobType,
             enrollment: enrollment,
             jobId: jobId,
             userId: userId
-        ))
+        )
+        authRequest.authToken = "" // remove this so it is not stored offline
+        let data = try jsonEncoder.encode(authRequest)
         return try createSmileFile(to: jobId, name: "authenticationrequest.json", file: data)
     }
 
