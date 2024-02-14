@@ -155,7 +155,8 @@ public class LocalStorage {
         )
     }
 
-    static func createInfoJson(
+    // todo - to delete
+    static func createInfoJsons(
         selfie: URL,
         livenessImages: [URL],
         idInfo: IdInfo? = nil,
@@ -180,6 +181,7 @@ public class LocalStorage {
         return url
     }
 
+    // todo - to delete
     /// Saves front and back images of documents to disk, generates an `info.json`
     /// and returns the url of all the files that have been saved
     /// - Parameters:
