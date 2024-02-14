@@ -297,7 +297,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 var imageInfoArray: [UploadImageInfo] = []
                 imageInfoArray.append(
                     UploadImageInfo(
-                        imageTypeId: .selfieJpgFile, 
+                        imageTypeId: .selfieJpgFile,
                         fileName: selfieImage.lastPathComponent
                     )
                 )
