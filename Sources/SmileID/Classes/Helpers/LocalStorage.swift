@@ -3,8 +3,8 @@ import Zip
 
 public class LocalStorage {
     private static let defaultFolderName = "SmileID"
-    private static let pendingFolderName = "unsubmitted"
-    private static let completedFolderName = "submitted"
+    private static let unsubmittedFolderName = "unsubmitted"
+    private static let submittedFolderName = "submitted"
     private static let imagePrefix = "si_"
     private static let fileManager = FileManager.default
     private static let previewImageName = "PreviewImage.jpg"
@@ -24,13 +24,13 @@ public class LocalStorage {
 
     static var unsubmittedDirectory: URL {
         get throws {
-            try defaultDirectory.appendingPathComponent(pendingFolderName)
+            try defaultDirectory.appendingPathComponent(unsubmittedFolderName)
         }
     }
 
     static var submittedDirectory: URL {
         get throws {
-            try defaultDirectory.appendingPathComponent(completedFolderName)
+            try defaultDirectory.appendingPathComponent(submittedFolderName)
         }
     }
 
@@ -39,8 +39,7 @@ public class LocalStorage {
         name: String,
         file data: Data
     ) throws -> URL {
-        try createDirectory(at: defaultDirectory, overwrite: false)
-        try createDirectory(at: unsubmittedDirectory, overwrite: false)
+        try createDirectory(at: unsubmittedDirectory)
         let destinationFolder = try unsubmittedDirectory.appendingPathComponent(folder)
         return try write(data, to: destinationFolder.appendingPathComponent(name))
     }
@@ -114,32 +113,19 @@ public class LocalStorage {
         return try createSmileFile(to: jobId, name: "info.json", file: data)
     }
 
-    private static func createPreUploadFile(
+    private static func createPrepUploadFile(
         jobId: String,
-        partnerParams: PartnerParams,
-        allowNewEnroll: Bool
+        prepUpload: PrepUploadRequest
     ) throws -> URL {
-        let data = try jsonEncoder.encode(PrepUploadRequest(
-            partnerParams: partnerParams,
-            allowNewEnroll: String(allowNewEnroll) // TODO - Fix when Michael changes
-        ))
+        let data = try jsonEncoder.encode(prepUpload)
         return try createSmileFile(to: jobId, name: "preupload.json", file: data)
     }
 
     private static func createAuthenticationRequestFile(
         jobId: String,
-        userId: String,
-        jobType: JobType,
-        enrollment: Bool
+        authentationRequest: AuthenticationRequest
     ) throws -> URL {
-        var authRequest = AuthenticationRequest(
-            jobType: jobType,
-            enrollment: enrollment,
-            jobId: jobId,
-            userId: userId
-        )
-        authRequest.authToken = "" // remove this so it is not stored offline
-        let data = try jsonEncoder.encode(authRequest)
+        let data = try jsonEncoder.encode(authentationRequest)
         return try createSmileFile(to: jobId, name: "authenticationrequest.json", file: data)
     }
 
@@ -152,21 +138,27 @@ public class LocalStorage {
         partnerParams: [String: String]
     ) throws {
         do {
-            _ = try createPreUploadFile(
+            _ = try createPrepUploadFile(
                 jobId: jobId,
-                partnerParams: PartnerParams(
-                    jobId: jobId,
-                    userId: userId,
-                    jobType: jobType,
-                    extras: partnerParams
-                ),
-                allowNewEnroll: allowNewEnroll
+                prepUpload: PrepUploadRequest(
+                    partnerParams: PartnerParams(
+                        jobId: jobId,
+                        userId: userId,
+                        jobType: jobType,
+                        extras: partnerParams
+                    ),
+                    allowNewEnroll: String(allowNewEnroll)
+                )
             )
             _ = try createAuthenticationRequestFile(
                 jobId: jobId,
-                userId: userId,
-                jobType: jobType,
-                enrollment: enrollment
+                authentationRequest: AuthenticationRequest(
+                    jobType: jobType,
+                    enrollment: enrollment,
+                    jobId: jobId,
+                    userId: userId,
+                    authToken: "" // remove this so it is not stored offline
+                )
             )
         }
     }
@@ -188,15 +180,8 @@ public class LocalStorage {
         }
     }
 
-    private static func createDirectory(at url: URL, overwrite: Bool = true) throws {
-        if !fileManager.fileExists(atPath: url.relativePath) {
-            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false)
-        } else {
-            if overwrite {
-                try delete(at: url)
-                try createDirectory(at: url)
-            }
-        }
+    private static func createDirectory(at url: URL) throws {
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
     }
 
     // todo - rework this as we change zip library
@@ -204,7 +189,7 @@ public class LocalStorage {
         uploadRequest: UploadRequest,
         to folder: String = "sid-\(UUID().uuidString)"
     ) throws -> URL {
-        try createDirectory(at: defaultDirectory, overwrite: false)
+        try createDirectory(at: defaultDirectory)
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         let jsonData = try jsonEncoder.encode(uploadRequest)
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
