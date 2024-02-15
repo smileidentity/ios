@@ -329,10 +329,23 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 jobStatusResponse = try await SmileID.api.getJobStatus(
                     request: jobStatusRequest
                 ).async()
+                do {
+                    try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                } catch {
+                    print("Error moving job to submitted directory: \(error)")
+                    self.error = error
+                }
                 DispatchQueue.main.async { self.processingState = .success }
             } catch {
+                if SmileID.allowOfflineMode {
+
+                } else {
+                    // move job to submitted folder, not going to be retried later
+                    try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                }
                 let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
                 _ = try LocalStorage.saveOfflineJob(
+                    allowOfflineMode: SmileID.allowOfflineMode,
                     jobId: jobId,
                     userId: userId,
                     jobType: jobType,

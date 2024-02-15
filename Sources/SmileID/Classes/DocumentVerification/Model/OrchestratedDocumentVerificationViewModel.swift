@@ -196,7 +196,9 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     switch completion {
                     case .failure(let error):
                             do {
-                                _ = try LocalStorage.saveOfflineJob(
+                                // save job info to unsubmitted folder here, or move to submitted folder
+                                try LocalStorage.saveOfflineJob(
+                                    allowOfflineMode: SmileID.allowOfflineMode,
                                     jobId: self.jobId,
                                     userId: self.userId,
                                     jobType: self.jobType,
@@ -216,6 +218,12 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 },
                 receiveValue: { response in
                     self.jobStatusResponse = response
+                    do {
+                        try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                    } catch {
+                        print("Error moving job to submitted directory: \(error)")
+                        self.onError(error: SmileIDError.unknown("Failed to create file"))
+                    }
                     DispatchQueue.main.async {
                         self.step = .processing(.success)
                     }

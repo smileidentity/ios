@@ -144,6 +144,7 @@ public class LocalStorage {
     }
 
     static func saveOfflineJob(
+        allowOfflineMode: Bool,
         jobId: String,
         userId: String,
         jobType: JobType,
@@ -152,22 +153,27 @@ public class LocalStorage {
         partnerParams: [String: String]
     ) throws {
         do {
-            _ = try createPreUploadFile(
-                jobId: jobId,
-                partnerParams: PartnerParams(
+            if allowOfflineMode {
+                _ = try createPreUploadFile(
+                    jobId: jobId,
+                    partnerParams: PartnerParams(
+                        jobId: jobId,
+                        userId: userId,
+                        jobType: jobType,
+                        extras: partnerParams
+                    ),
+                    allowNewEnroll: allowNewEnroll
+                )
+                _ = try createAuthenticationRequestFile(
                     jobId: jobId,
                     userId: userId,
                     jobType: jobType,
-                    extras: partnerParams
-                ),
-                allowNewEnroll: allowNewEnroll
-            )
-            _ = try createAuthenticationRequestFile(
-                jobId: jobId,
-                userId: userId,
-                jobType: jobType,
-                enrollment: enrollment
-            )
+                    enrollment: enrollment
+                )
+            } else {
+                // move job to submitted folder, not going to be retried later
+                try LocalStorage.moveToSubmittedJobs(jobId: jobId)
+            }
         }
     }
 
@@ -223,13 +229,9 @@ public class LocalStorage {
 
     static func moveToSubmittedJobs(jobId: String) throws {
         try createDirectory(at: submittedDirectory, overwrite: false)
-        let sourceURLs = try fileManager.contentsOfDirectory(atPath: jobId).map {
-            URL(fileURLWithPath: jobId).appendingPathComponent($0)
-        }
-        for sourceURL in sourceURLs {
-            let destinationURL = try submittedDirectory.appendingPathComponent(sourceURL.lastPathComponent)
-            try fileManager.moveItem(at: sourceURL, to: destinationURL)
-        }
+        let unsubmittedFileDirectory = try unsubmittedDirectory.appendingPathComponent(jobId)
+        let submittedFileDirectory = try submittedDirectory.appendingPathComponent(jobId)
+        try fileManager.moveItem(at: unsubmittedFileDirectory, to: submittedFileDirectory)
     }
 
     // todo - rework this as we change zip library
