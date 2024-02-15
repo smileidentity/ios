@@ -200,24 +200,20 @@ public class LocalStorage {
     }
 
     static func getUnsubmittedJobs() -> [String] {
-        var fileNames: [String] = []
         do {
-            let files = try fileManager.contentsOfDirectory(atPath: unsubmittedDirectory.relativePath)
-            fileNames.append(contentsOf: files)
-            return fileNames
+            return try fileManager.contentsOfDirectory(atPath: unsubmittedDirectory.relativePath)
         } catch {
-           return fileNames
+            print("Error fetching unsubmitted jobs: \(error.localizedDescription)")
+            return []
         }
     }
 
     static func getSubmittedJobs() -> [String] {
-        var fileNames: [String] = []
         do {
-            let files = try fileManager.contentsOfDirectory(atPath: submittedDirectory.relativePath)
-            fileNames.append(contentsOf: files)
-            return fileNames
+            return try fileManager.contentsOfDirectory(atPath: submittedDirectory.relativePath)
         } catch {
-            return fileNames
+            print("Error fetching submitted jobs: \(error.localizedDescription)")
+            return []
         }
     }
 
