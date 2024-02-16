@@ -184,6 +184,24 @@ public class LocalStorage {
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
     }
 
+    static func getUnsubmittedJobs() -> [String] {
+        do {
+            return try fileManager.contentsOfDirectory(atPath: unsubmittedDirectory.relativePath)
+        } catch {
+            print("Error fetching unsubmitted jobs: \(error.localizedDescription)")
+            return []
+        }
+    }
+
+    static func getSubmittedJobs() -> [String] {
+        do {
+            return try fileManager.contentsOfDirectory(atPath: submittedDirectory.relativePath)
+        } catch {
+            print("Error fetching submitted jobs: \(error.localizedDescription)")
+            return []
+        }
+    }
+
     // todo - rework this as we change zip library
     public static func toZip(
         uploadRequest: UploadRequest,
@@ -209,9 +227,12 @@ public class LocalStorage {
         }
     }
 
-    static func delete(at urls: [URL]) throws {
-        for url in urls where fileManager.fileExists(atPath: url.relativePath) {
-            try fileManager.removeItem(atPath: url.relativePath)
+    static func delete(at jobIds: [String]) throws {
+        try jobIds.forEach {
+            let unsubmittedJob = try unsubmittedDirectory.appendingPathComponent($0)
+            try delete(at: unsubmittedJob)
+            let submittedJob = try submittedDirectory.appendingPathComponent($0)
+            try delete(at: submittedJob)
         }
     }
 
