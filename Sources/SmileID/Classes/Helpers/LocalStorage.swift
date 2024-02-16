@@ -23,6 +23,7 @@ public class LocalStorage {
     }
 
     static var unsubmittedDirectory: URL {
+        get throws {
             try defaultDirectory.appendingPathComponent(unsubmittedFolderName)
         }
     }
@@ -206,7 +207,7 @@ public class LocalStorage {
         uploadRequest: UploadRequest,
         to folder: String = "sid-\(UUID().uuidString)"
     ) throws -> URL {
-        try createDirectory(at: defaultDirectory, overwrite: false)
+        try createDirectory(at: defaultDirectory)
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         let jsonData = try jsonEncoder.encode(uploadRequest)
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
@@ -227,7 +228,7 @@ public class LocalStorage {
     }
 
     static func delete(at jobIds: [String]) throws {
-        try jobIds.forEach{
+        try jobIds.forEach {
             let unsubmittedJob = try unsubmittedDirectory.appendingPathComponent($0)
             try delete(at: unsubmittedJob)
             let submittedJob = try submittedDirectory.appendingPathComponent($0)
