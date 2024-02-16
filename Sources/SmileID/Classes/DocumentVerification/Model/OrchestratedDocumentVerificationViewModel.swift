@@ -16,14 +16,14 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal let countryCode: String
     internal let documentType: String?
     internal let captureBothSides: Bool
-    internal var selfieFile: Data?
     internal let jobType: JobType
     internal let extraPartnerParams: [String: String]
 
     // Other properties
     internal var documentFrontFile: Data?
     internal var documentBackFile: Data?
-    internal var livenessFiles: [Data]?
+    internal var selfieFile: URL?
+    internal var livenessFiles: [URL]?
     internal var jobStatusResponse: JobStatusResponse<U>?
     internal var savedFiles: DocumentCaptureResultStore?
     internal var networkingSubscriber: AnyCancellable?
@@ -51,7 +51,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         self.countryCode = countryCode
         self.documentType = documentType
         self.captureBothSides = captureBothSides
-        self.selfieFile = selfieFile.flatMap { try? Data(contentsOf: $0) }
+        self.selfieFile = selfieFile
         self.jobType = jobType
         self.extraPartnerParams = extraPartnerParams
     }
@@ -121,17 +121,36 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
         let zip: Data
         do {
-            let savedFiles = try LocalStorage.saveDocumentImages(
-                front: documentFrontFile,
-                back: documentBackFile,
+            var allFiles = [URL]()
+            let frontDocumentUrl = try LocalStorage.createDocumentFile(jobId: jobId, document: documentFrontFile)
+            allFiles.append(contentsOf: [selfieFile, frontDocumentUrl])
+            var backDocumentUrl: URL?
+            if let documentBackFile = documentBackFile {
+                let url = try LocalStorage.createDocumentFile(jobId: jobId, document: documentBackFile)
+                backDocumentUrl = url
+                allFiles.append(url)
+            }
+            if let livenessFiles = livenessFiles {
+                allFiles.append(contentsOf: livenessFiles)
+            }
+            let info = try LocalStorage.createInfoJsonFile(
+                jobId: jobId,
+                idInfo: IdInfo(country: countryCode),
+                documentFront: frontDocumentUrl,
+                documentBack: backDocumentUrl,
                 selfie: selfieFile,
-                livenessImages: livenessFiles,
-                countryCode: countryCode,
-                documentType: documentType
+                livenessImages: livenessFiles
             )
-            let zipUrl = try LocalStorage.zipFiles(at: savedFiles.allFiles)
+            allFiles.append(info)
+            let zipUrl = try LocalStorage.zipFiles(at: allFiles)
             zip = try Data(contentsOf: zipUrl)
-            self.savedFiles = savedFiles
+            self.savedFiles = DocumentCaptureResultStore(
+                allFiles: allFiles,
+                documentFront: frontDocumentUrl,
+                documentBack: backDocumentUrl,
+                selfie: selfieFile,
+                livenessImages: livenessFiles ?? []
+            )
         } catch {
             print("Error saving document images: \(error)")
             onError(error: SmileIDError.unknown("Error saving document images"))
@@ -174,6 +193,22 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 receiveCompletion: { completion in
                     switch completion {
                     case .failure(let error):
+                            // todo will updated this in a subsequent PR to use SmileID.allowOfflineMode property
+                            // we need to check that property and figure our if we need to save in unsubmitted folder
+                            // or move to submitted folder - I will update the documentation as well
+                            do {
+                                _ = try LocalStorage.saveOfflineJob(
+                                    jobId: self.jobId,
+                                    userId: self.userId,
+                                    jobType: self.jobType,
+                                    enrollment: false,
+                                    allowNewEnroll: self.allowNewEnroll,
+                                    partnerParams: self.extraPartnerParams
+                                )
+                            } catch {
+                                print("Error saving job for offline mode: \(error)")
+                                self.onError(error: SmileIDError.unknown("Failed to create file"))
+                            }
                         print("Error submitting job: \(error)")
                         self.onError(error: SmileIDError.unknown("Network error"))
                     default:
@@ -208,8 +243,8 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
 extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate {
     func didSucceed(selfieImage: URL, livenessImages: [URL], jobStatusResponse: SmartSelfieJobStatusResponse?) {
-        selfieFile = try? Data(contentsOf: selfieImage)
-        livenessFiles = livenessImages.compactMap { try? Data(contentsOf: $0) }
+        selfieFile = selfieImage
+        livenessFiles = livenessImages
         submitJob()
     }
 

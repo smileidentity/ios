@@ -186,7 +186,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         ) else {
                             throw SmileIDError.unknown("Error resizing liveness image")
                         }
-                        let imageUrl = try LocalStorage.saveImage(image: imageData, name: "liveness")
+                        let imageUrl = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: imageData)
                         livenessImages.append(imageUrl)
                         DispatchQueue.main.async {
                             self.captureProgress = Double(self.livenessImages.count) / Double(self.numTotalSteps)
@@ -200,7 +200,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         ) else {
                             throw SmileIDError.unknown("Error resizing selfie image")
                         }
-                        let selfieImage = try LocalStorage.saveImage(image: imageData, name: "selfie")
+                        let selfieImage = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
                         self.selfieImage = selfieImage
                         DispatchQueue.main.async {
                             self.captureProgress = 1
@@ -288,7 +288,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 guard let selfieImage, livenessImages.count == numLivenessImages else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
-                let infoJson = try LocalStorage.createInfoJson(
+                let infoJson = try LocalStorage.createInfoJsonFile(
+                    jobId: jobId,
                     selfie: selfieImage,
                     livenessImages: livenessImages
                 )
@@ -330,6 +331,15 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 ).async()
                 DispatchQueue.main.async { self.processingState = .success }
             } catch {
+                let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
+                _ = try LocalStorage.saveOfflineJob(
+                    jobId: jobId,
+                    userId: userId,
+                    jobType: jobType,
+                    enrollment: false,
+                    allowNewEnroll: allowNewEnroll,
+                    partnerParams: extraPartnerParams
+                )
                 print("Error submitting job: \(error)")
                 self.error = error
                 DispatchQueue.main.async { self.processingState = .error }
