@@ -3,12 +3,13 @@ import Zip
 
 public class LocalStorage {
     private static let defaultFolderName = "SmileID"
-    private static let pendingFolderName = "unsubmitted"
-    private static let completedFolderName = "submitted"
+    private static let unsubmittedFolderName = "unsubmitted"
+    private static let submittedFolderName = "submitted"
     private static let imagePrefix = "si_"
     private static let fileManager = FileManager.default
     private static let previewImageName = "PreviewImage.jpg"
     private static let jsonEncoder = JSONEncoder()
+    private static let jsonDecoder = JSONDecoder()
 
     static var defaultDirectory: URL {
         get throws {
@@ -22,15 +23,15 @@ public class LocalStorage {
         }
     }
 
-    static var unsubmittedDirectory: URL {
+    static var unsubmittedJobDirectory: URL {
         get throws {
-            try defaultDirectory.appendingPathComponent(pendingFolderName)
+            try defaultDirectory.appendingPathComponent(unsubmittedFolderName)
         }
     }
 
-    static var submittedDirectory: URL {
+    static var submittedJobDirectory: URL {
         get throws {
-            try defaultDirectory.appendingPathComponent(completedFolderName)
+            try defaultDirectory.appendingPathComponent(submittedFolderName)
         }
     }
 
@@ -39,9 +40,8 @@ public class LocalStorage {
         name: String,
         file data: Data
     ) throws -> URL {
-        try createDirectory(at: defaultDirectory, overwrite: false)
-        try createDirectory(at: unsubmittedDirectory, overwrite: false)
-        let destinationFolder = try unsubmittedDirectory.appendingPathComponent(folder)
+        try createDirectory(at: unsubmittedJobDirectory)
+        let destinationFolder = try unsubmittedJobDirectory.appendingPathComponent(folder)
         return try write(data, to: destinationFolder.appendingPathComponent(name))
     }
 
@@ -114,36 +114,50 @@ public class LocalStorage {
         return try createSmileFile(to: jobId, name: "info.json", file: data)
     }
 
-    private static func createPreUploadFile(
+    private static func createPrepUploadFile(
         jobId: String,
-        partnerParams: PartnerParams,
-        allowNewEnroll: Bool
+        prepUpload: PrepUploadRequest
     ) throws -> URL {
-        let data = try jsonEncoder.encode(PrepUploadRequest(
-            partnerParams: partnerParams,
-            allowNewEnroll: String(allowNewEnroll) // TODO - Fix when Michael changes
-        ))
-        return try createSmileFile(to: jobId, name: "preupload.json", file: data)
+        let data = try jsonEncoder.encode(prepUpload)
+        return try createSmileFile(to: jobId, name: "prep_upload.json", file: data)
+    }
+
+    static func fetchPrepUploadFile(
+        jobId: String
+    ) throws -> PrepUploadRequest {
+        let contents = try getDirectoryContents(jobId: jobId)
+        let preupload = contents.first(where: { $0.lastPathComponent == "prep_upload.json" })
+        let data = try Data(contentsOf: preupload!)
+        return try jsonDecoder.decode(PrepUploadRequest.self, from: data)
     }
 
     private static func createAuthenticationRequestFile(
         jobId: String,
-        userId: String,
-        jobType: JobType,
-        enrollment: Bool
+        authentationRequest: AuthenticationRequest
     ) throws -> URL {
-        var authRequest = AuthenticationRequest(
-            jobType: jobType,
-            enrollment: enrollment,
-            jobId: jobId,
-            userId: userId
-        )
-        authRequest.authToken = "" // remove this so it is not stored offline
-        let data = try jsonEncoder.encode(authRequest)
-        return try createSmileFile(to: jobId, name: "authenticationrequest.json", file: data)
+        let data = try jsonEncoder.encode(authentationRequest)
+        return try createSmileFile(to: jobId, name: "authentication_request.json", file: data)
+    }
+
+    static func fetchAuthenticationRequestFile(
+        jobId: String
+    ) throws -> AuthenticationRequest {
+        let contents = try getDirectoryContents(jobId: jobId)
+        let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authentication_request.json" })
+        let data = try Data(contentsOf: authenticationrequest!)
+        return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
+    }
+
+    static func fetchUploadZip(
+        jobId: String
+    ) throws -> Data {
+        let contents = try getDirectoryContents(jobId: jobId)
+        let zipUrl = contents.first(where: { $0.lastPathComponent == "upload.zip" })
+        return try Data(contentsOf: zipUrl!)
     }
 
     static func saveOfflineJob(
+        allowOfflineMode: Bool,
         jobId: String,
         userId: String,
         jobType: JobType,
@@ -152,22 +166,33 @@ public class LocalStorage {
         partnerParams: [String: String]
     ) throws {
         do {
-            _ = try createPreUploadFile(
-                jobId: jobId,
-                partnerParams: PartnerParams(
+            if allowOfflineMode {
+                _ = try createPrepUploadFile(
                     jobId: jobId,
-                    userId: userId,
-                    jobType: jobType,
-                    extras: partnerParams
-                ),
-                allowNewEnroll: allowNewEnroll
-            )
-            _ = try createAuthenticationRequestFile(
-                jobId: jobId,
-                userId: userId,
-                jobType: jobType,
-                enrollment: enrollment
-            )
+                    prepUpload: PrepUploadRequest(
+                        partnerParams: PartnerParams(
+                            jobId: jobId,
+                            userId: userId,
+                            jobType: jobType,
+                            extras: partnerParams
+                        ),
+                        allowNewEnroll: String(allowNewEnroll)
+                    )
+                )
+                _ = try createAuthenticationRequestFile(
+                    jobId: jobId,
+                    authentationRequest: AuthenticationRequest(
+                        jobType: jobType,
+                        enrollment: enrollment,
+                        jobId: jobId,
+                        userId: userId,
+                        authToken: "" // remove this so it is not stored offline
+                    )
+                )
+            } else {
+                // move job to submitted folder, not going to be retried later
+                try LocalStorage.moveToSubmittedJobs(jobId: jobId)
+            }
         }
     }
 
@@ -188,48 +213,40 @@ public class LocalStorage {
         }
     }
 
-    private static func createDirectory(at url: URL, overwrite: Bool = true) throws {
-        if !fileManager.fileExists(atPath: url.relativePath) {
-            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false)
-        } else {
-            if overwrite {
-                try delete(at: url)
-                try createDirectory(at: url)
-            }
-        }
+    private static func createDirectory(at url: URL) throws {
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+    }
+
+    private static func getDirectoryContents(
+        jobId: String
+    ) throws -> [URL] {
+        let folderPathURL = URL(fileURLWithPath: unsubmittedFolderName.appending(jobId))
+        return try fileManager.contentsOfDirectory(at: folderPathURL, includingPropertiesForKeys: nil)
     }
 
     static func getUnsubmittedJobs() -> [String] {
-        var fileNames: [String] = []
         do {
-            let files = try fileManager.contentsOfDirectory(atPath: unsubmittedDirectory.relativePath)
-            fileNames.append(contentsOf: files)
-            return fileNames
+            return try fileManager.contentsOfDirectory(atPath: unsubmittedJobDirectory.relativePath)
         } catch {
-           return fileNames
+            print("Error fetching unsubmitted jobs: \(error.localizedDescription)")
+            return []
         }
     }
 
     static func getSubmittedJobs() -> [String] {
-        var fileNames: [String] = []
         do {
-            let files = try fileManager.contentsOfDirectory(atPath: submittedDirectory.relativePath)
-            fileNames.append(contentsOf: files)
-            return fileNames
+            return try fileManager.contentsOfDirectory(atPath: submittedJobDirectory.relativePath)
         } catch {
-            return fileNames
+            print("Error fetching submitted jobs: \(error.localizedDescription)")
+            return []
         }
     }
 
     static func moveToSubmittedJobs(jobId: String) throws {
-        try createDirectory(at: submittedDirectory, overwrite: false)
-        let sourceURLs = try fileManager.contentsOfDirectory(atPath: jobId).map {
-            URL(fileURLWithPath: jobId).appendingPathComponent($0)
-        }
-        for sourceURL in sourceURLs {
-            let destinationURL = try submittedDirectory.appendingPathComponent(sourceURL.lastPathComponent)
-            try fileManager.moveItem(at: sourceURL, to: destinationURL)
-        }
+        try createDirectory(at: submittedJobDirectory)
+        let unsubmittedFileDirectory = try unsubmittedJobDirectory.appendingPathComponent(jobId)
+        let submittedFileDirectory = try submittedJobDirectory.appendingPathComponent(jobId)
+        try fileManager.moveItem(at: unsubmittedFileDirectory, to: submittedFileDirectory)
     }
 
     // todo - rework this as we change zip library
@@ -237,7 +254,7 @@ public class LocalStorage {
         uploadRequest: UploadRequest,
         to folder: String = "sid-\(UUID().uuidString)"
     ) throws -> URL {
-        try createDirectory(at: defaultDirectory, overwrite: false)
+        try createDirectory(at: defaultDirectory)
         let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
         let jsonData = try jsonEncoder.encode(uploadRequest)
         let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
@@ -258,10 +275,10 @@ public class LocalStorage {
     }
 
     static func delete(at jobIds: [String]) throws {
-        try jobIds.forEach{
-            let unsubmittedJob = try unsubmittedDirectory.appendingPathComponent($0)
+        try jobIds.forEach {
+            let unsubmittedJob = try unsubmittedJobDirectory.appendingPathComponent($0)
             try delete(at: unsubmittedJob)
-            let submittedJob = try submittedDirectory.appendingPathComponent($0)
+            let submittedJob = try submittedJobDirectory.appendingPathComponent($0)
             try delete(at: submittedJob)
         }
     }
