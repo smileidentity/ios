@@ -339,6 +339,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             } catch {
                 let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
                 _ = try LocalStorage.saveOfflineJob(
+                    allowOfflineMode: SmileID.allowOfflineMode,
                     jobId: jobId,
                     userId: userId,
                     jobType: jobType,

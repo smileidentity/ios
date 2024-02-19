@@ -198,6 +198,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                             // or move to submitted folder - I will update the documentation as well
                             do {
                                 _ = try LocalStorage.saveOfflineJob(
+                                    allowOfflineMode: SmileID.allowOfflineMode,
                                     jobId: self.jobId,
                                     userId: self.userId,
                                     jobType: self.jobType,
