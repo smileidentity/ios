@@ -123,15 +123,13 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         do {
             var allFiles = [URL]()
             let frontDocumentUrl = try LocalStorage.createDocumentFile(jobId: jobId, document: documentFrontFile)
-            allFiles.append(frontDocumentUrl)
+            allFiles.append(contentsOf: [selfieFile, frontDocumentUrl])
             var backDocumentUrl: URL?
             if let documentBackFile = documentBackFile {
                 let url = try LocalStorage.createDocumentFile(jobId: jobId, document: documentBackFile)
                 backDocumentUrl = url
                 allFiles.append(url)
             }
-            allFiles.append(selfieFile)
-            var livenessImagesUrl = [URL]()
             if let livenessFiles = livenessFiles {
                 allFiles.append(contentsOf: livenessFiles)
             }
@@ -141,7 +139,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 documentFront: frontDocumentUrl,
                 documentBack: backDocumentUrl,
                 selfie: selfieFile,
-                livenessImages: livenessImagesUrl
+                livenessImages: livenessFiles
             )
             allFiles.append(info)
             let zipUrl = try LocalStorage.zipFiles(at: allFiles)
@@ -151,7 +149,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 documentFront: frontDocumentUrl,
                 documentBack: backDocumentUrl,
                 selfie: selfieFile,
-                livenessImages: livenessImagesUrl
+                livenessImages: livenessFiles ?? []
             )
         } catch {
             print("Error saving document images: \(error)")
@@ -195,10 +193,11 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 receiveCompletion: { completion in
                     switch completion {
                     case .failure(let error):
+                            // todo will updated this in a subsequent PR to use SmileID.allowOfflineMode property
+                            // we need to check that property and figure our if we need to save in unsubmitted folder
+                            // or move to submitted folder - I will update the documentation as well
                             do {
-                                // save job info to unsubmitted folder here, or move to submitted folder
-                                try LocalStorage.saveOfflineJob(
-                                    allowOfflineMode: SmileID.allowOfflineMode,
+                                _ = try LocalStorage.saveOfflineJob(
                                     jobId: self.jobId,
                                     userId: self.userId,
                                     jobType: self.jobType,
@@ -207,7 +206,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                                     partnerParams: self.extraPartnerParams
                                 )
                             } catch {
-                                print("Error submitting job: \(error)")
+                                print("Error saving job for offline mode: \(error)")
                                 self.onError(error: SmileIDError.unknown("Failed to create file"))
                             }
                         print("Error submitting job: \(error)")

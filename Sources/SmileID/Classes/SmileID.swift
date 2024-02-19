@@ -81,14 +81,17 @@ public class SmileID {
         LocalStorage.getSubmittedJobs()
     }
 
-    /// nukes all offline stored files
-    public class func cleanup() throws {
-        try LocalStorage.deleteAll()
+    /// deletes the job ids list, whether in unsubmitted or submitted state
+    public class func cleanup(jobIds: [String]? = nil) throws {
+        if let jobIds {
+            try LocalStorage.delete(at: jobIds)
+        } else {
+            try LocalStorage.deleteAll()
+        }
     }
 
-    /// deletes the passed job id, whether in unsubmitted or submitted state
-    public class func cleanup(jobId: String) throws {
-        try cleanup(jobIds: [jobId])
+    public class func cleanup(jobIds: String...) throws {
+        try cleanup(jobIds: jobIds)
     }
 
     /// deletes the job ids list, whether in unsubmitted or submitted state
