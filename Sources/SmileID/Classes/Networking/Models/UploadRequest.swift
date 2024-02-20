@@ -64,7 +64,7 @@ public struct IdInfo: Codable {
     }
 
     // Method for copying with modified properties
-    func copy(entered: Bool? = entered) -> IdInfo {
+    func copy(entered: Bool?) -> IdInfo {
         IdInfo(
             country: country,
             idType: idType,
