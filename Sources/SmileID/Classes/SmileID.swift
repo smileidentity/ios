@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import SwiftUI
 import UIKit
@@ -79,6 +80,14 @@ public class SmileID {
     /// Returns a list of all submitted jobIds
     public class func getSubmittedJobs() -> [String] {
         LocalStorage.getSubmittedJobs()
+    }
+
+    /// Submit an offline job
+    public class func submitJob(
+        jobId: String,
+        deleteFilesOnSuccess: Bool = false
+    ) throws -> AnyPublisher<UploadResponse, Error> {
+        try OfflineMode.submitJob(jobId: jobId, deleteFilesOnSuccess: deleteFilesOnSuccess)
     }
 
     /// deletes the job ids list, whether in unsubmitted or submitted state

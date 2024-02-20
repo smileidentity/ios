@@ -9,6 +9,7 @@ public class LocalStorage {
     private static let fileManager = FileManager.default
     private static let previewImageName = "PreviewImage.jpg"
     private static let jsonEncoder = JSONEncoder()
+    private static let jsonDecoder = JSONDecoder()
 
     static var defaultDirectory: URL {
         get throws {
@@ -121,12 +122,38 @@ public class LocalStorage {
         return try createSmileFile(to: jobId, name: "preupload.json", file: data)
     }
 
+    static func fetchPrepUploadFile(
+        jobId: String
+    ) throws -> PrepUploadRequest {
+        let contents = try getDirectoryContents(jobId: jobId)
+        let preupload = contents.first(where: { $0.lastPathComponent == "preupload.json" })
+        let data = try Data(contentsOf: preupload!)
+        return try jsonDecoder.decode(PrepUploadRequest.self, from: data)
+    }
+
     private static func createAuthenticationRequestFile(
         jobId: String,
         authentationRequest: AuthenticationRequest
     ) throws -> URL {
         let data = try jsonEncoder.encode(authentationRequest)
         return try createSmileFile(to: jobId, name: "authenticationrequest.json", file: data)
+    }
+
+    static func fetchAuthenticationRequestFile(
+        jobId: String
+    ) throws -> AuthenticationRequest {
+        let contents = try getDirectoryContents(jobId: jobId)
+        let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authenticationrequest.json" })
+        let data = try Data(contentsOf: authenticationrequest!)
+        return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
+    }
+
+    static func fetchUploadZip(
+        jobId: String
+    ) throws -> Data {
+        let contents = try getDirectoryContents(jobId: jobId)
+        let zipUrl = contents.first(where: { $0.lastPathComponent == "upload.zip" })
+        return try Data(contentsOf: zipUrl!)
     }
 
     static func saveOfflineJob(
@@ -188,6 +215,13 @@ public class LocalStorage {
 
     private static func createDirectory(at url: URL) throws {
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+    }
+
+    private static func getDirectoryContents(
+        jobId: String
+    ) throws -> [URL] {
+        let folderPathURL = URL(fileURLWithPath: unsubmittedFolderName.appending(jobId))
+        return try fileManager.contentsOfDirectory(at: folderPathURL, includingPropertiesForKeys: nil)
     }
 
     static func getUnsubmittedJobs() -> [String] {
