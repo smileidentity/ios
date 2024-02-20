@@ -153,7 +153,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             )
         } catch {
             print("Error saving document images: \(error)")
-            onError(error: SmileIDError.unknown("Error saving document images"))
+            onError(error: error)
             return
         }
 
@@ -208,10 +208,10 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                                 )
                             } catch {
                                 print("Error saving job for offline mode: \(error)")
-                                self.onError(error: SmileIDError.unknown("Failed to create file"))
+                                self.onError(error: error)
                             }
                         print("Error submitting job: \(error)")
-                        self.onError(error: SmileIDError.unknown("Network error"))
+                        self.onError(error: error)
                     default:
                         break
                     }
@@ -222,7 +222,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                         try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
                     } catch {
                         print("Error moving job to submitted directory: \(error)")
-                        self.onError(error: SmileIDError.unknown("Failed to create file"))
+                        self.onError(error: error)
                     }
                     DispatchQueue.main.async {
                         self.step = .processing(.success)
