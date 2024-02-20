@@ -131,6 +131,15 @@ public class LocalStorage {
         return try jsonDecoder.decode(PrepUploadRequest.self, from: data)
     }
 
+    static func fetchPrepUploadFile(
+        jobId: String
+    ) throws -> PrepUploadRequest {
+        let contents = try getDirectoryContents(jobId: jobId)
+        let preupload = contents.first(where: { $0.lastPathComponent == "preupload.json" })
+        let data = try Data(contentsOf: preupload!)
+        return try jsonDecoder.decode(PrepUploadRequest.self, from: data)
+    }
+
     private static func createAuthenticationRequestFile(
         jobId: String,
         authentationRequest: AuthenticationRequest
@@ -144,6 +153,23 @@ public class LocalStorage {
     ) throws -> AuthenticationRequest {
         let contents = try getDirectoryContents(jobId: jobId)
         let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authentication_request.json" })
+        let data = try Data(contentsOf: authenticationrequest!)
+        return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
+    }
+
+    static func fetchUploadZip(
+        jobId: String
+    ) throws -> Data {
+        let contents = try getDirectoryContents(jobId: jobId)
+        let zipUrl = contents.first(where: { $0.lastPathComponent == "upload.zip" })
+        return try Data(contentsOf: zipUrl!)
+    }
+
+    static func fetchAuthenticationRequestFile(
+        jobId: String
+    ) throws -> AuthenticationRequest {
+        let contents = try getDirectoryContents(jobId: jobId)
+        let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authenticationrequest.json" })
         let data = try Data(contentsOf: authenticationrequest!)
         return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
     }
