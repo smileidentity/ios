@@ -8,7 +8,7 @@ public protocol EnhancedDocumentVerificationResultDelegate {
     ///   - selfie: URL of captured selfie JPEG
     ///   - documentFrontImage: URL of captured front document image JPEG
     ///   - documentBackImage: URL of captured back document image JPEG (if applicable)
-    ///   - didSubmitEnhancedDocVJob: Indicates whether the job was submitted to the SmileID backend (e.g. it would be false in offline mode)
+    ///   - didSubmitJob: Shows if the job was submitted
     func didSucceed(
         selfie: URL,
         documentFrontImage: URL,
