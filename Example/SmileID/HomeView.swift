@@ -123,16 +123,16 @@ struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
         _ userId: String,
         _ selfieFile: URL,
         _ livenessImages: [URL],
-        _ jobStatusResponse: SmartSelfieJobStatusResponse?
+        _ didSubmitSmartSelfieJob: Bool
     ) -> Void
     let onError: (Error) -> Void
 
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        jobStatusResponse: SmartSelfieJobStatusResponse?
+        didSubmitSmartSelfieJob: Bool
     ) {
-        onEnrollmentSuccess(userId, selfieImage, livenessImages, jobStatusResponse)
+        onEnrollmentSuccess(userId, selfieImage, livenessImages, didSubmitSmartSelfieJob)
     }
 
     func didError(error: Error) {

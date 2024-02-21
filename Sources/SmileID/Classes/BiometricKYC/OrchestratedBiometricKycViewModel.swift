@@ -17,7 +17,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - Other Properties
     private var error: Error?
     private var selfieCaptureResultStore: SelfieCaptureResultStore?
-    private var jobStatusResponse: BiometricKycJobStatusResponse?
+    private var didSubmitJob: Bool = false
 
     // MARK: - UI Properties
     @Published @MainActor private (set) var step: BiometricKycStep = .selfie
@@ -45,12 +45,11 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     func onFinished(delegate: BiometricKycResultDelegate) {
-        if let jobStatusResponse = jobStatusResponse,
-           let selfieCaptureResultStore = selfieCaptureResultStore {
+        if let selfieCaptureResultStore = selfieCaptureResultStore {
             delegate.didSucceed(
                 selfieImage: selfieCaptureResultStore.selfie,
                 livenessImages: selfieCaptureResultStore.livenessImages,
-                jobStatusResponse: jobStatusResponse
+                didSubmitBiometricJob: self.didSubmitJob
             )
         } else if let error = error {
             delegate.didError(error: error)
@@ -97,19 +96,10 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     zip: zip,
                     to: prepUploadResponse.uploadUrl
                 ).async()
-                let jobStatusRequest = JobStatusRequest(
-                    userId: userId,
-                    jobId: jobId,
-                    includeImageLinks: false,
-                    includeHistory: false,
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                jobStatusResponse = try await SmileID.api.getJobStatus(
-                    request: jobStatusRequest
-                ).async()
+                didSubmitJob = true
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch {
+                didSubmitJob = if SmileID.allowOfflineMode { false } else { true } // TODO review this
                 print("Error submitting job: \(error)")
                 self.error = error
                 DispatchQueue.main.async { self.step = .processing(.error) }
@@ -122,7 +112,7 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        jobStatusResponse: SmartSelfieJobStatusResponse?
+        didSubmitSmartSelfieJob: Bool
     ) {
         selfieCaptureResultStore = SelfieCaptureResultStore(
             selfie: selfieImage,

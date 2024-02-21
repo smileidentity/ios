@@ -11,24 +11,14 @@ func openUrl(_ urlString: String) {
 
 func jobResultMessageBuilder(
     jobName: String,
-    jobComplete: Bool?,
-    jobSuccess: Bool?,
-    code: String?,
-    resultCode: String?,
-    resultText: String?,
+    didSubmitJob: Bool?,
     suffix: String? = nil
 ) -> String {
     var message = "\(jobName) "
-    if jobComplete == true {
-        if jobSuccess == true {
-            message += "completed successfully"
-        } else {
-            message += "completed unsuccessfully"
-        }
-        message +=
-            " (resultText=\(resultText ?? "null"), code=\(code ?? "null"), resultCode=\(resultCode ?? "null"))"
+    if didSubmitJob == true {
+        message += "completed successfully"
     } else {
-        message += "still pending"
+        message += "saved offline"
     }
     if let suffix = suffix {
         message += ". \(suffix)"
