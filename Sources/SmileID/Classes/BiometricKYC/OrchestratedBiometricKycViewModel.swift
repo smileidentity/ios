@@ -59,9 +59,10 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         }
     }
 
-    func submitJob(selfieCaptureResultStore: SelfieCaptureResultStore) {
+    @discardableResult
+    func submitJob(selfieCaptureResultStore: SelfieCaptureResultStore) -> Task<Void, Error> {
         DispatchQueue.main.async { self.step = .processing(.inProgress) }
-        Task {
+        return Task {
             do {
                 let livenessImages = selfieCaptureResultStore.livenessImages
                 let selfieImage = selfieCaptureResultStore.selfie
@@ -71,7 +72,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     idInfo: idInfo.copy(entered: true)
                 )
                 let zipUrl = try LocalStorage.zipFiles(
-                    at: livenessImages + [selfieImage] + [infoJson]
+                    at: livenessImages + [infoJson]
                 )
                 let zip = try Data(contentsOf: zipUrl)
                 let authRequest = AuthenticationRequest(

@@ -9,14 +9,7 @@ final class PollingTests: XCTestCase {
     let mockService = MockSmileIdentityService()
 
     override func setUpWithError() throws {
-        let config = Config(
-            partnerId: "id",
-            authToken: "token",
-            prodUrl: "url", testUrl: "url",
-            prodLambdaUrl: "url",
-            testLambdaUrl: "url"
-        )
-        SmileID.initialize(config: config)
+        initSdk()
         DependencyAutoResolver.set(resolver: mockDependency)
         mockDependency.register(SmileIDServiceable.self, creation: {
             self.mockService
