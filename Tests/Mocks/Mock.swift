@@ -61,7 +61,11 @@ public final class MockExpectationBuilder<M, R>: MockExpectationHandler {
     /// block.
     private var multipleExpectations = false
 
-    init(mockName: String, callBlock: @escaping (M) throws -> R, mockInit: @escaping (String, MockExpectationHandler) -> Mock<M>) {
+    init(
+        mockName: String,
+        callBlock: @escaping (M) throws -> R,
+        mockInit: @escaping (String, MockExpectationHandler) -> Mock<M>
+    ) {
         self.mockName = mockName
         self.callBlock = callBlock
         self.mockInit = mockInit
@@ -99,10 +103,19 @@ public final class MockExpectationBuilder<M, R>: MockExpectationHandler {
     ///   - file: Calling file.
     ///   - line: Calling line.
     /// - Returns: Optional return value.
-    public func accept(_ callSummary: String, actionArgs: [Any?], file: StaticString, line: UInt) -> Any? {
+    public func accept(
+        _ callSummary: String,
+        actionArgs: [Any?],
+        file: StaticString,
+        line: UInt
+    ) -> Any? {
         if self.callSummary != nil {
             self.multipleExpectations = true
-            XCTFail("[\(self.mockName)]: Too many expectations in `.expect { }`", file: file, line: line)
+            XCTFail(
+                "[\(self.mockName)]: Too many expectations in `.expect { }`",
+                file: file,
+                line: line
+            )
         }
 
         self.callSummary = callSummary
@@ -113,7 +126,11 @@ public final class MockExpectationBuilder<M, R>: MockExpectationHandler {
         case .success(let returnValue):
             return returnValue
         case .failure:
-            XCTFail("[\(self.mockName)]: Non-throwing function cannot throw errors", file: file, line: line)
+            XCTFail(
+                "[\(self.mockName)]: Non-throwing function cannot throw errors",
+                file: file,
+                line: line
+            )
             return nil
         }
     }
@@ -128,10 +145,19 @@ public final class MockExpectationBuilder<M, R>: MockExpectationHandler {
     ///   - file: Calling file.
     ///   - line: Calling line.
     /// - Returns: Optional return value.
-    public func throwingAccept(_ callSummary: String, actionArgs: [Any?], file: StaticString, line: UInt) throws -> Any? {
+    public func throwingAccept(
+        _ callSummary: String,
+        actionArgs: [Any?],
+        file: StaticString,
+        line: UInt
+    ) throws -> Any? {
         if self.callSummary != nil {
             self.multipleExpectations = true
-            XCTFail("[\(self.mockName)]: Too many expectations in `.expect { }`", file: file, line: line)
+            XCTFail(
+                "[\(self.mockName)]: Too many expectations in `.expect { }`",
+                file: file,
+                line: line
+            )
         }
 
         self.callSummary = callSummary
@@ -181,7 +207,12 @@ public final class MockExpectationBuilder<M, R>: MockExpectationHandler {
 /// system-under-test is being exercised
 public protocol MockExpectationHandler {
     func accept(_ callSummary: String, actionArgs: [Any?], file: StaticString, line: UInt) -> Any?
-    func throwingAccept(_ callSummary: String, actionArgs: [Any?], file: StaticString, line: UInt) throws -> Any?
+    func throwingAccept(
+        _ callSummary: String,
+        actionArgs: [Any?],
+        file: StaticString,
+        line: UInt
+    ) throws -> Any?
 }
 
 /// Maintains a list of expectations on a mock object.
@@ -203,9 +234,16 @@ private class MockExpectationCreator {
     ///   - callBlock: the closure which defines the expected function call
     ///   - mockInit:
     /// - Returns: expectation builder
-    func builder<M, R>(callBlock: @escaping (M) throws -> R, mockInit: @escaping (String, MockExpectationHandler) -> Mock<M>) -> MockExpectationBuilder<M, R> {
+    func builder<M, R>(
+        callBlock: @escaping (M) throws -> R,
+        mockInit: @escaping (String, MockExpectationHandler) -> Mock<M>
+    ) -> MockExpectationBuilder<M, R> {
         // create the builder
-        let builder = MockExpectationBuilder(mockName: self.mockName, callBlock: callBlock, mockInit: mockInit)
+        let builder = MockExpectationBuilder(
+            mockName: self.mockName,
+            callBlock: callBlock,
+            mockInit: mockInit
+        )
         // capture the builder's `build()` function for later
         self.expectationBuilderFunctions.append(builder.build)
         return builder
@@ -249,7 +287,12 @@ private class MockExpectationConsumer: MockExpectationHandler {
         self.expectationCreator = expectationCreator
     }
 
-    private func claim(_ callSummary: String, actionArgs: [Any?], file: StaticString, line: UInt) -> MockExpectation? {
+    private func claim(
+        _ callSummary: String,
+        actionArgs: [Any?],
+        file: StaticString,
+        line: UInt
+    ) -> MockExpectation? {
         // try to find (and remove) this call from the collection of expectations
         guard let foundExpectation = expectationCreator.claimExpectation(callSummary) else {
             XCTFail("[\(self.mockName)] Unexpected call: \(callSummary)", file: file, line: line)
@@ -266,7 +309,12 @@ private class MockExpectationConsumer: MockExpectationHandler {
 
     func accept(_ callSummary: String, actionArgs: [Any?], file: StaticString, line: UInt) -> Any? {
         // try to find the expectation, and peform actios
-        guard let foundExpectation = self.claim(callSummary, actionArgs: actionArgs, file: file, line: line) else {
+        guard let foundExpectation = self.claim(
+            callSummary,
+            actionArgs: actionArgs,
+            file: file,
+            line: line
+        ) else {
             return nil
         }
 
@@ -277,14 +325,28 @@ private class MockExpectationConsumer: MockExpectationHandler {
         case .success(let returnValue):
             return returnValue
         case .failure:
-            XCTFail("[\(self.mockName)]: Non-throwing function cannot throw errors", file: file, line: line)
+            XCTFail(
+                "[\(self.mockName)]: Non-throwing function cannot throw errors",
+                file: file,
+                line: line
+            )
             return nil
         }
     }
 
-    func throwingAccept(_ callSummary: String, actionArgs: [Any?], file: StaticString, line: UInt) throws -> Any? {
+    func throwingAccept(
+        _ callSummary: String,
+        actionArgs: [Any?],
+        file: StaticString,
+        line: UInt
+    ) throws -> Any? {
         // try to find the expectation, and peform actios
-        guard let foundExpectation = self.claim(callSummary, actionArgs: actionArgs, file: file, line: line) else {
+        guard let foundExpectation = self.claim(
+            callSummary,
+            actionArgs: actionArgs,
+            file: file,
+            line: line
+        ) else {
             return nil
         }
 
@@ -312,7 +374,10 @@ open class Mock<M> {
     public static func create(mockName name: String? = nil) -> Self {
         let mockName = name ?? String(describing: M.self)
         let expectationCreator = MockExpectationCreator(mockName: mockName)
-            let expectationConsumer = MockExpectationConsumer(mockName: mockName, expectationCreator: expectationCreator)
+            let expectationConsumer = MockExpectationConsumer(
+                mockName: mockName,
+                expectationCreator: expectationCreator
+            )
 
         let consumerMock = self.init(name: mockName, expectationHandler: expectationConsumer)
 
@@ -330,7 +395,9 @@ open class Mock<M> {
     /// with the expectation.
     @discardableResult
     public func expect<R>(_ callBlock: @escaping (M) throws -> R) -> MockExpectationBuilder<M, R> {
-        guard let expectationCreator = (expectationHandler as? MockExpectationConsumer)?.expectationCreator else {
+        guard let expectationCreator = (
+            expectationHandler as? MockExpectationConsumer
+        )?.expectationCreator else {
             preconditionFailure("internal error")
         }
 
@@ -354,7 +421,11 @@ open class Mock<M> {
         if expectationCreator.expectations.count > 0 {
             for expectation in expectationCreator.expectations {
                 let expectationDescription = String(describing: expectation)
-                XCTFail("[\(self.name)] Unsatisfied expectation: \(expectationDescription)", file: file, line: line)
+                XCTFail(
+                    "[\(self.name)] Unsatisfied expectation: \(expectationDescription)",
+                    file: file,
+                    line: line
+                )
             }
         }
 
@@ -372,7 +443,12 @@ open class Mock<M> {
     ///   - line: Calling line.
     /// - Returns: The optional return value for the mocked function.
     @discardableResult
-    public func accept(func: String = #function, args: [Any?] = [], file: StaticString = #file, line: UInt = #line) -> Any? {
+    public func accept(
+        func: String = #function,
+        args: [Any?] = [],
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> Any? {
         return accept(func: `func`, checkArgs: args, actionArgs: args, file: file, line: line)
     }
 
@@ -387,13 +463,24 @@ open class Mock<M> {
     ///   - file: Calling file.
     ///   - line: Calling line.
     /// - Returns: The optional return value for the mocked function.
-    public func accept(func: String = #function, checkArgs: [Any?], actionArgs: [Any?], file: StaticString = #file, line: UInt = #line) -> Any? {
+    public func accept(
+        func: String = #function,
+        checkArgs: [Any?],
+        actionArgs: [Any?],
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> Any? {
         var callSummary = "\(`func`)"
         if checkArgs.count > 0 {
             callSummary += " " + summary(for: checkArgs)
         }
 
-        return expectationHandler.accept(callSummary, actionArgs: actionArgs, file: file, line: line)
+        return expectationHandler.accept(
+            callSummary,
+            actionArgs: actionArgs,
+            file: file,
+            line: line
+        )
     }
 
     /// A concrete mock object should call one of the `throwingAccept()`
@@ -405,8 +492,19 @@ open class Mock<M> {
     ///   - line: Calling line.
     /// - Returns: The optional return value for the mocked function.
     @discardableResult
-    public func throwingAccept(func: String = #function, args: [Any?] = [], file: StaticString = #file, line: UInt = #line) throws -> Any? {
-        return try throwingAccept(func: `func`, checkArgs: args, actionArgs: args, file: file, line: line)
+    public func throwingAccept(
+        func: String = #function,
+        args: [Any?] = [],
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws -> Any? {
+        return try throwingAccept(
+            func: `func`,
+            checkArgs: args,
+            actionArgs: args,
+            file: file,
+            line: line
+        )
     }
 
     @discardableResult
@@ -421,13 +519,24 @@ open class Mock<M> {
     ///   - line: Calling line.
     /// - Returns: The optional return value for the mocked function.
     /// - Throws: May throw errors when the expecations are being consumed. Will not throw when expectations are being set.
-    public func throwingAccept(func: String = #function, checkArgs: [Any?], actionArgs: [Any?], file: StaticString = #file, line: UInt = #line) throws -> Any? {
+    public func throwingAccept(
+        func: String = #function,
+        checkArgs: [Any?],
+        actionArgs: [Any?],
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws -> Any? {
         var callSummary = "\(`func`)"
         if checkArgs.count > 0 {
             callSummary += " " + summary(for: checkArgs)
         }
 
-        return try expectationHandler.throwingAccept(callSummary, actionArgs: actionArgs, file: file, line: line)
+        return try expectationHandler.throwingAccept(
+            callSummary,
+            actionArgs: actionArgs,
+            file: file,
+            line: line
+        )
     }
 
     private func summary(for argument: Any) -> String {
