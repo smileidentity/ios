@@ -106,5 +106,6 @@ class OrchestratedBiometricKycViewModelTest: XCTestCase {
         print(infoJsonString)
         let capturedInfoJson = try jsonDecoder.decode(UploadRequest.self, from: infoJsonString)
         XCTAssert(capturedInfoJson.idInfo?.entered == true)
+        mockService.verify()
     }
 }

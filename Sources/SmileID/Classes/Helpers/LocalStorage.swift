@@ -208,7 +208,7 @@ public class LocalStorage {
     }
 
     public static func zipFiles(at urls: [URL]) throws -> URL {
-        return try Zip.quickZipFiles(urls, fileName: "upload")
+        try Zip.quickZipFiles(urls, fileName: "upload")
     }
 
     static func delete(at url: URL) throws {

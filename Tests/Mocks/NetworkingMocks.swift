@@ -72,8 +72,6 @@ class NewMockSmileIDServiceable: Mock<SmileIDServiceable>, SmileIDServiceable {
     func submitBvnOtp(request: SubmitBvnTotpRequest) -> AnyPublisher<SubmitBvnTotpResponse, Error> {
         return accept(args: [request]) as! AnyPublisher<SubmitBvnTotpResponse, Error>
     }
-    
-
 }
 
 class MockSmileIdentityService: SmileIDServiceable {

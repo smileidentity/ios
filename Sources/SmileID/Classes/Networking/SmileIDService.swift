@@ -92,6 +92,7 @@ extension SmileIDServiceable {
                     } else if attemptCount < numAttempts {
                         return makeRequest()
                     } else {
+                        print("Fail 1")
                         return Fail(error: SmileIDError.jobStatusTimeOut).eraseToAnyPublisher()
                     }
                 }
@@ -100,6 +101,7 @@ extension SmileIDServiceable {
                     if attemptCount < numAttempts {
                         return makeRequest()
                     } else {
+                        print("Fail 2: \(error)")
                         return Fail(error: lastError ?? error).eraseToAnyPublisher()
                     }
                 }
