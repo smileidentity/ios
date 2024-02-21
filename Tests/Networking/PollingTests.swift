@@ -40,7 +40,7 @@ final class PollingTests: XCTestCase {
             .pollJobStatus(request: self.jobStatusRequest, interval: 1, numAttempts: 3)
             .async()
 
-        //then
+        // then
         XCTAssert(response.jobComplete)
     }
 
@@ -83,7 +83,7 @@ final class PollingTests: XCTestCase {
         ) { error in
             // then
             XCTAssertEqual(
-                SmileIDError.jobStatusTimeOut.localizedDescription, 
+                SmileIDError.jobStatusTimeOut.localizedDescription,
                 error.localizedDescription
             )
         }

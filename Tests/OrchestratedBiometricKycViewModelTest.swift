@@ -91,7 +91,6 @@ class OrchestratedBiometricKycViewModelTest: XCTestCase {
             livenessImages: []
         )
 
-
         // when
         _ = await subject.submitJob(selfieCaptureResultStore: selfieCaptureResultStore).result
 
