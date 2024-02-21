@@ -39,7 +39,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
     var selfieImage: URL?
     var livenessImages: [URL] = []
-    var jobStatusResponse: SmartSelfieJobStatusResponse?
+    internal var didSubmitJob: Bool = false
     var error: Error?
 
     private let arKitFramePublisher = PassthroughSubject<CVPixelBuffer?, Never>()
@@ -263,7 +263,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
         selfieImage = nil
         livenessImages = []
-        jobStatusResponse = nil
         shouldAnalyzeImages = true
     }
 
@@ -318,17 +317,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     zip: zip,
                     to: prepUploadResponse.uploadUrl
                 ).async()
-                let jobStatusRequest = JobStatusRequest(
-                    userId: userId,
-                    jobId: jobId,
-                    includeImageLinks: false,
-                    includeHistory: false,
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                jobStatusResponse = try await SmileID.api.getJobStatus(
-                    request: jobStatusRequest
-                ).async()
+                didSubmitJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
                 } catch {
@@ -337,6 +326,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
                 DispatchQueue.main.async { self.processingState = .success }
             } catch {
+                didSubmitJob = if SmileID.allowOfflineMode { false } else { true } // TODO review this
                 let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
                 _ = try LocalStorage.saveOfflineJob(
                     allowOfflineMode: SmileID.allowOfflineMode,
@@ -359,7 +349,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             callback.didSucceed(
                 selfieImage: selfieImage,
                 livenessImages: livenessImages,
-                jobStatusResponse: jobStatusResponse
+                didSubmitSmartSelfieJob: self.didSubmitJob
             )
         } else if let error {
             callback.didError(error: error)
