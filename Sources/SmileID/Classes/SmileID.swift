@@ -86,8 +86,8 @@ public class SmileID {
     public class func submitJob(
         jobId: String,
         deleteFilesOnSuccess: Bool = false
-    ) throws -> AnyPublisher<UploadResponse, Error> {
-        try OfflineMode.submitJob(jobId: jobId, deleteFilesOnSuccess: deleteFilesOnSuccess)
+    ) {
+        OfflineMode.submitJob(jobId: jobId, deleteFilesOnSuccess: deleteFilesOnSuccess)
     }
 
     /// deletes the job ids list, whether in unsubmitted or submitted state
