@@ -62,6 +62,21 @@ public struct IdInfo: Codable {
         case bankCode = "bank_code"
         case entered = "entered"
     }
+
+    // Method for copying with modified properties
+    func copy(entered: Bool?) -> IdInfo {
+        IdInfo(
+            country: country,
+            idType: idType,
+            idNumber: idNumber,
+            firstName: firstName,
+            middleName: middleName,
+            lastName: lastName,
+            dob: dob,
+            bankCode: bankCode,
+            entered: entered
+        )
+    }
 }
 
 public struct UploadImageInfo: Codable {
