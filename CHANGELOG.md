@@ -1,4 +1,7 @@
 # Release Notes
+## 10.0.10
+* Set `IdInfo.entered` to true for Biometric KYC Jobs
+
 ## 10.0.9
 * Carthage support
 
