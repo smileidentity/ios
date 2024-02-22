@@ -1,8 +1,6 @@
 # Release Notes
-## 10.0.11 (unreleased)
-
 ## 10.0.10
-* Fixed missing `entered` key in IdInfo on BioMetricKYC Job
+* Set `IdInfo.entered` to true for Biometric KYC Jobs
 
 ## 10.0.9
 * Carthage support
