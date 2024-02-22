@@ -1,12 +1,4 @@
-
 # Release Notes
-## 10.0.11
-
-#### Fixed
-* PartnerParams extras fixed to be in the correct format for the requests
-* PartnerParams extras fixed to cater for the Photo param used in sandbox testing
-
-
 ## 10.0.10
 * Set `IdInfo.entered` to true for Biometric KYC Jobs
 
