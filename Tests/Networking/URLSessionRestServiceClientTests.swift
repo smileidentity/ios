@@ -13,7 +13,7 @@ class URLSessionRestServiceClientTests: BaseTestCase {
         try super.setUpWithError()
         mockServiceHeaderProvider = MockServiceHeaderProvider()
         mockSessionPublisher = MockURLSessionPublisher()
-        mockDependencyContainer.register(ServiceHeaderProvider.self) {
+        dependencyContainer.register(ServiceHeaderProvider.self) {
             self.mockServiceHeaderProvider
         }
 

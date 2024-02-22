@@ -4,25 +4,25 @@ import XCTest
 class DependencyContainerTests: BaseTestCase {
 
     func testThatDependencyContainerResolvesCorrectType() {
-        mockDependencyContainer.register(TestProtocol.self) { TestClass() }
-        let result = mockDependencyContainer.resolve(TestProtocol.self)
+        dependencyContainer.register(TestProtocol.self) { TestClass() }
+        let result = dependencyContainer.resolve(TestProtocol.self)
         XCTAssert(result is TestClass)
     }
 
     func testThatDependencyContainerResolvesCorrectWithSingletonType() {
-        mockDependencyContainer.register(singleton: TestProtocol.self) { TestClass() }
-        let result = mockDependencyContainer.resolve(TestProtocol.self)
+        dependencyContainer.register(singleton: TestProtocol.self) { TestClass() }
+        let result = dependencyContainer.resolve(TestProtocol.self)
         XCTAssert(result is TestClass)
     }
 
     func testThatDependencyContainerReturnsTrueWhenContainerHasDependency() {
-        mockDependencyContainer.register(TestProtocol.self, creation: TestClass.init)
-        let result = mockDependencyContainer.has(TestProtocol.self)
+        dependencyContainer.register(TestProtocol.self, creation: TestClass.init)
+        let result = dependencyContainer.has(TestProtocol.self)
         XCTAssert(result)
     }
 
     func testThatDependencyContainerReturnsFalseWhenContainerDoesNotHaveDepdency() {
-        let result = mockDependencyContainer.has(TestProtocol.self)
+        let result = dependencyContainer.has(TestProtocol.self)
         XCTAssertFalse(result)
     }
 }

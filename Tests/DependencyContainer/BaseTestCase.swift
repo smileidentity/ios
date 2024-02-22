@@ -3,11 +3,11 @@ import XCTest
 
 class BaseTestCase: XCTestCase {
 
-    var mockDependencyContainer: DependencyContainer!
+    var dependencyContainer: DependencyContainer!
 
     override func setUpWithError() throws {
-        mockDependencyContainer = DependencyContainer()
-        DependencyAutoResolver.set(resolver: mockDependencyContainer)
+        dependencyContainer = DependencyContainer()
+        DependencyAutoResolver.set(resolver: dependencyContainer)
     }
 
     override func tearDownWithError() throws {

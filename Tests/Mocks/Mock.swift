@@ -264,10 +264,10 @@ private class MockExpectationCreator {
     func claimExpectation(_ callSummary: String) -> MockExpectation? {
         // build any unbuild expectations
         self.buildExpectations()
-
         guard let index = expectations.firstIndex(where: { (expectation) -> Bool in
             expectation.callSummary == callSummary
         }) else {
+            print("No matching mock call/expectation not found")
             return nil
         }
 
@@ -381,7 +381,6 @@ open class Mock<M> {
             )
 
         let consumerMock = self.init(name: mockName, expectationHandler: expectationConsumer)
-
         return consumerMock
     }
 
