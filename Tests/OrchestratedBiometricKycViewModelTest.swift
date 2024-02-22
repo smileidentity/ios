@@ -5,7 +5,7 @@ import Zip
 
 class OrchestratedBiometricKycViewModelTest: XCTestCase {
     var subject: OrchestratedBiometricKycViewModel!
-    let mockService = NewMockSmileIDServiceable.create()
+    let mockService = MockSmileIDServiceable.create()
     let jobId = "jobId"
     let userId = "userId"
     let allowNewEnroll = false

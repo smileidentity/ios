@@ -6,7 +6,7 @@ final class PollingTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
     let mockDependency = DependencyContainer()
-    var mockService: NewMockSmileIDServiceable!
+    var mockService: MockSmileIDServiceable!
     let numAttempts = 5
     let jobStatusRequest = JobStatusRequest(
         userId: "userId",
@@ -19,7 +19,7 @@ final class PollingTests: XCTestCase {
     )
 
     override func setUp() {
-        mockService = NewMockSmileIDServiceable.create()
+        mockService = MockSmileIDServiceable.create()
         DependencyAutoResolver.set(resolver: mockDependency)
         mockDependency.register(SmileIDServiceable.self, creation: { self.mockService })
         initSdk()

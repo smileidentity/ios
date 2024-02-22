@@ -24,7 +24,7 @@ class MockURLSessionPublisher: URLSessionPublisher {
     }
 }
 
-class NewMockSmileIDServiceable: Mock<SmileIDServiceable>, SmileIDServiceable {
+class MockSmileIDServiceable: Mock<SmileIDServiceable>, SmileIDServiceable {
     func authenticate(
         request: AuthenticationRequest
     ) -> AnyPublisher<AuthenticationResponse, Error> {
