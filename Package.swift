@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.9
 
 import PackageDescription
 
@@ -13,12 +13,13 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/marmelroy/Zip", .upToNextMajor(from: "2.1.0"))
+        // we need next release (after 0.9.18) to fix iOS11 bug, sio we target development branch
+        .package(url: "https://github.com/weichsel/ZIPFoundation.git", branch: "development")
     ],
     targets: [
         .target(
             name: "SmileID",
-            dependencies: ["Zip"],
+            dependencies: ["ZIPFoundation"],
             path: "Sources/SmileID",
             resources: [.process("Resources")]
         ),

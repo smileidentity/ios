@@ -1,5 +1,5 @@
 import Foundation
-import Zip
+import ZIPFoundation
 
 public class LocalStorage {
     private static let defaultFolderName = "SmileID"
@@ -265,7 +265,8 @@ public class LocalStorage {
     }
 
     public static func zipFiles(at urls: [URL]) throws -> URL {
-        try Zip.quickZipFiles(urls, fileName: "upload")
+//        try Zip.quickZipFiles(urls, fileName: "upload")
+        URL(fileURLWithPath:"")
     }
 
     private static func delete(at url: URL) throws {
