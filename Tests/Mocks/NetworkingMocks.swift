@@ -51,7 +51,7 @@ class NewMockSmileIDServiceable: Mock<SmileIDServiceable>, SmileIDServiceable {
 
     func getJobStatus<T>(
         request: JobStatusRequest
-    ) -> AnyPublisher<JobStatusResponse<T>, Error> where T : JobResult {
+    ) -> AnyPublisher<JobStatusResponse<T>, Error> where T: JobResult {
         return accept(args: [request]) as! AnyPublisher<JobStatusResponse<T>, Error>
     }
 

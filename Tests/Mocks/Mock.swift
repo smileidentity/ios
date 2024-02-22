@@ -181,6 +181,7 @@ public final class MockExpectationBuilder<M, R>: MockExpectationHandler {
     fileprivate func build() -> MockExpectation? {
         // make an instance of the `M` mock which contains this
         // expectation builder
+        // swiftlint:disable force_cast
         let completionMock = self.mockInit(self.mockName, self) as! M
         _ = try? self.callBlock(completionMock)
 
@@ -555,7 +556,7 @@ open class Mock<M> {
             var result = "["
             for (index, key) in dict.keys.sorted().enumerated() {
                 if let value = dict[key] {
-                    result += "\(summary(for: key)):\(summary(for:value))"
+                    result += "\(summary(for: key)):\(summary(for: value))"
                 }
                 if index < dict.count-1 {
                     result += ","
@@ -563,6 +564,7 @@ open class Mock<M> {
             }
             result += "]"
             return result
+        // swiftlint:disable syntactic_sugar
         case  Optional<Any>.none:
             // for nil values (Optional.none), return "nil"
             return "nil"
@@ -570,6 +572,7 @@ open class Mock<M> {
             // for non-nil values (Optional.some), return the unwrapped value
             return String(describing: value)
         default:
+            // swiftlint:disable colon
             preconditionFailure("don't expect this to happen, because we're already handling Optional.none and Optional.some")
         }
     }
