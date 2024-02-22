@@ -1,17 +1,4 @@
 # Release Notes
-
-## 10.1.0
-* Add PrivacyInfo Manifest
-* Added polling extensions for products
-* Added an Offline Mode, enabled by calling `SmileID.setAllowOfflineMode(true)`. If a job is attempted while the device is offline, and offline mode has been enabled, the UI will complete successfully and the job can be submitted at a later time by calling `SmileID.submitJob(jobId)`
-
-## 10.0.11
-
-#### Fixed
-* PartnerParams extras fixed to be in the correct format for the requests
-* PartnerParams extras fixed to cater for the Photo param used in sandbox testing
-
-
 ## 10.0.10
 * Set `IdInfo.entered` to true for Biometric KYC Jobs
 
