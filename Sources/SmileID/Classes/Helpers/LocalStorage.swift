@@ -119,14 +119,14 @@ public class LocalStorage {
         prepUpload: PrepUploadRequest
     ) throws -> URL {
         let data = try jsonEncoder.encode(prepUpload)
-        return try createSmileFile(to: jobId, name: "preupload.json", file: data)
+        return try createSmileFile(to: jobId, name: "prep_upload.json", file: data)
     }
 
     static func fetchPrepUploadFile(
         jobId: String
     ) throws -> PrepUploadRequest {
         let contents = try getDirectoryContents(jobId: jobId)
-        let preupload = contents.first(where: { $0.lastPathComponent == "preupload.json" })
+        let preupload = contents.first(where: { $0.lastPathComponent == "prep_upload.json" })
         let data = try Data(contentsOf: preupload!)
         return try jsonDecoder.decode(PrepUploadRequest.self, from: data)
     }
@@ -136,14 +136,14 @@ public class LocalStorage {
         authentationRequest: AuthenticationRequest
     ) throws -> URL {
         let data = try jsonEncoder.encode(authentationRequest)
-        return try createSmileFile(to: jobId, name: "authenticationrequest.json", file: data)
+        return try createSmileFile(to: jobId, name: "authentication_request.json", file: data)
     }
 
     static func fetchAuthenticationRequestFile(
         jobId: String
     ) throws -> AuthenticationRequest {
         let contents = try getDirectoryContents(jobId: jobId)
-        let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authenticationrequest.json" })
+        let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authentication_request.json" })
         let data = try Data(contentsOf: authenticationrequest!)
         return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
     }
