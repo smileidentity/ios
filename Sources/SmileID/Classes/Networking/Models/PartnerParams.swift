@@ -22,7 +22,7 @@ public struct PartnerParams: Codable {
         case jobId = "job_id"
         case userId = "user_id"
         case jobType = "job_type"
-        case extras = "extras"
+        case extras
     }
 
     // Method for copying with modified properties
@@ -31,4 +31,25 @@ public struct PartnerParams: Codable {
             jobId: jobId, userId: userId, jobType: jobType, extras: extras
         )
     }
+
+    var unpackedExtras: [String: String] {
+        var unpacked = [String: String]()
+        unpacked[CodingKeys.jobId.rawValue] = jobId
+        unpacked[CodingKeys.userId.rawValue] = userId
+        if let jobType = jobType {
+            unpacked[CodingKeys.jobType.rawValue] = String(jobType.rawValue)
+        }
+        if let extras = extras {
+            for (key, value) in extras {
+                unpacked[key] = value
+            }
+        }
+        return unpacked
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        try container.encode(self.unpackedExtras)
+    }
+
 }
