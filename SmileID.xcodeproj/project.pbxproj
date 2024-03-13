@@ -1725,6 +1725,7 @@
 		AF844D28D9636BBED3B2C655 /* FaceGeometryModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceGeometryModel.swift; path = Sources/SmileID/Classes/FaceDetector/FaceGeometryModel.swift; sourceTree = "<group>"; };
 		AFB018D028D6CD9B4C714ACC /* Config.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Config.swift; path = Sources/SmileID/Classes/Networking/Models/Config.swift; sourceTree = "<group>"; };
 		AFB0B3B817ABF944C3F39AAB /* PartnerParamsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PartnerParamsTests.swift; path = Model/PartnerParamsTests.swift; sourceTree = "<group>"; };
+		AFB0B990A31D8A2EFB33C4D3 /* PartnerParamsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PartnerParamsTests.swift; path = Model/PartnerParamsTests.swift; sourceTree = "<group>"; };
 		AFB79E4E8DA52E1EF98E0280 /* SelfieViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieViewModel.swift; path = Sources/SmileID/Classes/SelfieCapture/SelfieViewModel.swift; sourceTree = "<group>"; };
 		AFC98F8ECC19FEA644C20C67 /* FaceShapedProgressIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceShapedProgressIndicator.swift; path = Sources/SmileID/Classes/SelfieCapture/View/FaceShapedProgressIndicator.swift; sourceTree = "<group>"; };
 		B00C2F196732F0CF1718B0F7 /* LocalizedStringExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalizedStringExtensions.swift; path = Sources/SmileID/Classes/Helpers/LocalizedStringExtensions.swift; sourceTree = "<group>"; };
@@ -4690,6 +4691,7 @@
 				1EEFC3A82B5849D100B8A934 /* CalculateSignatureTests.swift */,
 				1EEFC3A92B5849D100B8A934 /* PollingTests.swift */,
 				AFB0B3B817ABF944C3F39AAB /* PartnerParamsTests.swift */,
+				AFB0B990A31D8A2EFB33C4D3 /* PartnerParamsTests.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";

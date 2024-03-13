@@ -5,7 +5,7 @@ public struct PartnerParams: Codable {
     public var userId: String
     public var jobType: JobType?
     public var extras: [String: String]?
-    
+
     public init(
         jobId: String,
         userId: String,
@@ -17,14 +17,14 @@ public struct PartnerParams: Codable {
         self.jobType = jobType
         self.extras = extras
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case jobId = "job_id"
         case userId = "user_id"
         case jobType = "job_type"
         case extras
     }
-    
+
     // Method for copying with modified properties
     func copy(extras: [String: String]?) -> PartnerParams {
         PartnerParams(
@@ -34,18 +34,17 @@ public struct PartnerParams: Codable {
 }
 
 extension PartnerParams {
-
     struct DynamicCodingKey: CodingKey {
         var stringValue: String
         var intValue: Int?
 
         init?(stringValue: String) {
             self.stringValue = stringValue
-            self.intValue = nil
+            intValue = nil
         }
 
         init?(intValue: Int) {
-            self.stringValue = String(intValue)
+            stringValue = String(intValue)
             self.intValue = intValue
         }
     }

@@ -1,8 +1,7 @@
-import XCTest
 @testable import SmileID
+import XCTest
 
 class PartnerParamsTests: XCTestCase {
-
     func testEncoding() throws {
         // Define an instance of PartnerParams
         let jobType: JobType = .smartSelfieEnrollment
@@ -26,4 +25,3 @@ class PartnerParamsTests: XCTestCase {
         XCTAssertNil(dictionary?["extras"])
     }
 }
-
