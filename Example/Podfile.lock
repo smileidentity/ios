@@ -1,11 +1,11 @@
 PODS:
   - netfox (1.21.0)
-  - Sentry (8.20.0):
-    - Sentry/Core (= 8.20.0)
-    - SentryPrivate (= 8.20.0)
-  - Sentry/Core (8.20.0):
-    - SentryPrivate (= 8.20.0)
-  - SentryPrivate (8.20.0)
+  - Sentry (8.21.0):
+    - Sentry/Core (= 8.21.0)
+    - SentryPrivate (= 8.21.0)
+  - Sentry/Core (8.21.0):
+    - SentryPrivate (= 8.21.0)
+  - SentryPrivate (8.21.0)
   - SmileID (10.0.10):
     - Zip (~> 2.1.0)
   - SwiftLint (0.54.0)
@@ -31,12 +31,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
-  Sentry: a8d7b373b9f9868442b02a0c425192f693103cbf
-  SentryPrivate: 006b24af16828441f70e2ab6adf241bd0a8ad130
+  Sentry: ebc12276bd17613a114ab359074096b6b3725203
+  SentryPrivate: d651efb234cf385ec9a1cdd3eff94b5e78a0e0fe
   SmileID: ffaa1eab202cb9c402ade1cc66ceaf5a2c99c686
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 81f36d854eaf9451aa489ca090d5c32269373e5d
+PODFILE CHECKSUM: 8f7be2cf75babf479684f1e21d344f4c640486be
 
 COCOAPODS: 1.15.2

@@ -17,6 +17,7 @@ post_install do |installer|
     project.targets.each do |target|
         target.build_configurations.each do |config|
             config.build_settings["DEVELOPMENT_TEAM"] = "99P7YGX9Q6"
+            config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
          end
     end
   end

@@ -54,3 +54,20 @@ jobs:
           labels: "release-notes"
           team-reviewers: "smileidentity/mobile"
 
+  generate-docc-reference-docs:
+    # TODO: Change back to macos-latest once it points to macOS 14 (Q2 '24)
+    runs-on: macos-14
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup environment
+        run: bundle install
+      - name: Select Xcode Version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+         xcode-version: 15.2
+      - name: Generate Archive
+        run:  xcodebuild docbuild -workspace Example/SmileID.xcworkspace -scheme SmileID -destination 'generic/platform=iOS' DOCC_OUTPUT_DIR=.
+      - name: Generate Docs Site
+        run: $(xcrun --find docc) process-archive transform-for-static-hosting Example/Pods/SmileID.doccarchive --output-path docs --hosting-base-path ios
