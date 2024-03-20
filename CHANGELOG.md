@@ -1,7 +1,5 @@
 
 # Release Notes
-## 10.0.12 (Unreleased)
-
 ## 10.0.11
 
 #### Fixed

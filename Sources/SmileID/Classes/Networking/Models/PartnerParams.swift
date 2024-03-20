@@ -32,8 +32,8 @@ public struct PartnerParams: Codable {
         )
     }
 }
-//made this seperate in case we need to do this for any
-//other class in future
+// made this seperate in case we need to do this for any
+// other class in future
 extension PartnerParams {
     struct DynamicCodingKey: CodingKey {
         var stringValue: String
@@ -44,7 +44,7 @@ extension PartnerParams {
             intValue = nil
         }
 
-        //not used but required by CodingKey
+        // not used but required by CodingKey
         init?(intValue: Int) {
             stringValue = String(intValue)
             self.intValue = intValue
