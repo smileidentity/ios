@@ -6,7 +6,7 @@ public protocol SmartSelfieResultDelegate {
     /// - Parameters:
     ///   - selfieImage: The local url of the colour selfie image captured
     ///   - livenessImages: An array of local urls of images captured for liveness checks
-    ///   - didSubmitJob: Indicates whether the job was submitted to the SmileID backend (e.g. it would be false in offline mode)
+    ///   - didSubmitSmartSelfieJob: Indicates whether the job was submitted to the SmileID backend (e.g. it would be false in offline mode)
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],

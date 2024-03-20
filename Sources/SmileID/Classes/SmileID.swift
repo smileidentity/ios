@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 import SwiftUI
 import UIKit
@@ -66,67 +65,51 @@ public class SmileID {
         SmileID.useSandbox = useSandbox
     }
 
-    /// Set offline mode on the sdkJobStatusResponse
-    /// - Parameter allowOfflineMode: A boolean to enable offline mode or not
+    /// Sets the state of offline mode for the SDK.
+    /// This function enables or disables the SDK's ability to operate in offline mode,
+    /// where it can continue functioning without an active internet connection. When offline mode
+    /// is enabled (allowOfflineMode = true), the SDK will attempt to use capture and cache
+    /// images in local file storage and will not attempt to submit the job. Conversely, when offline
+    /// mode is disabled (allowOfflineMode = false), the application will require an active internet
+    /// connection for all operations that involve data fetching or submission.
+    ///
+    /// - Parameter allowOfflineMode: A Boolean value indicating whether offline mode should
+    /// be enabled (true) or disabled (false).
     public class func setAllowOfflineMode(allowOfflineMode: Bool) {
         SmileID.allowOfflineMode = allowOfflineMode
     }
 
-    /// Returns a list of all unsubmitted jobIds
+    /// Retrieves a list of unsubmitted job IDs.
     public class func getUnsubmittedJobs() -> [String] {
         LocalStorage.getUnsubmittedJobs()
     }
 
-    /// Returns a list of all submitted jobIds
+    /// Retrieves a list of submitted job IDs.
     public class func getSubmittedJobs() -> [String] {
         LocalStorage.getSubmittedJobs()
     }
 
-    /// Submit an offline job
-    public class func submitJob(
-        jobId: String,
-        deleteFilesOnSuccess: Bool = false
-    ) {
-        static func submitJob(
-            jobId: String,
-            deleteFilesOnSuccess: Bool // todo - to be used in next pr
-        ) {
-            Task {
-                do {
-                    let authRequest = try LocalStorage.fetchAuthenticationRequestFile(jobId: jobId)
-                    let authResponse = try await SmileID.api.authenticate(
-                        request: authRequest
-                    ).async()
-                    let prepUploadRequest = try LocalStorage.fetchPrepUploadFile(jobId: jobId)
-                    let prepUploadResponse = try await SmileID.api.prepUpload(
-                        request: prepUploadRequest
-                    ).async()
-                    let zip = try LocalStorage.fetchUploadZip(jobId: jobId)
-                    let response = try await SmileID.api.upload(
-                        zip: zip,
-                        to: prepUploadResponse.uploadUrl
-                    ).async()
-                }
-            }
-        }
+    /// Initiates the cleanup process for a single job by its ID.
+    /// This is a convenience method that wraps the cleanup process, allowing for a single job ID
+    /// to be specified for cleanup.
+    ///
+    /// - Parameter jobId: the job IDs to clean up.
+    public class func cleanup(jobId: String) throws {
+        try cleanup(jobIds: [jobId])
     }
 
-    /// deletes the job ids list, whether in unsubmitted or submitted state
+    ///  Initiates the cleanup process for multiple jobs by their IDs.
+    ///  If no IDs are provided, a default cleanup process is initiated that may target
+    ///  specific jobs based on the implementation in com.smileidentity.util.cleanup.
+    ///
+    ///  - Parameter jobIds: An optional list of job IDs to clean up. If null, the method defaults
+    ///  to  a predefined cleanup process.
     public class func cleanup(jobIds: [String]? = nil) throws {
         if let jobIds {
             try LocalStorage.delete(at: jobIds)
         } else {
             try LocalStorage.deleteAll()
         }
-    }
-
-    public class func cleanup(jobIds: String...) throws {
-        try cleanup(jobIds: jobIds)
-    }
-
-    /// deletes the job ids list, whether in unsubmitted or submitted state
-    public class func cleanup(jobIds: [String]) throws {
-        try LocalStorage.delete(at: jobIds)
     }
 
     /// Set the callback URL for all submitted jobs. If no value is set, the default callback URL
