@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name             = 'SmileID'
-  s.version          = '10.0.10'
+  s.version          = '10.0.11'
   s.summary          = 'The Official Smile Identity iOS SDK.'
   s.homepage         = 'https://docs.usesmileid.com/integration-options/mobile/ios-v10-beta'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Japhet' => 'japhet@usesmileid.com', 'Juma Allan' => 'juma@usesmileid.com', 'Vansh Gandhi' => 'vansh@usesmileid.com'}
-  s.source           = { :git => "https://github.com/smileidentity/ios.git", :tag => "v10.0.10" }
+  s.source           = { :git => "https://github.com/smileidentity/ios.git", :tag => "v10.0.11" }
   s.ios.deployment_target = '13.0'
   s.dependency 'Zip', '~> 2.1.0'
   s.swift_version = '5.5'

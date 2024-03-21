@@ -6,12 +6,27 @@ This repo contains all the code required to run the Smile Identity SDK. The proj
 
 - `Example` - A sample app that demonstrates the SDKs features
 - `Sources`- Contains all UI, CV and networking source code
-- `Tests`- Unit tests for the SDK business logic 
+- `Tests`- Unit tests for the SDK business logic
+
+We use [`mint`](https://github.com/yonaskolb/Mint) for running swift command line tool packages.
+We use [`rake`](https://github.com/ruby/rake) for task automation.
 
 ## Requirements
 
 - iOS 13 or higher
 - Xcode 14 or higher
+
+## SDK Tests
+
+```shell
+bundle exec rake test:package
+```
+
+## Example App Tests
+
+```shell
+bundle exec rake test:example
+```
 
 ## CI Setup
 
