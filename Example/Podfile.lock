@@ -6,7 +6,7 @@ PODS:
   - Sentry/Core (8.21.0):
     - SentryPrivate (= 8.21.0)
   - SentryPrivate (8.21.0)
-  - SmileID (10.0.10):
+  - SmileID (10.0.11):
     - Zip (~> 2.1.0)
   - SwiftLint (0.54.0)
   - Zip (2.1.2)
@@ -33,7 +33,7 @@ SPEC CHECKSUMS:
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
   Sentry: ebc12276bd17613a114ab359074096b6b3725203
   SentryPrivate: d651efb234cf385ec9a1cdd3eff94b5e78a0e0fe
-  SmileID: ffaa1eab202cb9c402ade1cc66ceaf5a2c99c686
+  SmileID: 93d6f6bee1b988d12c2dc8872e7113dbe9edd5a1
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
