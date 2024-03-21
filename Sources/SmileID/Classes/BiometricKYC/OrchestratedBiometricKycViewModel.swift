@@ -17,7 +17,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - Other Properties
     private var error: Error?
     private var selfieCaptureResultStore: SelfieCaptureResultStore?
-    private var didSubmitJob: Bool = false
+    private var didSubmitBiometricJob: Bool = false
 
     // MARK: - UI Properties
     @Published @MainActor private (set) var step: BiometricKycStep = .selfie
@@ -49,7 +49,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
             delegate.didSucceed(
                 selfieImage: selfieCaptureResultStore.selfie,
                 livenessImages: selfieCaptureResultStore.livenessImages,
-                didSubmitBiometricJob: self.didSubmitJob
+                didSubmitBiometricJob: self.didSubmitBiometricJob
             )
         } else if let error = error {
             delegate.didError(error: error)
@@ -82,6 +82,16 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     country: idInfo.country,
                     idType: idInfo.idType
                 )
+                if SmileID.allowOfflineMode {
+                    try LocalStorage.saveOfflineJob(
+                        jobId: jobId,
+                        userId: userId,
+                        jobType: .biometricKyc,
+                        enrollment: false,
+                        allowNewEnroll: allowNewEnroll,
+                        partnerParams: extraPartnerParams
+                    )
+                }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
@@ -92,14 +102,20 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 let prepUploadResponse = try await SmileID.api.prepUpload(
                     request: prepUploadRequest
                 ).async()
-                let _ = try await SmileID.api.upload(
+                _ = try await SmileID.api.upload(
                     zip: zip,
                     to: prepUploadResponse.uploadUrl
                 ).async()
-                didSubmitJob = true
+                didSubmitBiometricJob = true
+                do {
+                    try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                } catch {
+                    print("Error moving job to submitted directory: \(error)")
+                    self.error = error
+                }
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch {
-                didSubmitJob = if SmileID.allowOfflineMode { false } else { true } // TODO review this
+                didSubmitBiometricJob = false
                 print("Error submitting job: \(error)")
                 self.error = error
                 DispatchQueue.main.async { self.step = .processing(.error) }

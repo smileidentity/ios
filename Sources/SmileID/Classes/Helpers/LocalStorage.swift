@@ -157,7 +157,6 @@ public class LocalStorage {
     }
 
     static func saveOfflineJob(
-        allowOfflineMode: Bool,
         jobId: String,
         userId: String,
         jobType: JobType,
@@ -166,33 +165,30 @@ public class LocalStorage {
         partnerParams: [String: String]
     ) throws {
         do {
-            if allowOfflineMode {
-                _ = try createPrepUploadFile(
-                    jobId: jobId,
-                    prepUpload: PrepUploadRequest(
-                        partnerParams: PartnerParams(
-                            jobId: jobId,
-                            userId: userId,
-                            jobType: jobType,
-                            extras: partnerParams
-                        ),
-                        allowNewEnroll: String(allowNewEnroll)
-                    )
-                )
-                _ = try createAuthenticationRequestFile(
-                    jobId: jobId,
-                    authentationRequest: AuthenticationRequest(
-                        jobType: jobType,
-                        enrollment: enrollment,
+            _ = try createPrepUploadFile(
+                jobId: jobId,
+                prepUpload: PrepUploadRequest(
+                    partnerParams: PartnerParams(
                         jobId: jobId,
                         userId: userId,
-                        authToken: "" // remove this so it is not stored offline
-                    )
+                        jobType: jobType,
+                        extras: partnerParams
+                    ),
+                    allowNewEnroll: String(allowNewEnroll),
+                    timestamp: "", // remove this so it is not stored offline
+                    signature: "" // remove this so it is not stored offline
                 )
-            } else {
-                // move job to submitted folder, not going to be retried later
-                try LocalStorage.moveToSubmittedJobs(jobId: jobId)
-            }
+            )
+            _ = try createAuthenticationRequestFile(
+                jobId: jobId,
+                authentationRequest: AuthenticationRequest(
+                    jobType: jobType,
+                    enrollment: enrollment,
+                    jobId: jobId,
+                    userId: userId,
+                    authToken: "" // remove this so it is not stored offline
+                )
+            )
         }
     }
 
