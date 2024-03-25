@@ -22,7 +22,7 @@ public class SmileID {
 
     public private(set) static var config: Config!
     public private(set) static var useSandbox = false
-    public private(set) static var allowOfflineMode = false
+    public private(set) static var allowOfflineMode = true
     public private(set) static var callbackUrl: String = ""
     internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
@@ -109,6 +109,72 @@ public class SmileID {
             try LocalStorage.delete(at: jobIds)
         } else {
             try LocalStorage.deleteAll()
+        }
+    }
+
+    /// Submits a previously captured job to SmileID for processing.
+    ///
+    ///- Parameters:
+    ///   - jobId: The unique identifier for the job to be submitted.
+    public class func submitJob(
+        jobId: String,
+        deleteFilesOnSuccess: Bool
+    ) throws {
+        let jobIds = LocalStorage.getSubmittedJobs()
+        if !jobIds.contains(jobId) {
+            throw "Invalid jobId or not found"
+        }
+
+        Task {
+            let zip: Data
+            do {
+                let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId)
+                let authRequest = AuthenticationRequest(
+                    jobType: authRequestFile!.jobType,
+                    enrollment: authRequestFile!.enrollment,
+                    jobId: authRequestFile!.jobId,
+                    userId: authRequestFile!.userId
+                )
+                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+                let prepUploadFile = try? LocalStorage.fetchPrepUploadFile(jobId: jobId)
+                let prepUploadRequest = PrepUploadRequest(
+                    partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile!.partnerParams.extras),
+                    allowNewEnroll: String(prepUploadFile!.allowNewEnroll), // TODO - Fix when Michael changes this to boolean
+                    timestamp: authResponse.timestamp,
+                    signature: authResponse.signature
+                )
+                let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest).async()
+                var allFiles = [URL]()
+                let selfieFileUrl = try LocalStorage.getFileByType(jobId: jobId)
+                let frontDocumentUrl = try LocalStorage.getFileByType(jobId: jobId)
+                allFiles.append(contentsOf: [selfieFileUrl, frontDocumentUrl])
+                let backDocumentUrl = try LocalStorage.getFileByType(jobId: jobId)
+                allFiles.append(backDocumentUrl)
+                let livenessFiles = try LocalStorage.getFilesByType(jobId: jobId)
+                allFiles.append(contentsOf: livenessFiles)
+                let info = try LocalStorage.getInfoJsonFile(jobId: jobId)
+                allFiles.append(info)
+                let zipUrl = try LocalStorage.zipFiles(at: allFiles)
+                zip = try Data(contentsOf: zipUrl)
+                _ = try await SmileID.api.upload(
+                    zip: zip,
+                    to: prepUploadResponse.uploadUrl
+                ).async()
+                if deleteFilesOnSuccess {
+                    do {
+                        try LocalStorage.delete(at: [jobId])
+                    } catch {
+                        print("Error deleting submitted job: \(error)")
+                    }
+                } else {
+                    do {
+                        try LocalStorage.moveToSubmittedJobs(jobId: jobId)
+                    } catch {
+                        print("Error moving job to submitted directory: \(error)")
+                    }
+                }
+                print("Upload finished")
+            }
         }
     }
 

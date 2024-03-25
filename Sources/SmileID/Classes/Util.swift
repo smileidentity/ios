@@ -35,3 +35,5 @@ private struct StackedShape<Bottom: Shape, Top: Shape>: Shape {
         }
     }
 }
+
+extension String: Error {}
