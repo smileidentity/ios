@@ -37,3 +37,14 @@ private struct StackedShape<Bottom: Shape, Top: Shape>: Shape {
 }
 
 extension String: Error {}
+
+enum FileType: String {
+    case selfie = "si_selfie_"
+    case liveness = "si_liveness_"
+    case documentFront = "si_document_front_"
+    case documentBack = "si_document_back_"
+
+    var name: String {
+        return rawValue
+    }
+}

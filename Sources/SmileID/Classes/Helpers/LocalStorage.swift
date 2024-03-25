@@ -53,21 +53,38 @@ public class LocalStorage {
         jobId: String,
         selfieFile data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: filename(for: "selfie"), file: data)
+        return try createSmileFile(to: jobId, name: filename(for: FileType.selfie.name), file: data)
     }
 
     static func createLivenessFile(
         jobId: String,
         livenessFile data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: filename(for: "liveness"), file: data)
+        return try createSmileFile(to: jobId, name: filename(for: FileType.liveness.name), file: data)
     }
 
     static func createDocumentFile(
         jobId: String,
+        fileType: FileType,
         document data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: filename(for: "document"), file: data)
+        return try createSmileFile(to: jobId, name: filename(for: fileType.name), file: data)
+    }
+
+    static func getFileByType(
+        jobId: String,
+        fileType: FileType
+    ) throws -> URL {
+        let contents = try getDirectoryContents(jobId: jobId)
+        return contents.first(where: { $0.lastPathComponent == fileType.name })!
+    }
+
+    static func getFilesByType(
+        jobId: String,
+        fileType: FileType
+    ) throws -> [URL] {
+        let contents = try getDirectoryContents(jobId: jobId)
+        return contents.filter{ $0.lastPathComponent == fileType.name }
     }
 
     static func createInfoJsonFile(
@@ -112,6 +129,13 @@ public class LocalStorage {
             idInfo: idInfo
         ))
         return try createSmileFile(to: jobId, name: "info.json", file: data)
+    }
+
+    static func getInfoJsonFile(
+        jobId: String
+    ) throws -> URL {
+        let contents = try getDirectoryContents(jobId: jobId)
+        return contents.first(where: { $0.lastPathComponent == "info.json" })!
     }
 
     private static func createPrepUploadFile(
