@@ -153,7 +153,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             )
         } catch {
             print("Error saving document images: \(error)")
-            onError(error: SmileIDError.unknown("Error saving document images"))
+            onError(error: error)
             return
         }
 
@@ -198,6 +198,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                             // or move to submitted folder - I will update the documentation as well
                             do {
                                 _ = try LocalStorage.saveOfflineJob(
+                                    allowOfflineMode: SmileID.allowOfflineMode,
                                     jobId: self.jobId,
                                     userId: self.userId,
                                     jobType: self.jobType,
@@ -207,16 +208,22 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                                 )
                             } catch {
                                 print("Error saving job for offline mode: \(error)")
-                                self.onError(error: SmileIDError.unknown("Failed to create file"))
+                                self.onError(error: error)
                             }
                         print("Error submitting job: \(error)")
-                        self.onError(error: SmileIDError.unknown("Network error"))
+                        self.onError(error: error)
                     default:
                         break
                     }
                 },
                 receiveValue: { response in
                     self.jobStatusResponse = response
+                    do {
+                        try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                    } catch {
+                        print("Error moving job to submitted directory: \(error)")
+                        self.onError(error: error)
+                    }
                     DispatchQueue.main.async {
                         self.step = .processing(.success)
                     }

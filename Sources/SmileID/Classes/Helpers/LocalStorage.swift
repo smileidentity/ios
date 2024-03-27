@@ -22,13 +22,13 @@ public class LocalStorage {
         }
     }
 
-    static var unsubmittedDirectory: URL {
+    static var unsubmittedJobDirectory: URL {
         get throws {
             try defaultDirectory.appendingPathComponent(unsubmittedFolderName)
         }
     }
 
-    static var submittedDirectory: URL {
+    static var submittedJobDirectory: URL {
         get throws {
             try defaultDirectory.appendingPathComponent(submittedFolderName)
         }
@@ -39,8 +39,8 @@ public class LocalStorage {
         name: String,
         file data: Data
     ) throws -> URL {
-        try createDirectory(at: unsubmittedDirectory)
-        let destinationFolder = try unsubmittedDirectory.appendingPathComponent(folder)
+        try createDirectory(at: unsubmittedJobDirectory)
+        let destinationFolder = try unsubmittedJobDirectory.appendingPathComponent(folder)
         return try write(data, to: destinationFolder.appendingPathComponent(name))
     }
 
@@ -130,6 +130,7 @@ public class LocalStorage {
     }
 
     static func saveOfflineJob(
+        allowOfflineMode: Bool,
         jobId: String,
         userId: String,
         jobType: JobType,
@@ -138,28 +139,33 @@ public class LocalStorage {
         partnerParams: [String: String]
     ) throws {
         do {
-            _ = try createPrepUploadFile(
-                jobId: jobId,
-                prepUpload: PrepUploadRequest(
-                    partnerParams: PartnerParams(
+            if allowOfflineMode {
+                _ = try createPrepUploadFile(
+                    jobId: jobId,
+                    prepUpload: PrepUploadRequest(
+                        partnerParams: PartnerParams(
+                            jobId: jobId,
+                            userId: userId,
+                            jobType: jobType,
+                            extras: partnerParams
+                        ),
+                        allowNewEnroll: String(allowNewEnroll)
+                    )
+                )
+                _ = try createAuthenticationRequestFile(
+                    jobId: jobId,
+                    authentationRequest: AuthenticationRequest(
+                        jobType: jobType,
+                        enrollment: enrollment,
                         jobId: jobId,
                         userId: userId,
-                        jobType: jobType,
-                        extras: partnerParams
-                    ),
-                    allowNewEnroll: String(allowNewEnroll)
+                        authToken: "" // remove this so it is not stored offline
+                    )
                 )
-            )
-            _ = try createAuthenticationRequestFile(
-                jobId: jobId,
-                authentationRequest: AuthenticationRequest(
-                    jobType: jobType,
-                    enrollment: enrollment,
-                    jobId: jobId,
-                    userId: userId,
-                    authToken: "" // remove this so it is not stored offline
-                )
-            )
+            } else {
+                // move job to submitted folder, not going to be retried later
+                try LocalStorage.moveToSubmittedJobs(jobId: jobId)
+            }
         }
     }
 
@@ -186,7 +192,7 @@ public class LocalStorage {
 
     static func getUnsubmittedJobs() -> [String] {
         do {
-            return try fileManager.contentsOfDirectory(atPath: unsubmittedDirectory.relativePath)
+            return try fileManager.contentsOfDirectory(atPath: unsubmittedJobDirectory.relativePath)
         } catch {
             print("Error fetching unsubmitted jobs: \(error.localizedDescription)")
             return []
@@ -195,11 +201,18 @@ public class LocalStorage {
 
     static func getSubmittedJobs() -> [String] {
         do {
-            return try fileManager.contentsOfDirectory(atPath: submittedDirectory.relativePath)
+            return try fileManager.contentsOfDirectory(atPath: submittedJobDirectory.relativePath)
         } catch {
             print("Error fetching submitted jobs: \(error.localizedDescription)")
             return []
         }
+    }
+
+    static func moveToSubmittedJobs(jobId: String) throws {
+        try createDirectory(at: submittedJobDirectory)
+        let unsubmittedFileDirectory = try unsubmittedJobDirectory.appendingPathComponent(jobId)
+        let submittedFileDirectory = try submittedJobDirectory.appendingPathComponent(jobId)
+        try fileManager.moveItem(at: unsubmittedFileDirectory, to: submittedFileDirectory)
     }
 
     // todo - rework this as we change zip library
@@ -221,7 +234,7 @@ public class LocalStorage {
         try Zip.quickZipFiles(urls, fileName: "upload")
     }
 
-    static func delete(at url: URL) throws {
+    private static func delete(at url: URL) throws {
         if fileManager.fileExists(atPath: url.relativePath) {
             try fileManager.removeItem(atPath: url.relativePath)
         }
@@ -229,9 +242,9 @@ public class LocalStorage {
 
     static func delete(at jobIds: [String]) throws {
         try jobIds.forEach {
-            let unsubmittedJob = try unsubmittedDirectory.appendingPathComponent($0)
+            let unsubmittedJob = try unsubmittedJobDirectory.appendingPathComponent($0)
             try delete(at: unsubmittedJob)
-            let submittedJob = try submittedDirectory.appendingPathComponent($0)
+            let submittedJob = try submittedJobDirectory.appendingPathComponent($0)
             try delete(at: submittedJob)
         }
     }
