@@ -122,7 +122,7 @@ public class SmileID {
     ) throws {
         let jobIds = LocalStorage.getSubmittedJobs()
         if !jobIds.contains(jobId) {
-            throw "Invalid jobId or not found"
+            throw SmileIDError.invalidJobId
         }
 
         Task {
