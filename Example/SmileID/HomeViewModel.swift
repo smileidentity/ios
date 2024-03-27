@@ -48,18 +48,14 @@ class HomeViewModel: ObservableObject,
         userId: String,
         selfieImage _: URL,
         livenessImages _: [URL],
-        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>?
+        didSubmitJob: Bool
     ) {
         dismissModal()
         showToast = true
         UIPasteboard.general.string = userId
         toastMessage = jobResultMessageBuilder(
             jobName: "SmartSelfie Enrollment",
-            jobComplete: jobStatusResponse?.jobComplete,
-            jobSuccess: jobStatusResponse?.jobSuccess,
-            code: jobStatusResponse?.code,
-            resultCode: jobStatusResponse?.result?.resultCode,
-            resultText: jobStatusResponse?.result?.resultText,
+            didSubmitJob: didSubmitJob,
             suffix: "The User ID has been copied to your clipboard"
         )
     }
@@ -68,34 +64,26 @@ class HomeViewModel: ObservableObject,
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        jobStatusResponse: JobStatusResponse<SmartSelfieJobResult>?
+        didSubmitSmartSelfieJob: Bool
     ) {
         dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "SmartSelfie Authentication",
-            jobComplete: jobStatusResponse?.jobComplete,
-            jobSuccess: jobStatusResponse?.jobSuccess,
-            code: jobStatusResponse?.code,
-            resultCode: jobStatusResponse?.result?.resultCode,
-            resultText: jobStatusResponse?.result?.resultText
+            didSubmitJob: didSubmitSmartSelfieJob
         )
     }
 
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        jobStatusResponse: JobStatusResponse<BiometricKycJobResult>
+        didSubmitBiometricJob: Bool
     ) {
         dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Biometric KYC",
-            jobComplete: jobStatusResponse.jobComplete,
-            jobSuccess: jobStatusResponse.jobSuccess,
-            code: jobStatusResponse.code,
-            resultCode: jobStatusResponse.result?.resultCode,
-            resultText: jobStatusResponse.result?.resultText
+            didSubmitJob: didSubmitBiometricJob
         )
     }
 
@@ -106,11 +94,7 @@ class HomeViewModel: ObservableObject,
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Enhanced KYC",
-            jobComplete: true,
-            jobSuccess: true,
-            code: nil,
-            resultCode: enhancedKycResponse.resultCode,
-            resultText: enhancedKycResponse.resultText
+            didSubmitJob: true
         )
     }
 
@@ -118,17 +102,13 @@ class HomeViewModel: ObservableObject,
         selfie _: URL,
         documentFrontImage _: URL,
         documentBackImage _: URL?,
-        jobStatusResponse: JobStatusResponse<DocumentVerificationJobResult>
+        didSubmitDocumentVerificationJob: Bool
     ) {
         dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Document Verification",
-            jobComplete: jobStatusResponse.jobComplete,
-            jobSuccess: jobStatusResponse.jobSuccess,
-            code: jobStatusResponse.code,
-            resultCode: jobStatusResponse.result?.resultCode,
-            resultText: jobStatusResponse.result?.resultText
+            didSubmitJob: didSubmitDocumentVerificationJob
         )
     }
 
@@ -136,17 +116,13 @@ class HomeViewModel: ObservableObject,
         selfie _: URL,
         documentFrontImage _: URL,
         documentBackImage _: URL?,
-        jobStatusResponse: JobStatusResponse<EnhancedDocumentVerificationJobResult>
+        didSubmitEnhancedDocVJob: Bool
     ) {
         dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Enhanced Document Verification",
-            jobComplete: jobStatusResponse.jobComplete,
-            jobSuccess: jobStatusResponse.jobSuccess,
-            code: jobStatusResponse.code,
-            resultCode: jobStatusResponse.result?.resultCode,
-            resultText: jobStatusResponse.result?.resultText
+            didSubmitJob: didSubmitEnhancedDocVJob
         )
     }
 

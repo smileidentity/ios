@@ -1,21 +1,19 @@
-/// The result of a Document Verification
-
 import Foundation
+
+/// The result of a Document Verification
 public protocol DocumentVerificationResultDelegate {
     /// Delegate method called after a successful Document Verification capture and submission.
-    /// It indicates that the capture and network requests were successful. The job may or may not
-    /// be complete. Use `jobStatusResponse.jobComplete` to check if a job is complete and
-    /// `jobStatusResponse.jobSuccess` to check if a job is successful.
+    /// It indicates that the capture and network requests were successful.
     /// - Parameters:
     ///   - selfie: URL of captured selfie JPEG
     ///   - documentFrontImage: URL of captured front document image JPEG
     ///   - documentBackImage: URL of captured back document image JPEG (if applicable)
-    ///   - jobStatusResponse: The response from the job status request
+    ///   - didSubmitDocumentVerificationJob: Indicates whether the job was submitted to the SmileID backend (e.g. it would be false in offline mode)
     func didSucceed(
         selfie: URL,
         documentFrontImage: URL,
         documentBackImage: URL?,
-        jobStatusResponse: DocumentVerificationJobStatusResponse
+        didSubmitDocumentVerificationJob: Bool
     )
 
     /// Delegate method called when an error occurs during Document Verification. This may
