@@ -192,23 +192,8 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.onError(error: error)
-                    return
                 }
                 DispatchQueue.main.async { self.step = .processing(.success) }
-            } catch let error as SmileIDError {
-                do {
-                    try LocalStorage.handleOfflineJobFailure(
-                        jobId: self.jobId,
-                        error: error
-                    )
-                } catch {
-                    print("Error moving job to submitted directory: \(error)")
-                    self.onError(error: error)
-                    return
-                }
-                didSubmitJob = false
-                print("Error submitting job: \(error)")
-                self.onError(error: error)
             } catch {
                 didSubmitJob = false
                 print("Error submitting job: \(error)")
