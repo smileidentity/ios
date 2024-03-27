@@ -9,7 +9,6 @@ public class LocalStorage {
     private static let fileManager = FileManager.default
     private static let previewImageName = "PreviewImage.jpg"
     private static let jsonEncoder = JSONEncoder()
-    private static let jsonDecoder = JSONDecoder()
 
     static var defaultDirectory: URL {
         get throws {
