@@ -192,6 +192,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.onError(error: error)
+                    return
                 }
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch {

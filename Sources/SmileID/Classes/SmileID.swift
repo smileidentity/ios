@@ -102,7 +102,7 @@ public class SmileID {
     ///  If no IDs are provided, a default cleanup process is initiated that may target
     ///  specific jobs based on the implementation in com.smileidentity.util.cleanup.
     ///
-    ///  - Parameter jobIds: An optional list of job IDs to clean up. If null, the method defaults
+    /// - Parameter jobIds: An optional list of job IDs to clean up. If null, the method defaults
     ///  to  a predefined cleanup process.
     public class func cleanup(jobIds: [String]? = nil) throws {
         if let jobIds {
@@ -114,7 +114,7 @@ public class SmileID {
 
     /// Submits a previously captured job to SmileID for processing.
     ///
-    ///- Parameters:
+    /// - Parameters:
     ///   - jobId: The unique identifier for the job to be submitted.
     public class func submitJob(
         jobId: String,
@@ -129,17 +129,22 @@ public class SmileID {
             let zip: Data
             do {
                 let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId)
+                guard let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId) else {
+                    throw SmileIDError.fileNotFound("Authentication Request file is missing")
+                }
                 let authRequest = AuthenticationRequest(
-                    jobType: authRequestFile!.jobType,
-                    enrollment: authRequestFile!.enrollment,
-                    jobId: authRequestFile!.jobId,
-                    userId: authRequestFile!.userId
+                    jobType: authRequestFile.jobType,
+                    enrollment: authRequestFile.enrollment,
+                    jobId: authRequestFile.jobId,
+                    userId: authRequestFile.userId
                 )
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
-                let prepUploadFile = try? LocalStorage.fetchPrepUploadFile(jobId: jobId)
+                guard let prepUploadFile = try? LocalStorage.fetchPrepUploadFile(jobId: jobId) else {
+                    throw SmileIDError.fileNotFound("Prep Upload file is missing")
+                }
                 let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile!.partnerParams.extras),
-                    allowNewEnroll: String(prepUploadFile!.allowNewEnroll), // TODO - Fix when Michael changes this to boolean
+                    partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile.partnerParams.extras),
+                    allowNewEnroll: String(prepUploadFile.allowNewEnroll), // TODO - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
