@@ -149,16 +149,12 @@ public class SmileID {
                     signature: authResponse.signature
                 )
                 let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest).async()
-                var allFiles = [URL]()
-                let selfieFileUrl = try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie)
-                let frontDocumentUrl = try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront)
-                allFiles.append(contentsOf: [selfieFileUrl, frontDocumentUrl])
-                let backDocumentUrl = try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack)
-                allFiles.append(backDocumentUrl)
-                let livenessFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: FileType.liveness)
-                allFiles.append(contentsOf: livenessFiles)
-                let info = try LocalStorage.getInfoJsonFile(jobId: jobId)
-                allFiles.append(info)
+                let allFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: FileType.liveness) + [
+                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie),
+                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
+                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack),
+                    try LocalStorage.getInfoJsonFile(jobId: jobId)
+                ].compactMap { $0 } // Filter out nil values
                 let zipUrl = try LocalStorage.zipFiles(at: allFiles)
                 zip = try Data(contentsOf: zipUrl)
                 _ = try await SmileID.api.upload(
