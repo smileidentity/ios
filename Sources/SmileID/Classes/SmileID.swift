@@ -102,7 +102,7 @@ public class SmileID {
     ///  If no IDs are provided, a default cleanup process is initiated that may target
     ///  specific jobs based on the implementation in com.smileidentity.util.cleanup.
     ///
-    ///  - Parameter jobIds: An optional list of job IDs to clean up. If null, the method defaults
+    /// - Parameter jobIds: An optional list of job IDs to clean up. If null, the method defaults
     ///  to  a predefined cleanup process.
     public class func cleanup(jobIds: [String]? = nil) throws {
         if let jobIds {
@@ -114,46 +114,45 @@ public class SmileID {
 
     /// Submits a previously captured job to SmileID for processing.
     ///
-    ///- Parameters:
+    /// - Parameters:
     ///   - jobId: The unique identifier for the job to be submitted.
     public class func submitJob(
         jobId: String,
         deleteFilesOnSuccess: Bool
     ) throws {
-        let jobIds = LocalStorage.getSubmittedJobs()
+        let jobIds = LocalStorage.getUnsubmittedJobs()
         if !jobIds.contains(jobId) {
             throw SmileIDError.invalidJobId
         }
-
+        guard let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId) else {
+            throw SmileIDError.fileNotFound("Authentication Request file is missing")
+        }
+        guard let prepUploadFile = try? LocalStorage.fetchPrepUploadFile(jobId: jobId) else {
+            throw SmileIDError.fileNotFound("Prep Upload file is missing")
+        }
         Task {
             let zip: Data
             do {
-                let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId)
                 let authRequest = AuthenticationRequest(
-                    jobType: authRequestFile!.jobType,
-                    enrollment: authRequestFile!.enrollment,
-                    jobId: authRequestFile!.jobId,
-                    userId: authRequestFile!.userId
+                    jobType: authRequestFile.jobType,
+                    enrollment: authRequestFile.enrollment,
+                    jobId: authRequestFile.jobId,
+                    userId: authRequestFile.userId
                 )
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
-                let prepUploadFile = try? LocalStorage.fetchPrepUploadFile(jobId: jobId)
                 let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile!.partnerParams.extras),
-                    allowNewEnroll: String(prepUploadFile!.allowNewEnroll), // TODO - Fix when Michael changes this to boolean
+                    partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile.partnerParams.extras),
+                    allowNewEnroll: String(prepUploadFile.allowNewEnroll), // TODO - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
                 let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest).async()
-                var allFiles = [URL]()
-                let selfieFileUrl = try LocalStorage.getFileByType(jobId: jobId)
-                let frontDocumentUrl = try LocalStorage.getFileByType(jobId: jobId)
-                allFiles.append(contentsOf: [selfieFileUrl, frontDocumentUrl])
-                let backDocumentUrl = try LocalStorage.getFileByType(jobId: jobId)
-                allFiles.append(backDocumentUrl)
-                let livenessFiles = try LocalStorage.getFilesByType(jobId: jobId)
-                allFiles.append(contentsOf: livenessFiles)
-                let info = try LocalStorage.getInfoJsonFile(jobId: jobId)
-                allFiles.append(info)
+                let allFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: FileType.liveness)! + [
+                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie),
+                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
+                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack),
+                    try LocalStorage.getInfoJsonFile(jobId: jobId)
+                ].compactMap { $0 } // Filter out nil values
                 let zipUrl = try LocalStorage.zipFiles(at: allFiles)
                 zip = try Data(contentsOf: zipUrl)
                 _ = try await SmileID.api.upload(
@@ -174,6 +173,9 @@ public class SmileID {
                     }
                 }
                 print("Upload finished")
+            } catch {
+                print("Error submitting job: \(error)")
+                throw error
             }
         }
     }

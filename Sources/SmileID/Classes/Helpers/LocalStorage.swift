@@ -5,10 +5,10 @@ public class LocalStorage {
     private static let defaultFolderName = "SmileID"
     private static let unsubmittedFolderName = "unsubmitted"
     private static let submittedFolderName = "submitted"
-    private static let imagePrefix = "si_"
     private static let fileManager = FileManager.default
     private static let previewImageName = "PreviewImage.jpg"
     private static let jsonEncoder = JSONEncoder()
+    private static let jsonDecoder = JSONDecoder()
 
     static var defaultDirectory: URL {
         get throws {
@@ -45,28 +45,45 @@ public class LocalStorage {
     }
 
     private static func filename(for name: String) -> String {
-        "\(imagePrefix)\(name)_\(Date().millisecondsSince1970).jpg"
+        "\(name)_\(Date().millisecondsSince1970).jpg"
     }
 
     static func createSelfieFile(
         jobId: String,
         selfieFile data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: filename(for: "selfie"), file: data)
+        return try createSmileFile(to: jobId, name: filename(for: FileType.selfie.name), file: data)
     }
 
     static func createLivenessFile(
         jobId: String,
         livenessFile data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: filename(for: "liveness"), file: data)
+        return try createSmileFile(to: jobId, name: filename(for: FileType.liveness.name), file: data)
     }
 
     static func createDocumentFile(
         jobId: String,
+        fileType: FileType,
         document data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: filename(for: "document"), file: data)
+        return try createSmileFile(to: jobId, name: filename(for: fileType.name), file: data)
+    }
+
+    static func getFileByType(
+        jobId: String,
+        fileType: FileType
+    ) throws -> URL? {
+        let contents = try getDirectoryContents(jobId: jobId)
+        return contents.first(where: { $0.lastPathComponent == fileType.name })!
+    }
+
+    static func getFilesByType(
+        jobId: String,
+        fileType: FileType
+    ) throws -> [URL]? {
+        let contents = try getDirectoryContents(jobId: jobId)
+        return contents.filter { $0.lastPathComponent == fileType.name }
     }
 
     static func createInfoJsonFile(
@@ -113,19 +130,26 @@ public class LocalStorage {
         return try createSmileFile(to: jobId, name: "info.json", file: data)
     }
 
+    static func getInfoJsonFile(
+        jobId: String
+    ) throws -> URL {
+        let contents = try getDirectoryContents(jobId: jobId)
+        return contents.first(where: { $0.lastPathComponent == "info.json" })!
+    }
+
     private static func createPrepUploadFile(
         jobId: String,
         prepUpload: PrepUploadRequest
     ) throws -> URL {
         let data = try jsonEncoder.encode(prepUpload)
-        return try createSmileFile(to: jobId, name: "preupload.json", file: data)
+        return try createSmileFile(to: jobId, name: "prep_upload.json", file: data)
     }
 
     static func fetchPrepUploadFile(
         jobId: String
     ) throws -> PrepUploadRequest {
         let contents = try getDirectoryContents(jobId: jobId)
-        let preupload = contents.first(where: { $0.lastPathComponent == "preupload.json" })
+        let preupload = contents.first(where: { $0.lastPathComponent == "prep_upload.json" })
         let data = try Data(contentsOf: preupload!)
         return try jsonDecoder.decode(PrepUploadRequest.self, from: data)
     }
@@ -135,14 +159,15 @@ public class LocalStorage {
         authentationRequest: AuthenticationRequest
     ) throws -> URL {
         let data = try jsonEncoder.encode(authentationRequest)
-        return try createSmileFile(to: jobId, name: "authenticationrequest.json", file: data)
+        return try createSmileFile(to: jobId, name: "authentication_request.json", file: data)
     }
 
     static func fetchAuthenticationRequestFile(
         jobId: String
     ) throws -> AuthenticationRequest {
         let contents = try getDirectoryContents(jobId: jobId)
-        let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authenticationrequest.json" })
+        print("the contents are \(contents)")
+        let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authentication_request.json" })
         let data = try Data(contentsOf: authenticationrequest!)
         return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
     }
@@ -156,7 +181,6 @@ public class LocalStorage {
     }
 
     static func saveOfflineJob(
-        allowOfflineMode: Bool,
         jobId: String,
         userId: String,
         jobType: JobType,
@@ -165,33 +189,30 @@ public class LocalStorage {
         partnerParams: [String: String]
     ) throws {
         do {
-            if allowOfflineMode {
-                _ = try createPrepUploadFile(
-                    jobId: jobId,
-                    prepUpload: PrepUploadRequest(
-                        partnerParams: PartnerParams(
-                            jobId: jobId,
-                            userId: userId,
-                            jobType: jobType,
-                            extras: partnerParams
-                        ),
-                        allowNewEnroll: String(allowNewEnroll)
-                    )
-                )
-                _ = try createAuthenticationRequestFile(
-                    jobId: jobId,
-                    authentationRequest: AuthenticationRequest(
-                        jobType: jobType,
-                        enrollment: enrollment,
+            _ = try createPrepUploadFile(
+                jobId: jobId,
+                prepUpload: PrepUploadRequest(
+                    partnerParams: PartnerParams(
                         jobId: jobId,
                         userId: userId,
-                        authToken: "" // remove this so it is not stored offline
-                    )
+                        jobType: jobType,
+                        extras: partnerParams
+                    ),
+                    allowNewEnroll: String(allowNewEnroll),
+                    timestamp: "", // remove this so it is not stored offline
+                    signature: "" // remove this so it is not stored offline
                 )
-            } else {
-                // move job to submitted folder, not going to be retried later
-                try LocalStorage.moveToSubmittedJobs(jobId: jobId)
-            }
+            )
+            _ = try createAuthenticationRequestFile(
+                jobId: jobId,
+                authentationRequest: AuthenticationRequest(
+                    jobType: jobType,
+                    enrollment: enrollment,
+                    jobId: jobId,
+                    userId: userId,
+                    authToken: "" // remove this so it is not stored offline
+                )
+            )
         }
     }
 
@@ -219,7 +240,7 @@ public class LocalStorage {
     private static func getDirectoryContents(
         jobId: String
     ) throws -> [URL] {
-        let folderPathURL = URL(fileURLWithPath: unsubmittedFolderName.appending(jobId))
+        let folderPathURL = try unsubmittedJobDirectory.appendingPathComponent(jobId)
         return try fileManager.contentsOfDirectory(at: folderPathURL, includingPropertiesForKeys: nil)
     }
 
