@@ -120,18 +120,19 @@ public class SmileID {
         jobId: String,
         deleteFilesOnSuccess: Bool
     ) throws {
-        let jobIds = LocalStorage.getSubmittedJobs()
+        let jobIds = LocalStorage.getUnsubmittedJobs()
         if !jobIds.contains(jobId) {
             throw SmileIDError.invalidJobId
         }
-
+        guard let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId) else {
+            throw SmileIDError.fileNotFound("Authentication Request file is missing")
+        }
+        guard let prepUploadFile = try? LocalStorage.fetchPrepUploadFile(jobId: jobId) else {
+            throw SmileIDError.fileNotFound("Prep Upload file is missing")
+        }
         Task {
             let zip: Data
             do {
-                let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId)
-                guard let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId) else {
-                    throw SmileIDError.fileNotFound("Authentication Request file is missing")
-                }
                 let authRequest = AuthenticationRequest(
                     jobType: authRequestFile.jobType,
                     enrollment: authRequestFile.enrollment,
@@ -139,9 +140,6 @@ public class SmileID {
                     userId: authRequestFile.userId
                 )
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
-                guard let prepUploadFile = try? LocalStorage.fetchPrepUploadFile(jobId: jobId) else {
-                    throw SmileIDError.fileNotFound("Prep Upload file is missing")
-                }
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile.partnerParams.extras),
                     allowNewEnroll: String(prepUploadFile.allowNewEnroll), // TODO - Fix when Michael changes this to boolean
@@ -149,7 +147,7 @@ public class SmileID {
                     signature: authResponse.signature
                 )
                 let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest).async()
-                let allFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: FileType.liveness) + [
+                let allFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: FileType.liveness)! + [
                     try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie),
                     try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
                     try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack),
@@ -175,6 +173,9 @@ public class SmileID {
                     }
                 }
                 print("Upload finished")
+            } catch {
+                print("Error submitting job: \(error)")
+                throw error
             }
         }
     }

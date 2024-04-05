@@ -196,6 +196,15 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 }
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch {
+                if !SmileID.allowOfflineMode {
+                    do {
+                        try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                    } catch {
+                        print("Error moving job to submitted directory: \(error)")
+                        self.onError(error: error)
+                        return
+                    }
+                }
                 didSubmitJob = false
                 print("Error submitting job: \(error)")
                 self.onError(error: error)

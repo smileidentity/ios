@@ -5,7 +5,6 @@ public class LocalStorage {
     private static let defaultFolderName = "SmileID"
     private static let unsubmittedFolderName = "unsubmitted"
     private static let submittedFolderName = "submitted"
-    private static let imagePrefix = "si_"
     private static let fileManager = FileManager.default
     private static let previewImageName = "PreviewImage.jpg"
     private static let jsonEncoder = JSONEncoder()
@@ -46,7 +45,7 @@ public class LocalStorage {
     }
 
     private static func filename(for name: String) -> String {
-        "\(imagePrefix)\(name)_\(Date().millisecondsSince1970).jpg"
+        "\(name)_\(Date().millisecondsSince1970).jpg"
     }
 
     static func createSelfieFile(
@@ -74,7 +73,7 @@ public class LocalStorage {
     static func getFileByType(
         jobId: String,
         fileType: FileType
-    ) throws -> URL {
+    ) throws -> URL? {
         let contents = try getDirectoryContents(jobId: jobId)
         return contents.first(where: { $0.lastPathComponent == fileType.name })!
     }
@@ -82,9 +81,9 @@ public class LocalStorage {
     static func getFilesByType(
         jobId: String,
         fileType: FileType
-    ) throws -> [URL] {
+    ) throws -> [URL]? {
         let contents = try getDirectoryContents(jobId: jobId)
-        return contents.filter{ $0.lastPathComponent == fileType.name }
+        return contents.filter { $0.lastPathComponent == fileType.name }
     }
 
     static func createInfoJsonFile(
@@ -167,6 +166,7 @@ public class LocalStorage {
         jobId: String
     ) throws -> AuthenticationRequest {
         let contents = try getDirectoryContents(jobId: jobId)
+        print("the contents are \(contents)")
         let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authentication_request.json" })
         let data = try Data(contentsOf: authenticationrequest!)
         return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
@@ -240,7 +240,7 @@ public class LocalStorage {
     private static func getDirectoryContents(
         jobId: String
     ) throws -> [URL] {
-        let folderPathURL = URL(fileURLWithPath: unsubmittedFolderName.appending(jobId))
+        let folderPathURL = try unsubmittedJobDirectory.appendingPathComponent(jobId)
         return try fileManager.contentsOfDirectory(at: folderPathURL, includingPropertiesForKeys: nil)
     }
 
