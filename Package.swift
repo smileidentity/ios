@@ -13,7 +13,8 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/marmelroy/Zip", .upToNextMajor(from: "2.1.0"))
+        .package(url: "https://github.com/marmelroy/Zip", .upToNextMajor(from: "2.1.0")),
+        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.4.2"),
     ],
     targets: [
         .target(
