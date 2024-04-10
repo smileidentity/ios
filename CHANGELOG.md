@@ -1,5 +1,8 @@
-
 # Release Notes
+
+## Unreleased
+* Add PrivacyInfo Manifest
+
 ## 10.0.11
 
 #### Fixed

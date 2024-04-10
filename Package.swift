@@ -19,7 +19,7 @@ let package = Package(
     targets: [
         .target(
             name: "SmileID",
-            dependencies: ["Zip"],
+            dependencies: ["Zip", "lottie-spm"],
             path: "Sources/SmileID",
             resources: [.process("Resources")]
         ),
