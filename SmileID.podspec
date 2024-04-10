@@ -8,6 +8,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/smileidentity/ios.git", :tag => "v10.0.11" }
   s.ios.deployment_target = '13.0'
   s.dependency 'Zip', '~> 2.1.0'
+  s.dependency 'lottie-ios', '~> 4.4.2'
   s.swift_version = '5.5'
   s.source_files = 'Sources/SmileID/Classes/**/*'
   s.resource_bundles = {
