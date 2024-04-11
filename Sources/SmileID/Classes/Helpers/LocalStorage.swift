@@ -75,7 +75,7 @@ public class LocalStorage {
         fileType: FileType
     ) throws -> URL? {
         let contents = try getDirectoryContents(jobId: jobId)
-        return contents.first(where: { $0.lastPathComponent == fileType.name })!
+        return contents.first(where: { $0.lastPathComponent.contains(fileType.name) })!
     }
 
     static func getFilesByType(
@@ -83,7 +83,7 @@ public class LocalStorage {
         fileType: FileType
     ) throws -> [URL]? {
         let contents = try getDirectoryContents(jobId: jobId)
-        return contents.filter { $0.lastPathComponent == fileType.name }
+        return contents.filter { $0.lastPathComponent.contains(fileType.name) }
     }
 
     static func createInfoJsonFile(
@@ -166,7 +166,6 @@ public class LocalStorage {
         jobId: String
     ) throws -> AuthenticationRequest {
         let contents = try getDirectoryContents(jobId: jobId)
-        print("the contents are \(contents)")
         let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authentication_request.json" })
         let data = try Data(contentsOf: authenticationrequest!)
         return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
@@ -267,6 +266,15 @@ public class LocalStorage {
         let unsubmittedFileDirectory = try unsubmittedJobDirectory.appendingPathComponent(jobId)
         let submittedFileDirectory = try submittedJobDirectory.appendingPathComponent(jobId)
         try fileManager.moveItem(at: unsubmittedFileDirectory, to: submittedFileDirectory)
+    }
+
+    static func handleOfflineJobFailure(
+        jobId: String,
+        error: Error
+    ) throws {
+        if !SmileID.allowOfflineMode {
+            return try LocalStorage.moveToSubmittedJobs(jobId: jobId)
+        }
     }
 
     // todo - rework this as we change zip library

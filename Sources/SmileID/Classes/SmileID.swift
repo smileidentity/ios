@@ -118,7 +118,7 @@ public class SmileID {
     ///   - jobId: The unique identifier for the job to be submitted.
     public class func submitJob(
         jobId: String,
-        deleteFilesOnSuccess: Bool
+        deleteFilesOnSuccess: Bool = true
     ) throws {
         let jobIds = LocalStorage.getUnsubmittedJobs()
         if !jobIds.contains(jobId) {
@@ -152,7 +152,7 @@ public class SmileID {
                     try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
                     try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack),
                     try LocalStorage.getInfoJsonFile(jobId: jobId)
-                ].compactMap { $0 } // Filter out nil values
+                ].compactMap { $0 }
                 let zipUrl = try LocalStorage.zipFiles(at: allFiles)
                 zip = try Data(contentsOf: zipUrl)
                 _ = try await SmileID.api.upload(
