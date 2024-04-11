@@ -335,7 +335,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     self.error = error
                 }
                 DispatchQueue.main.async { self.processingState = .success }
-            } catch {
+            } catch let error as SmileIDError {
                 do {
                     try LocalStorage.handleOfflineJobFailure(
                         jobId: self.jobId,
