@@ -194,7 +194,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     self.onError(error: error)
                 }
                 DispatchQueue.main.async { self.step = .processing(.success) }
-            } catch {
+            } catch let error as SmileIDError {
                 do {
                     try LocalStorage.handleOfflineJobFailure(
                         jobId: self.jobId,
