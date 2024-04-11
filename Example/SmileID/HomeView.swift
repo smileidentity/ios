@@ -18,19 +18,7 @@ struct HomeView: View {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
-
-                Button(action: {
-                    do {
-                        try SmileID.submitJob(jobId: "job-8F4F21B2-B607-40A4-8B9C-0FD49E23463D")
-                        print(SmileID.getSubmittedJobs())
-                        print(SmileID.getUnsubmittedJobs())
-                    } catch {
-                        print("Error submitting job : \(error)")
-                    }
-                }) {
-                    Text("Click me ")
-                }
-
+                
                 MyVerticalGrid(
                     maxColumns: 2,
                     items: [
