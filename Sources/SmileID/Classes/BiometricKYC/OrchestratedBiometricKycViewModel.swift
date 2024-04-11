@@ -117,6 +117,16 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 }
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch {
+                do {
+                    try LocalStorage.handleOfflineJobFailure(
+                        jobId: self.jobId,
+                        error: error
+                    )
+                } catch {
+                    print("Error moving job to submitted directory: \(error)")
+                    self.error = error
+                    return
+                }
                 didSubmitBiometricJob = false
                 print("Error submitting job: \(error)")
                 self.error = error
