@@ -346,10 +346,16 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     self.error = error
                     return
                 }
-                didSubmitSmartSelfieJob = false
-                print("Error submitting job: \(error)")
-                self.error = error
-                DispatchQueue.main.async { self.processingState = .error }
+                if SmileID.allowOfflineMode && LocalStorage.isNetworkFailure(error: error) {
+                    // todo how do we change message here
+                    didSubmitSmartSelfieJob = true
+                    DispatchQueue.main.async { self.processingState = .success }
+                } else {
+                    didSubmitSmartSelfieJob = false
+                    print("Error submitting job: \(error)")
+                    self.error = error
+                    DispatchQueue.main.async { self.processingState = .error }
+                }
             } catch {
                 do {
                     try LocalStorage.handleOfflineJobFailure(

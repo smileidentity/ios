@@ -127,10 +127,16 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     self.error = error
                     return
                 }
-                didSubmitBiometricJob = false
-                print("Error submitting job: \(error)")
-                self.error = error
-                DispatchQueue.main.async { self.step = .processing(.error) }
+                if SmileID.allowOfflineMode && LocalStorage.isNetworkFailure(error: error) {
+                    // todo how do we change message here
+                    didSubmitBiometricJob = true
+                    DispatchQueue.main.async { self.step = .processing(.success) }
+                } else {
+                    didSubmitBiometricJob = false
+                    print("Error submitting job: \(error)")
+                    self.error = error
+                    DispatchQueue.main.async { self.step = .processing(.error) }
+                }
             } catch {
                 didSubmitBiometricJob = false
                 print("Error submitting job: \(error)")
