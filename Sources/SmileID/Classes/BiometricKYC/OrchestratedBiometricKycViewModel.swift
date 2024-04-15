@@ -131,6 +131,11 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 print("Error submitting job: \(error)")
                 self.error = error
                 DispatchQueue.main.async { self.step = .processing(.error) }
+            } catch {
+                didSubmitBiometricJob = false
+                print("Error submitting job: \(error)")
+                self.error = error
+                DispatchQueue.main.async { self.step = .processing(.error) }
             }
         }
     }

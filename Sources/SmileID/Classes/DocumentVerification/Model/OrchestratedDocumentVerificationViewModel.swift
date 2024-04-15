@@ -208,6 +208,10 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 didSubmitJob = false
                 print("Error submitting job: \(error)")
                 self.onError(error: error)
+            } catch {
+                didSubmitJob = false
+                print("Error submitting job: \(error)")
+                self.onError(error: error)
             }
         }
     }
