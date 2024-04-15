@@ -272,16 +272,16 @@ public class LocalStorage {
         jobId: String,
         error: SmileIDError
     ) throws {
-        if SmileID.allowOfflineMode && isNetworkFailure(error: error) {
+        if !(SmileID.allowOfflineMode && isNetworkFailure(error: error)) {
             try LocalStorage.moveToSubmittedJobs(jobId: jobId)
         }
     }
 
-    private static func isNetworkFailure(
+    static func isNetworkFailure(
         error: SmileIDError
     ) -> Bool {
         switch error {
-            case .httpError(let code, _):
+            case .httpError(_, _):
                 true
             default:
                 false

@@ -206,9 +206,15 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     self.onError(error: error)
                     return
                 }
-                didSubmitJob = false
-                print("Error submitting job: \(error)")
-                self.onError(error: error)
+                if SmileID.allowOfflineMode && LocalStorage.isNetworkFailure(error: error) {
+                    // todo how do we change message here
+                    didSubmitJob = true
+                    DispatchQueue.main.async { self.step = .processing(.success) }
+                } else {
+                    didSubmitJob = false
+                    print("Error submitting job: \(error)")
+                    self.onError(error: error)
+                }
             } catch {
                 didSubmitJob = false
                 print("Error submitting job: \(error)")
