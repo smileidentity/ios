@@ -350,6 +350,11 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 print("Error submitting job: \(error)")
                 self.error = error
                 DispatchQueue.main.async { self.processingState = .error }
+            } catch {
+                didSubmitSmartSelfieJob = false
+                print("Error submitting job: \(error)")
+                self.error = error
+                DispatchQueue.main.async { self.processingState = .error }
             }
         }
     }
