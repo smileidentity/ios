@@ -20,6 +20,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     private var didSubmitBiometricJob: Bool = false
 
     // MARK: - UI Properties
+    @Published var errorMessage: String?
     @Published @MainActor private (set) var step: BiometricKycStep = .selfie
 
     init(
@@ -128,9 +129,11 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     return
                 }
                 if SmileID.allowOfflineMode && LocalStorage.isNetworkFailure(error: error) {
-                    // todo how do we change message here
                     didSubmitBiometricJob = true
-                    DispatchQueue.main.async { self.step = .processing(.success) }
+                    DispatchQueue.main.async {
+                        self.errorMessage = "Offline.Message"
+                        self.step = .processing(.success)
+                    }
                 } else {
                     didSubmitBiometricJob = false
                     print("Error submitting job: \(error)")

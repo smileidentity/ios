@@ -31,6 +31,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
     // UI properties
     @Published var acknowledgedInstructions = false
+    @Published var errorMessage: String?
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
     internal init(
@@ -207,9 +208,11 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     return
                 }
                 if SmileID.allowOfflineMode && LocalStorage.isNetworkFailure(error: error) {
-                    // todo how do we change message here
                     didSubmitJob = true
-                    DispatchQueue.main.async { self.step = .processing(.success) }
+                    DispatchQueue.main.async {
+                        self.errorMessage = "Offline.Message"
+                        self.step = .processing(.success)
+                    }
                 } else {
                     didSubmitJob = false
                     print("Error submitting job: \(error)")

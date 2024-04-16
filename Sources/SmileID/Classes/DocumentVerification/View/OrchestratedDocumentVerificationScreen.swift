@@ -211,7 +211,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     for: "Document.Complete.Header"
                 ),
                 successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Complete.Callout"
+                    for: $viewModel.errorMessage.wrappedValue ?? "Document.Complete.Callout"
                 ),
                 successIcon: SmileIDResourcesHelper.CheckBold,
                 errorTitle: SmileIDResourcesHelper.localizedString(for: "Document.Error.Header"),
