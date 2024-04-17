@@ -265,7 +265,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        jobStatusResponse _: JobStatusResponse<SmartSelfieJobResult>?
+        didSubmitSmartSelfieJob: Bool
     ) {
         successExpectation?.fulfill()
     }
