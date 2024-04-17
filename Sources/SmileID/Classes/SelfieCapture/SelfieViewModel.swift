@@ -357,16 +357,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     DispatchQueue.main.async { self.processingState = .error }
                 }
             } catch {
-                do {
-                    try LocalStorage.handleOfflineJobFailure(
-                        jobId: self.jobId,
-                        error: error
-                    )
-                } catch {
-                    print("Error moving job to submitted directory: \(error)")
-                    self.error = error
-                    return
-                }
                 didSubmitSmartSelfieJob = false
                 print("Error submitting job: \(error)")
                 self.error = error
