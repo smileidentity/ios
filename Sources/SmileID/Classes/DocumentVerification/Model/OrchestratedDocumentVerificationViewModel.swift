@@ -31,6 +31,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
     // UI properties
     @Published var acknowledgedInstructions = false
+    @Published var errorMessage: String?
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
     internal init(
@@ -206,9 +207,17 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     self.onError(error: error)
                     return
                 }
-                didSubmitJob = false
-                print("Error submitting job: \(error)")
-                self.onError(error: error)
+                if SmileID.allowOfflineMode && LocalStorage.isNetworkFailure(error: error) {
+                    didSubmitJob = true
+                    DispatchQueue.main.async {
+                        self.errorMessage = "Offline.Message"
+                        self.step = .processing(.success)
+                    }
+                } else {
+                    didSubmitJob = false
+                    print("Error submitting job: \(error)")
+                    self.onError(error: error)
+                }
             } catch {
                 didSubmitJob = false
                 print("Error submitting job: \(error)")

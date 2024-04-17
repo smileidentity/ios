@@ -20,6 +20,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     private var didSubmitBiometricJob: Bool = false
 
     // MARK: - UI Properties
+    @Published var errorMessage: String?
     @Published @MainActor private (set) var step: BiometricKycStep = .selfie
 
     init(
@@ -127,10 +128,18 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     self.error = error
                     return
                 }
-                didSubmitBiometricJob = false
-                print("Error submitting job: \(error)")
-                self.error = error
-                DispatchQueue.main.async { self.step = .processing(.error) }
+                if SmileID.allowOfflineMode && LocalStorage.isNetworkFailure(error: error) {
+                    didSubmitBiometricJob = true
+                    DispatchQueue.main.async {
+                        self.errorMessage = "Offline.Message"
+                        self.step = .processing(.success)
+                    }
+                } else {
+                    didSubmitBiometricJob = false
+                    print("Error submitting job: \(error)")
+                    self.error = error
+                    DispatchQueue.main.async { self.step = .processing(.error) }
+                }
             } catch {
                 didSubmitBiometricJob = false
                 print("Error submitting job: \(error)")

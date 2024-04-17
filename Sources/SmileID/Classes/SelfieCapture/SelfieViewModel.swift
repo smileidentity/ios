@@ -47,6 +47,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     // UI Properties
     @Published var directive: String = "Instructions.Start"
+    @Published var errorMessage: String?
     @Published var processingState: ProcessingState?
     @Published var selfieToConfirm: Data?
     @Published var captureProgress: Double = 0
@@ -346,10 +347,18 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     self.error = error
                     return
                 }
-                didSubmitSmartSelfieJob = false
-                print("Error submitting job: \(error)")
-                self.error = error
-                DispatchQueue.main.async { self.processingState = .error }
+                if SmileID.allowOfflineMode && LocalStorage.isNetworkFailure(error: error) {
+                    didSubmitSmartSelfieJob = true
+                    DispatchQueue.main.async {
+                        self.errorMessage = "Offline.Message"
+                        self.processingState = .success
+                    }
+                } else {
+                    didSubmitSmartSelfieJob = false
+                    print("Error submitting job: \(error)")
+                    self.error = error
+                    DispatchQueue.main.async { self.processingState = .error }
+                }
             } catch {
                 didSubmitSmartSelfieJob = false
                 print("Error submitting job: \(error)")

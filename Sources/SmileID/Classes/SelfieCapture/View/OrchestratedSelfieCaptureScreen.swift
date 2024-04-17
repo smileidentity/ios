@@ -58,7 +58,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     for: "Confirmation.SelfieCaptureComplete"
                 ),
                 successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.SuccessBody"
+                    for: $viewModel.errorMessage.wrappedValue ?? "Confirmation.SuccessBody"
                 ),
                 successIcon: SmileIDResourcesHelper.CheckBold,
                 errorTitle: SmileIDResourcesHelper.localizedString(
@@ -105,8 +105,8 @@ public struct OrchestratedSelfieCaptureScreen: View {
                 allowAgentMode: allowAgentMode,
                 viewModel: viewModel
             )
-                .onAppear { UIScreen.main.brightness = 1 }
-                .onDisappear { UIScreen.main.brightness = originalBrightness }
+            .onAppear { UIScreen.main.brightness = 1 }
+            .onDisappear { UIScreen.main.brightness = originalBrightness }
         }
     }
 }
