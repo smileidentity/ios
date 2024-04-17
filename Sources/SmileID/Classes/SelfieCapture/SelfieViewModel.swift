@@ -39,7 +39,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
     var selfieImage: URL?
     var livenessImages: [URL] = []
-    var jobStatusResponse: SmartSelfieJobStatusResponse?
+    internal var didSubmitSmartSelfieJob: Bool = false
     var error: Error?
 
     private let arKitFramePublisher = PassthroughSubject<CVPixelBuffer?, Never>()
@@ -72,7 +72,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.cameraManager.sampleBufferPublisher
             .merge(with: arKitFramePublisher)
             .throttle(for: 0.35, scheduler: DispatchQueue.global(qos: .userInitiated), latest: true)
-            // Drop the first ~2 seconds to allow the user to settle in
+        // Drop the first ~2 seconds to allow the user to settle in
             .dropFirst(5)
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
@@ -263,7 +263,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
         selfieImage = nil
         livenessImages = []
-        jobStatusResponse = nil
         shouldAnalyzeImages = true
     }
 
@@ -304,6 +303,16 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     jobId: jobId,
                     userId: userId
                 )
+                if SmileID.allowOfflineMode {
+                    try LocalStorage.saveOfflineJob(
+                        jobId: jobId,
+                        userId: userId,
+                        jobType: jobType,
+                        enrollment: isEnroll,
+                        allowNewEnroll: allowNewEnroll,
+                        partnerParams: extraPartnerParams
+                    )
+                }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
@@ -314,21 +323,11 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 let prepUploadResponse = try await SmileID.api.prepUpload(
                     request: prepUploadRequest
                 ).async()
-                let _ = try await SmileID.api.upload(
+                _ = try await SmileID.api.upload(
                     zip: zip,
                     to: prepUploadResponse.uploadUrl
                 ).async()
-                let jobStatusRequest = JobStatusRequest(
-                    userId: userId,
-                    jobId: jobId,
-                    includeImageLinks: false,
-                    includeHistory: false,
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                jobStatusResponse = try await SmileID.api.getJobStatus(
-                    request: jobStatusRequest
-                ).async()
+                didSubmitSmartSelfieJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
                 } catch {
@@ -336,17 +335,23 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     self.error = error
                 }
                 DispatchQueue.main.async { self.processingState = .success }
+            } catch let error as SmileIDError {
+                do {
+                    try LocalStorage.handleOfflineJobFailure(
+                        jobId: self.jobId,
+                        error: error
+                    )
+                } catch {
+                    print("Error moving job to submitted directory: \(error)")
+                    self.error = error
+                    return
+                }
+                didSubmitSmartSelfieJob = false
+                print("Error submitting job: \(error)")
+                self.error = error
+                DispatchQueue.main.async { self.processingState = .error }
             } catch {
-                let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
-                _ = try LocalStorage.saveOfflineJob(
-                    allowOfflineMode: SmileID.allowOfflineMode,
-                    jobId: jobId,
-                    userId: userId,
-                    jobType: jobType,
-                    enrollment: false,
-                    allowNewEnroll: allowNewEnroll,
-                    partnerParams: extraPartnerParams
-                )
+                didSubmitSmartSelfieJob = false
                 print("Error submitting job: \(error)")
                 self.error = error
                 DispatchQueue.main.async { self.processingState = .error }
@@ -359,7 +364,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             callback.didSucceed(
                 selfieImage: selfieImage,
                 livenessImages: livenessImages,
-                jobStatusResponse: jobStatusResponse
+                didSubmitSmartSelfieJob: self.didSubmitSmartSelfieJob
             )
         } else if let error {
             callback.didError(error: error)
