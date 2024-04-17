@@ -1,8 +1,8 @@
 import Foundation
 
 public enum SmartSelfieStatus: String, Codable {
-    case Approved = "approved"
-    case Pending = "pending"
-    case Rejected = "rejected"
-    case Unknown = "Unknown"
+    case approved = "approved"
+    case pending = "pending"
+    case rejected = "rejected"
+    case unknown = "Unknown"
 }
