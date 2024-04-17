@@ -61,6 +61,10 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
+    func sendMultipartRequest<T: Decodable>(responseModel: T.Type, data: Data?) async -> Result<T, Error> {
+
+    }
+
     private func mapToAPIError(_ error: Error) -> SmileIDError {
         if let decodingError = error as? DecodingError {
             return .decode(decodingError)

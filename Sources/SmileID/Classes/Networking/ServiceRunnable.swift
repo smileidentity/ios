@@ -97,6 +97,33 @@ extension ServiceRunnable {
             .eraseToAnyPublisher()
     }
 
+    func multipartRequest(
+        to url: String,
+        with restMethod: RestMethod
+    ) -> AnyPublisher<SmartSelfieResponse, Error> {
+        createMultipartRequest(
+            url: url,
+            method: restMethod
+        )
+    }
+
+    private func createMultipartRequest(
+        url: String,
+        method: RestMethod
+    ) -> AnyPublisher<RestRequest, Error> {
+        guard let url = URL(string: url) else {
+            return Fail(error: URLError(.badURL))
+                .eraseToAnyPublisher()
+        }
+        let request = RestRequest(
+            url: url,
+            method: method
+        )
+        return Just(request)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
     private func createRestRequest<T: Encodable>(
         path: PathType,
         method: RestMethod,
