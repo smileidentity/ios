@@ -65,7 +65,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     for: "Confirmation.Failure"
                 ),
                 errorSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.FailureReason"
+                    for: $viewModel.errorMessage.wrappedValue ?? "Confirmation.FailureReason"
                 ),
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(

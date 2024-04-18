@@ -73,7 +73,7 @@ struct OrchestratedBiometricKycScreen: View {
                     successIcon: SmileIDResourcesHelper.CheckBold,
                     errorTitle: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.Error.Title"),
                     errorSubtitle: SmileIDResourcesHelper.localizedString(
-                        for: "BiometricKYC.Error.Subtitle"
+                        for: $viewModel.errorMessage.wrappedValue ?? "BiometricKYC.Error.Subtitle"
                     ),
                     errorIcon: SmileIDResourcesHelper.Scan,
                     continueButtonText: SmileIDResourcesHelper.localizedString(
