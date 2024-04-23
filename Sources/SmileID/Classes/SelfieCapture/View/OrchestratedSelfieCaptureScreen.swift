@@ -29,7 +29,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
         self.onResult = onResult
-        self.viewModel = SelfieViewModel(
+        viewModel = SelfieViewModel(
             isEnroll: isEnroll,
             userId: userId,
             jobId: jobId,
@@ -40,7 +40,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
     }
 
     public var body: some View {
-        if showInstructions && !acknowledgedInstructions {
+        if showInstructions, !acknowledgedInstructions {
             SmartSelfieInstructionsScreen(showAttribution: showAttribution) {
                 acknowledgedInstructions = true
             }

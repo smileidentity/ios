@@ -8,6 +8,7 @@ internal enum BiometricKycStep {
 
 internal class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - Input Properties
+
     private let userId: String
     private let jobId: String
     private let allowNewEnroll: Bool
@@ -15,13 +16,15 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     private var idInfo: IdInfo
 
     // MARK: - Other Properties
+
     private var error: Error?
     private var selfieCaptureResultStore: SelfieCaptureResultStore?
     private var didSubmitBiometricJob: Bool = false
 
     // MARK: - UI Properties
+
     @Published var errorMessage: String?
-    @Published @MainActor private (set) var step: BiometricKycStep = .selfie
+    @Published @MainActor private(set) var step: BiometricKycStep = .selfie
 
     init(
         userId: String,
@@ -46,13 +49,13 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     func onFinished(delegate: BiometricKycResultDelegate) {
-        if let selfieCaptureResultStore = selfieCaptureResultStore {
+        if let selfieCaptureResultStore {
             delegate.didSucceed(
                 selfieImage: selfieCaptureResultStore.selfie,
                 livenessImages: selfieCaptureResultStore.livenessImages,
-                didSubmitBiometricJob: self.didSubmitBiometricJob
+                didSubmitBiometricJob: didSubmitBiometricJob
             )
-        } else if let error = error {
+        } else if let error {
             delegate.didError(error: error)
         } else {
             delegate.didError(error: SmileIDError.unknown("onFinish with no result or error"))
@@ -96,7 +99,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
-                    allowNewEnroll: String(allowNewEnroll), // TODO - Fix when Michael changes this to boolean
+                    allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
@@ -128,7 +131,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     self.error = error
                     return
                 }
-                if SmileID.allowOfflineMode && LocalStorage.isNetworkFailure(error: error) {
+                if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
                     didSubmitBiometricJob = true
                     DispatchQueue.main.async {
                         self.errorMessage = "Offline.Message"
@@ -154,13 +157,13 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        didSubmitSmartSelfieJob: Bool
+        didSubmitSmartSelfieJob _: Bool
     ) {
         selfieCaptureResultStore = SelfieCaptureResultStore(
             selfie: selfieImage,
             livenessImages: livenessImages
         )
-        if let selfieCaptureResultStore = selfieCaptureResultStore {
+        if let selfieCaptureResultStore {
             submitJob(selfieCaptureResultStore: selfieCaptureResultStore)
         } else {
             error = SmileIDError.unknown("Failed to save selfie capture result")
@@ -168,8 +171,8 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
         }
     }
 
-    func didError(error: Error) {
-        self.error = SmileIDError.unknown("Failed to capture selfie")
+    func didError(error _: Error) {
+        error = SmileIDError.unknown("Failed to capture selfie")
         DispatchQueue.main.async { self.step = .processing(.error) }
     }
 }

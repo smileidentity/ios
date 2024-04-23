@@ -52,14 +52,14 @@ public class LocalStorage {
         jobId: String,
         selfieFile data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: filename(for: FileType.selfie.name), file: data)
+        try createSmileFile(to: jobId, name: filename(for: FileType.selfie.name), file: data)
     }
 
     static func createLivenessFile(
         jobId: String,
         livenessFile data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: filename(for: FileType.liveness.name), file: data)
+        try createSmileFile(to: jobId, name: filename(for: FileType.liveness.name), file: data)
     }
 
     static func createDocumentFile(
@@ -67,7 +67,7 @@ public class LocalStorage {
         fileType: FileType,
         document data: Data
     ) throws -> URL {
-        return try createSmileFile(to: jobId, name: filename(for: fileType.name), file: data)
+        try createSmileFile(to: jobId, name: filename(for: fileType.name), file: data)
     }
 
     static func getFileByType(
@@ -95,29 +95,28 @@ public class LocalStorage {
         livenessImages: [URL]? = nil
     ) throws -> URL {
         var imageInfoArray = [UploadImageInfo]()
-        if let selfie = selfie {
+        if let selfie {
             imageInfoArray.append(UploadImageInfo(
                 imageTypeId: .selfieJpgFile,
                 fileName: selfie.lastPathComponent
             ))
-
         }
-        if let livenessImages = livenessImages {
+        if let livenessImages {
             let livenessImageInfos = livenessImages.map { liveness in
-                return UploadImageInfo(
+                UploadImageInfo(
                     imageTypeId: .livenessJpgFile,
                     fileName: liveness.lastPathComponent
                 )
             }
             imageInfoArray.append(contentsOf: livenessImageInfos)
         }
-        if let documentFront = documentFront {
+        if let documentFront {
             imageInfoArray.append(UploadImageInfo(
                 imageTypeId: .idCardJpgFile,
                 fileName: documentFront.lastPathComponent
             ))
         }
-        if let documentBack = documentBack {
+        if let documentBack {
             imageInfoArray.append(UploadImageInfo(
                 imageTypeId: .idCardRearJpgFile,
                 fileName: documentBack.lastPathComponent
@@ -281,10 +280,10 @@ public class LocalStorage {
         error: SmileIDError
     ) -> Bool {
         switch error {
-            case .httpError(_, _):
-                true
-            default:
-                false
+        case .httpError:
+            true
+        default:
+            false
         }
     }
 
@@ -323,7 +322,7 @@ public class LocalStorage {
     }
 
     static func deleteAll() throws {
-        if fileManager.fileExists(atPath: try defaultDirectory.relativePath) {
+        if try fileManager.fileExists(atPath: defaultDirectory.relativePath) {
             try fileManager.removeItem(atPath: defaultDirectory.relativePath)
         }
     }
