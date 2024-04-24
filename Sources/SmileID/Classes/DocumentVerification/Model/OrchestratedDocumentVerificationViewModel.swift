@@ -31,6 +31,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
     // UI properties
     @Published var acknowledgedInstructions = false
+    @Published var errorMessage: String?
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
     internal init(
@@ -76,7 +77,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     }
 
     func acknowledgeInstructions() {
-        self.acknowledgedInstructions = true
+        acknowledgedInstructions = true
     }
 
     func onError(error: Error) {
@@ -97,18 +98,18 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         }
     }
 
-    func onFinished(delegate: T) {
+    func onFinished(delegate _: T) {
         fatalError("Must override onFinished")
     }
 
     func submitJob() {
-        guard let documentFrontFile = documentFrontFile else {
+        guard let documentFrontFile else {
             // Set step to .frontDocumentCapture so that the Retry button goes back to this step
             step = .frontDocumentCapture
             onError(error: SmileIDError.unknown("Error getting document front file"))
             return
         }
-        guard let selfieFile = selfieFile else {
+        guard let selfieFile else {
             // Set step to .selfieCapture so that the Retry button goes back to this step
             step = .selfieCapture
             onError(error: SmileIDError.unknown("Error getting selfie file"))
@@ -128,7 +129,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 )
                 allFiles.append(contentsOf: [selfieFile, frontDocumentUrl])
                 var backDocumentUrl: URL?
-                if let documentBackFile = documentBackFile {
+                if let documentBackFile {
                     let url = try LocalStorage.createDocumentFile(
                         jobId: jobId,
                         fileType: FileType.documentBack,
@@ -137,7 +138,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     backDocumentUrl = url
                     allFiles.append(url)
                 }
-                if let livenessFiles = livenessFiles {
+                if let livenessFiles {
                     allFiles.append(contentsOf: livenessFiles)
                 }
                 let info = try LocalStorage.createInfoJsonFile(
@@ -177,7 +178,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
-                    allowNewEnroll: String(allowNewEnroll), // TODO - Fix when Michael changes this to boolean
+                    allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
@@ -206,9 +207,17 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     self.onError(error: error)
                     return
                 }
-                didSubmitJob = false
-                print("Error submitting job: \(error)")
-                self.onError(error: error)
+                if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
+                    didSubmitJob = true
+                    DispatchQueue.main.async {
+                        self.errorMessage = "Offline.Message"
+                        self.step = .processing(.success)
+                    }
+                } else {
+                    didSubmitJob = false
+                    print("Error submitting job: \(error)")
+                    self.onError(error: error)
+                }
             } catch {
                 didSubmitJob = false
                 print("Error submitting job: \(error)")
@@ -235,7 +244,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 }
 
 extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: URL, livenessImages: [URL], didSubmitSmartSelfieJob: Bool) {
+    func didSucceed(selfieImage: URL, livenessImages: [URL], didSubmitSmartSelfieJob _: Bool) {
         selfieFile = selfieImage
         livenessFiles = livenessImages
         submitJob()
@@ -246,18 +255,19 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
     }
 }
 
-// swiftlint:disable colon
+// swiftlint:disable opening_brace
 internal class OrchestratedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
+    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
+{
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
-        if let savedFiles = savedFiles {
+        if let savedFiles {
             delegate.didSucceed(
                 selfie: savedFiles.selfie,
                 documentFrontImage: savedFiles.documentFront,
                 documentBackImage: savedFiles.documentBack,
-                didSubmitDocumentVerificationJob: self.didSubmitJob
+                didSubmitDocumentVerificationJob: didSubmitJob
             )
-        } else if let error = error {
+        } else if let error {
             // We check error as the 2nd case because as long as jobStatusResponse is not nil, it
             // was a success
             delegate.didError(error: error)
@@ -267,19 +277,20 @@ internal class OrchestratedDocumentVerificationViewModel:
     }
 }
 
-// swiftlint:disable colon
+// swiftlint:disable opening_brace
 internal class OrchestratedEnhancedDocumentVerificationViewModel:
     // swiftlint:disable line_length
-    IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
+    IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult>
+{
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
-        if let savedFiles = savedFiles {
+        if let savedFiles {
             delegate.didSucceed(
                 selfie: savedFiles.selfie,
                 documentFrontImage: savedFiles.documentFront,
                 documentBackImage: savedFiles.documentBack,
-                didSubmitEnhancedDocVJob: self.didSubmitJob
+                didSubmitEnhancedDocVJob: didSubmitJob
             )
-        } else if let error = error {
+        } else if let error {
             // We check error as the 2nd case because as long as jobStatusResponse is not nil, it
             // was a success
             delegate.didError(error: error)

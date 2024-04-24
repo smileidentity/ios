@@ -29,7 +29,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
         self.onResult = onResult
-        self.viewModel = SelfieViewModel(
+        viewModel = SelfieViewModel(
             isEnroll: isEnroll,
             userId: userId,
             jobId: jobId,
@@ -40,7 +40,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
     }
 
     public var body: some View {
-        if showInstructions && !acknowledgedInstructions {
+        if showInstructions, !acknowledgedInstructions {
             SmartSelfieInstructionsScreen(showAttribution: showAttribution) {
                 acknowledgedInstructions = true
             }
@@ -58,14 +58,14 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     for: "Confirmation.SelfieCaptureComplete"
                 ),
                 successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.SuccessBody"
+                    for: $viewModel.errorMessage.wrappedValue ?? "Confirmation.SuccessBody"
                 ),
                 successIcon: SmileIDResourcesHelper.CheckBold,
                 errorTitle: SmileIDResourcesHelper.localizedString(
                     for: "Confirmation.Failure"
                 ),
                 errorSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.FailureReason"
+                    for: $viewModel.errorMessage.wrappedValue ?? "Confirmation.FailureReason"
                 ),
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(
@@ -105,8 +105,8 @@ public struct OrchestratedSelfieCaptureScreen: View {
                 allowAgentMode: allowAgentMode,
                 viewModel: viewModel
             )
-                .onAppear { UIScreen.main.brightness = 1 }
-                .onDisappear { UIScreen.main.brightness = originalBrightness }
+            .onAppear { UIScreen.main.brightness = 1 }
+            .onDisappear { UIScreen.main.brightness = originalBrightness }
         }
     }
 }

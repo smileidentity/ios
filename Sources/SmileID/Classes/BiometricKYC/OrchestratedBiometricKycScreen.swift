@@ -54,7 +54,7 @@ struct OrchestratedBiometricKycScreen: View {
                 skipApiSubmission: true,
                 onResult: viewModel
             )
-        case .processing(let state):
+        case let .processing(state):
             ProcessingScreen(
                 processingState: state,
                 inProgressTitle: SmileIDResourcesHelper.localizedString(
@@ -68,12 +68,12 @@ struct OrchestratedBiometricKycScreen: View {
                     for: "BiometricKYC.Success.Title"
                 ),
                 successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Success.Subtitle"
+                    for: $viewModel.errorMessage.wrappedValue ?? "BiometricKYC.Success.Subtitle"
                 ),
                 successIcon: SmileIDResourcesHelper.CheckBold,
                 errorTitle: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.Error.Title"),
                 errorSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Error.Subtitle"
+                    for: $viewModel.errorMessage.wrappedValue ?? "BiometricKYC.Error.Subtitle"
                 ),
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(
