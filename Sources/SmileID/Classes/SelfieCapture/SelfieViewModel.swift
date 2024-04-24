@@ -2,6 +2,7 @@ import ARKit
 import Combine
 import Foundation
 
+// swiftlint:disable opening_brace
 public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     // Constants
     private let intraImageMinDelay: TimeInterval = 0.35

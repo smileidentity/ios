@@ -255,7 +255,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
     }
 }
 
-// swiftlint:disable colon
+// swiftlint:disable opening_brace
 internal class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
@@ -277,7 +277,7 @@ internal class OrchestratedDocumentVerificationViewModel:
     }
 }
 
-// swiftlint:disable colon
+// swiftlint:disable opening_brace
 internal class OrchestratedEnhancedDocumentVerificationViewModel:
     // swiftlint:disable line_length
     IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult>
