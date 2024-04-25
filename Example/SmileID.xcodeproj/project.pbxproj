@@ -14,6 +14,7 @@
 		1E60ED3A2A29C306002695FF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED352A29C306002695FF /* AppDelegate.swift */; };
 		1E60ED3B2A29C306002695FF /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED362A29C306002695FF /* CopyableLabel.swift */; };
 		1EA026BC2B63F3390039B08D /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */; };
+		1EA322312BDA9A17002A9D87 /* HomeViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA322302BDA9A17002A9D87 /* HomeViewData.swift */; };
 		1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECAE3862A2F69BC00653FCA /* ToastView.swift */; };
 		1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F602A2F28590020BEFB /* HomeViewModel.swift */; };
 		1ED53F6B2A2F28590020BEFB /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F612A2F28590020BEFB /* ProductCell.swift */; };
@@ -76,6 +77,7 @@
 		1E60ED352A29C306002695FF /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E60ED362A29C306002695FF /* CopyableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
 		1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		1EA322302BDA9A17002A9D87 /* HomeViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HomeViewData.swift; path = SmileID/HomeViewData.swift; sourceTree = "<group>"; };
 		1ECAE3862A2F69BC00653FCA /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		1ED53F602A2F28590020BEFB /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		1ED53F612A2F28590020BEFB /* ProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
+				1EA322302BDA9A17002A9D87 /* HomeViewData.swift */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACD21AFB9204008FA782 /* Example */,
 				607FACE81AFB9204008FA782 /* Tests */,
@@ -562,6 +565,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1EA322312BDA9A17002A9D87 /* HomeViewData.swift in Sources */,
 				1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */,
 				1ED53F722A2F28590020BEFB /* SmileEnvironmentToggleButton.swift in Sources */,
 				1ED53F6C2A2F28590020BEFB /* RootView.swift in Sources */,

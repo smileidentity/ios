@@ -4,12 +4,13 @@ import SwiftUI
 struct HomeView: View {
     let version = SmileID.version
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
-    @State private var smartSelfieEnrollmentUserId: String = ""
     @ObservedObject var viewModel: HomeViewModel
+    @ObservedObject var homeViewData: HomeViewData
     @ObservedObject var networkMonitor = NetworkMonitor.shared
 
     init(config: Config) {
         viewModel = HomeViewModel(config: config)
+        homeViewData = HomeViewData()
     }
 
     var body: some View {
@@ -26,15 +27,15 @@ struct HomeView: View {
                             image: "smart_selfie_enroll",
                             name: "SmartSelfie™ Enrollment",
                             onClick: {
+                                homeViewData.smartSelfieEnrollmentUserId = generateUserId()
                                 viewModel.onProductClicked()
-                                smartSelfieEnrollmentUserId = generateUserId()
                             },
                             content: {
                                 SmileID.smartSelfieEnrollmentScreen(
-                                    userId: smartSelfieEnrollmentUserId,
+                                    userId: homeViewData.smartSelfieEnrollmentUserId,
                                     allowAgentMode: true,
                                     delegate: SmartSelfieEnrollmentDelegate(
-                                        userId: smartSelfieEnrollmentUserId,
+                                        userId: homeViewData.smartSelfieEnrollmentUserId,
                                         onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                                         onError: viewModel.didError
                                     )
@@ -49,7 +50,7 @@ struct HomeView: View {
                             },
                             content: {
                                 SmartSelfieAuthWithUserIdEntry(
-                                    initialUserId: smartSelfieEnrollmentUserId,
+                                    initialUserId: homeViewData.smartSelfieEnrollmentUserId,
                                     delegate: viewModel
                                 )
                             }
@@ -198,7 +199,8 @@ private struct EnhancedDocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides {
+           let captureBothSides
+        {
             SmileID.enhancedDocumentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
