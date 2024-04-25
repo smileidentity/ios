@@ -92,7 +92,7 @@ struct HomeView: View {
                             content: {
                                 EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                             }
-                        )
+                        ),
                     ].map { AnyView($0) }
                 )
 
@@ -170,7 +170,8 @@ private struct DocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides {
+           let captureBothSides
+        {
             SmileID.documentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
@@ -199,7 +200,8 @@ private struct EnhancedDocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides {
+           let captureBothSides
+        {
             SmileID.enhancedDocumentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
