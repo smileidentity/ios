@@ -159,10 +159,11 @@ public extension SmileIDServiceable {
         pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 
-    /// Polls the server for the status of a Enhanced Document Verification Job until it is complete. This should be called after
-    /// the  Job has been submitted to the server. The returned flow will be updated with every job
-    /// status response. The flow will complete when the job is complete, or the attempt limit is
-    /// reached. If any exceptions occur, only the last one will be thrown. If there is a successful
+    /// Polls the server for the status of a Enhanced Document Verification Job until it is complete.
+    ///  This should be called after the  Job has been submitted to the server. The returned flow will be
+    ///  updated with every job status response.
+    ///  The flow will complete when the job is complete, or the attempt limit is reached.
+    ///  If any exceptions occur, only the last one will be thrown. If there is a successful
     /// API response after an exception, the exception will be ignored.
     /// - Parameters:
     ///   - request: The JobStatus request to made
