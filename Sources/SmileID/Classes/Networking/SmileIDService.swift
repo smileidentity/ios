@@ -59,7 +59,7 @@ public protocol SmileIDServiceable {
     func submitBvnOtp(request: SubmitBvnTotpRequest) -> AnyPublisher<SubmitBvnTotpResponse, Error>
 }
 
-extension SmileIDServiceable {
+public extension SmileIDServiceable {
     /// Polls the server for the status of a Job until it is complete. This should be called after
     /// the  Job has been submitted to the server. The returned flow will be updated with every job
     /// status response. The flow will complete when the job is complete, or the attempt limit is
@@ -69,12 +69,11 @@ extension SmileIDServiceable {
     ///   - request: The JobStatus request to made
     ///   - interval: The time interval in seconds between each poll
     ///   - numAttempts: The maximum number of polls before ending the flow
-    public func pollJobStatus<T: JobResult>(
+    func pollJobStatus<T: JobResult>(
         request: JobStatusRequest,
-        interval: TimeInterval,
+        interval _: TimeInterval,
         numAttempts: Int
     ) -> AnyPublisher<JobStatusResponse<T>, Error> {
-
         var lastError: Error?
         var attemptCount = 0
 
@@ -107,6 +106,75 @@ extension SmileIDServiceable {
         }
 
         return makeRequest()
+    }
+
+    /// Polls the server for the status of a SmartSelfie Job until it is complete. This should be called after
+    /// the  Job has been submitted to the server. The returned flow will be updated with every job
+    /// status response. The flow will complete when the job is complete, or the attempt limit is
+    /// reached. If any exceptions occur, only the last one will be thrown. If there is a successful
+    /// API response after an exception, the exception will be ignored.
+    /// - Parameters:
+    ///   - request: The JobStatus request to made
+    ///   - interval: The time interval in seconds between each poll
+    ///   - numAttempts: The maximum number of polls before ending the flow
+    func pollSmartSelfieJobStatus(
+        request: JobStatusRequest,
+        interval: TimeInterval,
+        numAttempts: Int
+    ) -> AnyPublisher<SmartSelfieJobStatusResponse, Error> {
+        pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    }
+
+    /// Polls the server for the status of a Document Verification Job until it is complete. This should be called after
+    /// the  Job has been submitted to the server. The returned flow will be updated with every job
+    /// status response. The flow will complete when the job is complete, or the attempt limit is
+    /// reached. If any exceptions occur, only the last one will be thrown. If there is a successful
+    /// API response after an exception, the exception will be ignored.
+    /// - Parameters:
+    ///   - request: The JobStatus request to made
+    ///   - interval: The time interval in seconds between each poll
+    ///   - numAttempts: The maximum number of polls before ending the flow
+    func pollDocumentVerificationJobStatus(
+        request: JobStatusRequest,
+        interval: TimeInterval,
+        numAttempts: Int
+    ) -> AnyPublisher<DocumentVerificationJobStatusResponse, Error> {
+        pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    }
+
+    /// Polls the server for the status of a Biometric KYC Job until it is complete. This should be called after
+    /// the  Job has been submitted to the server. The returned flow will be updated with every job
+    /// status response. The flow will complete when the job is complete, or the attempt limit is
+    /// reached. If any exceptions occur, only the last one will be thrown. If there is a successful
+    /// API response after an exception, the exception will be ignored.
+    /// - Parameters:
+    ///   - request: The JobStatus request to made
+    ///   - interval: The time interval in seconds between each poll
+    ///   - numAttempts: The maximum number of polls before ending the flow
+    func pollBiometricKycJobStatus(
+        request: JobStatusRequest,
+        interval: TimeInterval,
+        numAttempts: Int
+    ) -> AnyPublisher<BiometricKycJobStatusResponse, Error> {
+        pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    }
+
+    /// Polls the server for the status of a Enhanced Document Verification Job until it is complete.
+    ///  This should be called after the  Job has been submitted to the server. The returned flow will be
+    ///  updated with every job status response.
+    ///  The flow will complete when the job is complete, or the attempt limit is reached.
+    ///  If any exceptions occur, only the last one will be thrown. If there is a successful
+    /// API response after an exception, the exception will be ignored.
+    /// - Parameters:
+    ///   - request: The JobStatus request to made
+    ///   - interval: The time interval in seconds between each poll
+    ///   - numAttempts: The maximum number of polls before ending the flow
+    func pollEnhancedDocumentVerificationJobStatus(
+        request: JobStatusRequest,
+        interval: TimeInterval,
+        numAttempts: Int
+    ) -> AnyPublisher<EnhancedDocumentVerificationJobStatusResponse, Error> {
+        pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 }
 
