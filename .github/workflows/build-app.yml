@@ -62,7 +62,7 @@ jobs:
 
 
       - name: Send Slack Notification
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@v1.26.0
         with:
           payload: |
             {
