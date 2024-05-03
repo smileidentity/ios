@@ -1,7 +1,8 @@
 # Release Notes
 
-## Unreleased
+## 10.0.12
 * Add PrivacyInfo Manifest
+* Added polling extensions for products
 
 ## 10.0.11
 
