@@ -27,6 +27,11 @@ protocol ServiceRunnable {
         to url: String,
         with restMethod: RestMethod
     ) -> AnyPublisher<UploadResponse, Error>
+
+    func multipart<U: Decodable>(
+        to path: PathType,
+        data: Data
+    ) -> AnyPublisher<U, Error>
 }
 
 extension ServiceRunnable {
@@ -97,17 +102,28 @@ extension ServiceRunnable {
             .eraseToAnyPublisher()
     }
 
-    func multipart(
+    func multipart<T: Decodable>(
         to path: PathType,
-        data: Data
-    ) -> AnyPublisher<SmartSelfieResponse, Error> {
+        selfieImage: Data,
+        livenessImages: [Data],
+        userId: String? = nil,
+        partnerParams: [String: String]? = nil,
+        callbackUrl: String? = nil,
+        sandboxResult: Int? = nil,
+        allowNewEnroll: Bool? = nil
+    ) -> AnyPublisher<T, Error> {
         let boundary = ProcessInfo.processInfo.globallyUniqueString
         createMultipartRequest(
             path: path,
             method: .post,
             headers: [.contentType(value: "multipart/form-data; boundary=\(boundary)")],
             boundary: boundary,
-            data: data
+            selfieImage: selfieImage,
+            livenessImages: livenessImages,
+            userId: userId,
+            partnerParams: partnerParams,
+            callbackUrl: callbackUrl,
+            sandboxResult: sandboxResult
         )
         .flatMap(serviceClient.multipart)
         .eraseToAnyPublisher()
@@ -117,8 +133,15 @@ extension ServiceRunnable {
         path: PathType,
         method: RestMethod,
         headers: [HTTPHeader]? = nil,
+        queryParameters: [HTTPQueryParameters]? = nil,
         boundary: String,
-        data: Data
+        selfieImage: Data,
+        livenessImages: [Data],
+        userId: String? = nil,
+        partnerParams: [String: String]? = nil,
+        callbackUrl: String? = nil,
+        sandboxResult: Int? = nil,
+        allowNewEnroll: Bool? = nil
     ) -> AnyPublisher<RestRequest, Error> {
         let path = String(describing: path)
         guard let url = baseURL?.appendingPathComponent(path) else {
@@ -129,8 +152,9 @@ extension ServiceRunnable {
             url: url,
             method: method,
             headers: headers,
+            queryParameters: queryParameters,
             body: createHttpBody(
-                binaryData: data,
+                binaryData: selfieImage,
                 mimeType: "image/jpeg",
                 boundary: boundary,
                 parameters: nil
