@@ -47,7 +47,7 @@ extension ServiceRunnable {
             headers: [.contentType(value: "application/json")],
             body: body
         )
-            .flatMap(serviceClient.send)
+        .flatMap(serviceClient.send)
             .eraseToAnyPublisher()
     }
 
@@ -97,27 +97,44 @@ extension ServiceRunnable {
             .eraseToAnyPublisher()
     }
 
-    func multipartRequest(
-        to url: String,
-        with restMethod: RestMethod
+    func multipart(
+        to path: PathType,
+        data: Data
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
+        let boundary = ProcessInfo.processInfo.globallyUniqueString
         createMultipartRequest(
-            url: url,
-            method: restMethod
+            path: path,
+            method: .post,
+            headers: [.contentType(value: "multipart/form-data; boundary=\(boundary)")],
+            boundary: boundary,
+            data: data
         )
+        .flatMap(serviceClient.multipart)
+        .eraseToAnyPublisher()
     }
 
     private func createMultipartRequest(
-        url: String,
-        method: RestMethod
+        path: PathType,
+        method: RestMethod,
+        headers: [HTTPHeader]? = nil,
+        boundary: String,
+        data: Data
     ) -> AnyPublisher<RestRequest, Error> {
-        guard let url = URL(string: url) else {
-            return Fail(error: URLError(.badURL))
-                .eraseToAnyPublisher()
+        let path = String(describing: path)
+        guard let url = baseURL?.appendingPathComponent(path) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
+
         let request = RestRequest(
             url: url,
-            method: method
+            method: method,
+            headers: headers,
+            body: createHttpBody(
+                binaryData: data,
+                mimeType: "image/jpeg",
+                boundary: boundary,
+                parameters: nil
+            )
         )
         return Just(request)
             .setFailureType(to: Error.self)
@@ -170,5 +187,34 @@ extension ServiceRunnable {
         return Just(request)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
+    }
+
+    private func createHttpBody(
+        binaryData: Data,
+        mimeType: String,
+        boundary: String,
+        parameters: [String:Any]?
+    ) -> Data {
+        let fieldName = "upload"
+        let fileName = "image.jpeg"
+        var postContent = "--\(boundary)\r\n"
+        postContent += "Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(fileName)\"\r\n"
+        postContent += "Content-Type: \(mimeType)\r\n\r\n"
+        var data = Data()
+        guard let postData = postContent.data(using: .utf8) else { return data }
+        data.append(postData)
+        data.append(binaryData)
+        if let parameters = parameters {
+            var content = ""
+            parameters.forEach {
+                content += "\r\n--\(boundary)\r\n"
+                content += "Content-Disposition: form-data; name=\"\($0.key)\"\r\n\r\n"
+                content += "\($0.value)"
+            }
+            if let postData = content.data(using: .utf8) { data.append(postData) }
+        }
+        guard let endData = "\r\n--\(boundary)--\r\n".data(using: .utf8) else { return data }
+        data.append(endData)
+        return data
     }
 }

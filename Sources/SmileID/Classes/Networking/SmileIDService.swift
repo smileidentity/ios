@@ -224,7 +224,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
-        multipartRequest(to: "/v2/smart-selfie-enroll", request: selfieImage, with: .post)
+        multipart(to: "/v2/smart-selfie-enroll", data: selfieImage)
     }
 
     public func doSmartSelfieAuthentication(
@@ -235,7 +235,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         callbackUrl: String? = nil,
         sandboxResult: Int? = nil
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
-        multipartRequest(to: "/v2/smart-selfie-authentication", request: selfieImage, with: .post)
+        multipart(to: "/v2/smart-selfie-authentication", data: selfieImage)
     }
 
     public func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error> {

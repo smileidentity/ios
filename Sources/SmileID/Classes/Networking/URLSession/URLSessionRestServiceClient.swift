@@ -61,8 +61,17 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    func sendMultipartRequest<T: Decodable>(responseModel: T.Type, data: Data?) async -> Result<T, Error> {
-
+    func multipart<T: Decodable>(request: RestRequest) -> AnyPublisher<T, Error> {
+        do {
+            let urlRequest = try request.getURLRequest()
+            return session.send(request: urlRequest)
+                .tryMap(checkStatusCode)
+                .decode(type: T.self, decoder: decoder)
+                .mapError(mapToAPIError)
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
     }
 
     private func mapToAPIError(_ error: Error) -> SmileIDError {
