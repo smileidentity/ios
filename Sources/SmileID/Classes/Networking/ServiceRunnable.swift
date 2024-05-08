@@ -17,6 +17,12 @@ protocol ServiceRunnable {
     ///   - path: Endpoint to execute the GET call.
     func get<U: Decodable>(to path: PathType) -> AnyPublisher<U, Error>
 
+    // POST service call to make a multipart request.
+    /// - Parameters:
+    ///   - path: Endpoint to execute the POST call.
+    ///   - body: The contents of the body of the mulitpart request.
+    func multipart<U: Decodable>(to path: PathType, with body: MultiPartRequest) -> AnyPublisher<U, Error>
+
     /// PUT service call to a particular path with a body.
     /// - Parameters:
     ///   - data: Data to be uploaded
@@ -27,11 +33,6 @@ protocol ServiceRunnable {
         to url: String,
         with restMethod: RestMethod
     ) -> AnyPublisher<UploadResponse, Error>
-
-    func multipart<U: Decodable>(
-        to path: PathType,
-        data: Data
-    ) -> AnyPublisher<U, Error>
 }
 
 extension ServiceRunnable {
@@ -52,7 +53,7 @@ extension ServiceRunnable {
             headers: [.contentType(value: "application/json")],
             body: body
         )
-        .flatMap(serviceClient.send)
+            .flatMap(serviceClient.send)
             .eraseToAnyPublisher()
     }
 
@@ -60,6 +61,20 @@ extension ServiceRunnable {
         createRestRequest(
             path: path,
             method: .get
+        )
+            .flatMap(serviceClient.send)
+            .eraseToAnyPublisher()
+    }
+
+    func multipart<U: Decodable>(
+        to path: PathType,
+        with body: MultiPartRequest
+    ) -> AnyPublisher<U, Error> {
+        createRestRequest(
+            path: path,
+            method: .post,
+            headers: [.contentType(value: "multipart/form-data; boundary=\(generateBoundary())")],
+            body: createMultiPartREquest(with: body, boundary: generateBoundary())
         )
             .flatMap(serviceClient.send)
             .eraseToAnyPublisher()
@@ -96,69 +111,6 @@ extension ServiceRunnable {
             method: method,
             headers: headers,
             body: uploadData
-        )
-        return Just(request)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-
-    func multipart<T: Decodable>(
-        to path: PathType,
-        selfieImage: Data,
-        livenessImages: [Data],
-        userId: String? = nil,
-        partnerParams: [String: String]? = nil,
-        callbackUrl: String? = nil,
-        sandboxResult: Int? = nil,
-        allowNewEnroll: Bool? = nil
-    ) -> AnyPublisher<T, Error> {
-        let boundary = ProcessInfo.processInfo.globallyUniqueString
-        createMultipartRequest(
-            path: path,
-            method: .post,
-            headers: [.contentType(value: "multipart/form-data; boundary=\(boundary)")],
-            boundary: boundary,
-            selfieImage: selfieImage,
-            livenessImages: livenessImages,
-            userId: userId,
-            partnerParams: partnerParams,
-            callbackUrl: callbackUrl,
-            sandboxResult: sandboxResult
-        )
-        .flatMap(serviceClient.multipart)
-        .eraseToAnyPublisher()
-    }
-
-    private func createMultipartRequest(
-        path: PathType,
-        method: RestMethod,
-        headers: [HTTPHeader]? = nil,
-        queryParameters: [HTTPQueryParameters]? = nil,
-        boundary: String,
-        selfieImage: Data,
-        livenessImages: [Data],
-        userId: String? = nil,
-        partnerParams: [String: String]? = nil,
-        callbackUrl: String? = nil,
-        sandboxResult: Int? = nil,
-        allowNewEnroll: Bool? = nil
-    ) -> AnyPublisher<RestRequest, Error> {
-        let path = String(describing: path)
-        guard let url = baseURL?.appendingPathComponent(path) else {
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
-        }
-
-        let request = RestRequest(
-            url: url,
-            method: method,
-            headers: headers,
-            queryParameters: queryParameters,
-            body: createHttpBody(
-                binaryData: selfieImage,
-                mimeType: "image/jpeg",
-                boundary: boundary,
-                parameters: nil
-            )
         )
         return Just(request)
             .setFailureType(to: Error.self)
@@ -213,32 +165,37 @@ extension ServiceRunnable {
             .eraseToAnyPublisher()
     }
 
-    private func createHttpBody(
-        binaryData: Data,
-        mimeType: String,
-        boundary: String,
-        parameters: [String:Any]?
+    func generateBoundary() -> String {
+        return ProcessInfo.processInfo.globallyUniqueString
+    }
+
+    func createMultiPartREquest(
+        with request: MultiPartRequest,
+        boundary: String
     ) -> Data {
-        let fieldName = "upload"
-        let fileName = "image.jpeg"
-        var postContent = "--\(boundary)\r\n"
-        postContent += "Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(fileName)\"\r\n"
-        postContent += "Content-Type: \(mimeType)\r\n\r\n"
-        var data = Data()
-        guard let postData = postContent.data(using: .utf8) else { return data }
-        data.append(postData)
-        data.append(binaryData)
-        if let parameters = parameters {
-            var content = ""
-            parameters.forEach {
-                content += "\r\n--\(boundary)\r\n"
-                content += "Content-Disposition: form-data; name=\"\($0.key)\"\r\n\r\n"
-                content += "\($0.value)"
+        let lineBreak = "\r\n"
+        var body = Data()
+
+        if let parameters = request.multiPartParams {
+            for (key, value) in parameters {
+                if let valueData = "\(value + lineBreak)".data(using: .utf8) {
+                    body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
+                    body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    body.append(valueData)
+                }
             }
-            if let postData = content.data(using: .utf8) { data.append(postData) }
         }
-        guard let endData = "\r\n--\(boundary)--\r\n".data(using: .utf8) else { return data }
-        data.append(endData)
-        return data
+
+        for item in request.multiPartMedia {
+            body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(item.key)\"; filename=\"\(item.filename)\"\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Type: \(item.mimeType + lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(item.data)
+            body.append(lineBreak.data(using: .utf8)!)
+        }
+
+        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
+
+        return body
     }
 }

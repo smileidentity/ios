@@ -126,6 +126,50 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
+    func doSmartSelfieEnrollment(request: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, any Error> {
+        if MockHelper.shouldFail {
+            let error = SmileIDError.request(URLError(.resourceUnavailable))
+            return Fail(error: error)
+                .eraseToAnyPublisher()
+        } else {
+            let response = SmartSelfieResponse(
+                code: "",
+                createdAt: "",
+                jobId: "",
+                jobType: JobTypeV2.smartSelfieEnrollment,
+                message: "", partnerId: "",
+                partnerParams: [:],
+                status: SmartSelfieStatus.approved,
+                updatedAt: "",
+                userId: ""
+            )
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    func doSmartSelfieAuthentication(request: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, any Error> {
+        if MockHelper.shouldFail {
+            let error = SmileIDError.request(URLError(.resourceUnavailable))
+            return Fail(error: error)
+                .eraseToAnyPublisher()
+        } else {
+            let response = SmartSelfieResponse(
+                code: "",
+                createdAt: "",
+                jobId: "",
+                jobType: JobTypeV2.smartSelfieAuthentication,
+                message: "", partnerId: "",
+                partnerParams: [:],
+                status: SmartSelfieStatus.approved,
+                updatedAt: "",
+                userId: ""
+            )
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
     func getJobStatus<T: JobResult>(
         request _: JobStatusRequest
     ) -> AnyPublisher<JobStatusResponse<T>, Error> {
