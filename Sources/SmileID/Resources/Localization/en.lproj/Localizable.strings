@@ -92,3 +92,5 @@
 "BiometricKYC.Success.Subtitle" = "You may now proceed";
 "BiometricKYC.Error.Title" = "Your submission failed to process";
 "BiometricKYC.Error.Subtitle" = "This could be because of image quality or internet connectivity";
+
+"Offline.Message" = "No internet connection. Your verification will be completed once you are back online";

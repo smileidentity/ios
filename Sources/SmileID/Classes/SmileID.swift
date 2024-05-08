@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.1.0"
+    public static let version = "10.1.1"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -22,6 +22,7 @@ public class SmileID {
 
     public private(set) static var config: Config!
     public private(set) static var useSandbox = false
+    public private(set) static var allowOfflineMode = true
     public private(set) static var callbackUrl: String = ""
     internal static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
@@ -62,6 +63,121 @@ public class SmileID {
     /// - Parameter useSandbox: A boolean to enable the sandbox environment or not
     public class func setEnvironment(useSandbox: Bool) {
         SmileID.useSandbox = useSandbox
+    }
+
+    /// Sets the state of offline mode for the SDK.
+    /// This function enables or disables the SDK's ability to operate in offline mode,
+    /// where it can continue functioning without an active internet connection. When offline mode
+    /// is enabled (allowOfflineMode = true), the SDK will attempt to use capture and cache
+    /// images in local file storage and will not attempt to submit the job. Conversely, when offline
+    /// mode is disabled (allowOfflineMode = false), the application will require an active internet
+    /// connection for all operations that involve data fetching or submission.
+    ///
+    /// - Parameter allowOfflineMode: A Boolean value indicating whether offline mode should
+    /// be enabled (true) or disabled (false).
+    public class func setAllowOfflineMode(allowOfflineMode: Bool) {
+        SmileID.allowOfflineMode = allowOfflineMode
+    }
+
+    /// Retrieves a list of unsubmitted job IDs.
+    public class func getUnsubmittedJobs() -> [String] {
+        LocalStorage.getUnsubmittedJobs()
+    }
+
+    /// Retrieves a list of submitted job IDs.
+    public class func getSubmittedJobs() -> [String] {
+        LocalStorage.getSubmittedJobs()
+    }
+
+    /// Initiates the cleanup process for a single job by its ID.
+    /// This is a convenience method that wraps the cleanup process, allowing for a single job ID
+    /// to be specified for cleanup.
+    ///
+    /// - Parameter jobId: the job IDs to clean up.
+    public class func cleanup(jobId: String) throws {
+        try cleanup(jobIds: [jobId])
+    }
+
+    ///  Initiates the cleanup process for multiple jobs by their IDs.
+    ///  If no IDs are provided, a default cleanup process is initiated that may target
+    ///  specific jobs based on the implementation in com.smileidentity.util.cleanup.
+    ///
+    /// - Parameter jobIds: An optional list of job IDs to clean up. If null, the method defaults
+    ///  to  a predefined cleanup process.
+    public class func cleanup(jobIds: [String]? = nil) throws {
+        if let jobIds {
+            try LocalStorage.delete(at: jobIds)
+        } else {
+            try LocalStorage.deleteAll()
+        }
+    }
+
+    /// Submits a previously captured job to SmileID for processing.
+    ///
+    /// - Parameters:
+    ///   - jobId: The unique identifier for the job to be submitted.
+    public class func submitJob(
+        jobId: String,
+        deleteFilesOnSuccess: Bool = true
+    ) throws {
+        let jobIds = LocalStorage.getUnsubmittedJobs()
+        if !jobIds.contains(jobId) {
+            throw SmileIDError.invalidJobId
+        }
+        guard let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId) else {
+            throw SmileIDError.fileNotFound("Authentication Request file is missing")
+        }
+        guard let prepUploadFile = try? LocalStorage.fetchPrepUploadFile(jobId: jobId) else {
+            throw SmileIDError.fileNotFound("Prep Upload file is missing")
+        }
+        Task {
+            let zip: Data
+            do {
+                let authRequest = AuthenticationRequest(
+                    jobType: authRequestFile.jobType,
+                    enrollment: authRequestFile.enrollment,
+                    jobId: authRequestFile.jobId,
+                    userId: authRequestFile.userId
+                )
+                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+                let prepUploadRequest = PrepUploadRequest(
+                    partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile.partnerParams.extras),
+                    allowNewEnroll: String(prepUploadFile.allowNewEnroll), // TODO - Fix when Michael changes this to boolean
+                    timestamp: authResponse.timestamp,
+                    signature: authResponse.signature
+                )
+                let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest).async()
+                let allFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: FileType.liveness)! + [
+                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie),
+                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
+                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack),
+                    try LocalStorage.getInfoJsonFile(jobId: jobId)
+                ].compactMap { $0 }
+                let zipUrl = try LocalStorage.zipFiles(at: allFiles)
+                zip = try Data(contentsOf: zipUrl)
+                _ = try await SmileID.api.upload(
+                    zip: zip,
+                    to: prepUploadResponse.uploadUrl
+                ).async()
+                if deleteFilesOnSuccess {
+                    do {
+                        try LocalStorage.delete(at: [jobId])
+                    } catch {
+                        print("Error deleting submitted job: \(error)")
+                    }
+                } else {
+                    do {
+                        try LocalStorage.moveToSubmittedJobs(jobId: jobId)
+                    } catch {
+                        print("Error moving job to submitted directory: \(error)")
+                    }
+                }
+                print("Upload finished")
+            } catch {
+                print("Error submitting job: \(error)")
+                throw error
+            }
+        }
     }
 
     /// Set the callback URL for all submitted jobs. If no value is set, the default callback URL

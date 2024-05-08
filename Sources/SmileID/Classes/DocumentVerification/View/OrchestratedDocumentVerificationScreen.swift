@@ -197,7 +197,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 skipApiSubmission: true,
                 onResult: viewModel
             )
-        case .processing(let state):
+        case let .processing(state):
             ProcessingScreen(
                 processingState: state,
                 inProgressTitle: SmileIDResourcesHelper.localizedString(
@@ -211,12 +211,12 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     for: "Document.Complete.Header"
                 ),
                 successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Complete.Callout"
+                    for: $viewModel.errorMessage.wrappedValue ?? "Document.Complete.Callout"
                 ),
                 successIcon: SmileIDResourcesHelper.CheckBold,
                 errorTitle: SmileIDResourcesHelper.localizedString(for: "Document.Error.Header"),
                 errorSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.FailureReason"
+                    for: $viewModel.errorMessage.wrappedValue ?? "Confirmation.FailureReason"
                 ),
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(
