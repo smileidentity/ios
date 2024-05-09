@@ -240,6 +240,7 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         extraPartnerParams: [String: String] = [:],
+        skipApiSubmission: Bool = false,
         delegate: SmartSelfieResultDelegate
     ) -> some View {
         OrchestratedSelfieCaptureScreen(
@@ -251,7 +252,7 @@ public class SmileID {
             showAttribution: showAttribution,
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: false,
+            skipApiSubmission: skipApiSubmission,
             onResult: delegate
         )
     }
