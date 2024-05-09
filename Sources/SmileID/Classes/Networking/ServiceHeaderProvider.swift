@@ -19,21 +19,6 @@ public class DefaultServiceHeaderProvider: ServiceHeaderProvider {
 
 }
 
-public class SmileHeaderAuthInterceptor: ServiceHeaderProvider {
-
-    init() {}
-    
-    func provide(request: RestRequest) -> [HTTPHeader]? {
-        var headers = request.headers ?? []
-        if request.body != nil {
-            headers.append(.partnerID(value: SmileID.config.partnerId))
-            headers.append(.requestSignature(value: ""))
-            headers.append(.timestamp(value: ""))
-        }
-        return headers
-    }
-}
-
 public class SmileHeaderMetadataProvider: ServiceHeaderProvider {
 
     init() {}

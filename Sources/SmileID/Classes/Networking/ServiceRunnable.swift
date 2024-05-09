@@ -67,14 +67,21 @@ extension ServiceRunnable {
     }
 
     func multipart<U: Decodable>(
+        signature: String,
+        timestamp: String,
         to path: PathType,
         with body: MultiPartRequest
     ) -> AnyPublisher<U, Error> {
+        var headers: [HTTPHeader] = []
+        headers.append(.contentType(value: "multipart/form-data; boundary=\(generateBoundary())"))
+        headers.append(.partnerID(value: SmileID.config.partnerId))
+        headers.append(.requestSignature(value: signature))
+        headers.append(.timestamp(value: timestamp))
         createRestRequest(
             path: path,
             method: .post,
-            headers: [.contentType(value: "multipart/form-data; boundary=\(generateBoundary())")],
-            body: createMultiPartREquest(with: body, boundary: generateBoundary())
+            headers: headers,
+            body: createMultiPartRequest(with: body, boundary: generateBoundary())
         )
             .flatMap(serviceClient.send)
             .eraseToAnyPublisher()
@@ -169,20 +176,54 @@ extension ServiceRunnable {
         return ProcessInfo.processInfo.globallyUniqueString
     }
 
-    func createMultiPartREquest(
+    func createMultiPartRequest(
         with request: MultiPartRequest,
         boundary: String
     ) -> Data {
         let lineBreak = "\r\n"
         var body = Data()
 
-        if let parameters = request.multiPartParams {
+        if let parameters = request.partnerParams {
             for (key, value) in parameters {
                 if let valueData = "\(value + lineBreak)".data(using: .utf8) {
                     body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
                     body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)".data(using: .utf8)!)
                     body.append(valueData)
                 }
+            }
+        }
+
+        if let userId = request.userId {
+            if let valueData = "\(userId + lineBreak)".data(using: .utf8) {
+                body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"userId\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(valueData)
+            }
+        }
+
+        if let callbackUrl = request.callbackUrl {
+            if let valueData = "\(callbackUrl + lineBreak)".data(using: .utf8) {
+                body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"callbackUrl\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(valueData)
+            }
+        }
+
+        if let sandboxResult = request.sandboxResult {
+            let sandboxResultString = "\(sandboxResult)"
+            if let valueData = "\(sandboxResultString + lineBreak)".data(using: .utf8) {
+                body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"sandboxResult\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(valueData)
+            }
+        }
+
+        if let allowNewEnroll = request.allowNewEnroll {
+            let allowNewEnrollString = "\(allowNewEnroll)"
+            if let valueData = "\(allowNewEnrollString + lineBreak)".data(using: .utf8) {
+                body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"allowNewEnroll\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(valueData)
             }
         }
 
