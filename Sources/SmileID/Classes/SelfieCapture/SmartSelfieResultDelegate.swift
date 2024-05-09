@@ -6,11 +6,13 @@ public protocol SmartSelfieResultDelegate {
     /// - Parameters:
     ///   - selfieImage: The local url of the colour selfie image captured
     ///   - livenessImages: An array of local urls of images captured for liveness checks
-    ///   - didSubmitSmartSelfieJob: Indicates whether the job was submitted to the SmileID backend (e.g. it would be false in offline mode)
+    ///   - apiResponse: The response from the REST API. This will be null if offline mode is
+    ///   enabled and the network request failed. In that case, you must use [SmileID.submitJob]
+    ///   to submit the job to the SmileID API when internet connectivity is restored.
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        didSubmitSmartSelfieJob: Bool
+        apiResponse: SmartSelfieResponse?
     )
 
     /// An error occurred during the selfie capture session

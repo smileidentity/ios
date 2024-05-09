@@ -14,9 +14,11 @@ struct MultiPartMedia: Encodable {
     }
 }
 
-typealias MultiPartParameters = [String: String]
-
 public struct MultiPartRequest: Encodable {
     let multiPartMedia: [MultiPartMedia]
-    let multiPartParams: MultiPartParameters?
+    let userId: String? = nil
+    let callbackUrl: String? = nil
+    let sandboxResult: Int? = nil
+    let allowNewEnroll: Bool? = nil
+    let partnerParams: [String: String]? = nil
 }
