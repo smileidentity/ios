@@ -201,15 +201,19 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     }
 
     public func doSmartSelfieEnrollment(
+        signature: String,
+        timestamp: String,
         request: MultiPartRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
-        multipart(to: "/v2/smart-selfie-enroll", with: request)
+        multipart(signature: signature, timestamp: timestamp, to: "/v2/smart-selfie-enroll", with: request)
     }
 
     public func doSmartSelfieAuthentication(
+        signature: String,
+        timestamp: String,
         request: MultiPartRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
-        multipart(to: "/v2/smart-selfie-enroll", with: request)
+        multipart(signature: signature, timestamp: timestamp, to: "/v2/smart-selfie-enroll", with: request)
     }
 
     public func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error> {
