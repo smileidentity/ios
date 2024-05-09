@@ -21,7 +21,12 @@ protocol ServiceRunnable {
     /// - Parameters:
     ///   - path: Endpoint to execute the POST call.
     ///   - body: The contents of the body of the mulitpart request.
-    func multipart<U: Decodable>(to path: PathType, with body: MultiPartRequest) -> AnyPublisher<U, Error>
+    func multipart<U: Decodable>(
+        signature: String,
+        timestamp: String,
+        to path: PathType,
+        with body: MultiPartRequest
+    ) -> AnyPublisher<U, Error>
 
     /// PUT service call to a particular path with a body.
     /// - Parameters:

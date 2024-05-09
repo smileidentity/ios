@@ -15,11 +15,19 @@ public protocol SmileIDServiceable {
 
     /// Perform a synchronous SmartSelfie Enrollment. The response will include the final result of
     /// the enrollment.
-    func doSmartSelfieEnrollment(request: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, Error>
+    func doSmartSelfieEnrollment(
+        signature: String,
+        timestamp: String,
+        request: MultiPartRequest
+    ) -> AnyPublisher<SmartSelfieResponse, Error>
 
     /// Perform a synchronous SmartSelfie Authentication. The response will include the final result
     /// of the authentication.
-    func doSmartSelfieAuthentication(request: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, Error>
+    func doSmartSelfieAuthentication(
+        signature: String,
+        timestamp: String,
+        request: MultiPartRequest
+    ) -> AnyPublisher<SmartSelfieResponse, Error>
 
     /// Query the Identity Information of an individual using their ID number from a supported ID
     /// Type. Return the personal information of the individual found in the database of the ID
