@@ -4,7 +4,7 @@
 
 #### Fixed
 
-* partner params duplicate keys error from user_id, job_id and job_type
+* Ignore `user_id`, `job_id`, and `job_type` fields in `extraPartnerParams`
 
 ## 10.1.1
 
