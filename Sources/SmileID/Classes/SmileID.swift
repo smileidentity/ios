@@ -9,7 +9,7 @@ public class SmileID {
 
     public static var api: SmileIDServiceable { SmileID.instance.injectedApi }
 
-    internal static let instance: SmileID = {
+    static let instance: SmileID = {
         let container = DependencyContainer.shared
         container.register(SmileIDServiceable.self) { SmileIDService() }
         container.register(RestServiceClient.self) { URLSessionRestServiceClient() }
@@ -24,9 +24,9 @@ public class SmileID {
     public private(set) static var useSandbox = false
     public private(set) static var allowOfflineMode = true
     public private(set) static var callbackUrl: String = ""
-    internal static var apiKey: String?
+    static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
-    internal private(set) static var localizableStrings: SmileIDLocalizableStrings?
+    private(set) static var localizableStrings: SmileIDLocalizableStrings?
 
     /// This method initializes SmileID. Invoke this method once in your application lifecycle
     /// before calling any other SmileID methods.
@@ -142,16 +142,16 @@ public class SmileID {
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile.partnerParams.extras),
-                    allowNewEnroll: String(prepUploadFile.allowNewEnroll), // TODO - Fix when Michael changes this to boolean
+                    allowNewEnroll: String(prepUploadFile.allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
                 let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest).async()
                 let allFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: FileType.liveness)! + [
-                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie),
-                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
-                    try LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack),
-                    try LocalStorage.getInfoJsonFile(jobId: jobId)
+                    LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie),
+                    LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
+                    LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack),
+                    LocalStorage.getInfoJsonFile(jobId: jobId),
                 ].compactMap { $0 }
                 let zipUrl = try LocalStorage.zipFiles(at: allFiles)
                 zip = try Data(contentsOf: zipUrl)
