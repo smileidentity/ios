@@ -1,4 +1,5 @@
 PODS:
+  - lottie-ios (4.4.3)
   - netfox (1.21.0)
   - Sentry (8.20.0):
     - Sentry/Core (= 8.20.0)
@@ -6,7 +7,8 @@ PODS:
   - Sentry/Core (8.20.0):
     - SentryPrivate (= 8.20.0)
   - SentryPrivate (8.20.0)
-  - SmileID (10.0.10):
+  - SmileID (10.1.2):
+    - lottie-ios (~> 4.4.2)
     - Zip (~> 2.1.0)
   - SwiftLint (0.54.0)
   - Zip (2.1.2)
@@ -19,6 +21,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - lottie-ios
     - netfox
     - Sentry
     - SentryPrivate
@@ -30,10 +33,11 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
+  lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
   Sentry: a8d7b373b9f9868442b02a0c425192f693103cbf
   SentryPrivate: 006b24af16828441f70e2ab6adf241bd0a8ad130
-  SmileID: ffaa1eab202cb9c402ade1cc66ceaf5a2c99c686
+  SmileID: 21923d7c669ec701c35580ab4e401ad76f83fade
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 

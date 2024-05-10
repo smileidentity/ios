@@ -64,7 +64,9 @@ extension PartnerParams {
         // Encode extras directly at the root level
         if let extras = extras {
             for (key, value) in extras {
-                try container.encode(value, forKey: .init(stringValue: key)!)
+                if key != "job_id" && key != "user_id" && key != "job_type" {
+                    try container.encode(value, forKey: .init(stringValue: key)!)
+                }
             }
         }
     }
