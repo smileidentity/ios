@@ -34,11 +34,13 @@ struct HomeView: View {
                                 SmileID.smartSelfieEnrollmentScreen(
                                     userId: homeViewData.smartSelfieEnrollmentUserId,
                                     allowAgentMode: true,
+                                    extraPartnerParams : ["userID": "testing"],
                                     delegate: SmartSelfieEnrollmentDelegate(
                                         userId: homeViewData.smartSelfieEnrollmentUserId,
                                         onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                                         onError: viewModel.didError
                                     )
+                        
                                 )
                             }
                         ),

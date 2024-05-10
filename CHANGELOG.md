@@ -1,5 +1,11 @@
 # Release Notes
 
+## 10.1.2
+
+#### Fixed
+
+* partner params duplicate keys error from user_id, job_id and job_type
+
 ## 10.1.1
 
 #### Added
