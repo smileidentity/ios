@@ -1,4 +1,5 @@
 import Foundation
+import SmileID
 import SwiftUI
 
 func openUrl(_ urlString: String) {
@@ -11,7 +12,8 @@ func openUrl(_ urlString: String) {
 
 func jobResultMessageBuilder(
     jobName: String,
-    didSubmitJob: Bool?,
+    didSubmitJob: Bool? = nil,
+    apiResponse _: SmartSelfieResponse? = nil,
     suffix: String? = nil
 ) -> String {
     var message = "\(jobName) "
@@ -20,7 +22,7 @@ func jobResultMessageBuilder(
     } else {
         message += "saved offline"
     }
-    if let suffix = suffix {
+    if let suffix {
         message += ". \(suffix)"
     }
     return message
