@@ -257,7 +257,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 
 // swiftlint:disable opening_brace
 internal class OrchestratedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> 
+    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles {
