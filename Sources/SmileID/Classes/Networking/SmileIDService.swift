@@ -221,7 +221,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         timestamp: String,
         request: MultiPartRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
-        multipart(signature: signature, timestamp: timestamp, to: "/v2/smart-selfie-enroll", with: request)
+        multipart(signature: signature, timestamp: timestamp, to: "/v2/smart-selfie-authentication", with: request)
     }
 
     public func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error> {

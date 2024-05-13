@@ -8,17 +8,17 @@ struct MultiPartMedia: Encodable {
 
     init?(withImage image: Data, forKey key: String, forName name: String) {
         self.key = key
-        self.mimeType = "image/jpeg"
-        self.filename = name
-        self.data = image
+        mimeType = "image/jpeg"
+        filename = name
+        data = image
     }
 }
 
 public struct MultiPartRequest: Encodable {
     let multiPartMedia: [MultiPartMedia]
-    let userId: String? = nil
-    let callbackUrl: String? = nil
-    let sandboxResult: Int? = nil
-    let allowNewEnroll: Bool? = nil
-    let partnerParams: [String: String]? = nil
+    var userId: String? = nil
+    var callbackUrl: String? = nil
+    var sandboxResult: Int? = nil
+    var allowNewEnroll: Bool? = nil
+    var partnerParams: [String: String]? = nil
 }

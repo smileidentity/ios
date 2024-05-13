@@ -307,50 +307,47 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
 
                 var imageInfoArray = [MultiPartMedia]()
-                if let selfieImage = selfieImage {
-                    if let selfie = try? Data(contentsOf: selfieImage) {
-                        imageInfoArray.append(
-                            MultiPartMedia(
-                                withImage: selfie,
-                                forKey: selfieImage.lastPathComponent,
-                                forName: selfieImage.lastPathComponent
-                            )
-                        )
-                    }
+                if let selfie = try? Data(contentsOf: selfieImage), let media = MultiPartMedia(
+                    withImage: selfie,
+                    forKey: selfieImage.lastPathComponent,
+                    forName: selfieImage.lastPathComponent
+                ) {
+                    imageInfoArray.append(media)
                 }
-                if let livenessImages {
-                    let livenessImageInfos = livenessImages.map { liveness in
-                        MultiPartMedia(
-                            withImage: try Data(contentsOf: liveness),
-                            forKey: liveness.lastPathComponent,
-                            forName: liveness.lastPathComponent
-                        )
+                if !livenessImages.isEmpty {
+                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultiPartMedia? in
+                        if let data = try? Data(contentsOf: liveness) {
+                            return MultiPartMedia(withImage: data, forKey: liveness.lastPathComponent, forName: liveness.lastPathComponent)
+                        }
+                        return nil
                     }
-                    imageInfoArray.append(contentsOf: livenessImageInfos)
+
+                    imageInfoArray.append(contentsOf: livenessImageInfos.compactMap { $0 })
                 }
-                let apiResponse = if (allowNewEnroll) {
-                    SmileID.api.doSmartSelfieEnrollment(
-                        signature: authResponse.signature,
-                        timestamp: authResponse.signature,
-                        request: MultiPartRequest(
-                            multiPartMedia: imageInfoArray, 
-                            userId = userId,
-                            allowNewEnroll = allowNewEnroll
-//                            partnerParams = extraPartnerParams
-                        )
-                    )
-                } else {
-                    SmileID.api.doSmartSelfieEnrollment(
+                let response = if allowNewEnroll {
+                    try await SmileID.api.doSmartSelfieEnrollment(
                         signature: authResponse.signature,
                         timestamp: authResponse.signature,
                         request: MultiPartRequest(
                             multiPartMedia: imageInfoArray,
-                            userId = userId
-//                            partnerParams = extraPartnerParams
+                            userId: userId,
+                            allowNewEnroll: allowNewEnroll,
+                            partnerParams: extraPartnerParams
                         )
-                    )
+                    ).async()
+                } else {
+                    try await SmileID.api.doSmartSelfieEnrollment(
+                        signature: authResponse.signature,
+                        timestamp: authResponse.signature,
+                        request: MultiPartRequest(
+                            multiPartMedia: imageInfoArray,
+                            userId: userId,
+                            allowNewEnroll: allowNewEnroll,
+                            partnerParams: extraPartnerParams
+                        )
+                    ).async()
                 }
-
+                apiResponse = response
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
                 } catch {

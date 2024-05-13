@@ -126,7 +126,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func doSmartSelfieEnrollment(request: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, any Error> {
+    func doSmartSelfieEnrollment(signature _: String, timestamp _: String, request _: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, any Error> {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)
@@ -148,7 +148,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func doSmartSelfieAuthentication(request: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, any Error> {
+    func doSmartSelfieAuthentication(signature _: String, timestamp _: String, request _: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, any Error> {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)
@@ -205,7 +205,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     func getProductsConfig(
-        request: ProductsConfigRequest
+        request _: ProductsConfigRequest
     ) -> AnyPublisher<ProductsConfigResponse, Error> {
         var response: ProductsConfigResponse
         do {
@@ -233,7 +233,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     func getValidDocuments(
-        request: ProductsConfigRequest
+        request _: ProductsConfigRequest
     ) -> AnyPublisher<ValidDocumentsResponse, Error> {
         let response = ValidDocumentsResponse(validDocuments: [ValidDocument]())
         if MockHelper.shouldFail {
@@ -246,7 +246,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     public func requestBvnTotpMode(
-        request: BvnTotpRequest
+        request _: BvnTotpRequest
     ) -> AnyPublisher<BvnTotpResponse, Error> {
         let response = BvnTotpResponse(
             success: true,
@@ -266,7 +266,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     public func requestBvnOtp(
-        request: BvnTotpModeRequest
+        request _: BvnTotpModeRequest
     ) -> AnyPublisher<BvnTotpModeResponse, Error> {
         let response = BvnTotpModeResponse(
             success: true,
@@ -284,7 +284,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     public func submitBvnOtp(
-        request: SubmitBvnTotpRequest
+        request _: SubmitBvnTotpRequest
     ) -> AnyPublisher<SubmitBvnTotpResponse, Error> {
         let response = SubmitBvnTotpResponse(
             success: true,
@@ -309,7 +309,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        didSubmitSmartSelfieJob: Bool
+        apiResponse _: SmartSelfieResponse?
     ) {
         successExpectation?.fulfill()
     }

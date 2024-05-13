@@ -5,7 +5,6 @@ protocol ServiceHeaderProvider {
 }
 
 public class DefaultServiceHeaderProvider: ServiceHeaderProvider {
-
     init() {}
 
     func provide(request: RestRequest) -> [HTTPHeader]? {
@@ -16,25 +15,9 @@ public class DefaultServiceHeaderProvider: ServiceHeaderProvider {
         }
         return headers
     }
-
-}
-
-public class SmileHeaderMetadataProvider: ServiceHeaderProvider {
-
-    init() {}
-
-    func provide(request: RestRequest) -> [HTTPHeader]? {
-        var headers = request.headers ?? []
-        if request.body != nil {
-            headers.append(.sourceSDK(value: "iOS"))
-            headers.append(.sourceSDKVersion(value: SmileID.version))
-        }
-        return headers
-    }
 }
 
 public extension HTTPHeader {
-
     static func contentType(value: String) -> HTTPHeader {
         HTTPHeader(name: "Content-Type", value: value)
     }
@@ -58,5 +41,4 @@ public extension HTTPHeader {
     static func sourceSDKVersion(value: String) -> HTTPHeader {
         HTTPHeader(name: "SmileID-Source-SDK-Version", value: value)
     }
-
 }

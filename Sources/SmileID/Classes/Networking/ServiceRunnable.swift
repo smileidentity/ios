@@ -21,12 +21,12 @@ protocol ServiceRunnable {
     /// - Parameters:
     ///   - path: Endpoint to execute the POST call.
     ///   - body: The contents of the body of the mulitpart request.
-    func multipart<U: Decodable>(
+    func multipart(
         signature: String,
         timestamp: String,
         to path: PathType,
         with body: MultiPartRequest
-    ) -> AnyPublisher<U, Error>
+    ) -> AnyPublisher<SmartSelfieResponse, Error>
 
     /// PUT service call to a particular path with a body.
     /// - Parameters:
@@ -58,8 +58,8 @@ extension ServiceRunnable {
             headers: [.contentType(value: "application/json")],
             body: body
         )
-            .flatMap(serviceClient.send)
-            .eraseToAnyPublisher()
+        .flatMap(serviceClient.send)
+        .eraseToAnyPublisher()
     }
 
     func get<U: Decodable>(to path: PathType) -> AnyPublisher<U, Error> {
@@ -67,28 +67,60 @@ extension ServiceRunnable {
             path: path,
             method: .get
         )
-            .flatMap(serviceClient.send)
-            .eraseToAnyPublisher()
+        .flatMap(serviceClient.send)
+        .eraseToAnyPublisher()
     }
 
-    func multipart<U: Decodable>(
+    func multipart(
         signature: String,
         timestamp: String,
         to path: PathType,
         with body: MultiPartRequest
-    ) -> AnyPublisher<U, Error> {
+    ) -> AnyPublisher<SmartSelfieResponse, Error> {
         var headers: [HTTPHeader] = []
         headers.append(.contentType(value: "multipart/form-data; boundary=\(generateBoundary())"))
         headers.append(.partnerID(value: SmileID.config.partnerId))
         headers.append(.requestSignature(value: signature))
         headers.append(.timestamp(value: timestamp))
-        createRestRequest(
-            path: path,
+        return createMultiPartRequest(
+            url: path,
             method: .post,
             headers: headers,
-            body: createMultiPartRequest(with: body, boundary: generateBoundary())
+            uploadData: createMultiPartRequest(
+                with: body,
+                boundary: generateBoundary())
         )
-            .flatMap(serviceClient.send)
+        .flatMap(serviceClient.multipart)
+        .eraseToAnyPublisher()
+    }
+
+    private func createMultiPartRequest(
+        url: PathType,
+        method: RestMethod,
+        headers: [HTTPHeader]? = nil,
+        uploadData: Data
+    ) -> AnyPublisher<RestRequest, Error> {
+        let path = String(describing: url)
+        guard var baseURL = baseURL?.absoluteString else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+
+        if let range = baseURL.range(of: "/v1/", options: .backwards) {
+            baseURL.removeSubrange(range)
+        }
+
+        guard let url = URL(string: baseURL)?.appendingPathComponent(path) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+
+        let request = RestRequest(
+            url: url,
+            method: method,
+            headers: headers,
+            body: uploadData
+        )
+        return Just(request)
+            .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
 
@@ -103,8 +135,8 @@ extension ServiceRunnable {
             headers: [.contentType(value: "application/zip")],
             uploadData: data
         )
-            .flatMap { serviceClient.upload(request: $0) }
-            .eraseToAnyPublisher()
+        .flatMap { serviceClient.upload(request: $0) }
+        .eraseToAnyPublisher()
     }
 
     private func createUploadRequest(

@@ -14,7 +14,6 @@ public class SmileID {
         container.register(SmileIDServiceable.self) { SmileIDService() }
         container.register(RestServiceClient.self) { URLSessionRestServiceClient() }
         container.register(ServiceHeaderProvider.self) { DefaultServiceHeaderProvider() }
-        container.register(ServiceHeaderProvider.self) { SmileHeaderMetadataProvider() }
         let instance = SmileID()
         return instance
     }()
