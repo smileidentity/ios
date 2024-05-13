@@ -231,6 +231,7 @@ public class SmileID {
     ///     screen
     ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
     ///   - extraPartnerParams: Custom values specific to partners
+    ///   - skipApiSubmission: Whether to skip submitting the captured selfie data to the server
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
     public class func smartSelfieEnrollmentScreen(
         userId: String = generateUserId(),
