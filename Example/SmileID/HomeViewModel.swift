@@ -10,8 +10,7 @@ class HomeViewModel: ObservableObject,
     DocumentVerificationResultDelegate,
     EnhancedDocumentVerificationResultDelegate,
     EnhancedKycResultDelegate,
-    BiometricKycResultDelegate
-{
+    BiometricKycResultDelegate {
     // MARK: - UI Properties
 
     @Published var dismissed = false

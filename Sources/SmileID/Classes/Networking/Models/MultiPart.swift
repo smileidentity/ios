@@ -16,9 +16,9 @@ struct MultiPartMedia: Encodable {
 
 public struct MultiPartRequest: Encodable {
     let multiPartMedia: [MultiPartMedia]
-    var userId: String? = nil
-    var callbackUrl: String? = nil
-    var sandboxResult: Int? = nil
-    var allowNewEnroll: Bool? = nil
-    var partnerParams: [String: String]? = nil
+    var userId: String?
+    var callbackUrl: String?
+    var sandboxResult: Int?
+    var allowNewEnroll: Bool?
+    var partnerParams: [String: String]?
 }

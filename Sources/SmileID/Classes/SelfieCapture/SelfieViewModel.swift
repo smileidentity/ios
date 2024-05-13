@@ -317,7 +317,11 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 if !livenessImages.isEmpty {
                     let livenessImageInfos = livenessImages.compactMap { liveness -> MultiPartMedia? in
                         if let data = try? Data(contentsOf: liveness) {
-                            return MultiPartMedia(withImage: data, forKey: liveness.lastPathComponent, forName: liveness.lastPathComponent)
+                            return MultiPartMedia(
+                                withImage: data,
+                                forKey: liveness.lastPathComponent,
+                                forName: liveness.lastPathComponent
+                            )
                         }
                         return nil
                     }

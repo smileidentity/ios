@@ -126,7 +126,11 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func doSmartSelfieEnrollment(signature _: String, timestamp _: String, request _: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, any Error> {
+    func doSmartSelfieEnrollment(
+        signature _: String,
+        timestamp _: String,
+        request _: MultiPartRequest
+    ) -> AnyPublisher<SmartSelfieResponse, any Error> {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)
@@ -148,7 +152,11 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func doSmartSelfieAuthentication(signature _: String, timestamp _: String, request _: MultiPartRequest) -> AnyPublisher<SmartSelfieResponse, any Error> {
+    func doSmartSelfieAuthentication(
+        signature _: String,
+        timestamp _: String,
+        request _: MultiPartRequest
+    ) -> AnyPublisher<SmartSelfieResponse, any Error> {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)
