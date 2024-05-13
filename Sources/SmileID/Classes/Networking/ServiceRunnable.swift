@@ -213,6 +213,7 @@ extension ServiceRunnable {
         return ProcessInfo.processInfo.globallyUniqueString
     }
 
+    // swiftlint:disable line_length cyclomatic_complexity
     func createMultiPartRequest(
         with request: MultiPartRequest,
         boundary: String
