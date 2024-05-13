@@ -19,7 +19,7 @@ struct HomeView: View {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
-                
+
                 MyVerticalGrid(
                     maxColumns: 2,
                     items: [
@@ -92,7 +92,7 @@ struct HomeView: View {
                             content: {
                                 EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                             }
-                        )
+                        ),
                     ].map { AnyView($0) }
                 )
 
@@ -170,7 +170,8 @@ private struct DocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides {
+           let captureBothSides
+        {
             SmileID.documentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,

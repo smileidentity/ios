@@ -1,5 +1,11 @@
 # Release Notes
 
+## 10.1.2
+
+#### Fixed
+
+* Ignore `user_id`, `job_id`, and `job_type` fields in `extraPartnerParams`
+
 ## 10.1.1
 
 #### Added
