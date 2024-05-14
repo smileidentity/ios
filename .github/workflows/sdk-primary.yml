@@ -39,6 +39,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Install bundle
         run: bundle install
+      - name: Update Compile Sources
+        run: ruby ./Scripts/update_compile_sources.rb
       - name: Write Smile Config
         id: write_smile_config
         # Mask the config so that it doesn't show up in the logs
