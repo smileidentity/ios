@@ -65,5 +65,7 @@ jobs:
           xcode: '15.2'
       - name: Build Example app and Run Unit Tests
         run: |
+          bundle exec rake test:spm    
           bundle exec rake provision:ios
           bundle exec rake test:package
+
