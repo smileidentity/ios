@@ -306,8 +306,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
 
-                var imageInfoArray = [MultiPartMedia]()
-                if let selfie = try? Data(contentsOf: selfieImage), let media = MultiPartMedia(
+                var imageInfoArray = [SmartSelfieRequestImages]()
+                if let selfie = try? Data(contentsOf: selfieImage), let media = SmartSelfieRequestImages(
                     withImage: selfie,
                     forKey: selfieImage.lastPathComponent,
                     forName: selfieImage.lastPathComponent
@@ -315,9 +315,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     imageInfoArray.append(media)
                 }
                 if !livenessImages.isEmpty {
-                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultiPartMedia? in
+                    let livenessImageInfos = livenessImages.compactMap { liveness -> SmartSelfieRequestImages? in
                         if let data = try? Data(contentsOf: liveness) {
-                            return MultiPartMedia(
+                            return SmartSelfieRequestImages(
                                 withImage: data,
                                 forKey: liveness.lastPathComponent,
                                 forName: liveness.lastPathComponent
@@ -332,7 +332,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     try await SmileID.api.doSmartSelfieEnrollment(
                         signature: authResponse.signature,
                         timestamp: authResponse.signature,
-                        request: MultiPartRequest(
+                        request: SmartSelfieRequest(
                             multiPartMedia: imageInfoArray,
                             userId: userId,
                             allowNewEnroll: allowNewEnroll,
@@ -340,10 +340,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         )
                     ).async()
                 } else {
-                    try await SmileID.api.doSmartSelfieEnrollment(
+                    try await SmileID.api.doSmartSelfieAuthentication(
                         signature: authResponse.signature,
-                        timestamp: authResponse.signature,
-                        request: MultiPartRequest(
+                        timestamp: authResponse.timestamp,
+                        request: SmartSelfieRequest(
                             multiPartMedia: imageInfoArray,
                             userId: userId,
                             allowNewEnroll: allowNewEnroll,

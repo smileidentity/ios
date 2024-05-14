@@ -1,6 +1,6 @@
 import Foundation
 
-struct MultiPartMedia: Encodable {
+struct SmartSelfieRequestImages: Encodable {
     let key: String
     let filename: String
     let data: Data
@@ -14,8 +14,8 @@ struct MultiPartMedia: Encodable {
     }
 }
 
-public struct MultiPartRequest: Encodable {
-    let multiPartMedia: [MultiPartMedia]
+public struct SmartSelfieRequest: Encodable {
+    let multiPartMedia: [SmartSelfieRequestImages]
     var userId: String?
     var callbackUrl: String?
     var sandboxResult: Int?

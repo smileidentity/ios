@@ -18,7 +18,7 @@ public protocol SmileIDServiceable {
     func doSmartSelfieEnrollment(
         signature: String,
         timestamp: String,
-        request: MultiPartRequest
+        request: SmartSelfieRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error>
 
     /// Perform a synchronous SmartSelfie Authentication. The response will include the final result
@@ -26,7 +26,7 @@ public protocol SmileIDServiceable {
     func doSmartSelfieAuthentication(
         signature: String,
         timestamp: String,
-        request: MultiPartRequest
+        request: SmartSelfieRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error>
 
     /// Query the Identity Information of an individual using their ID number from a supported ID
@@ -211,7 +211,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     public func doSmartSelfieEnrollment(
         signature: String,
         timestamp: String,
-        request: MultiPartRequest
+        request: SmartSelfieRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
         multipart(signature: signature, timestamp: timestamp, to: "/v2/smart-selfie-enroll", with: request)
     }
@@ -219,7 +219,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     public func doSmartSelfieAuthentication(
         signature: String,
         timestamp: String,
-        request: MultiPartRequest
+        request: SmartSelfieRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
         multipart(signature: signature, timestamp: timestamp, to: "/v2/smart-selfie-authentication", with: request)
     }

@@ -25,7 +25,7 @@ protocol ServiceRunnable {
         signature: String,
         timestamp: String,
         to path: PathType,
-        with body: MultiPartRequest
+        with body: SmartSelfieRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error>
 
     /// PUT service call to a particular path with a body.
@@ -75,7 +75,7 @@ extension ServiceRunnable {
         signature: String,
         timestamp: String,
         to path: PathType,
-        with body: MultiPartRequest
+        with body: SmartSelfieRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
         var headers: [HTTPHeader] = []
         headers.append(.contentType(value: "multipart/form-data; boundary=\(generateBoundary())"))
@@ -215,7 +215,7 @@ extension ServiceRunnable {
 
     // swiftlint:disable line_length cyclomatic_complexity
     func createMultiPartRequest(
-        with request: MultiPartRequest,
+        with request: SmartSelfieRequest,
         boundary: String
     ) -> Data {
         let lineBreak = "\r\n"
