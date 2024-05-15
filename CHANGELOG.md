@@ -1,5 +1,11 @@
 # Release Notes
 
+## 10.1.3
+
+#### Fixed
+
+* Fix lottie SPM dependancy issues
+
 ## 10.1.2
 
 #### Fixed
