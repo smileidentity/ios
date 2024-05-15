@@ -46,6 +46,7 @@
 		1D6740B6B9ACB471A2FC47B6 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C1ADE2243DEE26D85C8A964 /* APIError.swift */; };
 		1E3C2268397F017710A45732 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA64BCB76A2F50FEDF94BFD /* ImageExtensions.swift */; };
 		1E6857CE2BF39D020019B515 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 1E6857CD2BF39D020019B515 /* Lottie */; };
+		1ED16AEE2BF4923500D80ABF /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 1ED16AED2BF4923500D80ABF /* Zip */; };
 		1ED676C92B5983C30046CE46 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 1ED676C82B5983C30046CE46 /* Zip */; };
 		1EEFC2252B583CFB00B8A934 /* SmileID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EEFC21A2B583CFB00B8A934 /* SmileID.framework */; };
 		1EEFC2C72B58412300B8A934 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 1EEFC2402B58412200B8A934 /* .swiftlint.yml */; };
@@ -2734,6 +2735,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1ED16AEE2BF4923500D80ABF /* Zip in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5528,6 +5530,9 @@
 			dependencies = (
 			);
 			name = SmileID;
+			packageProductDependencies = (
+				1ED16AED2BF4923500D80ABF /* Zip */,
+			);
 			productName = SmileID;
 			productReference = 1EEFC2382B583F1A00B8A934 /* libSmileID.a */;
 			productType = "com.apple.product-type.library.static";
@@ -6214,6 +6219,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1E6857C92BF39CDD0019B515 /* XCRemoteSwiftPackageReference "lottie-spm" */;
 			productName = Lottie;
+		};
+		1ED16AED2BF4923500D80ABF /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1ED676C72B5983C30046CE46 /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
 		};
 		1ED676C82B5983C30046CE46 /* Zip */ = {
 			isa = XCSwiftPackageProductDependency;
