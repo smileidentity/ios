@@ -77,8 +77,9 @@ extension ServiceRunnable {
         to path: PathType,
         with body: SmartSelfieRequest
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
+        let boundary = generateBoundary()
         var headers: [HTTPHeader] = []
-        headers.append(.contentType(value: "multipart/form-data; boundary=\(generateBoundary())"))
+        headers.append(.contentType(value: "multipart/form-data; boundary=\(boundary)"))
         headers.append(.partnerID(value: SmileID.config.partnerId))
         headers.append(.requestSignature(value: signature))
         headers.append(.timestamp(value: timestamp))
@@ -88,7 +89,8 @@ extension ServiceRunnable {
             headers: headers,
             uploadData: createMultiPartRequest(
                 with: body,
-                boundary: generateBoundary())
+                boundary: boundary
+            )
         )
         .flatMap(serviceClient.multipart)
         .eraseToAnyPublisher()
@@ -210,71 +212,86 @@ extension ServiceRunnable {
     }
 
     func generateBoundary() -> String {
-        return ProcessInfo.processInfo.globallyUniqueString
+        return UUID().uuidString
     }
 
     // swiftlint:disable line_length cyclomatic_complexity
     func createMultiPartRequest(
-        with request: SmartSelfieRequest,
-        boundary: String
-    ) -> Data {
-        let lineBreak = "\r\n"
-        var body = Data()
+            with request: SmartSelfieRequest,
+            boundary: String
+        ) -> Data {
+            let lineBreak = "\r\n"
+            var body = Data()
 
-        if let parameters = request.partnerParams {
-            for (key, value) in parameters {
-                if let valueData = "\(value + lineBreak)".data(using: .utf8) {
-                    body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
-                    body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+            // Append parameters if available
+            if let parameters = request.partnerParams {
+                for (key, value) in parameters {
+                    if let valueData = "\(value)\(lineBreak)".data(using: .utf8) {
+                        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                        body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                        body.append(valueData)
+                    }
+                }
+            }
+
+            // Append userId if available
+            if let userId = request.userId {
+                if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
+                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                    body.append("Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(using: .utf8)!)
                     body.append(valueData)
                 }
             }
-        }
 
-        if let userId = request.userId {
-            if let valueData = "\(userId + lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
-                body.append("Content-Disposition: form-data; name=\"userId\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                body.append(valueData)
+            // Append callbackUrl if available
+            if let callbackUrl = request.callbackUrl {
+                if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
+                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                    body.append("Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    body.append(valueData)
+                }
             }
-        }
 
-        if let callbackUrl = request.callbackUrl {
-            if let valueData = "\(callbackUrl + lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
-                body.append("Content-Disposition: form-data; name=\"callbackUrl\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                body.append(valueData)
+            // Append sandboxResult if available
+            if let sandboxResult = request.sandboxResult {
+                let sandboxResultString = "\(sandboxResult)"
+                if let valueData = "\(sandboxResultString)\(lineBreak)".data(using: .utf8) {
+                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                    body.append("Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    body.append(valueData)
+                }
             }
-        }
 
-        if let sandboxResult = request.sandboxResult {
-            let sandboxResultString = "\(sandboxResult)"
-            if let valueData = "\(sandboxResultString + lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
-                body.append("Content-Disposition: form-data; name=\"sandboxResult\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                body.append(valueData)
+            // Append allowNewEnroll if available
+            if let allowNewEnroll = request.allowNewEnroll {
+                let allowNewEnrollString = "\(allowNewEnroll)"
+                if let valueData = "\(allowNewEnrollString)\(lineBreak)".data(using: .utf8) {
+                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                    body.append("Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    body.append(valueData)
+                }
             }
-        }
 
-        if let allowNewEnroll = request.allowNewEnroll {
-            let allowNewEnrollString = "\(allowNewEnroll)"
-            if let valueData = "\(allowNewEnrollString + lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
-                body.append("Content-Disposition: form-data; name=\"allowNewEnroll\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                body.append(valueData)
+            // Append liveness media files
+            for item in request.livenessImages {
+                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)".data(using: .utf8)!)
+                body.append("Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(item.data)
+                body.append(lineBreak.data(using: .utf8)!)
             }
-        }
-
-        for item in request.multiPartMedia {
-            body.append("--\(boundary + lineBreak)".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"\(item.key)\"; filename=\"\(item.filename)\"\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Type: \(item.mimeType + lineBreak + lineBreak)".data(using: .utf8)!)
-            body.append(item.data)
+            
+            // Append selfie media file
+            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(request.selfieImage.filename)\"\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Type: \(request.selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(request.selfieImage.data)
             body.append(lineBreak.data(using: .utf8)!)
+
+            // Append final boundary
+            body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
+
+            return body
         }
 
-        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
-
-        return body
-    }
 }
