@@ -329,6 +329,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
                     smartSelfieLivenessImages.append(contentsOf: livenessImageInfos.compactMap { $0 })
                 }
+                // swiftlint:disable line_length
                 guard let smartSelfieImage = smartSelfieImage, smartSelfieLivenessImages.count == numLivenessImages else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
