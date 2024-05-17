@@ -13,10 +13,21 @@ func openUrl(_ urlString: String) {
 func jobResultMessageBuilder(
     jobName: String,
     didSubmitJob: Bool? = nil,
-    apiResponse _: SmartSelfieResponse? = nil,
+    apiResponse: SmartSelfieResponse? = nil,
     suffix: String? = nil
 ) -> String {
     var message = "\(jobName) "
+    if let didSubmitJob = didSubmitJob {
+        if didSubmitJob {
+            message += "completed successfully"
+        } else {
+            message += "saved offline"
+        }
+    } else {
+        if let apiResponse = apiResponse {
+            message += apiResponse.message
+        }
+    }
     if didSubmitJob == true {
         message += "completed successfully"
     } else {

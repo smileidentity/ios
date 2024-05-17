@@ -306,9 +306,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
 
-                var smartSelfieLivenessImages = [SmartSelfieRequestImage]()
-                var smartSelfieImage: SmartSelfieRequestImage?
-                if let selfie = try? Data(contentsOf: selfieImage), let media = SmartSelfieRequestImage(
+                var smartSelfieLivenessImages = [MultipartBody]()
+                var smartSelfieImage: MultipartBody?
+                if let selfie = try? Data(contentsOf: selfieImage), let media = MultipartBody(
                     withImage: selfie,
                     forKey: selfieImage.lastPathComponent,
                     forName: selfieImage.lastPathComponent
@@ -316,9 +316,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     smartSelfieImage = media
                 }
                 if !livenessImages.isEmpty {
-                    let livenessImageInfos = livenessImages.compactMap { liveness -> SmartSelfieRequestImage? in
+                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultipartBody? in
                         if let data = try? Data(contentsOf: liveness) {
-                            return SmartSelfieRequestImage(
+                            return MultipartBody(
                                 withImage: data,
                                 forKey: liveness.lastPathComponent,
                                 forName: liveness.lastPathComponent
@@ -329,32 +329,32 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
                     smartSelfieLivenessImages.append(contentsOf: livenessImageInfos.compactMap { $0 })
                 }
-                // swiftlint:disable line_length
-                guard let smartSelfieImage = smartSelfieImage, smartSelfieLivenessImages.count == numLivenessImages else {
+                guard let smartSelfieImage = smartSelfieImage, 
+                smartSelfieLivenessImages.count == numLivenessImages else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
                 let response = if allowNewEnroll {
                     try await SmileID.api.doSmartSelfieEnrollment(
                         signature: authResponse.signature,
-                        timestamp: authResponse.signature,
-                        request: SmartSelfieRequest(
-                            livenessImages: smartSelfieLivenessImages,
-                            selfieImage: smartSelfieImage,
-                            userId: userId,
-                            allowNewEnroll: allowNewEnroll,
-                            partnerParams: extraPartnerParams
-                        )
+                        timestamp: authResponse.timestamp,
+                        selfieImage: smartSelfieImage,
+                        livenessImages: smartSelfieLivenessImages,
+                        userId: userId,
+                        partnerParams: extraPartnerParams,
+                        callbackUrl: SmileID.callbackUrl,
+                        sandboxResult: nil,
+                        allowNewEnroll: allowNewEnroll
                     ).async()
                 } else {
                     try await SmileID.api.doSmartSelfieAuthentication(
                         signature: authResponse.signature,
                         timestamp: authResponse.timestamp,
-                        request: SmartSelfieRequest(
-                            livenessImages: smartSelfieLivenessImages,
-                            selfieImage: smartSelfieImage,
-                            userId: userId,
-                            partnerParams: extraPartnerParams
-                        )
+                        userId: userId,
+                        selfieImage: smartSelfieImage,
+                        livenessImages: smartSelfieLivenessImages,
+                        partnerParams: extraPartnerParams,
+                        callbackUrl: SmileID.callbackUrl,
+                        sandboxResult: nil
                     ).async()
                 }
                 apiResponse = response

@@ -61,12 +61,12 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    public func multipart(request: RestRequest) -> AnyPublisher<SmartSelfieResponse, any Error> {
+    public func multipart<T: Decodable>(request: RestRequest) -> AnyPublisher<T, Error> {
         do {
             let urlRequest = try request.getURLRequest()
             return session.send(request: urlRequest)
                 .tryMap(checkStatusCode)
-                .decode(type: SmartSelfieResponse.self, decoder: decoder)
+                .decode(type: T.self, decoder: decoder)
                 .mapError(mapToAPIError)
                 .eraseToAnyPublisher()
         } catch {

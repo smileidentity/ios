@@ -18,7 +18,13 @@ public protocol SmileIDServiceable {
     func doSmartSelfieEnrollment(
         signature: String,
         timestamp: String,
-        request: SmartSelfieRequest
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        userId: String?,
+        partnerParams: [String: String]?,
+        callbackUrl: String?,
+        sandboxResult: Int?,
+        allowNewEnroll: Bool?
     ) -> AnyPublisher<SmartSelfieResponse, Error>
 
     /// Perform a synchronous SmartSelfie Authentication. The response will include the final result
@@ -26,7 +32,12 @@ public protocol SmileIDServiceable {
     func doSmartSelfieAuthentication(
         signature: String,
         timestamp: String,
-        request: SmartSelfieRequest
+        userId: String,
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        partnerParams: [String: String]?,
+        callbackUrl: String?,
+        sandboxResult: Int?
     ) -> AnyPublisher<SmartSelfieResponse, Error>
 
     /// Query the Identity Information of an individual using their ID number from a supported ID
@@ -211,17 +222,49 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     public func doSmartSelfieEnrollment(
         signature: String,
         timestamp: String,
-        request: SmartSelfieRequest
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        userId: String? = nil,
+        partnerParams: [String: String]? = nil,
+        callbackUrl: String? = SmileID.callbackUrl,
+        sandboxResult: Int? = nil,
+        allowNewEnroll: Bool? = nil
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
-        multipart(signature: signature, timestamp: timestamp, to: "/v2/smart-selfie-enroll", with: request)
+        multipart(
+            to: "/v2/smart-selfie-enroll",
+            signature: signature,
+            timestamp: timestamp,
+            selfieImage: selfieImage,
+            livenessImages: livenessImages,
+            userId: userId,
+            partnerParams: partnerParams,
+            callbackUrl: callbackUrl,
+            sandboxResult: sandboxResult,
+            allowNewEnroll: allowNewEnroll
+        )
     }
 
     public func doSmartSelfieAuthentication(
         signature: String,
         timestamp: String,
-        request: SmartSelfieRequest
+        userId: String,
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        partnerParams: [String: String]? = nil,
+        callbackUrl: String? = SmileID.callbackUrl,
+        sandboxResult: Int? = nil
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
-        multipart(signature: signature, timestamp: timestamp, to: "/v2/smart-selfie-authentication", with: request)
+        multipart(
+            to: "/v2/smart-selfie-authentication",
+            signature: signature,
+            timestamp: timestamp,
+            selfieImage: selfieImage,
+            livenessImages: livenessImages,
+            userId: userId,
+            partnerParams: partnerParams,
+            callbackUrl: callbackUrl,
+            sandboxResult: sandboxResult
+        )
     }
 
     public func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error> {

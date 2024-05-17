@@ -22,10 +22,16 @@ protocol ServiceRunnable {
     ///   - path: Endpoint to execute the POST call.
     ///   - body: The contents of the body of the mulitpart request.
     func multipart(
+        to path: PathType,
         signature: String,
         timestamp: String,
-        to path: PathType,
-        with body: SmartSelfieRequest
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        userId: String?,
+        partnerParams: [String: String]?,
+        callbackUrl: String?,
+        sandboxResult: Int?,
+        allowNewEnroll: Bool?
     ) -> AnyPublisher<SmartSelfieResponse, Error>
 
     /// PUT service call to a particular path with a body.
@@ -72,10 +78,16 @@ extension ServiceRunnable {
     }
 
     func multipart(
+        to path: PathType,
         signature: String,
         timestamp: String,
-        to path: PathType,
-        with body: SmartSelfieRequest
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        userId: String? = nil,
+        partnerParams: [String: String]? = nil,
+        callbackUrl: String? = nil,
+        sandboxResult: Int? = nil,
+        allowNewEnroll: Bool? = nil
     ) -> AnyPublisher<SmartSelfieResponse, Error> {
         let boundary = generateBoundary()
         var headers: [HTTPHeader] = []
@@ -88,7 +100,13 @@ extension ServiceRunnable {
             method: .post,
             headers: headers,
             uploadData: createMultiPartRequest(
-                with: body,
+                selfieImage: selfieImage,
+                livenessImages: livenessImages,
+                userId: userId,
+                partnerParams: partnerParams,
+                callbackUrl: callbackUrl,
+                sandboxResult: sandboxResult,
+                allowNewEnroll: allowNewEnroll,
                 boundary: boundary
             )
         )
@@ -217,14 +235,20 @@ extension ServiceRunnable {
 
     // swiftlint:disable line_length cyclomatic_complexity
     func createMultiPartRequest(
-            with request: SmartSelfieRequest,
+            selfieImage: MultipartBody,
+            livenessImages: [MultipartBody],
+            userId: String?,
+            partnerParams: [String: String]?,
+            callbackUrl: String?,
+            sandboxResult: Int?,
+            allowNewEnroll: Bool?,
             boundary: String
         ) -> Data {
             let lineBreak = "\r\n"
             var body = Data()
 
             // Append parameters if available
-            if let parameters = request.partnerParams {
+            if let parameters = partnerParams {
                 for (key, value) in parameters {
                     if let valueData = "\(value)\(lineBreak)".data(using: .utf8) {
                         body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
@@ -235,7 +259,7 @@ extension ServiceRunnable {
             }
 
             // Append userId if available
-            if let userId = request.userId {
+            if let userId = userId {
                 if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
                     body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                     body.append("Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(using: .utf8)!)
@@ -244,7 +268,7 @@ extension ServiceRunnable {
             }
 
             // Append callbackUrl if available
-            if let callbackUrl = request.callbackUrl {
+            if let callbackUrl = callbackUrl {
                 if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
                     body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                     body.append("Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(using: .utf8)!)
@@ -253,7 +277,7 @@ extension ServiceRunnable {
             }
 
             // Append sandboxResult if available
-            if let sandboxResult = request.sandboxResult {
+            if let sandboxResult = sandboxResult {
                 let sandboxResultString = "\(sandboxResult)"
                 if let valueData = "\(sandboxResultString)\(lineBreak)".data(using: .utf8) {
                     body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
@@ -263,7 +287,7 @@ extension ServiceRunnable {
             }
 
             // Append allowNewEnroll if available
-            if let allowNewEnroll = request.allowNewEnroll {
+            if let allowNewEnroll = allowNewEnroll {
                 let allowNewEnrollString = "\(allowNewEnroll)"
                 if let valueData = "\(allowNewEnrollString)\(lineBreak)".data(using: .utf8) {
                     body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
@@ -273,7 +297,7 @@ extension ServiceRunnable {
             }
 
             // Append liveness media files
-            for item in request.livenessImages {
+            for item in livenessImages {
                 body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                 body.append("Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)".data(using: .utf8)!)
                 body.append("Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
@@ -283,9 +307,9 @@ extension ServiceRunnable {
             
             // Append selfie media file
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(request.selfieImage.filename)\"\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Type: \(request.selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
-            body.append(request.selfieImage.data)
+            body.append("Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(selfieImage.data)
             body.append(lineBreak.data(using: .utf8)!)
 
             // Append final boundary
