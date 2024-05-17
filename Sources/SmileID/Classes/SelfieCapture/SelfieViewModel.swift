@@ -329,7 +329,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
                     smartSelfieLivenessImages.append(contentsOf: livenessImageInfos.compactMap { $0 })
                 }
-                guard let smartSelfieImage = smartSelfieImage, 
+                guard let smartSelfieImage = smartSelfieImage,
                 smartSelfieLivenessImages.count == numLivenessImages else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }

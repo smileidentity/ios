@@ -1,5 +1,11 @@
 # Release Notes
 
+## 10.1.4
+
+#### Added
+
+* Improved SmartSelfie Enrollment and Authentication times by moving to a synchronous API endpoint
+
 ## 10.1.3
 
 #### Fixed
