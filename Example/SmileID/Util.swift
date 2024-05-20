@@ -28,11 +28,6 @@ func jobResultMessageBuilder(
             message += apiResponse.message
         }
     }
-    if didSubmitJob == true {
-        message += "completed successfully"
-    } else {
-        message += "saved offline"
-    }
     if let suffix {
         message += ". \(suffix)"
     }

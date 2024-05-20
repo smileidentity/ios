@@ -95,6 +95,8 @@ extension ServiceRunnable {
         headers.append(.partnerID(value: SmileID.config.partnerId))
         headers.append(.requestSignature(value: signature))
         headers.append(.timestamp(value: timestamp))
+        headers.append(.sourceSDK(value: "iOS"))
+        headers.append(.sourceSDKVersion(value: SmileID.version))
         return createMultiPartRequest(
             url: path,
             method: .post,
@@ -104,7 +106,7 @@ extension ServiceRunnable {
                 livenessImages: livenessImages,
                 userId: userId,
                 partnerParams: partnerParams,
-                callbackUrl: callbackUrl,
+                callbackUrl: callbackUrl.ifBlank(nil),
                 sandboxResult: sandboxResult,
                 allowNewEnroll: allowNewEnroll,
                 boundary: boundary

@@ -48,3 +48,16 @@ enum FileType: String {
         return rawValue
     }
 }
+
+extension Optional where Wrapped == String {
+    func ifBlank(_ defaultValue: @autoclosure () -> String?) -> String? {
+        switch self {
+        case .some(let value) where value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty:
+            return defaultValue()
+        case .some(let value):
+            return value
+        case .none:
+            return defaultValue()
+        }
+    }
+}
