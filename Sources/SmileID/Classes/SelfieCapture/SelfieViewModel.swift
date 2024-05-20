@@ -333,7 +333,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 smartSelfieLivenessImages.count == numLivenessImages else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
-                let response = if allowNewEnroll {
+                let response = if isEnroll {
                     try await SmileID.api.doSmartSelfieEnrollment(
                         signature: authResponse.signature,
                         timestamp: authResponse.timestamp,
