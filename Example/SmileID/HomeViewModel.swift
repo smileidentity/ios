@@ -48,14 +48,14 @@ class HomeViewModel: ObservableObject,
         userId: String,
         selfieImage _: URL,
         livenessImages _: [URL],
-        didSubmitJob: Bool
+        apiResponse: SmartSelfieResponse?
     ) {
         dismissModal()
         showToast = true
         UIPasteboard.general.string = userId
         toastMessage = jobResultMessageBuilder(
             jobName: "SmartSelfie Enrollment",
-            didSubmitJob: didSubmitJob,
+            apiResponse: apiResponse,
             suffix: "The User ID has been copied to your clipboard"
         )
     }
@@ -64,13 +64,13 @@ class HomeViewModel: ObservableObject,
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        didSubmitSmartSelfieJob: Bool
+        apiResponse: SmartSelfieResponse?
     ) {
         dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "SmartSelfie Authentication",
-            didSubmitJob: didSubmitSmartSelfieJob
+            apiResponse: apiResponse
         )
     }
 
@@ -88,7 +88,7 @@ class HomeViewModel: ObservableObject,
     }
 
     func didSucceed(
-        enhancedKycResponse: EnhancedKycResponse
+        enhancedKycResponse _: EnhancedKycResponse
     ) {
         dismissModal()
         showToast = true

@@ -37,7 +37,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     var selfieImage: URL?
     var livenessImages: [URL] = []
-    internal var didSubmitSmartSelfieJob: Bool = false
+    var apiResponse: SmartSelfieResponse?
     var error: Error?
 
     private let arKitFramePublisher = PassthroughSubject<CVPixelBuffer?, Never>()
@@ -287,15 +287,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 guard let selfieImage, livenessImages.count == numLivenessImages else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
-                let infoJson = try LocalStorage.createInfoJsonFile(
-                    jobId: jobId,
-                    selfie: selfieImage,
-                    livenessImages: livenessImages
-                )
-                let zipUrl = try LocalStorage.zipFiles(
-                    at: livenessImages + [selfieImage] + [infoJson]
-                )
-                let zip = try Data(contentsOf: zipUrl)
                 let jobType = isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
                 let authRequest = AuthenticationRequest(
                     jobType: jobType,
@@ -314,20 +305,59 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     )
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
-                let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
-                    allowNewEnroll: String(allowNewEnroll),
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                let prepUploadResponse = try await SmileID.api.prepUpload(
-                    request: prepUploadRequest
-                ).async()
-                _ = try await SmileID.api.upload(
-                    zip: zip,
-                    to: prepUploadResponse.uploadUrl
-                ).async()
-                didSubmitSmartSelfieJob = true
+
+                var smartSelfieLivenessImages = [MultipartBody]()
+                var smartSelfieImage: MultipartBody?
+                if let selfie = try? Data(contentsOf: selfieImage), let media = MultipartBody(
+                    withImage: selfie,
+                    forKey: selfieImage.lastPathComponent,
+                    forName: selfieImage.lastPathComponent
+                ) {
+                    smartSelfieImage = media
+                }
+                if !livenessImages.isEmpty {
+                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultipartBody? in
+                        if let data = try? Data(contentsOf: liveness) {
+                            return MultipartBody(
+                                withImage: data,
+                                forKey: liveness.lastPathComponent,
+                                forName: liveness.lastPathComponent
+                            )
+                        }
+                        return nil
+                    }
+
+                    smartSelfieLivenessImages.append(contentsOf: livenessImageInfos.compactMap { $0 })
+                }
+                guard let smartSelfieImage = smartSelfieImage,
+                smartSelfieLivenessImages.count == numLivenessImages else {
+                    throw SmileIDError.unknown("Selfie capture failed")
+                }
+                let response = if isEnroll {
+                    try await SmileID.api.doSmartSelfieEnrollment(
+                        signature: authResponse.signature,
+                        timestamp: authResponse.timestamp,
+                        selfieImage: smartSelfieImage,
+                        livenessImages: smartSelfieLivenessImages,
+                        userId: userId,
+                        partnerParams: extraPartnerParams,
+                        callbackUrl: SmileID.callbackUrl,
+                        sandboxResult: nil,
+                        allowNewEnroll: allowNewEnroll
+                    ).async()
+                } else {
+                    try await SmileID.api.doSmartSelfieAuthentication(
+                        signature: authResponse.signature,
+                        timestamp: authResponse.timestamp,
+                        userId: userId,
+                        selfieImage: smartSelfieImage,
+                        livenessImages: smartSelfieLivenessImages,
+                        partnerParams: extraPartnerParams,
+                        callbackUrl: SmileID.callbackUrl,
+                        sandboxResult: nil
+                    ).async()
+                }
+                apiResponse = response
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
                 } catch {
@@ -347,19 +377,16 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     return
                 }
                 if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
-                    didSubmitSmartSelfieJob = true
                     DispatchQueue.main.async {
                         self.errorMessage = "Offline.Message"
                         self.processingState = .success
                     }
                 } else {
-                    didSubmitSmartSelfieJob = false
                     print("Error submitting job: \(error)")
                     self.error = error
                     DispatchQueue.main.async { self.processingState = .error }
                 }
             } catch {
-                didSubmitSmartSelfieJob = false
                 print("Error submitting job: \(error)")
                 self.error = error
                 DispatchQueue.main.async { self.processingState = .error }
@@ -372,7 +399,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             callback.didSucceed(
                 selfieImage: selfieImage,
                 livenessImages: livenessImages,
-                didSubmitSmartSelfieJob: didSubmitSmartSelfieJob
+                apiResponse: apiResponse
             )
         } else if let error {
             callback.didError(error: error)

@@ -92,7 +92,7 @@ struct HomeView: View {
                             content: {
                                 EnhancedDocumentVerificationWithSelector(delegate: viewModel)
                             }
-                        ),
+                        )
                     ].map { AnyView($0) }
                 )
 
@@ -124,16 +124,16 @@ struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
         _ userId: String,
         _ selfieFile: URL,
         _ livenessImages: [URL],
-        _ didSubmitSmartSelfieJob: Bool
+        _ apiResponse: SmartSelfieResponse?
     ) -> Void
     let onError: (Error) -> Void
 
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        didSubmitSmartSelfieJob: Bool
+        apiResponse: SmartSelfieResponse?
     ) {
-        onEnrollmentSuccess(userId, selfieImage, livenessImages, didSubmitSmartSelfieJob)
+        onEnrollmentSuccess(userId, selfieImage, livenessImages, apiResponse)
     }
 
     func didError(error: Error) {
@@ -170,8 +170,7 @@ private struct DocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides
-        {
+           let captureBothSides {
             SmileID.documentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,
@@ -200,8 +199,7 @@ private struct EnhancedDocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides
-        {
+           let captureBothSides {
             SmileID.enhancedDocumentVerificationScreen(
                 countryCode: countryCode,
                 documentType: documentType,

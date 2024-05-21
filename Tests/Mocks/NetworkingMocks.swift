@@ -126,6 +126,69 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
+    func doSmartSelfieEnrollment(
+        signature _: String,
+        timestamp _: String,
+        selfieImage _: MultipartBody,
+        livenessImages _: [MultipartBody],
+        userId _: String?,
+        partnerParams _: [String: String]?,
+        callbackUrl _: String?,
+        sandboxResult _: Int?,
+        allowNewEnroll _: Bool?
+    ) -> AnyPublisher<SmartSelfieResponse, any Error> {
+        if MockHelper.shouldFail {
+            let error = SmileIDError.request(URLError(.resourceUnavailable))
+            return Fail(error: error)
+                .eraseToAnyPublisher()
+        } else {
+            let response = SmartSelfieResponse(
+                code: "",
+                createdAt: "",
+                jobId: "",
+                jobType: JobTypeV2.smartSelfieEnrollment,
+                message: "", partnerId: "",
+                partnerParams: [:],
+                status: SmartSelfieStatus.approved,
+                updatedAt: "",
+                userId: ""
+            )
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    func doSmartSelfieAuthentication(
+        signature _: String,
+        timestamp _: String,
+        userId _: String,
+        selfieImage _: MultipartBody,
+        livenessImages _: [MultipartBody],
+        partnerParams _: [String: String]?,
+        callbackUrl _: String?,
+        sandboxResult _: Int?
+    ) -> AnyPublisher<SmartSelfieResponse, any Error> {
+        if MockHelper.shouldFail {
+            let error = SmileIDError.request(URLError(.resourceUnavailable))
+            return Fail(error: error)
+                .eraseToAnyPublisher()
+        } else {
+            let response = SmartSelfieResponse(
+                code: "",
+                createdAt: "",
+                jobId: "",
+                jobType: JobTypeV2.smartSelfieAuthentication,
+                message: "", partnerId: "",
+                partnerParams: [:],
+                status: SmartSelfieStatus.approved,
+                updatedAt: "",
+                userId: ""
+            )
+            return Result.Publisher(response)
+                .eraseToAnyPublisher()
+        }
+    }
+
     func getJobStatus<T: JobResult>(
         request _: JobStatusRequest
     ) -> AnyPublisher<JobStatusResponse<T>, Error> {
@@ -161,7 +224,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     func getProductsConfig(
-        request: ProductsConfigRequest
+        request _: ProductsConfigRequest
     ) -> AnyPublisher<ProductsConfigResponse, Error> {
         var response: ProductsConfigResponse
         do {
@@ -189,7 +252,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     func getValidDocuments(
-        request: ProductsConfigRequest
+        request _: ProductsConfigRequest
     ) -> AnyPublisher<ValidDocumentsResponse, Error> {
         let response = ValidDocumentsResponse(validDocuments: [ValidDocument]())
         if MockHelper.shouldFail {
@@ -202,7 +265,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     public func requestBvnTotpMode(
-        request: BvnTotpRequest
+        request _: BvnTotpRequest
     ) -> AnyPublisher<BvnTotpResponse, Error> {
         let response = BvnTotpResponse(
             success: true,
@@ -222,7 +285,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     public func requestBvnOtp(
-        request: BvnTotpModeRequest
+        request _: BvnTotpModeRequest
     ) -> AnyPublisher<BvnTotpModeResponse, Error> {
         let response = BvnTotpModeResponse(
             success: true,
@@ -240,7 +303,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
 
     public func submitBvnOtp(
-        request: SubmitBvnTotpRequest
+        request _: SubmitBvnTotpRequest
     ) -> AnyPublisher<SubmitBvnTotpResponse, Error> {
         let response = SubmitBvnTotpResponse(
             success: true,
@@ -265,7 +328,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        didSubmitSmartSelfieJob: Bool
+        apiResponse _: SmartSelfieResponse?
     ) {
         successExpectation?.fulfill()
     }

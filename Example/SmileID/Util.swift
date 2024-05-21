@@ -1,4 +1,5 @@
 import Foundation
+import SmileID
 import SwiftUI
 
 func openUrl(_ urlString: String) {
@@ -11,17 +12,49 @@ func openUrl(_ urlString: String) {
 
 func jobResultMessageBuilder(
     jobName: String,
-    didSubmitJob: Bool?,
+    didSubmitJob: Bool? = nil,
+    jobComplete: Bool? = false,
+    jobSuccess: Bool? = false,
+    code: String? = nil,
+    resultCode: String? = nil,
+    resultText: String? = nil,
+    apiResponse: SmartSelfieResponse? = nil,
     suffix: String? = nil
 ) -> String {
     var message = "\(jobName) "
     if didSubmitJob == true {
-        message += "completed successfully"
+        if jobComplete == true {
+            if jobSuccess == true {
+                message += "completed successfully"
+            } else {
+                message += "completed unsuccessfully"
+            }
+            var parenthesesTextComponents: [String] = []
+            if let resultText = resultText, !resultText.isEmpty {
+                parenthesesTextComponents.append("resultText=\(resultText)")
+            }
+            if let code = code, !code.isEmpty {
+                parenthesesTextComponents.append("code=\(code)")
+            }
+            if let resultCode = resultCode, !resultCode.isEmpty {
+                parenthesesTextComponents.append("resultCode=\(resultCode)")
+            }
+            let parenthesesText = parenthesesTextComponents.joined(separator: ", ")
+            if !parenthesesText.isEmpty {
+                message += " (\(parenthesesText))"
+            }
+        } else {
+            message += "still pending"
+        }
     } else {
-        message += "saved offline"
+        if let apiResponse = apiResponse {
+            message += apiResponse.message
+        } else {
+            message += "was saved offline and will need to be submitted later"
+        }
     }
     if let suffix = suffix {
-        message += ". \(suffix)"
+        message += " \(suffix)"
     }
     return message
 }

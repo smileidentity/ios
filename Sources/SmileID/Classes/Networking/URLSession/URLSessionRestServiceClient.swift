@@ -61,6 +61,19 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
+    public func multipart<T: Decodable>(request: RestRequest) -> AnyPublisher<T, Error> {
+        do {
+            let urlRequest = try request.getURLRequest()
+            return session.send(request: urlRequest)
+                .tryMap(checkStatusCode)
+                .decode(type: T.self, decoder: decoder)
+                .mapError(mapToAPIError)
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+    }
+
     private func mapToAPIError(_ error: Error) -> SmileIDError {
         if let decodingError = error as? DecodingError {
             return .decode(decodingError)
@@ -131,9 +144,9 @@ public final class URLUploadSessionPublisherImplementation: URLUploadSessionPubl
         _ callback: @escaping (Data?, URLResponse?, Error?) -> Void
     ) {
         session.uploadTask(with: request, from: data) { data, response, error in
-                callback(data, response, error)
-            }
-            .resume()
+            callback(data, response, error)
+        }
+        .resume()
     }
 }
 

@@ -48,3 +48,9 @@ enum FileType: String {
         return rawValue
     }
 }
+
+extension String {
+    func nilIfEmpty() -> String? {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : self
+    }
+}

@@ -264,6 +264,9 @@ public class LocalStorage {
         try createDirectory(at: submittedJobDirectory)
         let unsubmittedFileDirectory = try unsubmittedJobDirectory.appendingPathComponent(jobId)
         let submittedFileDirectory = try submittedJobDirectory.appendingPathComponent(jobId)
+        if fileManager.fileExists(atPath: submittedFileDirectory.relativePath) {
+            try fileManager.removeItem(atPath: submittedFileDirectory.relativePath)
+        }
         try fileManager.moveItem(at: unsubmittedFileDirectory, to: submittedFileDirectory)
     }
 

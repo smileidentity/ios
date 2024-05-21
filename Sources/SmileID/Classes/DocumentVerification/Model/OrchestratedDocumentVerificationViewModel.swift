@@ -244,7 +244,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 }
 
 extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: URL, livenessImages: [URL], didSubmitSmartSelfieJob _: Bool) {
+    func didSucceed(selfieImage: URL, livenessImages: [URL], apiResponse _: SmartSelfieResponse?) {
         selfieFile = selfieImage
         livenessFiles = livenessImages
         submitJob()

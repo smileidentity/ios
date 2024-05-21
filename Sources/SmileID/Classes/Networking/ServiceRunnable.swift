@@ -17,6 +17,23 @@ protocol ServiceRunnable {
     ///   - path: Endpoint to execute the GET call.
     func get<U: Decodable>(to path: PathType) -> AnyPublisher<U, Error>
 
+    // POST service call to make a multipart request.
+    /// - Parameters:
+    ///   - path: Endpoint to execute the POST call.
+    ///   - body: The contents of the body of the mulitpart request.
+    func multipart(
+        to path: PathType,
+        signature: String,
+        timestamp: String,
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        userId: String?,
+        partnerParams: [String: String]?,
+        callbackUrl: String?,
+        sandboxResult: Int?,
+        allowNewEnroll: Bool?
+    ) -> AnyPublisher<SmartSelfieResponse, Error>
+
     /// PUT service call to a particular path with a body.
     /// - Parameters:
     ///   - data: Data to be uploaded
@@ -47,8 +64,8 @@ extension ServiceRunnable {
             headers: [.contentType(value: "application/json")],
             body: body
         )
-            .flatMap(serviceClient.send)
-            .eraseToAnyPublisher()
+        .flatMap(serviceClient.send)
+        .eraseToAnyPublisher()
     }
 
     func get<U: Decodable>(to path: PathType) -> AnyPublisher<U, Error> {
@@ -56,7 +73,76 @@ extension ServiceRunnable {
             path: path,
             method: .get
         )
-            .flatMap(serviceClient.send)
+        .flatMap(serviceClient.send)
+        .eraseToAnyPublisher()
+    }
+
+    func multipart(
+        to path: PathType,
+        signature: String,
+        timestamp: String,
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        userId: String? = nil,
+        partnerParams: [String: String]? = nil,
+        callbackUrl: String? = nil,
+        sandboxResult: Int? = nil,
+        allowNewEnroll: Bool? = nil
+    ) -> AnyPublisher<SmartSelfieResponse, Error> {
+        let boundary = generateBoundary()
+        var headers: [HTTPHeader] = []
+        headers.append(.contentType(value: "multipart/form-data; boundary=\(boundary)"))
+        headers.append(.partnerID(value: SmileID.config.partnerId))
+        headers.append(.requestSignature(value: signature))
+        headers.append(.timestamp(value: timestamp))
+        headers.append(.sourceSDK(value: "iOS"))
+        headers.append(.sourceSDKVersion(value: SmileID.version))
+        return createMultiPartRequest(
+            url: path,
+            method: .post,
+            headers: headers,
+            uploadData: createMultiPartRequest(
+                selfieImage: selfieImage,
+                livenessImages: livenessImages,
+                userId: userId,
+                partnerParams: partnerParams,
+                callbackUrl: callbackUrl?.nilIfEmpty(),
+                sandboxResult: sandboxResult,
+                allowNewEnroll: allowNewEnroll,
+                boundary: boundary
+            )
+        )
+        .flatMap(serviceClient.multipart)
+        .eraseToAnyPublisher()
+    }
+
+    private func createMultiPartRequest(
+        url: PathType,
+        method: RestMethod,
+        headers: [HTTPHeader]? = nil,
+        uploadData: Data
+    ) -> AnyPublisher<RestRequest, Error> {
+        let path = String(describing: url)
+        guard var baseURL = baseURL?.absoluteString else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+
+        if let range = baseURL.range(of: "/v1/", options: .backwards) {
+            baseURL.removeSubrange(range)
+        }
+
+        guard let url = URL(string: baseURL)?.appendingPathComponent(path) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+
+        let request = RestRequest(
+            url: url,
+            method: method,
+            headers: headers,
+            body: uploadData
+        )
+        return Just(request)
+            .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
 
@@ -71,8 +157,8 @@ extension ServiceRunnable {
             headers: [.contentType(value: "application/zip")],
             uploadData: data
         )
-            .flatMap { serviceClient.upload(request: $0) }
-            .eraseToAnyPublisher()
+        .flatMap { serviceClient.upload(request: $0) }
+        .eraseToAnyPublisher()
     }
 
     private func createUploadRequest(
@@ -144,4 +230,94 @@ extension ServiceRunnable {
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
+
+    func generateBoundary() -> String {
+        return UUID().uuidString
+    }
+
+    // swiftlint:disable line_length cyclomatic_complexity
+    func createMultiPartRequest(
+            selfieImage: MultipartBody,
+            livenessImages: [MultipartBody],
+            userId: String?,
+            partnerParams: [String: String]?,
+            callbackUrl: String?,
+            sandboxResult: Int?,
+            allowNewEnroll: Bool?,
+            boundary: String
+        ) -> Data {
+            let lineBreak = "\r\n"
+            var body = Data()
+
+            // Append parameters if available
+            if let parameters = partnerParams {
+                for (key, value) in parameters {
+                    if let valueData = "\(value)\(lineBreak)".data(using: .utf8) {
+                        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                        body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                        body.append(valueData)
+                    }
+                }
+            }
+
+            // Append userId if available
+            if let userId = userId {
+                if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
+                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                    body.append("Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    body.append(valueData)
+                }
+            }
+
+            // Append callbackUrl if available
+            if let callbackUrl = callbackUrl {
+                if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
+                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                    body.append("Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    body.append(valueData)
+                }
+            }
+
+            // Append sandboxResult if available
+            if let sandboxResult = sandboxResult {
+                let sandboxResultString = "\(sandboxResult)"
+                if let valueData = "\(sandboxResultString)\(lineBreak)".data(using: .utf8) {
+                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                    body.append("Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    body.append(valueData)
+                }
+            }
+
+            // Append allowNewEnroll if available
+            if let allowNewEnroll = allowNewEnroll {
+                let allowNewEnrollString = "\(allowNewEnroll)"
+                if let valueData = "\(allowNewEnrollString)\(lineBreak)".data(using: .utf8) {
+                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                    body.append("Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    body.append(valueData)
+                }
+            }
+
+            // Append liveness media files
+            for item in livenessImages {
+                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)".data(using: .utf8)!)
+                body.append("Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(item.data)
+                body.append(lineBreak.data(using: .utf8)!)
+            }
+            
+            // Append selfie media file
+            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(selfieImage.data)
+            body.append(lineBreak.data(using: .utf8)!)
+
+            // Append final boundary
+            body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
+
+            return body
+        }
+
 }
