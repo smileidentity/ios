@@ -37,8 +37,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     var selfieImage: URL?
     var livenessImages: [URL] = []
-    var smartSelfieLivenessImages = [MultipartBody]()
-    var smartSelfieImage: MultipartBody?
     var apiResponse: SmartSelfieResponse?
     var error: Error?
 
@@ -308,6 +306,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
 
+                var smartSelfieLivenessImages = [MultipartBody]()
+                var smartSelfieImage: MultipartBody?
                 if let selfie = try? Data(contentsOf: selfieImage), let media = MultipartBody(
                     withImage: selfie,
                     forKey: selfieImage.lastPathComponent,
