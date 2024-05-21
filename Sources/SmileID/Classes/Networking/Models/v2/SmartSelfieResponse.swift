@@ -11,7 +11,7 @@ public struct SmartSelfieResponse: Codable {
     public let status: SmartSelfieStatus
     public let updatedAt: String
     public let userId: String
-    
+
     enum CodingKeys: String, CodingKey {
             case code
             case createdAt = "created_at"

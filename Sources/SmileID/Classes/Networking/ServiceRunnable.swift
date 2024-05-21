@@ -106,7 +106,7 @@ extension ServiceRunnable {
                 livenessImages: livenessImages,
                 userId: userId,
                 partnerParams: partnerParams,
-                callbackUrl: callbackUrl.ifBlank(nil),
+                callbackUrl: callbackUrl?.nilIfEmpty(),
                 sandboxResult: sandboxResult,
                 allowNewEnroll: allowNewEnroll,
                 boundary: boundary

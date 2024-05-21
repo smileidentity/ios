@@ -13,23 +13,48 @@ func openUrl(_ urlString: String) {
 func jobResultMessageBuilder(
     jobName: String,
     didSubmitJob: Bool? = nil,
+    jobComplete: Bool? = false,
+    jobSuccess: Bool? = false,
+    code: String? = nil,
+    resultCode: String? = nil,
+    resultText: String? = nil,
     apiResponse: SmartSelfieResponse? = nil,
     suffix: String? = nil
 ) -> String {
     var message = "\(jobName) "
-    if let didSubmitJob = didSubmitJob {
-        if didSubmitJob {
-            message += "completed successfully"
+    if didSubmitJob == true {
+        if jobComplete == true {
+            if jobSuccess == true {
+                message += "completed successfully"
+            } else {
+                message += "completed unsuccessfully"
+            }
+            var parenthesesTextComponents: [String] = []
+            if let resultText = resultText, !resultText.isEmpty {
+                parenthesesTextComponents.append("resultText=\(resultText)")
+            }
+            if let code = code, !code.isEmpty {
+                parenthesesTextComponents.append("code=\(code)")
+            }
+            if let resultCode = resultCode, !resultCode.isEmpty {
+                parenthesesTextComponents.append("resultCode=\(resultCode)")
+            }
+            let parenthesesText = parenthesesTextComponents.joined(separator: ", ")
+            if !parenthesesText.isEmpty {
+                message += " (\(parenthesesText))"
+            }
         } else {
-            message += "saved offline"
+            message += "still pending"
         }
     } else {
         if let apiResponse = apiResponse {
             message += apiResponse.message
+        } else {
+            message += "was saved offline and will need to be submitted later"
         }
     }
-    if let suffix {
-        message += ". \(suffix)"
+    if let suffix = suffix {
+        message += " \(suffix)"
     }
     return message
 }
