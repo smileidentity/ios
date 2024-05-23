@@ -72,17 +72,19 @@ public class LocalStorage {
 
     static func getFileByType(
         jobId: String,
-        fileType: FileType
+        fileType: FileType,
+        submitted: Bool = false
     ) throws -> URL? {
-        let contents = try getDirectoryContents(jobId: jobId)
+        let contents = try getDirectoryContents(jobId: jobId, submitted: submitted)
         return contents.first(where: { $0.lastPathComponent.contains(fileType.name) })!
     }
 
     static func getFilesByType(
         jobId: String,
-        fileType: FileType
+        fileType: FileType,
+        submitted: Bool = false
     ) throws -> [URL]? {
-        let contents = try getDirectoryContents(jobId: jobId)
+        let contents = try getDirectoryContents(jobId: jobId, submitted: submitted)
         return contents.filter { $0.lastPathComponent.contains(fileType.name) }
     }
 
@@ -236,9 +238,11 @@ public class LocalStorage {
     }
 
     private static func getDirectoryContents(
-        jobId: String
+        jobId: String,
+        submitted: Bool = false
     ) throws -> [URL] {
-        let folderPathURL = try unsubmittedJobDirectory.appendingPathComponent(jobId)
+        let baseDirectory = try submitted ? submittedJobDirectory : unsubmittedJobDirectory
+        let folderPathURL = baseDirectory.appendingPathComponent(jobId)
         return try fileManager.contentsOfDirectory(at: folderPathURL, includingPropertiesForKeys: nil)
     }
 
@@ -270,13 +274,19 @@ public class LocalStorage {
         try fileManager.moveItem(at: unsubmittedFileDirectory, to: submittedFileDirectory)
     }
 
+    /// Moves files from unsubmitted to submitted when not in Offline Mode, or if it was not a
+    /// network error
+    /// Returns: true if files were moved
     static func handleOfflineJobFailure(
         jobId: String,
         error: SmileIDError
-    ) throws {
+    ) throws -> Bool {
+        var didMove = false
         if !(SmileID.allowOfflineMode && isNetworkFailure(error: error)) {
             try LocalStorage.moveToSubmittedJobs(jobId: jobId)
+            didMove = true
         }
+        return didMove
     }
 
     static func isNetworkFailure(

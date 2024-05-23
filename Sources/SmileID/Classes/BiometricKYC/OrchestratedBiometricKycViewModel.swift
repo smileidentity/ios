@@ -113,6 +113,18 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 didSubmitBiometricJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                    self.selfieCaptureResultStore = SelfieCaptureResultStore(
+                        selfie: try LocalStorage.getFileByType(
+                            jobId: jobId,
+                            fileType: FileType.selfie,
+                            submitted: true
+                        ) ?? selfieCaptureResultStore.selfie,
+                        livenessImages: try LocalStorage.getFilesByType(
+                            jobId: jobId,
+                            fileType: FileType.liveness,
+                            submitted: true
+                        ) ?? selfieCaptureResultStore.livenessImages
+                    )
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.error = error
@@ -122,10 +134,24 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch let error as SmileIDError {
                 do {
-                    try LocalStorage.handleOfflineJobFailure(
+                    let didMove = try LocalStorage.handleOfflineJobFailure(
                         jobId: self.jobId,
                         error: error
                     )
+                    if (didMove) {
+                        self.selfieCaptureResultStore = SelfieCaptureResultStore(
+                            selfie: try LocalStorage.getFileByType(
+                                jobId: jobId,
+                                fileType: FileType.selfie,
+                                submitted: true
+                            ) ?? selfieCaptureResultStore.selfie,
+                            livenessImages: try LocalStorage.getFilesByType(
+                                jobId: jobId,
+                                fileType: FileType.liveness,
+                                submitted: true
+                            ) ?? selfieCaptureResultStore.livenessImages
+                        )
+                    }
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.error = error

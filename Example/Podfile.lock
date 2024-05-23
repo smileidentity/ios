@@ -1,16 +1,13 @@
 PODS:
   - lottie-ios (4.4.3)
   - netfox (1.21.0)
-  - Sentry (8.20.0):
-    - Sentry/Core (= 8.20.0)
-    - SentryPrivate (= 8.20.0)
-  - Sentry/Core (8.20.0):
-    - SentryPrivate (= 8.20.0)
-  - SentryPrivate (8.20.0)
-  - SmileID (10.1.3):
+  - Sentry (8.26.0):
+    - Sentry/Core (= 8.26.0)
+  - Sentry/Core (8.26.0)
+  - SmileID (10.1.4):
     - lottie-ios (~> 4.4.2)
     - Zip (~> 2.1.0)
-  - SwiftLint (0.54.0)
+  - SwiftLint (0.55.1)
   - Zip (2.1.2)
 
 DEPENDENCIES:
@@ -24,7 +21,6 @@ SPEC REPOS:
     - lottie-ios
     - netfox
     - Sentry
-    - SentryPrivate
     - SwiftLint
     - Zip
 
@@ -35,10 +31,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
-  Sentry: a8d7b373b9f9868442b02a0c425192f693103cbf
-  SentryPrivate: 006b24af16828441f70e2ab6adf241bd0a8ad130
-  SmileID: 61ae985152b559099730bf211b74c9fbbcc4e516
-  SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
+  Sentry: 74a073c71c998117edb08f56f443c83570a31bed
+  SmileID: 7aec4c8dea152260533e55672ad7ba04658f6cd0
+  SwiftLint: 3fe909719babe5537c552ee8181c0031392be933
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
 PODFILE CHECKSUM: 8f7be2cf75babf479684f1e21d344f4c640486be
