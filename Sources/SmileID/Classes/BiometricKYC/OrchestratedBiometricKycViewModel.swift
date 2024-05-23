@@ -138,7 +138,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                         jobId: self.jobId,
                         error: error
                     )
-                    if (didMove) {
+                    if didMove {
                         self.selfieCaptureResultStore = SelfieCaptureResultStore(
                             selfie: try LocalStorage.getFileByType(
                                 jobId: jobId,

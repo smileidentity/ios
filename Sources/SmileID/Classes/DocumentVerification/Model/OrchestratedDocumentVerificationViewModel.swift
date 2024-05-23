@@ -212,7 +212,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                         jobId: self.jobId,
                         error: error
                     )
-                    if (didMove) {
+                    if didMove {
                         self.selfieFile = try LocalStorage.getFileByType(
                             jobId: jobId,
                             fileType: FileType.selfie,

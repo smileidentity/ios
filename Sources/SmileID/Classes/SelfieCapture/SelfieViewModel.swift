@@ -381,7 +381,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         jobId: self.jobId,
                         error: error
                     )
-                    if (didMove) {
+                    if didMove {
                         self.selfieImage = try LocalStorage.getFileByType(
                             jobId: jobId,
                             fileType: FileType.selfie,
