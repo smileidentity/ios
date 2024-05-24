@@ -6,11 +6,15 @@
 
 * Improved SmartSelfie Enrollment and Authentication times by moving to a synchronous API endpoint
 
+#### Fixed
+
+* Fixed a bug where invalid file paths were returned and retries did not work
+
 ## 10.1.3
 
 #### Fixed
 
-* Fix lottie SPM dependancy issues
+* Fix Lottie SPM dependency issues
 
 ## 10.1.2
 

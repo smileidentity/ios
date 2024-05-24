@@ -190,6 +190,16 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 didSubmitJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                    self.selfieFile = try LocalStorage.getFileByType(
+                        jobId: jobId,
+                        fileType: FileType.selfie,
+                        submitted: true
+                    ) ?? selfieFile
+                    self.livenessFiles = try LocalStorage.getFilesByType(
+                        jobId: jobId,
+                        fileType: FileType.liveness,
+                        submitted: true
+                    ) ?? []
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.onError(error: error)
@@ -198,10 +208,22 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch let error as SmileIDError {
                 do {
-                    try LocalStorage.handleOfflineJobFailure(
+                    let didMove = try LocalStorage.handleOfflineJobFailure(
                         jobId: self.jobId,
                         error: error
                     )
+                    if didMove {
+                        self.selfieFile = try LocalStorage.getFileByType(
+                            jobId: jobId,
+                            fileType: FileType.selfie,
+                            submitted: true
+                        ) ?? selfieFile
+                        self.livenessFiles = try LocalStorage.getFilesByType(
+                            jobId: jobId,
+                            fileType: FileType.liveness,
+                            submitted: true
+                        ) ?? []
+                    }
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.onError(error: error)

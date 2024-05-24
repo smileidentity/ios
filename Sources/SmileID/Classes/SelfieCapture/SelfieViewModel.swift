@@ -360,6 +360,16 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 apiResponse = response
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                    self.selfieImage = try LocalStorage.getFileByType(
+                        jobId: jobId,
+                        fileType: FileType.selfie,
+                        submitted: true
+                    )
+                    self.livenessImages = try LocalStorage.getFilesByType(
+                        jobId: jobId,
+                        fileType: FileType.liveness,
+                        submitted: true
+                    ) ?? []
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.error = error
@@ -367,10 +377,22 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 DispatchQueue.main.async { self.processingState = .success }
             } catch let error as SmileIDError {
                 do {
-                    try LocalStorage.handleOfflineJobFailure(
+                    let didMove = try LocalStorage.handleOfflineJobFailure(
                         jobId: self.jobId,
                         error: error
                     )
+                    if didMove {
+                        self.selfieImage = try LocalStorage.getFileByType(
+                            jobId: jobId,
+                            fileType: FileType.selfie,
+                            submitted: true
+                        )
+                        self.livenessImages = try LocalStorage.getFilesByType(
+                            jobId: jobId,
+                            fileType: FileType.liveness,
+                            submitted: true
+                        ) ?? []
+                    }
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.error = error
