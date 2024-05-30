@@ -2,6 +2,10 @@
 
 ## 10.1.5
 
+#### Added
+
+* Update generic errors with actual platform errors
+
 #### Fixed
 
 * Made the MultipartBody init func public
