@@ -58,14 +58,15 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     for: "Confirmation.SelfieCaptureComplete"
                 ),
                 successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: $viewModel.errorMessage.wrappedValue ?? "Confirmation.SuccessBody"
+                    for: $viewModel.errorMessageRes.wrappedValue ?? "Confirmation.SuccessBody"
                 ),
                 successIcon: SmileIDResourcesHelper.CheckBold,
                 errorTitle: SmileIDResourcesHelper.localizedString(
                     for: "Confirmation.Failure"
                 ),
-                errorSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: $viewModel.errorMessage.wrappedValue ?? "Confirmation.FailureReason"
+                errorSubtitle: getErrorSubtitle(
+                    errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
+                    errorMessage: $viewModel.errorMessage.wrappedValue
                 ),
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(
