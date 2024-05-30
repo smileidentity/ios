@@ -1,5 +1,11 @@
 # Release Notes
 
+## 10.1.5
+
+#### Fixed
+
+* Made the MultipartBody init func public
+
 ## 10.1.4
 
 #### Added

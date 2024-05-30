@@ -6,7 +6,7 @@ public struct MultipartBody: Encodable {
     let data: Data
     let mimeType: String
 
-    init?(withImage image: Data, forKey key: String, forName name: String) {
+    public init?(withImage image: Data, forKey key: String, forName name: String) {
         self.key = key
         mimeType = "image/jpeg"
         filename = name
