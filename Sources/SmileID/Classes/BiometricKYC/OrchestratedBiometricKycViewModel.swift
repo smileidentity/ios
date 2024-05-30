@@ -23,6 +23,9 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
     // MARK: - UI Properties
 
+    /// we use `errorMessageRes` to map to the actual code to the stringRes to allow localization,
+    /// and use `errorMessage` to show the actual platform error message that we show if
+    /// `errorMessageRes` is not set by the partner
     @Published var errorMessageRes: String?
     @Published var errorMessage: String?
     @Published @MainActor private(set) var step: BiometricKycStep = .selfie

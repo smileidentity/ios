@@ -45,6 +45,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     // UI Properties
     @Published var directive: String = "Instructions.Start"
+    /// we use `errorMessageRes` to map to the actual code to the stringRes to allow localization,
+    /// and use `errorMessage` to show the actual platform error message that we show if
+    /// `errorMessageRes` is not set by the partner
     @Published var errorMessageRes: String?
     @Published var errorMessage: String?
     @Published var processingState: ProcessingState?
