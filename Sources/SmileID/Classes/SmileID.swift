@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.1.3"
+    public static let version = "10.1.5"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -142,7 +142,8 @@ public class SmileID {
                 let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile.partnerParams.extras),
-                    allowNewEnroll: String(prepUploadFile.allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+                    // TODO: - Fix when Michael changes this to boolean
+                    allowNewEnroll: String(prepUploadFile.allowNewEnroll),
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
@@ -151,7 +152,7 @@ public class SmileID {
                     LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie),
                     LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
                     LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack),
-                    LocalStorage.getInfoJsonFile(jobId: jobId),
+                    LocalStorage.getInfoJsonFile(jobId: jobId)
                 ].compactMap { $0 }
                 let zipUrl = try LocalStorage.zipFiles(at: allFiles)
                 zip = try Data(contentsOf: zipUrl)
