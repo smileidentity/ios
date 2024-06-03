@@ -143,11 +143,14 @@ public class JobResult: Codable {
 }
 
 public class SmartSelfieJobResult: JobResult {
-    public let confidence: String?
+    public let confidence: Double?
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        confidence = try container.decodeIfPresent(String.self, forKey: .confidence)
+        guard let confidenceValue = try container.decodeIfPresent(String.self, forKey: .confidence) else {
+            throw SmileIDError.unknown("Decoding error")
+        }
+        self.confidence =  Double(confidenceValue)
         try super.init(from: decoder)
     }
 
