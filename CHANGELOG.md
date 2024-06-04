@@ -5,6 +5,7 @@
 #### Fixed
 
 * Made the MultipartBody init func public
+* Fixed decoding error for confidence value
 
 ## 10.1.4
 
