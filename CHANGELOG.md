@@ -1,5 +1,10 @@
 # Release Notes
 
+## [Unreleased]
+
+#### Changed
+* Made the `Color` extension initializer with hex values public.
+
 ## 10.1.5
 
 #### Fixed
