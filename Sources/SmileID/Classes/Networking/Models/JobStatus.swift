@@ -147,7 +147,10 @@ public class SmartSelfieJobResult: JobResult {
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        confidence = try container.decodeIfPresent(Double.self, forKey: .confidence)
+        guard let confidenceValue = try container.decodeIfPresent(String.self, forKey: .confidence) else {
+            throw SmileIDError.unknown("Error decoding .confidenceValue")
+        }
+        self.confidence =  Double(confidenceValue)
         try super.init(from: decoder)
     }
 
