@@ -55,53 +55,40 @@ extension String {
     }
 }
 
+let errorMappings: [Set<String>: String] = [
+    ["2201", "2301", "2401"]: "Si.Error.Message.2201.2301.2401",
+    ["2205", "2405"]: "Si.Error.Message.2205.2405",
+    ["2213", "2413"]: "Si.Error.Message.2213.2413",
+    ["2203"]: "Si.Error.Message.2203",
+    ["2204"]: "Si.Error.Message.2204",
+    ["2207"]: "Si.Error.Message.2207",
+    ["2208"]: "Si.Error.Message.2208",
+    ["2209"]: "Si.Error.Message.2209",
+    ["2210"]: "Si.Error.Message.2210",
+    ["2211"]: "Si.Error.Message.2211",
+    ["2212"]: "Si.Error.Message.2212",
+    ["2215"]: "Si.Error.Message.2215",
+    ["2216"]: "Si.Error.Message.2216",
+    ["2220"]: "Si.Error.Message.2220",
+    ["2221"]: "Si.Error.Message.2221",
+    ["2314"]: "Si.Error.Message.2314",
+    ["2414"]: "Si.Error.Message.2414"
+]
+
+func findErrorMessage(for code: String) -> String {
+    for (codes, message) in errorMappings {
+        if codes.contains(code) {
+            return message
+        }
+    }
+    return "Confirmation.FailureReason"
+}
+
 func toErrorMessage(error: SmileIDError) -> (String, String?) {
     switch error {
     case .api(let code, let message):
-        let systemError = ["2201", "2301", "2401"]
-        let notAuthorized = ["2205", "2405"]
-        let missingParameters = ["2213", "2413"]
-        
-        if systemError.contains(code) {
-            return ("Si.Error.Message.2201.2301.2401", message)
-        } else if notAuthorized.contains(code) {
-            return ("Si.Error.Message.2205.2405", message)
-        } else if missingParameters.contains(code) {
-            return ("Si.Error.Message.2213.2413", message)
-        }
-        
-        switch code {
-        case "2203":
-            return ("Si.Error.Message.2203", message)
-        case "2204":
-            return ("Si.Error.Message.2204", message)
-        case "2207":
-            return ("Si.Error.Message.2207", message)
-        case "2208":
-            return ("Si.Error.Message.2208", message)
-        case "2209":
-            return ("Si.Error.Message.2209", message)
-        case "2210":
-            return ("Si.Error.Message.2210", message)
-        case "2211":
-            return ("Si.Error.Message.2211", message)
-        case "2212":
-            return ("Si.Error.Message.2212", message)
-        case "2215":
-            return ("Si.Error.Message.2215", message)
-        case "2216":
-            return ("Si.Error.Message.2216", message)
-        case "2220":
-            return ("Si.Error.Message.2220", message)
-        case "2221":
-            return ("Si.Error.Message.2221", message)
-        case "2314":
-            return ("Si.Error.Message.2314", message)
-        case "2414":
-            return ("Si.Error.Message.2414", message)
-        default:
-            return ("Confirmation.FailureReason", nil)
-        }
+        let errorMessage = findErrorMessage(for: code)
+        return (errorMessage, message)
     default:
         return ("Confirmation.FailureReason", nil)
     }
