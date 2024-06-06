@@ -23,7 +23,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         self.uploadSession = uploadSession
     }
 
-    func send<T: Decodable>(request: RestRequest) -> AnyPublisher<T, Error> {
+    func send<T: Decodable>(request: RestRequest) async throws -> T {
         do {
             let urlRequest = try request.getURLRequest()
             return session.send(request: urlRequest)
@@ -36,7 +36,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    public func upload(request: RestRequest) -> AnyPublisher<UploadResponse, Error> {
+    public func upload(request: RestRequest) async throws -> UploadResponse {
         do {
             let urlRequest = try request.getUploadRequest()
             let subject = PassthroughSubject<UploadResponse, Error>()
@@ -61,7 +61,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    public func multipart<T: Decodable>(request: RestRequest) -> AnyPublisher<T, Error> {
+    public func multipart<T: Decodable>(request: RestRequest) async throws -> T {
         do {
             let urlRequest = try request.getURLRequest()
             return session.send(request: urlRequest)

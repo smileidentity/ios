@@ -4,14 +4,14 @@ import Foundation
 public protocol SmileIDServiceable {
     /// Returns a signature and timestamp that can be used to authenticate future requests. This is
     /// necessary only when using the authToken and *not* using the API key.
-    func authenticate(request: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error>
+    func authenticate(request: AuthenticationRequest) async throws -> AuthenticationResponse
 
     /// Used by Job Types that need to upload a file to the server. The response contains the URL
     /// that the file should eventually be uploaded to (via upload).
-    func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error>
+    func prepUpload(request: PrepUploadRequest) async throws -> PrepUploadResponse
 
     /// Uploads files to S3. The URL should be the one returned by `prepUpload`.
-    func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error>
+    func upload(zip: Data, to url: String) async throws -> UploadResponse
 
     /// Perform a synchronous SmartSelfie Enrollment. The response will include the final result of
     /// the enrollment.
@@ -25,7 +25,7 @@ public protocol SmileIDServiceable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?
-    ) -> AnyPublisher<SmartSelfieResponse, Error>
+    ) async throws -> SmartSelfieResponse
 
     /// Perform a synchronous SmartSelfie Authentication. The response will include the final result
     /// of the authentication.
@@ -38,7 +38,7 @@ public protocol SmileIDServiceable {
         partnerParams: [String: String]?,
         callbackUrl: String?,
         sandboxResult: Int?
-    ) -> AnyPublisher<SmartSelfieResponse, Error>
+    ) async throws -> SmartSelfieResponse
 
     /// Query the Identity Information of an individual using their ID number from a supported ID
     /// Type. Return the personal information of the individual found in the database of the ID
@@ -47,43 +47,43 @@ public protocol SmileIDServiceable {
     /// - Requires: The `callbackUrl` must be set on the `request`
     func doEnhancedKycAsync(
         request: EnhancedKycRequest
-    ) -> AnyPublisher<EnhancedKycAsyncResponse, Error>
+    ) async throws -> EnhancedKycAsyncResponse
     /// Query the Identity Information of an individual using their ID number from a supported ID
     /// Type. Return the personal information of the individual found in the database of the ID authority.
     /// This will be done synchronously, and the result will be returned in the response. If the ID
     /// provider is unavailable, the response will be an error.
     func doEnhancedKyc(
         request: EnhancedKycRequest
-    ) -> AnyPublisher<EnhancedKycResponse, Error>
+    ) async throws -> EnhancedKycResponse
 
     /// Fetches the status of a Job. This can be used to check if a Job is complete, and if so,
     /// whether it was successful.
     func getJobStatus<T: JobResult>(
         request: JobStatusRequest
-    ) -> AnyPublisher<JobStatusResponse<T>, Error>
+    ) async throws -> JobStatusResponse<T>
 
     /// Returns supported products and metadata
-    func getServices() -> AnyPublisher<ServicesResponse, Error>
+    func getServices() async throws -> ServicesResponse
 
     /// Returns the ID types that are enabled for authenticated partner and which of those require
     /// consent
     func getProductsConfig(
         request: ProductsConfigRequest
-    ) -> AnyPublisher<ProductsConfigResponse, Error>
+    ) async throws -> ProductsConfigResponse
 
     /// Gets supported documents and metadata for Document Verification
     func getValidDocuments(
         request: ProductsConfigRequest
-    ) -> AnyPublisher<ValidDocumentsResponse, Error>
+    ) async throws -> ValidDocumentsResponse
 
     /// Returns the different modes of getting the BVN OTP, either via sms or email
-    func requestBvnTotpMode(request: BvnTotpRequest) -> AnyPublisher<BvnTotpResponse, Error>
+    func requestBvnTotpMode(request: BvnTotpRequest) async throws -> BvnTotpResponse
 
     /// Returns the BVN OTP via the selected mode
-    func requestBvnOtp(request: BvnTotpModeRequest) -> AnyPublisher<BvnTotpModeResponse, Error>
+    func requestBvnOtp(request: BvnTotpModeRequest) async throws -> BvnTotpModeResponse
 
     /// Submits the BVN OTP for verification
-    func submitBvnOtp(request: SubmitBvnTotpRequest) -> AnyPublisher<SubmitBvnTotpResponse, Error>
+    func submitBvnOtp(request: SubmitBvnTotpRequest) async throws -> SubmitBvnTotpResponse
 }
 
 public extension SmileIDServiceable {
@@ -100,18 +100,18 @@ public extension SmileIDServiceable {
         request: JobStatusRequest,
         interval _: TimeInterval,
         numAttempts: Int
-    ) -> AnyPublisher<JobStatusResponse<T>, Error> {
+    ) async throws -> JobStatusResponse<T> {
         var lastError: Error?
         var attemptCount = 0
 
-        func makeRequest() -> AnyPublisher<JobStatusResponse<T>, Error> {
+        func makeRequest() async throws -> JobStatusResponse<T> {
             attemptCount += 1
 
             return SmileID.api.getJobStatus(request: request)
                 // swiftlint:disable force_cast
                 .map { response in response as! JobStatusResponse<T> }
                 // swiftlint:enable force_cast
-                .flatMap { response -> AnyPublisher<JobStatusResponse<T>, Error> in
+                .flatMap { response -> JobStatusResponse<T> in
                     if response.jobComplete {
                         return Just(response).setFailureType(to: Error.self)
                             .eraseToAnyPublisher()
@@ -121,7 +121,7 @@ public extension SmileIDServiceable {
                         return Fail(error: SmileIDError.jobStatusTimeOut).eraseToAnyPublisher()
                     }
                 }
-                .catch { error -> AnyPublisher<JobStatusResponse<T>, Error> in
+                .catch { error -> JobStatusResponse<T> in
                     lastError = error
                     if attemptCount < numAttempts {
                         return makeRequest()
@@ -132,7 +132,7 @@ public extension SmileIDServiceable {
                 .eraseToAnyPublisher()
         }
 
-        return makeRequest()
+        return try await makeRequest()
     }
 
     /// Polls the server for the status of a SmartSelfie Job until it is complete. This should be called after
@@ -148,8 +148,8 @@ public extension SmileIDServiceable {
         request: JobStatusRequest,
         interval: TimeInterval,
         numAttempts: Int
-    ) -> AnyPublisher<SmartSelfieJobStatusResponse, Error> {
-        pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    ) async throws -> SmartSelfieJobStatusResponse {
+        try await pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 
     /// Polls the server for the status of a Document Verification Job until it is complete. This should be called after
@@ -165,8 +165,8 @@ public extension SmileIDServiceable {
         request: JobStatusRequest,
         interval: TimeInterval,
         numAttempts: Int
-    ) -> AnyPublisher<DocumentVerificationJobStatusResponse, Error> {
-        pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    ) async throws -> DocumentVerificationJobStatusResponse {
+        try await pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 
     /// Polls the server for the status of a Biometric KYC Job until it is complete. This should be called after
@@ -182,8 +182,8 @@ public extension SmileIDServiceable {
         request: JobStatusRequest,
         interval: TimeInterval,
         numAttempts: Int
-    ) -> AnyPublisher<BiometricKycJobStatusResponse, Error> {
-        pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    ) async throws -> BiometricKycJobStatusResponse {
+        try await pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 
     /// Polls the server for the status of a Enhanced Document Verification Job until it is complete.
@@ -200,8 +200,8 @@ public extension SmileIDServiceable {
         request: JobStatusRequest,
         interval: TimeInterval,
         numAttempts: Int
-    ) -> AnyPublisher<EnhancedDocumentVerificationJobStatusResponse, Error> {
-        pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    ) async throws -> EnhancedDocumentVerificationJobStatusResponse {
+        try await pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 }
 
@@ -211,12 +211,12 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
 
     public func authenticate(
         request: AuthenticationRequest
-    ) -> AnyPublisher<AuthenticationResponse, Error> {
-        post(to: "auth_smile", with: request)
+    ) async throws -> AuthenticationResponse {
+        try await post(to: "auth_smile", with: request)
     }
 
-    public func prepUpload(request: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error> {
-        post(to: "upload", with: request)
+    public func prepUpload(request: PrepUploadRequest) async throws -> PrepUploadResponse {
+        try await post(to: "upload", with: request)
     }
 
     public func doSmartSelfieEnrollment(
@@ -229,8 +229,8 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         callbackUrl: String? = SmileID.callbackUrl,
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil
-    ) -> AnyPublisher<SmartSelfieResponse, Error> {
-        multipart(
+    ) async throws -> SmartSelfieResponse {
+        try await multipart(
             to: "/v2/smart-selfie-enroll",
             signature: signature,
             timestamp: timestamp,
@@ -253,8 +253,8 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         partnerParams: [String: String]? = nil,
         callbackUrl: String? = SmileID.callbackUrl,
         sandboxResult: Int? = nil
-    ) -> AnyPublisher<SmartSelfieResponse, Error> {
-        multipart(
+    ) async throws -> SmartSelfieResponse {
+        try await multipart(
             to: "/v2/smart-selfie-authentication",
             signature: signature,
             timestamp: timestamp,
@@ -267,59 +267,59 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         )
     }
 
-    public func upload(zip: Data, to url: String) -> AnyPublisher<UploadResponse, Error> {
-        upload(data: zip, to: url, with: .put)
+    public func upload(zip: Data, to url: String) async throws -> UploadResponse {
+        try await upload(data: zip, to: url, with: .put)
     }
 
     public func doEnhancedKycAsync(
         request: EnhancedKycRequest
-    ) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
-        post(to: "async_id_verification", with: request)
+    ) async throws -> EnhancedKycAsyncResponse {
+        try await post(to: "async_id_verification", with: request)
     }
 
     public func doEnhancedKyc(
         request: EnhancedKycRequest
-    ) -> AnyPublisher<EnhancedKycResponse, Error> {
-        post(to: "id_verification", with: request)
+    ) async throws -> EnhancedKycResponse {
+        try await post(to: "id_verification", with: request)
     }
 
     public func getJobStatus<T>(
         request: JobStatusRequest
-    ) -> AnyPublisher<JobStatusResponse<T>, Error> {
-        post(to: "job_status", with: request)
+    ) async throws -> JobStatusResponse<T> {
+        try await post(to: "job_status", with: request)
     }
 
-    public func getServices() -> AnyPublisher<ServicesResponse, Error> {
-        get(to: "services")
+    public func getServices() async throws -> ServicesResponse {
+        try await get(to: "services")
     }
 
     public func getProductsConfig(
         request: ProductsConfigRequest
-    ) -> AnyPublisher<ProductsConfigResponse, Error> {
-        post(to: "products_config", with: request)
+    ) async throws -> ProductsConfigResponse {
+        try await post(to: "products_config", with: request)
     }
 
     public func getValidDocuments(
         request: ProductsConfigRequest
-    ) -> AnyPublisher<ValidDocumentsResponse, Error> {
-        post(to: "valid_documents", with: request)
+    ) async throws -> ValidDocumentsResponse {
+        try await post(to: "valid_documents", with: request)
     }
 
     public func requestBvnTotpMode(
         request: BvnTotpRequest
-    ) -> AnyPublisher<BvnTotpResponse, Error> {
-        post(to: "totp_consent", with: request)
+    ) async throws -> BvnTotpResponse {
+        try await post(to: "totp_consent", with: request)
     }
 
     public func requestBvnOtp(
         request: BvnTotpModeRequest
-    ) -> AnyPublisher<BvnTotpModeResponse, Error> {
-        post(to: "totp_consent/mode", with: request)
+    ) async throws -> BvnTotpModeResponse {
+        try await post(to: "totp_consent/mode", with: request)
     }
 
     public func submitBvnOtp(
         request: SubmitBvnTotpRequest
-    ) -> AnyPublisher<SubmitBvnTotpResponse, Error> {
-        post(to: "totp_consent/otp", with: request)
+    ) async throws -> SubmitBvnTotpResponse {
+        try await post(to: "totp_consent/otp", with: request)
     }
 }
