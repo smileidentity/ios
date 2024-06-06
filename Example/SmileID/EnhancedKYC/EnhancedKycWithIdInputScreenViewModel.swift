@@ -32,16 +32,16 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
         DispatchQueue.main.async { self.step = .loading("Loading ID Types…") }
         Task {
             do {
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+                let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let productsConfigRequest = ProductsConfigRequest(
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
                 let productsConfigResponse = try await SmileID.api.getProductsConfig(
                     request: productsConfigRequest
-                ).async()
+                )
                 let supportedCountries = productsConfigResponse.idSelection.enhancedKyc
-                let servicesResponse = try await SmileID.api.getServices().async()
+                let servicesResponse = try await SmileID.api.getServices()
                 let servicesCountryInfo = servicesResponse.hostedWeb.enhancedKyc
                 // sort by country name
                 let countryList = servicesCountryInfo
@@ -75,7 +75,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
         }
         Task {
             do {
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+                let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 if authResponse.consentInfo?.consentRequired == true {
                     DispatchQueue.main.async {
                         self.step = .consent(
@@ -132,7 +132,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
                     jobId: jobId,
                     userId: userId
                 )
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+                let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let enhancedKycRequest = EnhancedKycRequest(
                     country: idInfo.country,
                     idType: idInfo.idType!,
@@ -147,7 +147,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
                 )
                 enhancedKycResponse = try await SmileID.api.doEnhancedKyc(
                     request: enhancedKycRequest
-                ).async()
+                )
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch {
                 self.error = error
