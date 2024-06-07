@@ -58,14 +58,15 @@ extension ServiceRunnable {
         to path: PathType,
         with body: T
     ) async throws -> U {
-        createRestRequest(
+        let request = try await createRestRequest(
             path: path,
             method: .post,
             headers: [.contentType(value: "application/json")],
             body: body
         )
-        .flatMap(serviceClient.send)
-        .eraseToAnyPublisher()
+        serviceClient.send(request: <#T##RestRequest#>)
+//        .flatMap(serviceClient.send)
+//        .eraseToAnyPublisher()
     }
 
     func get<U: Decodable>(to path: PathType) async throws -> U {

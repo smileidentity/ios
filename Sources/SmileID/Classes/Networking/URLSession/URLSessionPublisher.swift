@@ -10,3 +10,9 @@ extension URLSession: URLSessionPublisher {
         dataTaskPublisher(for: request).eraseToAnyPublisher()
     }
 }
+
+extension URLSession {
+    func send(request: URLRequest) async throws -> (data: Data, response: URLResponse) {
+        try await data(for: request)
+    }
+}

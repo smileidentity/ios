@@ -11,12 +11,14 @@ public protocol URLUploadSessionPublisher {
 }
 
 class URLSessionRestServiceClient: NSObject, RestServiceClient {
-    let session: URLSessionPublisher
+    typealias URLSessionResponse = (data: Data, response: URLResponse)
+    
+    let session: URLSession
     let uploadSession: URLUploadSessionPublisher
     let decoder = JSONDecoder()
 
     public init(
-        session: URLSessionPublisher = URLSession.shared,
+        session: URLSession = URLSession.shared,
         uploadSession: URLUploadSessionPublisher = URLUploadSessionPublisherImplementation()
     ) {
         self.session = session
@@ -26,56 +28,50 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     func send<T: Decodable>(request: RestRequest) async throws -> T {
         do {
             let urlRequest = try request.getURLRequest()
-            return session.send(request: urlRequest)
-                .tryMap(checkStatusCode)
-                .decode(type: T.self, decoder: decoder)
-                .mapError(mapToAPIError)
-                .eraseToAnyPublisher()
+            let urlSessionResponse = try await session.send(request: urlRequest)
+            let data = try checkStatusCode(urlSessionResponse)
+            return try decoder.decode(T.self, from: data)
         } catch {
-            return Fail(error: error).eraseToAnyPublisher()
+            throw mapToAPIError(error)
         }
     }
 
-    public func upload(request: RestRequest) async throws -> UploadResponse {
-        do {
-            let urlRequest = try request.getUploadRequest()
-            let subject = PassthroughSubject<UploadResponse, Error>()
-            uploadSession.upload(request: urlRequest, data: request.body) { data, response, error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    subject.send(completion: .failure(error))
-                    return
+    public func upload(request: RestRequest) async throws -> AsyncThrowingStream<UploadResponse, Error> {
+        AsyncThrowingStream<UploadResponse, Error> { continuation in
+            do {
+                let urlRequest = try request.getUploadRequest()
+                let delegate = URLDelegate(continuation: continuation)
+                let uploadSession2 = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
+                uploadSession2.uploadTask(with: urlRequest, from: request.body) { data, response, error in
+                    if let error = error {
+                        continuation.finish(throwing: error)
+                        return
+                    }
+                    if (response as? HTTPURLResponse)?.statusCode == 200 {
+                        continuation.yield(.response(data: data))
+                    }
                 }
-                if (response as? HTTPURLResponse)?.statusCode == 200 {
-                    subject.send(.response(data: data))
-                    return
-                }
+            } catch {
+                continuation.finish(throwing: error)
             }
-
-            let uploadProgress = uploadSession.delegate.subject
-            return uploadProgress
-                .merge(with: subject)
-                .eraseToAnyPublisher()
-        } catch {
-            return Fail(error: error).eraseToAnyPublisher()
         }
     }
 
     public func multipart<T: Decodable>(request: RestRequest) async throws -> T {
         do {
             let urlRequest = try request.getURLRequest()
-            return session.send(request: urlRequest)
-                .tryMap(checkStatusCode)
-                .decode(type: T.self, decoder: decoder)
-                .mapError(mapToAPIError)
-                .eraseToAnyPublisher()
+            let urlSessionResponse = try await session.send(request: urlRequest)
+            let data = try checkStatusCode(urlSessionResponse)
+            return try decoder.decode(T.self, from: data)
         } catch {
-            return Fail(error: error).eraseToAnyPublisher()
+            throw mapToAPIError(error)
         }
     }
 
     private func mapToAPIError(_ error: Error) -> SmileIDError {
-        if let decodingError = error as? DecodingError {
+        if let requestError = error as? URLError {
+            return .request(requestError)
+        } else if let decodingError = error as? DecodingError {
             return .decode(decodingError)
         } else if let error = error as? SmileIDError {
             return error
@@ -84,20 +80,20 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    private func checkStatusCode(_ element: URLSession.DataTaskPublisher.Output) throws -> Data {
-        guard let httpResponse = element.response as? HTTPURLResponse,
+    private func checkStatusCode(_ urlSessionResponse: URLSessionResponse) throws -> Data {
+        guard let httpResponse = urlSessionResponse.response as? HTTPURLResponse,
               httpResponse.isSuccess
         else {
             if let decodedError = try? JSONDecoder().decode(
                 SmileIDErrorResponse.self,
-                from: element.data
+                from: urlSessionResponse.data
             ) {
                 throw SmileIDError.api(decodedError.code, decodedError.message)
             }
-            throw SmileIDError.httpError((element.response as? HTTPURLResponse)?.statusCode ?? 500, element.data)
+            throw SmileIDError.httpError((urlSessionResponse.response as? HTTPURLResponse)?.statusCode ?? 500, urlSessionResponse.data)
         }
 
-        return element.data
+        return urlSessionResponse.data
     }
 }
 
@@ -110,10 +106,10 @@ extension HTTPURLResponse {
 
 public class URLDelegate: NSObject, URLSessionTaskDelegate {
 
-    var subject: PassthroughSubject<UploadResponse, Error>
-
-    public init(subject: PassthroughSubject<UploadResponse, Error> = .init()) {
-        self.subject = subject
+    let continuation: AsyncThrowingStream<UploadResponse, Error>.Continuation
+    
+    public init(continuation: AsyncThrowingStream<UploadResponse, Error>.Continuation) {
+        self.continuation = continuation
     }
 
     public func urlSession(
@@ -123,7 +119,11 @@ public class URLDelegate: NSObject, URLSessionTaskDelegate {
         totalBytesSent: Int64,
         totalBytesExpectedToSend: Int64
     ) {
-        subject.send(.progress(percentage: task.progress.fractionCompleted))
+        self.continuation.yield(.progress(percentage: task.progress.fractionCompleted))
+    }
+    
+    deinit {
+        continuation.finish()
     }
 }
 
