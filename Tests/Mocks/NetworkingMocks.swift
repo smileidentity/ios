@@ -18,14 +18,14 @@ class MockURLSessionPublisher: URLSessionPublisher {
 
     func send(
         request _: URLRequest
-    ) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
+    ) async throws -> (data: Data, response: URLResponse) {
         Result.Publisher((expectedData, expectedResponse))
             .eraseToAnyPublisher()
     }
 }
 
 class MockSmileIdentityService: SmileIDServiceable {
-    func authenticate(request _: AuthenticationRequest) -> AnyPublisher<AuthenticationResponse, Error> {
+    func authenticate(request _: AuthenticationRequest) async throws -> AuthenticationResponse {
         let params = PartnerParams(
             jobId: "jobid",
             userId: "userid",
@@ -47,7 +47,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func prepUpload(request _: PrepUploadRequest) -> AnyPublisher<PrepUploadResponse, Error> {
+    func prepUpload(request _: PrepUploadRequest) async throws -> PrepUploadResponse {
         let response = PrepUploadResponse(
             code: "code",
             refId: "refid",
@@ -63,7 +63,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func upload(zip _: Data = Data(), to _: String = "") -> AnyPublisher<UploadResponse, Error> {
+    func upload(zip _: Data = Data(), to _: String = "") async throws -> UploadResponse {
         let response = UploadResponse.response(data: Data())
         if MockHelper.shouldFail {
             return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
@@ -76,7 +76,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     func doEnhancedKycAsync(
         request _: EnhancedKycRequest
-    ) -> AnyPublisher<EnhancedKycAsyncResponse, Error> {
+    ) async throws -> EnhancedKycAsyncResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)
@@ -90,7 +90,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     func doEnhancedKyc(
         request _: EnhancedKycRequest
-    ) -> AnyPublisher<EnhancedKycResponse, Error> {
+    ) async throws -> EnhancedKycResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)
@@ -136,7 +136,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         callbackUrl _: String?,
         sandboxResult _: Int?,
         allowNewEnroll _: Bool?
-    ) -> AnyPublisher<SmartSelfieResponse, any Error> {
+    ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)
@@ -167,7 +167,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         partnerParams _: [String: String]?,
         callbackUrl _: String?,
         sandboxResult _: Int?
-    ) -> AnyPublisher<SmartSelfieResponse, any Error> {
+    ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
             return Fail(error: error)
@@ -191,7 +191,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     func getJobStatus<T: JobResult>(
         request _: JobStatusRequest
-    ) -> AnyPublisher<JobStatusResponse<T>, Error> {
+    ) async throws -> JobStatusResponse<T> {
         let response = JobStatusResponse<T>(jobComplete: MockHelper.jobComplete)
         if MockHelper.shouldFail {
             return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
@@ -202,7 +202,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func getServices() -> AnyPublisher<ServicesResponse, Error> {
+    func getServices() async throws -> ServicesResponse {
         var response: ServicesResponse
         do {
             response = try ServicesResponse(
@@ -225,7 +225,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     func getProductsConfig(
         request _: ProductsConfigRequest
-    ) -> AnyPublisher<ProductsConfigResponse, Error> {
+    ) async throws -> ProductsConfigResponse {
         var response: ProductsConfigResponse
         do {
             response = try ProductsConfigResponse(
@@ -253,7 +253,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     func getValidDocuments(
         request _: ProductsConfigRequest
-    ) -> AnyPublisher<ValidDocumentsResponse, Error> {
+    ) async throws -> ValidDocumentsResponse {
         let response = ValidDocumentsResponse(validDocuments: [ValidDocument]())
         if MockHelper.shouldFail {
             return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
@@ -266,7 +266,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     public func requestBvnTotpMode(
         request _: BvnTotpRequest
-    ) -> AnyPublisher<BvnTotpResponse, Error> {
+    ) async throws -> BvnTotpResponse {
         let response = BvnTotpResponse(
             success: true,
             message: "success",
@@ -286,7 +286,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     public func requestBvnOtp(
         request _: BvnTotpModeRequest
-    ) -> AnyPublisher<BvnTotpModeResponse, Error> {
+    ) async throws -> BvnTotpModeResponse {
         let response = BvnTotpModeResponse(
             success: true,
             message: "success",
@@ -304,7 +304,7 @@ class MockSmileIdentityService: SmileIDServiceable {
 
     public func submitBvnOtp(
         request _: SubmitBvnTotpRequest
-    ) -> AnyPublisher<SubmitBvnTotpResponse, Error> {
+    ) async throws -> SubmitBvnTotpResponse {
         let response = SubmitBvnTotpResponse(
             success: true,
             message: "success",

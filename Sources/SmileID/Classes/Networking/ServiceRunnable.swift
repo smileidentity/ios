@@ -10,12 +10,12 @@ protocol ServiceRunnable {
     /// - Parameters:
     ///   - path: Endpoint to execute the POST call.
     ///   - body: The contents of the body of the request.
-    func post<T: Encodable, U: Decodable>(to path: PathType, with body: T) -> AnyPublisher<U, Error>
+    func post<T: Encodable, U: Decodable>(to path: PathType, with body: T) async throws -> U
 
     /// Get service call to a particular path
     /// - Parameters:
     ///   - path: Endpoint to execute the GET call.
-    func get<U: Decodable>(to path: PathType) -> AnyPublisher<U, Error>
+    func get<U: Decodable>(to path: PathType) async throws -> U
 
     // POST service call to make a multipart request.
     /// - Parameters:
@@ -32,7 +32,7 @@ protocol ServiceRunnable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?
-    ) -> AnyPublisher<SmartSelfieResponse, Error>
+    ) async throws -> SmartSelfieResponse
 
     /// PUT service call to a particular path with a body.
     /// - Parameters:
@@ -43,7 +43,7 @@ protocol ServiceRunnable {
         data: Data,
         to url: String,
         with restMethod: RestMethod
-    ) -> AnyPublisher<UploadResponse, Error>
+    ) async throws -> UploadResponse
 }
 
 extension ServiceRunnable {
@@ -57,7 +57,7 @@ extension ServiceRunnable {
     func post<T: Encodable, U: Decodable>(
         to path: PathType,
         with body: T
-    ) -> AnyPublisher<U, Error> {
+    ) async throws -> U {
         createRestRequest(
             path: path,
             method: .post,
@@ -68,7 +68,7 @@ extension ServiceRunnable {
         .eraseToAnyPublisher()
     }
 
-    func get<U: Decodable>(to path: PathType) -> AnyPublisher<U, Error> {
+    func get<U: Decodable>(to path: PathType) async throws -> U {
         createRestRequest(
             path: path,
             method: .get
@@ -88,7 +88,7 @@ extension ServiceRunnable {
         callbackUrl: String? = nil,
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil
-    ) -> AnyPublisher<SmartSelfieResponse, Error> {
+    ) async throws -> SmartSelfieResponse {
         let boundary = generateBoundary()
         var headers: [HTTPHeader] = []
         headers.append(.contentType(value: "multipart/form-data; boundary=\(boundary)"))
@@ -121,7 +121,7 @@ extension ServiceRunnable {
         method: RestMethod,
         headers: [HTTPHeader]? = nil,
         uploadData: Data
-    ) -> AnyPublisher<RestRequest, Error> {
+    ) async throws -> RestRequest {
         let path = String(describing: url)
         guard var baseURL = baseURL?.absoluteString else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
@@ -150,7 +150,7 @@ extension ServiceRunnable {
         data: Data,
         to url: String,
         with restMethod: RestMethod
-    ) -> AnyPublisher<UploadResponse, Error> {
+    ) async throws -> UploadResponse {
         createUploadRequest(
             url: url,
             method: restMethod,
@@ -167,7 +167,7 @@ extension ServiceRunnable {
         headers: [HTTPHeader]? = nil,
         uploadData: Data,
         queryParameters _: [HTTPQueryParameters]? = nil
-    ) -> AnyPublisher<RestRequest, Error> {
+    ) async throws -> RestRequest {
         guard let url = URL(string: url) else {
             return Fail(error: URLError(.badURL))
                 .eraseToAnyPublisher()
@@ -189,7 +189,7 @@ extension ServiceRunnable {
         headers: [HTTPHeader]? = nil,
         queryParameters: [HTTPQueryParameters]? = nil,
         body: T
-    ) -> AnyPublisher<RestRequest, Error> {
+    ) async throws -> RestRequest {
         let path = String(describing: path)
         guard let url = baseURL?.appendingPathComponent(path) else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
@@ -215,7 +215,7 @@ extension ServiceRunnable {
         path: PathType,
         method: RestMethod,
         queryParameters: [HTTPQueryParameters]? = nil
-    ) -> AnyPublisher<RestRequest, Error> {
+    ) async throws -> RestRequest {
         let path = String(describing: path)
         guard let url = baseURL?.appendingPathComponent(path) else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
