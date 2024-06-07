@@ -14,15 +14,12 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     typealias URLSessionResponse = (data: Data, response: URLResponse)
     
     let session: URLSession
-    let uploadSession: URLUploadSessionPublisher
     let decoder = JSONDecoder()
 
     public init(
-        session: URLSession = URLSession.shared,
-        uploadSession: URLUploadSessionPublisher = URLUploadSessionPublisherImplementation()
+        session: URLSession = URLSession.shared
     ) {
         self.session = session
-        self.uploadSession = uploadSession
     }
 
     func send<T: Decodable>(request: RestRequest) async throws -> T {
@@ -50,7 +47,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
                     if (response as? HTTPURLResponse)?.statusCode == 200 {
                         continuation.yield(.response(data: data))
                     }
-                }
+                }.resume()
             } catch {
                 continuation.finish(throwing: error)
             }
@@ -124,29 +121,6 @@ public class URLDelegate: NSObject, URLSessionTaskDelegate {
     
     deinit {
         continuation.finish()
-    }
-}
-
-public final class URLUploadSessionPublisherImplementation: URLUploadSessionPublisher {
-
-    public let delegate: URLDelegate = URLDelegate()
-    lazy var session = {
-        URLSession(configuration: .default,
-                   delegate: delegate,
-                   delegateQueue: nil)
-    }()
-
-    public init() {}
-
-    public func upload(
-        request: URLRequest,
-        data: Data?,
-        _ callback: @escaping (Data?, URLResponse?, Error?) -> Void
-    ) {
-        session.uploadTask(with: request, from: data) { data, response, error in
-            callback(data, response, error)
-        }
-        .resume()
     }
 }
 
