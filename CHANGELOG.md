@@ -2,15 +2,15 @@
 
 ## [Unreleased]
 
+#### Added
+
+* Update generic errors with actual platform errors
+
 #### Changed
 
 * Made the `Color` extension initializer with hex values public.
 
 ## 10.1.5
-
-#### Added
-
-* Update generic errors with actual platform errors
 
 #### Fixed
 
