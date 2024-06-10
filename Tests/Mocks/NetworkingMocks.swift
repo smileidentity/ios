@@ -12,15 +12,15 @@ class MockServiceHeaderProvider: ServiceHeaderProvider {
     }
 }
 
-class MockURLSessionPublisher: URLSessionPublisher {
+class MockURLSession {
+    
     var expectedData = Data()
     var expectedResponse = URLResponse()
 
     func send(
         request _: URLRequest
     ) async throws -> (data: Data, response: URLResponse) {
-        Result.Publisher((expectedData, expectedResponse))
-            .eraseToAnyPublisher()
+        return (expectedData, expectedResponse)
     }
 }
 
@@ -39,11 +39,9 @@ class MockSmileIdentityService: SmileIDServiceable {
             partnerParams: params
         )
         if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -55,22 +53,20 @@ class MockSmileIdentityService: SmileIDServiceable {
             smileJobId: "8950"
         )
         if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
-    func upload(zip _: Data = Data(), to _: String = "") async throws -> UploadResponse {
-        let response = UploadResponse.response(data: Data())
-        if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
-        } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+    func upload(zip _: Data = Data(), to _: String = "") async throws -> AsyncThrowingStream<UploadResponse, Error> {
+        return AsyncThrowingStream { continuation in
+            let response = UploadResponse.response(data: Data())
+            if MockHelper.shouldFail {
+                continuation.finish(throwing: SmileIDError.request(URLError(.resourceUnavailable)))
+            } else {
+                continuation.yield(response)
+            }
         }
     }
 
@@ -79,12 +75,10 @@ class MockSmileIdentityService: SmileIDServiceable {
     ) async throws -> EnhancedKycAsyncResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
-            return Fail(error: error)
-                .eraseToAnyPublisher()
+            throw error
         } else {
             let response = EnhancedKycAsyncResponse(success: true)
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -93,8 +87,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     ) async throws -> EnhancedKycResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
-            return Fail(error: error)
-                .eraseToAnyPublisher()
+            throw error
         } else {
             let response = EnhancedKycResponse(
                 smileJobId: "",
@@ -121,8 +114,7 @@ class MockSmileIdentityService: SmileIDServiceable {
                 idType: "",
                 idNumber: ""
             )
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -139,8 +131,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
-            return Fail(error: error)
-                .eraseToAnyPublisher()
+            throw error
         } else {
             let response = SmartSelfieResponse(
                 code: "",
@@ -153,8 +144,7 @@ class MockSmileIdentityService: SmileIDServiceable {
                 updatedAt: "",
                 userId: ""
             )
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -170,8 +160,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
-            return Fail(error: error)
-                .eraseToAnyPublisher()
+            throw error
         } else {
             let response = SmartSelfieResponse(
                 code: "",
@@ -184,8 +173,7 @@ class MockSmileIdentityService: SmileIDServiceable {
                 updatedAt: "",
                 userId: ""
             )
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -194,11 +182,9 @@ class MockSmileIdentityService: SmileIDServiceable {
     ) async throws -> JobStatusResponse<T> {
         let response = JobStatusResponse<T>(jobComplete: MockHelper.jobComplete)
         if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -210,16 +196,13 @@ class MockSmileIdentityService: SmileIDServiceable {
                 hostedWeb: HostedWeb(from: JSONDecoder() as! Decoder)
             )
         } catch {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         }
 
         if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -227,27 +210,20 @@ class MockSmileIdentityService: SmileIDServiceable {
         request _: ProductsConfigRequest
     ) async throws -> ProductsConfigResponse {
         var response: ProductsConfigResponse
-        do {
-            response = try ProductsConfigResponse(
-                consentRequired: [:],
-                idSelection: IdSelection(
-                    basicKyc: [:],
-                    biometricKyc: [:],
-                    enhancedKyc: [:],
-                    documentVerification: [:]
-                )
+        response = ProductsConfigResponse(
+            consentRequired: [:],
+            idSelection: IdSelection(
+                basicKyc: [:],
+                biometricKyc: [:],
+                enhancedKyc: [:],
+                documentVerification: [:]
             )
-        } catch {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
-        }
+        )
 
         if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -256,11 +232,9 @@ class MockSmileIdentityService: SmileIDServiceable {
     ) async throws -> ValidDocumentsResponse {
         let response = ValidDocumentsResponse(validDocuments: [ValidDocument]())
         if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -276,11 +250,9 @@ class MockSmileIdentityService: SmileIDServiceable {
             signature: "signature"
         )
         if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -294,11 +266,9 @@ class MockSmileIdentityService: SmileIDServiceable {
             signature: "signature"
         )
         if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 
@@ -312,11 +282,9 @@ class MockSmileIdentityService: SmileIDServiceable {
             signature: "signature"
         )
         if MockHelper.shouldFail {
-            return Fail(error: SmileIDError.request(URLError(.resourceUnavailable)))
-                .eraseToAnyPublisher()
+            throw SmileIDError.request(URLError(.resourceUnavailable))
         } else {
-            return Result.Publisher(response)
-                .eraseToAnyPublisher()
+            return response
         }
     }
 }

@@ -11,7 +11,6 @@ public protocol URLUploadSessionPublisher {
 
 class URLSessionRestServiceClient: NSObject, RestServiceClient {
     typealias URLSessionResponse = (data: Data, response: URLResponse)
-    
     let session: URLSession
     let decoder = JSONDecoder()
 
