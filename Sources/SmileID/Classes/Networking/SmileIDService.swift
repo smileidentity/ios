@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 public protocol SmileIDServiceable {
@@ -11,7 +10,7 @@ public protocol SmileIDServiceable {
     func prepUpload(request: PrepUploadRequest) async throws -> PrepUploadResponse
 
     /// Uploads files to S3. The URL should be the one returned by `prepUpload`.
-    func upload(zip: Data, to url: String) async throws -> UploadResponse
+    func upload(zip: Data, to url: String) async throws -> AsyncThrowingStream<UploadResponse, Error>
 
     /// Perform a synchronous SmartSelfie Enrollment. The response will include the final result of
     /// the enrollment.
@@ -106,30 +105,27 @@ public extension SmileIDServiceable {
 
         func makeRequest() async throws -> JobStatusResponse<T> {
             attemptCount += 1
-
-            return SmileID.api.getJobStatus(request: request)
-                // swiftlint:disable force_cast
-                .map { response in response as! JobStatusResponse<T> }
-                // swiftlint:enable force_cast
-                .flatMap { response -> JobStatusResponse<T> in
-                    if response.jobComplete {
-                        return Just(response).setFailureType(to: Error.self)
-                            .eraseToAnyPublisher()
-                    } else if attemptCount < numAttempts {
-                        return makeRequest()
-                    } else {
-                        return Fail(error: SmileIDError.jobStatusTimeOut).eraseToAnyPublisher()
-                    }
+            
+            do {
+                let response = try await SmileID.api.getJobStatus(request: request)
+                
+                if response.jobComplete {
+                    // swiftlint:disable force_cast
+                    return response as! JobStatusResponse<T>
+                    // swiftlint:enable force_cast
+                } else if attemptCount < numAttempts {
+                    return try await makeRequest()
+                } else {
+                    throw SmileIDError.jobStatusTimeOut
                 }
-                .catch { error -> JobStatusResponse<T> in
-                    lastError = error
-                    if attemptCount < numAttempts {
-                        return makeRequest()
-                    } else {
-                        return Fail(error: lastError ?? error).eraseToAnyPublisher()
-                    }
+            } catch {
+                lastError = error
+                if attemptCount < numAttempts {
+                    return try await makeRequest()
+                } else {
+                    throw lastError ?? error
                 }
-                .eraseToAnyPublisher()
+            }
         }
 
         return try await makeRequest()
@@ -267,7 +263,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         )
     }
 
-    public func upload(zip: Data, to url: String) async throws -> UploadResponse {
+    public func upload(zip: Data, to url: String) async throws -> AsyncThrowingStream<UploadResponse, Error> {
         try await upload(data: zip, to: url, with: .put)
     }
 

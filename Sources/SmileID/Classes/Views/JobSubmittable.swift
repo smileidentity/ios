@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 protocol JobSubmittable {
@@ -35,7 +34,7 @@ extension JobSubmittable {
     func upload(
         _ prepUploadResponse: PrepUploadResponse,
         zip: Data
-    ) async throws -> UploadResponse {
+    ) async throws -> AsyncThrowingStream<UploadResponse, Error> {
         try await SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
     }
 

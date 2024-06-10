@@ -63,5 +63,10 @@ struct DocumentVerificationIdTypeSelector: View {
                 }
             }
         }
+        .onAppear {
+            Task {
+                try await self.viewModel.getServices()
+            }
+        }
     }
 }

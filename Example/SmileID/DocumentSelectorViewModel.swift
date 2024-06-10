@@ -18,46 +18,32 @@ class DocumentSelectorViewModel: ObservableObject {
             fatalError("Only Document Verification jobs are supported")
         }
         self.jobType = jobType
-        let authRequest = AuthenticationRequest(
-            jobType: jobType,
-            enrollment: false,
-            userId: generateUserId()
-        )
-        let services = SmileID.api.getServices()
-        subscriber = SmileID.api.authenticate(request: authRequest)
-            .flatMap { authResponse in
-                let productRequest = ProductsConfigRequest(
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                return SmileID.api.getValidDocuments(request: productRequest)
-            }
-            .zip(services)
-            .sink(
-                receiveCompletion: { completion in
-                    switch completion {
-                    case .failure(let error):
-                        DispatchQueue.main.async {
-                            self.errorMessage = error.localizedDescription
-                        }
-                    default:
-                        break
-                    }
-                },
-                receiveValue: { (validDocumentsResponse, servicesResponse) in
-                    let supportedDocuments = servicesResponse.hostedWeb.enhancedDocumentVerification
-                    DispatchQueue.main.async {
-                        if jobType == .enhancedDocumentVerification {
-                            self.idTypes = self.filteredForEnhancedDocumentVerification(
-                                allDocuments: validDocumentsResponse.validDocuments,
-                                supportedDocuments: supportedDocuments
-                            )
-                        } else {
-                            self.idTypes = validDocumentsResponse.validDocuments
-                        }
-                    }
-                }
+    }
+    
+    @MainActor
+    func getServices() async throws {
+        do {
+            let authRequest = AuthenticationRequest(
+                jobType: jobType,
+                enrollment: false,
+                userId: generateUserId()
             )
+            let servicesResponse = try await SmileID.api.getServices()
+            let authResponse = try await SmileID.api.authenticate(request: authRequest)
+            let productRequest = ProductsConfigRequest(
+                timestamp: authResponse.timestamp,
+                signature: authResponse.signature
+            )
+            let validDocumentsResponse = try await SmileID.api.getValidDocuments(request: productRequest)
+            let supportedDocuments = servicesResponse.hostedWeb.enhancedDocumentVerification
+            if jobType == .enhancedDocumentVerification {
+                self.idTypes = self.filteredForEnhancedDocumentVerification(allDocuments: validDocumentsResponse.validDocuments, supportedDocuments: supportedDocuments)
+            } else {
+                self.idTypes = validDocumentsResponse.validDocuments
+            }
+        } catch {
+            self.errorMessage = error.localizedDescription
+        }
     }
 
     private func filteredForEnhancedDocumentVerification(

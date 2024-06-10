@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 
 public protocol URLUploadSessionPublisher {
     var delegate: URLDelegate { get }
