@@ -17,7 +17,7 @@ class URLSessionRestServiceClientTests: BaseTestCase {
             self.mockServiceHeaderProvider
         }
 
-        serviceUnderTest = URLSessionRestServiceClient()
+        serviceUnderTest = URLSessionRestServiceClient(session: mockSession)
     }
 
     func testSendReturnsPublisherWithSuccessResponse() async throws {

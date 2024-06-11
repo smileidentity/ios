@@ -11,11 +11,11 @@ public protocol URLUploadSessionPublisher {
 
 class URLSessionRestServiceClient: NSObject, RestServiceClient {
     typealias URLSessionResponse = (data: Data, response: URLResponse)
-    let session: URLSession
+    let session: URLSessionPublisher
     let decoder = JSONDecoder()
 
     public init(
-        session: URLSession = URLSession.shared
+        session: URLSessionPublisher = URLSession.shared
     ) {
         self.session = session
     }
@@ -36,8 +36,8 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
             do {
                 let urlRequest = try request.getUploadRequest()
                 let delegate = URLDelegate(continuation: continuation)
-                let uploadSession2 = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
-                uploadSession2.uploadTask(with: urlRequest, from: request.body) { data, response, error in
+                let uploadSession = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
+                uploadSession.uploadTask(with: urlRequest, from: request.body) { data, response, error in
                     if let error = error {
                         continuation.finish(throwing: error)
                         return
