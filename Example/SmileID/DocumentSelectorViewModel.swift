@@ -19,7 +19,7 @@ class DocumentSelectorViewModel: ObservableObject {
         }
         self.jobType = jobType
     }
-    
+
     @MainActor
     func getServices() async throws {
         do {
@@ -37,7 +37,10 @@ class DocumentSelectorViewModel: ObservableObject {
             let validDocumentsResponse = try await SmileID.api.getValidDocuments(request: productRequest)
             let supportedDocuments = servicesResponse.hostedWeb.enhancedDocumentVerification
             if jobType == .enhancedDocumentVerification {
-                self.idTypes = self.filteredForEnhancedDocumentVerification(allDocuments: validDocumentsResponse.validDocuments, supportedDocuments: supportedDocuments)
+                self.idTypes = self.filteredForEnhancedDocumentVerification(
+                    allDocuments: validDocumentsResponse.validDocuments,
+                    supportedDocuments: supportedDocuments
+                )
             } else {
                 self.idTypes = validDocumentsResponse.validDocuments
             }
