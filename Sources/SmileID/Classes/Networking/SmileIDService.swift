@@ -105,14 +105,11 @@ public extension SmileIDServiceable {
 
         func makeRequest() async throws -> JobStatusResponse<T> {
             attemptCount += 1
-            
+
             do {
-                let response = try await SmileID.api.getJobStatus(request: request)
-                
+                let response: JobStatusResponse<T> = try await SmileID.api.getJobStatus(request: request)
                 if response.jobComplete {
-                    // swiftlint:disable force_cast
-                    return response as! JobStatusResponse<T>
-                    // swiftlint:enable force_cast
+                    return response
                 } else if attemptCount < numAttempts {
                     return try await makeRequest()
                 } else {

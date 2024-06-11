@@ -41,7 +41,7 @@ final class PollingTests: XCTestCase {
             let response = try await pollFunction(request, interval, numAttempts)
             XCTAssertEqual(response.jobComplete, expectedResponse.jobComplete)
         } catch {
-            XCTFail(error.localizedDescription)
+            XCTFail("Unexpected error: \(error)")
         }
     }
 
@@ -52,15 +52,20 @@ final class PollingTests: XCTestCase {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
+
+        let expectation = XCTestExpectation(description: "Polling fails due to an error")
+
         MockHelper.shouldFail = true
         MockHelper.jobComplete = false
         
         do {
-            let response = try await pollFunction(request, interval, numAttempts)
-            XCTAssertFalse(response.jobComplete, "Job is not complete")
+            _ = try await pollFunction(request, interval, numAttempts)
+            XCTFail("No response should be received b/c an error occurs at first attempt")
         } catch {
-            XCTFail(error.localizedDescription)
+            expectation.fulfill()
         }
+
+        await fulfillment(of: [expectation], timeout: 2.0)
     }
 
     func testPollingFunction_MaxAttemptsReached(
@@ -70,6 +75,10 @@ final class PollingTests: XCTestCase {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
+        
+        let expectation = XCTestExpectation(
+            description: "Polling fails due to reaching the maximum number of attempts"
+        )
 
         MockHelper.shouldFail = false
         MockHelper.jobComplete = false
@@ -77,8 +86,10 @@ final class PollingTests: XCTestCase {
             let response = try await pollFunction(request, interval, numAttempts)
             XCTAssertFalse(response.jobComplete, "Job is not complete")
         } catch {
-            XCTFail(error.localizedDescription)
+            expectation.fulfill()
         }
+
+        await fulfillment(of: [expectation], timeout: 2.0)
     }
 
     func testPollSmartSelfieJobStatus() async throws {

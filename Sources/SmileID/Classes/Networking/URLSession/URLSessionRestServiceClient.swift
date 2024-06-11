@@ -102,7 +102,7 @@ extension HTTPURLResponse {
 public class URLDelegate: NSObject, URLSessionTaskDelegate {
 
     let continuation: AsyncThrowingStream<UploadResponse, Error>.Continuation
-    
+
     public init(continuation: AsyncThrowingStream<UploadResponse, Error>.Continuation) {
         self.continuation = continuation
     }
@@ -116,7 +116,7 @@ public class URLDelegate: NSObject, URLSessionTaskDelegate {
     ) {
         self.continuation.yield(.progress(percentage: task.progress.fractionCompleted))
     }
-    
+
     deinit {
         continuation.finish()
     }
