@@ -12,7 +12,7 @@ class MockServiceHeaderProvider: ServiceHeaderProvider {
     }
 }
 
-class MockURLSession {
+class MockURLSession: URLSessionPublisher {
     
     var expectedData = Data()
     var expectedResponse = URLResponse()
