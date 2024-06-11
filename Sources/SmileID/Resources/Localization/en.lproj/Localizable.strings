@@ -91,6 +91,28 @@
 "BiometricKYC.Success.Title" = "Submission Complete";
 "BiometricKYC.Success.Subtitle" = "You may now proceed";
 "BiometricKYC.Error.Title" = "Your submission failed to process";
-"BiometricKYC.Error.Subtitle" = "This could be because of image quality or internet connectivity";
 
 "Offline.Message" = "No internet connection. Your verification will be completed once you are back online";
+
+"Si.Error.Message.No.Internet" = "Please check your internet connectivity";
+"Si.Error.Message.2201" = "";
+"Si.Error.Message.2301" = "";
+"Si.Error.Message.2401" = "";
+"Si.Error.Message.2203" = "";
+"Si.Error.Message.2204" = "";
+"Si.Error.Message.2205" = "";
+"Si.Error.Message.2405" = "";
+"Si.Error.Message.2207" = "";
+"Si.Error.Message.2208" = "";
+"Si.Error.Message.2209" = "";
+"Si.Error.Message.2210" = "";
+"Si.Error.Message.2211" = "";
+"Si.Error.Message.2212" = "";
+"Si.Error.Message.2213" = "";
+"Si.Error.Message.2413" = "";
+"Si.Error.Message.2215" = "";
+"Si.Error.Message.2216" = "";
+"Si.Error.Message.2220" = "";
+"Si.Error.Message.2221" = "";
+"Si.Error.Message.2314" = "";
+"Si.Error.Message.2414" = "";

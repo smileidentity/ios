@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+#### Added
+
+* Update generic errors with actual platform errors
+
 #### Changed
 
 * Made the `Color` extension initializer with hex values public.

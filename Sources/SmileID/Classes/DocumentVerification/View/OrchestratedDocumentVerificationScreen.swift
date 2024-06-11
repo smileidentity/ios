@@ -211,12 +211,13 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     for: "Document.Complete.Header"
                 ),
                 successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: $viewModel.errorMessage.wrappedValue ?? "Document.Complete.Callout"
+                    for: $viewModel.errorMessageRes.wrappedValue ?? "Document.Complete.Callout"
                 ),
                 successIcon: SmileIDResourcesHelper.CheckBold,
                 errorTitle: SmileIDResourcesHelper.localizedString(for: "Document.Error.Header"),
-                errorSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: $viewModel.errorMessage.wrappedValue ?? "Confirmation.FailureReason"
+                errorSubtitle: getErrorSubtitle(
+                    errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
+                    errorMessage: $viewModel.errorMessage.wrappedValue
                 ),
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(
