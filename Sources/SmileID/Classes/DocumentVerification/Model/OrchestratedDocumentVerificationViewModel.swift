@@ -175,18 +175,18 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                         partnerParams: extraPartnerParams
                     )
                 }
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+                let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
                     allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
-                let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest).async()
+                let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest)
                 _ = try await SmileID.api.upload(
                     zip: zip,
                     to: prepUploadResponse.uploadUrl
-                ).async()
+                )
                 didSubmitJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)

@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 protocol ServiceRunnable {
@@ -43,7 +42,7 @@ protocol ServiceRunnable {
         data: Data,
         to url: String,
         with restMethod: RestMethod
-    ) async throws -> UploadResponse
+    ) async throws -> AsyncThrowingStream<UploadResponse, Error>
 }
 
 extension ServiceRunnable {
@@ -58,23 +57,21 @@ extension ServiceRunnable {
         to path: PathType,
         with body: T
     ) async throws -> U {
-        createRestRequest(
+        let request = try await createRestRequest(
             path: path,
             method: .post,
             headers: [.contentType(value: "application/json")],
             body: body
         )
-        .flatMap(serviceClient.send)
-        .eraseToAnyPublisher()
+        return try await serviceClient.send(request: request)
     }
 
     func get<U: Decodable>(to path: PathType) async throws -> U {
-        createRestRequest(
+        let request = try createRestRequest(
             path: path,
             method: .get
         )
-        .flatMap(serviceClient.send)
-        .eraseToAnyPublisher()
+        return try await serviceClient.send(request: request)
     }
 
     func multipart(
@@ -97,11 +94,11 @@ extension ServiceRunnable {
         headers.append(.timestamp(value: timestamp))
         headers.append(.sourceSDK(value: "iOS"))
         headers.append(.sourceSDKVersion(value: SmileID.version))
-        return createMultiPartRequest(
+        let request = try await createMultiPartRequest(
             url: path,
             method: .post,
             headers: headers,
-            uploadData: createMultiPartRequest(
+            uploadData: createMultiPartRequestData(
                 selfieImage: selfieImage,
                 livenessImages: livenessImages,
                 userId: userId,
@@ -112,8 +109,8 @@ extension ServiceRunnable {
                 boundary: boundary
             )
         )
-        .flatMap(serviceClient.multipart)
-        .eraseToAnyPublisher()
+
+        return try await serviceClient.multipart(request: request)
     }
 
     private func createMultiPartRequest(
@@ -124,7 +121,7 @@ extension ServiceRunnable {
     ) async throws -> RestRequest {
         let path = String(describing: url)
         guard var baseURL = baseURL?.absoluteString else {
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+            throw URLError(.badURL)
         }
 
         if let range = baseURL.range(of: "/v1/", options: .backwards) {
@@ -132,7 +129,7 @@ extension ServiceRunnable {
         }
 
         guard let url = URL(string: baseURL)?.appendingPathComponent(path) else {
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+            throw URLError(.badURL)
         }
 
         let request = RestRequest(
@@ -141,24 +138,21 @@ extension ServiceRunnable {
             headers: headers,
             body: uploadData
         )
-        return Just(request)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+        return request
     }
 
     func upload(
         data: Data,
         to url: String,
         with restMethod: RestMethod
-    ) async throws -> UploadResponse {
-        createUploadRequest(
+    ) async throws -> AsyncThrowingStream<UploadResponse, Error> {
+        let uploadRequest = try await createUploadRequest(
             url: url,
             method: restMethod,
             headers: [.contentType(value: "application/zip")],
             uploadData: data
         )
-        .flatMap { serviceClient.upload(request: $0) }
-        .eraseToAnyPublisher()
+        return try await serviceClient.upload(request: uploadRequest)
     }
 
     private func createUploadRequest(
@@ -169,8 +163,7 @@ extension ServiceRunnable {
         queryParameters _: [HTTPQueryParameters]? = nil
     ) async throws -> RestRequest {
         guard let url = URL(string: url) else {
-            return Fail(error: URLError(.badURL))
-                .eraseToAnyPublisher()
+            throw URLError(.badURL)
         }
         let request = RestRequest(
             url: url,
@@ -178,9 +171,7 @@ extension ServiceRunnable {
             headers: headers,
             body: uploadData
         )
-        return Just(request)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+        return request
     }
 
     private func createRestRequest<T: Encodable>(
@@ -192,7 +183,7 @@ extension ServiceRunnable {
     ) async throws -> RestRequest {
         let path = String(describing: path)
         guard let url = baseURL?.appendingPathComponent(path) else {
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+            throw URLError(.badURL)
         }
 
         do {
@@ -203,11 +194,9 @@ extension ServiceRunnable {
                 queryParameters: queryParameters,
                 body: body
             )
-            return Just(request)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
+            return request
         } catch {
-            return Fail(error: error).eraseToAnyPublisher()
+            throw error
         }
     }
 
@@ -215,10 +204,10 @@ extension ServiceRunnable {
         path: PathType,
         method: RestMethod,
         queryParameters: [HTTPQueryParameters]? = nil
-    ) async throws -> RestRequest {
+    ) throws -> RestRequest {
         let path = String(describing: path)
         guard let url = baseURL?.appendingPathComponent(path) else {
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+            throw URLError(.badURL)
         }
 
         let request = RestRequest(
@@ -226,9 +215,7 @@ extension ServiceRunnable {
             method: method,
             queryParameters: queryParameters
         )
-        return Just(request)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+        return request
     }
 
     func generateBoundary() -> String {
@@ -236,7 +223,7 @@ extension ServiceRunnable {
     }
 
     // swiftlint:disable line_length cyclomatic_complexity
-    func createMultiPartRequest(
+    func createMultiPartRequestData(
             selfieImage: MultipartBody,
             livenessImages: [MultipartBody],
             userId: String?,

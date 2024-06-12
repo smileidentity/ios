@@ -139,7 +139,7 @@ public class SmileID {
                     jobId: authRequestFile.jobId,
                     userId: authRequestFile.userId
                 )
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+                let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile.partnerParams.extras),
                     // TODO: - Fix when Michael changes this to boolean
@@ -147,7 +147,7 @@ public class SmileID {
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
-                let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest).async()
+                let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest)
                 let allFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: FileType.liveness)! + [
                     LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie),
                     LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
@@ -159,7 +159,7 @@ public class SmileID {
                 _ = try await SmileID.api.upload(
                     zip: zip,
                     to: prepUploadResponse.uploadUrl
-                ).async()
+                )
                 if deleteFilesOnSuccess {
                     do {
                         try LocalStorage.delete(at: [jobId])

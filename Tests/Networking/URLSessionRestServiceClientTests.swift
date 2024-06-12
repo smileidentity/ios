@@ -6,21 +6,21 @@ import Combine
 class URLSessionRestServiceClientTests: BaseTestCase {
     var mockURL: URL!
     var mockServiceHeaderProvider: MockServiceHeaderProvider!
-    var mockSessionPublisher: MockURLSessionPublisher!
+    var mockSession: MockURLSession!
     var serviceUnderTest: URLSessionRestServiceClient!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         mockServiceHeaderProvider = MockServiceHeaderProvider()
-        mockSessionPublisher = MockURLSessionPublisher()
+        mockSession = MockURLSession()
         mockDependencyContainer.register(ServiceHeaderProvider.self) {
             self.mockServiceHeaderProvider
         }
 
-        serviceUnderTest = URLSessionRestServiceClient(session: mockSessionPublisher)
+        serviceUnderTest = URLSessionRestServiceClient(session: mockSession)
     }
 
-    func testSendReturnsPublisherWithSuccessResponse() throws {
+    func testSendReturnsPublisherWithSuccessResponse() async throws {
         let expectedURL = URL(string: "https://example.com")!
         let expectedData = try JSONEncoder().encode(TestResponse(status: true, message: "Success"))
         let expectedResponse: URLResponse = HTTPURLResponse(
@@ -29,15 +29,14 @@ class URLSessionRestServiceClientTests: BaseTestCase {
             httpVersion: nil,
             headerFields: nil
         )!
-        mockSessionPublisher.expectedResponse = expectedResponse
-        mockSessionPublisher.expectedData = expectedData
+        mockSession.expectedResponse = expectedResponse
+        mockSession.expectedData = expectedData
         let request = RestRequest(url: expectedURL, method: .get)
-        let result: AnyPublisher<TestResponse, Error> = serviceUnderTest.send(request: request)
-        let response = try `await`(result)
+        let response: TestResponse = try await serviceUnderTest.send(request: request)
         XCTAssert(response.status)
     }
 
-    func testSendReturnsPublisherWithSuccessResponseAnd201ResponseCode() throws {
+    func testSendReturnsPublisherWithSuccessResponseAnd201ResponseCode() async throws {
         let expectedURL = URL(string: "https://example.com")!
         let expectedData = try JSONEncoder().encode(TestResponse(status: true, message: "Success"))
         let expectedResponse: URLResponse = HTTPURLResponse(
@@ -47,11 +46,10 @@ class URLSessionRestServiceClientTests: BaseTestCase {
             headerFields: nil
         )!
 
-        mockSessionPublisher.expectedResponse = expectedResponse
-        mockSessionPublisher.expectedData = expectedData
+        mockSession.expectedResponse = expectedResponse
+        mockSession.expectedData = expectedData
         let request = RestRequest(url: expectedURL, method: .get)
-        let result: AnyPublisher<TestResponse, Error> = serviceUnderTest.send(request: request)
-        let response = try `await`(result)
+        let response: TestResponse = try await serviceUnderTest.send(request: request)
         XCTAssert(response.status)
     }
 
@@ -74,7 +72,7 @@ class URLSessionRestServiceClientTests: BaseTestCase {
         XCTAssertEqual(urlRequest.url!, expectedURL)
     }
 
-    func testSendReturnsPublisherWithFailureResponseWhenHttpResponseIsNotSuccessful() throws {
+    func testSendReturnsPublisherWithFailureResponseWhenHttpResponseIsNotSuccessful() async throws {
         let expectedURL = URL(string: "https://example.com")!
         let expectedData = try JSONEncoder().encode(TestResponse(status: true, message: "Success"))
         let expectedResponse: URLResponse = HTTPURLResponse(
@@ -83,13 +81,12 @@ class URLSessionRestServiceClientTests: BaseTestCase {
             httpVersion: nil,
             headerFields: nil
         )!
-        mockSessionPublisher.expectedResponse = expectedResponse
-        mockSessionPublisher.expectedData = expectedData
+        mockSession.expectedResponse = expectedResponse
+        mockSession.expectedData = expectedData
         let request = RestRequest(url: expectedURL, method: .get)
 
-        let result: AnyPublisher<TestResponse, Error> = serviceUnderTest.send(request: request)
         do {
-            _ = try `await`(result)
+            let response: TestResponse = try await serviceUnderTest.send(request: request)
             XCTFail("Send should have not succeeded")
         } catch {
             XCTAssert(error is SmileIDError)
