@@ -1,5 +1,11 @@
 # Release Notes
 
+## Unreleased
+
+#### Changed
+
+* Convert AnyPublisher to async/await.
+
 ## 10.1.6
 
 #### Added
