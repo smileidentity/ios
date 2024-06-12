@@ -68,12 +68,13 @@ struct OrchestratedBiometricKycScreen: View {
                     for: "BiometricKYC.Success.Title"
                 ),
                 successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: $viewModel.errorMessage.wrappedValue ?? "BiometricKYC.Success.Subtitle"
+                    for: $viewModel.errorMessageRes.wrappedValue ?? "BiometricKYC.Success.Subtitle"
                 ),
                 successIcon: SmileIDResourcesHelper.CheckBold,
                 errorTitle: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.Error.Title"),
-                errorSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: $viewModel.errorMessage.wrappedValue ?? "BiometricKYC.Error.Subtitle"
+                errorSubtitle: getErrorSubtitle(
+                    errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
+                    errorMessage: $viewModel.errorMessage.wrappedValue
                 ),
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(

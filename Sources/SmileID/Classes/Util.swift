@@ -54,3 +54,23 @@ extension String {
         return self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : self
     }
 }
+
+func toErrorMessage(error: SmileIDError) -> (String, String?) {
+    switch error {
+    case .api(let code, let message):
+        let errorMessage = "Si.Error.Message.\(code)"
+        return (errorMessage, message)
+    default:
+        return ("Confirmation.FailureReason", nil)
+    }
+}
+
+func getErrorSubtitle(errorMessageRes: String?, errorMessage: String?) -> String {
+    if let errorMessageRes = errorMessageRes, !SmileIDResourcesHelper.localizedString(for: errorMessageRes).isEmpty {
+        return SmileIDResourcesHelper.localizedString(for: errorMessageRes)
+    } else if let errorMessage = errorMessage, !errorMessage.isEmpty {
+        return errorMessage
+    } else {
+        return SmileIDResourcesHelper.localizedString(for: "Confirmation.FailureReason")
+    }
+}

@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased]
+## 10.1.6
+
+#### Added
+
+* Update generic errors with actual platform errors
 
 #### Changed
 

@@ -31,6 +31,10 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
     // UI properties
     @Published var acknowledgedInstructions = false
+    /// we use `errorMessageRes` to map to the actual code to the stringRes to allow localization,
+    /// and use `errorMessage` to show the actual platform error message that we show if
+    /// `errorMessageRes` is not set by the partner
+    @Published var errorMessageRes: String?
     @Published var errorMessage: String?
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
@@ -232,13 +236,16 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
                     didSubmitJob = true
                     DispatchQueue.main.async {
-                        self.errorMessage = "Offline.Message"
+                        self.errorMessageRes = "Offline.Message"
                         self.step = .processing(.success)
                     }
                 } else {
                     didSubmitJob = false
                     print("Error submitting job: \(error)")
                     self.onError(error: error)
+                    let (errorMessageRes, errorMessage) = toErrorMessage(error: error)
+                    self.errorMessageRes = errorMessageRes
+                    self.errorMessage = errorMessage
                 }
             } catch {
                 didSubmitJob = false
