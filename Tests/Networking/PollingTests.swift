@@ -1,9 +1,7 @@
-import Combine
 @testable import SmileID
 import XCTest
 
 final class PollingTests: XCTestCase {
-    var cancellables: Set<AnyCancellable> = []
     let mockDependency = DependencyContainer()
     let mockService = MockSmileIdentityService()
 

@@ -1,6 +1,5 @@
 import Foundation
 import XCTest
-import Combine
 @testable import SmileID
 
 class URLSessionRestServiceClientTests: BaseTestCase {
@@ -86,7 +85,7 @@ class URLSessionRestServiceClientTests: BaseTestCase {
         let request = RestRequest(url: expectedURL, method: .get)
 
         do {
-            let response: TestResponse = try await serviceUnderTest.send(request: request)
+            let _: TestResponse = try await serviceUnderTest.send(request: request)
             XCTFail("Send should have not succeeded")
         } catch {
             XCTAssert(error is SmileIDError)
