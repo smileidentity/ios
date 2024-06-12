@@ -1,3 +1,4 @@
+// swiftlint:disable force_cast
 import Foundation
 @testable import SmileID
 import XCTest
