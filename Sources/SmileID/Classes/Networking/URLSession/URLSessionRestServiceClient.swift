@@ -85,7 +85,12 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
             ) {
                 throw SmileIDError.api(decodedError.code, decodedError.message)
             }
-            throw SmileIDError.httpError((urlSessionResponse.response as? HTTPURLResponse)?.statusCode ?? 500, urlSessionResponse.data)
+            throw SmileIDError.httpError(
+                (
+                    urlSessionResponse.response as? HTTPURLResponse
+                )?.statusCode ?? 500,
+                urlSessionResponse.data
+            )
         }
 
         return urlSessionResponse.data

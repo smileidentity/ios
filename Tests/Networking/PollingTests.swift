@@ -36,7 +36,7 @@ final class PollingTests: XCTestCase {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
-        
+
         do {
             let response = try await pollFunction(request, interval, numAttempts)
             XCTAssertEqual(response.jobComplete, expectedResponse.jobComplete)
@@ -57,7 +57,7 @@ final class PollingTests: XCTestCase {
 
         MockHelper.shouldFail = true
         MockHelper.jobComplete = false
-        
+
         do {
             _ = try await pollFunction(request, interval, numAttempts)
             XCTFail("No response should be received b/c an error occurs at first attempt")
@@ -75,7 +75,7 @@ final class PollingTests: XCTestCase {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
-        
+
         let expectation = XCTestExpectation(
             description: "Polling fails due to reaching the maximum number of attempts"
         )

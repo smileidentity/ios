@@ -293,7 +293,7 @@ extension ServiceRunnable {
                 body.append(item.data)
                 body.append(lineBreak.data(using: .utf8)!)
             }
-            
+
             // Append selfie media file
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)".data(using: .utf8)!)
