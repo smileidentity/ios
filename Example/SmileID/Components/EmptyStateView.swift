@@ -21,6 +21,7 @@ struct EmptyStateView: View {
 
     var body: some View {
         VStack(spacing: 10) {
+            Spacer()
             Image(systemName: systemImage)
                 .font(.title)
             Text(message)
@@ -30,7 +31,10 @@ struct EmptyStateView: View {
                     .accentColor(SmileID.theme.accent)
             }
             .padding(.top)
+            Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(SmileID.theme.backgroundLight.ignoresSafeArea())
     }
 }
 
