@@ -251,6 +251,8 @@
 				1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */,
 				1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */,
 				1ED53F692A2F28590020BEFB /* HomeView.swift */,
+				20343AEC2C1C825D003536F5 /* JobsView.swift */,
+				20343AEE2C206BDF003536F5 /* JobListItem.swift */,
 				1ED53F602A2F28590020BEFB /* HomeViewModel.swift */,
 				1ED53F622A2F28590020BEFB /* RootView.swift */,
 				1ED53F612A2F28590020BEFB /* ProductCell.swift */,
