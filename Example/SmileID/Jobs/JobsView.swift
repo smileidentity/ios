@@ -2,7 +2,7 @@ import SmileID
 import SwiftUI
 
 struct JobsView: View {
-    
+
     var body: some View {
         NavigationView {
             let scrollView = ScrollView {
@@ -23,7 +23,7 @@ struct JobsView: View {
                     .buttonStyle(.plain)
                 }
             }
-            
+
             if #available(iOS 16.0, *) {
                 scrollView.toolbarBackground(SmileID.theme.backgroundLight, for: .navigationBar)
             } else {
