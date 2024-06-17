@@ -37,7 +37,6 @@ extension JobType {
             return "Enhanced Document Verification"
         }
     }
-
     var icon: String {
         switch self {
         case .biometricKyc:

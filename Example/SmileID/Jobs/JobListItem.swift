@@ -4,7 +4,6 @@ import SwiftUI
 struct JobListItem: View {
     var job: JobData
     @State private var isExpanded = false
-
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
