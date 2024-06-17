@@ -181,9 +181,19 @@
 			children = (
 				20343AEE2C206BDF003536F5 /* JobListItem.swift */,
 				20343AEC2C1C825D003536F5 /* JobsView.swift */,
-				20343AF92C2086D3003536F5 /* EmptyStateView.swift */,
 			);
 			path = Jobs;
+			sourceTree = "<group>";
+		};
+		20343AFB2C2089AA003536F5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */,
+				1ECAE3862A2F69BC00653FCA /* ToastView.swift */,
+				1ED53F632A2F28590020BEFB /* SmileTextField.swift */,
+				20343AF92C2086D3003536F5 /* EmptyStateView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		58C5F1D62B05922100A6080C /* BiometricKYC */ = {
@@ -222,12 +232,11 @@
 		607FACD21AFB9204008FA782 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				20343AFB2C2089AA003536F5 /* Components */,
 				20343AF32C207917003536F5 /* Jobs */,
 				20343AF02C206C8D003536F5 /* Models */,
 				624777CC2B0CDC5200952842 /* EnhancedKYC */,
 				58C5F1D62B05922100A6080C /* BiometricKYC */,
-				91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */,
-				1ECAE3862A2F69BC00653FCA /* ToastView.swift */,
 				1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */,
 				1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */,
 				1ED53F692A2F28590020BEFB /* HomeView.swift */,
@@ -235,7 +244,6 @@
 				1ED53F622A2F28590020BEFB /* RootView.swift */,
 				1ED53F612A2F28590020BEFB /* ProductCell.swift */,
 				1ED53F642A2F28590020BEFB /* ResourcesView.swift */,
-				1ED53F632A2F28590020BEFB /* SmileTextField.swift */,
 				1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */,
 				1E60ED352A29C306002695FF /* AppDelegate.swift */,
 				1E60ED332A29C306002695FF /* Constants.swift */,
