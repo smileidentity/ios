@@ -183,7 +183,6 @@
 			children = (
 				20343AEE2C206BDF003536F5 /* JobListItem.swift */,
 				20343AEC2C1C825D003536F5 /* JobsView.swift */,
-				20343AF92C2086D3003536F5 /* EmptyStateView.swift */,
 			);
 			path = Jobs;
 			sourceTree = "<group>";
