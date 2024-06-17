@@ -36,6 +36,11 @@ struct RootView: View {
                         Image(systemName: "house")
                         Text("Home")
                     }
+                JobsView()
+                    .tabItem {
+                        Image(systemName: "list.bullet")
+                        Text("Jobs")
+                    }
                 ResourcesView()
                     .tabItem {
                         Image(systemName: "info.circle")
