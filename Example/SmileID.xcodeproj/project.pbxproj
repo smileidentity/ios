@@ -28,6 +28,7 @@
 		20343AED2C1C825D003536F5 /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEC2C1C825D003536F5 /* JobsView.swift */; };
 		20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEE2C206BDF003536F5 /* JobListItem.swift */; };
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
+		20343AFA2C2086D3003536F5 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF92C2086D3003536F5 /* EmptyStateView.swift */; };
 		5829A8C02BC7429A001C1E7E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */; };
 		585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */; };
 		58C5F1D82B05925800A6080C /* BiometricKycWithIdInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C5F1D72B05925800A6080C /* BiometricKycWithIdInputScreen.swift */; };
@@ -93,6 +94,7 @@
 		20343AEC2C1C825D003536F5 /* JobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsView.swift; sourceTree = "<group>"; };
 		20343AEE2C206BDF003536F5 /* JobListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListItem.swift; sourceTree = "<group>"; };
 		20343AF12C206CEC003536F5 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
+		20343AF92C2086D3003536F5 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
 		287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 			children = (
 				20343AEE2C206BDF003536F5 /* JobListItem.swift */,
 				20343AEC2C1C825D003536F5 /* JobsView.swift */,
+				20343AF92C2086D3003536F5 /* EmptyStateView.swift */,
 			);
 			path = Jobs;
 			sourceTree = "<group>";
@@ -592,6 +595,7 @@
 				1ECAE3872A2F69CD00653FCA /* ToastView.swift in Sources */,
 				1ED53F722A2F28590020BEFB /* SmileEnvironmentToggleButton.swift in Sources */,
 				1ED53F6C2A2F28590020BEFB /* RootView.swift in Sources */,
+				20343AFA2C2086D3003536F5 /* EmptyStateView.swift in Sources */,
 				1EA026BC2B63F3390039B08D /* NetworkMonitor.swift in Sources */,
 				1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */,
 				620F1E982B69194900185CD2 /* AlertView.swift in Sources */,
