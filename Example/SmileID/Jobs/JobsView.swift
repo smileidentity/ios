@@ -2,12 +2,13 @@ import SmileID
 import SwiftUI
 
 struct JobsView: View {
+    
     var body: some View {
         NavigationView {
             let scrollView = ScrollView {
                 VStack(spacing: 0) {
-                    ForEach(0...5, id: \.self) { _ in
-                        JobListItem(job: JobData(title: "Job 1", jobType: .documentVerification))
+                    ForEach(0..<5, id: \.self) { _ in
+                        JobListItem(job: .documentVerification)
                     }
                     Spacer()
                 }

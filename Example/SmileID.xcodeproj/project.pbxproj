@@ -174,6 +174,15 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		20343AF32C207917003536F5 /* Jobs */ = {
+			isa = PBXGroup;
+			children = (
+				20343AEE2C206BDF003536F5 /* JobListItem.swift */,
+				20343AEC2C1C825D003536F5 /* JobsView.swift */,
+			);
+			path = Jobs;
+			sourceTree = "<group>";
+		};
 		58C5F1D62B05922100A6080C /* BiometricKYC */ = {
 			isa = PBXGroup;
 			children = (
@@ -210,6 +219,7 @@
 		607FACD21AFB9204008FA782 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				20343AF32C207917003536F5 /* Jobs */,
 				20343AF02C206C8D003536F5 /* Models */,
 				624777CC2B0CDC5200952842 /* EnhancedKYC */,
 				58C5F1D62B05922100A6080C /* BiometricKYC */,
@@ -218,8 +228,6 @@
 				1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */,
 				1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */,
 				1ED53F692A2F28590020BEFB /* HomeView.swift */,
-				20343AEC2C1C825D003536F5 /* JobsView.swift */,
-				20343AEE2C206BDF003536F5 /* JobListItem.swift */,
 				1ED53F602A2F28590020BEFB /* HomeViewModel.swift */,
 				1ED53F622A2F28590020BEFB /* RootView.swift */,
 				1ED53F612A2F28590020BEFB /* ProductCell.swift */,
@@ -791,6 +799,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.smileidentity.example-ios";
 				SENTRY_DSN = "$(SENTRY_DSN)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 			};
