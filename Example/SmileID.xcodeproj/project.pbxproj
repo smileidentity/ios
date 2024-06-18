@@ -29,6 +29,7 @@
 		20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEE2C206BDF003536F5 /* JobListItem.swift */; };
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
 		20343AFA2C2086D3003536F5 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF92C2086D3003536F5 /* EmptyStateView.swift */; };
+		20DFA0EC2C21917100AC2AE7 /* View+TextSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */; };
 		5829A8C02BC7429A001C1E7E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */; };
 		585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */; };
 		58C5F1D82B05925800A6080C /* BiometricKycWithIdInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C5F1D72B05925800A6080C /* BiometricKycWithIdInputScreen.swift */; };
@@ -95,6 +96,7 @@
 		20343AEE2C206BDF003536F5 /* JobListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListItem.swift; sourceTree = "<group>"; };
 		20343AF12C206CEC003536F5 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
 		20343AF92C2086D3003536F5 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+TextSelection.swift"; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
 		287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -196,6 +198,14 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		20DFA0EA2C21913C00AC2AE7 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		58C5F1D62B05922100A6080C /* BiometricKYC */ = {
 			isa = PBXGroup;
 			children = (
@@ -232,6 +242,7 @@
 		607FACD21AFB9204008FA782 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				20DFA0EA2C21913C00AC2AE7 /* Helpers */,
 				20343AFB2C2089AA003536F5 /* Components */,
 				20343AF32C207917003536F5 /* Jobs */,
 				20343AF02C206C8D003536F5 /* Models */,
@@ -633,6 +644,7 @@
 				6AC984526F49F4E8F52C7494 /* ScannerViewController.swift in Sources */,
 				6AC98976E04EBF5C45A2E857 /* BiometricKycWithIdInputScreenViewModel.swift in Sources */,
 				20343AED2C1C825D003536F5 /* JobsView.swift in Sources */,
+				20DFA0EC2C21917100AC2AE7 /* View+TextSelection.swift in Sources */,
 				6AC9886EEE4DE8AE1A31896A /* IdInfoInputScreen.swift in Sources */,
 				6AC984F8CA1753050C98F14B /* IdInfoInputViewModel.swift in Sources */,
 				20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */,

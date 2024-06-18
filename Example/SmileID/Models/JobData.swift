@@ -68,6 +68,9 @@ extension JobData {
             jobId: "742418bf-d7dd-450b-9785-420d3773496a",
             jobComplete: false,
             jobSuccess: false,
+            code: "2340",
+            resultCode: "8822",
+            smileJobId: "420d3773496a-d7dd-450b-9785-742418bf",
             resultText: "Document Verified"
         )
     }
