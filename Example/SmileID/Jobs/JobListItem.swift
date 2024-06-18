@@ -84,14 +84,7 @@ struct JobListItem: View {
                     }
                 }
                 Spacer()
-                Button {
-                    withAnimation {
-                        isExpanded.toggle()
-                    }
-                } label: {
-                    Image(systemName: isExpanded ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
-                }
-                .buttonStyle(.plain)
+                Image(systemName: isExpanded ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
             }
             .padding(.vertical)
             .padding(.horizontal, 10)
@@ -99,6 +92,11 @@ struct JobListItem: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
+        .onTapGesture {
+            withAnimation {
+                isExpanded.toggle()
+            }
+        }
     }
 }
 
