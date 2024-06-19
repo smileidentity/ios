@@ -52,14 +52,14 @@ extension Job {
         job.smileJobId = data.smileJobId
         job.resultText = data.resultText
         job.selfieImageUrl = data.selfieImageUrl
-        
+
         do {
             try context.save()
         } catch {
             throw DataStoreError.saveItemError
         }
     }
-    
+
     static func updateJobStatus(
         _ jobId: String,
         jobSuccess: Bool,
@@ -78,7 +78,7 @@ extension Job {
             throw DataStoreError.updateError
         }
     }
-    
+
     static func deleteJobs(using context: NSManagedObjectContext) throws {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Job.fetchRequest()
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)

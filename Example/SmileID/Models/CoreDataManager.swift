@@ -3,7 +3,7 @@ import Foundation
 
 struct CoreDataManager {
     static let shared = CoreDataManager()
-    
+
     static let preview: CoreDataManager = {
         var result = CoreDataManager(inMemory: true)
         let viewContext = result.container.viewContext
@@ -19,11 +19,11 @@ struct CoreDataManager {
 
     lazy var container: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "SmileID")
-        
+
         guard let description = container.persistentStoreDescriptions.first else {
             fatalError("Failed to retrieve a persistent store description.")
         }
-        
+
         if inMemory {
             description.url = URL(fileURLWithPath: "/dev/null")
         }
