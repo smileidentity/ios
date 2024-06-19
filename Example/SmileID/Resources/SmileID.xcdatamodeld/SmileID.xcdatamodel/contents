@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="Job" representedClassName="Job" syncable="YES">
+    <entity name="Job" representedClassName=".Job" syncable="YES">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="jobComplete" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="jobId" attributeType="String"/>
