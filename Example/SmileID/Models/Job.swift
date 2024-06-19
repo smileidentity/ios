@@ -26,10 +26,10 @@ extension Job {
         sortDescriptors: [NSSortDescriptor]? = nil,
         using context: NSManagedObjectContext
     ) throws -> [Job] {
+        let fetchRequest = Job.fetchRequest()
+        fetchRequest.predicate = predicate
+        fetchRequest.sortDescriptors = sortDescriptors
         do {
-            let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
-            fetchRequest.predicate = predicate
-            fetchRequest.sortDescriptors = sortDescriptors
             let results = try context.fetch(fetchRequest)
             return results
         } catch {
@@ -57,6 +57,35 @@ extension Job {
             try context.save()
         } catch {
             throw DataStoreError.saveItemError
+        }
+    }
+    
+    static func updateJobStatus(
+        _ jobId: String,
+        jobSuccess: Bool,
+        using context: NSManagedObjectContext
+    ) throws {
+        let fetchRequest = Job.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "jobId == %@", jobId)
+        fetchRequest.fetchLimit = 1
+        do {
+            guard let job = try context.fetch(fetchRequest).first else {
+                throw DataStoreError.fetchError
+            }
+            job.jobSuccess = jobSuccess
+            try context.save()
+        } catch {
+            throw DataStoreError.updateError
+        }
+    }
+    
+    static func deleteJobs(using context: NSManagedObjectContext) throws {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Job.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        do {
+            try context.execute(batchDeleteRequest)
+        } catch {
+            throw DataStoreError.batchDeleteError
         }
     }
 }
