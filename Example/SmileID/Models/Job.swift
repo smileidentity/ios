@@ -20,8 +20,27 @@ extension Job {
     @nonobjc class func fetchRequest() -> NSFetchRequest<Job> {
         return NSFetchRequest<Job>(entityName: "Job")
     }
-    
-    static func createWith(data: JobData, using context: NSManagedObjectContext) {
+
+    static func fetchJobs(
+        predicate: NSPredicate? = nil,
+        sortDescriptors: [NSSortDescriptor]? = nil,
+        using context: NSManagedObjectContext
+    ) throws -> [Job] {
+        do {
+            let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+            fetchRequest.predicate = predicate
+            fetchRequest.sortDescriptors = sortDescriptors
+            let results = try context.fetch(fetchRequest)
+            return results
+        } catch {
+            throw DataStoreError.fetchError
+        }
+    }
+
+    static func create(
+        with data: JobData,
+        using context: NSManagedObjectContext
+    ) throws {
         let job = Job(context: context)
         job.jobId = data.jobId
         job.jobType = Int16(data.jobType.rawValue)
@@ -37,8 +56,7 @@ extension Job {
         do {
             try context.save()
         } catch {
-            let error = error as NSError
-            fatalError("Unresolved error \(error), \(error.userInfo)")
+            throw DataStoreError.saveItemError
         }
     }
 }
