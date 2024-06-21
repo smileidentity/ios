@@ -29,7 +29,12 @@
 		20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEE2C206BDF003536F5 /* JobListItem.swift */; };
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
 		20343AFA2C2086D3003536F5 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF92C2086D3003536F5 /* EmptyStateView.swift */; };
+		20B6D5E32C21C3C90023D51C /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E12C21C3C90023D51C /* Job.swift */; };
+		20B6D5EA2C21CA9E0023D51C /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */; };
+		20B6D5EC2C21CE660023D51C /* DataStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5EB2C21CE660023D51C /* DataStoreError.swift */; };
 		20DFA0EC2C21917100AC2AE7 /* View+TextSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */; };
+		20F3D6F32C25F4D700B32751 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		20F3D6F62C25F5C100B32751 /* SmileID.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 20F3D6F42C25F5C100B32751 /* SmileID.xcdatamodeld */; };
 		5829A8C02BC7429A001C1E7E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */; };
 		585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */; };
 		58C5F1D82B05925800A6080C /* BiometricKycWithIdInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C5F1D72B05925800A6080C /* BiometricKycWithIdInputScreen.swift */; };
@@ -96,7 +101,11 @@
 		20343AEE2C206BDF003536F5 /* JobListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListItem.swift; sourceTree = "<group>"; };
 		20343AF12C206CEC003536F5 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
 		20343AF92C2086D3003536F5 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		20B6D5E12C21C3C90023D51C /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Job.swift; sourceTree = "<group>"; };
+		20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		20B6D5EB2C21CE660023D51C /* DataStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreError.swift; sourceTree = "<group>"; };
 		20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+TextSelection.swift"; sourceTree = "<group>"; };
+		20F3D6F52C25F5C100B32751 /* SmileID.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SmileID.xcdatamodel; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
 		287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -173,7 +182,11 @@
 		20343AF02C206C8D003536F5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				20F3D6F42C25F5C100B32751 /* SmileID.xcdatamodeld */,
+				20B6D5E12C21C3C90023D51C /* Job.swift */,
 				20343AF12C206CEC003536F5 /* JobData.swift */,
+				20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */,
+				20B6D5EB2C21CE660023D51C /* DataStoreError.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -190,12 +203,52 @@
 		20343AFB2C2089AA003536F5 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */,
+				1E60ED362A29C306002695FF /* CopyableLabel.swift */,
+				620F1E972B69194900185CD2 /* AlertView.swift */,
 				91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */,
 				1ECAE3862A2F69BC00653FCA /* ToastView.swift */,
 				1ED53F632A2F28590020BEFB /* SmileTextField.swift */,
 				20343AF92C2086D3003536F5 /* EmptyStateView.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		20B6D5D72C21B65B0023D51C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				607FACDC1AFB9204008FA782 /* Images.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		20B6D5D82C21B6F40023D51C /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				1ED53F612A2F28590020BEFB /* ProductCell.swift */,
+				1ED53F602A2F28590020BEFB /* HomeViewModel.swift */,
+				1ED53F692A2F28590020BEFB /* HomeView.swift */,
+				1E60ED322A29C306002695FF /* HomeViewController.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		20B6D5D92C21B6FF0023D51C /* App */ = {
+			isa = PBXGroup;
+			children = (
+				1ED53F622A2F28590020BEFB /* RootView.swift */,
+				1E60ED352A29C306002695FF /* AppDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		20B6D5DA2C21B72F0023D51C /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				6AC982147640002B81F72DEC /* SettingsView.swift */,
+				6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		20DFA0EA2C21913C00AC2AE7 /* Helpers */ = {
@@ -242,38 +295,28 @@
 		607FACD21AFB9204008FA782 /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				20DFA0EA2C21913C00AC2AE7 /* Helpers */,
+				1E60ED332A29C306002695FF /* Constants.swift */,
+				6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */,
+				6AC9868BCF06ECE5F65DF248 /* DocumentVerificationIdTypeSelector.swift */,
+				1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */,
+				1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */,
+				1ED53F642A2F28590020BEFB /* ResourcesView.swift */,
+				6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */,
+				6AC980584C522B17A099E098 /* Util.swift */,
+				6AC982F34F80CAE1AA5569AB /* WelcomeScreen.swift */,
+				5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */,
+				20B6D5D92C21B6FF0023D51C /* App */,
+				58C5F1D62B05922100A6080C /* BiometricKYC */,
+				6AC98DDBE27D169AF8DB4B98 /* CodeScanner */,
 				20343AFB2C2089AA003536F5 /* Components */,
+				624777CC2B0CDC5200952842 /* EnhancedKYC */,
+				20DFA0EA2C21913C00AC2AE7 /* Helpers */,
+				20B6D5D82C21B6F40023D51C /* Home */,
 				20343AF32C207917003536F5 /* Jobs */,
 				20343AF02C206C8D003536F5 /* Models */,
-				624777CC2B0CDC5200952842 /* EnhancedKYC */,
-				58C5F1D62B05922100A6080C /* BiometricKYC */,
-				1EA026BB2B63F3390039B08D /* NetworkMonitor.swift */,
-				1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */,
-				1ED53F692A2F28590020BEFB /* HomeView.swift */,
-				1ED53F602A2F28590020BEFB /* HomeViewModel.swift */,
-				1ED53F622A2F28590020BEFB /* RootView.swift */,
-				1ED53F612A2F28590020BEFB /* ProductCell.swift */,
-				1ED53F642A2F28590020BEFB /* ResourcesView.swift */,
-				1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */,
-				1E60ED352A29C306002695FF /* AppDelegate.swift */,
-				1E60ED332A29C306002695FF /* Constants.swift */,
-				1E60ED362A29C306002695FF /* CopyableLabel.swift */,
-				1E60ED322A29C306002695FF /* HomeViewController.swift */,
-				607FACD91AFB9204008FA782 /* Main.storyboard */,
-				607FACDC1AFB9204008FA782 /* Images.xcassets */,
-				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
+				20B6D5D72C21B65B0023D51C /* Resources */,
+				20B6D5DA2C21B72F0023D51C /* Settings */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
-				6AC980584C522B17A099E098 /* Util.swift */,
-				6AC9868BCF06ECE5F65DF248 /* DocumentVerificationIdTypeSelector.swift */,
-				6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */,
-				6AC982147640002B81F72DEC /* SettingsView.swift */,
-				6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */,
-				6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */,
-				6AC982F34F80CAE1AA5569AB /* WelcomeScreen.swift */,
-				6AC98DDBE27D169AF8DB4B98 /* CodeScanner */,
-				620F1E972B69194900185CD2 /* AlertView.swift */,
-				5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */,
 			);
 			name = Example;
 			path = SmileID;
@@ -282,6 +325,8 @@
 		607FACD31AFB9204008FA782 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
+				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACD41AFB9204008FA782 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -616,14 +661,17 @@
 				1ED53F6C2A2F28590020BEFB /* RootView.swift in Sources */,
 				20343AFA2C2086D3003536F5 /* EmptyStateView.swift in Sources */,
 				1EA026BC2B63F3390039B08D /* NetworkMonitor.swift in Sources */,
+				20B6D5EC2C21CE660023D51C /* DataStoreError.swift in Sources */,
 				1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */,
 				620F1E982B69194900185CD2 /* AlertView.swift in Sources */,
+				20F3D6F62C25F5C100B32751 /* SmileID.xcdatamodeld in Sources */,
 				1ED53F6A2A2F28590020BEFB /* HomeViewModel.swift in Sources */,
 				1E60ED372A29C306002695FF /* HomeViewController.swift in Sources */,
 				1E60ED3A2A29C306002695FF /* AppDelegate.swift in Sources */,
 				1ED53F6D2A2F28590020BEFB /* SmileTextField.swift in Sources */,
 				91CB21A52AC10C61005AEBF5 /* NavigationBar.swift in Sources */,
 				1ED53F6B2A2F28590020BEFB /* ProductCell.swift in Sources */,
+				20F3D6F32C25F4D700B32751 /* (null) in Sources */,
 				1E60ED382A29C306002695FF /* Constants.swift in Sources */,
 				624777D02B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift in Sources */,
 				1ED53F712A2F28590020BEFB /* EnterUserIDView.swift in Sources */,
@@ -632,6 +680,7 @@
 				1E60ED3B2A29C306002695FF /* CopyableLabel.swift in Sources */,
 				6AC98C0E9305B4B3EB66ED35 /* Util.swift in Sources */,
 				62F6766F2B0D173600417419 /* EnhancedKycWithIdInputScreenViewModel.swift in Sources */,
+				20B6D5EA2C21CA9E0023D51C /* CoreDataManager.swift in Sources */,
 				20343AF22C206CEC003536F5 /* JobData.swift in Sources */,
 				6AC9870BB28E40FCACC75947 /* DocumentVerificationIdTypeSelector.swift in Sources */,
 				6AC98F5682012E19C815AE70 /* DocumentSelectorViewModel.swift in Sources */,
@@ -639,6 +688,7 @@
 				6AC98990097662789B0107EB /* SettingsViewModel.swift in Sources */,
 				6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */,
 				62F676712B0E00E800417419 /* EnhancedKycResultDelegate.swift in Sources */,
+				20B6D5E32C21C3C90023D51C /* Job.swift in Sources */,
 				6AC98856053013D0E8ABB188 /* WelcomeScreen.swift in Sources */,
 				6AC9802B9D1A630961B5454B /* CodeScanner.swift in Sources */,
 				6AC984526F49F4E8F52C7494 /* ScannerViewController.swift in Sources */,
@@ -948,6 +998,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		20F3D6F42C25F5C100B32751 /* SmileID.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				20F3D6F52C25F5C100B32751 /* SmileID.xcdatamodel */,
+			);
+			currentVersion = 20F3D6F52C25F5C100B32751 /* SmileID.xcdatamodel */;
+			name = SmileID.xcdatamodeld;
+			path = "SmileID.xcdatamodeld";
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 607FACC81AFB9204008FA782 /* Project object */;
 }
