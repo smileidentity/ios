@@ -1007,7 +1007,7 @@
 			);
 			currentVersion = 20F3D6F52C25F5C100B32751 /* SmileID.xcdatamodel */;
 			name = SmileID.xcdatamodeld;
-			path = "/Users/oluwatobiomotayo/Desktop/smile-identity-ios/Example/SmileID/Models/SmileID.xcdatamodeld";
+			path = "SmileID.xcdatamodeld";
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
