@@ -57,6 +57,27 @@ extension JobType {
     }
 }
 
+extension JobData {
+    init?(managedObject: Job) {
+        guard let jobType = JobType(rawValue: Int(managedObject.jobType)) else {
+            return nil
+        }
+        self.init(
+            jobType: jobType,
+            timestamp: managedObject.timestamp,
+            userId: managedObject.userId,
+            jobId: managedObject.jobId,
+            jobComplete: managedObject.jobComplete,
+            jobSuccess: managedObject.jobSuccess,
+            code: managedObject.code,
+            resultCode: managedObject.resultCode,
+            smileJobId: managedObject.smileJobId,
+            resultText: managedObject.resultText,
+            selfieImageUrl: managedObject.selfieImageUrl
+        )
+    }
+}
+
 #if DEBUG
 extension JobData {
     static var documentVerification: JobData {

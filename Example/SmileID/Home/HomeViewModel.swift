@@ -19,7 +19,10 @@ class HomeViewModel: ObservableObject,
     @Published var partnerId: String
     @ObservedObject var networkMonitor = NetworkMonitor.shared
 
-    init(config: Config) {
+    let provider: JobsProvider
+    
+    init(config: Config, provider: JobsProvider = JobsProvider()) {
+        self.provider = provider
         partnerId = config.partnerId
         SmileID.initialize(config: config, useSandbox: false)
         SentrySDK.configureScope { scope in
@@ -81,6 +84,7 @@ class HomeViewModel: ObservableObject,
     ) {
         dismissModal()
         showToast = true
+        // save job to core data
         toastMessage = jobResultMessageBuilder(
             jobName: "Biometric KYC",
             didSubmitJob: didSubmitBiometricJob
