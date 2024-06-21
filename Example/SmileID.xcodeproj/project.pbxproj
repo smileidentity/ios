@@ -34,6 +34,7 @@
 		20B6D5EA2C21CA9E0023D51C /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */; };
 		20B6D5EC2C21CE660023D51C /* DataStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5EB2C21CE660023D51C /* DataStoreError.swift */; };
 		20DFA0EC2C21917100AC2AE7 /* View+TextSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */; };
+		20F29DF02C25E48D003CCF21 /* SmileID.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 20F29DEE2C25E48D003CCF21 /* SmileID.xcdatamodeld */; };
 		5829A8C02BC7429A001C1E7E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */; };
 		585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */; };
 		58C5F1D82B05925800A6080C /* BiometricKycWithIdInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C5F1D72B05925800A6080C /* BiometricKycWithIdInputScreen.swift */; };
@@ -105,6 +106,7 @@
 		20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		20B6D5EB2C21CE660023D51C /* DataStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreError.swift; sourceTree = "<group>"; };
 		20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+TextSelection.swift"; sourceTree = "<group>"; };
+		20F29DEF2C25E48D003CCF21 /* SmileID.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SmileID.xcdatamodel; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
 		287986BB9E93D632523CC13A /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 		20343AF02C206C8D003536F5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				20F29DEE2C25E48D003CCF21 /* SmileID.xcdatamodeld */,
 				20B6D5E12C21C3C90023D51C /* Job.swift */,
 				20343AF12C206CEC003536F5 /* JobData.swift */,
 				20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */,
@@ -669,7 +672,7 @@
 				1ED53F6D2A2F28590020BEFB /* SmileTextField.swift in Sources */,
 				91CB21A52AC10C61005AEBF5 /* NavigationBar.swift in Sources */,
 				1ED53F6B2A2F28590020BEFB /* ProductCell.swift in Sources */,
-				20A1F12F2C2349490084C338 /* SmileID.xcdatamodeld in Sources */,
+				20F29DF02C25E48D003CCF21 /* SmileID.xcdatamodeld in Sources */,
 				1E60ED382A29C306002695FF /* Constants.swift in Sources */,
 				624777D02B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift in Sources */,
 				1ED53F712A2F28590020BEFB /* EnterUserIDView.swift in Sources */,
@@ -998,14 +1001,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		20B6D5DB2C21B8D50023D51C /* SmileID.xcdatamodeld */ = {
+		20F29DEE2C25E48D003CCF21 /* SmileID.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				20B6D5DC2C21B8D50023D51C /* SmileID.xcdatamodel */,
+				20F29DEF2C25E48D003CCF21 /* SmileID.xcdatamodel */,
 			);
-			currentVersion = 20B6D5DC2C21B8D50023D51C /* SmileID.xcdatamodel */;
+			currentVersion = 20F29DEF2C25E48D003CCF21 /* SmileID.xcdatamodel */;
 			name = SmileID.xcdatamodeld;
-			path = "/Users/oluwatobiomotayo/Desktop/smile-identity-ios/Example/SmileID/Resources/SmileID.xcdatamodeld";
+			path = "SmileID.xcdatamodeld";
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
