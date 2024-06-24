@@ -131,6 +131,7 @@ class HomeViewModel: ObservableObject,
             data: JobData(
                 jobType: .biometricKyc,
                 timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                // TODO: Update userId and jobId
                 userId: "",
                 jobId: ""
             )
@@ -177,6 +178,7 @@ class HomeViewModel: ObservableObject,
             data: JobData(
                 jobType: .documentVerification,
                 timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                // TODO: Update userId and jobId
                 userId: "",
                 jobId: ""
             )
@@ -199,6 +201,7 @@ class HomeViewModel: ObservableObject,
             data: JobData(
                 jobType: .enhancedDocumentVerification,
                 timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                // TODO: Update userId and jobId
                 userId: "",
                 jobId: ""
             )
