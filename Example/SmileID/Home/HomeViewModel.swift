@@ -22,7 +22,7 @@ class HomeViewModel: ObservableObject,
     let dataStoreClient: DataStoreClient
     var userId: String?
     var jobId: String?
-    
+
     init(
         config: Config,
         dataStoreClient: DataStoreClient = DataStoreClient()

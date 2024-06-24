@@ -1,9 +1,9 @@
 import Foundation
 
 class DataStoreClient {
-    
+
     let viewContext = CoreDataManager.shared.container.viewContext
-    
+
     func fetchJobs() -> [JobData] {
         do {
             let objects = try Job.fetchJobs(using: viewContext)
@@ -13,7 +13,7 @@ class DataStoreClient {
             return []
         }
     }
-    
+
     func saveJob(data: JobData) {
         do {
             try Job.create(with: data, using: viewContext)
@@ -21,7 +21,7 @@ class DataStoreClient {
             print(error.localizedDescription)
         }
     }
-    
+
     func clearJobs() {
         do {
             try Job.deleteJobs(using: viewContext)
