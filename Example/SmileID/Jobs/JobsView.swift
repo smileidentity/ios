@@ -32,7 +32,9 @@ struct JobsView: View {
                 }
 
                 ToolbarItem {
-                    Button(action: {}, label: {
+                    Button(action: {
+                        viewModel.clearButtonTapped()
+                    }, label: {
                         Image(systemName: "trash.fill")
                     })
                     .buttonStyle(.plain)
@@ -41,6 +43,17 @@ struct JobsView: View {
             .onAppear {
                 viewModel.fetchJobs()
             }
+            .actionSheet(isPresented: $viewModel.showConfirmation, content: {
+                ActionSheet(
+                    title: Text("Are you sure you want to clear all jobs?"),
+                    buttons: [
+                        .cancel(),
+                        .destructive(Text("Clear Jobs"), action: {
+                            viewModel.clearJobs()
+                        })
+                    ]
+                )
+            })
             
             if #available(iOS 16.0, *) {
                 scrollView.toolbarBackground(SmileID.theme.backgroundLight, for: .navigationBar)

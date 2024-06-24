@@ -4,6 +4,7 @@ import SmileID
 @MainActor
 class JobsViewModel: ObservableObject {
     @Published private(set) var jobs: [JobData] = []
+    @Published var showConfirmation: Bool = false
     
     let provider: JobsProvider
     
@@ -16,16 +17,21 @@ class JobsViewModel: ObservableObject {
     }
     
     func addNewJob() {
-        provider.saveJob(
-            data: JobData(
-                jobType: .biometricKyc,
-                timestamp: "14/05/2024 16:12",
-                userId: generateUserId(),
-                jobId: generateJobId(),
-                jobComplete: false,
-                jobSuccess: false
-            )
+        let newJobData = JobData(
+            jobType: .biometricKyc,
+            timestamp: "14/05/2024 16:12",
+            userId: generateUserId(),
+            jobId: generateJobId(),
+            jobComplete: false,
+            jobSuccess: false
         )
+        provider.saveJob(
+            data: newJobData
+        )
+    }
+    
+    func clearButtonTapped() {
+        showConfirmation = true
     }
     
     func clearJobs() {

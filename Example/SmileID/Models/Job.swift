@@ -43,6 +43,7 @@ extension Job {
     ) throws {
         let job = Job(context: context)
         job.jobId = data.jobId
+        job.userId = data.userId
         job.jobType = Int16(data.jobType.rawValue)
         job.timestamp = data.timestamp
         job.jobComplete = data.jobComplete
