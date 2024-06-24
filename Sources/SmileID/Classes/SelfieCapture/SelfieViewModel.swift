@@ -308,7 +308,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         partnerParams: extraPartnerParams
                     )
                 }
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+                let authResponse = try await SmileID.api.authenticate(request: authRequest)
 
                 var smartSelfieLivenessImages = [MultipartBody]()
                 var smartSelfieImage: MultipartBody?
@@ -348,7 +348,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         callbackUrl: SmileID.callbackUrl,
                         sandboxResult: nil,
                         allowNewEnroll: allowNewEnroll
-                    ).async()
+                    )
                 } else {
                     try await SmileID.api.doSmartSelfieAuthentication(
                         signature: authResponse.signature,
@@ -359,7 +359,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         partnerParams: extraPartnerParams,
                         callbackUrl: SmileID.callbackUrl,
                         sandboxResult: nil
-                    ).async()
+                    )
                 }
                 apiResponse = response
                 do {
