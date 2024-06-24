@@ -1,5 +1,12 @@
 # Release Notes
 
+## 10.2.0
+
+#### Changed
+
+* **Breaking Change:** Updated the networking layer to use Swift's `async/await` instead of Combine's `AnyPublisher` and now return `async` functions. This improves readability and aligns with modern Swift concurrency practices.
+    * All instances where these methods are used have been updated accordingly.
+
 ## 10.1.6
 
 #### Added

@@ -1,18 +1,17 @@
-import Combine
 import Foundation
 
 protocol JobSubmittable {
     func getJobStatus<T: JobResult>(
         _ authResponse: AuthenticationResponse
-    ) -> AnyPublisher<JobStatusResponse<T>, Error>
+    ) async throws -> JobStatusResponse<T>
     func upload(
         _ prepUploadResponse: PrepUploadResponse, zip: Data
-    ) -> AnyPublisher<UploadResponse, Error>
+    ) async throws -> UploadResponse
     func prepUpload(
         authResponse: AuthenticationResponse,
         allowNewEnroll: Bool,
         extraPartnerParams: [String: String]
-    ) -> AnyPublisher<PrepUploadResponse, Error>
+    ) async throws -> PrepUploadResponse
     func handleRetry()
     func handleClose()
 }
@@ -22,27 +21,26 @@ extension JobSubmittable {
         authResponse: AuthenticationResponse,
         allowNewEnroll: Bool,
         extraPartnerParams: [String: String]
-    ) -> AnyPublisher<PrepUploadResponse, Error> {
+    ) async throws -> PrepUploadResponse {
         let prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
             allowNewEnroll: String(allowNewEnroll), // TODO - Fix when Michael changes this to boolean
             timestamp: authResponse.timestamp,
             signature: authResponse.signature
         )
-        return SmileID.api.prepUpload(request: prepUploadRequest)
+        return try await SmileID.api.prepUpload(request: prepUploadRequest)
     }
 
     func upload(
         _ prepUploadResponse: PrepUploadResponse,
         zip: Data
-    ) -> AnyPublisher<UploadResponse, Error> {
-        SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
-            .eraseToAnyPublisher()
+    ) async throws -> AsyncThrowingStream<UploadResponse, Error> {
+        try await SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
     }
 
     func getJobStatus<T: JobResult>(
         _ authResponse: AuthenticationResponse
-    ) -> AnyPublisher<JobStatusResponse<T>, Error> {
+    ) async throws -> JobStatusResponse<T> {
         let jobStatusRequest = JobStatusRequest(
             userId: authResponse.partnerParams.userId,
             jobId: authResponse.partnerParams.jobId,
@@ -51,6 +49,6 @@ extension JobSubmittable {
             timestamp: authResponse.timestamp,
             signature: authResponse.signature
         )
-        return SmileID.api.getJobStatus(request: jobStatusRequest)
+        return try await SmileID.api.getJobStatus(request: jobStatusRequest)
     }
 }

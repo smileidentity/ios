@@ -1,6 +1,5 @@
 import Foundation
 import XCTest
-import Combine
 @testable import SmileID
 
 class EnhancedKycTest: BaseTestCase {
