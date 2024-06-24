@@ -6,28 +6,14 @@ class JobsViewModel: ObservableObject {
     @Published private(set) var jobs: [JobData] = []
     @Published var showConfirmation: Bool = false
     
-    let provider: JobsProvider
+    let dataStoreClient: DataStoreClient
     
-    init(provider: JobsProvider = JobsProvider()) {
-        self.provider = provider
+    init(dataStoreClient: DataStoreClient = DataStoreClient()) {
+        self.dataStoreClient = dataStoreClient
     }
     
     func fetchJobs() {
-        jobs = provider.fetchJobs()
-    }
-    
-    func addNewJob() {
-        let newJobData = JobData(
-            jobType: .biometricKyc,
-            timestamp: "14/05/2024 16:12",
-            userId: generateUserId(),
-            jobId: generateJobId(),
-            jobComplete: false,
-            jobSuccess: false
-        )
-        provider.saveJob(
-            data: newJobData
-        )
+        jobs = dataStoreClient.fetchJobs()
     }
     
     func clearButtonTapped() {
@@ -35,6 +21,7 @@ class JobsViewModel: ObservableObject {
     }
     
     func clearJobs() {
-        provider.clearJobs()
+        dataStoreClient.clearJobs()
+        jobs.removeAll()
     }
 }

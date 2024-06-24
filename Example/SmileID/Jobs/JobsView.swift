@@ -24,15 +24,6 @@ struct JobsView: View {
             .toolbar {
                 ToolbarItem {
                     Button(action: {
-                        viewModel.addNewJob()
-                    }, label: {
-                        Image(systemName: "plus.circle.fill")
-                    })
-                    .buttonStyle(.plain)
-                }
-
-                ToolbarItem {
-                    Button(action: {
                         viewModel.clearButtonTapped()
                     }, label: {
                         Image(systemName: "trash.fill")

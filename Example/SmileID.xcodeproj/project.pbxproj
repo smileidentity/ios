@@ -29,7 +29,8 @@
 		20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEE2C206BDF003536F5 /* JobListItem.swift */; };
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
 		20343AFA2C2086D3003536F5 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF92C2086D3003536F5 /* EmptyStateView.swift */; };
-		2089720E2C2624EE00D07D68 /* JobsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2089720D2C2624EE00D07D68 /* JobsProvider.swift */; };
+		205FB4A52C29AF1500FDE64F /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205FB4A42C29AF1500FDE64F /* Date+Extension.swift */; };
+		2089720E2C2624EE00D07D68 /* DataStoreClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2089720D2C2624EE00D07D68 /* DataStoreClient.swift */; };
 		208972102C26253E00D07D68 /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2089720F2C26253E00D07D68 /* JobsViewModel.swift */; };
 		20B6D5E32C21C3C90023D51C /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E12C21C3C90023D51C /* Job.swift */; };
 		20B6D5EA2C21CA9E0023D51C /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */; };
@@ -103,7 +104,8 @@
 		20343AEE2C206BDF003536F5 /* JobListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListItem.swift; sourceTree = "<group>"; };
 		20343AF12C206CEC003536F5 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
 		20343AF92C2086D3003536F5 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
-		2089720D2C2624EE00D07D68 /* JobsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsProvider.swift; sourceTree = "<group>"; };
+		205FB4A42C29AF1500FDE64F /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		2089720D2C2624EE00D07D68 /* DataStoreClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreClient.swift; sourceTree = "<group>"; };
 		2089720F2C26253E00D07D68 /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsViewModel.swift; sourceTree = "<group>"; };
 		20B6D5E12C21C3C90023D51C /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Job.swift; sourceTree = "<group>"; };
 		20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -191,7 +193,7 @@
 				20343AF12C206CEC003536F5 /* JobData.swift */,
 				20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */,
 				20B6D5EB2C21CE660023D51C /* DataStoreError.swift */,
-				2089720D2C2624EE00D07D68 /* JobsProvider.swift */,
+				2089720D2C2624EE00D07D68 /* DataStoreClient.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -261,6 +263,7 @@
 			isa = PBXGroup;
 			children = (
 				20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */,
+				205FB4A42C29AF1500FDE64F /* Date+Extension.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -690,6 +693,7 @@
 				20B6D5EA2C21CA9E0023D51C /* CoreDataManager.swift in Sources */,
 				20343AF22C206CEC003536F5 /* JobData.swift in Sources */,
 				6AC9870BB28E40FCACC75947 /* DocumentVerificationIdTypeSelector.swift in Sources */,
+				205FB4A52C29AF1500FDE64F /* Date+Extension.swift in Sources */,
 				6AC98F5682012E19C815AE70 /* DocumentSelectorViewModel.swift in Sources */,
 				6AC983F056A8F9088D6CF3F7 /* SettingsView.swift in Sources */,
 				6AC98990097662789B0107EB /* SettingsViewModel.swift in Sources */,
@@ -704,7 +708,7 @@
 				20DFA0EC2C21917100AC2AE7 /* View+TextSelection.swift in Sources */,
 				6AC9886EEE4DE8AE1A31896A /* IdInfoInputScreen.swift in Sources */,
 				6AC984F8CA1753050C98F14B /* IdInfoInputViewModel.swift in Sources */,
-				2089720E2C2624EE00D07D68 /* JobsProvider.swift in Sources */,
+				2089720E2C2624EE00D07D68 /* DataStoreClient.swift in Sources */,
 				20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

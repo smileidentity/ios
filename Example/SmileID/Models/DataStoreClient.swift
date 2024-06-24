@@ -1,6 +1,6 @@
 import Foundation
 
-class JobsProvider {
+class DataStoreClient {
     
     let viewContext = CoreDataManager.shared.container.viewContext
     

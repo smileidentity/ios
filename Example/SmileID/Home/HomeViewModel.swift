@@ -19,10 +19,15 @@ class HomeViewModel: ObservableObject,
     @Published var partnerId: String
     @ObservedObject var networkMonitor = NetworkMonitor.shared
 
-    let provider: JobsProvider
+    let dataStoreClient: DataStoreClient
+    var userId: String?
+    var jobId: String?
     
-    init(config: Config, provider: JobsProvider = JobsProvider()) {
-        self.provider = provider
+    init(
+        config: Config,
+        dataStoreClient: DataStoreClient = DataStoreClient()
+    ) {
+        self.dataStoreClient = dataStoreClient
         partnerId = config.partnerId
         SmileID.initialize(config: config, useSandbox: false)
         SentrySDK.configureScope { scope in
@@ -49,7 +54,7 @@ class HomeViewModel: ObservableObject,
     // Called for SmartSelfie Enrollment by a proxy delegate in HomeView
     func onSmartSelfieEnrollment(
         userId: String,
-        selfieImage _: URL,
+        selfieImage: URL,
         livenessImages _: [URL],
         apiResponse: SmartSelfieResponse?
     ) {
@@ -61,11 +66,28 @@ class HomeViewModel: ObservableObject,
             apiResponse: apiResponse,
             suffix: "The User ID has been copied to your clipboard"
         )
+        if let apiResponse = apiResponse {
+            dataStoreClient.saveJob(
+                data: JobData(
+                    jobType: .smartSelfieEnrollment,
+                    timestamp: apiResponse.createdAt,
+                    userId: apiResponse.userId,
+                    jobId: apiResponse.jobId,
+                    jobComplete: true,
+                    jobSuccess: apiResponse.status == .approved,
+                    code: apiResponse.code,
+                    resultCode: apiResponse.code,
+                    smileJobId: apiResponse.jobId,
+                    resultText: apiResponse.message,
+                    selfieImageUrl: selfieImage.absoluteString
+                )
+            )
+        }
     }
 
     // Called only for SmartSelfie Authentication
     func didSucceed(
-        selfieImage _: URL,
+        selfieImage: URL,
         livenessImages _: [URL],
         apiResponse: SmartSelfieResponse?
     ) {
@@ -75,6 +97,23 @@ class HomeViewModel: ObservableObject,
             jobName: "SmartSelfie Authentication",
             apiResponse: apiResponse
         )
+        if let apiResponse = apiResponse {
+            dataStoreClient.saveJob(
+                data: JobData(
+                    jobType: .smartSelfieAuthentication,
+                    timestamp: apiResponse.createdAt,
+                    userId: apiResponse.userId,
+                    jobId: apiResponse.jobId,
+                    jobComplete: true,
+                    jobSuccess: apiResponse.status == .approved,
+                    code: apiResponse.code,
+                    resultCode: apiResponse.code,
+                    smileJobId: apiResponse.jobId,
+                    resultText: apiResponse.message,
+                    selfieImageUrl: selfieImage.absoluteString
+                )
+            )
+        }
     }
 
     func didSucceed(
@@ -84,21 +123,41 @@ class HomeViewModel: ObservableObject,
     ) {
         dismissModal()
         showToast = true
-        // save job to core data
         toastMessage = jobResultMessageBuilder(
             jobName: "Biometric KYC",
             didSubmitJob: didSubmitBiometricJob
         )
+        dataStoreClient.saveJob(
+            data: JobData(
+                jobType: .biometricKyc,
+                timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                userId: "",
+                jobId: ""
+            )
+        )
     }
 
     func didSucceed(
-        enhancedKycResponse _: EnhancedKycResponse
+        enhancedKycResponse: EnhancedKycResponse
     ) {
         dismissModal()
         showToast = true
         toastMessage = jobResultMessageBuilder(
             jobName: "Enhanced KYC",
             didSubmitJob: true
+        )
+        dataStoreClient.saveJob(
+            data: JobData(
+                jobType: .enhancedKyc,
+                timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                userId: enhancedKycResponse.partnerParams.userId,
+                jobId: enhancedKycResponse.partnerParams.jobId,
+                jobComplete: true,
+                jobSuccess: true,
+                resultCode: enhancedKycResponse.resultCode,
+                smileJobId: enhancedKycResponse.smileJobId,
+                resultText: enhancedKycResponse.resultText
+            )
         )
     }
 
@@ -114,6 +173,14 @@ class HomeViewModel: ObservableObject,
             jobName: "Document Verification",
             didSubmitJob: didSubmitDocumentVerificationJob
         )
+        dataStoreClient.saveJob(
+            data: JobData(
+                jobType: .documentVerification,
+                timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                userId: "",
+                jobId: ""
+            )
+        )
     }
 
     func didSucceed(
@@ -127,6 +194,14 @@ class HomeViewModel: ObservableObject,
         toastMessage = jobResultMessageBuilder(
             jobName: "Enhanced Document Verification",
             didSubmitJob: didSubmitEnhancedDocVJob
+        )
+        dataStoreClient.saveJob(
+            data: JobData(
+                jobType: .enhancedDocumentVerification,
+                timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                userId: "",
+                jobId: ""
+            )
         )
     }
 
