@@ -5,12 +5,10 @@ struct HomeView: View {
     let version = SmileID.version
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @ObservedObject var viewModel: HomeViewModel
-    @ObservedObject var homeViewData: HomeViewData
     @ObservedObject var networkMonitor = NetworkMonitor.shared
 
     init(config: Config) {
         viewModel = HomeViewModel(config: config)
-        homeViewData = HomeViewData()
     }
 
     var body: some View {
@@ -27,15 +25,15 @@ struct HomeView: View {
                             image: "smart_selfie_enroll",
                             name: "SmartSelfie™ Enrollment",
                             onClick: {
-                                homeViewData.smartSelfieEnrollmentUserId = generateUserId()
                                 viewModel.onProductClicked()
                             },
                             content: {
                                 SmileID.smartSelfieEnrollmentScreen(
-                                    userId: homeViewData.smartSelfieEnrollmentUserId,
+                                    userId: viewModel.smartSelfieEnrollmentUserId,
+                                    jobId: viewModel.newJobId,
                                     allowAgentMode: true,
                                     delegate: SmartSelfieEnrollmentDelegate(
-                                        userId: homeViewData.smartSelfieEnrollmentUserId,
+                                        userId: viewModel.smartSelfieEnrollmentUserId,
                                         onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                                         onError: viewModel.didError
                                     )
@@ -50,7 +48,7 @@ struct HomeView: View {
                             },
                             content: {
                                 SmartSelfieAuthWithUserIdEntry(
-                                    initialUserId: homeViewData.smartSelfieEnrollmentUserId,
+                                    initialUserId: viewModel.smartSelfieEnrollmentUserId,
                                     delegate: viewModel
                                 )
                             }
@@ -81,7 +79,13 @@ struct HomeView: View {
                             onClick: {
                                 viewModel.onProductClicked()
                             },
-                            content: { DocumentVerificationWithSelector(delegate: viewModel) }
+                            content: {
+                                DocumentVerificationWithSelector(
+                                    userId: viewModel.smartSelfieEnrollmentUserId,
+                                    jobId: viewModel.newJobId,
+                                    delegate: viewModel
+                                )
+                            }
                         ),
                         ProductCell(
                             image: "enhanced_doc_v",
@@ -90,10 +94,16 @@ struct HomeView: View {
                                 viewModel.onProductClicked()
                             },
                             content: {
-                                EnhancedDocumentVerificationWithSelector(delegate: viewModel)
+                                EnhancedDocumentVerificationWithSelector(
+                                    userId: viewModel.smartSelfieEnrollmentUserId,
+                                    jobId: viewModel.newJobId,
+                                    delegate: viewModel
+                                )
                             }
                         )
-                    ].map { AnyView($0) }
+                    ].map {
+                        AnyView($0)
+                    }
                 )
 
                 Text("Partner \(viewModel.partnerId) - Version \(version) - Build \(build)")
@@ -165,6 +175,9 @@ private struct DocumentVerificationWithSelector: View {
     @State private var countryCode: String?
     @State private var documentType: String?
     @State private var captureBothSides: Bool?
+    
+    let userId: String
+    let jobId: String
     let delegate: DocumentVerificationResultDelegate
 
     var body: some View {
@@ -172,6 +185,8 @@ private struct DocumentVerificationWithSelector: View {
            let documentType,
            let captureBothSides {
             SmileID.documentVerificationScreen(
+                userId: userId,
+                jobId: jobId,
                 countryCode: countryCode,
                 documentType: documentType,
                 captureBothSides: captureBothSides,
@@ -194,6 +209,9 @@ private struct EnhancedDocumentVerificationWithSelector: View {
     @State private var countryCode: String?
     @State private var documentType: String?
     @State private var captureBothSides: Bool?
+
+    let userId: String
+    let jobId: String
     let delegate: EnhancedDocumentVerificationResultDelegate
 
     var body: some View {
@@ -201,6 +219,8 @@ private struct EnhancedDocumentVerificationWithSelector: View {
            let documentType,
            let captureBothSides {
             SmileID.enhancedDocumentVerificationScreen(
+                userId: userId,
+                jobId: jobId,
                 countryCode: countryCode,
                 documentType: documentType,
                 captureBothSides: captureBothSides,

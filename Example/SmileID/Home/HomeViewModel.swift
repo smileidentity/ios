@@ -19,9 +19,12 @@ class HomeViewModel: ObservableObject,
     @Published var partnerId: String
     @ObservedObject var networkMonitor = NetworkMonitor.shared
 
+    @Published private(set) var smartSelfieEnrollmentUserId = generateUserId()
+    var newJobId: String {
+        generateJobId()
+    }
+
     let dataStoreClient: DataStoreClient
-    var userId: String?
-    var jobId: String?
 
     init(
         config: Config,
@@ -131,9 +134,8 @@ class HomeViewModel: ObservableObject,
             data: JobData(
                 jobType: .biometricKyc,
                 timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
-                // TODO: Update userId and jobId
-                userId: "",
-                jobId: ""
+                userId: smartSelfieEnrollmentUserId,
+                jobId: newJobId
             )
         )
     }
@@ -178,9 +180,8 @@ class HomeViewModel: ObservableObject,
             data: JobData(
                 jobType: .documentVerification,
                 timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
-                // TODO: Update userId and jobId
-                userId: "",
-                jobId: ""
+                userId: smartSelfieEnrollmentUserId,
+                jobId: newJobId
             )
         )
     }
@@ -201,9 +202,8 @@ class HomeViewModel: ObservableObject,
             data: JobData(
                 jobType: .enhancedDocumentVerification,
                 timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
-                // TODO: Update userId and jobId
-                userId: "",
-                jobId: ""
+                userId: smartSelfieEnrollmentUserId,
+                jobId: newJobId
             )
         )
     }
