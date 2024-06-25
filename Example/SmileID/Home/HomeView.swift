@@ -175,7 +175,7 @@ private struct DocumentVerificationWithSelector: View {
     @State private var countryCode: String?
     @State private var documentType: String?
     @State private var captureBothSides: Bool?
-    
+
     let userId: String
     let jobId: String
     let delegate: DocumentVerificationResultDelegate
