@@ -257,7 +257,7 @@ class DocumentCaptureViewModel: ObservableObject {
 
         return isCenteredHorizontally && isCenteredVertically
     }
-    
+
     func openSettings() {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(settingsURL)

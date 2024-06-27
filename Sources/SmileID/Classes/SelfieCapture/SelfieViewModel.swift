@@ -445,7 +445,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             callback.didError(error: SmileIDError.unknown("Unknown error"))
         }
     }
-    
+
     func openSettings() {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(settingsURL)
