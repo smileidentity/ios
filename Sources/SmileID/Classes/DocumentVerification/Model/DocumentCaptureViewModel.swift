@@ -44,9 +44,10 @@ class DocumentCaptureViewModel: ObservableObject {
             idAspectRatio = defaultAspectRatio
         }
 
-        cameraManager.$error
+        cameraManager.$status
             .receive(on: DispatchQueue.main)
-            .map { AlertState(message: $0?.localizedDescription, title: "Camera error") }
+            .filter { $0 == .unauthorized }
+            .map { _ in AlertState.cameraUnauthorized }
             .sink { alert in self.unauthorizedAlert = alert }
             .store(in: &subscribers)
 

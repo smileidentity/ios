@@ -74,10 +74,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
 
-        cameraManager.$error
+        cameraManager.$status
             .receive(on: DispatchQueue.main)
-            // .filter { $0 == .unauthorized }
-            .map { AlertState(message: $0?.localizedDescription, title: "Camera error") }
+            .filter { $0 == .unauthorized }
+            .map { _ in AlertState.cameraUnauthorized }
             .sink { alert in self.unauthorizedAlert = alert }
             .store(in: &subscribers)
 

@@ -94,17 +94,17 @@ public struct DocumentCaptureScreen: View {
                 cameraManager: viewModel.cameraManager,
                 onCaptureClick: viewModel.captureDocument
             )
-            .alert(item: $viewModel.alert) { alert in
+            .alert(item: $viewModel.unauthorizedAlert) { alert in
                 Alert(
-                    title: Text("App name Needs Access to Your Camera"),
-                    message: Text("The camera permission is required to complete the verification process"),
-                    primaryButton: .cancel(),
-                    secondaryButton: .default(
-                        Text("Open Settings"),
+                    title: Text(alert.title),
+                    message: Text(alert.message ?? ""),
+                    primaryButton: .default(
+                        Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
                         action: {
                             viewModel.openSettings()
                         }
-                    )
+                    ),
+                    secondaryButton: .cancel()
                 )
             }
         }
