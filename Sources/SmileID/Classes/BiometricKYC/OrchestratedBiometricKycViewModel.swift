@@ -100,7 +100,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                         partnerParams: extraPartnerParams
                     )
                 }
-                let authResponse = try await SmileID.api.authenticate(request: authRequest).async()
+                let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
                     allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
@@ -109,11 +109,11 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 )
                 let prepUploadResponse = try await SmileID.api.prepUpload(
                     request: prepUploadRequest
-                ).async()
+                )
                 _ = try await SmileID.api.upload(
                     zip: zip,
                     to: prepUploadResponse.uploadUrl
-                ).async()
+                )
                 didSubmitBiometricJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
