@@ -65,6 +65,8 @@ struct BiometricKycWithIdInputScreen: View {
         case .sdk(let idInfo):
             SmileID.biometricKycScreen(
                 idInfo: idInfo,
+                userId: viewModel.userId,
+                jobId: viewModel.jobId,
                 allowAgentMode: true,
                 delegate: delegate
             )

@@ -9,8 +9,8 @@ struct JobData: Identifiable {
     var timestamp: String
     var userId: String
     var jobId: String
-    var jobComplete: Bool
-    var jobSuccess: Bool
+    var jobComplete: Bool = false
+    var jobSuccess: Bool = false
     var code: String?
     var resultCode: String?
     var smileJobId: String?
@@ -54,6 +54,27 @@ extension JobType {
         case .enhancedDocumentVerification:
             return "enhanced_doc_v"
         }
+    }
+}
+
+extension JobData {
+    init?(managedObject: Job) {
+        guard let jobType = JobType(rawValue: Int(managedObject.jobType)) else {
+            return nil
+        }
+        self.init(
+            jobType: jobType,
+            timestamp: managedObject.timestamp,
+            userId: managedObject.userId,
+            jobId: managedObject.jobId,
+            jobComplete: managedObject.jobComplete,
+            jobSuccess: managedObject.jobSuccess,
+            code: managedObject.code,
+            resultCode: managedObject.resultCode,
+            smileJobId: managedObject.smileJobId,
+            resultText: managedObject.resultText,
+            selfieImageUrl: managedObject.selfieImageUrl
+        )
     }
 }
 

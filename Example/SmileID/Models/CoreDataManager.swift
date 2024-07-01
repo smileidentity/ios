@@ -1,7 +1,7 @@
 import CoreData
 import Foundation
 
-struct CoreDataManager {
+class CoreDataManager {
     static let shared = CoreDataManager()
 
     static let preview: CoreDataManager = {
