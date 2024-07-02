@@ -50,5 +50,18 @@ public struct SelfieCaptureScreen: View {
             }
                 .padding(24)
         }
+        .alert(item: $viewModel.unauthorizedAlert) { alert in
+            Alert(
+                title: Text(alert.title),
+                message: Text(alert.message ?? ""),
+                primaryButton: .default(
+                    Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
+                    action: {
+                        viewModel.openSettings()
+                    }
+                ),
+                secondaryButton: .cancel()
+            )
+        }
     }
 }

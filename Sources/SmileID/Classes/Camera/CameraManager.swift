@@ -39,7 +39,7 @@ class CameraManager: NSObject, ObservableObject {
     private let sessionQueue = DispatchQueue(label: "com.smileidentity.ios")
     private let videoOutput = AVCaptureVideoDataOutput()
     private let photoOutput = AVCapturePhotoOutput()
-    private var status = Status.unconfigured
+    @Published private(set) var status = Status.unconfigured
     private var orientation: Orientation
 
     init(orientation: Orientation) {
@@ -48,6 +48,7 @@ class CameraManager: NSObject, ObservableObject {
         sessionQueue.async {
             self.videoOutput.setSampleBufferDelegate(self, queue: self.videoOutputQueue)
         }
+        checkPermissions()
     }
 
     private func set(error: CameraError?) {

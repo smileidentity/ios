@@ -47,6 +47,9 @@
 "Action.Skip" = "Skip back of ID";
 
 "Camera.AgentMode" = "Agent Mode";
+"Camera.Unauthorized.Title" = "Allow access to your camera";
+"Camera.Unauthorized.Message" = "The camera permission is required to complete the verification process.";
+"Camera.Unauthorized.PrimaryAction" = "Open Settings";
 
 "Document.Confirmation.Header" = "Is the document clear and readable?";
 "Document.Confirmation.Callout" = "Make sure all corners of the document are visible and there is no glare";
