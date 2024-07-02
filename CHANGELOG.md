@@ -1,4 +1,8 @@
 # Release Notes
+## 10.2.1
+
+#### Added
+*  Handle unauthorized camera status
 
 ## 10.2.0
 
