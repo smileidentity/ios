@@ -26,6 +26,7 @@ class DocumentCaptureViewModel: ObservableObject {
     private var areEdgesDetectedSubscriber: AnyCancellable?
 
     // UI properties
+    @Published var documentImageOrigin: DocumentImageOriginValue?
     @Published var acknowledgedInstructions = false
     @Published var showPhotoPicker = false
     @Published var directive: DocumentDirective = .defaultInstructions
@@ -109,20 +110,34 @@ class DocumentCaptureViewModel: ObservableObject {
             return
         }
         DispatchQueue.main.async {
+            self.documentImageOrigin = DocumentImageOriginValue.gallery
             self.acknowledgedInstructions = true
             self.documentImageToConfirm = image
             self.showPhotoPicker = false
         }
     }
 
-    /// Called when auto capture determines the image quality is sufficient OR when the user taps
-    /// the manual capture button.
+    /// Need to make this identitcal to android implementation
     func captureDocument() {
         if isCapturing {
             print("Already capturing. Skipping duplicate capture request")
             return
         }
         DispatchQueue.main.async {
+            self.documentImageOrigin = DocumentImageOriginValue.cameraAutoCapture
+            self.isCapturing = true
+            self.directive = .capturing
+        }
+        cameraManager.capturePhoto()
+    }
+    
+    func captureDocumentManually() {
+        if isCapturing {
+            print("Already capturing. Skipping duplicate capture request")
+            return
+        }
+        DispatchQueue.main.async {
+            self.documentImageOrigin = DocumentImageOriginValue.cameraManualCapture
             self.isCapturing = true
             self.directive = .capturing
         }
@@ -132,6 +147,7 @@ class DocumentCaptureViewModel: ObservableObject {
     /// Called if the user declines the image in the capture confirmation dialog.
     func onRetry() {
         DispatchQueue.main.async {
+            self.documentImageOrigin = nil
             self.isCapturing = false
             self.acknowledgedInstructions = false
             self.documentImageToConfirm = nil
