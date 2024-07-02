@@ -18,8 +18,7 @@ class DocumentCaptureViewModel: ObservableObject {
     // Other properties
     private let defaultAspectRatio: Double
     private let textDetector = TextDetector()
-    private var imageCaptureSubscriber: AnyCancellable?
-    private var cameraBufferSubscriber: AnyCancellable?
+    private var subscribers = Set<AnyCancellable>()
     private var processingImage = false
     private var documentFirstDetectedAtTime: TimeInterval?
     private var lastAnalysisTime: TimeInterval = 0
@@ -27,6 +26,7 @@ class DocumentCaptureViewModel: ObservableObject {
 
     // UI properties
     @Published var documentImageOrigin: DocumentImageOriginValue?
+    @Published var unauthorizedAlert: AlertState?
     @Published var acknowledgedInstructions = false
     @Published var showPhotoPicker = false
     @Published var directive: DocumentDirective = .defaultInstructions
@@ -45,15 +45,24 @@ class DocumentCaptureViewModel: ObservableObject {
             idAspectRatio = defaultAspectRatio
         }
 
-        imageCaptureSubscriber = cameraManager.capturedImagePublisher
+        cameraManager.$status
+            .receive(on: DispatchQueue.main)
+            .filter { $0 == .unauthorized }
+            .map { _ in AlertState.cameraUnauthorized }
+            .sink { alert in self.unauthorizedAlert = alert }
+            .store(in: &subscribers)
+
+        cameraManager.capturedImagePublisher
             .receive(on: DispatchQueue.global())
             .compactMap { $0 }
             .sink(receiveValue: onCaptureComplete)
+            .store(in: &subscribers)
 
-        cameraBufferSubscriber = cameraManager.sampleBufferPublisher
+        cameraManager.sampleBufferPublisher
             .receive(on: DispatchQueue(label: "com.smileidentity.receivebuffer"))
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
+            .store(in: &subscribers)
 
         // Show Manual Capture button after 10 seconds
         Timer.scheduledTimer(
@@ -263,5 +272,10 @@ class DocumentCaptureViewModel: ObservableObject {
         let isCenteredVertically = deltaY < tolerance
 
         return isCenteredHorizontally && isCenteredVertically
+    }
+
+    func openSettings() {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(settingsURL)
     }
 }
