@@ -2,13 +2,13 @@ import Foundation
 
 public class Metadata: Codable {
     let items: [Metadatum]
-    
+
     init(items: [Metadatum]) {
         self.items = items
     }
-    
+
     static func `default`() -> Metadata {
-        return Metadata(items: [Metadatum.sdk, Metadatum.sdkVersion])
+        Metadata(items: [Metadatum.sdk, Metadatum.sdkVersion])
     }
 }
 
@@ -18,26 +18,26 @@ public enum Metadatum: Codable {
     case documentFrontImageOrigin(origin: DocumentImageOriginValue)
     case documentBackImageOrigin(origin: DocumentImageOriginValue)
     case cameraFacing(facing: CameraFacingValue)
-    
+
     var value: String {
         switch self {
         case .sdk:
             return "iOS"
         case .sdkVersion:
             return SmileID.version
-        case .documentFrontImageOrigin(let origin):
+        case let .documentFrontImageOrigin(origin):
             return origin.rawValue
-        case .documentBackImageOrigin(let origin):
+        case let .documentBackImageOrigin(origin):
             return origin.rawValue
-        case .cameraFacing(let facing):
+        case let .cameraFacing(facing):
             return facing.rawValue
         }
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case name, value
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(value, forKey: .value)
@@ -54,12 +54,12 @@ public enum Metadatum: Codable {
             try container.encode("camera_facing", forKey: .name)
         }
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let name = try container.decode(String.self, forKey: .name)
         let value = try container.decode(String.self, forKey: .value)
-        
+
         switch name {
         case "sdk":
             self = .sdk
@@ -78,12 +78,12 @@ public enum Metadatum: Codable {
 }
 
 public enum DocumentImageOriginValue: String, Codable {
-    case gallery = "gallery"
+    case gallery
     case cameraAutoCapture = "camera_auto_capture"
     case cameraManualCapture = "camera_manual_capture"
 }
 
 public enum CameraFacingValue: String, Codable {
-    case front = "front"
-    case back = "back"
+    case front
+    case back
 }
