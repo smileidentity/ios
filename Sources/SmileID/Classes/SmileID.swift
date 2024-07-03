@@ -21,7 +21,6 @@ public class SmileID {
 
     private init() {}
 
-    let fingerprinter = FingerprinterFactory.getInstance()
     public private(set) static var fingerprint: String = ""
     public private(set) static var config: Config!
     public private(set) static var useSandbox = false
@@ -60,6 +59,7 @@ public class SmileID {
         self.useSandbox = useSandbox
         self.apiKey = apiKey
         SmileIDResourcesHelper.registerFonts()
+        let fingerprinter = FingerprinterFactory.getInstance()
         Task {
             // we use the deviceId and not fingerprint as this is unique and does not change
             if let fingerprint = await fingerprinter.getDeviceId() {

@@ -1,5 +1,15 @@
 {
+  "originHash" : "ae35afebec93e158e3bd5680eeed6bc09e0c13a0bd7abe27e72621c60a0c7f53",
   "pins" : [
+    {
+      "identity" : "fingerprintjs-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fingerprintjs/fingerprintjs-ios",
+      "state" : {
+        "revision" : "bd93291c149e328919a9a2881575494f6ea9245f",
+        "version" : "1.5.0"
+      }
+    },
     {
       "identity" : "lottie-spm",
       "kind" : "remoteSourceControl",
@@ -19,5 +29,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
