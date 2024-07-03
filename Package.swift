@@ -10,12 +10,12 @@ let package = Package(
         .library(
             name: "SmileID",
             targets: ["SmileID"]
-        ),
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/marmelroy/Zip", .upToNextMajor(from: "2.1.0")),
         .package(url: "https://github.com/airbnb/lottie-spm", from: "4.4.2"),
-        .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", from: "1.5.0"),
+        .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", from: "1.5.0")
     ],
     targets: [
         .target(
