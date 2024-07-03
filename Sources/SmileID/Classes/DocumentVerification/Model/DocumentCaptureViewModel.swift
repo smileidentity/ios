@@ -139,7 +139,7 @@ class DocumentCaptureViewModel: ObservableObject {
         }
         cameraManager.capturePhoto()
     }
-    
+
     /// used to manually capture images using button click
     func captureDocumentManually() {
         if isCapturing {

@@ -20,11 +20,7 @@ let package = Package(
     targets: [
         .target(
             name: "SmileID",
-            dependencies: [
-                "Zip", 
-                .product(name: "Lottie", package: "lottie-spm"), 
-                "FingerprintJS"
-            ],
+            dependencies: [ "Zip", .product(name: "Lottie", package: "lottie-spm"), "FingerprintJS"],
             path: "Sources/SmileID",
             resources: [.process("Resources")]
         ),
