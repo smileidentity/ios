@@ -62,7 +62,7 @@ public class SmileID {
         let fingerprinter = FingerprinterFactory.getInstance()
         Task {
             // we use the deviceId and not fingerprint as this is unique and does not change
-            if let fingerprint = await fingerprinter.getDeviceId() {
+            if let fingerprint = await FingerprinterFactory.getInstance().getDeviceId() {
                 SmileID.fingerprint = fingerprint
             }
         }
