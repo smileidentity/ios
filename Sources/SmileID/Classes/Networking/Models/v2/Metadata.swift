@@ -35,7 +35,7 @@ public enum Metadatum: Codable {
     }
     
     private enum CodingKeys: String, CodingKey {
-        case type, value
+        case name, value
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -43,24 +43,24 @@ public enum Metadatum: Codable {
         try container.encode(value, forKey: .value)
         switch self {
         case .sdk:
-            try container.encode("sdk", forKey: .type)
+            try container.encode("sdk", forKey: .name)
         case .sdkVersion:
-            try container.encode("sdk_version", forKey: .type)
+            try container.encode("sdk_version", forKey: .name)
         case .documentFrontImageOrigin:
-            try container.encode("document_front_image_origin", forKey: .type)
+            try container.encode("document_front_image_origin", forKey: .name)
         case .documentBackImageOrigin:
-            try container.encode("document_back_image_origin", forKey: .type)
+            try container.encode("document_back_image_origin", forKey: .name)
         case .cameraFacing:
-            try container.encode("camera_facing", forKey: .type)
+            try container.encode("camera_facing", forKey: .name)
         }
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let type = try container.decode(String.self, forKey: .type)
+        let name = try container.decode(String.self, forKey: .name)
         let value = try container.decode(String.self, forKey: .value)
         
-        switch type {
+        switch name {
         case "sdk":
             self = .sdk
         case "sdk_version":
@@ -72,7 +72,7 @@ public enum Metadatum: Codable {
         case "camera_facing":
             self = .cameraFacing(facing: CameraFacingValue(rawValue: value)!)
         default:
-            throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid type")
+            throw DecodingError.dataCorruptedError(forKey: .name, in: container, debugDescription: "Invalid type")
         }
     }
 }
