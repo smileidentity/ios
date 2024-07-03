@@ -8,13 +8,14 @@ public class Metadata: Codable {
     }
 
     static func `default`() -> Metadata {
-        Metadata(items: [Metadatum.sdk, Metadatum.sdkVersion])
+        Metadata(items: [Metadatum.sdk, Metadatum.sdkVersion, Metadatum.fingerprint])
     }
 }
 
 public enum Metadatum: Codable {
     case sdk
     case sdkVersion
+    case fingerprint
     case documentFrontImageOrigin(origin: DocumentImageOriginValue)
     case documentBackImageOrigin(origin: DocumentImageOriginValue)
     case cameraFacing(facing: CameraFacingValue)
@@ -25,6 +26,8 @@ public enum Metadatum: Codable {
             return "iOS"
         case .sdkVersion:
             return SmileID.version
+        case .fingerprint:
+            return "iOS"
         case let .documentFrontImageOrigin(origin):
             return origin.rawValue
         case let .documentBackImageOrigin(origin):
@@ -46,6 +49,8 @@ public enum Metadatum: Codable {
             try container.encode("sdk", forKey: .name)
         case .sdkVersion:
             try container.encode("sdk_version", forKey: .name)
+        case .fingerprint:
+            try container.encode("fingerprint", forKey: .name)
         case .documentFrontImageOrigin:
             try container.encode("document_front_image_origin", forKey: .name)
         case .documentBackImageOrigin:

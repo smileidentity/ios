@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import UIKit
+import FingerprintJS
 
 public class SmileID {
     public static let version = "10.2.1"
@@ -20,6 +21,8 @@ public class SmileID {
 
     private init() {}
 
+    let fingerprinter = FingerprinterFactory.getInstance()
+    public private(set) static var fingerprint: String = ""
     public private(set) static var config: Config!
     public private(set) static var useSandbox = false
     public private(set) static var allowOfflineMode = true
@@ -57,6 +60,12 @@ public class SmileID {
         self.useSandbox = useSandbox
         self.apiKey = apiKey
         SmileIDResourcesHelper.registerFonts()
+        Task {
+            // we use the deviceId and not fingerprint as this is unique and does not change
+            if let fingerprint = await fingerprinter.getDeviceId() {
+                SmileID.fingerprint = fingerprint
+            }
+        }
     }
 
     /// Set the environment
