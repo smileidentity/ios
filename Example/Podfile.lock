@@ -1,10 +1,16 @@
 PODS:
+  - FingerprintJS (1.5.0):
+    - FingerprintJS/Core (= 1.5.0)
+  - FingerprintJS/Core (1.5.0):
+    - FingerprintJS/SystemControl
+  - FingerprintJS/SystemControl (1.5.0)
   - lottie-ios (4.4.3)
   - netfox (1.21.0)
   - Sentry (8.26.0):
     - Sentry/Core (= 8.26.0)
   - Sentry/Core (8.26.0)
   - SmileID (10.2.1):
+    - FingerprintJS (~> 1.5.0)
     - lottie-ios (~> 4.4.2)
     - Zip (~> 2.1.0)
   - SwiftLint (0.55.1)
@@ -18,6 +24,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - FingerprintJS
     - lottie-ios
     - netfox
     - Sentry
@@ -29,10 +36,11 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
+  FingerprintJS: 96410117a394cca04d0f1e2374944c8697f2cceb
   lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
   Sentry: 74a073c71c998117edb08f56f443c83570a31bed
-  SmileID: a69509562442d9a9f00abf8bf1f47fff2d26dee4
+  SmileID: c21b7fefc36ff656b916dfb21ff25415efe6f389
   SwiftLint: 3fe909719babe5537c552ee8181c0031392be933
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 

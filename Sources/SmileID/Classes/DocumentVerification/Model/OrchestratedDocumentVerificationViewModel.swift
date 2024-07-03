@@ -60,8 +60,11 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         self.extraPartnerParams = extraPartnerParams
     }
 
-    func onFrontDocumentImageConfirmed(data: Data) {
-        documentFrontFile = data
+    func onFrontDocumentImageConfirmed(
+        documentImageFile: Data,
+        imageOrigin: DocumentImageOriginValue?
+    ) {
+        documentFrontFile = documentImageFile
         if captureBothSides {
             DispatchQueue.main.async {
                 self.step = .backDocumentCapture
@@ -73,8 +76,11 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         }
     }
 
-    func onBackDocumentImageConfirmed(data: Data) {
-        documentBackFile = data
+    func onBackDocumentImageConfirmed(
+        documentImageFile: Data,
+        imageOrigin: DocumentImageOriginValue?
+    ) {
+        documentBackFile = documentImageFile
         DispatchQueue.main.async {
             self.step = .selfieCapture
         }

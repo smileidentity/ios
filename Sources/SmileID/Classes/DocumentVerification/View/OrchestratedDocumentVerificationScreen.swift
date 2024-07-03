@@ -162,7 +162,9 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 ),
                 captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
                 knownIdAspectRatio: idAspectRatio,
-                onConfirm: viewModel.onFrontDocumentImageConfirmed,
+                onConfirm: { data, origin in
+                    viewModel.onFrontDocumentImageConfirmed(documentImageFile: data, imageOrigin: origin)
+                },
                 onError: viewModel.onError
             )
         case .backDocumentCapture:
@@ -180,7 +182,9 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 ),
                 captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
                 knownIdAspectRatio: idAspectRatio,
-                onConfirm: viewModel.onBackDocumentImageConfirmed,
+                onConfirm: { data, origin in
+                    viewModel.onFrontDocumentImageConfirmed(documentImageFile: data, imageOrigin: origin)
+                },
                 onError: viewModel.onError,
                 onSkip: viewModel.onDocumentBackSkip
             )

@@ -11,7 +11,7 @@ public struct DocumentCaptureScreen: View {
     let instructionsSubtitleText: String
     let captureTitleText: String
     let knownIdAspectRatio: Double?
-    let onConfirm: (Data) -> Void
+    let onConfirm: (Data, DocumentImageOriginValue?) -> Void
     let onError: (Error) -> Void
     let onSkip: () -> Void
 
@@ -28,7 +28,7 @@ public struct DocumentCaptureScreen: View {
         instructionsSubtitleText: String,
         captureTitleText: String,
         knownIdAspectRatio: Double?,
-        onConfirm: @escaping (Data) -> Void,
+        onConfirm: @escaping (Data, DocumentImageOriginValue?) -> Void,
         onError: @escaping (Error) -> Void,
         onSkip: @escaping () -> Void = {}
 
@@ -76,7 +76,7 @@ public struct DocumentCaptureScreen: View {
                 confirmationButtonText: SmileIDResourcesHelper.localizedString(
                     for: "Document.Confirmation.Accept"
                 ),
-                onConfirm: { onConfirm(imageToConfirm) },
+                onConfirm: { onConfirm(imageToConfirm, viewModel.documentImageOrigin) },
                 retakeButtonText: SmileIDResourcesHelper.localizedString(
                     for: "Document.Confirmation.Decline"
                 ),
@@ -92,7 +92,7 @@ public struct DocumentCaptureScreen: View {
                 showCaptureInProgress: viewModel.isCapturing,
                 showManualCaptureButton: viewModel.showManualCaptureButton,
                 cameraManager: viewModel.cameraManager,
-                onCaptureClick: viewModel.captureDocument
+                onCaptureClick: viewModel.captureDocumentManually
             )
             .alert(item: $viewModel.unauthorizedAlert) { alert in
                 Alert(
