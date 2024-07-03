@@ -59,7 +59,6 @@ public class SmileID {
         self.useSandbox = useSandbox
         self.apiKey = apiKey
         SmileIDResourcesHelper.registerFonts()
-        let fingerprinter = FingerprinterFactory.getInstance()
         Task {
             // we use the deviceId and not fingerprint as this is unique and does not change
             if let fingerprint = await FingerprinterFactory.getInstance().getDeviceId() {
