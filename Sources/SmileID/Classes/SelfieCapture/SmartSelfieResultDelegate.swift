@@ -12,7 +12,8 @@ public protocol SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        apiResponse: SmartSelfieResponse?
+        apiResponse: SmartSelfieResponse?,
+        captureMode: CameraFacingValue
     )
 
     /// An error occurred during the selfie capture session
