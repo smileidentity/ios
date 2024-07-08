@@ -11,10 +11,10 @@ public struct DocumentCaptureScreen: View {
     let instructionsSubtitleText: String
     let captureTitleText: String
     let knownIdAspectRatio: Double?
-    let onConfirm: (Data, DocumentImageOriginValue?) -> Void
+    let onConfirm: (Data, DocumentImageOriginValue?, Int) -> Void
     let onError: (Error) -> Void
     let onSkip: () -> Void
-
+    
     @ObservedObject
     private var viewModel: DocumentCaptureViewModel
 
@@ -28,7 +28,7 @@ public struct DocumentCaptureScreen: View {
         instructionsSubtitleText: String,
         captureTitleText: String,
         knownIdAspectRatio: Double?,
-        onConfirm: @escaping (Data, DocumentImageOriginValue?) -> Void,
+        onConfirm: @escaping (Data, DocumentImageOriginValue?, Int) -> Void,
         onError: @escaping (Error) -> Void,
         onSkip: @escaping () -> Void = {}
 
@@ -76,7 +76,7 @@ public struct DocumentCaptureScreen: View {
                 confirmationButtonText: SmileIDResourcesHelper.localizedString(
                     for: "Document.Confirmation.Accept"
                 ),
-                onConfirm: { onConfirm(imageToConfirm, viewModel.documentImageOrigin) },
+                onConfirm: { onConfirm(imageToConfirm, viewModel.documentImageOrigin, viewModel.retryCount) },
                 retakeButtonText: SmileIDResourcesHelper.localizedString(
                     for: "Document.Confirmation.Decline"
                 ),

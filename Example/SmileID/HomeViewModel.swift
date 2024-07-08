@@ -48,7 +48,8 @@ class HomeViewModel: ObservableObject,
         userId: String,
         selfieImage _: URL,
         livenessImages _: [URL],
-        apiResponse: SmartSelfieResponse?
+        apiResponse: SmartSelfieResponse?,
+        captureMode _: CameraFacingValue
     ) {
         dismissModal()
         showToast = true
@@ -64,7 +65,8 @@ class HomeViewModel: ObservableObject,
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        apiResponse: SmartSelfieResponse?
+        apiResponse: SmartSelfieResponse?,
+        captureMode _: CameraFacingValue
     ) {
         dismissModal()
         showToast = true
@@ -74,6 +76,7 @@ class HomeViewModel: ObservableObject,
         )
     }
 
+    // called for Biometric KYC
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
@@ -87,6 +90,7 @@ class HomeViewModel: ObservableObject,
         )
     }
 
+    // called for Enhanced KYC
     func didSucceed(
         enhancedKycResponse _: EnhancedKycResponse
     ) {
@@ -98,6 +102,7 @@ class HomeViewModel: ObservableObject,
         )
     }
 
+    // called for Document Verification
     func didSucceed(
         selfie _: URL,
         documentFrontImage _: URL,
@@ -112,6 +117,7 @@ class HomeViewModel: ObservableObject,
         )
     }
 
+    // called for Enhanced Document Verification
     func didSucceed(
         selfie _: URL,
         documentFrontImage _: URL,

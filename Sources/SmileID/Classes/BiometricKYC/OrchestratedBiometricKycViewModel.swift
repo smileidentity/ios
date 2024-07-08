@@ -16,7 +16,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     private var idInfo: IdInfo
 
     // MARK: - Other Properties
-
+    internal var selfieCaptureMode: CameraFacingValue?
     private var error: Error?
     private var selfieCaptureResultStore: SelfieCaptureResultStore?
     private var didSubmitBiometricJob: Bool = false
@@ -190,12 +190,14 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage: URL,
         livenessImages: [URL],
-        apiResponse _: SmartSelfieResponse?
+        apiResponse _: SmartSelfieResponse?,
+        captureMode: CameraFacingValue
     ) {
         selfieCaptureResultStore = SelfieCaptureResultStore(
             selfie: selfieImage,
             livenessImages: livenessImages
         )
+        selfieCaptureMode = captureMode
         if let selfieCaptureResultStore {
             submitJob(selfieCaptureResultStore: selfieCaptureResultStore)
         } else {

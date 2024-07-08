@@ -35,6 +35,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     var isSmiling = false
     var currentlyUsingArKit: Bool { ARFaceTrackingConfiguration.isSupported && !useBackCamera }
 
+    internal var captureMode: CameraFacingValue = .front
+    
     var selfieImage: URL?
     var livenessImages: [URL] = []
     var apiResponse: SmartSelfieResponse?
@@ -266,6 +268,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     func switchCamera() {
         cameraManager.switchCamera(to: useBackCamera ? .back : .front)
+        captureMode = useBackCamera ? .back : .front
     }
 
     func onSelfieRejected() {
@@ -437,7 +440,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             callback.didSucceed(
                 selfieImage: selfieImage,
                 livenessImages: livenessImages,
-                apiResponse: apiResponse
+                apiResponse: apiResponse,
+                captureMode: captureMode
             )
         } else if let error {
             callback.didError(error: error)

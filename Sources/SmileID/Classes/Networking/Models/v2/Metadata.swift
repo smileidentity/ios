@@ -19,6 +19,10 @@ public enum Metadatum: Codable {
     case documentFrontImageOrigin(origin: DocumentImageOriginValue)
     case documentBackImageOrigin(origin: DocumentImageOriginValue)
     case cameraFacing(facing: CameraFacingValue)
+    case documentFrontRetryCount(retryCount: Int)
+    case documentBackRetryCount(retryCount: Int)
+    case documentFrontAutoCapture(autoCapture: Bool)
+    case documentBackAutoCapture(autoCapture: Bool)
 
     var value: String {
         switch self {
@@ -34,50 +38,45 @@ public enum Metadatum: Codable {
             return origin.rawValue
         case let .cameraFacing(facing):
             return facing.rawValue
+        case .documentFrontRetryCount(retryCount: let retryCount):
+            return String(retryCount)
+        case .documentBackRetryCount(retryCount: let retryCount):
+            return String(retryCount)
+        case .documentFrontAutoCapture(autoCapture: let autoCapture):
+            return String(autoCapture)
+        case .documentBackAutoCapture(autoCapture: let autoCapture):
+            return String(autoCapture)
         }
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case name, value
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(value, forKey: .value)
-        switch self {
-        case .sdk:
-            try container.encode("sdk", forKey: .name)
-        case .sdkVersion:
-            try container.encode("sdk_version", forKey: .name)
-        case .fingerprint:
-            try container.encode("fingerprint", forKey: .name)
-        case .documentFrontImageOrigin:
-            try container.encode("document_front_image_origin", forKey: .name)
-        case .documentBackImageOrigin:
-            try container.encode("document_back_image_origin", forKey: .name)
-        case .cameraFacing:
-            try container.encode("camera_facing", forKey: .name)
+        
+        enum CodingKeys: String, CodingKey {
+            case name, value
         }
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let name = try container.decode(String.self, forKey: .name)
-        let value = try container.decode(String.self, forKey: .value)
-
-        switch name {
-        case "sdk":
-            self = .sdk
-        case "sdk_version":
-            self = .sdkVersion
-        case "document_front_image_origin":
-            self = .documentFrontImageOrigin(origin: DocumentImageOriginValue(rawValue: value)!)
-        case "document_back_image_origin":
-            self = .documentBackImageOrigin(origin: DocumentImageOriginValue(rawValue: value)!)
-        case "camera_facing":
-            self = .cameraFacing(facing: CameraFacingValue(rawValue: value)!)
-        default:
-            throw DecodingError.dataCorruptedError(forKey: .name, in: container, debugDescription: "Invalid type")
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(value, forKey: .value)
+            switch self {
+            case .sdk:
+                try container.encode("sdk", forKey: .name)
+            case .sdkVersion:
+                try container.encode("sdk_version", forKey: .name)
+            case .fingerprint:
+                try container.encode("fingerprint", forKey: .name)
+            case .documentFrontImageOrigin:
+                try container.encode("document_front_image_origin", forKey: .name)
+            case .documentBackImageOrigin:
+                try container.encode("document_back_image_origin", forKey: .name)
+            case .cameraFacing:
+                try container.encode("camera_facing", forKey: .name)
+            case .documentFrontRetryCount:
+                try container.encode("document_front_retry_count", forKey: .name)
+            case .documentBackRetryCount:
+                try container.encode("document_back_retry_count", forKey: .name)
+            case .documentFrontAutoCapture:
+                try container.encode("document_front_auto_capture", forKey: .name)
+            case .documentBackAutoCapture:
+                try container.encode("document_back_auto_capture", forKey: .name)
+            }
         }
     }
 }
@@ -87,7 +86,7 @@ public enum DocumentImageOriginValue: String, Codable {
     case cameraAutoCapture = "camera_auto_capture"
     case cameraManualCapture = "camera_manual_capture"
 }
-
+    
 public enum CameraFacingValue: String, Codable {
     case front
     case back
