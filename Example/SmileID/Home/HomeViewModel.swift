@@ -53,7 +53,7 @@ class HomeViewModel: ObservableObject,
         showToast = true
         toastMessage = error.localizedDescription
     }
-    
+
     private func showToast(message: String) {
         toastMessage = message
         showToast = true

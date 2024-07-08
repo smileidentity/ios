@@ -63,7 +63,7 @@ class JobItemModel: ObservableObject {
             self.job = updatedJob
         }
     }
-    
+
     func cancelTask() {
         self.task?.cancel()
         self.task = nil

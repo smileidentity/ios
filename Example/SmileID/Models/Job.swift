@@ -80,7 +80,7 @@ extension Job {
             job.smileJobId = data.smileJobId
             job.resultText = data.resultText
             job.selfieImageUrl = data.selfieImageUrl
-            
+
             try context.save()
             return job
         } catch {

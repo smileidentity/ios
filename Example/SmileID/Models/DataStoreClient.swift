@@ -20,7 +20,7 @@ class DataStoreClient {
             throw DataStoreError.saveItemError
         }
     }
-    
+
     func updateJob(data: JobData) throws -> JobData? {
         do {
             let updatedObject = try Job.updateJob(data, using: viewContext)
