@@ -21,10 +21,10 @@ class DataStoreClient {
         }
     }
     
-    func updateJob(data: JobData, status: Bool) throws -> JobData? {
+    func updateJob(data: JobData) throws -> JobData? {
         do {
-            let updateObject = try Job.updateJobStatus(data.jobId, jobSuccess: status, using: viewContext)
-            return JobData(managedObject: updateObject)
+            let updatedObject = try Job.updateJob(data, using: viewContext)
+            return JobData(managedObject: updatedObject)
         } catch {
             throw DataStoreError.updateError
         }
