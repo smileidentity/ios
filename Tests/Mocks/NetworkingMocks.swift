@@ -295,7 +295,8 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     func didSucceed(
         selfieImage _: URL,
         livenessImages _: [URL],
-        apiResponse _: SmartSelfieResponse?
+        apiResponse _: SmartSelfieResponse?,
+        captureMode _: CameraFacingValue
     ) {
         successExpectation?.fulfill()
     }
