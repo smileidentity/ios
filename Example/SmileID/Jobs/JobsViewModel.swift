@@ -5,6 +5,8 @@ import SmileID
 class JobsViewModel: ObservableObject {
     @Published private(set) var jobs: [JobData] = []
     @Published var showConfirmation: Bool = false
+    @Published var showToast: Bool = false
+    @Published var toastMessage: String = ""
 
     let dataStoreClient: DataStoreClient
 
@@ -13,7 +15,11 @@ class JobsViewModel: ObservableObject {
     }
 
     func fetchJobs() {
-        jobs = dataStoreClient.fetchJobs()
+        do {
+            jobs = try dataStoreClient.fetchJobs()
+        } catch {
+            toastMessage = error.localizedDescription
+        }
     }
 
     func clearButtonTapped() {
@@ -21,7 +27,11 @@ class JobsViewModel: ObservableObject {
     }
 
     func clearJobs() {
-        dataStoreClient.clearJobs()
-        jobs.removeAll()
+        do {
+            try dataStoreClient.clearJobs()
+            jobs.removeAll()
+        } catch {
+            toastMessage = error.localizedDescription
+        }
     }
 }

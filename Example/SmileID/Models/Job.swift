@@ -65,7 +65,7 @@ extension Job {
         _ jobId: String,
         jobSuccess: Bool,
         using context: NSManagedObjectContext
-    ) throws {
+    ) throws -> Job {
         let fetchRequest = Job.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "jobId == %@", jobId)
         fetchRequest.fetchLimit = 1
@@ -75,6 +75,7 @@ extension Job {
             }
             job.jobSuccess = jobSuccess
             try context.save()
+            return job
         } catch {
             throw DataStoreError.updateError
         }
@@ -85,6 +86,7 @@ extension Job {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         do {
             try context.execute(batchDeleteRequest)
+            try context.save()
         } catch {
             throw DataStoreError.batchDeleteError
         }

@@ -53,6 +53,11 @@ class HomeViewModel: ObservableObject,
         showToast = true
         toastMessage = error.localizedDescription
     }
+    
+    private func showToast(message: String) {
+        toastMessage = message
+        showToast = true
+    }
 
     // Called for SmartSelfie Enrollment by a proxy delegate in HomeView
     func onSmartSelfieEnrollment(
@@ -70,21 +75,25 @@ class HomeViewModel: ObservableObject,
             suffix: "The User ID has been copied to your clipboard"
         )
         if let apiResponse = apiResponse {
-            dataStoreClient.saveJob(
-                data: JobData(
-                    jobType: .smartSelfieEnrollment,
-                    timestamp: apiResponse.createdAt,
-                    userId: apiResponse.userId,
-                    jobId: apiResponse.jobId,
-                    jobComplete: true,
-                    jobSuccess: apiResponse.status == .approved,
-                    code: apiResponse.code,
-                    resultCode: apiResponse.code,
-                    smileJobId: apiResponse.jobId,
-                    resultText: apiResponse.message,
-                    selfieImageUrl: selfieImage.absoluteString
+            do {
+                try dataStoreClient.saveJob(
+                    data: JobData(
+                        jobType: .smartSelfieEnrollment,
+                        timestamp: apiResponse.createdAt,
+                        userId: apiResponse.userId,
+                        jobId: apiResponse.jobId,
+                        jobComplete: true,
+                        jobSuccess: apiResponse.status == .approved,
+                        code: apiResponse.code,
+                        resultCode: apiResponse.code,
+                        smileJobId: apiResponse.jobId,
+                        resultText: apiResponse.message,
+                        selfieImageUrl: selfieImage.absoluteString
+                    )
                 )
-            )
+            } catch {
+                showToast(message: error.localizedDescription)
+            }
         }
     }
 
@@ -101,21 +110,25 @@ class HomeViewModel: ObservableObject,
             apiResponse: apiResponse
         )
         if let apiResponse = apiResponse {
-            dataStoreClient.saveJob(
-                data: JobData(
-                    jobType: .smartSelfieAuthentication,
-                    timestamp: apiResponse.createdAt,
-                    userId: apiResponse.userId,
-                    jobId: apiResponse.jobId,
-                    jobComplete: apiResponse.status != .pending,
-                    jobSuccess: apiResponse.status == .approved,
-                    code: apiResponse.code,
-                    resultCode: apiResponse.code,
-                    smileJobId: apiResponse.jobId,
-                    resultText: apiResponse.message,
-                    selfieImageUrl: selfieImage.absoluteString
+            do {
+                try dataStoreClient.saveJob(
+                    data: JobData(
+                        jobType: .smartSelfieAuthentication,
+                        timestamp: apiResponse.createdAt,
+                        userId: apiResponse.userId,
+                        jobId: apiResponse.jobId,
+                        jobComplete: true,
+                        jobSuccess: apiResponse.status == .approved,
+                        code: apiResponse.code,
+                        resultCode: apiResponse.code,
+                        smileJobId: apiResponse.jobId,
+                        resultText: apiResponse.message,
+                        selfieImageUrl: selfieImage.absoluteString
+                    )
                 )
-            )
+            } catch {
+                showToast(message: error.localizedDescription)
+            }
         }
     }
 
@@ -130,14 +143,18 @@ class HomeViewModel: ObservableObject,
             jobName: "Biometric KYC",
             didSubmitJob: didSubmitBiometricJob
         )
-        dataStoreClient.saveJob(
-            data: JobData(
-                jobType: .biometricKyc,
-                timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
-                userId: smartSelfieEnrollmentUserId,
-                jobId: newJobId
+        do {
+            try dataStoreClient.saveJob(
+                data: JobData(
+                    jobType: .biometricKyc,
+                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    userId: smartSelfieEnrollmentUserId,
+                    jobId: newJobId
+                )
             )
-        )
+        } catch {
+            showToast(message: error.localizedDescription)
+        }
     }
 
     func didSucceed(
@@ -149,19 +166,23 @@ class HomeViewModel: ObservableObject,
             jobName: "Enhanced KYC",
             didSubmitJob: true
         )
-        dataStoreClient.saveJob(
-            data: JobData(
-                jobType: .enhancedKyc,
-                timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
-                userId: enhancedKycResponse.partnerParams.userId,
-                jobId: enhancedKycResponse.partnerParams.jobId,
-                jobComplete: true,
-                jobSuccess: true,
-                resultCode: enhancedKycResponse.resultCode,
-                smileJobId: enhancedKycResponse.smileJobId,
-                resultText: enhancedKycResponse.resultText
+        do {
+            try dataStoreClient.saveJob(
+                data: JobData(
+                    jobType: .enhancedKyc,
+                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    userId: enhancedKycResponse.partnerParams.userId,
+                    jobId: enhancedKycResponse.partnerParams.jobId,
+                    jobComplete: true,
+                    jobSuccess: true,
+                    resultCode: enhancedKycResponse.resultCode,
+                    smileJobId: enhancedKycResponse.smileJobId,
+                    resultText: enhancedKycResponse.resultText
+                )
             )
-        )
+        } catch {
+            showToast(message: error.localizedDescription)
+        }
     }
 
     func didSucceed(
@@ -176,14 +197,18 @@ class HomeViewModel: ObservableObject,
             jobName: "Document Verification",
             didSubmitJob: didSubmitDocumentVerificationJob
         )
-        dataStoreClient.saveJob(
-            data: JobData(
-                jobType: .documentVerification,
-                timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
-                userId: smartSelfieEnrollmentUserId,
-                jobId: newJobId
+        do {
+            try dataStoreClient.saveJob(
+                data: JobData(
+                    jobType: .documentVerification,
+                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    userId: smartSelfieEnrollmentUserId,
+                    jobId: newJobId
+                )
             )
-        )
+        } catch {
+            showToast(message: error.localizedDescription)
+        }
     }
 
     func didSucceed(
@@ -198,14 +223,18 @@ class HomeViewModel: ObservableObject,
             jobName: "Enhanced Document Verification",
             didSubmitJob: didSubmitEnhancedDocVJob
         )
-        dataStoreClient.saveJob(
-            data: JobData(
-                jobType: .enhancedDocumentVerification,
-                timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
-                userId: smartSelfieEnrollmentUserId,
-                jobId: newJobId
+        do {
+            try dataStoreClient.saveJob(
+                data: JobData(
+                    jobType: .enhancedDocumentVerification,
+                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    userId: smartSelfieEnrollmentUserId,
+                    jobId: newJobId
+                )
             )
-        )
+        } catch {
+            showToast(message: error.localizedDescription)
+        }
     }
 
     func onConsentGranted() {

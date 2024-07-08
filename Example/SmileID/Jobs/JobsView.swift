@@ -34,6 +34,12 @@ struct JobsView: View {
             .onAppear {
                 viewModel.fetchJobs()
             }
+            .toast(isPresented: $viewModel.showToast) {
+                Text(viewModel.toastMessage)
+                    .font(SmileID.theme.body)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
             .actionSheet(isPresented: $viewModel.showConfirmation, content: {
                 ActionSheet(
                     title: Text("Are you sure you want to clear all jobs?"),
