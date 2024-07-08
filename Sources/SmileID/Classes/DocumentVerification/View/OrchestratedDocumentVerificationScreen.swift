@@ -162,8 +162,12 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 ),
                 captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
                 knownIdAspectRatio: idAspectRatio,
-                onConfirm: { data, origin in
-                    viewModel.onFrontDocumentImageConfirmed(documentImageFile: data, imageOrigin: origin)
+                onConfirm: { data, origin, retries in
+                    viewModel.onFrontDocumentImageConfirmed(
+                        documentImageFile: data,
+                        imageOrigin: origin,
+                        retryCount: retries
+                    )
                 },
                 onError: viewModel.onError
             )
@@ -182,8 +186,12 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 ),
                 captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
                 knownIdAspectRatio: idAspectRatio,
-                onConfirm: { data, origin in
-                    viewModel.onFrontDocumentImageConfirmed(documentImageFile: data, imageOrigin: origin)
+                onConfirm: { data, origin, retries in
+                    viewModel.onFrontDocumentImageConfirmed(
+                        documentImageFile: data,
+                        imageOrigin: origin,
+                        retryCount: retries
+                    )
                 },
                 onError: viewModel.onError,
                 onSkip: viewModel.onDocumentBackSkip

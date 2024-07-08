@@ -20,6 +20,13 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal let extraPartnerParams: [String: String]
 
     // Other properties
+    internal var selfieCaptureMode: CameraFacingValue?
+    internal var documentFrontRetryCount: Int = 0
+    internal var documentBackRetryCount: Int = 0
+    internal var documentFrontAutoCapture: Bool = false
+    internal var documentBackAutoCapture: Bool = false
+    internal var documentFrontImageOrigin: DocumentImageOriginValue?
+    internal var documentBackImageOrigin: DocumentImageOriginValue?
     internal var documentFrontFile: Data?
     internal var documentBackFile: Data?
     internal var selfieFile: URL?
@@ -62,9 +69,15 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
     func onFrontDocumentImageConfirmed(
         documentImageFile: Data,
-        imageOrigin: DocumentImageOriginValue?
+        imageOrigin: DocumentImageOriginValue?,
+        retryCount: Int
     ) {
         documentFrontFile = documentImageFile
+        documentFrontImageOrigin = imageOrigin
+        documentFrontRetryCount = retryCount
+        if let origin = imageOrigin, case .cameraAutoCapture = origin {
+            documentFrontAutoCapture = true
+        }
         if captureBothSides {
             DispatchQueue.main.async {
                 self.step = .backDocumentCapture
@@ -78,9 +91,15 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
     func onBackDocumentImageConfirmed(
         documentImageFile: Data,
-        imageOrigin: DocumentImageOriginValue?
+        imageOrigin: DocumentImageOriginValue?,
+        retryCount: Int
     ) {
         documentBackFile = documentImageFile
+        documentBackImageOrigin = imageOrigin
+        documentBackRetryCount = retryCount
+        if let origin = imageOrigin, case .cameraAutoCapture = origin {
+            documentBackAutoCapture = true
+        }
         DispatchQueue.main.async {
             self.step = .selfieCapture
         }
@@ -279,9 +298,15 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 }
 
 extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: URL, livenessImages: [URL], apiResponse _: SmartSelfieResponse?) {
+    func didSucceed(
+        selfieImage: URL,
+        livenessImages: [URL],
+        apiResponse _: SmartSelfieResponse?,
+        captureMode: CameraFacingValue
+    ) {
         selfieFile = selfieImage
         livenessFiles = livenessImages
+        selfieCaptureMode = captureMode
         submitJob()
     }
 

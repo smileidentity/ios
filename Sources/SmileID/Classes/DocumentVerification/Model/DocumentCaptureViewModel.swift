@@ -26,6 +26,7 @@ class DocumentCaptureViewModel: ObservableObject {
 
     // UI properties
     @Published var documentImageOrigin: DocumentImageOriginValue?
+    @Published var retryCount: Int = 0
     @Published var unauthorizedAlert: AlertState?
     @Published var acknowledgedInstructions = false
     @Published var showPhotoPicker = false
@@ -156,6 +157,7 @@ class DocumentCaptureViewModel: ObservableObject {
 
     /// Called if the user declines the image in the capture confirmation dialog.
     func onRetry() {
+        retryCount += 1
         DispatchQueue.main.async {
             self.documentImageOrigin = nil
             self.isCapturing = false
