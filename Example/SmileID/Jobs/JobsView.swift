@@ -13,7 +13,7 @@ struct JobsView: View {
                 } else {
                     VStack(spacing: 0) {
                         ForEach(viewModel.jobs) { job in
-                            JobListItem(job: job)
+                            JobListItem(model: JobItemModel(job: job))
                         }
                         Spacer()
                     }
