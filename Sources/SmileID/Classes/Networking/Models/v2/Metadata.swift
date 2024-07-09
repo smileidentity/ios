@@ -13,7 +13,7 @@ public class Metadata: Codable {
             Metadatum.sdkVersion,
             Metadatum.deviceModel,
             Metadatum.deviceOS,
-            Metadatum.fingerprint,
+            Metadatum.fingerprint
         ])
     }
 }
