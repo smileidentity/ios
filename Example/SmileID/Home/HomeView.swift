@@ -60,7 +60,13 @@ struct HomeView: View {
                                 viewModel.onProductClicked()
                             },
                             content: {
-                                EnhancedKycWithIdInputScreen(delegate: viewModel)
+                                EnhancedKycWithIdInputScreen(
+                                    delegate: viewModel,
+                                    viewModel: EnhancedKycWithIdInputScreenViewModel(
+                                        userId: viewModel.smartSelfieEnrollmentUserId,
+                                        jobId: viewModel.newJobId
+                                    )
+                                )
                             }
                         ),
                         ProductCell(
@@ -70,7 +76,13 @@ struct HomeView: View {
                                 viewModel.onProductClicked()
                             },
                             content: {
-                                BiometricKycWithIdInputScreen(delegate: viewModel)
+                                BiometricKycWithIdInputScreen(
+                                    delegate: viewModel,
+                                    viewModel: BiometricKycWithIdInputScreenViewModel(
+                                        userId: viewModel.smartSelfieEnrollmentUserId,
+                                        jobId: viewModel.newJobId
+                                    )
+                                )
                             }
                         ),
                         ProductCell(

@@ -6,7 +6,7 @@ struct BiometricKycWithIdInputScreen: View {
     let delegate: BiometricKycResultDelegate
 
     @State private var selectedCountry: CountryInfo?
-    @ObservedObject private var viewModel = BiometricKycWithIdInputScreenViewModel()
+    @ObservedObject var viewModel: BiometricKycWithIdInputScreenViewModel
 
     var body: some View {
         switch viewModel.step {

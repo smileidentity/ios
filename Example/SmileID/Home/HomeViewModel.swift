@@ -20,9 +20,7 @@ class HomeViewModel: ObservableObject,
     @ObservedObject var networkMonitor = NetworkMonitor.shared
 
     @Published private(set) var smartSelfieEnrollmentUserId = generateUserId()
-    var newJobId: String {
-        generateJobId()
-    }
+    @Published private(set) var newJobId: String = generateJobId()
 
     let dataStoreClient: DataStoreClient
 
@@ -42,6 +40,8 @@ class HomeViewModel: ObservableObject,
     }
 
     func onProductClicked() {
+        // Update jobId whenever a new job is about to be initiated.
+        newJobId = generateJobId()
         if !networkMonitor.isConnected {
             toastMessage = "No internet connection"
             showToast = true
