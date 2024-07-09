@@ -6,7 +6,7 @@ class Job: NSManagedObject {
     @NSManaged var jobId: String
     @NSManaged var userId: String
     @NSManaged var jobType: Int16
-    @NSManaged var timestamp: String
+    @NSManaged var timestamp: Date?
     @NSManaged var jobComplete: Bool
     @NSManaged var jobSuccess: Bool
     @NSManaged var code: String?

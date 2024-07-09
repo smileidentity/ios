@@ -10,7 +10,7 @@
         <attribute name="resultText" optional="YES" attributeType="String"/>
         <attribute name="selfieImageUrl" optional="YES" attributeType="String"/>
         <attribute name="smileJobId" optional="YES" attributeType="String"/>
-        <attribute name="timestamp" attributeType="String"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="userId" attributeType="String"/>
         <uniquenessConstraints>
             <uniquenessConstraint>

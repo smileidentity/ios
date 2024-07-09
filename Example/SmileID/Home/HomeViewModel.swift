@@ -79,7 +79,7 @@ class HomeViewModel: ObservableObject,
                 try dataStoreClient.saveJob(
                     data: JobData(
                         jobType: .smartSelfieEnrollment,
-                        timestamp: apiResponse.createdAt,
+                        timestamp: apiResponse.createdAt.jobTimestampDate(),
                         userId: apiResponse.userId,
                         jobId: apiResponse.jobId,
                         jobComplete: true,
@@ -114,7 +114,7 @@ class HomeViewModel: ObservableObject,
                 try dataStoreClient.saveJob(
                     data: JobData(
                         jobType: .smartSelfieAuthentication,
-                        timestamp: apiResponse.createdAt,
+                        timestamp: apiResponse.createdAt.jobTimestampDate(),
                         userId: apiResponse.userId,
                         jobId: apiResponse.jobId,
                         jobComplete: true,
@@ -147,7 +147,7 @@ class HomeViewModel: ObservableObject,
             try dataStoreClient.saveJob(
                 data: JobData(
                     jobType: .biometricKyc,
-                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    timestamp: Date(),
                     userId: smartSelfieEnrollmentUserId,
                     jobId: newJobId
                 )
@@ -170,7 +170,7 @@ class HomeViewModel: ObservableObject,
             try dataStoreClient.saveJob(
                 data: JobData(
                     jobType: .enhancedKyc,
-                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    timestamp: Date(),
                     userId: enhancedKycResponse.partnerParams.userId,
                     jobId: enhancedKycResponse.partnerParams.jobId,
                     jobComplete: true,
@@ -201,7 +201,7 @@ class HomeViewModel: ObservableObject,
             try dataStoreClient.saveJob(
                 data: JobData(
                     jobType: .documentVerification,
-                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    timestamp: Date(),
                     userId: smartSelfieEnrollmentUserId,
                     jobId: newJobId
                 )
@@ -227,7 +227,7 @@ class HomeViewModel: ObservableObject,
             try dataStoreClient.saveJob(
                 data: JobData(
                     jobType: .enhancedDocumentVerification,
-                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    timestamp: Date(),
                     userId: smartSelfieEnrollmentUserId,
                     jobId: newJobId
                 )

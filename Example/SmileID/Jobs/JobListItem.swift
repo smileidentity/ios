@@ -19,7 +19,7 @@ struct JobListItem: View {
                     .clipped()
                 VStack(alignment: .leading, spacing: 0) {
                     Group {
-                        Text(model.job.timestamp)
+                        Text(model.job.timestamp?.jobTimestampFormat() ?? "")
                             .font(.footnote)
                         Text(model.job.jobType.label)
                         if let resultText = model.job.resultText {
