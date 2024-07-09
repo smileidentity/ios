@@ -4,29 +4,37 @@ class DataStoreClient {
 
     let viewContext = CoreDataManager.shared.container.viewContext
 
-    func fetchJobs() -> [JobData] {
+    func fetchJobs() throws -> [JobData] {
         do {
             let objects = try Job.fetchJobs(using: viewContext)
             return objects.compactMap { JobData(managedObject: $0) }
         } catch {
-            print(error.localizedDescription)
-            return []
+            throw DataStoreError.fetchError
         }
     }
 
-    func saveJob(data: JobData) {
+    func saveJob(data: JobData) throws {
         do {
             try Job.create(with: data, using: viewContext)
         } catch {
-            print(error.localizedDescription)
+            throw DataStoreError.saveItemError
         }
     }
 
-    func clearJobs() {
+    func updateJob(data: JobData) throws -> JobData? {
+        do {
+            let updatedObject = try Job.updateJob(data, using: viewContext)
+            return JobData(managedObject: updatedObject)
+        } catch {
+            throw DataStoreError.updateError
+        }
+    }
+
+    func clearJobs() throws {
         do {
             try Job.deleteJobs(using: viewContext)
         } catch {
-            print(error.localizedDescription)
+            throw DataStoreError.batchDeleteError
         }
     }
 }

@@ -13,7 +13,7 @@ struct JobsView: View {
                 } else {
                     VStack(spacing: 0) {
                         ForEach(viewModel.jobs) { job in
-                            JobListItem(job: job)
+                            JobListItem(model: JobItemModel(job: job))
                         }
                         Spacer()
                     }
@@ -33,6 +33,12 @@ struct JobsView: View {
             }
             .onAppear {
                 viewModel.fetchJobs()
+            }
+            .toast(isPresented: $viewModel.showToast) {
+                Text(viewModel.toastMessage)
+                    .font(SmileID.theme.body)
+                    .multilineTextAlignment(.center)
+                    .padding()
             }
             .actionSheet(isPresented: $viewModel.showConfirmation, content: {
                 ActionSheet(

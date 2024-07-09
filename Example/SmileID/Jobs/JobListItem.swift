@@ -2,25 +2,27 @@ import SmileID
 import SwiftUI
 
 struct JobListItem: View {
-    var job: JobData
+    @StateObject var model: JobItemModel
+
     @State private var isExpanded = false
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
                 .fill(SmileID.theme.backgroundLightest)
 
             HStack(alignment: .top, spacing: 0) {
-                Image(job.jobType.icon)
+                Image(model.job.jobType.icon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
                     .clipped()
                 VStack(alignment: .leading, spacing: 0) {
                     Group {
-                        Text(job.timestamp)
+                        Text(model.job.timestamp)
                             .font(.footnote)
-                        Text(job.jobType.label)
-                        if let resultText = job.resultText {
+                        Text(model.job.jobType.label)
+                        if let resultText = model.job.resultText {
                             Text(resultText)
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
@@ -34,24 +36,24 @@ struct JobListItem: View {
                             .fontWeight(.medium)
                             .padding(.top, 10)
                             .padding(.leading, 10)
-                        Text(job.userId)
+                        Text(model.job.userId)
                             .font(.footnote)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .enableTextSelection(job.userId)
+                            .enableTextSelection(model.job.userId)
                         Text("Job ID")
                             .font(.subheadline)
                             .fontWeight(.medium)
                             .padding(.top, 10)
                             .padding(.leading, 10)
-                        Text(job.jobId)
+                        Text(model.job.jobId)
                             .font(.footnote)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .enableTextSelection(job.jobId)
+                            .enableTextSelection(model.job.jobId)
 
                         Group {
-                            if let smileJobId = job.smileJobId {
+                            if let smileJobId = model.job.smileJobId {
                                 Text("Smile Job ID")
                                     .font(.subheadline)
                                     .fontWeight(.medium)
@@ -60,7 +62,7 @@ struct JobListItem: View {
                                     .font(.footnote)
                                     .padding(.vertical, 5)
                             }
-                            if let resultCode = job.resultCode {
+                            if let resultCode = model.job.resultCode {
                                 Text("Result Code")
                                     .font(.subheadline)
                                     .fontWeight(.medium)
@@ -69,7 +71,7 @@ struct JobListItem: View {
                                     .font(.footnote)
                                     .padding(.vertical, 5)
                             }
-                            if let code = job.code {
+                            if let code = model.job.code {
                                 Text("Code")
                                     .font(.subheadline)
                                     .fontWeight(.medium)
@@ -95,6 +97,14 @@ struct JobListItem: View {
             withAnimation {
                 isExpanded.toggle()
             }
+        }
+        .onAppear() {
+            Task {
+                try await model.updateJobStatus()
+            }
+        }
+        .onDisappear {
+            model.cancelTask()
         }
     }
 }

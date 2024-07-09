@@ -61,20 +61,28 @@ extension Job {
         }
     }
 
-    static func updateJobStatus(
-        _ jobId: String,
-        jobSuccess: Bool,
+    static func updateJob(
+        _ data: JobData,
         using context: NSManagedObjectContext
-    ) throws {
+    ) throws -> Job {
         let fetchRequest = Job.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "jobId == %@", jobId)
+        fetchRequest.predicate = NSPredicate(format: "jobId == %@", data.jobId)
         fetchRequest.fetchLimit = 1
         do {
             guard let job = try context.fetch(fetchRequest).first else {
                 throw DataStoreError.fetchError
             }
-            job.jobSuccess = jobSuccess
+
+            job.jobComplete = data.jobComplete
+            job.jobSuccess = data.jobSuccess
+            job.code = data.code
+            job.resultCode = data.resultCode
+            job.smileJobId = data.smileJobId
+            job.resultText = data.resultText
+            job.selfieImageUrl = data.selfieImageUrl
+
             try context.save()
+            return job
         } catch {
             throw DataStoreError.updateError
         }
@@ -85,6 +93,7 @@ extension Job {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         do {
             try context.execute(batchDeleteRequest)
+            try context.save()
         } catch {
             throw DataStoreError.batchDeleteError
         }
