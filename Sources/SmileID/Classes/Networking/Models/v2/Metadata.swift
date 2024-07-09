@@ -9,11 +9,11 @@ public class Metadata: Codable {
 
     static func `default`() -> Metadata {
         Metadata(items: [
-            Metadatum.sdk,
-            Metadatum.sdkVersion,
-            Metadatum.deviceModel,
-            Metadatum.deviceOS,
-            Metadatum.fingerprint
+            .sdk,
+            .sdkVersion,
+            .deviceModel,
+            .deviceOS,
+            .fingerprint
         ])
     }
 }
