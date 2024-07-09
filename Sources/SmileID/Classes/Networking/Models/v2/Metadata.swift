@@ -123,7 +123,7 @@ public enum CameraFacingValue: String, Codable {
     case back
 }
 
-private extension UIDevice {
+public extension UIDevice {
     var isSimulator: Bool {
         TARGET_OS_SIMULATOR != 0
     }
