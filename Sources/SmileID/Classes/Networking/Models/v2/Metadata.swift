@@ -32,8 +32,6 @@ public enum Metadatum: Codable {
     case documentBackRetryCount(retryCount: Int)
     case documentFrontCaptureDuration(duration: String)
     case documentBackCaptureDuration(duration: String)
-    case documentFrontAutoCapture(autoCapture: Bool)
-    case documentBackAutoCapture(autoCapture: Bool)
 
     var value: String {
         switch self {
@@ -63,10 +61,6 @@ public enum Metadatum: Codable {
             return duration
         case let .documentBackCaptureDuration(duration):
             return duration
-        case let .documentFrontAutoCapture(autoCapture: autoCapture):
-            return String(autoCapture)
-        case let .documentBackAutoCapture(autoCapture: autoCapture):
-            return String(autoCapture)
 
             enum CodingKeys: String, CodingKey {
                 case name, value
@@ -102,10 +96,6 @@ public enum Metadatum: Codable {
                     try container.encode("front_document_capture_duration", forKey: .name)
                 case .documentBackCaptureDuration:
                     try container.encode("back_document_capture_duration", forKey: .name)
-                case .documentFrontAutoCapture:
-                    try container.encode("document_front_auto_capture", forKey: .name)
-                case .documentBackAutoCapture:
-                    try container.encode("document_back_auto_capture", forKey: .name)
                 }
             }
         }
