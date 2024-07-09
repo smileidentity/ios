@@ -6,9 +6,9 @@ class DataStoreClient {
 
     func fetchJobs() throws -> [JobData] {
         do {
-            let dateSortDescriptor = NSSortDescriptor(key: "timestamp", ascending: false)
+            let timestampSortDescriptor = NSSortDescriptor(key: "timestamp", ascending: false)
             let objects = try Job.fetchJobs(
-                sortDescriptors: [dateSortDescriptor],
+                sortDescriptors: [timestampSortDescriptor],
                 using: viewContext
             )
             return objects.compactMap { JobData(managedObject: $0) }
