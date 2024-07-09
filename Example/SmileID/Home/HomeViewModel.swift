@@ -74,12 +74,13 @@ class HomeViewModel: ObservableObject,
             apiResponse: apiResponse,
             suffix: "The User ID has been copied to your clipboard"
         )
-        if let apiResponse = apiResponse {
+        if let apiResponse = apiResponse,
+            let date = apiResponse.createdAt.jobTimestampDate() {
             do {
                 try dataStoreClient.saveJob(
                     data: JobData(
                         jobType: .smartSelfieEnrollment,
-                        timestamp: apiResponse.createdAt.jobTimestampDate(),
+                        timestamp: date,
                         userId: apiResponse.userId,
                         jobId: apiResponse.jobId,
                         jobComplete: true,
@@ -109,12 +110,13 @@ class HomeViewModel: ObservableObject,
             jobName: "SmartSelfie Authentication",
             apiResponse: apiResponse
         )
-        if let apiResponse = apiResponse {
+        if let apiResponse = apiResponse,
+            let date = apiResponse.createdAt.jobTimestampDate() {
             do {
                 try dataStoreClient.saveJob(
                     data: JobData(
                         jobType: .smartSelfieAuthentication,
-                        timestamp: apiResponse.createdAt.jobTimestampDate(),
+                        timestamp: date,
                         userId: apiResponse.userId,
                         jobId: apiResponse.jobId,
                         jobComplete: true,

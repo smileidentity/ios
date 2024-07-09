@@ -6,7 +6,7 @@ struct JobData: Identifiable {
         return jobId
     }
     var jobType: JobType
-    var timestamp: Date?
+    var timestamp: Date
     var userId: String
     var jobId: String
     var jobComplete: Bool = false
