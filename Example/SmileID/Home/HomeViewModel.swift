@@ -20,6 +20,7 @@ class HomeViewModel: ObservableObject,
     @ObservedObject var networkMonitor = NetworkMonitor.shared
 
     @Published private(set) var smartSelfieEnrollmentUserId = generateUserId()
+    @Published private(set) var newUserId: String = generateUserId()
     @Published private(set) var newJobId: String = generateJobId()
 
     let dataStoreClient: DataStoreClient
@@ -40,7 +41,8 @@ class HomeViewModel: ObservableObject,
     }
 
     func onProductClicked() {
-        // Update jobId whenever a new job is about to be initiated.
+        // Update userId and jobId whenever a new job is about to be initiated.
+        newUserId = generateUserId()
         newJobId = generateJobId()
         if !networkMonitor.isConnected {
             toastMessage = "No internet connection"
@@ -150,7 +152,7 @@ class HomeViewModel: ObservableObject,
                 data: JobData(
                     jobType: .biometricKyc,
                     timestamp: Date(),
-                    userId: smartSelfieEnrollmentUserId,
+                    userId: newUserId,
                     jobId: newJobId
                 )
             )
@@ -204,7 +206,7 @@ class HomeViewModel: ObservableObject,
                 data: JobData(
                     jobType: .documentVerification,
                     timestamp: Date(),
-                    userId: smartSelfieEnrollmentUserId,
+                    userId: newUserId,
                     jobId: newJobId
                 )
             )
@@ -230,7 +232,7 @@ class HomeViewModel: ObservableObject,
                 data: JobData(
                     jobType: .enhancedDocumentVerification,
                     timestamp: Date(),
-                    userId: smartSelfieEnrollmentUserId,
+                    userId: newUserId,
                     jobId: newJobId
                 )
             )

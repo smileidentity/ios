@@ -16,7 +16,11 @@ class JobItemModel: ObservableObject {
     }
 
     private func sendAuthenticationRequest() async throws -> AuthenticationResponse {
-        let authRequest = AuthenticationRequest(jobType: job.jobType)
+        let authRequest = AuthenticationRequest(
+            jobType: job.jobType,
+            jobId: job.jobId,
+            userId: job.userId
+        )
         return try await SmileID.api.authenticate(request: authRequest)
     }
 
