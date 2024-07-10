@@ -1,4 +1,9 @@
 # Release Notes
+## 10.2.2
+
+#### Fixed
+*  Remove force unwrapping for getting files from storage
+
 ## 10.2.1
 
 #### Added
