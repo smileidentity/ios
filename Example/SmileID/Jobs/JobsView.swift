@@ -19,7 +19,6 @@ struct JobsView: View {
                     }
                 }
             }
-            .background(SmileID.theme.backgroundLight.ignoresSafeArea())
             .navigationTitle("Jobs")
             .toolbar {
                 ToolbarItem {
@@ -40,6 +39,7 @@ struct JobsView: View {
                     .multilineTextAlignment(.center)
                     .padding()
             }
+            .background(SmileID.theme.backgroundLight.ignoresSafeArea())
             .actionSheet(isPresented: $viewModel.showConfirmation, content: {
                 ActionSheet(
                     title: Text("Are you sure you want to clear all jobs?"),
