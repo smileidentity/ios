@@ -22,12 +22,14 @@ struct JobsView: View {
             .navigationTitle("Jobs")
             .toolbar {
                 ToolbarItem {
-                    Button(action: {
-                        viewModel.clearButtonTapped()
-                    }, label: {
-                        Image(systemName: "trash.fill")
-                    })
-                    .buttonStyle(.plain)
+                    if !viewModel.jobs.isEmpty {
+                        Button(action: {
+                            viewModel.clearButtonTapped()
+                        }, label: {
+                            Image(systemName: "trash.fill")
+                        })
+                        .buttonStyle(.plain)
+                    }
                 }
             }
             .onAppear {
