@@ -10,15 +10,18 @@ enum EnhancedKycWithIdInputScreenStep {
 }
 
 class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
-    private let userId = generateUserId()
-    private let jobId = generateJobId()
+    let userId: String
+    let jobId: String
+
     private var error: Error?
     private var enhancedKycResponse: EnhancedKycResponse?
     @Published @MainActor var step = EnhancedKycWithIdInputScreenStep.loading("Loading ID Types…")
 
     @Published @MainActor var idInfo = IdInfo(country: "")
 
-    init() {
+    init(userId: String, jobId: String) {
+        self.userId = userId
+        self.jobId = jobId
         loadIdTypes()
     }
 

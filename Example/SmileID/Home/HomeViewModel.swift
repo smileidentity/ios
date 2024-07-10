@@ -20,9 +20,7 @@ class HomeViewModel: ObservableObject,
     @ObservedObject var networkMonitor = NetworkMonitor.shared
 
     @Published private(set) var smartSelfieEnrollmentUserId = generateUserId()
-    var newJobId: String {
-        generateJobId()
-    }
+    @Published private(set) var newJobId: String = generateJobId()
 
     let dataStoreClient: DataStoreClient
 
@@ -42,6 +40,8 @@ class HomeViewModel: ObservableObject,
     }
 
     func onProductClicked() {
+        // Update jobId whenever a new job is about to be initiated.
+        newJobId = generateJobId()
         if !networkMonitor.isConnected {
             toastMessage = "No internet connection"
             showToast = true
@@ -74,12 +74,13 @@ class HomeViewModel: ObservableObject,
             apiResponse: apiResponse,
             suffix: "The User ID has been copied to your clipboard"
         )
-        if let apiResponse = apiResponse {
+        if let apiResponse = apiResponse,
+            let date = apiResponse.createdAt.jobTimestampDate() {
             do {
                 try dataStoreClient.saveJob(
                     data: JobData(
                         jobType: .smartSelfieEnrollment,
-                        timestamp: apiResponse.createdAt,
+                        timestamp: date,
                         userId: apiResponse.userId,
                         jobId: apiResponse.jobId,
                         jobComplete: true,
@@ -109,12 +110,13 @@ class HomeViewModel: ObservableObject,
             jobName: "SmartSelfie Authentication",
             apiResponse: apiResponse
         )
-        if let apiResponse = apiResponse {
+        if let apiResponse = apiResponse,
+            let date = apiResponse.createdAt.jobTimestampDate() {
             do {
                 try dataStoreClient.saveJob(
                     data: JobData(
                         jobType: .smartSelfieAuthentication,
-                        timestamp: apiResponse.createdAt,
+                        timestamp: date,
                         userId: apiResponse.userId,
                         jobId: apiResponse.jobId,
                         jobComplete: true,
@@ -147,7 +149,7 @@ class HomeViewModel: ObservableObject,
             try dataStoreClient.saveJob(
                 data: JobData(
                     jobType: .biometricKyc,
-                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    timestamp: Date(),
                     userId: smartSelfieEnrollmentUserId,
                     jobId: newJobId
                 )
@@ -170,7 +172,7 @@ class HomeViewModel: ObservableObject,
             try dataStoreClient.saveJob(
                 data: JobData(
                     jobType: .enhancedKyc,
-                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    timestamp: Date(),
                     userId: enhancedKycResponse.partnerParams.userId,
                     jobId: enhancedKycResponse.partnerParams.jobId,
                     jobComplete: true,
@@ -201,7 +203,7 @@ class HomeViewModel: ObservableObject,
             try dataStoreClient.saveJob(
                 data: JobData(
                     jobType: .documentVerification,
-                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    timestamp: Date(),
                     userId: smartSelfieEnrollmentUserId,
                     jobId: newJobId
                 )
@@ -227,7 +229,7 @@ class HomeViewModel: ObservableObject,
             try dataStoreClient.saveJob(
                 data: JobData(
                     jobType: .enhancedDocumentVerification,
-                    timestamp: Date.getCurrentTimeAsHumanReadableTimestamp(),
+                    timestamp: Date(),
                     userId: smartSelfieEnrollmentUserId,
                     jobId: newJobId
                 )

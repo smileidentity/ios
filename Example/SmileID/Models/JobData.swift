@@ -6,7 +6,7 @@ struct JobData: Identifiable {
         return jobId
     }
     var jobType: JobType
-    var timestamp: String
+    var timestamp: Date
     var userId: String
     var jobId: String
     var jobComplete: Bool = false
@@ -83,7 +83,7 @@ extension JobData {
     static var documentVerification: JobData {
         return .init(
             jobType: .documentVerification,
-            timestamp: "13/06/2024 16:46",
+            timestamp: Date(),
             userId: "6a811664-ba17-460a-b8c6-54b8f8dda0c0_742418bf-d7dd-450b-9785-420d3773496a",
             jobId: "742418bf-d7dd-450b-9785-420d3773496a",
             jobComplete: false,

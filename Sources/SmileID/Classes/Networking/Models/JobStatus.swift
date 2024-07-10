@@ -533,6 +533,7 @@ public enum ActionResult: String, Codable {
     case notVerified = "Not Verified"
     case notDone = "Not Done"
     case issuerUnavailable = "Issuer Unavailable"
+    case idAuthorityPhotoNotAvailable = "ID Authority Photo Not Available"
 }
 
 public struct ImageLinks: Codable {
