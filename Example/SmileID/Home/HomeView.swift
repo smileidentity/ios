@@ -63,7 +63,7 @@ struct HomeView: View {
                                 EnhancedKycWithIdInputScreen(
                                     delegate: viewModel,
                                     viewModel: EnhancedKycWithIdInputScreenViewModel(
-                                        userId: viewModel.smartSelfieEnrollmentUserId,
+                                        userId: viewModel.newUserId,
                                         jobId: viewModel.newJobId
                                     )
                                 )
@@ -79,7 +79,7 @@ struct HomeView: View {
                                 BiometricKycWithIdInputScreen(
                                     delegate: viewModel,
                                     viewModel: BiometricKycWithIdInputScreenViewModel(
-                                        userId: viewModel.smartSelfieEnrollmentUserId,
+                                        userId: viewModel.newUserId,
                                         jobId: viewModel.newJobId
                                     )
                                 )
@@ -93,7 +93,7 @@ struct HomeView: View {
                             },
                             content: {
                                 DocumentVerificationWithSelector(
-                                    userId: viewModel.smartSelfieEnrollmentUserId,
+                                    userId: viewModel.newUserId,
                                     jobId: viewModel.newJobId,
                                     delegate: viewModel
                                 )
@@ -107,7 +107,7 @@ struct HomeView: View {
                             },
                             content: {
                                 EnhancedDocumentVerificationWithSelector(
-                                    userId: viewModel.smartSelfieEnrollmentUserId,
+                                    userId: viewModel.newUserId,
                                     jobId: viewModel.newJobId,
                                     delegate: viewModel
                                 )
