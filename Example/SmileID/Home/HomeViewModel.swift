@@ -85,6 +85,7 @@ class HomeViewModel: ObservableObject,
                         timestamp: date,
                         userId: apiResponse.userId,
                         jobId: apiResponse.jobId,
+                        partnerId: partnerId,
                         jobComplete: true,
                         jobSuccess: apiResponse.status == .approved,
                         code: apiResponse.code,
@@ -121,6 +122,7 @@ class HomeViewModel: ObservableObject,
                         timestamp: date,
                         userId: apiResponse.userId,
                         jobId: apiResponse.jobId,
+                        partnerId: partnerId,
                         jobComplete: true,
                         jobSuccess: apiResponse.status == .approved,
                         code: apiResponse.code,
@@ -153,7 +155,8 @@ class HomeViewModel: ObservableObject,
                     jobType: .biometricKyc,
                     timestamp: Date(),
                     userId: newUserId,
-                    jobId: newJobId
+                    jobId: newJobId,
+                    partnerId: partnerId
                 )
             )
         } catch {
@@ -177,6 +180,7 @@ class HomeViewModel: ObservableObject,
                     timestamp: Date(),
                     userId: enhancedKycResponse.partnerParams.userId,
                     jobId: enhancedKycResponse.partnerParams.jobId,
+                    partnerId: partnerId,
                     jobComplete: true,
                     jobSuccess: true,
                     resultCode: enhancedKycResponse.resultCode,
@@ -207,7 +211,8 @@ class HomeViewModel: ObservableObject,
                     jobType: .documentVerification,
                     timestamp: Date(),
                     userId: newUserId,
-                    jobId: newJobId
+                    jobId: newJobId,
+                    partnerId: partnerId
                 )
             )
         } catch {
@@ -233,7 +238,8 @@ class HomeViewModel: ObservableObject,
                     jobType: .enhancedDocumentVerification,
                     timestamp: Date(),
                     userId: newUserId,
-                    jobId: newJobId
+                    jobId: newJobId,
+                    partnerId: partnerId
                 )
             )
         } catch {

@@ -9,13 +9,45 @@ struct JobData: Identifiable {
     var timestamp: Date
     var userId: String
     var jobId: String
-    var jobComplete: Bool = false
-    var jobSuccess: Bool = false
+    var partnerId: String
+    var isProduction: Bool
+    var jobComplete: Bool
+    var jobSuccess: Bool
     var code: String?
     var resultCode: String?
     var smileJobId: String?
     var resultText: String?
     var selfieImageUrl: String?
+    
+    init(
+        jobType: JobType,
+        timestamp: Date,
+        userId: String,
+        jobId: String,
+        partnerId: String,
+        isProduction: Bool = !SmileID.useSandbox,
+        jobComplete: Bool = false,
+        jobSuccess: Bool = false,
+        code: String? = nil,
+        resultCode: String? = nil,
+        smileJobId: String? = nil,
+        resultText: String? = nil,
+        selfieImageUrl: String? = nil
+    ) {
+        self.jobType = jobType
+        self.timestamp = timestamp
+        self.userId = userId
+        self.jobId = jobId
+        self.partnerId = partnerId
+        self.isProduction = isProduction
+        self.jobComplete = jobComplete
+        self.jobSuccess = jobSuccess
+        self.code = code
+        self.resultCode = resultCode
+        self.smileJobId = smileJobId
+        self.resultText = resultText
+        self.selfieImageUrl = selfieImageUrl
+    }
 }
 
 extension JobType {
@@ -66,7 +98,9 @@ extension JobData {
             jobType: jobType,
             timestamp: managedObject.timestamp,
             userId: managedObject.userId,
-            jobId: managedObject.jobId,
+            jobId: managedObject.jobId, 
+            partnerId: managedObject.partnerId, 
+            isProduction: managedObject.isProduction,
             jobComplete: managedObject.jobComplete,
             jobSuccess: managedObject.jobSuccess,
             code: managedObject.code,
@@ -85,7 +119,9 @@ extension JobData {
             jobType: .documentVerification,
             timestamp: Date(),
             userId: "6a811664-ba17-460a-b8c6-54b8f8dda0c0_742418bf-d7dd-450b-9785-420d3773496a",
-            jobId: "742418bf-d7dd-450b-9785-420d3773496a",
+            jobId: "742418bf-d7dd-450b-9785-420d3773496a", 
+            partnerId: "002", 
+            isProduction: true,
             jobComplete: false,
             jobSuccess: false,
             code: "2340",

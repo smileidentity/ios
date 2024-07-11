@@ -4,10 +4,18 @@ class DataStoreClient {
 
     let viewContext = CoreDataManager.shared.container.viewContext
 
-    func fetchJobs() throws -> [JobData] {
+    func fetchJobs(
+        partnerId: String,
+        isProduction: Bool
+    ) throws -> [JobData] {
         do {
+            let predicate = NSPredicate(
+                format: "partnerId == %@ AND isProduction == %@",
+                partnerId, NSNumber(value: isProduction)
+            )
             let timestampSortDescriptor = NSSortDescriptor(key: "timestamp", ascending: false)
             let objects = try Job.fetchJobs(
+                predicate: predicate,
                 sortDescriptors: [timestampSortDescriptor],
                 using: viewContext
             )
