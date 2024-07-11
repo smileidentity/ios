@@ -27,6 +27,10 @@ struct JobListItem: View {
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
                         }
+                        if model.isLoading {
+                            IndeterminateProgressView()
+                                .padding(.top)
+                        }
                     }
                     .padding(.leading, 10)
 

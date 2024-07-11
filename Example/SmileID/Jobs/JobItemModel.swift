@@ -4,6 +4,7 @@ import SmileID
 class JobItemModel: ObservableObject {
     @Published private(set) var job: JobData
     @Published private(set) var task: Task<JobData, Error>?
+    @Published private(set) var isLoading: Bool = false
 
     let dataStoreClient: DataStoreClient
 
@@ -58,6 +59,8 @@ class JobItemModel: ObservableObject {
     @MainActor
     func updateJobStatus() async throws {
         guard !job.jobComplete, task == nil else { return }
+        isLoading = true
+        defer { isLoading = false }
         task = Task {
             return try await getJobStatus()
         }
