@@ -73,6 +73,7 @@ class JobItemModel: ObservableObject {
     }
 
     func cancelTask() {
+        self.isLoading = false
         self.task?.cancel()
         self.task = nil
     }
