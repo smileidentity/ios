@@ -535,6 +535,13 @@ public enum ActionResult: String, Codable {
     case issuerUnavailable = "Issuer Unavailable"
     case idAuthorityPhotoNotAvailable = "ID Authority Photo Not Available"
     case sentToHumanReview = "Sent to Human Review"
+    case unknown
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = ActionResult(rawValue: rawValue) ?? .unknown
+    }
 }
 
 public struct ImageLinks: Codable {
