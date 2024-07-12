@@ -18,7 +18,7 @@ struct JobData: Identifiable {
     var smileJobId: String?
     var resultText: String?
     var selfieImageUrl: String?
-    
+
     init(
         jobType: JobType,
         timestamp: Date,
@@ -98,8 +98,8 @@ extension JobData {
             jobType: jobType,
             timestamp: managedObject.timestamp,
             userId: managedObject.userId,
-            jobId: managedObject.jobId, 
-            partnerId: managedObject.partnerId, 
+            jobId: managedObject.jobId,
+            partnerId: managedObject.partnerId,
             isProduction: managedObject.isProduction,
             jobComplete: managedObject.jobComplete,
             jobSuccess: managedObject.jobSuccess,
@@ -119,8 +119,8 @@ extension JobData {
             jobType: .documentVerification,
             timestamp: Date(),
             userId: "6a811664-ba17-460a-b8c6-54b8f8dda0c0_742418bf-d7dd-450b-9785-420d3773496a",
-            jobId: "742418bf-d7dd-450b-9785-420d3773496a", 
-            partnerId: "002", 
+            jobId: "742418bf-d7dd-450b-9785-420d3773496a",
+            partnerId: "002",
             isProduction: true,
             jobComplete: false,
             jobSuccess: false,

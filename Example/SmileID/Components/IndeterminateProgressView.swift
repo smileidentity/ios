@@ -5,7 +5,7 @@ struct IndeterminateProgressView: View {
     @State private var width: CGFloat = 0
     @State private var offset: CGFloat = 0
     @Environment(\.isEnabled) private var isEnabled
-    
+
     var body: some View {
         Rectangle()
             .foregroundColor(.gray.opacity(0.15))
@@ -47,7 +47,7 @@ private struct ReadWidthModifier: ViewModifier {
             Color.clear.preference(key: WidthPreferenceKey.self, value: geometry.size.width)
         }
     }
-    
+
     func body(content: Content) -> some View {
         content.background(sizeView)
     }
