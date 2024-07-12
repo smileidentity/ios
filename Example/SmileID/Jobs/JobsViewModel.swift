@@ -8,15 +8,23 @@ class JobsViewModel: ObservableObject {
     @Published var showToast: Bool = false
     @Published var toastMessage: String = ""
 
+    let config: Config
     let dataStoreClient: DataStoreClient
 
-    init(dataStoreClient: DataStoreClient = DataStoreClient()) {
+    init(
+        config: Config,
+        dataStoreClient: DataStoreClient = DataStoreClient()
+    ) {
+        self.config = config
         self.dataStoreClient = dataStoreClient
     }
 
     func fetchJobs() {
         do {
-            jobs = try dataStoreClient.fetchJobs()
+            jobs = try dataStoreClient.fetchJobs(
+                partnerId: config.partnerId,
+                isProduction: !SmileID.useSandbox
+            )
         } catch {
             toastMessage = error.localizedDescription
         }

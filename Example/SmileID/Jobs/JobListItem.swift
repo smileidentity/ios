@@ -114,5 +114,7 @@ struct JobListItem: View {
 }
 
 #Preview {
-    JobsView()
+    JobListItem(
+        model: JobItemModel(job: .documentVerification)
+    )
 }

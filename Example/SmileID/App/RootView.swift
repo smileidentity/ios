@@ -36,7 +36,7 @@ struct RootView: View {
                         Image(systemName: "house")
                         Text("Home")
                     }
-                JobsView()
+                JobsView(viewModel: JobsViewModel(config: decodedConfig))
                     .tabItem {
                         Image(systemName: "list.bullet")
                         Text("Jobs")

@@ -46,6 +46,7 @@ class JobItemModel: ObservableObject {
             timestamp: job.timestamp,
             userId: job.userId,
             jobId: job.jobId,
+            partnerId: job.partnerId,
             jobComplete: response.jobComplete,
             jobSuccess: response.jobSuccess,
             code: response.code,
