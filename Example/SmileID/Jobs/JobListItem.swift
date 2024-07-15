@@ -129,8 +129,10 @@ struct JobListItem: View {
     }
 }
 
+#if DEBUG
 #Preview {
     JobListItem(
         model: JobItemModel(job: .documentVerification)
     )
 }
+#endif
