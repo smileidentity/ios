@@ -37,6 +37,7 @@
 		20B6D5E32C21C3C90023D51C /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E12C21C3C90023D51C /* Job.swift */; };
 		20B6D5EA2C21CA9E0023D51C /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */; };
 		20B6D5EC2C21CE660023D51C /* DataStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5EB2C21CE660023D51C /* DataStoreError.swift */; };
+		20C360C82C454C130008DBDE /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C360C72C454C130008DBDE /* RootViewModel.swift */; };
 		20DFA0EC2C21917100AC2AE7 /* View+TextSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */; };
 		20F3D6F32C25F4D700B32751 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		20F3D6F62C25F5C100B32751 /* SmileID.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 20F3D6F42C25F5C100B32751 /* SmileID.xcdatamodeld */; };
@@ -114,6 +115,7 @@
 		20B6D5E12C21C3C90023D51C /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Job.swift; sourceTree = "<group>"; };
 		20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		20B6D5EB2C21CE660023D51C /* DataStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreError.swift; sourceTree = "<group>"; };
+		20C360C72C454C130008DBDE /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+TextSelection.swift"; sourceTree = "<group>"; };
 		20F3D6F52C25F5C100B32751 /* SmileID.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SmileID.xcdatamodel; sourceTree = "<group>"; };
 		262BF9A8643DF9220FD233E3 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 			isa = PBXGroup;
 			children = (
 				1ED53F622A2F28590020BEFB /* RootView.swift */,
+				20C360C72C454C130008DBDE /* RootViewModel.swift */,
 				1E60ED352A29C306002695FF /* AppDelegate.swift */,
 			);
 			path = App;
@@ -699,6 +702,7 @@
 				20343AF22C206CEC003536F5 /* JobData.swift in Sources */,
 				205FB4A72C2C32A500FDE64F /* JobItemModel.swift in Sources */,
 				6AC9870BB28E40FCACC75947 /* DocumentVerificationIdTypeSelector.swift in Sources */,
+				20C360C82C454C130008DBDE /* RootViewModel.swift in Sources */,
 				205FB4A52C29AF1500FDE64F /* Date+Extensions.swift in Sources */,
 				6AC98F5682012E19C815AE70 /* DocumentSelectorViewModel.swift in Sources */,
 				6AC983F056A8F9088D6CF3F7 /* SettingsView.swift in Sources */,
