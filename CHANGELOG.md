@@ -1,4 +1,10 @@
 # Release Notes
+## [Unreleased]
+
+#### Added
+* Add new cases to `ActionResult` including an unknown case to handle values that do not match the defined enum cases.
+* Add a custom decoding initializer to ActionResult that supports defaulting unexpected values to the unknown case.
+
 ## 10.2.2
 
 #### Fixed
