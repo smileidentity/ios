@@ -2,7 +2,7 @@ import SmileID
 import SwiftUI
 
 struct SettingsView: View {
-    @ObservedObject private var viewModel = SettingsViewModel()
+    @ObservedObject var viewModel: SettingsViewModel
 
     var body: some View {
         NavigationView {
@@ -67,6 +67,6 @@ private struct SettingsCell: View {
 
 private struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView(viewModel: SettingsViewModel(didUpdateConfig: { _ in }))
     }
 }

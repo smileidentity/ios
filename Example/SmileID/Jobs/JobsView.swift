@@ -2,7 +2,7 @@ import SmileID
 import SwiftUI
 
 struct JobsView: View {
-    @StateObject var viewModel: JobsViewModel
+    @ObservedObject var viewModel: JobsViewModel
 
     var body: some View {
         NavigationView {
