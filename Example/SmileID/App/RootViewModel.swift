@@ -10,7 +10,7 @@ class RootViewModel: ObservableObject {
     )
     private let jsonDecoder = JSONDecoder()
 
-    init(config: Config? = nil) {
+    init() {
         // It is possible the app was built without a smile_config, so it may be null
         let builtInConfig = Bundle.main.url(forResource: "smile_config", withExtension: "json")
             .flatMap {
