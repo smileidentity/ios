@@ -4,6 +4,7 @@ import SmileID
 class JobItemModel: ObservableObject {
     @Published private(set) var job: JobData
     @Published private(set) var task: Task<JobData, Error>?
+    @Published private(set) var isLoading: Bool = false
 
     let dataStoreClient: DataStoreClient
 
@@ -45,6 +46,7 @@ class JobItemModel: ObservableObject {
             timestamp: job.timestamp,
             userId: job.userId,
             jobId: job.jobId,
+            partnerId: job.partnerId,
             jobComplete: response.jobComplete,
             jobSuccess: response.jobSuccess,
             code: response.code,
@@ -58,6 +60,8 @@ class JobItemModel: ObservableObject {
     @MainActor
     func updateJobStatus() async throws {
         guard !job.jobComplete, task == nil else { return }
+        isLoading = true
+        defer { isLoading = false }
         task = Task {
             return try await getJobStatus()
         }
@@ -69,6 +73,7 @@ class JobItemModel: ObservableObject {
     }
 
     func cancelTask() {
+        self.isLoading = false
         self.task?.cancel()
         self.task = nil
     }

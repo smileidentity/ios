@@ -534,6 +534,16 @@ public enum ActionResult: String, Codable {
     case notDone = "Not Done"
     case issuerUnavailable = "Issuer Unavailable"
     case idAuthorityPhotoNotAvailable = "ID Authority Photo Not Available"
+    case sentToHumanReview = "Sent to Human Review"
+    /// This case is used to handle any ActionResult value that does not match the defined enum cases.
+    /// It prevents the decoding process from failing when encountering unexpected values.
+    case unknown
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = ActionResult(rawValue: rawValue) ?? .unknown
+    }
 }
 
 public struct ImageLinks: Codable {

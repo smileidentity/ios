@@ -2,10 +2,12 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="Job" representedClassName=".Job" syncable="YES">
         <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="isProduction" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="jobComplete" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="jobId" attributeType="String"/>
         <attribute name="jobSuccess" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="jobType" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="partnerId" attributeType="String"/>
         <attribute name="resultCode" optional="YES" attributeType="String"/>
         <attribute name="resultText" optional="YES" attributeType="String"/>
         <attribute name="selfieImageUrl" optional="YES" attributeType="String"/>

@@ -27,6 +27,10 @@ struct JobListItem: View {
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
                         }
+                        if model.isLoading {
+                            IndeterminateProgressView()
+                                .padding(.top)
+                        }
                     }
                     .padding(.leading, 10)
 
@@ -53,6 +57,22 @@ struct JobListItem: View {
                             .enableTextSelection(model.job.jobId)
 
                         Group {
+                            Text("Partner ID")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .padding(.top, 10)
+                            Text(model.job.partnerId)
+                                .font(.footnote)
+                                .padding(.vertical, 5)
+
+                            Text("Environment")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .padding(.top, 10)
+                            Text(model.job.isProduction ? "Production" : "Sandbox")
+                                .font(.footnote)
+                                .padding(.vertical, 5)
+
                             if let smileJobId = model.job.smileJobId {
                                 Text("Smile Job ID")
                                     .font(.subheadline)
@@ -110,5 +130,7 @@ struct JobListItem: View {
 }
 
 #Preview {
-    JobsView()
+    JobListItem(
+        model: JobItemModel(job: .documentVerification)
+    )
 }

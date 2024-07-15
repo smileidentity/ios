@@ -7,6 +7,8 @@ class Job: NSManagedObject {
     @NSManaged var userId: String
     @NSManaged var jobType: Int16
     @NSManaged var timestamp: Date
+    @NSManaged var partnerId: String
+    @NSManaged var isProduction: Bool
     @NSManaged var jobComplete: Bool
     @NSManaged var jobSuccess: Bool
     @NSManaged var code: String?
@@ -46,6 +48,8 @@ extension Job {
         job.userId = data.userId
         job.jobType = Int16(data.jobType.rawValue)
         job.timestamp = data.timestamp
+        job.partnerId = data.partnerId
+        job.isProduction = data.isProduction
         job.jobComplete = data.jobComplete
         job.jobSuccess = data.jobSuccess
         job.code = data.code

@@ -2,7 +2,7 @@ import SmileID
 import SwiftUI
 
 struct JobsView: View {
-    @StateObject var viewModel = JobsViewModel()
+    @StateObject var viewModel: JobsViewModel
 
     var body: some View {
         NavigationView {
@@ -64,5 +64,16 @@ struct JobsView: View {
 }
 
 #Preview {
-    JobsView()
+    JobsView(
+        viewModel: JobsViewModel(
+            config: Config(
+                partnerId: "1000",
+                authToken: "",
+                prodUrl: "",
+                testUrl: "",
+                prodLambdaUrl: "",
+                testLambdaUrl: ""
+            )
+        )
+    )
 }
