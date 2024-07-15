@@ -44,6 +44,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private var subscribers = Set<AnyCancellable>()
 
     // UI Properties
+    @Published var unauthorizedAlert: AlertState?
     @Published var directive: String = "Instructions.Start"
     /// we use `errorMessageRes` to map to the actual code to the stringRes to allow localization,
     /// and use `errorMessage` to show the actual platform error message that we show if
@@ -72,6 +73,14 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.allowNewEnroll = allowNewEnroll
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
+
+        cameraManager.$status
+            .receive(on: DispatchQueue.main)
+            .filter { $0 == .unauthorized }
+            .map { _ in AlertState.cameraUnauthorized }
+            .sink { alert in self.unauthorizedAlert = alert }
+            .store(in: &subscribers)
+
         cameraManager.sampleBufferPublisher
             .merge(with: arKitFramePublisher)
             .throttle(for: 0.35, scheduler: DispatchQueue.global(qos: .userInitiated), latest: true)
@@ -435,5 +444,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         } else {
             callback.didError(error: SmileIDError.unknown("Unknown error"))
         }
+    }
+
+    func openSettings() {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(settingsURL)
     }
 }

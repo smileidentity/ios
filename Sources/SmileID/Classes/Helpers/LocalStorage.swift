@@ -76,7 +76,7 @@ public class LocalStorage {
         submitted: Bool = false
     ) throws -> URL? {
         let contents = try getDirectoryContents(jobId: jobId, submitted: submitted)
-        return contents.first(where: { $0.lastPathComponent.contains(fileType.name) })!
+        return contents.first(where: { $0.lastPathComponent.contains(fileType.name) })
     }
 
     static func getFilesByType(

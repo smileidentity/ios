@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.2.0"
+    public static let version = "10.2.2"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -148,12 +148,19 @@ public class SmileID {
                     signature: authResponse.signature
                 )
                 let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest)
-                let allFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: FileType.liveness)! + [
-                    LocalStorage.getFileByType(jobId: jobId, fileType: FileType.selfie),
-                    LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentFront),
-                    LocalStorage.getFileByType(jobId: jobId, fileType: FileType.documentBack),
-                    LocalStorage.getInfoJsonFile(jobId: jobId)
-                ].compactMap { $0 }
+                let allFiles: [URL]
+                do {
+                    let livenessFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness) ?? []
+                    let additionalFiles = try [
+                        LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
+                        LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
+                        LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
+                        LocalStorage.getInfoJsonFile(jobId: jobId)
+                    ].compactMap { $0 }
+                    allFiles = livenessFiles + additionalFiles
+                } catch {
+                    throw error
+                }
                 let zipUrl = try LocalStorage.zipFiles(at: allFiles)
                 zip = try Data(contentsOf: zipUrl)
                 _ = try await SmileID.api.upload(
