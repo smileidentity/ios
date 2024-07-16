@@ -7,7 +7,7 @@ struct AlertView: View {
     let description: String
     let buttonTitle: String
     let onClick: () -> Void
-    
+
     var body: some View {
         VStack {
             icon

@@ -2,11 +2,7 @@ import SmileID
 import SwiftUI
 
 struct RootView: View {
-    // This is set by the SettingsView
-    @AppStorage("smileConfig") private var configJson = (
-        UserDefaults.standard.string(forKey: "smileConfig") ?? ""
-    )
-    private let jsonDecoder = JSONDecoder()
+    @StateObject var viewModel = RootViewModel()
     @State private var showSuccess = false
     @State private var partnerId: String?
 
@@ -16,32 +12,28 @@ struct RootView: View {
     }
 
     var body: some View {
-        // It is possible the app was built without a smile_config, so it may be null
-        let builtInConfig = Bundle.main.url(forResource: "smile_config", withExtension: "json")
-            .flatMap {
-                try? jsonDecoder.decode(Config.self, from: Data(contentsOf: $0))
-            }
-        let configFromUserStorage = try? jsonDecoder.decode(
-            Config.self,
-            from: configJson.data(using: .utf8)!
-        )
-
-        // If a config was set at runtime (i.e. saved in UserStorage) prioritize that. Fallback to
-        // the built-in config if not set. Otherwise, ask the user to set a config.
-        let decodedConfig = configFromUserStorage ?? builtInConfig
-        if let decodedConfig, !showSuccess {
+        if let decodedConfig = viewModel.decodedConfig, !showSuccess {
             TabView {
                 HomeView(config: decodedConfig)
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
                     }
+                JobsView(viewModel: JobsViewModel(config: decodedConfig))
+                    .tabItem {
+                        Image(systemName: "list.bullet")
+                        Text("Jobs")
+                    }
                 ResourcesView()
                     .tabItem {
                         Image(systemName: "info.circle")
                         Text("Resources")
                     }
-                SettingsView()
+                SettingsView(
+                    viewModel: SettingsViewModel(
+                        didUpdateConfig: { viewModel.updateConfig(config: $0) }
+                    )
+                )
                     .tabItem {
                         Image(systemName: "gear")
                         Text("Settings")

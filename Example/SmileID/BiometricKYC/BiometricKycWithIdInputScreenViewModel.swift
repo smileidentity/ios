@@ -10,12 +10,14 @@ enum BiometricKycWithIdInputScreenStep {
 }
 
 class BiometricKycWithIdInputScreenViewModel: ObservableObject {
-    private let userId = generateUserId()
-    private let jobId = generateJobId()
+    let userId: String
+    let jobId: String
 
     @Published @MainActor var step = BiometricKycWithIdInputScreenStep.loading("Loading ID Types…")
 
-    init() {
+    init(userId: String, jobId: String) {
+        self.userId = userId
+        self.jobId = jobId
         loadIdTypes()
     }
 

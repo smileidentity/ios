@@ -6,7 +6,7 @@ struct BiometricKycWithIdInputScreen: View {
     let delegate: BiometricKycResultDelegate
 
     @State private var selectedCountry: CountryInfo?
-    @ObservedObject private var viewModel = BiometricKycWithIdInputScreenViewModel()
+    @ObservedObject var viewModel: BiometricKycWithIdInputScreenViewModel
 
     var body: some View {
         switch viewModel.step {
@@ -65,6 +65,8 @@ struct BiometricKycWithIdInputScreen: View {
         case .sdk(let idInfo):
             SmileID.biometricKycScreen(
                 idInfo: idInfo,
+                userId: viewModel.userId,
+                jobId: viewModel.jobId,
                 allowAgentMode: true,
                 delegate: delegate
             )

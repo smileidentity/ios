@@ -5,7 +5,7 @@ struct EnhancedKycWithIdInputScreen: View {
     let delegate: EnhancedKycResultDelegate
 
     @State private var selectedCountry: CountryInfo?
-    @ObservedObject private var viewModel = EnhancedKycWithIdInputScreenViewModel()
+    @ObservedObject var viewModel: EnhancedKycWithIdInputScreenViewModel
 
     var body: some View {
         switch viewModel.step {
