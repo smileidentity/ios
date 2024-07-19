@@ -147,7 +147,21 @@ public class SmileID {
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
-                let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest)
+                let prepUploadResponse: PrepUploadResponse
+                do {
+                    prepUploadResponse = try await SmileID.api.prepUpload(
+                        request: prepUploadRequest
+                    )
+                } catch let error as SmileIDError {
+                    switch error {
+                    case .api("2215", _):
+                        prepUploadResponse = try await SmileID.api.prepUpload(
+                            request: prepUploadRequest.copy(retry: "true")
+                        )
+                    default:
+                        throw error
+                    }
+                }
                 let allFiles: [URL]
                 do {
                     let livenessFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness) ?? []
