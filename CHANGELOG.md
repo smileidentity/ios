@@ -5,6 +5,10 @@
 * Add new cases to `ActionResult` including an unknown case to handle values that do not match the defined enum cases.
 * Add a custom decoding initializer to ActionResult that supports defaulting unexpected values to the unknown case.
 
+#### Fixed
+
+* Fixed a bug where `SmileID.submitJob` would not work for previously attempted API requests
+
 ## 10.2.2
 
 #### Fixed
