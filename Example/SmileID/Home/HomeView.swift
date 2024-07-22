@@ -54,6 +54,40 @@ struct HomeView: View {
                             }
                         ),
                         ProductCell(
+                            image: "smart_selfie_enroll",
+                            name: "SmartSelfie™ Enrollment (Strict)",
+                            onClick: {
+                                viewModel.onProductClicked()
+                            },
+                            content: {
+                                SmileID.smartSelfieEnrollmentScreen(
+                                    userId: viewModel.smartSelfieEnrollmentUserId,
+                                    jobId: viewModel.newJobId,
+                                    allowAgentMode: true,
+                                    useStrictMode: true,
+                                    delegate: SmartSelfieEnrollmentDelegate(
+                                        userId: viewModel.smartSelfieEnrollmentUserId,
+                                        onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                                        onError: viewModel.didError
+                                    )
+                                )
+                            }
+                        ),
+                        ProductCell(
+                            image: "smart_selfie_authentication",
+                            name: "SmartSelfie™ Authentication (Strict)",
+                            onClick: {
+                                viewModel.onProductClicked()
+                            },
+                            content: {
+                                SmartSelfieAuthWithUserIdEntry(
+                                    initialUserId: viewModel.smartSelfieEnrollmentUserId,
+                                    useStrictMode: true,
+                                    delegate: viewModel
+                                )
+                            }
+                        ),
+                        ProductCell(
                             image: "enhanced_kyc",
                             name: "Enhanced KYC",
                             onClick: {
@@ -165,7 +199,9 @@ struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
 
 private struct SmartSelfieAuthWithUserIdEntry: View {
     let initialUserId: String
+    var useStrictMode: Bool = false
     let delegate: SmartSelfieResultDelegate
+
     @State private var userId: String?
 
     var body: some View {
@@ -173,6 +209,7 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
             SmileID.smartSelfieAuthenticationScreen(
                 userId: userId,
                 allowAgentMode: true,
+                useStrictMode: useStrictMode,
                 delegate: delegate
             )
         } else {
