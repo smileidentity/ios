@@ -50,6 +50,21 @@ public struct PrepUploadRequest: Codable {
         case signature
         case retry
     }
+
+    public func copy(retry: String? = nil) -> PrepUploadRequest {
+        return PrepUploadRequest(
+            partnerParams: partnerParams,
+            callbackUrl: callbackUrl,
+            allowNewEnroll: allowNewEnroll,
+            partnerId: partnerId,
+            sourceSdk: sourceSdk,
+            sourceSdkVersion: sourceSdkVersion,
+            timestamp: timestamp,
+            signature: signature,
+            useEnrolledImage: useEnrolledImage,
+            retry: retry ?? self.retry
+        )
+    }
 }
 
 public struct PrepUploadResponse: Codable {
