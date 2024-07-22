@@ -9,6 +9,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
     public let showInstructions: Bool
     public let onResult: SmartSelfieResultDelegate
     @ObservedObject var viewModel: SelfieViewModel
+    @ObservedObject var localMetadata = LocalMetadata()
 
     @State private var acknowledgedInstructions = false
     private var originalBrightness = UIScreen.main.brightness
@@ -108,6 +109,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
             )
             .onAppear { UIScreen.main.brightness = 1 }
             .onDisappear { UIScreen.main.brightness = originalBrightness }
+            .environmentObject(localMetadata)
         }
     }
 }

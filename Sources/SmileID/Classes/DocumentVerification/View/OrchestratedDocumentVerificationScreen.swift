@@ -110,6 +110,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     var extraPartnerParams: [String: String]
     let onResult: T
     @ObservedObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
+    @ObservedObject var localMetadata = LocalMetadata()
 
     init(
         countryCode: String,
@@ -170,7 +171,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     )
                 },
                 onError: viewModel.onError
-            )
+            ).environmentObject(localMetadata)
         case .backDocumentCapture:
             DocumentCaptureScreen(
                 showInstructions: showInstructions,
@@ -195,7 +196,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 },
                 onError: viewModel.onError,
                 onSkip: viewModel.onDocumentBackSkip
-            )
+            ).environmentObject(localMetadata)
         case .selfieCapture:
             OrchestratedSelfieCaptureScreen(
                 userId: userId,
@@ -208,7 +209,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 extraPartnerParams: extraPartnerParams,
                 skipApiSubmission: true,
                 onResult: viewModel
-            )
+            ).environmentObject(localMetadata)
         case let .processing(state):
             ProcessingScreen(
                 processingState: state,

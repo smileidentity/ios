@@ -24,12 +24,12 @@ public enum Metadatum: Codable {
     case deviceModel
     case deviceOS
     case fingerprint
-    case cameraFacing(facing: CameraFacingValue)
+    case selfieImageOrigin(facing: CameraFacingValue)
     case selfieCaptureDuration(duration: String)
     case documentFrontImageOrigin(origin: DocumentImageOriginValue)
     case documentBackImageOrigin(origin: DocumentImageOriginValue)
-    case documentFrontRetryCount(retryCount: Int)
-    case documentBackRetryCount(retryCount: Int)
+    case documentFrontCaptureRetries(retries: Int)
+    case documentBackCaptureRetries(retries: Int)
     case documentFrontCaptureDuration(duration: String)
     case documentBackCaptureDuration(duration: String)
 
@@ -45,7 +45,7 @@ public enum Metadatum: Codable {
             return "\(UIDevice.current.systemName) \(UIDevice.current.systemVersion)"
         case .fingerprint:
             return SmileID.fingerprint
-        case let .cameraFacing(facing):
+        case let .selfieImageOrigin(facing):
             return facing.rawValue
         case let .selfieCaptureDuration(duration):
             return duration
@@ -53,10 +53,10 @@ public enum Metadatum: Codable {
             return origin.rawValue
         case let .documentBackImageOrigin(origin):
             return origin.rawValue
-        case let .documentFrontRetryCount(retryCount: retryCount):
-            return String(retryCount)
-        case let .documentBackRetryCount(retryCount: retryCount):
-            return String(retryCount)
+        case let .documentFrontCaptureRetries(retries):
+            return String(retries)
+        case let .documentBackCaptureRetries(retries):
+            return String(retries)
         case let .documentFrontCaptureDuration(duration):
             return duration
         case let .documentBackCaptureDuration(duration):
@@ -80,22 +80,22 @@ public enum Metadatum: Codable {
                     try container.encode("device_os", forKey: .name)
                 case .fingerprint:
                     try container.encode("fingerprint", forKey: .name)
-                case .cameraFacing:
+                case .selfieImageOrigin:
                     try container.encode("camera_facing", forKey: .name)
                 case .selfieCaptureDuration:
-                    try container.encode("selfie_capture_duration", forKey: .name)
+                    try container.encode("selfie_capture_duration_ms", forKey: .name)
                 case .documentFrontImageOrigin:
                     try container.encode("document_front_image_origin", forKey: .name)
                 case .documentBackImageOrigin:
                     try container.encode("document_back_image_origin", forKey: .name)
-                case .documentFrontRetryCount:
-                    try container.encode("document_front_retry_count", forKey: .name)
-                case .documentBackRetryCount:
-                    try container.encode("document_back_retry_count", forKey: .name)
+                case .documentFrontCaptureRetries:
+                    try container.encode("document_front_capture_retries", forKey: .name)
+                case .documentBackCaptureRetries:
+                    try container.encode("document_back_capture_retries", forKey: .name)
                 case .documentFrontCaptureDuration:
-                    try container.encode("front_document_capture_duration", forKey: .name)
+                    try container.encode("document_front_capture_duration_ms", forKey: .name)
                 case .documentBackCaptureDuration:
-                    try container.encode("back_document_capture_duration", forKey: .name)
+                    try container.encode("document_back_capture_duration_ms", forKey: .name)
                 }
             }
         }
@@ -109,8 +109,8 @@ public enum DocumentImageOriginValue: String, Codable {
 }
 
 public enum CameraFacingValue: String, Codable {
-    case front
-    case back
+    case frontCamera = "front_camera"
+    case backCamera = "back_camera"
 }
 
 public extension UIDevice {
