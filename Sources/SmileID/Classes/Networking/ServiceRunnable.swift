@@ -238,14 +238,16 @@ extension ServiceRunnable {
 
             // Append parameters if available
             if let parameters = partnerParams {
-                for (key, value) in parameters {
-                    if let valueData = "\(value)\(lineBreak)".data(using: .utf8) {
-                        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                        body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                        body.append(valueData)
-                    }
-                }
-            }
+                   body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                   body.append("Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(using: .utf8)!)
+                   body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+                   
+                   let jsonData = try? JSONSerialization.data(withJSONObject: parameters)
+                   if let jsonData = jsonData {
+                       body.append(jsonData)
+                       body.append(lineBreak.data(using: .utf8)!)
+                   }
+               }
 
             // Append userId if available
             if let userId = userId {
@@ -303,7 +305,6 @@ extension ServiceRunnable {
 
             // Append final boundary
             body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
-
             return body
         }
 
