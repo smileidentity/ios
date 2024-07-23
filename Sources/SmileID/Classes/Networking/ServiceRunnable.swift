@@ -4,18 +4,18 @@ protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
     associatedtype PathType: CustomStringConvertible
     var baseURL: URL? { get }
-    
+
     /// POST service call to a particular path with a body.
     /// - Parameters:
     ///   - path: Endpoint to execute the POST call.
     ///   - body: The contents of the body of the request.
     func post<T: Encodable, U: Decodable>(to path: PathType, with body: T) async throws -> U
-    
+
     /// Get service call to a particular path
     /// - Parameters:
     ///   - path: Endpoint to execute the GET call.
     func get<U: Decodable>(to path: PathType) async throws -> U
-    
+
     // POST service call to make a multipart request.
     /// - Parameters:
     ///   - path: Endpoint to execute the POST call.
@@ -32,7 +32,7 @@ protocol ServiceRunnable {
         sandboxResult: Int?,
         allowNewEnroll: Bool?
     ) async throws -> SmartSelfieResponse
-    
+
     /// PUT service call to a particular path with a body.
     /// - Parameters:
     ///   - data: Data to be uploaded
@@ -52,7 +52,7 @@ extension ServiceRunnable {
         }
         return URL(string: SmileID.config.prodLambdaUrl)
     }
-    
+
     func post<T: Encodable, U: Decodable>(
         to path: PathType,
         with body: T
@@ -65,7 +65,7 @@ extension ServiceRunnable {
         )
         return try await serviceClient.send(request: request)
     }
-    
+
     func get<U: Decodable>(to path: PathType) async throws -> U {
         let request = try createRestRequest(
             path: path,
@@ -73,7 +73,7 @@ extension ServiceRunnable {
         )
         return try await serviceClient.send(request: request)
     }
-    
+
     func multipart(
         to path: PathType,
         signature: String,
@@ -109,10 +109,10 @@ extension ServiceRunnable {
                 boundary: boundary
             )
         )
-        
+
         return try await serviceClient.multipart(request: request)
     }
-    
+
     private func createMultiPartRequest(
         url: PathType,
         method: RestMethod,
@@ -123,15 +123,15 @@ extension ServiceRunnable {
         guard var baseURL = baseURL?.absoluteString else {
             throw URLError(.badURL)
         }
-        
+
         if let range = baseURL.range(of: "/v1/", options: .backwards) {
             baseURL.removeSubrange(range)
         }
-        
+
         guard let url = URL(string: baseURL)?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
-        
+
         let request = RestRequest(
             url: url,
             method: method,
@@ -140,7 +140,7 @@ extension ServiceRunnable {
         )
         return request
     }
-    
+
     func upload(
         data: Data,
         to url: String,
@@ -154,7 +154,7 @@ extension ServiceRunnable {
         )
         return try await serviceClient.upload(request: uploadRequest)
     }
-    
+
     private func createUploadRequest(
         url: String,
         method: RestMethod,
@@ -173,7 +173,7 @@ extension ServiceRunnable {
         )
         return request
     }
-    
+
     private func createRestRequest<T: Encodable>(
         path: PathType,
         method: RestMethod,
@@ -185,7 +185,7 @@ extension ServiceRunnable {
         guard let url = baseURL?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
-        
+
         do {
             let request = try RestRequest(
                 url: url,
@@ -199,7 +199,7 @@ extension ServiceRunnable {
             throw error
         }
     }
-    
+
     private func createRestRequest(
         path: PathType,
         method: RestMethod,
@@ -209,7 +209,7 @@ extension ServiceRunnable {
         guard let url = baseURL?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
-        
+
         let request = RestRequest(
             url: url,
             method: method,
@@ -217,11 +217,11 @@ extension ServiceRunnable {
         )
         return request
     }
-    
+
     func generateBoundary() -> String {
         return UUID().uuidString
     }
-    
+
     // swiftlint:disable line_length cyclomatic_complexity
     func createMultiPartRequestData(
         selfieImage: MultipartBody,
@@ -235,25 +235,24 @@ extension ServiceRunnable {
     ) -> Data {
         let lineBreak = "\r\n"
         var body = Data()
-        
+
         // Append parameters if available
         if let parameters = partnerParams {
             if let boundaryData = "--\(boundary)\(lineBreak)".data(using: .utf8),
                let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(using: .utf8),
                let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8),
                let lineBreakData = lineBreak.data(using: .utf8) {
-                
                 body.append(boundaryData)
                 body.append(dispositionData)
                 body.append(contentTypeData)
-                
+
                 if let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: []) {
                     body.append(jsonData)
                     body.append(lineBreakData)
                 }
             }
         }
-        
+
         // Append userId if available
         if let userId = userId {
             if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
@@ -262,7 +261,7 @@ extension ServiceRunnable {
                 body.append(valueData)
             }
         }
-        
+
         // Append callbackUrl if available
         if let callbackUrl = callbackUrl {
             if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
@@ -271,7 +270,7 @@ extension ServiceRunnable {
                 body.append(valueData)
             }
         }
-        
+
         // Append sandboxResult if available
         if let sandboxResult = sandboxResult {
             let sandboxResultString = "\(sandboxResult)"
@@ -281,7 +280,7 @@ extension ServiceRunnable {
                 body.append(valueData)
             }
         }
-        
+
         // Append allowNewEnroll if available
         if let allowNewEnroll = allowNewEnroll {
             let allowNewEnrollString = "\(allowNewEnroll)"
@@ -291,7 +290,7 @@ extension ServiceRunnable {
                 body.append(valueData)
             }
         }
-        
+
         // Append liveness media files
         for item in livenessImages {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
@@ -300,17 +299,16 @@ extension ServiceRunnable {
             body.append(item.data)
             body.append(lineBreak.data(using: .utf8)!)
         }
-        
+
         // Append selfie media file
         body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
         body.append("Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)".data(using: .utf8)!)
         body.append("Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
         body.append(selfieImage.data)
         body.append(lineBreak.data(using: .utf8)!)
-        
+
         // Append final boundary
         body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
         return body
     }
-    
 }
