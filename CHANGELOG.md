@@ -1,4 +1,9 @@
 # Release Notes
+## 10.2.4
+
+#### Fixed
+* Partner params fix on v2 endpoints
+
 ## 10.2.3
 
 #### Added
