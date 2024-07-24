@@ -170,7 +170,7 @@ public class BiometricKycJobResult: JobResult {
     public let address: String?
     public let country: String?
     public let documentImageBase64: String?
-    public let fullData: [String: String]?
+    public let fullData: FlexibleDictionary?
     public let fullName: String?
     public let idNumber: String?
     public let phoneNumber: String?
@@ -192,7 +192,7 @@ public class BiometricKycJobResult: JobResult {
         documentImageBase64 = try container.decodeIfPresent(
             String.self, forKey: .documentImageBase64
         )
-        fullData = try container.decodeIfPresent([String: String].self, forKey: .fullData)
+        fullData = try container.decodeIfPresent(FlexibleDictionary.self, forKey: .fullData)
         fullName = try container.decodeIfPresent(String.self, forKey: .fullName)
         idNumber = try container.decodeIfPresent(String.self, forKey: .idNumber)
         phoneNumber = try container.decodeIfPresent(String.self, forKey: .phoneNumber)
@@ -288,7 +288,7 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
     public let address: String?
     public let country: String?
     public let documentImageBase64: String?
-    public let fullData: [String: String]?
+    public let fullData: FlexibleDictionary?
     public let fullName: String?
     public let idNumber: String?
     public let phoneNumber: String?
@@ -310,7 +310,7 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
         documentImageBase64 = try container.decodeIfPresent(
             String.self, forKey: .documentImageBase64
         )
-        fullData = try container.decodeIfPresent([String: String].self, forKey: .fullData)
+        fullData = try container.decodeIfPresent(FlexibleDictionary.self, forKey: .fullData)
         fullName = try container.decodeIfPresent(String.self, forKey: .fullName)
         idNumber = try container.decodeIfPresent(String.self, forKey: .idNumber)
         phoneNumber = try container.decodeIfPresent(String.self, forKey: .phoneNumber)
@@ -553,5 +553,45 @@ public struct ImageLinks: Codable {
     enum CodingKeys: String, CodingKey {
         case selfieImageUrl = "selfie_image"
         case error
+    }
+}
+
+public struct FlexibleDictionary: Codable {
+    enum Value: Codable {
+        case string(String)
+        case bool(Bool)
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            if let stringValue = try? container.decode(String.self) {
+                self = .string(stringValue)
+            } else if let boolValue = try? container.decode(Bool.self) {
+                self = .bool(boolValue)
+            } else {
+                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode value")
+            }
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            switch self {
+            case .string(let value):
+                try container.encode(value)
+            case .bool(let value):
+                try container.encode(value)
+            }
+        }
+    }
+
+    var dictionary: [String: Value]
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.dictionary = try container.decode([String: Value].self)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(dictionary)
     }
 }
