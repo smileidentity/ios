@@ -2,7 +2,7 @@ import SwiftUI
 import Lottie
 
 public struct SelfieCaptureScreenV2: View {
-    @ObservedObject var viewModel = SelfieViewModelV2()
+    @ObservedObject var viewModel: SelfieViewModelV2
     @State private var playbackMode: LottiePlaybackMode = LottiePlaybackMode.paused
 
     public var body: some View {
@@ -93,9 +93,3 @@ struct CornerShape: Shape {
         return path
     }
 }
-
-#if DEBUG
-#Preview {
-    SelfieCaptureScreenV2()
-}
-#endif
