@@ -3,6 +3,8 @@ import Lottie
 
 public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel = SelfieViewModelV2()
+    let showAttribution: Bool
+    
     @State private var playbackMode: LottiePlaybackMode = LottiePlaybackMode.paused
 
     public var body: some View {
@@ -31,7 +33,9 @@ public struct SelfieCaptureScreenV2: View {
             }
             .frame(width: 300, height: 400)
 
-            Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+            if showAttribution {
+                Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -93,9 +97,3 @@ struct CornerShape: Shape {
         return path
     }
 }
-
-#if DEBUG
-#Preview {
-    SelfieCaptureScreenV2()
-}
-#endif
