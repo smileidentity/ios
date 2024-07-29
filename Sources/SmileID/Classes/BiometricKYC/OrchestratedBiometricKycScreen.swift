@@ -11,6 +11,7 @@ struct OrchestratedBiometricKycScreen: View {
     let extraPartnerParams: [String: String] = [:]
     let delegate: BiometricKycResultDelegate
     @ObservedObject private var viewModel: OrchestratedBiometricKycViewModel
+    @ObservedObject var localMetadata = LocalMetadata()
 
     init(
         idInfo: IdInfo,
@@ -53,7 +54,7 @@ struct OrchestratedBiometricKycScreen: View {
                 extraPartnerParams: extraPartnerParams,
                 skipApiSubmission: true,
                 onResult: viewModel
-            )
+            ).environmentObject(localMetadata)
         case let .processing(state):
             ProcessingScreen(
                 processingState: state,

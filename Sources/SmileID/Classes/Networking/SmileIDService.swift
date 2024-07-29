@@ -23,7 +23,8 @@ public protocol SmileIDServiceable {
         partnerParams: [String: String]?,
         callbackUrl: String?,
         sandboxResult: Int?,
-        allowNewEnroll: Bool?
+        allowNewEnroll: Bool?,
+        metadata: Metadata
     ) async throws -> SmartSelfieResponse
 
     /// Perform a synchronous SmartSelfie Authentication. The response will include the final result
@@ -36,7 +37,8 @@ public protocol SmileIDServiceable {
         livenessImages: [MultipartBody],
         partnerParams: [String: String]?,
         callbackUrl: String?,
-        sandboxResult: Int?
+        sandboxResult: Int?,
+        metadata: Metadata
     ) async throws -> SmartSelfieResponse
 
     /// Query the Identity Information of an individual using their ID number from a supported ID
@@ -221,7 +223,8 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         partnerParams: [String: String]? = nil,
         callbackUrl: String? = SmileID.callbackUrl,
         sandboxResult: Int? = nil,
-        allowNewEnroll: Bool? = nil
+        allowNewEnroll: Bool? = nil,
+        metadata: Metadata = Metadata.default()
     ) async throws -> SmartSelfieResponse {
         try await multipart(
             to: "/v2/smart-selfie-enroll",
@@ -233,7 +236,8 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
             partnerParams: partnerParams,
             callbackUrl: callbackUrl,
             sandboxResult: sandboxResult,
-            allowNewEnroll: allowNewEnroll
+            allowNewEnroll: allowNewEnroll,
+            metadata: metadata
         )
     }
 
@@ -245,7 +249,8 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         livenessImages: [MultipartBody],
         partnerParams: [String: String]? = nil,
         callbackUrl: String? = SmileID.callbackUrl,
-        sandboxResult: Int? = nil
+        sandboxResult: Int? = nil,
+        metadata: Metadata = Metadata.default()
     ) async throws -> SmartSelfieResponse {
         try await multipart(
             to: "/v2/smart-selfie-authentication",
@@ -256,7 +261,8 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
             userId: userId,
             partnerParams: partnerParams,
             callbackUrl: callbackUrl,
-            sandboxResult: sandboxResult
+            sandboxResult: sandboxResult,
+            metadata: metadata
         )
     }
 

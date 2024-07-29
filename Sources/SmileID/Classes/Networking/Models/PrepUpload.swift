@@ -13,6 +13,7 @@ public struct PrepUploadRequest: Codable {
     public var signature = ""
     public var useEnrolledImage = false
     public var retry = "false" /// backend is broken needs these as strings
+    public var metadata: [Metadatum]?
 
     public init(
         partnerParams: PartnerParams,
@@ -24,7 +25,8 @@ public struct PrepUploadRequest: Codable {
         timestamp: String = String(Date().millisecondsSince1970),
         signature: String = "",
         useEnrolledImage: Bool = false,
-        retry: String = "false"
+        retry: String = "false",
+        metadata: [Metadatum]? = nil
     ) {
         self.partnerParams = partnerParams
         self.callbackUrl = callbackUrl
@@ -36,6 +38,7 @@ public struct PrepUploadRequest: Codable {
         self.signature = signature
         self.useEnrolledImage = useEnrolledImage
         self.retry = retry
+        self.metadata = metadata
     }
 
     enum CodingKeys: String, CodingKey {
@@ -49,6 +52,7 @@ public struct PrepUploadRequest: Codable {
         case timestamp
         case signature
         case retry
+        case metadata
     }
 }
 
