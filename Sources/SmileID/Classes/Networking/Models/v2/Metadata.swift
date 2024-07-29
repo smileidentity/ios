@@ -7,7 +7,7 @@ public class Metadata: Codable {
         self.items = items
     }
 
-    static func `default`() -> Metadata {
+    public static func `default`() -> Metadata {
         Metadata(items: [
             .sdk,
             .sdkVersion,
@@ -132,4 +132,8 @@ public extension UIDevice {
     var deviceModel: String {
         isSimulator ? "emulator" : modelName
     }
+}
+
+public class LocalMetadata: ObservableObject {
+    @Published var metadata: Metadata = Metadata.default()
 }

@@ -209,7 +209,8 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
                     allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
                     timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
+                    signature: authResponse.signature,
+                    metadata: Metadata.default().items
                 )
                 let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest)
                 _ = try await SmileID.api.upload(

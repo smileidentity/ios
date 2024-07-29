@@ -359,7 +359,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         partnerParams: extraPartnerParams,
                         callbackUrl: SmileID.callbackUrl,
                         sandboxResult: nil,
-                        allowNewEnroll: allowNewEnroll
+                        allowNewEnroll: allowNewEnroll, 
+                        metadata: Metadata(items: Metadata.default().items)
                     )
                 } else {
                     try await SmileID.api.doSmartSelfieAuthentication(
@@ -370,7 +371,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         livenessImages: smartSelfieLivenessImages,
                         partnerParams: extraPartnerParams,
                         callbackUrl: SmileID.callbackUrl,
-                        sandboxResult: nil
+                        sandboxResult: nil,
+                        metadata: Metadata(items: Metadata.default().items)
                     )
                 }
                 apiResponse = response
