@@ -254,28 +254,45 @@ public class SmileID {
     ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
-    public class func smartSelfieEnrollmentScreen(
+    @ViewBuilder public class func smartSelfieEnrollmentScreen(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
         allowNewEnroll: Bool = false,
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
+        useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        OrchestratedSelfieCaptureScreen(
-            userId: userId,
-            jobId: jobId,
-            isEnroll: true,
-            allowNewEnroll: allowNewEnroll,
-            allowAgentMode: allowAgentMode,
-            showAttribution: showAttribution,
-            showInstructions: showInstructions,
-            extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: false,
-            onResult: delegate
-        )
+        if useStrictMode {
+            OrchestratedSelfieCaptureScreenV2(
+                userId: userId,
+                jobId: jobId,
+                isEnroll: true,
+                allowNewEnroll: allowNewEnroll,
+                allowAgentMode: allowAgentMode,
+                showAttribution: showAttribution,
+                showInstructions: showInstructions,
+                useStrictMode: useStrictMode,
+                extraPartnerParams: extraPartnerParams,
+                skipApiSubmission: false,
+                onResult: delegate
+            )
+        } else {
+            OrchestratedSelfieCaptureScreen(
+                userId: userId,
+                jobId: jobId,
+                isEnroll: true,
+                allowNewEnroll: allowNewEnroll,
+                allowAgentMode: allowAgentMode,
+                showAttribution: showAttribution,
+                showInstructions: showInstructions,
+                extraPartnerParams: extraPartnerParams,
+                skipApiSubmission: false,
+                onResult: delegate
+            )
+        }
     }
 
     /// Perform a SmartSelfie™ Authentication
@@ -298,28 +315,45 @@ public class SmileID {
     ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
-    public class func smartSelfieAuthenticationScreen(
+    @ViewBuilder public class func smartSelfieAuthenticationScreen(
         userId: String,
         jobId: String = generateJobId(),
         allowNewEnroll: Bool = false,
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
+        useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        OrchestratedSelfieCaptureScreen(
-            userId: userId,
-            jobId: jobId,
-            isEnroll: false,
-            allowNewEnroll: allowNewEnroll,
-            allowAgentMode: allowAgentMode,
-            showAttribution: showAttribution,
-            showInstructions: showInstructions,
-            extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: false,
-            onResult: delegate
-        )
+        if useStrictMode {
+            OrchestratedSelfieCaptureScreenV2(
+                userId: userId,
+                jobId: jobId,
+                isEnroll: true,
+                allowNewEnroll: allowNewEnroll,
+                allowAgentMode: allowAgentMode,
+                showAttribution: showAttribution,
+                showInstructions: showInstructions,
+                useStrictMode: useStrictMode,
+                extraPartnerParams: extraPartnerParams,
+                skipApiSubmission: false,
+                onResult: delegate
+            )
+        } else {
+            OrchestratedSelfieCaptureScreen(
+                userId: userId,
+                jobId: jobId,
+                isEnroll: false,
+                allowNewEnroll: allowNewEnroll,
+                allowAgentMode: allowAgentMode,
+                showAttribution: showAttribution,
+                showInstructions: showInstructions,
+                extraPartnerParams: extraPartnerParams,
+                skipApiSubmission: false,
+                onResult: delegate
+            )
+        }
     }
 
     /// Perform a Document Verification
