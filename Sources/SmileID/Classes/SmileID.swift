@@ -59,12 +59,6 @@ public class SmileID {
         SmileIDResourcesHelper.registerFonts()
     }
 
-    /// Set the environment
-    /// - Parameter useSandbox: A boolean to enable the sandbox environment or not
-    public class func setEnvironment(useSandbox: Bool) {
-        SmileID.useSandbox = useSandbox
-    }
-
     /// Sets the state of offline mode for the SDK.
     /// This function enables or disables the SDK's ability to operate in offline mode,
     /// where it can continue functioning without an active internet connection. When offline mode
