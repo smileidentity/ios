@@ -1,5 +1,15 @@
 # Release Notes
-## [Unreleased]
+## 10.2.5
+
+#### Fixed
+* Job status history full data parsing causing a crash during polling
+
+## 10.2.4
+
+#### Fixed
+* Partner params fix on v2 endpoints
+
+## 10.2.3
 
 #### Added
 * Add new cases to `ActionResult` including an unknown case to handle values that do not match the defined enum cases.
