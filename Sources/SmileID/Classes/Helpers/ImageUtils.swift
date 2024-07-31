@@ -251,7 +251,13 @@ extension UIImage {
         let width = 120
         let height = 120
         let channels = 3
-        let array = try? MLMultiArray(shape: [1, NSNumber(value: height), NSNumber(value: width), NSNumber(value: channels)], dataType: .float32)
+        let array = try? MLMultiArray(
+            shape: [
+                1, NSNumber(value: height),
+                NSNumber(value: width),
+                NSNumber(value: channels)],
+            dataType: .float32
+        )
 
         guard let mlMultiArray = array else { return nil }
 

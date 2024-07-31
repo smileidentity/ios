@@ -96,9 +96,9 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
     }
-    
+
     private func checkSelfieQuality(pixelBuffer: CVPixelBuffer) {
-        guard let image = UIImage(pixelBuffer: pixelBuffer), 
+        guard let image = UIImage(pixelBuffer: pixelBuffer),
                 let mlMultiArray = image.toMLMultiArray() else {
             print("Failed to preprocess image")
             return
@@ -113,7 +113,7 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
 
             // Perform the prediction
             let prediction = try model.prediction(input: input)
-            
+
             // Handle the output multi-array
             // Extract the output MLMultiArray
             if let output = prediction.featureValue(for: "Identity")?.multiArrayValue {
@@ -125,7 +125,7 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
             print("Error initializing model: \(error.localizedDescription)")
         }
     }
-    
+
     func processOutput(_ output: MLMultiArray) {
         let shape = output.shape.map { $0.intValue }
         let count = shape.reduce(1, *)
@@ -152,7 +152,7 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
 
         print("Processed output values: \(values)")
     }
-    
+
     // swiftlint:disable cyclomatic_complexity
     func analyzeImage(image: CVPixelBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
