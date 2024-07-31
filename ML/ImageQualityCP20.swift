@@ -1,3 +1,4 @@
+// swiftlint:disable all
 //
 // ImageQualityCP20.swift
 //
