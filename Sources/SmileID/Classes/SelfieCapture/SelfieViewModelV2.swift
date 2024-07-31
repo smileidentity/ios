@@ -130,26 +130,26 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
         let shape = output.shape.map { $0.intValue }
         let count = shape.reduce(1, *)
         print("count -", count)
-        
+
         var values = [Float32]()
         let dataPointer = UnsafePointer<Float32>(OpaquePointer(output.dataPointer))
-        for i in 0..<count {
-            values.append(dataPointer[i])
+        for index in 0..<count {
+            values.append(dataPointer[index])
         }
-        
+
         // update quality history
         selfieQualityHistory.append(values.first ?? 0)
         if selfieQualityHistory.count > selfieQualityHistoryLength {
             selfieQualityHistory.removeFirst()
         }
-        
+
         // quality check
         let averageFaceQuality = selfieQualityHistory.reduce(0, +) / Float(selfieQualityHistory.count)
         if averageFaceQuality < faceQualityThreshold {
             print("Face quality not Met")
             return
         }
-        
+
         print("Processed output values: \(values)")
     }
     
