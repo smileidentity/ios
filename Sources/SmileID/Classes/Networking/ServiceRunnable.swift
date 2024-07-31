@@ -224,87 +224,91 @@ extension ServiceRunnable {
 
     // swiftlint:disable line_length cyclomatic_complexity
     func createMultiPartRequestData(
-            selfieImage: MultipartBody,
-            livenessImages: [MultipartBody],
-            userId: String?,
-            partnerParams: [String: String]?,
-            callbackUrl: String?,
-            sandboxResult: Int?,
-            allowNewEnroll: Bool?,
-            boundary: String
-        ) -> Data {
-            let lineBreak = "\r\n"
-            var body = Data()
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        userId: String?,
+        partnerParams: [String: String]?,
+        callbackUrl: String?,
+        sandboxResult: Int?,
+        allowNewEnroll: Bool?,
+        boundary: String
+    ) -> Data {
+        let lineBreak = "\r\n"
+        var body = Data()
 
-            // Append parameters if available
-            if let parameters = partnerParams {
-                for (key, value) in parameters {
-                    if let valueData = "\(value)\(lineBreak)".data(using: .utf8) {
-                        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                        body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                        body.append(valueData)
-                    }
+        // Append parameters if available
+        if let parameters = partnerParams {
+            if let boundaryData = "--\(boundary)\(lineBreak)".data(using: .utf8),
+               let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(using: .utf8),
+               let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8),
+               let lineBreakData = lineBreak.data(using: .utf8) {
+                body.append(boundaryData)
+                body.append(dispositionData)
+                body.append(contentTypeData)
+
+                if let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: []) {
+                    body.append(jsonData)
+                    body.append(lineBreakData)
                 }
             }
-
-            // Append userId if available
-            if let userId = userId {
-                if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
-                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                    body.append("Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                    body.append(valueData)
-                }
-            }
-
-            // Append callbackUrl if available
-            if let callbackUrl = callbackUrl {
-                if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
-                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                    body.append("Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                    body.append(valueData)
-                }
-            }
-
-            // Append sandboxResult if available
-            if let sandboxResult = sandboxResult {
-                let sandboxResultString = "\(sandboxResult)"
-                if let valueData = "\(sandboxResultString)\(lineBreak)".data(using: .utf8) {
-                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                    body.append("Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                    body.append(valueData)
-                }
-            }
-
-            // Append allowNewEnroll if available
-            if let allowNewEnroll = allowNewEnroll {
-                let allowNewEnrollString = "\(allowNewEnroll)"
-                if let valueData = "\(allowNewEnrollString)\(lineBreak)".data(using: .utf8) {
-                    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                    body.append("Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                    body.append(valueData)
-                }
-            }
-
-            // Append liveness media files
-            for item in livenessImages {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append("Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)".data(using: .utf8)!)
-                body.append("Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
-                body.append(item.data)
-                body.append(lineBreak.data(using: .utf8)!)
-            }
-
-            // Append selfie media file
-            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
-            body.append(selfieImage.data)
-            body.append(lineBreak.data(using: .utf8)!)
-
-            // Append final boundary
-            body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
-
-            return body
         }
 
+        // Append userId if available
+        if let userId = userId {
+            if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
+                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(valueData)
+            }
+        }
+
+        // Append callbackUrl if available
+        if let callbackUrl = callbackUrl {
+            if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
+                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(valueData)
+            }
+        }
+
+        // Append sandboxResult if available
+        if let sandboxResult = sandboxResult {
+            let sandboxResultString = "\(sandboxResult)"
+            if let valueData = "\(sandboxResultString)\(lineBreak)".data(using: .utf8) {
+                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(valueData)
+            }
+        }
+
+        // Append allowNewEnroll if available
+        if let allowNewEnroll = allowNewEnroll {
+            let allowNewEnrollString = "\(allowNewEnroll)"
+            if let valueData = "\(allowNewEnrollString)\(lineBreak)".data(using: .utf8) {
+                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                body.append(valueData)
+            }
+        }
+
+        // Append liveness media files
+        for item in livenessImages {
+            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(item.data)
+            body.append(lineBreak.data(using: .utf8)!)
+        }
+
+        // Append selfie media file
+        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)".data(using: .utf8)!)
+        body.append("Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+        body.append(selfieImage.data)
+        body.append(lineBreak.data(using: .utf8)!)
+
+        // Append final boundary
+        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
+        return body
+    }
 }

@@ -47,7 +47,7 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
                 acknowledgedInstructions = true
             }
         } else {
-            SelfieCaptureScreenV2(viewModel: viewModel)
+            SelfieCaptureScreenV2(viewModel: viewModel, showAttribution: showAttribution)
         }
     }
 }

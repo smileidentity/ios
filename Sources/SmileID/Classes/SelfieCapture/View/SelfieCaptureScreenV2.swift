@@ -3,6 +3,8 @@ import Lottie
 
 public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
+    let showAttribution: Bool
+
     @State private var playbackMode: LottiePlaybackMode = LottiePlaybackMode.paused
 
     public var body: some View {
@@ -21,7 +23,7 @@ public struct SelfieCaptureScreenV2: View {
                 .foregroundColor(.secondary)
             ZStack {
                 RoundedRectangle(cornerRadius: 25)
-                    .stroke(Color.black, lineWidth: 20.0)
+                    .stroke(SmileID.theme.onLight, lineWidth: 20.0)
                     CameraView(cameraManager: viewModel.cameraManager)
                         .clipShape(.rect(cornerRadius: 25))
                         .onAppear {
@@ -34,7 +36,9 @@ public struct SelfieCaptureScreenV2: View {
             }
             .frame(width: 300, height: 400)
 
-            Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+            if showAttribution {
+                Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .alert(item: $viewModel.unauthorizedAlert) { alert in
