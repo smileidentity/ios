@@ -13,9 +13,12 @@ public struct SelfieCaptureScreenV2: View {
             .playing(loopMode: .autoReverse)
             .frame(width: 80, height: 80)
 
-            Text("Look up")
+            Text(viewModel.directive)
                 .font(SmileID.theme.header2)
                 .foregroundColor(.primary)
+            Text("\(viewModel.captureProgress)")
+                .font(.footnote)
+                .foregroundColor(.secondary)
             ZStack {
                 RoundedRectangle(cornerRadius: 25)
                     .stroke(Color.black, lineWidth: 20.0)
@@ -34,6 +37,19 @@ public struct SelfieCaptureScreenV2: View {
             Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .alert(item: $viewModel.unauthorizedAlert) { alert in
+            Alert(
+                title: Text(alert.title),
+                message: Text(alert.message ?? ""),
+                primaryButton: .default(
+                    Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
+                    action: {
+                        viewModel.openSettings()
+                    }
+                ),
+                secondaryButton: .cancel()
+            )
+        }
     }
 
     // swiftlint:disable identifier_name

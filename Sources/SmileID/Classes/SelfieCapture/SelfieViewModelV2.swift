@@ -17,6 +17,8 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
     private let numTotalSteps = 8 // numLivenessImages + 1 selfie image
     private let livenessImageSize = 320
     private let selfieImageSize = 640
+    private let faceQualityThreshold: Float = 0.5
+    private let selfieQualityHistoryLength: Int = 5
 
     private let isEnroll: Bool
     private let userId: String
@@ -38,6 +40,7 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
 
     var selfieImage: URL?
     var livenessImages: [URL] = []
+    private var selfieQualityHistory: [Float] = []
     var apiResponse: SmartSelfieResponse?
     var error: Error?
 
@@ -93,7 +96,63 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
     }
+    
+    private func checkSelfieQuality(pixelBuffer: CVPixelBuffer) {
+        guard let image = UIImage(pixelBuffer: pixelBuffer), 
+                let mlMultiArray = image.toMLMultiArray() else {
+            print("Failed to preprocess image")
+            return
+        }
 
+        do {
+            // Load the model
+            let model = try ImageQualityCP20(configuration: MLModelConfiguration())
+
+            // Create the input feature provider
+            let input = ImageQualityCP20Input(conv2d_193_input: mlMultiArray)
+
+            // Perform the prediction
+            let prediction = try model.prediction(input: input)
+            
+            // Handle the output multi-array
+            // Extract the output MLMultiArray
+            if let output = prediction.featureValue(for: "Identity")?.multiArrayValue {
+                print("Output MultiArray: \(output)")
+                processOutput(output)
+            }
+
+        } catch {
+            print("Error initializing model: \(error.localizedDescription)")
+        }
+    }
+    
+    func processOutput(_ output: MLMultiArray) {
+        let shape = output.shape.map { $0.intValue }
+        let count = shape.reduce(1, *)
+        print("count -", count)
+        
+        var values = [Float32]()
+        let dataPointer = UnsafePointer<Float32>(OpaquePointer(output.dataPointer))
+        for i in 0..<count {
+            values.append(dataPointer[i])
+        }
+        
+        // update quality history
+        selfieQualityHistory.append(values.first ?? 0)
+        if selfieQualityHistory.count > selfieQualityHistoryLength {
+            selfieQualityHistory.removeFirst()
+        }
+        
+        // quality check
+        let averageFaceQuality = selfieQualityHistory.reduce(0, +) / Float(selfieQualityHistory.count)
+        if averageFaceQuality < faceQualityThreshold {
+            print("Face quality not Met")
+            return
+        }
+        
+        print("Processed output values: \(values)")
+    }
+    
     // swiftlint:disable cyclomatic_complexity
     func analyzeImage(image: CVPixelBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
@@ -190,6 +249,10 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
                     print("Not enough face rotation between captures. Waiting...")
                     return
                 }
+
+                // Feels like a perfect place to run Selfie Quality Check
+                // Right now doesn't break the current flow of image analysis.
+                checkSelfieQuality(pixelBuffer: image)
 
                 let orientation = currentlyUsingArKit ? CGImagePropertyOrientation.right : .up
                 lastAutoCaptureTime = Date()
