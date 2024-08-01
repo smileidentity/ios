@@ -47,7 +47,7 @@ public struct IdType: Codable, Identifiable, Equatable {
     public let hasBack: Bool
     public let name: String
 
-    public var id: String { code }
+    public var id: String { code + name }
 
     public init(
         code: String,
