@@ -2,14 +2,11 @@ import SwiftUI
 import SmileID
 
 struct SmileEnvironmentToggleButton: View {
-    @State private var isProduction: Bool = true
+    @State private var isProduction: Bool = !SmileID.useSandbox
 
     var body: some View {
         Button(
-            action: {
-                isProduction.toggle()
-                SmileID.setEnvironment(useSandbox: !isProduction)
-            },
+            action: {},
             label: {
                 Text(isProduction ? "Production" : "Sandbox")
                     .font(SmileID.theme.button)

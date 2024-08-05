@@ -1,4 +1,10 @@
 # Release Notes
+
+## 10.2.6
+
+### Changed
+* Removed `SmileID.setEnvironment()` since the API Keys are no longer shared between environments
+
 ## 10.2.5
 
 #### Fixed

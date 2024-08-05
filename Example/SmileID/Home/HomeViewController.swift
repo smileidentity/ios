@@ -19,10 +19,8 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
 
     @IBAction func onEnvironmentToggle(_ sender: UIBarButtonItem) {
         if sender.title!.lowercased() == "sandbox" {
-            SmileID.setEnvironment(useSandbox: false)
             sender.title = "Production"
         } else {
-            SmileID.setEnvironment(useSandbox: true)
             sender.title = "Sandbox"
         }
     }
