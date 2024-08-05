@@ -4,6 +4,7 @@
 
 ### Changed
 * Removed `SmileID.setEnvironment()` since the API Keys are no longer shared between environments
+* Fixed a bug where prep upload would not work for previously attempted API requests
 
 ## 10.2.5
 
