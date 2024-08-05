@@ -1,5 +1,9 @@
 # Release Notes
 
+## 10.2.7
+
+* Fixed a bug where prep upload would not work for previously attempted API requests
+
 ## 10.2.6
 
 ### Changed
