@@ -27,7 +27,8 @@ final class PollingTests: XCTestCase {
     }
 
     func testPollJobStatus_Success<T: JobResult>(
-        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int) async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
+        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int)
+        async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
         expectedResponse: JobStatusResponse<T>,
         requestBuilder: () -> JobStatusRequest
     ) async throws {
@@ -51,7 +52,8 @@ final class PollingTests: XCTestCase {
     }
 
     func testPollingFunction_ErrorDuringPolling<T: JobResult>(
-        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int) async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
+        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int)
+        async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
         requestBuilder: () -> JobStatusRequest
     ) async {
         let request = requestBuilder()
@@ -73,7 +75,8 @@ final class PollingTests: XCTestCase {
     }
 
     func testPollingFunction_MaxAttemptsReached<T: JobResult>(
-        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int) async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
+        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int)
+        async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
         requestBuilder: () -> JobStatusRequest
     ) async throws {
         let request = requestBuilder()
