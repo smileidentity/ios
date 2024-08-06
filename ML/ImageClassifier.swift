@@ -1,6 +1,7 @@
 import CoreML
 import Vision
 
+/// An enum representing possible errors during image classification
 enum ImageClassifierError: Error {
     case preprocessingFailed
     case classificationFailed
@@ -9,19 +10,24 @@ enum ImageClassifierError: Error {
     case faceCroppingFailed
 }
 
+/// A structure representing the image quality check result
 struct ImageQualityResult {
     let passed: Bool
     let confidence: Float
-    
+
     var description: String {
         return passed ? "Passed" : "Failed"
     }
 }
 
+/// A class that performs image classification to determine selfie quality using a Core ML Model
 class ModelImageClassifier {
 
     init() {}
 
+    /// Classifies an image using the Core ML Model
+    /// - Parameter image: The input image as a UIImage
+    /// - Returns: A result containing classifiction confidence.
     func classify(image: UIImage) async throws -> ImageQualityResult {
         do {
             let mlMultiArray = try await preprocessImage(image)
@@ -31,7 +37,10 @@ class ModelImageClassifier {
             throw error
         }
     }
-    
+
+    /// Preprocesses the input image to match the model's required input format and size.
+    /// - Parameter image: The originial input image
+    /// - Returns: A MultiArray matching the model's input specifications.
     private func preprocessImage(_ image: UIImage) async throws -> MLMultiArray {
         do {
             let croppedImage = try await cropToFace(image: image)
@@ -42,49 +51,52 @@ class ModelImageClassifier {
         }
     }
 
+    /// Crops the input image to the region of the first face in the image.
+    /// - Parameter image: The original input image that should have a face.
+    /// - Returns: A cropped image of the detected face in the input image.
     private func cropToFace(image: UIImage) async throws -> UIImage {
         guard let cgImage = image.cgImage else {
             throw ImageClassifierError.faceCroppingFailed
         }
-        
+
         let request = VNDetectFaceRectanglesRequest()
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        
+
         try handler.perform([request])
-        
+
         guard let results = request.results,
               let face = results.first else {
             throw ImageClassifierError.faceCroppingFailed
         }
-        
+
         let faceRect = VNImageRectForNormalizedRect(face.boundingBox, cgImage.width, cgImage.height)
-        
+
         guard let croppedImage = cgImage.cropping(to: faceRect) else {
             throw ImageClassifierError.faceCroppingFailed
         }
-        
+
         return UIImage(cgImage: croppedImage)
     }
-    
+
     private func imageToMLMultiArray(_ image: UIImage) throws -> MLMultiArray {
         let inputSize = CGSize(width: 120, height: 120)
         UIGraphicsBeginImageContextWithOptions(inputSize, false, 0.0)
         image.draw(in: CGRect(origin: .zero, size: inputSize))
         let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        
+
         guard let resizedImage = resizedImage,
               let mlMultiArray = toMLMultiArrayInternal(image: resizedImage) else {
             throw ImageClassifierError.preprocessingFailed
         }
         return mlMultiArray
     }
-    
+
     private func toMLMultiArrayInternal(image: UIImage) -> MLMultiArray? {
         guard let cgImage = image.cgImage else {
             return nil
         }
-        
+
         // These values were gotten from the model input specification:
         // MultiArray (Float32 1 × 120 × 120 × 3)
         let width = 120
@@ -141,25 +153,31 @@ class ModelImageClassifier {
                 pointer[pixelIndex + 2] = blue
             }
         }
-        
+
         return mlMultiArray
     }
-    
+
+    /// Performs the actual classification using the `ImageQualityCP20` model
+    /// - Parameter mlMultiArray: The processed input image as a MultiArray
+    /// - Returns: The ImageQualityResult
     private func performClassification(mlMultiArray: MLMultiArray) throws -> ImageQualityResult {
         let modelConfiguration = MLModelConfiguration()
         let model = try ImageQualityCP20(configuration: modelConfiguration)
-        
+
         let input = ImageQualityCP20Input(conv2d_193_input: mlMultiArray)
-        
+
         let prediction = try model.prediction(input: input)
-        
+
         guard let output = prediction.featureValue(for: "Identity")?.multiArrayValue else {
             throw ImageClassifierError.classificationFailed
         }
-        
+
         return try processModelOuput(output)
     }
 
+    /// Processes the model's output to determine the final classification
+    /// - Parameter output: The MLMultiArray output from the model
+    /// - Returns: The ImageQualityResult
     private func processModelOuput(_ output: MLMultiArray) throws -> ImageQualityResult {
         guard output.shape.count == 2,
               output.shape[0] == 1,
@@ -176,3 +194,4 @@ class ModelImageClassifier {
         return ImageQualityResult(passed: passed, confidence: confidence)
     }
 }
+
