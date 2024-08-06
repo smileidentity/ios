@@ -39,11 +39,9 @@ final class PollingTests: XCTestCase {
         let stream = try await pollFunction(request, interval, numAttempts)
 
         do {
-            for try await response in stream {
-                if response.jobComplete {
-                    XCTAssertEqual(response.jobComplete, expectedResponse.jobComplete)
-                    return
-                }
+            for try await response in stream where response.jobComplete {
+                XCTAssertEqual(response.jobComplete, expectedResponse.jobComplete)
+                return
             }
             XCTFail("Stream completed without a jobComplete response")
         } catch {
