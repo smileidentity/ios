@@ -14,11 +14,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         UINavigationBar.appearance().titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.black,
+            NSAttributedString.Key.foregroundColor: UIColor.black
         ]
-        if enableSentry() {
+        if let dsn = Bundle.main.object(forInfoDictionaryKey: "SentryDSN") as? String {
             SentrySDK.start { options in
-                options.dsn = ArkanaKeys.Global().sENTRY_DSN
+                options.dsn = dsn
                 options.debug = true
                 options.tracesSampleRate = 1.0
                 options.profilesSampleRate = 1.0
@@ -31,12 +31,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = UIHostingController(rootView: RootView())
         window?.makeKeyAndVisible()
         return true
-    }
-
-    func enableSentry() -> Bool {
-        guard let enableSentry = Bundle.main.object(forInfoDictionaryKey: "EnableSentry") as? String else {
-            return false
-        }
-        return enableSentry == "YES"
     }
 }
