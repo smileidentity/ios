@@ -98,59 +98,16 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
     }
 
     private func checkSelfieQuality(pixelBuffer: CVPixelBuffer) {
-        guard let image = UIImage(pixelBuffer: pixelBuffer),
-                let mlMultiArray = image.toMLMultiArray() else {
+        // turn pixel buffer to UIImage.
+        guard let image = UIImage(pixelBuffer: pixelBuffer) else {
             print("Failed to preprocess image")
             return
         }
 
-        do {
-            // Load the model
-            let model = try ImageQualityCP20(configuration: MLModelConfiguration())
-
-            // Create the input feature provider
-            let input = ImageQualityCP20Input(conv2d_193_input: mlMultiArray)
-
-            // Perform the prediction
-            let prediction = try model.prediction(input: input)
-
-            // Handle the output multi-array
-            // Extract the output MLMultiArray
-            if let output = prediction.featureValue(for: "Identity")?.multiArrayValue {
-                print("Output MultiArray: \(output)")
-                processOutput(output)
-            }
-
-        } catch {
-            print("Error initializing model: \(error.localizedDescription)")
+        Task {
+            let imageClassifier = ModelImageClassifier()
+            let qualityResult = try await imageClassifier.classify(image: image)
         }
-    }
-
-    func processOutput(_ output: MLMultiArray) {
-        let shape = output.shape.map { $0.intValue }
-        let count = shape.reduce(1, *)
-        print("count -", count)
-
-        var values = [Float32]()
-        let dataPointer = UnsafePointer<Float32>(OpaquePointer(output.dataPointer))
-        for index in 0..<count {
-            values.append(dataPointer[index])
-        }
-
-        // update quality history
-        selfieQualityHistory.append(values.first ?? 0)
-        if selfieQualityHistory.count > selfieQualityHistoryLength {
-            selfieQualityHistory.removeFirst()
-        }
-
-        // quality check
-        let averageFaceQuality = selfieQualityHistory.reduce(0, +) / Float(selfieQualityHistory.count)
-        if averageFaceQuality < faceQualityThreshold {
-            print("Face quality not Met")
-            return
-        }
-
-        print("Processed output values: \(values)")
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -250,8 +207,6 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
                     return
                 }
 
-                // Feels like a perfect place to run Selfie Quality Check
-                // Right now doesn't break the current flow of image analysis.
                 checkSelfieQuality(pixelBuffer: image)
 
                 let orientation = currentlyUsingArKit ? CGImagePropertyOrientation.right : .up
@@ -409,7 +364,7 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
                     smartSelfieLivenessImages.append(contentsOf: livenessImageInfos.compactMap { $0 })
                 }
                 guard let smartSelfieImage = smartSelfieImage,
-                smartSelfieLivenessImages.count == numLivenessImages else {
+                      smartSelfieLivenessImages.count == numLivenessImages else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
                 let response = if isEnroll {

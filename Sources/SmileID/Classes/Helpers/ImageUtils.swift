@@ -216,89 +216,12 @@ class ImageUtils {
 }
 
 extension UIImage {
-    public convenience init?(pixelBuffer: CVPixelBuffer) {
-        var cgImage: CGImage?
-        VTCreateCGImageFromCVPixelBuffer(pixelBuffer, options: nil, imageOut: &cgImage)
-
-        guard let cgImage = cgImage else {
-            return nil
-        }
-
-        self.init(cgImage: cgImage)
-    }
-}
-
-extension UIImage {
-    func toMLMultiArray() -> MLMultiArray? {
-        guard let resizedImage = self.resized(to: CGSize(width: 120, height: 120)),
-              let mlMultiArray = resizedImage.toMLMultiArrayInternal() else {
-            return nil
-        }
-        return mlMultiArray
-    }
-
-    private func resized(to size: CGSize) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        draw(in: CGRect(origin: .zero, size: size))
-        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return resizedImage
-    }
-
-    private func toMLMultiArrayInternal() -> MLMultiArray? {
-        guard let cgImage = self.cgImage else { return nil }
-
-        let width = 120
-        let height = 120
-        let channels = 3
-        let array = try? MLMultiArray(
-            shape: [
-                1, NSNumber(value: height),
-                NSNumber(value: width),
-                NSNumber(value: channels)],
-            dataType: .float32
-        )
-
-        guard let mlMultiArray = array else { return nil }
-
+    convenience init?(pixelBuffer: CVPixelBuffer) {
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         let context = CIContext()
-        let inputImage = CIImage(cgImage: cgImage)
-
-        guard let bitmap = context.createCGImage(inputImage, from: inputImage.extent) else { return nil }
-
-        let bytesPerRow = cgImage.bytesPerRow
-        let pixelBuffer = UnsafeMutablePointer<UInt8>.allocate(capacity: height * width * channels)
-        defer { pixelBuffer.deallocate() }
-
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let contextRef = CGContext(
-            data: pixelBuffer,
-            width: width,
-            height: height,
-            bitsPerComponent: 8,
-            bytesPerRow: width * channels,
-            space: colorSpace,
-            bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
-        )
-
-        contextRef?.draw(bitmap, in: CGRect(x: 0, y: 0, width: width, height: height))
-
-        let pointer = UnsafeMutablePointer<Float32>(OpaquePointer(mlMultiArray.dataPointer))
-
-        for yAxis in 0..<height {
-            for xAxis in 0..<width {
-                let pixelIndex = (yAxis * width * channels) + (xAxis * channels)
-
-                let red = Float32(pixelBuffer[pixelIndex]) / 255.0
-                let green = Float32(pixelBuffer[pixelIndex + 1]) / 255.0
-                let blue = Float32(pixelBuffer[pixelIndex + 2]) / 255.0
-
-                pointer[pixelIndex + 0] = red
-                pointer[pixelIndex + 1] = green
-                pointer[pixelIndex + 2] = blue
-            }
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
+            return nil
         }
-
-        return mlMultiArray
+        self.init(cgImage: cgImage)
     }
 }

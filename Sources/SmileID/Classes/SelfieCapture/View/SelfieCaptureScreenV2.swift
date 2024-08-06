@@ -15,11 +15,10 @@ public struct SelfieCaptureScreenV2: View {
             .playing(loopMode: .autoReverse)
             .frame(width: 80, height: 80)
 
-            Text(viewModel.directive)
+            Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
                 .font(SmileID.theme.header2)
                 .foregroundColor(.primary)
             Text("\(viewModel.captureProgress)")
-                .font(.footnote)
                 .foregroundColor(.secondary)
             ZStack {
                 RoundedRectangle(cornerRadius: 25)
