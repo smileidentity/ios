@@ -305,9 +305,9 @@ internal class OrchestratedDocumentVerificationViewModel:
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles {
             delegate.didSucceed(
-                selfie: savedFiles.selfie,
-                documentFrontImage: savedFiles.documentFront,
-                documentBackImage: savedFiles.documentBack,
+                selfie: getRelativePath(from: savedFiles.selfie)!,
+                documentFrontImage: getRelativePath(from: savedFiles.documentFront)!,
+                documentBackImage: getRelativePath(from: savedFiles.documentBack)!,
                 didSubmitDocumentVerificationJob: didSubmitJob
             )
         } else if let error {
@@ -328,9 +328,9 @@ internal class OrchestratedEnhancedDocumentVerificationViewModel:
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles {
             delegate.didSucceed(
-                selfie: savedFiles.selfie,
-                documentFrontImage: savedFiles.documentFront,
-                documentBackImage: savedFiles.documentBack,
+                selfie: getRelativePath(from: savedFiles.selfie)!,
+                documentFrontImage: getRelativePath(from: savedFiles.documentFront)!,
+                documentBackImage: getRelativePath(from: savedFiles.documentBack)!,
                 didSubmitEnhancedDocVJob: didSubmitJob
             )
         } else if let error {
