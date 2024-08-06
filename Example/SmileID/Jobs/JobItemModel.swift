@@ -39,8 +39,8 @@ class JobItemModel: ObservableObject {
             interval: 1,
             numAttempts: 30
         )
-        var response : JobStatusResponse<JobResult>? = nil
-        
+        var response: JobStatusResponse<JobResult>? = nil
+
         for try await res in pollStream {
             response = res
         }
@@ -67,18 +67,18 @@ class JobItemModel: ObservableObject {
         isLoading = true
         defer { isLoading = false }
         task = Task {
-            return try await getJobStatus()
+            try await getJobStatus()
         }
-        guard let task = self.task else { return }
+        guard let task = task else { return }
         let jobStatusResponse = try await task.value
         if let updatedJob = try dataStoreClient.updateJob(data: jobStatusResponse) {
-            self.job = updatedJob
+            job = updatedJob
         }
     }
 
     func cancelTask() {
-        self.isLoading = false
-        self.task?.cancel()
-        self.task = nil
+        isLoading = false
+        task?.cancel()
+        task = nil
     }
 }
