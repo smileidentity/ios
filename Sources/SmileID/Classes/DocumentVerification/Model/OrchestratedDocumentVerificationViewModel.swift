@@ -186,7 +186,21 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
-                let prepUploadResponse = try await SmileID.api.prepUpload(request: prepUploadRequest)
+                let prepUploadResponse: PrepUploadResponse
+                do {
+                    prepUploadResponse = try await SmileID.api.prepUpload(
+                        request: prepUploadRequest
+                    )
+                } catch let error as SmileIDError {
+                    switch error {
+                    case .api("2215", _):
+                        prepUploadResponse = try await SmileID.api.prepUpload(
+                            request: prepUploadRequest.copy(retry: "true")
+                        )
+                    default:
+                        throw error
+                    }
+                }
                 _ = try await SmileID.api.upload(
                     zip: zip,
                     to: prepUploadResponse.uploadUrl
