@@ -34,12 +34,16 @@ class JobItemModel: ObservableObject {
             timestamp: authResponse.timestamp,
             signature: authResponse.signature
         )
-
-        let response = try await SmileID.api.pollJobStatus(
+        let pollStream = SmileID.api.pollJobStatus(
             request: request,
             interval: 1,
             numAttempts: 30
         )
+        var response : JobStatusResponse<JobResult>? = nil
+        
+        for try await res in pollStream {
+            response = res
+        }
 
         return JobData(
             jobType: job.jobType,
@@ -47,13 +51,13 @@ class JobItemModel: ObservableObject {
             userId: job.userId,
             jobId: job.jobId,
             partnerId: job.partnerId,
-            jobComplete: response.jobComplete,
-            jobSuccess: response.jobSuccess,
-            code: response.code,
-            resultCode: response.result?.resultCode,
-            smileJobId: response.result?.smileJobId,
-            resultText: response.result?.resultText,
-            selfieImageUrl: response.imageLinks?.selfieImageUrl
+            jobComplete: response?.jobComplete ?? false,
+            jobSuccess: response?.jobSuccess ?? false,
+            code: response?.code,
+            resultCode: response?.result?.resultCode,
+            smileJobId: response?.result?.smileJobId,
+            resultText: response?.result?.resultText,
+            selfieImageUrl: response?.imageLinks?.selfieImageUrl
         )
     }
 

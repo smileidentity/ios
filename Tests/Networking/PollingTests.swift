@@ -27,67 +27,70 @@ final class PollingTests: XCTestCase {
     }
 
     func testPollJobStatus_Success<T: JobResult>(
-        pollFunction: (JobStatusRequest, TimeInterval, Int) async throws -> JobStatusResponse<T>,
+        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int) async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
         expectedResponse: JobStatusResponse<T>,
         requestBuilder: () -> JobStatusRequest
-    ) async {
+    ) async throws {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
-
+        
+        let stream = try await pollFunction(request, interval, numAttempts)
+        
         do {
-            let response = try await pollFunction(request, interval, numAttempts)
-            XCTAssertEqual(response.jobComplete, expectedResponse.jobComplete)
+            for try await response in stream {
+                if response.jobComplete {
+                    XCTAssertEqual(response.jobComplete, expectedResponse.jobComplete)
+                    return
+                }
+            }
+            XCTFail("Stream completed without a jobComplete response")
         } catch {
             XCTFail("Unexpected error: \(error)")
         }
     }
-
-    func testPollingFunction_ErrorDuringPolling(
-        pollFunction: (JobStatusRequest, TimeInterval, Int) async throws -> JobStatusResponse<some JobResult>,
+    
+    func testPollingFunction_ErrorDuringPolling<T: JobResult>(
+        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int) async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
         requestBuilder: () -> JobStatusRequest
     ) async {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
-
-        let expectation = XCTestExpectation(description: "Polling fails due to an error")
-
+        
         MockHelper.shouldFail = true
         MockHelper.jobComplete = false
-
+        
         do {
-            _ = try await pollFunction(request, interval, numAttempts)
-            XCTFail("No response should be received b/c an error occurs at first attempt")
+            let stream = try await pollFunction(request, interval, numAttempts)
+            for try await _ in stream {
+                XCTFail("No response should be received because an error occurs at first attempt")
+            }
         } catch {
-            expectation.fulfill()
+            // Expected to catch an error
+            XCTAssertNotNil(error)
         }
-
-        await fulfillment(of: [expectation], timeout: 2.0)
     }
-
-    func testPollingFunction_MaxAttemptsReached(
-        pollFunction: (JobStatusRequest, TimeInterval, Int) async throws -> JobStatusResponse<some JobResult>,
+    
+    func testPollingFunction_MaxAttemptsReached<T: JobResult>(
+        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int) async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
         requestBuilder: () -> JobStatusRequest
-    ) async {
+    ) async throws {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
-
-        let expectation = XCTestExpectation(
-            description: "Polling fails due to reaching the maximum number of attempts"
-        )
-
+        
         MockHelper.shouldFail = false
         MockHelper.jobComplete = false
-        do {
-            let response = try await pollFunction(request, interval, numAttempts)
-            XCTAssertFalse(response.jobComplete, "Job is not complete")
-        } catch {
-            expectation.fulfill()
+        
+        let stream = try await pollFunction(request, interval, numAttempts)
+        
+        var responseCount = 0
+        for try await response in stream {
+            XCTAssertFalse(response.jobComplete, "Job should not be complete")
+            responseCount += 1
         }
-
-        await fulfillment(of: [expectation], timeout: 2.0)
+        XCTAssertEqual(responseCount, numAttempts, "Should receive exactly \(numAttempts) responses")
     }
 
     func testPollSmartSelfieJobStatus() async throws {
@@ -103,7 +106,7 @@ final class PollingTests: XCTestCase {
         )
         }
 
-        await testPollJobStatus_Success(
+        try await testPollJobStatus_Success(
             pollFunction: mockService.pollSmartSelfieJobStatus,
             expectedResponse: expectedResponse,
             requestBuilder: requestBuilder
@@ -114,13 +117,13 @@ final class PollingTests: XCTestCase {
             requestBuilder: requestBuilder
         )
 
-        await testPollingFunction_MaxAttemptsReached(
+        try await testPollingFunction_MaxAttemptsReached(
             pollFunction: mockService.pollSmartSelfieJobStatus,
             requestBuilder: requestBuilder
         )
     }
 
-    func testPollDocumentVerificationJobStatus() async {
+    func testPollDocumentVerificationJobStatus() async throws {
         let expectedResponse = DocumentVerificationJobStatusResponse(jobComplete: true)
         let requestBuilder = { JobStatusRequest(
             userId: "",
@@ -133,7 +136,7 @@ final class PollingTests: XCTestCase {
         )
         }
 
-        await testPollJobStatus_Success(
+        try await testPollJobStatus_Success(
             pollFunction: mockService.pollDocumentVerificationJobStatus,
             expectedResponse: expectedResponse,
             requestBuilder: requestBuilder
@@ -144,13 +147,13 @@ final class PollingTests: XCTestCase {
             requestBuilder: requestBuilder
         )
 
-        await testPollingFunction_MaxAttemptsReached(
+        try await testPollingFunction_MaxAttemptsReached(
             pollFunction: mockService.pollDocumentVerificationJobStatus,
             requestBuilder: requestBuilder
         )
     }
 
-    func testPollBiometricKycJobStatus() async {
+    func testPollBiometricKycJobStatus() async throws {
         let expectedResponse = BiometricKycJobStatusResponse(jobComplete: true)
         let requestBuilder = { JobStatusRequest(
             userId: "",
@@ -163,7 +166,7 @@ final class PollingTests: XCTestCase {
         )
         }
 
-        await testPollJobStatus_Success(
+        try await testPollJobStatus_Success(
             pollFunction: mockService.pollBiometricKycJobStatus,
             expectedResponse: expectedResponse,
             requestBuilder: requestBuilder
@@ -174,13 +177,13 @@ final class PollingTests: XCTestCase {
             requestBuilder: requestBuilder
         )
 
-        await testPollingFunction_MaxAttemptsReached(
+        try await testPollingFunction_MaxAttemptsReached(
             pollFunction: mockService.pollBiometricKycJobStatus,
             requestBuilder: requestBuilder
         )
     }
 
-    func testPollEnhancedDocumentVerificationJobStatus() async {
+    func testPollEnhancedDocumentVerificationJobStatus() async throws {
         let expectedResponse = EnhancedDocumentVerificationJobStatusResponse(jobComplete: true)
         let requestBuilder = { JobStatusRequest(
             userId: "",
@@ -193,7 +196,7 @@ final class PollingTests: XCTestCase {
         )
         }
 
-        await testPollJobStatus_Success(
+        try await testPollJobStatus_Success(
             pollFunction: mockService.pollEnhancedDocumentVerificationJobStatus,
             expectedResponse: expectedResponse,
             requestBuilder: requestBuilder
@@ -204,7 +207,7 @@ final class PollingTests: XCTestCase {
             requestBuilder: requestBuilder
         )
 
-        await testPollingFunction_MaxAttemptsReached(
+        try await testPollingFunction_MaxAttemptsReached(
             pollFunction: mockService.pollEnhancedDocumentVerificationJobStatus,
             requestBuilder: requestBuilder
         )
