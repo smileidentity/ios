@@ -1,5 +1,10 @@
 # Release Notes
 
+## 10.2.7
+
+### Changed
+* All polling methods now return a `AsyncThrowingStream<JobStatusResponse<T>, Error>` and instead of a timeout, if there is no error it'll return the last valid response and complete the stream.
+
 ## 10.2.6
 
 ### Changed
