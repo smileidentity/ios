@@ -49,6 +49,7 @@ jobs:
       - name: Build and Deploy to TestFlight 🚀
         run: |
           cd example
+          bundle exec arkana -c .arkana.yml -l swift
           bundle exec fastlane releaseapp
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
