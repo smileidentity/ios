@@ -30,7 +30,15 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
         self.onResult = onResult
-        viewModel = SelfieViewModelV2()
+        viewModel = SelfieViewModelV2(
+            isEnroll: isEnroll,
+            userId: userId,
+            jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
+            skipApiSubmission: skipApiSubmission,
+            extraPartnerParams: extraPartnerParams,
+            useStrictMode: useStrictMode
+        )
     }
 
     public var body: some View {
@@ -39,7 +47,7 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
                 acknowledgedInstructions = true
             }
         } else {
-            SelfieCaptureScreenV2(showAttribution: showAttribution)
+            SelfieCaptureScreenV2(viewModel: viewModel, showAttribution: showAttribution)
         }
     }
 }
