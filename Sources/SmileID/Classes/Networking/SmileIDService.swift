@@ -97,35 +97,33 @@ public extension SmileIDServiceable {
     ///   - numAttempts: The maximum number of polls before ending the flow
     func pollJobStatus<T: JobResult>(
         request: JobStatusRequest,
-        interval _: TimeInterval,
+        interval: TimeInterval,
         numAttempts: Int
-    ) async throws -> JobStatusResponse<T> {
-        var lastError: Error?
-        var attemptCount = 0
-
-        func makeRequest() async throws -> JobStatusResponse<T> {
-            attemptCount += 1
-
-            do {
-                let response: JobStatusResponse<T> = try await SmileID.api.getJobStatus(request: request)
-                if response.jobComplete {
-                    return response
-                } else if attemptCount < numAttempts {
-                    return try await makeRequest()
-                } else {
-                    throw SmileIDError.jobStatusTimeOut
+    ) -> AsyncThrowingStream<JobStatusResponse<T>, Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                var latestError: Error?
+                for _ in 0..<numAttempts {
+                    do {
+                        let response: JobStatusResponse<T> = try await SmileID.api.getJobStatus(request: request)
+                        continuation.yield(response)
+                        // Reset the error if the API response was successful
+                        latestError = nil
+                        if response.jobComplete {
+                            break
+                        }
+                    } catch {
+                        latestError = error
+                    }
+                    try await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
                 }
-            } catch {
-                lastError = error
-                if attemptCount < numAttempts {
-                    return try await makeRequest()
+                if let latestError = latestError {
+                    continuation.finish(throwing: latestError)
                 } else {
-                    throw lastError ?? error
+                    continuation.finish()
                 }
             }
         }
-
-        return try await makeRequest()
     }
 
     /// Polls the server for the status of a SmartSelfie Job until it is complete. This should be called after
@@ -141,8 +139,8 @@ public extension SmileIDServiceable {
         request: JobStatusRequest,
         interval: TimeInterval,
         numAttempts: Int
-    ) async throws -> SmartSelfieJobStatusResponse {
-        try await pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    ) async throws -> AsyncThrowingStream<SmartSelfieJobStatusResponse, Error> {
+        return pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 
     /// Polls the server for the status of a Document Verification Job until it is complete. This should be called after
@@ -158,8 +156,8 @@ public extension SmileIDServiceable {
         request: JobStatusRequest,
         interval: TimeInterval,
         numAttempts: Int
-    ) async throws -> DocumentVerificationJobStatusResponse {
-        try await pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    ) async throws -> AsyncThrowingStream<DocumentVerificationJobStatusResponse, Error> {
+        return pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 
     /// Polls the server for the status of a Biometric KYC Job until it is complete. This should be called after
@@ -175,8 +173,8 @@ public extension SmileIDServiceable {
         request: JobStatusRequest,
         interval: TimeInterval,
         numAttempts: Int
-    ) async throws -> BiometricKycJobStatusResponse {
-        try await pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    ) async throws -> AsyncThrowingStream<BiometricKycJobStatusResponse, Error> {
+        return pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 
     /// Polls the server for the status of a Enhanced Document Verification Job until it is complete.
@@ -193,8 +191,8 @@ public extension SmileIDServiceable {
         request: JobStatusRequest,
         interval: TimeInterval,
         numAttempts: Int
-    ) async throws -> EnhancedDocumentVerificationJobStatusResponse {
-        try await pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
+    ) async throws -> AsyncThrowingStream<EnhancedDocumentVerificationJobStatusResponse, Error> {
+        return pollJobStatus(request: request, interval: interval, numAttempts: numAttempts)
     }
 }
 

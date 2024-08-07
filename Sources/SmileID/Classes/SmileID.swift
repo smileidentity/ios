@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.2.5"
+    public static let version = "10.2.6"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -57,12 +57,6 @@ public class SmileID {
         self.useSandbox = useSandbox
         self.apiKey = apiKey
         SmileIDResourcesHelper.registerFonts()
-    }
-
-    /// Set the environment
-    /// - Parameter useSandbox: A boolean to enable the sandbox environment or not
-    public class func setEnvironment(useSandbox: Bool) {
-        SmileID.useSandbox = useSandbox
     }
 
     /// Sets the state of offline mode for the SDK.
