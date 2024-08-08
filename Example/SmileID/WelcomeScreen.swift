@@ -27,7 +27,7 @@ struct WelcomeScreen: View {
                 .font(EpilogueFont.regular(with: 16))
                 .foregroundColor(SmileID.theme.onLight)
                 .padding(.vertical)
-            
+
             Link(
                 "https://portal.usesmileid.com/sdk",
                 destination: URL(string: "https://portal.usesmileid.com/sdk")!
