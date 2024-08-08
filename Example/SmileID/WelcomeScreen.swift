@@ -6,7 +6,8 @@ struct WelcomeScreen: View {
     @State private var showQrCodeScanner = false
     @State private var errorMessage: String?
     @Binding var showSuccess: Bool
-    @State private var partnerId: String?
+    @State private var config: Config?
+    var didUpdateConfig: (Config) -> Void
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -82,8 +83,8 @@ struct WelcomeScreen: View {
         .sheet(isPresented: $showManualEntrySheet) {
             let content = SmileConfigEntryView(errorMessage: errorMessage) { smileConfig in
                 let response = updateSmileConfig(smileConfig)
-                if let smilePartnerId = response {
-                    partnerId = smilePartnerId
+                if let config = response {
+                    self.config = config
                     showSuccess = true
                     showManualEntrySheet = false
                 } else {
@@ -107,8 +108,8 @@ struct WelcomeScreen: View {
                 if case let .success(result) = response {
                     let configJson = result.string
                     let response = updateSmileConfig(configJson)
-                    if let smilePartnerId = response {
-                        partnerId = smilePartnerId
+                    if let config = response {
+                        self.config = config
                         showSuccess = true
                         showQrCodeScanner = false
                     }
@@ -117,18 +118,19 @@ struct WelcomeScreen: View {
         }
         .overlay(
             Group {
-                if showSuccess {
+                if let config, showSuccess {
                     Color.black.opacity(0.3)
                         .edgesIgnoringSafeArea(.all)
                         .overlay(
                             AlertView(
                                 icon: Image(systemName: "checkmark.circle.fill"),
                                 title: "Configuration Added",
-                                description: "Welcome Partner \(partnerId ?? ""), you can "
+                                description: "Welcome Partner \(config.partnerId), you can "
                                 + "now proceed to the home screen of the Sample App",
                                 buttonTitle: "Continue",
                                 onClick: {
                                     showSuccess = false
+                                    didUpdateConfig(config)
                                 }
                             )
                             .padding([.leading, .trailing], 20)
@@ -139,11 +141,11 @@ struct WelcomeScreen: View {
     }
 }
 
-private func updateSmileConfig(_ configJson: String) -> String? {
+private func updateSmileConfig(_ configJson: String) -> Config? {
     do {
         let config = try JSONDecoder().decode(Config.self, from: configJson.data(using: .utf8)!)
         UserDefaults.standard.set(configJson, forKey: "smileConfig")
-        return config.partnerId
+        return config
     } catch {
         print("Error decoding new config: \(error)")
         return nil
