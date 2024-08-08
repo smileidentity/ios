@@ -4,17 +4,15 @@
 
 ### Changed
 * Replaced the Zip library to introduce in memory ziping during file upload
-
-## 10.2.7
-
-### Changed
-* All polling methods now return a `AsyncThrowingStream<JobStatusResponse<T>, Error>` and instead of a timeout, if there is no error it'll return the last valid response and complete the stream.
+* Remove `prodUrl` and `testURl` from Config model struct since the `prod_url` and `test_url` keys are no longer used in the `smile_config.json` file.
 
 ## 10.2.6
 
 ### Changed
 * Removed `SmileID.setEnvironment()` since the API Keys are no longer shared between environments
+* All polling methods now return a `AsyncThrowingStream<JobStatusResponse<T>, Error>` and instead of a timeout, if there is no error it'll return the last valid response and complete the stream.
 * Fixed a bug where prep upload would not work for previously attempted API requests
+
 
 ## 10.2.5
 

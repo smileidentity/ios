@@ -290,8 +290,6 @@ private struct HomeView_Previews: PreviewProvider {
             config: Config(
                 partnerId: "",
                 authToken: "",
-                prodUrl: "",
-                testUrl: "",
                 prodLambdaUrl: "",
                 testLambdaUrl: ""
             ),
@@ -300,8 +298,6 @@ private struct HomeView_Previews: PreviewProvider {
         HomeView(config: Config(
             partnerId: "1000",
             authToken: "",
-            prodUrl: "",
-            testUrl: "",
             prodLambdaUrl: "",
             testLambdaUrl: ""
         ))
