@@ -1,5 +1,5 @@
 import Foundation
-import Zip
+import ZIPFoundation
 
 public class LocalStorage {
     private static let defaultFolderName = "SmileID"
@@ -300,23 +300,12 @@ public class LocalStorage {
         }
     }
 
-    // todo - rework this as we change zip library
-    public static func toZip(
-        uploadRequest: UploadRequest,
-        to folder: String = "sid-\(UUID().uuidString)"
-    ) throws -> URL {
-        try createDirectory(at: defaultDirectory)
-        let destinationFolder = try defaultDirectory.appendingPathComponent(folder)
-        let jsonData = try jsonEncoder.encode(uploadRequest)
-        let jsonUrl = try write(jsonData, to: destinationFolder.appendingPathComponent("info.json"))
-        let imageUrls = uploadRequest.images.map { imageInfo in
-            destinationFolder.appendingPathComponent(imageInfo.fileName)
+    public static func zipFiles(at urls: [URL]) throws -> Data {
+        let archive = try Archive(accessMode: .create)
+        for url in urls {
+            try archive.addEntry(with: url.lastPathComponent, fileURL: url)
         }
-        return try zipFiles(at: [jsonUrl] + imageUrls)
-    }
-
-    public static func zipFiles(at urls: [URL]) throws -> URL {
-        try Zip.quickZipFiles(urls, fileName: "upload")
+        return archive.data!
     }
 
     private static func delete(at url: URL) throws {
