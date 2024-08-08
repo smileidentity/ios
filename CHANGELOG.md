@@ -1,5 +1,10 @@
 # Release Notes
 
+## [Unreleased]
+
+### Changed
+* Replaced the Zip library to introduce in memory ziping during file upload
+
 ## 10.2.7
 
 ### Changed
