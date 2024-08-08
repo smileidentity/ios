@@ -171,15 +171,7 @@ public class LocalStorage {
         let data = try Data(contentsOf: authenticationrequest!)
         return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
     }
-
-    static func fetchUploadZip(
-        jobId: String
-    ) throws -> Data {
-        let contents = try getDirectoryContents(jobId: jobId)
-        let zipUrl = contents.first(where: { $0.lastPathComponent == "upload.zip" })
-        return try Data(contentsOf: zipUrl!)
-    }
-
+    
     static func saveOfflineJob(
         jobId: String,
         userId: String,
