@@ -9,7 +9,6 @@ final class PollingTests: XCTestCase {
         let config = Config(
             partnerId: "id",
             authToken: "token",
-            prodUrl: "url", testUrl: "url",
             prodLambdaUrl: "url",
             testLambdaUrl: "url"
         )
