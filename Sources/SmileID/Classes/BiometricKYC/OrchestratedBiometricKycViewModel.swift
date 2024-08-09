@@ -55,8 +55,8 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     func onFinished(delegate: BiometricKycResultDelegate) {
         if let selfieCaptureResultStore {
             delegate.didSucceed(
-                selfieImage: selfieCaptureResultStore.selfie,
-                livenessImages: selfieCaptureResultStore.livenessImages,
+                selfieImage: getRelativePath(from: selfieCaptureResultStore.selfie)!,
+                livenessImages: selfieCaptureResultStore.livenessImages.compactMap { getRelativePath(from: $0) },
                 didSubmitBiometricJob: didSubmitBiometricJob
             )
         } else if let error {
