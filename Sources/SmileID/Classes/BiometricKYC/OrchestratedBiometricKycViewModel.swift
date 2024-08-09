@@ -78,10 +78,9 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     selfie: selfieImage,
                     livenessImages: livenessImages
                 )
-                let zipUrl = try LocalStorage.zipFiles(
+                let zipData = try LocalStorage.zipFiles(
                     at: livenessImages + [selfieImage] + [infoJson]
                 )
-                let zip = try Data(contentsOf: zipUrl)
                 let authRequest = AuthenticationRequest(
                     jobType: .biometricKyc,
                     enrollment: false,
@@ -123,7 +122,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     }
                 }
                 _ = try await SmileID.api.upload(
-                    zip: zip,
+                    zip: zipData,
                     to: prepUploadResponse.uploadUrl
                 )
                 didSubmitBiometricJob = true

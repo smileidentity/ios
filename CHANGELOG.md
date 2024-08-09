@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Changed
+* Replaced the Zip library to introduce in memory ziping during file upload
 * Remove `prodUrl` and `testURl` from Config model struct since the `prod_url` and `test_url` keys are no longer used in the `smile_config.json` file.
 
 ## 10.2.6
