@@ -154,8 +154,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     livenessImages: livenessFiles
                 )
                 allFiles.append(info)
-                let zipUrl = try LocalStorage.zipFiles(at: allFiles)
-                zip = try Data(contentsOf: zipUrl)
+                let zipData = try LocalStorage.zipFiles(at: allFiles)
                 self.savedFiles = DocumentCaptureResultStore(
                     allFiles: allFiles,
                     documentFront: frontDocumentUrl,
@@ -202,7 +201,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     }
                 }
                 _ = try await SmileID.api.upload(
-                    zip: zip,
+                    zip: zipData,
                     to: prepUploadResponse.uploadUrl
                 )
                 didSubmitJob = true
