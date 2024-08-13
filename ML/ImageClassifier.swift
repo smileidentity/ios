@@ -69,7 +69,18 @@ class ModelImageClassifier {
             throw ImageClassifierError.faceCroppingFailed
         }
 
-        let faceRect = VNImageRectForNormalizedRect(face.boundingBox, cgImage.width, cgImage.height)
+        let boundingBox = face.boundingBox
+        
+        let size = CGSize(
+            width: boundingBox.width * image.size.width,
+            height: boundingBox.height * image.size.height
+        )
+        let origin = CGPoint(
+            x: boundingBox.minX * image.size.width,
+            y: (1 - boundingBox.minY) * image.size.height - size.height
+        )
+        
+        let faceRect = CGRect(origin: origin, size: size)
 
         guard let croppedImage = cgImage.cropping(to: faceRect) else {
             throw ImageClassifierError.faceCroppingFailed
@@ -131,7 +142,7 @@ class ModelImageClassifier {
             width: width,
             height: height,
             bitsPerComponent: 8,
-            bytesPerRow: width * channels,
+            bytesPerRow: width * 4,
             space: colorSpace,
             bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
         )
@@ -167,11 +178,7 @@ class ModelImageClassifier {
         let input = ImageQualityCP20Input(conv2d_193_input: mlMultiArray)
 
         let prediction = try model.prediction(input: input)
-
-        guard let output = prediction.featureValue(for: "Identity")?.multiArrayValue else {
-            throw ImageClassifierError.classificationFailed
-        }
-
+        let output = prediction.Identity
         return try processModelOuput(output)
     }
 
