@@ -107,24 +107,37 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     }
 
     func submitJob() {
-        guard let documentFrontFile else {
-            // Set step to .frontDocumentCapture so that the Retry button goes back to this step
-            step = .frontDocumentCapture
-            onError(error: SmileIDError.unknown("Error getting document front file"))
-            return
-        }
-        guard let selfieFile else {
-            // Set step to .selfieCapture so that the Retry button goes back to this step
-            step = .selfieCapture
-            onError(error: SmileIDError.unknown("Error getting selfie file"))
-            return
-        }
-        DispatchQueue.main.async {
-            self.step = .processing(.inProgress)
-        }
         Task {
             let zip: Data
             do {
+                selfieFile = try LocalStorage.getFileByType(
+                    jobId: jobId,
+                    fileType: FileType.selfie
+                )
+                
+                livenessFiles = try LocalStorage.getFilesByType(
+                    jobId: jobId,
+                    fileType: FileType.liveness
+                )
+                
+                guard let documentFrontFile else {
+                    // Set step to .frontDocumentCapture so that the Retry button goes back to this step
+                    step = .frontDocumentCapture
+                    onError(error: SmileIDError.unknown("Error getting document front file"))
+                    return
+                }
+                
+                guard let selfieFile else {
+                    // Set step to .selfieCapture so that the Retry button goes back to this step
+                    step = .selfieCapture
+                    onError(error: SmileIDError.unknown("Error getting selfie file"))
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.step = .processing(.inProgress)
+                }
+        
                 var allFiles = [URL]()
                 let frontDocumentUrl = try LocalStorage.createDocumentFile(
                     jobId: jobId,
@@ -286,9 +299,11 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 }
 
 extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: URL, livenessImages: [URL], apiResponse _: SmartSelfieResponse?) {
-        selfieFile = selfieImage
-        livenessFiles = livenessImages
+    func didSucceed(
+        selfieImage _: URL,
+        livenessImages _: [URL],
+        apiResponse _: SmartSelfieResponse?
+    ) {
         submitJob()
     }
 

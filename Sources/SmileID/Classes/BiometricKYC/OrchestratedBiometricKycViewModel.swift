@@ -17,8 +17,9 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
     // MARK: - Other Properties
 
+    internal var selfieFile: URL?
+    internal var livenessFiles: [URL]?
     private var error: Error?
-    private var selfieCaptureResultStore: SelfieCaptureResultStore?
     private var didSubmitBiometricJob: Bool = false
 
     // MARK: - UI Properties
@@ -45,20 +46,22 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     func onRetry() {
-        if selfieCaptureResultStore == nil {
+        if selfieFile == nil {
             DispatchQueue.main.async { self.step = .selfie }
         } else {
-            submitJob(selfieCaptureResultStore: selfieCaptureResultStore!)
+            submitJob()
         }
     }
 
     func onFinished(delegate: BiometricKycResultDelegate) {
-        if let selfieCaptureResultStore {
-            delegate.didSucceed(
-                selfieImage: getRelativePath(from: selfieCaptureResultStore.selfie)!,
-                livenessImages: selfieCaptureResultStore.livenessImages.compactMap { getRelativePath(from: $0) },
-                didSubmitBiometricJob: didSubmitBiometricJob
-            )
+        if let selfieFile {
+            if let livenessFiles {
+                delegate.didSucceed(
+                    selfieImage: getRelativePath(from: selfieFile)!,
+                    livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
+                    didSubmitBiometricJob: didSubmitBiometricJob
+                )
+            }
         } else if let error {
             delegate.didError(error: error)
         } else {
@@ -66,21 +69,39 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         }
     }
 
-    func submitJob(selfieCaptureResultStore: SelfieCaptureResultStore) {
+    func submitJob() {
         DispatchQueue.main.async { self.step = .processing(.inProgress) }
         Task {
             do {
-                let livenessImages = selfieCaptureResultStore.livenessImages
-                let selfieImage = selfieCaptureResultStore.selfie
+                selfieFile = try LocalStorage.getFileByType(
+                    jobId: jobId,
+                    fileType: FileType.selfie
+                )
+                
+                livenessFiles = try LocalStorage.getFilesByType(
+                    jobId: jobId,
+                    fileType: FileType.liveness
+                )
+                
+                guard let selfieFile else {
+                    // Set step to .selfieCapture so that the Retry button goes back to this step
+                    DispatchQueue.main.async { self.step = .selfie }
+                    error = SmileIDError.unknown("Error capturing selfie")
+                    return
+                }
+                
+                var allFiles = [URL]()
                 let infoJson = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,
                     idInfo: idInfo.copy(entered: true),
-                    selfie: selfieImage,
-                    livenessImages: livenessImages
+                    selfie: selfieFile,
+                    livenessImages: livenessFiles
                 )
-                let zipData = try LocalStorage.zipFiles(
-                    at: livenessImages + [selfieImage] + [infoJson]
-                )
+                allFiles.append(contentsOf: [selfieFile, infoJson])
+                if let livenessFiles {
+                    allFiles.append(contentsOf: livenessFiles)
+                }
+                let zipData = try LocalStorage.zipFiles(at: allFiles)
                 let authRequest = AuthenticationRequest(
                     jobType: .biometricKyc,
                     enrollment: false,
@@ -128,18 +149,6 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 didSubmitBiometricJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
-                    self.selfieCaptureResultStore = SelfieCaptureResultStore(
-                        selfie: try LocalStorage.getFileByType(
-                            jobId: jobId,
-                            fileType: FileType.selfie,
-                            submitted: true
-                        ) ?? selfieCaptureResultStore.selfie,
-                        livenessImages: try LocalStorage.getFilesByType(
-                            jobId: jobId,
-                            fileType: FileType.liveness,
-                            submitted: true
-                        ) ?? selfieCaptureResultStore.livenessImages
-                    )
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.error = error
@@ -149,24 +158,10 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch let error as SmileIDError {
                 do {
-                    let didMove = try LocalStorage.handleOfflineJobFailure(
+                    _ = try LocalStorage.handleOfflineJobFailure(
                         jobId: self.jobId,
                         error: error
                     )
-                    if didMove {
-                        self.selfieCaptureResultStore = SelfieCaptureResultStore(
-                            selfie: try LocalStorage.getFileByType(
-                                jobId: jobId,
-                                fileType: FileType.selfie,
-                                submitted: true
-                            ) ?? selfieCaptureResultStore.selfie,
-                            livenessImages: try LocalStorage.getFilesByType(
-                                jobId: jobId,
-                                fileType: FileType.liveness,
-                                submitted: true
-                            ) ?? selfieCaptureResultStore.livenessImages
-                        )
-                    }
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.error = error
@@ -199,24 +194,15 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
 extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
     func didSucceed(
-        selfieImage: URL,
-        livenessImages: [URL],
+        selfieImage _: URL,
+        livenessImages _: [URL],
         apiResponse _: SmartSelfieResponse?
     ) {
-        selfieCaptureResultStore = SelfieCaptureResultStore(
-            selfie: selfieImage,
-            livenessImages: livenessImages
-        )
-        if let selfieCaptureResultStore {
-            submitJob(selfieCaptureResultStore: selfieCaptureResultStore)
-        } else {
-            error = SmileIDError.unknown("Failed to save selfie capture result")
-            DispatchQueue.main.async { self.step = .processing(.error) }
-        }
+        submitJob()
     }
 
     func didError(error _: Error) {
-        error = SmileIDError.unknown("Failed to capture selfie")
+        error = SmileIDError.unknown("Error capturing selfie")
         DispatchQueue.main.async { self.step = .processing(.error) }
     }
 }
