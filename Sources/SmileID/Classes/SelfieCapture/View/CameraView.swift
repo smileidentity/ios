@@ -3,16 +3,16 @@ import AVFoundation
 import Vision
 
 struct CameraView: UIViewControllerRepresentable {
-    typealias UIViewType = PreviewView
-    let preview: PreviewView
+    typealias UIViewType = CameraViewController
+    let preview: CameraViewController
 
     init(cameraManager: CameraManager) {
-        preview = PreviewView(cameraManager: cameraManager)
+        preview = CameraViewController(cameraManager: cameraManager)
     }
 
-    func makeUIViewController(context: Context) -> PreviewView {
+    func makeUIViewController(context: Context) -> CameraViewController {
         preview
     }
 
-    func updateUIViewController(_ uiViewController: PreviewView, context: Context) {}
+    func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {}
 }

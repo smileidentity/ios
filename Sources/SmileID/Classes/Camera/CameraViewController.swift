@@ -2,7 +2,7 @@ import UIKit
 import Vision
 import AVFoundation
 
-class PreviewView: UIViewController {
+class CameraViewController: UIViewController {
     var previewLayer: AVCaptureVideoPreviewLayer?
     private weak var cameraManager: CameraManager?
 
@@ -34,7 +34,7 @@ class PreviewView: UIViewController {
     }
 }
 
-extension PreviewView: RectangleDetectionDelegate {
+extension CameraViewController: RectangleDetectionDelegate {
     func didDetectQuad(
         quad: Quadrilateral?,
         _ imageSize: CGSize,

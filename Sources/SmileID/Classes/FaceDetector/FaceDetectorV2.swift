@@ -9,10 +9,10 @@ protocol FaceDetectorDelegate: NSObjectProtocol {
 class FaceDetectorV2: NSObject {
     weak var viewDelegate: FaceDetectorDelegate?
     weak var viewModel: SelfieViewModelV2?
-    
+
     var sequenceHandler = VNSequenceRequestHandler()
     var currentFrameBuffer: CVImageBuffer?
-    
+
     let imageProcessingQueue = DispatchQueue(
         label: "Image Processing Queue",
         qos: .userInitiated,
@@ -27,10 +27,10 @@ extension FaceDetectorV2: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
-        
+
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
         currentFrameBuffer = imageBuffer
-        
+
         do {
             try sequenceHandler.perform([detectFaceRectanglesRequest], on: imageBuffer, orientation: .leftMirrored)
         } catch {
@@ -45,7 +45,7 @@ extension FaceDetectorV2 {
         guard let viewModel = viewModel,
         let viewDelegate = viewDelegate else { return }
 
-        guard let results = request.results as? [VNFaceObservation], 
+        guard let results = request.results as? [VNFaceObservation],
                 let result = results.first else {
             viewModel.perform(action: .noFaceDetected)
             return
@@ -62,4 +62,3 @@ extension FaceDetectorV2 {
         viewModel.perform(action: .faceObservationDetected(faceObservationModel))
     }
 }
-
