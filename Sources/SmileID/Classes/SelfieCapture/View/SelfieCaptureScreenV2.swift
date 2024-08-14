@@ -5,41 +5,32 @@ public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
 
-    @State private var playbackMode: LottiePlaybackMode = LottiePlaybackMode.paused
-
     public var body: some View {
-        VStack(spacing: 40) {
-            LottieView {
-                try await DotLottieFile.named("si_anim_face", bundle: SmileIDResourcesHelper.bundle)
-            }
-            .playing(loopMode: .autoReverse)
-            .frame(width: 80, height: 80)
-
-            Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
-                .font(SmileID.theme.header2)
-                .foregroundColor(.primary)
-            Text("\(viewModel.captureProgress)")
-                .foregroundColor(.secondary)
+        VStack {
             ZStack {
-                RoundedRectangle(cornerRadius: 25)
-                    .stroke(SmileID.theme.onLight, lineWidth: 20.0)
-                    CameraView(cameraManager: viewModel.cameraManager)
-                        .clipShape(.rect(cornerRadius: 25))
-                        .onAppear {
-                            viewModel.cameraManager.switchCamera(to: .front)
-                        }
-                CornerShapes()
-                RoundedRectangle(cornerRadius: 25)
-                    .foregroundColor(.white.opacity(0.8))
+                CameraView(cameraManager: viewModel.cameraManager)
+                    .onAppear {
+                        viewModel.cameraManager.switchCamera(to: .front)
+                    }
+                Rectangle()
+                    .fill(.white)
                     .cutout(Ellipse().scale(x: 0.8, y: 0.8))
             }
             .frame(width: 300, height: 400)
-
+            .padding(.top, 80)
+            Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
+                .font(SmileID.theme.header2)
+                .foregroundColor(.primary)
+                .padding(.bottom)
+                .padding(.horizontal)
+            if viewModel.debugEnabled {
+                DebugView()
+            }
+            Spacer()
             if showAttribution {
                 Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .alert(item: $viewModel.unauthorizedAlert) { alert in
             Alert(
                 title: Text(alert.title),
@@ -47,7 +38,7 @@ public struct SelfieCaptureScreenV2: View {
                 primaryButton: .default(
                     Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
                     action: {
-                        viewModel.openSettings()
+                        viewModel.perform(action: .openApplicationSettings)
                     }
                 ),
                 secondaryButton: .cancel()
@@ -56,37 +47,44 @@ public struct SelfieCaptureScreenV2: View {
     }
 
     // swiftlint:disable identifier_name
-    @ViewBuilder func CornerShapes() -> some View {
+    @ViewBuilder func DebugView() -> some View {
+        VStack(spacing: 0) {
+            // Text("Progress: \(viewModel.captureProgress)")
+            Text("Yaw: \(viewModel.yawValue)")
+            Text("Row: \(viewModel.rollValue)")
+            Text("Pitch: \(viewModel.pitchValue)")
+            switch viewModel.faceDirection {
+            case .left:
+                Text("Looking Left")
+            case .right:
+                Text("Looking Right")
+            case .none:
+                Text("Looking Straight")
+            }
+        }
+        .foregroundColor(.primary)
+        Spacer()
+    }
+
+    // swiftlint:disable identifier_name
+    @ViewBuilder func CameraOverlayView() -> some View {
         VStack {
             HStack {
-                // Top Left Corner
-                CornerShape()
-                    .stroke(SmileID.theme.success, style: StrokeStyle(lineWidth: 5))
-                    .frame(width: 40, height: 40)
-                    .rotationEffect(.degrees(90))
-                    .offset(x: -2.0, y: -2.0)
-                Spacer()
-                // Top Right Corner
-                CornerShape()
-                    .stroke(SmileID.theme.success, style: StrokeStyle(lineWidth: 5))
-                    .frame(width: 40, height: 40)
-                    .rotationEffect(.degrees(180))
-                    .offset(x: 2.0, y: -2.0)
+                Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
+                    .font(SmileID.theme.header2)
+                    .foregroundColor(.primary)
+                    .padding(.bottom)
             }
+            .background(Color.black)
             Spacer()
             HStack {
-                // Bottom Left Corner
-                CornerShape()
-                    .stroke(SmileID.theme.success, style: StrokeStyle(lineWidth: 5))
-                    .frame(width: 40, height: 40)
-                    .offset(x: -2.0, y: 2.0)
-                Spacer()
-                // Bottom Right Corner
-                CornerShape()
-                    .stroke(SmileID.theme.success, style: StrokeStyle(lineWidth: 5))
-                    .frame(width: 40, height: 40)
-                    .rotationEffect(.degrees(270))
-                    .offset(x: 2.0, y: 2.0)
+                Button {
+                    viewModel.perform(action: .toggleDebugMode)
+                } label: {
+                    Image(systemName: "ladybug")
+                        .font(.title)
+                }
+                .buttonStyle(.plain)
             }
         }
     }

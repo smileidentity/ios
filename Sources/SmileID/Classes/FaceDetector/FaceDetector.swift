@@ -3,8 +3,17 @@ import Vision
 import CoreImage
 import UIKit
 
+enum FaceDirection {
+    case left
+    case right
+    case none
+}
+
 class FaceDetector: NSObject {
     var sequenceHandler = VNSequenceRequestHandler()
+    
+    private var faceMovementThreshold: CGFloat = 0.15
+    private var lastYawAngle: CGFloat = 0.0
 
     /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
     func detect(
@@ -29,5 +38,20 @@ class FaceDetector: NSObject {
             on: imageBuffer,
             orientation: .leftMirrored
         )
+    }
+
+    func detectFaceMovement(faceObservation: VNFaceObservation) -> FaceDirection {
+        guard let yaw = faceObservation.yaw?.doubleValue else { 
+            return .none
+        }
+        let yawInRadians = CGFloat(yaw)
+
+        if yawInRadians > faceMovementThreshold {
+            return .right
+        } else if yawInRadians < -faceMovementThreshold {
+            return .left
+        } else {
+            return .none
+        }
     }
 }
