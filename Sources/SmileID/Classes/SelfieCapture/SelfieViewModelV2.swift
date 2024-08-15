@@ -25,7 +25,9 @@ public class SelfieViewModelV2: ObservableObject {
         }
     }
 
+    // MARK: Dependencies
     var cameraManager = CameraManager(orientation: .portrait)
+    let faceDetector = FaceDetectorV2()
 
     private var subscribers = Set<AnyCancellable>()
 
@@ -64,12 +66,25 @@ public class SelfieViewModelV2: ObservableObject {
             debugEnabled = false
         #endif
 
+        self.faceDetector.model = self
+
         cameraManager.$status
             .receive(on: DispatchQueue.main)
             .filter { $0 == .unauthorized }
             .map { _ in AlertState.cameraUnauthorized }
             .sink { alert in self.unauthorizedAlert = alert }
             .store(in: &subscribers)
+
+        cameraManager.sampleBufferPublisher
+            .throttle(for: 0.35, scheduler: DispatchQueue.global(qos: .userInitiated), latest: true)
+            .dropFirst(5)
+            .compactMap { $0 }
+            .sink(receiveValue: analyzeImage)
+            .store(in: &subscribers)
+    }
+
+    private func analyzeImage(image: CVPixelBuffer) {
+        faceDetector.detect(imageBuffer: image)
     }
 
     // MARK: Actions
@@ -118,9 +133,7 @@ extension SelfieViewModelV2 {
     func processUpdatedFaceGeometry() {
         switch faceGeometryState {
         case let .faceFound(faceGeometryModel):
-            let roll = faceGeometryModel.roll.doubleValue
-            let yaw = faceGeometryModel.yaw.doubleValue
-            updateAcceptableRollPitchYaw(using: roll, pitch: 0.0, yaw: yaw)
+            updateFaceGeometryValues(using: faceGeometryModel)
         case .faceNotFound:
             invalidateFaceGeometryState()
         case let .errored(error):
@@ -129,10 +142,13 @@ extension SelfieViewModelV2 {
     }
 
     func invalidateFaceGeometryState() {
-
+        // This is where we reset all the face geometry values.
     }
-    
-    func updateAcceptableRollPitchYaw(using roll: Double, pitch: Double, yaw: Double) {
 
+    func updateFaceGeometryValues(using value: FaceGeometryModel) {
+        rollValue = value.roll.doubleValue
+        pitchValue = value.pitch.doubleValue
+        yawValue = value.yaw.doubleValue
+        faceDirection = value.direction
     }
 }

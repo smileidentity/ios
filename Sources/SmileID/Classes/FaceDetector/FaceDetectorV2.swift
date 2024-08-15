@@ -7,34 +7,19 @@ protocol FaceDetectorDelegate: NSObjectProtocol {
 }
 
 class FaceDetectorV2: NSObject {
-    weak var viewDelegate: FaceDetectorDelegate?
-    weak var viewModel: SelfieViewModelV2?
-
+    private let faceMovementThreshold: CGFloat = 0.15
+    
     var sequenceHandler = VNSequenceRequestHandler()
-    var currentFrameBuffer: CVImageBuffer?
+    weak var model: SelfieViewModelV2?
 
-    let imageProcessingQueue = DispatchQueue(
-        label: "Image Processing Queue",
-        qos: .userInitiated,
-        attributes: [],
-        autoreleaseFrequency: .workItem
-    )
-}
-
-// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate methods
-extension FaceDetectorV2: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            return
-        }
-
+    /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
+    func detect(imageBuffer: CVPixelBuffer) {
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(completionHandler: detectedFaceRectangles)
-        currentFrameBuffer = imageBuffer
 
         do {
             try sequenceHandler.perform([detectFaceRectanglesRequest], on: imageBuffer, orientation: .leftMirrored)
         } catch {
-            viewModel?.perform(action: .handleError(error))
+            model?.perform(action: .handleError(error))
         }
     }
 }
@@ -42,23 +27,43 @@ extension FaceDetectorV2: AVCaptureVideoDataOutputSampleBufferDelegate {
 // MARK: - Private methods
 extension FaceDetectorV2 {
     func detectedFaceRectangles(request: VNRequest, error: Error?) {
-        guard let viewModel = viewModel,
-        let viewDelegate = viewDelegate else { return }
+        guard let model = model else { return }
 
         guard let results = request.results as? [VNFaceObservation],
                 let result = results.first else {
-            viewModel.perform(action: .noFaceDetected)
+            model.perform(action: .noFaceDetected)
             return
         }
 
-        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
+        // let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
 
-        let faceObservationModel = FaceGeometryModel(
-            boundingBox: convertedBoundingBox,
-            roll: result.roll ?? 0.0,
-            yaw: result.yaw ?? 0.0
-        )
-
-        viewModel.perform(action: .faceObservationDetected(faceObservationModel))
+        if #available(iOS 15.0, *) {
+            let faceObservationModel = FaceGeometryModel(
+                boundingBox: .zero, // Change this later.
+                roll: result.roll ?? 0.0,
+                yaw: result.yaw ?? 0.0,
+                pitch: result.pitch ?? 0.0,
+                direction: faceDirection(faceObservation: result)
+            )
+            model.perform(action: .faceObservationDetected(faceObservationModel))
+        } else {
+            // Fallback on earlier versions
+        }
     }
+
+    private func faceDirection(faceObservation: VNFaceObservation) -> FaceDirection {
+        guard let yaw = faceObservation.yaw?.doubleValue else {
+            return .none
+        }
+        let yawInRadians = CGFloat(yaw)
+
+        if yawInRadians > faceMovementThreshold {
+            return .right
+        } else if yawInRadians < -faceMovementThreshold {
+            return .left
+        } else {
+            return .none
+        }
+    }
+
 }
