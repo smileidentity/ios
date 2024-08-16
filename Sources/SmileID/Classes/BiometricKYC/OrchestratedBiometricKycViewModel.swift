@@ -46,32 +46,20 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     func onRetry() {
-if let selfieFile {
+        if let selfieFile {
             submitJob()
         } else {
             DispatchQueue.main.async { self.step = .selfie }
-        }
-            DispatchQueue.main.async { self.step = .selfie }
-        } else {
-            submitJob()
         }
     }
 
     func onFinished(delegate: BiometricKycResultDelegate) {
-if let selfieFile = selfieFile, let livenessFiles = livenessFiles {
-        delegate.didSucceed(
-            selfieImage: getRelativePath(from: selfieFile) ?? "",
-            livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
-            didSubmitBiometricJob: didSubmitBiometricJob
-        )
-    }
-            if let livenessFiles {
-                delegate.didSucceed(
-                    selfieImage: getRelativePath(from: selfieFile)!,
-                    livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
-                    didSubmitBiometricJob: didSubmitBiometricJob
-                )
-            }
+        if let selfieFile = selfieFile, let livenessFiles = livenessFiles {
+            delegate.didSucceed(
+                selfieImage: getRelativePath(from: selfieFile)!,
+                livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
+                didSubmitBiometricJob: didSubmitBiometricJob
+            )
         } else if let error {
             delegate.didError(error: error)
         } else {
