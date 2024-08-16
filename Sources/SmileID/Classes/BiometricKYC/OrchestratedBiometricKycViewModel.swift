@@ -46,7 +46,11 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     func onRetry() {
-        if selfieFile == nil {
+if let selfieFile {
+            submitJob()
+        } else {
+            DispatchQueue.main.async { self.step = .selfie }
+        }
             DispatchQueue.main.async { self.step = .selfie }
         } else {
             submitJob()
