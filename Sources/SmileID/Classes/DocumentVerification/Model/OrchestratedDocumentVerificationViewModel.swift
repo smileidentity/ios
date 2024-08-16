@@ -108,8 +108,14 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 
     func submitJob() {
         Task {
-            let zip: Data
             do {
+                guard let documentFrontFile else {
+                    // Set step to .frontDocumentCapture so that the Retry button goes back to this step
+                    step = .frontDocumentCapture
+                    onError(error: SmileIDError.unknown("Error getting document front file"))
+                    return
+                }
+                
                 selfieFile = try LocalStorage.getFileByType(
                     jobId: jobId,
                     fileType: FileType.selfie
@@ -119,13 +125,6 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     jobId: jobId,
                     fileType: FileType.liveness
                 )
-                
-                guard let documentFrontFile else {
-                    // Set step to .frontDocumentCapture so that the Retry button goes back to this step
-                    step = .frontDocumentCapture
-                    onError(error: SmileIDError.unknown("Error getting document front file"))
-                    return
-                }
                 
                 guard let selfieFile else {
                     // Set step to .selfieCapture so that the Retry button goes back to this step
