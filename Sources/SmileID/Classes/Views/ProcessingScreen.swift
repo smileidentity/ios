@@ -136,6 +136,7 @@ public struct ProcessingInProgressScreen: View {
         .cornerRadius(24)
         .shadow(radius: 16)
         .padding(32)
+        .preferredColorScheme(.light)
     }
 }
 
@@ -177,6 +178,7 @@ private struct ProcessingSuccessScreen: View {
         .cornerRadius(24)
         .shadow(radius: 16)
         .padding(32)
+        .preferredColorScheme(.light)
     }
 }
 
@@ -230,5 +232,6 @@ public struct ProcessingErrorScreen: View {
         .cornerRadius(24)
         .shadow(radius: 16)
         .padding(32)
+        .preferredColorScheme(.light)
     }
 }

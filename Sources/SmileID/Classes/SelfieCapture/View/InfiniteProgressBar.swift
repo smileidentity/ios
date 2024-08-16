@@ -18,6 +18,7 @@ struct InfiniteProgressBar: View {
                 overlayRect(in: geo.frame(in: .global))
             })
             .clipped()
+            .preferredColorScheme(.light)
     }
 
     private func overlayRect(in rect: CGRect) -> some View {
