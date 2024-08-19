@@ -24,6 +24,16 @@ public class SelfieViewModelV2: ObservableObject {
             processUpdatedFaceGeometry()
         }
     }
+    @Published private(set) var faceQualityState: FaceObservation<FaceQualityModel> {
+        didSet {
+            processUpdatedFaceQuality()
+        }
+    }
+    @Published private(set) var selfieQualityState: FaceObservation<SelfieQualityModel> {
+        didSet {
+            processUpdatedSelfieQuality()
+        }
+    }
 
     // MARK: Dependencies
     var cameraManager = CameraManager(orientation: .portrait)
@@ -39,6 +49,8 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var rollValue: Double = 0.0
     @Published private(set) var pitchValue: Double = 0.0
     @Published private(set) var faceDirection: FaceDirection = .none
+    @Published private(set) var faceQualityValue: Double = 0.0
+    @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
 
     public init(
         isEnroll: Bool,
@@ -59,6 +71,8 @@ public class SelfieViewModelV2: ObservableObject {
 
         faceDetectedState = .noFaceDetected
         faceGeometryState = .faceNotFound
+        faceQualityState = .faceNotFound
+        selfieQualityState = .faceNotFound
 
         #if DEBUG
             debugEnabled = true
@@ -94,6 +108,10 @@ public class SelfieViewModelV2: ObservableObject {
             publishNoFaceObserved()
         case let .faceObservationDetected(faceObservation):
             publishFaceObservation(faceObservation)
+        case let .faceQualityObservationDetected(faceQualityObservation):
+            publishFaceQualityObservation(faceQualityObservation)
+        case let .selfieQualityObservationDetected(selfieQualityObservation):
+            publishSelfieQualityObservation(selfieQualityObservation)
         case .toggleDebugMode:
             toggleDebugMode()
         case .openApplicationSettings:
@@ -115,6 +133,20 @@ public class SelfieViewModelV2: ObservableObject {
         DispatchQueue.main.async { [self] in
             faceDetectedState = .faceDetected
             faceGeometryState = .faceFound(faceGeometryModel)
+        }
+    }
+
+    private func publishFaceQualityObservation(_ faceQualityModel: FaceQualityModel) {
+        DispatchQueue.main.async { [self] in
+            faceDetectedState = .faceDetected
+            faceQualityState = .faceFound(faceQualityModel)
+        }
+    }
+    
+    private func publishSelfieQualityObservation(_ selfieQualityModel: SelfieQualityModel) {
+        DispatchQueue.main.async { [self] in
+            faceDetectedState = .faceDetected
+            selfieQualityState = .faceFound(selfieQualityModel)
         }
     }
 
@@ -150,5 +182,29 @@ extension SelfieViewModelV2 {
         pitchValue = value.pitch.doubleValue
         yawValue = value.yaw.doubleValue
         faceDirection = value.direction
+    }
+
+    func processUpdatedFaceQuality() {
+        switch faceQualityState {
+        case let .faceFound(faceQualityModel):
+            // Check acceptable range here.
+            faceQualityValue = Double(faceQualityModel.quality)
+        case .faceNotFound:
+            return
+        case let .errored(error):
+            print(error.localizedDescription)
+        }
+    }
+
+    func processUpdatedSelfieQuality() {
+        switch selfieQualityState {
+        case let .faceFound(selfieQualityModel):
+            // Check acceptable range here.
+            selfieQualityValue = selfieQualityModel
+        case .faceNotFound:
+            return
+        case let .errored(error):
+            print(error.localizedDescription)
+        }
     }
 }

@@ -13,3 +13,18 @@ enum FaceDirection {
     case right
     case none
 }
+
+struct FaceQualityModel {
+    let quality: Float
+}
+
+struct SelfieQualityModel {
+    let failed: Float
+    let passed: Float
+}
+
+extension SelfieQualityModel {
+    static var zero: SelfieQualityModel {
+        return SelfieQualityModel(failed: 0, passed: 1)
+    }
+}
