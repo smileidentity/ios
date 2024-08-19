@@ -114,4 +114,3 @@ class ModelImageClassifier {
         return ImageQualityResult(passed: passed, confidence: confidence)
     }
 }
-
