@@ -107,5 +107,6 @@ public struct DocumentCaptureInstructionsScreen: View {
             }
         }
             .padding(.horizontal, 16)
+            .preferredColorScheme(.light)
     }
 }

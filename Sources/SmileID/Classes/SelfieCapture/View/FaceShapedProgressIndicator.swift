@@ -21,5 +21,6 @@ struct FaceShapedProgressIndicator: View {
                     .animation(.easeInOut, value: progress)
             )
             .edgesIgnoringSafeArea(.all)
+            .preferredColorScheme(.light)
     }
 }
