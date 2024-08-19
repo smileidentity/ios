@@ -107,24 +107,36 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     }
 
     func submitJob() {
-        guard let documentFrontFile else {
-            // Set step to .frontDocumentCapture so that the Retry button goes back to this step
-            step = .frontDocumentCapture
-            onError(error: SmileIDError.unknown("Error getting document front file"))
-            return
-        }
-        guard let selfieFile else {
-            // Set step to .selfieCapture so that the Retry button goes back to this step
-            step = .selfieCapture
-            onError(error: SmileIDError.unknown("Error getting selfie file"))
-            return
-        }
-        DispatchQueue.main.async {
-            self.step = .processing(.inProgress)
-        }
         Task {
-            let zip: Data
             do {
+                guard let documentFrontFile else {
+                    // Set step to .frontDocumentCapture so that the Retry button goes back to this step
+                    step = .frontDocumentCapture
+                    onError(error: SmileIDError.unknown("Error getting document front file"))
+                    return
+                }
+            
+                selfieFile = try LocalStorage.getFileByType(
+                    jobId: jobId,
+                    fileType: FileType.selfie
+                )
+            
+                livenessFiles = try LocalStorage.getFilesByType(
+                    jobId: jobId,
+                    fileType: FileType.liveness
+                )
+            
+                guard let selfieFile else {
+                    // Set step to .selfieCapture so that the Retry button goes back to this step
+                    step = .selfieCapture
+                    onError(error: SmileIDError.unknown("Error getting selfie file"))
+                    return
+                }
+            
+                DispatchQueue.main.async {
+                    self.step = .processing(.inProgress)
+                }
+        
                 var allFiles = [URL]()
                 let frontDocumentUrl = try LocalStorage.createDocumentFile(
                     jobId: jobId,
@@ -286,9 +298,11 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
 }
 
 extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate {
-    func didSucceed(selfieImage: URL, livenessImages: [URL], apiResponse _: SmartSelfieResponse?) {
-        selfieFile = selfieImage
-        livenessFiles = livenessImages
+    func didSucceed(
+        selfieImage _: URL,
+        livenessImages _: [URL],
+        apiResponse _: SmartSelfieResponse?
+    ) {
         submitJob()
     }
 
@@ -302,11 +316,15 @@ internal class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
-        if let savedFiles {
+        if let savedFiles, 
+            let selfiePath = getRelativePath(from: selfieFile),
+            let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
+            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+        {
             delegate.didSucceed(
-                selfie: savedFiles.selfie,
-                documentFrontImage: savedFiles.documentFront,
-                documentBackImage: savedFiles.documentBack,
+                selfie: selfiePath,
+                documentFrontImage: documentFrontPath,
+                documentBackImage: documentBackPath,
                 didSubmitDocumentVerificationJob: didSubmitJob
             )
         } else if let error {
@@ -325,11 +343,15 @@ internal class OrchestratedEnhancedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult>
 {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
-        if let savedFiles {
+        if let savedFiles,
+           let selfiePath = getRelativePath(from: selfieFile),
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
+           let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+        {
             delegate.didSucceed(
-                selfie: savedFiles.selfie,
-                documentFrontImage: savedFiles.documentFront,
-                documentBackImage: savedFiles.documentBack,
+                selfie: selfiePath,
+                documentFrontImage: documentFrontPath,
+                documentBackImage: documentBackPath,
                 didSubmitEnhancedDocVJob: didSubmitJob
             )
         } else if let error {
