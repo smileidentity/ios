@@ -74,6 +74,7 @@ public struct SmileButton: View {
                 .cornerRadius(cornerRadius)
                 .frame(maxWidth: .infinity)
                 .disabled(isDisabled)
+                .preferredColorScheme(.light)
         }
     }
 }

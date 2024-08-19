@@ -160,5 +160,6 @@ struct CaptureScreenContent: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .preferredColorScheme(.light)
     }
 }

@@ -74,5 +74,6 @@ public struct ImageCaptureConfirmationDialog: View {
             .cornerRadius(24)
             .shadow(radius: 16)
             .padding(32)
+            .preferredColorScheme(.light)
     }
 }
