@@ -31,7 +31,7 @@
     "neuralNetworkLayerTypeHistogram" : {
       "ActivationReLU" : 5,
       "ReshapeStatic" : 1,
-      "Transpose" : 2,
+      "Transpose" : 1,
       "SoftmaxND" : 1,
       "Convolution" : 5,
       "InnerProduct" : 2,
@@ -44,19 +44,19 @@
       "com.github.apple.coremltools.version" : "7.2",
       "com.github.apple.coremltools.source" : "tensorflow==2.15.0"
     },
-    "generatedClassName" : "ImageQualityCP20",
+    "generatedClassName" : "SelfieQualityDetector",
     "inputSchema" : [
       {
-        "dataType" : "Float32",
-        "hasShapeFlexibility" : "1",
+        "height" : "120",
+        "colorspace" : "RGB",
         "isOptional" : "0",
-        "shapeFlexibility" : "1... × 120 × 120 × 3",
-        "shapeRange" : "[[1, -1], [120, 120], [120, 120], [3, 3]]",
-        "formattedType" : "MultiArray (Float32 1 × 120 × 120 × 3)",
-        "type" : "MultiArray",
-        "shape" : "[1, 120, 120, 3]",
-        "name" : "conv2d_193_input",
-        "shortDescription" : ""
+        "width" : "120",
+        "isColor" : "1",
+        "formattedType" : "Image (Color 120 × 120)",
+        "hasSizeFlexibility" : "0",
+        "type" : "Image",
+        "shortDescription" : "",
+        "name" : "conv2d_193_input"
       }
     ],
     "method" : "predict"

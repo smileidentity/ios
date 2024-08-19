@@ -22,8 +22,8 @@
       "h" : 13
     },
     "conv2d_193_input" : {
-      "k" : 120,
-      "w" : 3,
+      "k" : 3,
+      "w" : 120,
       "n" : 1,
       "_rank" : 4,
       "h" : 120
@@ -35,12 +35,12 @@
       "_rank" : 4,
       "h" : 116
     },
-    "transpose_18" : {
-      "k" : 3,
-      "w" : 120,
+    "sequential_35\/activation_67\/Relu" : {
+      "k" : 32,
+      "w" : 26,
       "n" : 1,
       "_rank" : 4,
-      "h" : 120
+      "h" : 26
     },
     "max_pool_0" : {
       "k" : 32,
@@ -72,13 +72,6 @@
     },
     "sequential_35\/conv2d_196\/BiasAdd" : {
       "k" : 128,
-      "w" : 26,
-      "n" : 1,
-      "_rank" : 4,
-      "h" : 26
-    },
-    "sequential_35\/activation_67\/Relu" : {
-      "k" : 32,
       "w" : 26,
       "n" : 1,
       "_rank" : 4,
