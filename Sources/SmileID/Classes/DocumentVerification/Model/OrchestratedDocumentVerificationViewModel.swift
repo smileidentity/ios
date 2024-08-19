@@ -316,11 +316,15 @@ internal class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
-        if let savedFiles {
+        if let savedFiles, 
+            let selfiePath = getRelativePath(from: selfieFile),
+            let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
+            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+        {
             delegate.didSucceed(
-                selfie: getRelativePath(from: savedFiles.selfie)!,
-                documentFrontImage: getRelativePath(from: savedFiles.documentFront)!,
-                documentBackImage: getRelativePath(from: savedFiles.documentBack)!,
+                selfie: selfiePath,
+                documentFrontImage: documentFrontPath,
+                documentBackImage: documentBackPath,
                 didSubmitDocumentVerificationJob: didSubmitJob
             )
         } else if let error {
@@ -339,11 +343,15 @@ internal class OrchestratedEnhancedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult>
 {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
-        if let savedFiles {
+        if let savedFiles,
+           let selfiePath = getRelativePath(from: selfieFile),
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
+           let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+        {
             delegate.didSucceed(
-                selfie: getRelativePath(from: savedFiles.selfie)!,
-                documentFrontImage: getRelativePath(from: savedFiles.documentFront)!,
-                documentBackImage: getRelativePath(from: savedFiles.documentBack)!,
+                selfie: selfiePath,
+                documentFrontImage: documentFrontPath,
+                documentBackImage: documentBackPath,
                 didSubmitEnhancedDocVJob: didSubmitJob
             )
         } else if let error {

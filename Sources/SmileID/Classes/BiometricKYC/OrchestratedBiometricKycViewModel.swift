@@ -54,9 +54,12 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     func onFinished(delegate: BiometricKycResultDelegate) {
-        if let selfieFile = selfieFile, let livenessFiles = livenessFiles {
+        if let selfieFile = selfieFile,
+           let livenessFiles = livenessFiles,
+           let selfiePath = getRelativePath(from: selfieFile)
+        {
             delegate.didSucceed(
-                selfieImage: getRelativePath(from: selfieFile)!,
+                selfieImage: selfiePath,
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
                 didSubmitBiometricJob: didSubmitBiometricJob
             )
