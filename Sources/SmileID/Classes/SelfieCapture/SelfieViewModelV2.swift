@@ -2,7 +2,6 @@ import ARKit
 import Combine
 import Foundation
 
-
 public class SelfieViewModelV2: ObservableObject {
 
     private let isEnroll: Bool
