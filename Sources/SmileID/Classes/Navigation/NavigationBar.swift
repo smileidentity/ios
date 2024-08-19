@@ -12,6 +12,7 @@ struct NavigationBar: View {
         }
             .frame(height: 50)
             .frame(maxHeight: .infinity, alignment: .top)
+            .preferredColorScheme(.light)
     }
 }
 

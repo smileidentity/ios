@@ -69,8 +69,6 @@ struct JobsView: View {
             config: Config(
                 partnerId: "1000",
                 authToken: "",
-                prodUrl: "",
-                testUrl: "",
                 prodLambdaUrl: "",
                 testLambdaUrl: ""
             )

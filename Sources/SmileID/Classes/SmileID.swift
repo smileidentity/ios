@@ -169,10 +169,9 @@ public class SmileID {
                 } catch {
                     throw error
                 }
-                let zipUrl = try LocalStorage.zipFiles(at: allFiles)
-                zip = try Data(contentsOf: zipUrl)
+                let zipData = try LocalStorage.zipFiles(at: allFiles)
                 _ = try await SmileID.api.upload(
-                    zip: zip,
+                    zip: zipData,
                     to: prepUploadResponse.uploadUrl
                 )
                 if deleteFilesOnSuccess {

@@ -70,7 +70,7 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
                     )
                 }
             }
-        }
+        }.preferredColorScheme(.light)
     }
 }
 
