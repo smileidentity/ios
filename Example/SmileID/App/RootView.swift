@@ -44,7 +44,10 @@ struct RootView: View {
             .ignoresSafeArea()
             .preferredColorScheme(.light)
         } else {
-            WelcomeScreen(showSuccess: $showSuccess)
+            WelcomeScreen(
+                showSuccess: $showSuccess,
+                didUpdateConfig: { viewModel.updateConfig(config: $0) }
+            )
         }
     }
 }

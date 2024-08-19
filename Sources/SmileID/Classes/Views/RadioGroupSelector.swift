@@ -69,6 +69,7 @@ public struct RadioGroupSelector<T>: View where T: Identifiable & Equatable {
                 .cornerRadius(60)
                 .frame(maxWidth: .infinity)
                 .padding()
+                .preferredColorScheme(.light)
         }
     }
 }

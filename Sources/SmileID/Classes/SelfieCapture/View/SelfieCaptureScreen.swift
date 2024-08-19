@@ -50,6 +50,7 @@ public struct SelfieCaptureScreen: View {
             }
                 .padding(24)
         }
+        .preferredColorScheme(.light)
         .alert(item: $viewModel.unauthorizedAlert) { alert in
             Alert(
                 title: Text(alert.title),
