@@ -75,19 +75,19 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     jobId: jobId,
                     fileType: FileType.selfie
                 )
-                
+            
                 livenessFiles = try LocalStorage.getFilesByType(
                     jobId: jobId,
                     fileType: FileType.liveness
                 )
-                
+            
                 guard let selfieFile else {
                     // Set step to .selfieCapture so that the Retry button goes back to this step
                     DispatchQueue.main.async { self.step = .selfie }
                     error = SmileIDError.unknown("Error capturing selfie")
                     return
                 }
-                
+            
                 var allFiles = [URL]()
                 let infoJson = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,

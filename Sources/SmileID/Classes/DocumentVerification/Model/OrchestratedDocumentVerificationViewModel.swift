@@ -115,24 +115,24 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     onError(error: SmileIDError.unknown("Error getting document front file"))
                     return
                 }
-                
+            
                 selfieFile = try LocalStorage.getFileByType(
                     jobId: jobId,
                     fileType: FileType.selfie
                 )
-                
+            
                 livenessFiles = try LocalStorage.getFilesByType(
                     jobId: jobId,
                     fileType: FileType.liveness
                 )
-                
+            
                 guard let selfieFile else {
                     // Set step to .selfieCapture so that the Retry button goes back to this step
                     step = .selfieCapture
                     onError(error: SmileIDError.unknown("Error getting selfie file"))
                     return
                 }
-                
+            
                 DispatchQueue.main.async {
                     self.step = .processing(.inProgress)
                 }
