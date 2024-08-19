@@ -22,6 +22,6 @@ struct DocumentShapedBoundingBox: View {
                 // issues on iOS 14 devices
                 .cutout(cutoutShape)
                 .overlay(cutoutShape.stroke(borderColor, lineWidth: 4))
-        }
+        }.preferredColorScheme(.light)
     }
 }
