@@ -97,19 +97,6 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
             .store(in: &subscribers)
     }
 
-    private func checkSelfieQuality(pixelBuffer: CVPixelBuffer) {
-        // turn pixel buffer to UIImage.
-        guard let image = UIImage(pixelBuffer: pixelBuffer) else {
-            print("Failed to preprocess image")
-            return
-        }
-
-        Task {
-            let imageClassifier = ModelImageClassifier()
-            let qualityResult = try await imageClassifier.classify(image: image)
-        }
-    }
-
     // swiftlint:disable cyclomatic_complexity
     func analyzeImage(image: CVPixelBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
@@ -206,8 +193,6 @@ public class SelfieViewModelV2: ObservableObject, ARKitSmileDelegate {
                     print("Not enough face rotation between captures. Waiting...")
                     return
                 }
-
-                checkSelfieQuality(pixelBuffer: image)
 
                 let orientation = currentlyUsingArKit ? CGImagePropertyOrientation.right : .up
                 lastAutoCaptureTime = Date()
