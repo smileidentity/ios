@@ -62,7 +62,7 @@ class ModelImageClassifier {
         }
 
         let boundingBox = face.boundingBox
-        
+
         let size = CGSize(
             width: boundingBox.width * image.size.width,
             height: boundingBox.height * image.size.height
@@ -71,7 +71,7 @@ class ModelImageClassifier {
             x: boundingBox.minX * image.size.width,
             y: (1 - boundingBox.minY) * image.size.height - size.height
         )
-        
+
         let faceRect = CGRect(origin: origin, size: size)
 
         guard let croppedImage = cgImage.cropping(to: faceRect) else {
