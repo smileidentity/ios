@@ -9,17 +9,10 @@ public struct SelfieCaptureScreenV2: View {
 
     public var body: some View {
         VStack(spacing: 40) {
-            LottieView {
-                try await DotLottieFile.named("si_anim_face", bundle: SmileIDResourcesHelper.bundle)
-            }
-            .playing(loopMode: .autoReverse)
-            .frame(width: 80, height: 80)
-
             Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
                 .font(SmileID.theme.header2)
                 .foregroundColor(.primary)
-            Text("\(viewModel.captureProgress)")
-                .foregroundColor(.secondary)
+
             ZStack {
                 RoundedRectangle(cornerRadius: 25)
                     .stroke(SmileID.theme.onLight, lineWidth: 20.0)
