@@ -149,7 +149,7 @@ public struct ConsentScreen: View {
                     Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                 }
             }
-        }
+        }.preferredColorScheme(.light)
     }
 }
 
@@ -208,6 +208,6 @@ public struct ConsentDeniedScreen: View {
             if showAttribution {
                 Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
             }
-        }
+        }.preferredColorScheme(.light)
     }
 }
