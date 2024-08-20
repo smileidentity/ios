@@ -3,21 +3,13 @@ import Combine
 import Foundation
 
 public class SelfieViewModelV2: ObservableObject {
-    // MARK: Private Properties
-    private let isEnroll: Bool
-    private let userId: String
-    private let jobId: String
-    private let allowNewEnroll: Bool
-    private let skipApiSubmission: Bool
-    private let extraPartnerParams: [String: String]
-    private let useStrictMode: Bool
-
     // MARK: Publishers
     @Published private(set) var debugEnabled: Bool
     @Published var unauthorizedAlert: AlertState?
     @Published var directive: String = "Instructions.Start"
 
     // MARK: Publishers for Vision data
+    @Published private(set) var isFaceInFrame: Bool
     @Published private(set) var faceDetectedState: FaceDetectionState
     @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel> {
         didSet {
@@ -34,14 +26,19 @@ public class SelfieViewModelV2: ObservableObject {
             processUpdatedSelfieQuality()
         }
     }
+    @Published private(set) var isAcceptableBounds: FaceBoundsState {
+        didSet {
+            calculateFaceValidity()
+        }
+    }
 
     // MARK: Dependencies
     var cameraManager = CameraManager(orientation: .portrait)
-    let faceDetector = FaceDetectorV2()
+    var faceDetector = FaceDetectorV2()
 
     private var subscribers = Set<AnyCancellable>()
 
-    // Active Liveness Properties
+    // MARK: UI Properties
     let maxFaceYawThreshold: Double = 15
     let maxFaceRollThreshold: Double = 15
     let maxFacePitchThreshold: Double = 15
@@ -51,6 +48,17 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var faceDirection: FaceDirection = .none
     @Published private(set) var faceQualityValue: Double = 0.0
     @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
+
+    // MARK: Private Properties
+    private let isEnroll: Bool
+    private let userId: String
+    private let jobId: String
+    private let allowNewEnroll: Bool
+    private let skipApiSubmission: Bool
+    private let extraPartnerParams: [String: String]
+    private let useStrictMode: Bool
+
+    var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
 
     public init(
         isEnroll: Bool,
@@ -69,10 +77,12 @@ public class SelfieViewModelV2: ObservableObject {
         self.extraPartnerParams = extraPartnerParams
         self.useStrictMode = useStrictMode
 
+        isFaceInFrame = false
         faceDetectedState = .noFaceDetected
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
         selfieQualityState = .faceNotFound
+        isAcceptableBounds = .unknown
 
         #if DEBUG
             debugEnabled = true
@@ -142,7 +152,7 @@ public class SelfieViewModelV2: ObservableObject {
             faceQualityState = .faceFound(faceQualityModel)
         }
     }
-    
+
     private func publishSelfieQualityObservation(_ selfieQualityModel: SelfieQualityModel) {
         DispatchQueue.main.async { [self] in
             faceDetectedState = .faceDetected
@@ -166,15 +176,20 @@ extension SelfieViewModelV2 {
         switch faceGeometryState {
         case let .faceFound(faceGeometryModel):
             updateFaceGeometryValues(using: faceGeometryModel)
+
+            let boundingBox = faceGeometryModel.boundingBox
+            updateAcceptableBounds(using: boundingBox)
         case .faceNotFound:
             invalidateFaceGeometryState()
         case let .errored(error):
+            print(error.localizedDescription)
             invalidateFaceGeometryState()
         }
     }
 
     func invalidateFaceGeometryState() {
         // This is where we reset all the face geometry values.
+        isAcceptableBounds = .unknown
     }
 
     func updateFaceGeometryValues(using value: FaceGeometryModel) {
@@ -182,6 +197,22 @@ extension SelfieViewModelV2 {
         pitchValue = value.pitch.doubleValue
         yawValue = value.yaw.doubleValue
         faceDirection = value.direction
+    }
+
+    func updateAcceptableBounds(using boundingBox: CGRect) {
+        if boundingBox.width > 1.2 * faceLayoutGuideFrame.width {
+            isAcceptableBounds = .detectedFaceTooLarge
+        } else if boundingBox.width * 1.2 < faceLayoutGuideFrame.width {
+            isAcceptableBounds = .detectedFaceTooSmall
+        } else {
+            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 50 {
+                isAcceptableBounds = .detectedFaceOffCentre
+            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 50 {
+                isAcceptableBounds = .detectedFaceOffCentre
+            } else {
+                isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
+            }
+        }
     }
 
     func processUpdatedFaceQuality() {
@@ -206,5 +237,9 @@ extension SelfieViewModelV2 {
         case let .errored(error):
             print(error.localizedDescription)
         }
+    }
+    
+    func calculateFaceValidity() {
+        isFaceInFrame = isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition
     }
 }

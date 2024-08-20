@@ -6,29 +6,35 @@ public struct SelfieCaptureScreenV2: View {
     let showAttribution: Bool
 
     public var body: some View {
-        VStack {
-            ZStack {
-                CameraView(cameraManager: viewModel.cameraManager)
-                    .onAppear {
-                        viewModel.cameraManager.switchCamera(to: .front)
-                    }
-                Rectangle()
-                    .fill(.white)
-                    .cutout(Ellipse().scale(x: 0.8, y: 0.8))
-            }
-            .frame(width: 300, height: 400)
-            .padding(.top, 80)
-            Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
-                .font(SmileID.theme.header4)
-                .foregroundColor(.primary)
-                .padding(.bottom)
-                .padding(.horizontal)
+        ZStack {
+            CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
+                .onAppear {
+                    viewModel.cameraManager.switchCamera(to: .front)
+                }
+//            VStack {
+//                ZStack {
+//                    CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
+//                        .onAppear {
+//                            viewModel.cameraManager.switchCamera(to: .front)
+//                        }
+//                    LayoutGuideView(
+//                        layoutGuideFrame: viewModel.faceLayoutGuideFrame
+//                    )
+//                }
+//                .frame(width: viewModel.faceLayoutGuideFrame.width, height: viewModel.faceLayoutGuideFrame.height)
+//                .padding(.top, 80)
+//                Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
+//                    .font(SmileID.theme.header4)
+//                    .foregroundColor(.primary)
+//                    .padding(.bottom)
+//                    .padding(.horizontal)
+//                Spacer()
+//                if showAttribution {
+//                    Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+//                }
+//            }
             if viewModel.debugEnabled {
-                DebugView()
-            }
-            Spacer()
-            if showAttribution {
-                Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                FaceBoundingBoxView(model: viewModel)
             }
         }
         .alert(item: $viewModel.unauthorizedAlert) { alert in
@@ -48,31 +54,36 @@ public struct SelfieCaptureScreenV2: View {
 
     // swiftlint:disable identifier_name
     @ViewBuilder func DebugView() -> some View {
-        VStack(spacing: 0) {
-            // Text("Progress: \(viewModel.captureProgress)")
-            Text("Yaw: \(viewModel.yawValue)")
-            Text("Row: \(viewModel.rollValue)")
-            Text("Pitch: \(viewModel.pitchValue)")
-            Text("Quality: \(viewModel.faceQualityValue)")
-            Text("Selfie Quality Model")
-                .padding(.top, 10)
-            Text("Fail: \(viewModel.selfieQualityValue.failed) | Pass: \(viewModel.selfieQualityValue.passed)")
-                .font(.subheadline.weight(.medium))
-                .padding(5)
-                .background(Color.yellow)
-                .clipShape(.rect(cornerRadius: 5))
-                .padding(.bottom, 10)
-            switch viewModel.faceDirection {
-            case .left:
-                Text("Looking Left")
-            case .right:
-                Text("Looking Right")
-            case .none:
-                Text("Looking Straight")
+        ZStack {
+            FaceBoundingBoxView(model: viewModel)
+            VStack(spacing: 0) {
+                Spacer()
+                // Text("Progress: \(viewModel.captureProgress)")
+                Text("\(viewModel.isFaceInFrame ? "Face in Frame" : "Face out of Frame")")
+                Text("Yaw: \(viewModel.yawValue)")
+                Text("Row: \(viewModel.rollValue)")
+                Text("Pitch: \(viewModel.pitchValue)")
+                Text("Quality: \(viewModel.faceQualityValue)")
+                Text("Selfie Quality Model")
+                    .padding(.top, 10)
+                Text("Fail: \(viewModel.selfieQualityValue.failed) | Pass: \(viewModel.selfieQualityValue.passed)")
+                    .font(.subheadline.weight(.medium))
+                    .padding(5)
+                    .background(Color.yellow)
+                    .clipShape(.rect(cornerRadius: 5))
+                    .padding(.bottom, 10)
+                switch viewModel.faceDirection {
+                case .left:
+                    Text("Looking Left")
+                case .right:
+                    Text("Looking Right")
+                case .none:
+                    Text("Looking Straight")
+                }
             }
+            .foregroundColor(.primary)
+            .padding(.bottom, 40)
         }
-        .foregroundColor(.primary)
-        Spacer()
     }
 
     // swiftlint:disable identifier_name
@@ -96,26 +107,5 @@ public struct SelfieCaptureScreenV2: View {
                 .buttonStyle(.plain)
             }
         }
-    }
-}
-
-struct CornerShape: Shape {
-    let width: CGFloat = 40
-    let height: CGFloat = 40
-    let cornerRadius: CGFloat = 25
-
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: 0, y: 0))
-        path.addLine(to: CGPoint(x: 0, y: height - cornerRadius))
-        path.addArc(
-            center: CGPoint(x: cornerRadius, y: height - cornerRadius),
-            radius: cornerRadius,
-            startAngle: .degrees(180),
-            endAngle: .degrees(90),
-            clockwise: true
-        )
-        path.addLine(to: CGPoint(x: width, y: height))
-        return path
     }
 }

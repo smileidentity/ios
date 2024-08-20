@@ -20,6 +20,23 @@ enum FaceBoundsState {
     case detectedFaceAppropriateSizeAndPosition
 }
 
+enum ActiveLivenessStage: CaseIterable {
+    case lookLeft
+    case lookRight
+    case lookUp
+    
+    var maxValue: CGFloat {
+        switch self {
+        case .lookLeft:
+            return 30.0
+        case .lookRight:
+            return -30.0
+        case .lookUp:
+            return 15.0
+        }
+    }
+}
+
 struct ErrorWrapper: Equatable {
     let error: Error
 

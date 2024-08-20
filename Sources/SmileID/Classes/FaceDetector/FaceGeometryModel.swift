@@ -25,6 +25,6 @@ struct SelfieQualityModel {
 
 extension SelfieQualityModel {
     static var zero: SelfieQualityModel {
-        return SelfieQualityModel(failed: 0, passed: 1)
+        return SelfieQualityModel(failed: 0, passed: 0)
     }
 }

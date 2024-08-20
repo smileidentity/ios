@@ -10,8 +10,10 @@ class FaceDetectorV2: NSObject {
     private let faceMovementThreshold: CGFloat = 0.15
 
     var sequenceHandler = VNSequenceRequestHandler()
-    weak var model: SelfieViewModelV2?
     var currentFrameBuffer: CVPixelBuffer?
+
+    weak var model: SelfieViewModelV2?
+    weak var viewDelegate: FaceDetectorDelegate?
 
     /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
     func detect(imageBuffer: CVPixelBuffer) {
@@ -149,7 +151,7 @@ class FaceDetectorV2: NSObject {
 extension FaceDetectorV2 {
     func detectedFaceRectangles(request: VNRequest, error: Error?) {
         guard let model = model,
-              let imageBuffer = currentFrameBuffer else { return }
+              let viewDelegate = viewDelegate else { return }
 
         guard let results = request.results as? [VNFaceObservation],
                 let result = results.first else {
@@ -158,10 +160,7 @@ extension FaceDetectorV2 {
         }
 
         // let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
-        let convertedBoundingBox = convertBoundingBox(
-            faceObservation: result,
-            bufferImage: imageBuffer
-        )
+        let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
 
         if #available(iOS 15.0, *) {
             let faceObservationModel = FaceGeometryModel(
@@ -175,27 +174,6 @@ extension FaceDetectorV2 {
         } else {
             // Fallback on earlier versions
         }
-    }
-
-    private func convertBoundingBox(
-        faceObservation: VNFaceObservation,
-        bufferImage: CVPixelBuffer
-    ) -> CGRect {
-        guard let image = UIImage(pixelBuffer: bufferImage) else {
-            return .zero
-        }
-        let boundingBox = faceObservation.boundingBox
-        let size = CGSize(
-            width: boundingBox.width * image.size.width,
-            height: boundingBox.height * image.size.height
-        )
-        let origin = CGPoint(
-            x: boundingBox.minX * image.size.width,
-            y: (1 - boundingBox.minY) * image.size.height - size.height
-        )
-
-        let faceRect = CGRect(origin: origin, size: size)
-        return faceRect
     }
 
     private func faceDirection(faceObservation: VNFaceObservation) -> FaceDirection {

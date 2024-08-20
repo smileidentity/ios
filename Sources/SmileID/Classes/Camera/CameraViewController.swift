@@ -3,6 +3,8 @@ import Vision
 import AVFoundation
 
 class CameraViewController: UIViewController {
+    var faceDetector: FaceDetectorV2?
+
     var previewLayer: AVCaptureVideoPreviewLayer?
     private weak var cameraManager: CameraManager?
 
@@ -17,6 +19,7 @@ class CameraViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        faceDetector?.viewDelegate = self
         configurePreviewLayer()
     }
 
@@ -31,6 +34,15 @@ class CameraViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         previewLayer?.frame = view.bounds
+    }
+}
+
+extension CameraViewController: FaceDetectorDelegate {
+    func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
+        guard let previewLayer = previewLayer else {
+            return CGRect.zero
+        }
+        return previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
     }
 }
 
