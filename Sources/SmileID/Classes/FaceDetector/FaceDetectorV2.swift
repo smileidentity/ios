@@ -136,7 +136,7 @@ class FaceDetectorV2: NSObject {
         }
 
         let imageClassifierModel = imageClassifier.model
-        
+
         guard let imageClassifierVisionModel = try? VNCoreMLModel(for: imageClassifierModel) else {
             fatalError("Failed to create a `VNCoreMLModel` instance.")
         }
