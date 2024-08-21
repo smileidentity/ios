@@ -8,6 +8,7 @@ struct CaptureButton: View {
             label: { Image(uiImage: SmileIDResourcesHelper.Capture) }
         )
             .frame(width: 70, height: 70, alignment: .center)
+            .preferredColorScheme(.light)
     }
 }
 

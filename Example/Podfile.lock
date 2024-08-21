@@ -4,14 +4,14 @@ PODS:
   - ArkanaKeysInterfaces (1.0.0)
   - lottie-ios (4.4.3)
   - netfox (1.21.0)
-  - Sentry (8.31.1):
-    - Sentry/Core (= 8.31.1)
-  - Sentry/Core (8.31.1)
-  - SmileID (10.2.5):
+  - Sentry (8.32.0):
+    - Sentry/Core (= 8.32.0)
+  - Sentry/Core (8.32.0)
+  - SmileID (10.2.7):
     - lottie-ios (~> 4.4.2)
-    - Zip (~> 2.1.0)
+    - ZIPFoundation (~> 0.9)
   - SwiftLint (0.55.1)
-  - Zip (2.1.2)
+  - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
   - ArkanaKeys (from `./ArkanaKeys/ArkanaKeys/`)
@@ -27,7 +27,7 @@ SPEC REPOS:
     - netfox
     - Sentry
     - SwiftLint
-    - Zip
+    - ZIPFoundation
 
 EXTERNAL SOURCES:
   ArkanaKeys:
@@ -42,10 +42,10 @@ SPEC CHECKSUMS:
   ArkanaKeysInterfaces: 81d21923368b058e2b6fd932ec96855166ef6d19
   lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
-  Sentry: 9c1188876ea1291d1a9db4b38c3f17ebd8e6985e
-  SmileID: 09d42fdc65cd4d2b0d33fd33e14e8c85a189a64b
+  Sentry: 96ae1dcdf01a644bc3a3b1dc279cecaf48a833fb
+  SmileID: 500429946fbb916221450c9f792fa94ee1060955
   SwiftLint: 3fe909719babe5537c552ee8181c0031392be933
-  Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
+  ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
 PODFILE CHECKSUM: ebb96bfc1b5a0c7f6061ff1e91ac138e67c1d9f4
 

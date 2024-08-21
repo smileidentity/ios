@@ -38,7 +38,7 @@ namespace :build do
     sh 'mv SmileID.zip SmileID.sha256 release/'
   end
 end
-  
+
 namespace :test do
   desc 'Tests the package , processed the test results and tests spm compatibility'
   task all: ['package', 'process', 'spm','example']
@@ -62,7 +62,7 @@ namespace :test do
     xcodebuild('build -scheme "SmileID" -destination generic/platform=iOS',"SmileID.xcodeproj")
   end
 end
-  
+
 namespace :lint do
   desc 'Lints swift files'
   task :swift do
@@ -74,14 +74,14 @@ namespace :lint do
     sh 'pod lib lint SmileID.podspec'
   end
 end
-  
+
 namespace :format do
   desc 'Formats swift files'
   task :swift do
     sh 'mint run swiftformat . --swiftversion 5.8'
   end
 end
-  
+
 def xcodebuild(command, project = "Example/SmileID.xcworkspace")
   # Determine the project flag based on the file extension
   project_flag = if project.end_with?(".xcworkspace")

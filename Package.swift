@@ -13,13 +13,13 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/marmelroy/Zip", .upToNextMajor(from: "2.1.0")),
+        .package(url: "https://github.com/weichsel/ZIPFoundation.git", .upToNextMajor(from: "0.9.0")),
         .package(url: "https://github.com/airbnb/lottie-spm", from: "4.4.2")
     ],
     targets: [
         .target(
             name: "SmileID",
-            dependencies: ["Zip", .product(name: "Lottie", package: "lottie-spm")],
+            dependencies: ["ZIPFoundation", .product(name: "Lottie", package: "lottie-spm")],
             path: "Sources/SmileID",
             resources: [.process("Resources")]
         ),

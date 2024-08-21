@@ -1,4 +1,21 @@
 # Release Notes
+
+## 10.2.7
+
+### Changed
+* Replaced the Zip library to introduce in memory ziping during file upload
+* Remove `prodUrl` and `testURl` from Config model struct since the `prod_url` and `test_url` keys are no longer used in the `smile_config.json` file.
+* Disabled dark mode as we fix theming across the sdk
+* Fixed ambigious file paths on responses
+
+## 10.2.6
+
+### Changed
+* Removed `SmileID.setEnvironment()` since the API Keys are no longer shared between environments
+* All polling methods now return a `AsyncThrowingStream<JobStatusResponse<T>, Error>` and instead of a timeout, if there is no error it'll return the last valid response and complete the stream.
+* Fixed a bug where prep upload would not work for previously attempted API requests
+
+
 ## 10.2.5
 
 #### Fixed

@@ -9,7 +9,6 @@ final class PollingTests: XCTestCase {
         let config = Config(
             partnerId: "id",
             authToken: "token",
-            prodUrl: "url", testUrl: "url",
             prodLambdaUrl: "url",
             testLambdaUrl: "url"
         )
@@ -27,37 +26,37 @@ final class PollingTests: XCTestCase {
     }
 
     func testPollJobStatus_Success<T: JobResult>(
-        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int) async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
+        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int)
+        async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
         expectedResponse: JobStatusResponse<T>,
         requestBuilder: () -> JobStatusRequest
     ) async throws {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
-        
+
         let stream = try await pollFunction(request, interval, numAttempts)
-        
+
         do {
-            for try await response in stream {
-                if response.jobComplete {
-                    XCTAssertEqual(response.jobComplete, expectedResponse.jobComplete)
-                    return
-                }
+            for try await response in stream where response.jobComplete {
+                XCTAssertEqual(response.jobComplete, expectedResponse.jobComplete)
+                return
             }
             XCTFail("Stream completed without a jobComplete response")
         } catch {
             XCTFail("Unexpected error: \(error)")
         }
     }
-    
+
     func testPollingFunction_ErrorDuringPolling<T: JobResult>(
-        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int) async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
+        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int)
+        async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
         requestBuilder: () -> JobStatusRequest
     ) async {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
-        
+
         MockHelper.shouldFail = true
         MockHelper.jobComplete = false
         
@@ -71,20 +70,21 @@ final class PollingTests: XCTestCase {
             XCTAssertNotNil(error)
         }
     }
-    
+
     func testPollingFunction_MaxAttemptsReached<T: JobResult>(
-        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int) async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
+        pollFunction: @escaping (JobStatusRequest, TimeInterval, Int)
+        async throws -> AsyncThrowingStream<JobStatusResponse<T>, Error>,
         requestBuilder: () -> JobStatusRequest
     ) async throws {
         let request = requestBuilder()
         let interval: TimeInterval = 1.0
         let numAttempts = 3
-        
+
         MockHelper.shouldFail = false
         MockHelper.jobComplete = false
-        
+
         let stream = try await pollFunction(request, interval, numAttempts)
-        
+
         var responseCount = 0
         for try await response in stream {
             XCTAssertFalse(response.jobComplete, "Job should not be complete")
