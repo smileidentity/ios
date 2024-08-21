@@ -31,6 +31,8 @@ public class SelfieViewModelV2: ObservableObject {
             calculateFaceValidity()
         }
     }
+    @Published private(set) var boundingXDelta: CGFloat = .zero
+    @Published private(set) var boundingYDelta: CGFloat = .zero
 
     // MARK: Dependencies
     var cameraManager = CameraManager(orientation: .portrait)
@@ -100,8 +102,6 @@ public class SelfieViewModelV2: ObservableObject {
             .store(in: &subscribers)
 
         cameraManager.sampleBufferPublisher
-            .throttle(for: 0.35, scheduler: DispatchQueue.global(qos: .userInitiated), latest: true)
-            .dropFirst(5)
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
@@ -114,6 +114,8 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Actions
     func perform(action: SelfieViewModelAction) {
         switch action {
+        case let .windowSizeDetected(windowRect):
+            handleWindowSizeChanged(toRect: windowRect)
         case .noFaceDetected:
             publishNoFaceObserved()
         case let .faceObservationDetected(faceObservation):
@@ -132,6 +134,15 @@ public class SelfieViewModelV2: ObservableObject {
     }
 
     // MARK: Action Handlers
+    private func handleWindowSizeChanged(toRect: CGRect) {
+        faceLayoutGuideFrame = CGRect(
+            x: toRect.midX - faceLayoutGuideFrame.width / 2,
+            y: toRect.midY - faceLayoutGuideFrame.height / 2,
+            width: faceLayoutGuideFrame.width,
+            height: faceLayoutGuideFrame.height
+        )
+    }
+
     private func publishNoFaceObserved() {
         DispatchQueue.main.async { [self] in
             faceDetectedState = .noFaceDetected
@@ -200,6 +211,9 @@ extension SelfieViewModelV2 {
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
+        boundingXDelta = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
+        boundingYDelta = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
+
         if boundingBox.width > 1.2 * faceLayoutGuideFrame.width {
             isAcceptableBounds = .detectedFaceTooLarge
         } else if boundingBox.width * 1.2 < faceLayoutGuideFrame.width {
@@ -238,8 +252,8 @@ extension SelfieViewModelV2 {
             print(error.localizedDescription)
         }
     }
-    
+
     func calculateFaceValidity() {
-        isFaceInFrame = isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition
+        // isFaceInFrame = isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition
     }
 }

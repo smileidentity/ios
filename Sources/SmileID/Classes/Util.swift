@@ -24,6 +24,21 @@ public extension View {
     }
 }
 
+extension View {
+    @inlinable func reverseMask<Mask: View>(
+        alignment: Alignment = .center,
+        @ViewBuilder _ mask: () -> Mask
+    ) -> some View {
+        self.mask(
+            ZStack(alignment: alignment) {
+                Rectangle()
+                mask()
+                    .blendMode(.destinationOut)
+            }
+        )
+    }
+}
+
 private struct StackedShape<Bottom: Shape, Top: Shape>: Shape {
     var bottom: Bottom
     var top: Top

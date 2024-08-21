@@ -6,49 +6,35 @@ public struct SelfieCaptureScreenV2: View {
     let showAttribution: Bool
 
     public var body: some View {
-        ZStack {
-            CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
-                .onAppear {
-                    viewModel.cameraManager.switchCamera(to: .front)
-                }
-//            VStack {
-//                ZStack {
-//                    CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
-//                        .onAppear {
-//                            viewModel.cameraManager.switchCamera(to: .front)
-//                        }
-//                    LayoutGuideView(
-//                        layoutGuideFrame: viewModel.faceLayoutGuideFrame
-//                    )
-//                }
-//                .frame(width: viewModel.faceLayoutGuideFrame.width, height: viewModel.faceLayoutGuideFrame.height)
-//                .padding(.top, 80)
-//                Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
-//                    .font(SmileID.theme.header4)
-//                    .foregroundColor(.primary)
-//                    .padding(.bottom)
-//                    .padding(.horizontal)
-//                Spacer()
-//                if showAttribution {
-//                    Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
-//                }
-//            }
-            if viewModel.debugEnabled {
-                FaceBoundingBoxView(model: viewModel)
-            }
-        }
-        .alert(item: $viewModel.unauthorizedAlert) { alert in
-            Alert(
-                title: Text(alert.title),
-                message: Text(alert.message ?? ""),
-                primaryButton: .default(
-                    Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
-                    action: {
-                        viewModel.perform(action: .openApplicationSettings)
+        GeometryReader { proxy in
+            ZStack {
+                CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
+                    .onAppear {
+                        viewModel.cameraManager.switchCamera(to: .front)
                     }
-                ),
-                secondaryButton: .cancel()
-            )
+                LayoutGuideView(layoutGuideFrame: viewModel.faceLayoutGuideFrame)
+
+                if viewModel.debugEnabled {
+                    DebugView()
+                }
+            }
+            .edgesIgnoringSafeArea(.all)
+            .onAppear {
+                viewModel.perform(action: .windowSizeDetected(proxy.frame(in: .global)))
+            }
+            .alert(item: $viewModel.unauthorizedAlert) { alert in
+                Alert(
+                    title: Text(alert.title),
+                    message: Text(alert.message ?? ""),
+                    primaryButton: .default(
+                        Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
+                        action: {
+                            viewModel.perform(action: .openApplicationSettings)
+                        }
+                    ),
+                    secondaryButton: .cancel()
+                )
+            }
         }
     }
 
@@ -56,10 +42,25 @@ public struct SelfieCaptureScreenV2: View {
     @ViewBuilder func DebugView() -> some View {
         ZStack {
             FaceBoundingBoxView(model: viewModel)
+            FaceLayoutGuideView(model: viewModel)
             VStack(spacing: 0) {
                 Spacer()
                 // Text("Progress: \(viewModel.captureProgress)")
-                Text("\(viewModel.isFaceInFrame ? "Face in Frame" : "Face out of Frame")")
+                Text("xDelta: \(viewModel.boundingXDelta)")
+                Text("yDelta: \(viewModel.boundingYDelta)")
+                switch viewModel.isAcceptableBounds {
+                case .unknown:
+                    Text("Bounds - Unknown")
+                case .detectedFaceTooSmall:
+                    Text("Bounds - Face too small")
+                case .detectedFaceTooLarge:
+                    Text("Bounds - Face too large")
+                case .detectedFaceOffCentre:
+                    Text("Bounds - Face off Center")
+                case .detectedFaceAppropriateSizeAndPosition:
+                    Text("Bounds - Appropriate Size and Position")
+                }
+                Divider()
                 Text("Yaw: \(viewModel.yawValue)")
                 Text("Row: \(viewModel.rollValue)")
                 Text("Pitch: \(viewModel.pitchValue)")
@@ -81,7 +82,7 @@ public struct SelfieCaptureScreenV2: View {
                     Text("Looking Straight")
                 }
             }
-            .foregroundColor(.primary)
+            .foregroundColor(.white)
             .padding(.bottom, 40)
         }
     }
