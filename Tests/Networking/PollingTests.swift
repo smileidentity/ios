@@ -59,7 +59,7 @@ final class PollingTests: XCTestCase {
 
         MockHelper.shouldFail = true
         MockHelper.jobComplete = false
-        
+
         do {
             let stream = try await pollFunction(request, interval, numAttempts)
             for try await _ in stream {
