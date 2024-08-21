@@ -9,6 +9,7 @@ public class SelfieViewModelV2: ObservableObject {
     @Published var directive: String = "Instructions.Start"
 
     // MARK: Publishers for Vision data
+    @Published private(set) var hasDetectedValidFace: Bool
     @Published private(set) var isFaceInFrame: Bool
     @Published private(set) var faceDetectedState: FaceDetectionState
     @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel> {
@@ -28,7 +29,12 @@ public class SelfieViewModelV2: ObservableObject {
     }
     @Published private(set) var isAcceptableBounds: FaceBoundsState {
         didSet {
-            calculateFaceValidity()
+            calculateDetectedFaceValidity()
+        }
+    }
+    @Published private(set) var isAcceptableQuality: Bool {
+        didSet {
+            calculateDetectedFaceValidity()
         }
     }
     @Published private(set) var boundingXDelta: CGFloat = .zero
@@ -79,12 +85,14 @@ public class SelfieViewModelV2: ObservableObject {
         self.extraPartnerParams = extraPartnerParams
         self.useStrictMode = useStrictMode
 
+        hasDetectedValidFace = false
         isFaceInFrame = false
         faceDetectedState = .noFaceDetected
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
         selfieQualityState = .faceNotFound
         isAcceptableBounds = .unknown
+        isAcceptableQuality = false
 
         #if DEBUG
             debugEnabled = true
@@ -233,11 +241,13 @@ extension SelfieViewModelV2 {
         switch faceQualityState {
         case let .faceFound(faceQualityModel):
             // Check acceptable range here.
+            isAcceptableQuality = faceQualityModel.quality > 0.2
             faceQualityValue = Double(faceQualityModel.quality)
         case .faceNotFound:
-            return
+            isAcceptableQuality = false
         case let .errored(error):
             print(error.localizedDescription)
+            isAcceptableQuality = false
         }
     }
 
@@ -253,7 +263,11 @@ extension SelfieViewModelV2 {
         }
     }
 
-    func calculateFaceValidity() {
-        // isFaceInFrame = isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition
+    func calculateDetectedFaceValidity() {
+        hasDetectedValidFace =
+        isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition // &&
+        // lookLeftChallengeCompleted &&
+        // lookRightChallengeCompleted &&
+        // pitchChallengeCompleted
     }
 }

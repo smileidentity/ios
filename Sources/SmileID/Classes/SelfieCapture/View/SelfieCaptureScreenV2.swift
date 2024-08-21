@@ -17,6 +17,10 @@ public struct SelfieCaptureScreenV2: View {
                 if viewModel.debugEnabled {
                     DebugView()
                 }
+                VStack {
+                    UserInstructionsView(model: viewModel)
+                    Spacer()
+                }
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {
