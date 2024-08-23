@@ -22,6 +22,7 @@ struct ImageQualityResult {
 
 /// A class that performs image classification to determine selfie quality using a Core ML Model
 class ModelImageClassifier {
+    let cropSize = (width: 120, height: 120)
 
     init() {}
 
@@ -34,7 +35,7 @@ class ModelImageClassifier {
                 throw ImageClassifierError.preprocessingFailed
             }
             let croppedImage = try await cropToFace(image: image)
-            guard let convertedImage = croppedImage.pixelBuffer(width: 120, height: 120) else {
+            guard let convertedImage = croppedImage.pixelBuffer(width: cropSize.width, height: cropSize.height) else {
                 throw ImageClassifierError.preprocessingFailed
             }
             return try performClassification(imageBuffer: convertedImage)
