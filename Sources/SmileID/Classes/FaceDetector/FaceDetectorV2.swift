@@ -16,7 +16,7 @@ class FaceDetectorV2: NSObject {
     weak var viewDelegate: FaceDetectorDelegate?
 
     /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
-    func detect(imageBuffer: CVPixelBuffer) {
+    func detect(_ imageBuffer: CVPixelBuffer) {
         currentFrameBuffer = imageBuffer
 
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest(

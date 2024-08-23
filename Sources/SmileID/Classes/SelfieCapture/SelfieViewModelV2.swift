@@ -3,6 +3,14 @@ import Combine
 import Foundation
 
 public class SelfieViewModelV2: ObservableObject {
+    // MARK: Dependencies
+    var cameraManager = CameraManager(orientation: .portrait)
+    var faceDetector = FaceDetectorV2()
+    private var subscribers = Set<AnyCancellable>()
+    
+    var selfieImage: URL?
+    var livenessImages: [URL] = []
+
     // MARK: Publishers
     @Published private(set) var debugEnabled: Bool
     @Published var unauthorizedAlert: AlertState?
@@ -10,7 +18,7 @@ public class SelfieViewModelV2: ObservableObject {
 
     // MARK: Publishers for Vision data
     @Published private(set) var hasDetectedValidFace: Bool
-    @Published private(set) var isFaceInFrame: Bool
+    @Published private(set) var hasCompletedLivenessChallenge: Bool
     @Published private(set) var faceDetectedState: FaceDetectionState
     @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel> {
         didSet {
@@ -40,22 +48,21 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var boundingXDelta: CGFloat = .zero
     @Published private(set) var boundingYDelta: CGFloat = .zero
 
-    // MARK: Dependencies
-    var cameraManager = CameraManager(orientation: .portrait)
-    var faceDetector = FaceDetectorV2()
-
-    private var subscribers = Set<AnyCancellable>()
-
+    // MARK: Constants
+    private let maxFaceYawThreshold: Double = 15
+    private let maxFaceRollThreshold: Double = 15
+    private let maxFacePitchThreshold: Double = 15
+    private let livenessImageSize = 320
+    private let selfieImageSize = 640
+    
     // MARK: UI Properties
-    let maxFaceYawThreshold: Double = 15
-    let maxFaceRollThreshold: Double = 15
-    let maxFacePitchThreshold: Double = 15
     @Published private(set) var yawValue: Double = 0.0
     @Published private(set) var rollValue: Double = 0.0
     @Published private(set) var pitchValue: Double = 0.0
     @Published private(set) var faceDirection: FaceDirection = .none
     @Published private(set) var faceQualityValue: Double = 0.0
     @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
+    var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
 
     // MARK: Private Properties
     private let isEnroll: Bool
@@ -65,8 +72,6 @@ public class SelfieViewModelV2: ObservableObject {
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
     private let useStrictMode: Bool
-
-    var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
 
     public init(
         isEnroll: Bool,
@@ -86,7 +91,7 @@ public class SelfieViewModelV2: ObservableObject {
         self.useStrictMode = useStrictMode
 
         hasDetectedValidFace = false
-        isFaceInFrame = false
+        hasCompletedLivenessChallenge = false
         faceDetectedState = .noFaceDetected
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
@@ -115,8 +120,17 @@ public class SelfieViewModelV2: ObservableObject {
             .store(in: &subscribers)
     }
 
-    private func analyzeImage(image: CVPixelBuffer) {
-        faceDetector.detect(imageBuffer: image)
+    private func analyzeImage(imageBuffer: CVPixelBuffer) {
+        faceDetector.detect(imageBuffer)
+        if hasDetectedValidFace && selfieImage == nil {
+            captureSelfieImage(imageBuffer)
+        }
+        // TODO: Confirm this logic with Kwame
+        // How many images do we capture and
+        // at what points do we capture those images
+        if hasCompletedLivenessChallenge { // should check for each challenge.
+            captureLivenessImage(imageBuffer)
+        }
     }
 
     // MARK: Actions
@@ -137,7 +151,7 @@ public class SelfieViewModelV2: ObservableObject {
         case .openApplicationSettings:
             openSettings()
         case let .handleError(error):
-            print(error.localizedDescription)
+            handleError(error)
         }
     }
 
@@ -177,6 +191,42 @@ public class SelfieViewModelV2: ObservableObject {
             faceDetectedState = .faceDetected
             selfieQualityState = .faceFound(selfieQualityModel)
         }
+    }
+    
+    private func captureSelfieImage(_ pixelBuffer: CVPixelBuffer) {
+        do {
+            guard let imageData = ImageUtils.resizePixelBufferToHeight(
+                pixelBuffer,
+                height: selfieImageSize,
+                orientation: .up
+            ) else {
+                throw SmileIDError.unknown("Error resizing selfie image")
+            }
+            let selfieImage = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
+            self.selfieImage = selfieImage
+        } catch {
+            handleError(error)
+        }
+    }
+    
+    private func captureLivenessImage(_ pixelBuffer: CVPixelBuffer) {
+        do {
+            guard let imageData = ImageUtils.resizePixelBufferToHeight(
+                pixelBuffer,
+                height: livenessImageSize,
+                orientation: .up
+            ) else {
+                throw SmileIDError.unknown("Error resizing liveness image")
+            }
+            let imageUrl = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: imageData)
+            livenessImages.append(imageUrl)
+        } catch {
+            handleError(error)
+        }
+    }
+    
+    private func handleError(_ error: Error) {
+        print(error.localizedDescription)
     }
 
     private func openSettings() {
@@ -265,9 +315,14 @@ extension SelfieViewModelV2 {
 
     func calculateDetectedFaceValidity() {
         hasDetectedValidFace =
-        isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition // &&
-        // lookLeftChallengeCompleted &&
-        // lookRightChallengeCompleted &&
-        // pitchChallengeCompleted
+        isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
+        isAcceptableQuality
+    }
+    
+    func calculateActiveLivenessValidity() {
+        // hasCompletedLivenessChallenge = true
+       // lookLeftChallengeCompleted &&
+       // lookRightChallengeCompleted &&
+       // pitchChallengeCompleted
     }
 }
