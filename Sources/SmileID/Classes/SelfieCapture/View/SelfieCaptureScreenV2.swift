@@ -4,6 +4,7 @@ import Lottie
 public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
+    @State private var showImages: Bool = false
 
     public var body: some View {
         GeometryReader { proxy in
@@ -39,6 +40,9 @@ public struct SelfieCaptureScreenV2: View {
                     secondaryButton: .cancel()
                 )
             }
+            .sheet(isPresented: $showImages) {
+                CapturedImagesView(model: viewModel)
+            }
         }
     }
 
@@ -69,25 +73,40 @@ public struct SelfieCaptureScreenV2: View {
                 Text("Row: \(viewModel.rollValue)")
                 Text("Pitch: \(viewModel.pitchValue)")
                 Text("Quality: \(viewModel.faceQualityValue)")
-                Text("Selfie Quality Model")
-                    .padding(.top, 10)
                 Text("Fail: \(viewModel.selfieQualityValue.failed) | Pass: \(viewModel.selfieQualityValue.passed)")
                     .font(.subheadline.weight(.medium))
                     .padding(5)
                     .background(Color.yellow)
                     .clipShape(.rect(cornerRadius: 5))
                     .padding(.bottom, 10)
-                switch viewModel.faceDirection {
-                case .left:
-                    Text("Looking Left")
-                case .right:
-                    Text("Looking Right")
-                case .none:
-                    Text("Looking Straight")
+                HStack {
+                    switch viewModel.faceDirection {
+                    case .left:
+                        Text("Looking Left")
+                    case .right:
+                        Text("Looking Right")
+                    case .none:
+                        Text("Looking Straight")
+                    }
+                    Spacer()
+                    Button {
+                        showImages = true
+                    } label: {
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(.yellow)
+                            .frame(width: 50, height: 50)
+                            .overlay(
+                                Text("\(viewModel.livenessImages.count + (viewModel.selfieImage != nil ? 1 : 0))")
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.primary)
+                            )
+                    }
                 }
             }
+            .font(.footnote)
             .foregroundColor(.white)
             .padding(.bottom, 40)
+            .padding(.horizontal)
         }
     }
 

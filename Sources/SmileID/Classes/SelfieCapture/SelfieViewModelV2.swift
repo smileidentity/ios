@@ -4,10 +4,10 @@ import Foundation
 
 public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
-    var cameraManager = CameraManager(orientation: .portrait)
+    var cameraManager = CameraManager.shared
     var faceDetector = FaceDetectorV2()
     private var subscribers = Set<AnyCancellable>()
-    
+
     var selfieImage: URL?
     var livenessImages: [URL] = []
 
@@ -54,7 +54,7 @@ public class SelfieViewModelV2: ObservableObject {
     private let maxFacePitchThreshold: Double = 15
     private let livenessImageSize = 320
     private let selfieImageSize = 640
-    
+
     // MARK: UI Properties
     @Published private(set) var yawValue: Double = 0.0
     @Published private(set) var rollValue: Double = 0.0
@@ -208,7 +208,7 @@ public class SelfieViewModelV2: ObservableObject {
             handleError(error)
         }
     }
-    
+
     private func captureLivenessImage(_ pixelBuffer: CVPixelBuffer) {
         do {
             guard let imageData = ImageUtils.resizePixelBufferToHeight(
@@ -224,7 +224,7 @@ public class SelfieViewModelV2: ObservableObject {
             handleError(error)
         }
     }
-    
+
     private func handleError(_ error: Error) {
         print(error.localizedDescription)
     }
