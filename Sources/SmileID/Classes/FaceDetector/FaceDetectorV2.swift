@@ -52,7 +52,7 @@ class FaceDetectorV2: NSObject {
             }
             selfieQualityRequest(imageBuffer: convertedImage)
         } catch {
-            print(error.localizedDescription, error)
+            model?.perform(action: .handleError(error))
         }
     }
 
@@ -84,7 +84,7 @@ class FaceDetectorV2: NSObject {
             )
             model.perform(action: .selfieQualityObservationDetected(selfieQualityModel))
         } catch {
-            print(error.localizedDescription, error)
+            model.perform(action: .handleError(error))
         }
     }
 
