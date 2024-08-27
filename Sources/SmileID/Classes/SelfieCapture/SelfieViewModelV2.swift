@@ -4,8 +4,9 @@ import Foundation
 
 public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
-    var cameraManager = CameraManager.shared
-    var faceDetector = FaceDetectorV2()
+    let cameraManager = CameraManager.shared
+    let faceDetector = FaceDetectorV2()
+    private let activeLiveness = ActiveLivenessManager()
     private var subscribers = Set<AnyCancellable>()
 
     var selfieImage: URL?
@@ -19,7 +20,11 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Publishers for Vision data
     @Published private(set) var hasDetectedValidFace: Bool
     @Published private(set) var hasCompletedLivenessChallenge: Bool
-    @Published private(set) var faceDetectedState: FaceDetectionState
+    @Published private(set) var faceDetectedState: FaceDetectionState {
+        didSet {
+            determineDirective()
+        }
+    }
     @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel> {
         didSet {
             processUpdatedFaceGeometry()
@@ -125,11 +130,9 @@ public class SelfieViewModelV2: ObservableObject {
         if hasDetectedValidFace && selfieImage == nil {
             captureSelfieImage(imageBuffer)
         }
-        // TODO: Confirm this logic with Kwame
-        // How many images do we capture and
-        // at what points do we capture those images
-        if hasCompletedLivenessChallenge { // should check for each challenge.
-            captureLivenessImage(imageBuffer)
+
+        activeLiveness.takePhoto = { [weak self] in
+            self?.captureLivenessImage(imageBuffer)
         }
     }
 
@@ -146,6 +149,10 @@ public class SelfieViewModelV2: ObservableObject {
             publishFaceQualityObservation(faceQualityObservation)
         case let .selfieQualityObservationDetected(selfieQualityObservation):
             publishSelfieQualityObservation(selfieQualityObservation)
+        case .captureLivenessImage:
+            return
+        case let .updateDirective(directive):
+            publishDirective(directive)
         case .toggleDebugMode:
             toggleDebugMode()
         case .openApplicationSettings:
@@ -192,7 +199,11 @@ public class SelfieViewModelV2: ObservableObject {
             selfieQualityState = .faceFound(selfieQualityModel)
         }
     }
-    
+
+    private func publishDirective(_ value: String) {
+        directive = value
+    }
+
     private func captureSelfieImage(_ pixelBuffer: CVPixelBuffer) {
         do {
             guard let imageData = ImageUtils.resizePixelBufferToHeight(
@@ -241,6 +252,29 @@ public class SelfieViewModelV2: ObservableObject {
 
 // MARK: Helpers
 extension SelfieViewModelV2 {
+    func determineDirective() {
+        switch faceDetectedState {
+        case .faceDetected:
+            if hasDetectedValidFace {
+                directive = "Please take your photo"
+            } else if isAcceptableBounds == .detectedFaceTooSmall {
+                directive = "Please bring your face closer to the camera"
+            } else if isAcceptableBounds == .detectedFaceTooLarge {
+                directive = "Please hold the camera further from your face"
+            } else if isAcceptableBounds == .detectedFaceOffCentre {
+                directive = "Please move your face to the center of the frame"
+            } else if !isAcceptableQuality {
+                directive = "Image quality is too low"
+            } else {
+                directive = "We cannot take your photo right now"
+            }
+        case .noFaceDetected:
+            directive = "Please look at the camera"
+        case .faceDetectionErrored:
+            directive = "An unexpected error ocurred"
+        }
+    }
+    
     func processUpdatedFaceGeometry() {
         switch faceGeometryState {
         case let .faceFound(faceGeometryModel):
@@ -266,6 +300,9 @@ extension SelfieViewModelV2 {
         pitchValue = value.pitch.doubleValue
         yawValue = value.yaw.doubleValue
         faceDirection = value.direction
+        if hasDetectedValidFace && selfieImage != nil {
+            activeLiveness.performLivenessChecks(with: value)
+        }
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
