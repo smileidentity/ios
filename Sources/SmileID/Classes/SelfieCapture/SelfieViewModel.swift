@@ -343,7 +343,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     smartSelfieLivenessImages.append(contentsOf: livenessImageInfos.compactMap { $0 })
                 }
                 guard let smartSelfieImage = smartSelfieImage,
-                smartSelfieLivenessImages.count == numLivenessImages else {
+                      smartSelfieLivenessImages.count == numLivenessImages
+                else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
                 let response = if isEnroll {
@@ -433,13 +434,19 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     func onFinished(callback: SmartSelfieResultDelegate) {
-        if let selfieImage, livenessImages.count == numLivenessImages {
+        if let selfieImage = selfieImage,
+           let selfiePath = getRelativePath(from: selfieImage),
+           livenessImages.count == numLivenessImages,
+           !livenessImages.contains(where: { getRelativePath(from: $0) == nil })
+        {
+            let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
+
             callback.didSucceed(
-                selfieImage: selfieImage,
-                livenessImages: livenessImages,
+                selfieImage: selfiePath,
+                livenessImages: livenessImagesPaths,
                 apiResponse: apiResponse
             )
-        } else if let error {
+        } else if let error = error {
             callback.didError(error: error)
         } else {
             callback.didError(error: SmileIDError.unknown("Unknown error"))
