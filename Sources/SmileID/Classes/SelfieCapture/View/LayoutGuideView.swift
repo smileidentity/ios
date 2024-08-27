@@ -4,16 +4,6 @@ struct LayoutGuideView: View {
     let layoutGuideFrame: CGRect
 
     var body: some View {
-//        Rectangle()
-//            .fill(.white)
-//            .reverseMask(alignment: .top) {
-//                Ellipse()
-//                    .frame(
-//                        width: layoutGuideFrame.width,
-//                        height: layoutGuideFrame.height
-//                    )
-//                    .padding(.top, 100)
-//            }
         VStack {
           Ellipse()
                 .stroke(.blue)

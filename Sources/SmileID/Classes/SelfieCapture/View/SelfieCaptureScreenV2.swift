@@ -53,7 +53,6 @@ public struct SelfieCaptureScreenV2: View {
             FaceLayoutGuideView(model: viewModel)
             VStack(spacing: 0) {
                 Spacer()
-                // Text("Progress: \(viewModel.captureProgress)")
                 Text("xDelta: \(viewModel.boundingXDelta)")
                 Text("yDelta: \(viewModel.boundingYDelta)")
                 switch viewModel.isAcceptableBounds {

@@ -355,11 +355,4 @@ extension SelfieViewModelV2 {
         isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
         isAcceptableQuality
     }
-    
-    func calculateActiveLivenessValidity() {
-        // hasCompletedLivenessChallenge = true
-       // lookLeftChallengeCompleted &&
-       // lookRightChallengeCompleted &&
-       // pitchChallengeCompleted
-    }
 }

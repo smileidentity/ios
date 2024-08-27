@@ -27,15 +27,11 @@ class FaceDetectorV2: NSObject {
             completionHandler: detectedFaceQualityRequest
         )
 
-//        let coreMLModel = createImageClassifier()
-//        let imageClassificationRequest = VNCoreMLRequest(model: coreMLModel, completionHandler: detectedSelfieQuality)
-
         do {
             try sequenceHandler.perform(
                 [
                     detectFaceRectanglesRequest,
                     detectCaptureQualityRequest
-                    // imageClassificationRequest
                 ],
                 on: imageBuffer,
                 orientation: .leftMirrored
@@ -61,9 +57,6 @@ class FaceDetectorV2: NSObject {
     }
 
     func selfieQualityRequest(imageBuffer: CVPixelBuffer) {
-        // let selfieQualityRequest = VNImageRequestHandler(cvPixelBuffer: imageBuffer)
-        // let model = createImageClassifier()
-        // let imageClassificationRequest = VNCoreMLRequest(model: model, completionHandler: detectedSelfieQuality)
 
         guard let model = model else { return }
 
@@ -129,22 +122,6 @@ class FaceDetectorV2: NSObject {
 
         return UIImage(cgImage: croppedImage)
     }
-
-    private func createImageClassifier() -> VNCoreMLModel {
-        let defaultConfig = MLModelConfiguration()
-        let imageClassifierWrapper = try? SelfieQualityDetector(configuration: defaultConfig)
-        guard let imageClassifier = imageClassifierWrapper else {
-            fatalError("Failed to create an image classifier model instance.")
-        }
-
-        let imageClassifierModel = imageClassifier.model
-
-        guard let imageClassifierVisionModel = try? VNCoreMLModel(for: imageClassifierModel) else {
-            fatalError("Failed to create a `VNCoreMLModel` instance.")
-        }
-
-        return imageClassifierVisionModel
-    }
 }
 
 // MARK: - Private methods
@@ -159,7 +136,6 @@ extension FaceDetectorV2 {
             return
         }
 
-        // let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
         let convertedBoundingBox = viewDelegate.convertFromMetadataToPreviewRect(rect: result.boundingBox)
 
         if #available(iOS 15.0, *) {
@@ -204,13 +180,5 @@ extension FaceDetectorV2 {
             quality: result.faceCaptureQuality ?? 0.0
         )
         model.perform(action: .faceQualityObservationDetected(faceQualityModel))
-    }
-
-    func detectedSelfieQuality(request: VNRequest, error: Error?) {
-        guard let observations = request.results as? [VNCoreMLFeatureValueObservation] else {
-            print("VNRequest produced the wrong result type: \(type(of: request.results)).")
-            return
-        }
-        observations.first?.featureValue
     }
 }
