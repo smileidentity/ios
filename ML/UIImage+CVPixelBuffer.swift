@@ -3,13 +3,6 @@ import VideoToolbox
 
 extension UIImage {
   /**
-    Converts the image to an ARGB `CVPixelBuffer`.
-  */
-  public func pixelBuffer() -> CVPixelBuffer? {
-    return pixelBuffer(width: Int(size.width), height: Int(size.height))
-  }
-
-  /**
     Resizes the image to `width` x `height` and converts it to an ARGB
     `CVPixelBuffer`.
   */
@@ -18,24 +11,6 @@ extension UIImage {
                        pixelFormatType: kCVPixelFormatType_32ARGB,
                        colorSpace: CGColorSpaceCreateDeviceRGB(),
                        alphaInfo: .noneSkipFirst)
-  }
-
-  /**
-    Converts the image to a grayscale `CVPixelBuffer`.
-  */
-  public func pixelBufferGray() -> CVPixelBuffer? {
-    return pixelBufferGray(width: Int(size.width), height: Int(size.height))
-  }
-
-  /**
-    Resizes the image to `width` x `height` and converts it to a grayscale
-    `CVPixelBuffer`.
-  */
-  public func pixelBufferGray(width: Int, height: Int) -> CVPixelBuffer? {
-    return pixelBuffer(width: width, height: height,
-                       pixelFormatType: kCVPixelFormatType_OneComponent8,
-                       colorSpace: CGColorSpaceCreateDeviceGray(),
-                       alphaInfo: .none)
   }
 
   /**
@@ -96,26 +71,6 @@ extension UIImage {
   */
   public convenience init?(pixelBuffer: CVPixelBuffer) {
     if let cgImage = CGImage.create(pixelBuffer: pixelBuffer) {
-      self.init(cgImage: cgImage)
-    } else {
-      return nil
-    }
-  }
-
-  /*
-  // Alternative implementation:
-  public convenience init?(pixelBuffer: CVPixelBuffer) {
-    // This converts the image to a CIImage first and then to a UIImage.
-    // Does not appear to work on the simulator but is OK on the device.
-    self.init(ciImage: CIImage(cvPixelBuffer: pixelBuffer))
-  }
-  */
-
-  /**
-    Creates a new UIImage from a CVPixelBuffer, using a Core Image context.
-  */
-  public convenience init?(pixelBuffer: CVPixelBuffer, context: CIContext) {
-    if let cgImage = CGImage.create(pixelBuffer: pixelBuffer, context: context) {
       self.init(cgImage: cgImage)
     } else {
       return nil
