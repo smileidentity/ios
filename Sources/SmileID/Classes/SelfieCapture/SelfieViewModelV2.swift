@@ -6,7 +6,7 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
     let cameraManager = CameraManager.shared
     let faceDetector = FaceDetectorV2()
-    private let activeLiveness = ActiveLivenessManager()
+    let activeLiveness = ActiveLivenessManager()
     private var subscribers = Set<AnyCancellable>()
 
     var selfieImage: URL?
@@ -61,10 +61,6 @@ public class SelfieViewModelV2: ObservableObject {
     private let selfieImageSize = 640
 
     // MARK: UI Properties
-    @Published private(set) var yawValue: Double = 0.0
-    @Published private(set) var rollValue: Double = 0.0
-    @Published private(set) var pitchValue: Double = 0.0
-    @Published private(set) var faceDirection: FaceDirection = .none
     @Published private(set) var faceQualityValue: Double = 0.0
     @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
     var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
@@ -149,10 +145,14 @@ public class SelfieViewModelV2: ObservableObject {
             publishFaceQualityObservation(faceQualityObservation)
         case let .selfieQualityObservationDetected(selfieQualityObservation):
             publishSelfieQualityObservation(selfieQualityObservation)
-        case .captureLivenessImage:
+        case let .activeLivenessInProgress(livenessTask):
+            publishDirective(livenessTask.directive)
+        case .activeLivenessCompleted:
+            // Completed at this stage: submit the images.
             return
-        case let .updateDirective(directive):
-            publishDirective(directive)
+        case .activeLivenessTimeout:
+            // Submit with forced failure reason here.
+            return
         case .toggleDebugMode:
             toggleDebugMode()
         case .openApplicationSettings:
@@ -274,14 +274,15 @@ extension SelfieViewModelV2 {
             directive = "An unexpected error ocurred"
         }
     }
-    
+
     func processUpdatedFaceGeometry() {
         switch faceGeometryState {
         case let .faceFound(faceGeometryModel):
-            updateFaceGeometryValues(using: faceGeometryModel)
-
             let boundingBox = faceGeometryModel.boundingBox
             updateAcceptableBounds(using: boundingBox)
+            if hasDetectedValidFace && selfieImage != nil {
+                activeLiveness.runLivenessChecks(with: faceGeometryModel)
+            }
         case .faceNotFound:
             invalidateFaceGeometryState()
         case let .errored(error):
@@ -293,16 +294,6 @@ extension SelfieViewModelV2 {
     func invalidateFaceGeometryState() {
         // This is where we reset all the face geometry values.
         isAcceptableBounds = .unknown
-    }
-
-    func updateFaceGeometryValues(using value: FaceGeometryModel) {
-        rollValue = value.roll.doubleValue
-        pitchValue = value.pitch.doubleValue
-        yawValue = value.yaw.doubleValue
-        faceDirection = value.direction
-        if hasDetectedValidFace && selfieImage != nil {
-            activeLiveness.performLivenessChecks(with: value)
-        }
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {

@@ -68,9 +68,9 @@ public struct SelfieCaptureScreenV2: View {
                     Text("Bounds - Appropriate Size and Position")
                 }
                 Divider()
-                Text("Yaw: \(viewModel.yawValue)")
-                Text("Row: \(viewModel.rollValue)")
-                Text("Pitch: \(viewModel.pitchValue)")
+                Text("Yaw: \(viewModel.activeLiveness.yawValue)")
+                Text("Row: \(viewModel.activeLiveness.rollValue)")
+                Text("Pitch: \(viewModel.activeLiveness.pitchValue)")
                 Text("Quality: \(viewModel.faceQualityValue)")
                 Text("Fail: \(viewModel.selfieQualityValue.failed) | Pass: \(viewModel.selfieQualityValue.passed)")
                     .font(.subheadline.weight(.medium))
@@ -79,7 +79,7 @@ public struct SelfieCaptureScreenV2: View {
                     .clipShape(.rect(cornerRadius: 5))
                     .padding(.bottom, 10)
                 HStack {
-                    switch viewModel.faceDirection {
+                    switch viewModel.activeLiveness.faceDirection {
                     case .left:
                         Text("Looking Left")
                     case .right:

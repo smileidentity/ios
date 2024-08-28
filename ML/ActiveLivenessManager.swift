@@ -18,26 +18,34 @@ enum LivenessTask {
     }
 }
 
-class ActiveLivenessManager {
+class ActiveLivenessManager: ObservableObject {
     private var tasks: [LivenessTask] = []
-    private(set) var currentTaskIndex: Int = 0 {
-        didSet {
-            model?.perform(action: .updateDirective(currentTask.directive))
-        }
-    }
-    private var livenessPhotos: [UIImage] = []
+    private(set) var currentTaskIndex: Int = 0
     weak var model: SelfieViewModelV2?
     var takePhoto: (() -> Void)?
 
     // MARK: Constants
-    private let yawThreshold: CGFloat = 0.5
-    private let pitchThreshold: CGFloat = 0.5
+    private let yawLeftMinThreshold: CGFloat = -0.15
+    private let yawLeftMaxThreshold: CGFloat = -0.6
+    private let yawRightMinThreshold: CGFloat = 0.15
+    private let yawRightMaxThreshold: CGFloat = 0.6
+    private let pitchMinThreshold: CGFloat = 0.15
+    private let pitchMaxThreshold: CGFloat = 0.6
+
+    // MARK: UI Properties
+    @Published private(set) var yawValue: Double = 0.0
+    @Published private(set) var yawLeftProgress: Double = 0.0
+    @Published private(set) var yawRightProgress: Double = 0.0
+    @Published private(set) var rollValue: Double = 0.0
+    @Published private(set) var pitchValue: Double = 0.0
+    @Published private(set) var pitchProgress: Double = 0.0
+    @Published private(set) var faceDirection: FaceDirection = .none
 
     init() {
         tasks = [.lookLeft, .lookRight, .lookUp].shuffled()
     }
 
-    private var currentTask: LivenessTask {
+    var currentTask: LivenessTask {
         guard !tasks.isEmpty, currentTaskIndex < tasks.count else {
             return tasks[0]
         }
@@ -52,21 +60,51 @@ class ActiveLivenessManager {
         return true
     }
 
-    func performLivenessChecks(with faceGeometryModel: FaceGeometryModel) {
+    func runLivenessChecks(with faceGeometryModel: FaceGeometryModel) {
+        yawValue = faceGeometryModel.yaw.doubleValue
+        rollValue = faceGeometryModel.roll.doubleValue
+        pitchValue = faceGeometryModel.pitch.doubleValue
+
         switch currentTask {
         case .lookLeft:
-            if CGFloat(faceGeometryModel.yaw.doubleValue) < -yawThreshold {
+            if yawLeftProgress < 1.0 {
+                yawLeftProgress = normalize(
+                    value: faceGeometryModel.yaw.doubleValue,
+                    minValue: min(-yawLeftMinThreshold, faceGeometryModel.yaw.doubleValue),
+                    maxValue: min(-yawLeftMaxThreshold, faceGeometryModel.yaw.doubleValue)
+                )
+            } else {
                 completeCurrentTask()
             }
         case .lookRight:
-            if CGFloat(faceGeometryModel.yaw.doubleValue) < yawThreshold {
+            if yawRightProgress < 1.0 {
+                yawRightProgress = normalize(
+                    value: faceGeometryModel.yaw.doubleValue,
+                    minValue: max(yawRightMinThreshold, faceGeometryModel.yaw.doubleValue),
+                    maxValue: max(yawRightMaxThreshold, faceGeometryModel.yaw.doubleValue)
+                )
+            } else {
                 completeCurrentTask()
             }
         case .lookUp:
-            if CGFloat(faceGeometryModel.pitch.doubleValue) > pitchThreshold {
+            if pitchProgress < 1.0 {
+                pitchProgress = normalize(
+                    value: faceGeometryModel.pitch.doubleValue,
+                    minValue: max(pitchMinThreshold, faceGeometryModel.yaw.doubleValue),
+                    maxValue: max(pitchMaxThreshold, faceGeometryModel.yaw.doubleValue)
+                )
+            } else {
                 completeCurrentTask()
             }
         }
+    }
+    
+    private func normalize(
+        value: Double,
+        minValue: Double,
+        maxValue: Double
+    ) -> Double {
+        return (value - minValue) / (maxValue - minValue)
     }
 
     private func completeCurrentTask() {
@@ -75,9 +113,9 @@ class ActiveLivenessManager {
         
         if !moveToNextTask() {
             // Liveness challenge complete
-            print("All steps completed. Photos captured: \(livenessPhotos.count)")
+            model?.perform(action: .activeLivenessCompleted)
         } else {
-            print("Moving to next step: \(currentTask)")
+            model?.perform(action: .activeLivenessInProgress(currentTask))
         }
     }
 }

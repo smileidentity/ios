@@ -9,10 +9,11 @@ enum SelfieViewModelAction {
     case faceObservationDetected(FaceGeometryModel)
     case faceQualityObservationDetected(FaceQualityModel)
     case selfieQualityObservationDetected(SelfieQualityModel)
-    case updateDirective(String)
+    case activeLivenessInProgress(LivenessTask)
+    case activeLivenessCompleted
+    case activeLivenessTimeout
 
     // Others
-    case captureLivenessImage
     case toggleDebugMode
     case openApplicationSettings
     case handleError(Error)
