@@ -20,7 +20,7 @@ enum LivenessTask {
 
 class ActiveLivenessManager: ObservableObject {
     private var tasks: [LivenessTask] = []
-    private(set) var currentTaskIndex: Int = 0
+    private var currentTaskIndex: Int = 0
     weak var model: SelfieViewModelV2?
     var takePhoto: (() -> Void)?
 
@@ -45,25 +45,27 @@ class ActiveLivenessManager: ObservableObject {
         tasks = [.lookLeft, .lookRight, .lookUp].shuffled()
     }
 
-    var currentTask: LivenessTask {
-        guard !tasks.isEmpty, currentTaskIndex < tasks.count else {
-            return tasks[0]
-        }
-        return tasks[currentTaskIndex]
-    }
+    private(set) var currentTask: LivenessTask?
 
     private func moveToNextTask() -> Bool {
         guard currentTaskIndex < tasks.count - 1 else {
             return false
         }
         currentTaskIndex += 1
+        currentTask = tasks[currentTaskIndex]
         return true
+    }
+    
+    func setInitialTask() {
+        currentTask = tasks[currentTaskIndex]
     }
 
     func runLivenessChecks(with faceGeometryModel: FaceGeometryModel) {
         yawValue = faceGeometryModel.yaw.doubleValue
         rollValue = faceGeometryModel.roll.doubleValue
         pitchValue = faceGeometryModel.pitch.doubleValue
+
+        guard let currentTask = currentTask else { return }
 
         switch currentTask {
         case .lookLeft:
@@ -114,8 +116,7 @@ class ActiveLivenessManager: ObservableObject {
         if !moveToNextTask() {
             // Liveness challenge complete
             model?.perform(action: .activeLivenessCompleted)
-        } else {
-            model?.perform(action: .activeLivenessInProgress(currentTask))
+            self.currentTask = nil
         }
     }
 }

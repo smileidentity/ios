@@ -125,6 +125,7 @@ public class SelfieViewModelV2: ObservableObject {
         faceDetector.detect(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
             captureSelfieImage(imageBuffer)
+            activeLiveness.setInitialTask()
         }
 
         activeLiveness.takePhoto = { [weak self] in
@@ -145,8 +146,6 @@ public class SelfieViewModelV2: ObservableObject {
             publishFaceQualityObservation(faceQualityObservation)
         case let .selfieQualityObservationDetected(selfieQualityObservation):
             publishSelfieQualityObservation(selfieQualityObservation)
-        case let .activeLivenessInProgress(livenessTask):
-            publishDirective(livenessTask.directive)
         case .activeLivenessCompleted:
             // Completed at this stage: submit the images.
             return
@@ -198,10 +197,6 @@ public class SelfieViewModelV2: ObservableObject {
             faceDetectedState = .faceDetected
             selfieQualityState = .faceFound(selfieQualityModel)
         }
-    }
-
-    private func publishDirective(_ value: String) {
-        directive = value
     }
 
     private func captureSelfieImage(_ pixelBuffer: CVPixelBuffer) {
@@ -256,7 +251,9 @@ extension SelfieViewModelV2 {
         switch faceDetectedState {
         case .faceDetected:
             if hasDetectedValidFace {
-                directive = "Please take your photo"
+                if let currentLivenessTask = activeLiveness.currentTask {
+                    directive = currentLivenessTask.directive
+                }
             } else if isAcceptableBounds == .detectedFaceTooSmall {
                 directive = "Please bring your face closer to the camera"
             } else if isAcceptableBounds == .detectedFaceTooLarge {
@@ -280,7 +277,9 @@ extension SelfieViewModelV2 {
         case let .faceFound(faceGeometryModel):
             let boundingBox = faceGeometryModel.boundingBox
             updateAcceptableBounds(using: boundingBox)
-            if hasDetectedValidFace && selfieImage != nil {
+            if hasDetectedValidFace &&
+                selfieImage != nil &&
+                activeLiveness.currentTask != nil {
                 activeLiveness.runLivenessChecks(with: faceGeometryModel)
             }
         case .faceNotFound:
