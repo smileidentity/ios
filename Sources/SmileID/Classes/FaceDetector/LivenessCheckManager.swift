@@ -31,7 +31,7 @@ class LivenessCheckManager: ObservableObject {
     var captureImage: (() -> Void)?
 
     // MARK: Constants
-    
+
     /// The minimum threshold for yaw (left-right head movement)
     private let minYawAngleThreshold: CGFloat = 0.15
     /// The maximum threshold for yaw (left-right head movement)
@@ -70,7 +70,7 @@ class LivenessCheckManager: ObservableObject {
     func initiateLivenessCheck() {
         currentTask = livenessTaskSequence[currentTaskIndex]
     }
-    
+
     /// Processes face geometry data and checks for task completion
     /// - Parameter faceGeometry: The current face geometry data.
     func processFaceGeometry(_ faceGeometry: FaceGeometryModel) {
