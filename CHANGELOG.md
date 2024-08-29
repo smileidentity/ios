@@ -1,5 +1,13 @@
 # Release Notes
 
+## 10.2.8
+
+### Changed
+* Smartselfie captures now return relative file urls as the rest of the products
+
+### Added
+* Zip files from prepupload request
+
 ## 10.2.7
 
 ### Changed
