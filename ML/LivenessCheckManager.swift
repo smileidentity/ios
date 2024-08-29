@@ -21,9 +21,13 @@ enum LivenessTask {
 }
 
 class LivenessCheckManager: ObservableObject {
+    /// The sequence of liveness tasks to be performed.
     private var livenessTaskSequence: [LivenessTask] = []
+    /// The index pointing to the current task in the sequence.
     private var currentTaskIndex: Int = 0
+    /// The view model associated with the selfie capture process.
     weak var selfieViewModel: SelfieViewModelV2?
+    /// A closure to trigger photo capture during the liveness check.
     var captureImage: (() -> Void)?
 
     // MARK: Constants
