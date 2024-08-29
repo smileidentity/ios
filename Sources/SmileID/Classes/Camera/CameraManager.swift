@@ -41,7 +41,7 @@ class CameraManager: NSObject, ObservableObject {
     private let photoOutput = AVCapturePhotoOutput()
     @Published private(set) var status = Status.unconfigured
     private var orientation: Orientation
-    
+
     static let shared: CameraManager = CameraManager(orientation: .portrait)
 
     private init(orientation: Orientation) {

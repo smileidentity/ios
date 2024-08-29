@@ -70,7 +70,7 @@ class ActiveLivenessManager: ObservableObject {
             }
         case .lookRight:
             let yawValue = CGFloat(faceGeometryModel.yaw.doubleValue)
-            if yawValue > yawMinThreshold  {
+            if yawValue > yawMinThreshold {
                 completeCurrentTask()
             }
         case .lookUp:

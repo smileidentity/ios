@@ -1,5 +1,6 @@
 import AVFoundation
 import Combine
+import UIKit
 import Vision
 
 protocol FaceDetectorDelegate: NSObjectProtocol {
