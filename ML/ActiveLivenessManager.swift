@@ -25,20 +25,15 @@ class ActiveLivenessManager: ObservableObject {
     var takePhoto: (() -> Void)?
 
     // MARK: Constants
-    private let yawLeftMinThreshold: CGFloat = -0.15
-    private let yawLeftMaxThreshold: CGFloat = -0.6
-    private let yawRightMinThreshold: CGFloat = 0.15
-    private let yawRightMaxThreshold: CGFloat = 0.6
+    private let yawMinThreshold: CGFloat = 0.15
+    private let yawMaxThreshold: CGFloat = 0.6
     private let pitchMinThreshold: CGFloat = 0.15
     private let pitchMaxThreshold: CGFloat = 0.6
 
     // MARK: UI Properties
     @Published private(set) var yawValue: Double = 0.0
-    @Published private(set) var yawLeftProgress: Double = 0.0
-    @Published private(set) var yawRightProgress: Double = 0.0
     @Published private(set) var rollValue: Double = 0.0
     @Published private(set) var pitchValue: Double = 0.0
-    @Published private(set) var pitchProgress: Double = 0.0
     @Published private(set) var faceDirection: FaceDirection = .none
 
     init() {
@@ -55,7 +50,7 @@ class ActiveLivenessManager: ObservableObject {
         currentTask = tasks[currentTaskIndex]
         return true
     }
-    
+
     func setInitialTask() {
         currentTask = tasks[currentTaskIndex]
     }
@@ -69,38 +64,23 @@ class ActiveLivenessManager: ObservableObject {
 
         switch currentTask {
         case .lookLeft:
-            if yawLeftProgress < 1.0 {
-                yawLeftProgress = normalize(
-                    value: faceGeometryModel.yaw.doubleValue,
-                    minValue: min(-yawLeftMinThreshold, faceGeometryModel.yaw.doubleValue),
-                    maxValue: min(-yawLeftMaxThreshold, faceGeometryModel.yaw.doubleValue)
-                )
-            } else {
+            let yawValue = CGFloat(faceGeometryModel.yaw.doubleValue)
+            if yawValue < -yawMinThreshold {
                 completeCurrentTask()
             }
         case .lookRight:
-            if yawRightProgress < 1.0 {
-                yawRightProgress = normalize(
-                    value: faceGeometryModel.yaw.doubleValue,
-                    minValue: max(yawRightMinThreshold, faceGeometryModel.yaw.doubleValue),
-                    maxValue: max(yawRightMaxThreshold, faceGeometryModel.yaw.doubleValue)
-                )
-            } else {
+            let yawValue = CGFloat(faceGeometryModel.yaw.doubleValue)
+            if yawValue > yawMinThreshold  {
                 completeCurrentTask()
             }
         case .lookUp:
-            if pitchProgress < 1.0 {
-                pitchProgress = normalize(
-                    value: faceGeometryModel.pitch.doubleValue,
-                    minValue: max(pitchMinThreshold, faceGeometryModel.yaw.doubleValue),
-                    maxValue: max(pitchMaxThreshold, faceGeometryModel.yaw.doubleValue)
-                )
-            } else {
+            let pitchValue = CGFloat(faceGeometryModel.pitch.doubleValue)
+            if pitchValue < -pitchMinThreshold {
                 completeCurrentTask()
             }
         }
     }
-    
+
     private func normalize(
         value: Double,
         minValue: Double,
@@ -112,7 +92,7 @@ class ActiveLivenessManager: ObservableObject {
     private func completeCurrentTask() {
         takePhoto?()
         takePhoto?()
-        
+
         if !moveToNextTask() {
             // Liveness challenge complete
             model?.perform(action: .activeLivenessCompleted)

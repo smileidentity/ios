@@ -45,7 +45,12 @@ public class SelfieViewModelV2: ObservableObject {
             calculateDetectedFaceValidity()
         }
     }
-    @Published private(set) var isAcceptableQuality: Bool {
+    @Published private(set) var isAcceptableFaceQuality: Bool {
+        didSet {
+            calculateDetectedFaceValidity()
+        }
+    }
+    @Published private(set) var isAcceptableSelfieQuality: Bool {
         didSet {
             calculateDetectedFaceValidity()
         }
@@ -98,7 +103,8 @@ public class SelfieViewModelV2: ObservableObject {
         faceQualityState = .faceNotFound
         selfieQualityState = .faceNotFound
         isAcceptableBounds = .unknown
-        isAcceptableQuality = false
+        isAcceptableFaceQuality = false
+        isAcceptableSelfieQuality = false
 
         #if DEBUG
             debugEnabled = true
@@ -253,6 +259,8 @@ extension SelfieViewModelV2 {
             if hasDetectedValidFace {
                 if let currentLivenessTask = activeLiveness.currentTask {
                     directive = currentLivenessTask.directive
+                } else {
+                    directive = ""
                 }
             } else if isAcceptableBounds == .detectedFaceTooSmall {
                 directive = "Please bring your face closer to the camera"
@@ -260,7 +268,7 @@ extension SelfieViewModelV2 {
                 directive = "Please hold the camera further from your face"
             } else if isAcceptableBounds == .detectedFaceOffCentre {
                 directive = "Please move your face to the center of the frame"
-            } else if !isAcceptableQuality {
+            } else if !isAcceptableSelfieQuality {
                 directive = "Image quality is too low"
             } else {
                 directive = "We cannot take your photo right now"
@@ -318,13 +326,13 @@ extension SelfieViewModelV2 {
         switch faceQualityState {
         case let .faceFound(faceQualityModel):
             // Check acceptable range here.
-            isAcceptableQuality = faceQualityModel.quality > 0.2
+            isAcceptableFaceQuality = faceQualityModel.quality > 0.2
             faceQualityValue = Double(faceQualityModel.quality)
         case .faceNotFound:
-            isAcceptableQuality = false
+            isAcceptableFaceQuality = false
         case let .errored(error):
             print(error.localizedDescription)
-            isAcceptableQuality = false
+            isAcceptableFaceQuality = false
         }
     }
 
@@ -332,17 +340,20 @@ extension SelfieViewModelV2 {
         switch selfieQualityState {
         case let .faceFound(selfieQualityModel):
             // Check acceptable range here.
+            isAcceptableSelfieQuality = selfieQualityModel.passed > 0.5
             selfieQualityValue = selfieQualityModel
         case .faceNotFound:
-            return
+            isAcceptableSelfieQuality = false
         case let .errored(error):
             print(error.localizedDescription)
+            isAcceptableSelfieQuality = false
         }
     }
 
     func calculateDetectedFaceValidity() {
         hasDetectedValidFace =
         isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
-        isAcceptableQuality
+        isAcceptableFaceQuality &&
+        isAcceptableSelfieQuality
     }
 }
