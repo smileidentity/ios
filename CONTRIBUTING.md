@@ -16,6 +16,18 @@ We use [`rake`](https://github.com/ruby/rake) for task automation.
 - iOS 13 or higher
 - Xcode 14 or higher
 
+## Sentry setup (Sample app only)
+
+```shell
+export SENTRY_DSN='your_sentry_dsn'
+```
+Run the following command to install the required variable for use in the example app
+
+```shell
+bundle exec arkana -c .arkana.yml -l swift 
+```
+bundle exec rake test:package
+
 ## SDK Tests
 
 ```shell

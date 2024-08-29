@@ -47,6 +47,7 @@ archives
 *.mobileprovision
 *.sentryclirc
 .sentryclirc
+**/ArkanaKeys/
 
 # JetBrains/AppCode
 .idea

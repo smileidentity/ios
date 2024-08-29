@@ -171,7 +171,7 @@ public class LocalStorage {
         let data = try Data(contentsOf: authenticationrequest!)
         return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
     }
-    
+
     static func saveOfflineJob(
         jobId: String,
         userId: String,
@@ -292,12 +292,59 @@ public class LocalStorage {
         }
     }
 
+    public static func toZip(uploadRequest: UploadRequest) throws -> Data {
+        var destinationFolder: String?
+        // Extract directory paths from all images and check for consistency
+        for imageInfo in uploadRequest.images {
+            let folder = extractDirectoryPath(from: imageInfo.fileName)
+            if let existingDestinationFolder = destinationFolder {
+                if folder != existingDestinationFolder {
+                    throw SmileIDError.fileNotFound("Job not found")
+                }
+            } else {
+                destinationFolder = folder
+            }
+        }
+
+        // Ensure a destination folder was found
+        guard let finalDestinationFolder = destinationFolder else {
+            throw SmileIDError.fileNotFound("Job not found")
+        }
+
+        // Get the URL for the JSON file
+        let jsonUrl = try LocalStorage.getInfoJsonFile(jobId: finalDestinationFolder)
+
+        // Create full URLs for all images
+        let imageUrls = uploadRequest.images.map { imageInfo in
+            URL(fileURLWithPath: finalDestinationFolder).appendingPathComponent(imageInfo.fileName)
+        }
+
+        var allUrls = imageUrls
+
+        do {
+            let jsonUrl = try LocalStorage.getInfoJsonFile(jobId: finalDestinationFolder)
+            allUrls.append(jsonUrl)
+        } catch {
+            debugPrint("Warning: info.json file not found. Continuing without it.")
+        }
+
+        // Zip all files
+        return try zipFiles(at: allUrls)
+    }
+
     public static func zipFiles(at urls: [URL]) throws -> Data {
         let archive = try Archive(accessMode: .create)
         for url in urls {
             try archive.addEntry(with: url.lastPathComponent, fileURL: url)
         }
         return archive.data!
+    }
+
+    private static func extractDirectoryPath(from path: String) -> String? {
+        let url = URL(fileURLWithPath: path)
+        // Remove the last component and add a trailing slash
+        let directoryPath = url.deletingLastPathComponent().path + "/"
+        return directoryPath
     }
 
     private static func delete(at url: URL) throws {
