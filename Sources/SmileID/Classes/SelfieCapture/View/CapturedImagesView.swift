@@ -36,7 +36,6 @@ struct CapturedImagesView: View {
                 .foregroundColor(.primary)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .frame(height: 342)
                 .navigationBarTitle(Text("Captured Images"))
                 .onAppear {
                     loadImages()
