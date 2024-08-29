@@ -8,6 +8,7 @@ protocol FaceDetectorDelegate: NSObjectProtocol {
 }
 
 class FaceDetectorV2: NSObject {
+    private let cropSize = (width: 120, height: 120)
     private let faceMovementThreshold: CGFloat = 0.15
 
     var sequenceHandler = VNSequenceRequestHandler()
@@ -48,7 +49,7 @@ class FaceDetectorV2: NSObject {
             guard let croppedImage = try cropToFace(image: image) else {
                 return
             }
-            guard let convertedImage = croppedImage.pixelBuffer(width: 120, height: 120) else {
+            guard let convertedImage = croppedImage.pixelBuffer(width: cropSize.width, height: cropSize.height) else {
                 return
             }
             selfieQualityRequest(imageBuffer: convertedImage)
