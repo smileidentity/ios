@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://docs.usesmileid.com/integration-options/mobile/ios-v10-beta'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Japhet' => 'japhet@usesmileid.com', 'Juma Allan' => 'juma@usesmileid.com', 'Vansh Gandhi' => 'vansh@usesmileid.com'}
-  s.source           = { :git => "https://github.com/smileidentity/ios.git", :tag => "v10.2.7" }
+  s.source           = { :git => "https://github.com/smileidentity/ios.git", :tag => "v10.2.8" }
   s.ios.deployment_target = '13.0'
   s.dependency 'ZIPFoundation', '~> 0.9'
   s.dependency 'lottie-ios', '~> 4.4.2'
