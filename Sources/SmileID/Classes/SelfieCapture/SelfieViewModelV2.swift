@@ -6,7 +6,7 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
     let cameraManager = CameraManager.shared
     let faceDetector = FaceDetectorV2()
-    let activeLiveness = ActiveLivenessManager()
+    let activeLiveness = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
 
     var selfieImage: URL?
@@ -112,7 +112,7 @@ public class SelfieViewModelV2: ObservableObject {
             debugEnabled = false
         #endif
 
-        self.faceDetector.model = self
+        self.faceDetector.selfieViewModel = self
 
         cameraManager.$status
             .receive(on: DispatchQueue.main)
@@ -131,10 +131,10 @@ public class SelfieViewModelV2: ObservableObject {
         faceDetector.detect(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
             captureSelfieImage(imageBuffer)
-            activeLiveness.setInitialTask()
+            activeLiveness.initiateLivenessCheck()
         }
 
-        activeLiveness.takePhoto = { [weak self] in
+        activeLiveness.captureImage = { [weak self] in
             self?.captureLivenessImage(imageBuffer)
         }
     }
@@ -258,7 +258,7 @@ extension SelfieViewModelV2 {
         case .faceDetected:
             if hasDetectedValidFace {
                 if let currentLivenessTask = activeLiveness.currentTask {
-                    directive = currentLivenessTask.directive
+                    directive = currentLivenessTask.instruction
                 } else {
                     directive = ""
                 }
@@ -288,7 +288,7 @@ extension SelfieViewModelV2 {
             if hasDetectedValidFace &&
                 selfieImage != nil &&
                 activeLiveness.currentTask != nil {
-                activeLiveness.runLivenessChecks(with: faceGeometryModel)
+                activeLiveness.processFaceGeometry(faceGeometryModel)
             }
         case .faceNotFound:
             invalidateFaceGeometryState()

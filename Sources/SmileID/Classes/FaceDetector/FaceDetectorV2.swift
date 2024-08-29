@@ -13,7 +13,7 @@ class FaceDetectorV2: NSObject {
     var sequenceHandler = VNSequenceRequestHandler()
     var currentFrameBuffer: CVPixelBuffer?
 
-    weak var model: SelfieViewModelV2?
+    weak var selfieViewModel: SelfieViewModelV2?
     weak var viewDelegate: FaceDetectorDelegate?
 
     /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
@@ -38,7 +38,7 @@ class FaceDetectorV2: NSObject {
                 orientation: .leftMirrored
             )
         } catch {
-            model?.perform(action: .handleError(error))
+            selfieViewModel?.perform(action: .handleError(error))
         }
 
         do {
@@ -53,13 +53,13 @@ class FaceDetectorV2: NSObject {
             }
             selfieQualityRequest(imageBuffer: convertedImage)
         } catch {
-            model?.perform(action: .handleError(error))
+            selfieViewModel?.perform(action: .handleError(error))
         }
     }
 
     func selfieQualityRequest(imageBuffer: CVPixelBuffer) {
 
-        guard let model = model else { return }
+        guard let selfieViewModel = selfieViewModel else { return }
 
         do {
             let modelConfiguration = MLModelConfiguration()
@@ -83,9 +83,9 @@ class FaceDetectorV2: NSObject {
                 failed: failScore,
                 passed: passScore
             )
-            model.perform(action: .selfieQualityObservationDetected(selfieQualityModel))
+            selfieViewModel.perform(action: .selfieQualityObservationDetected(selfieQualityModel))
         } catch {
-            model.perform(action: .handleError(error))
+            selfieViewModel.perform(action: .handleError(error))
         }
     }
 
@@ -128,12 +128,12 @@ class FaceDetectorV2: NSObject {
 // MARK: - Private methods
 extension FaceDetectorV2 {
     func detectedFaceRectangles(request: VNRequest, error: Error?) {
-        guard let model = model,
+        guard let selfieViewModel = selfieViewModel,
               let viewDelegate = viewDelegate else { return }
 
         guard let results = request.results as? [VNFaceObservation],
                 let result = results.first else {
-            model.perform(action: .noFaceDetected)
+            selfieViewModel.perform(action: .noFaceDetected)
             return
         }
 
@@ -147,7 +147,7 @@ extension FaceDetectorV2 {
                 pitch: result.pitch ?? 0.0,
                 direction: faceDirection(faceObservation: result)
             )
-            model.perform(action: .faceObservationDetected(faceObservationModel))
+            selfieViewModel.perform(action: .faceObservationDetected(faceObservationModel))
         } else {
             // Fallback on earlier versions
         }
@@ -169,17 +169,17 @@ extension FaceDetectorV2 {
     }
 
     func detectedFaceQualityRequest(request: VNRequest, error: Error?) {
-        guard let model = model else { return }
+        guard let selfieViewModel = selfieViewModel else { return }
 
         guard let results = request.results as? [VNFaceObservation],
                 let result = results.first else {
-            model.perform(action: .noFaceDetected)
+            selfieViewModel.perform(action: .noFaceDetected)
             return
         }
 
         let faceQualityModel = FaceQualityModel(
             quality: result.faceCaptureQuality ?? 0.0
         )
-        model.perform(action: .faceQualityObservationDetected(faceQualityModel))
+        selfieViewModel.perform(action: .faceQualityObservationDetected(faceQualityModel))
     }
 }
