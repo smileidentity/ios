@@ -6,7 +6,7 @@ struct CapturedImagesView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView(.horizontal, showsIndicators: false) {
+            ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
                     if let selfieURL = model.selfieImage,
                        let selfieImage = loadImage(from: selfieURL) {
@@ -19,12 +19,14 @@ struct CapturedImagesView: View {
                             .font(.title)
                     }
                     if !images.isEmpty {
-                        HStack {
-                            ForEach(images, id: \.self) { image in
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 148, height: 320)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                ForEach(images, id: \.self) { image in
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 148, height: 320)
+                                }
                             }
                         }
                     } else {
@@ -36,7 +38,7 @@ struct CapturedImagesView: View {
                 .foregroundColor(.primary)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .navigationBarTitle(Text("Captured Images"))
+                .navigationBarTitle(Text("Captured Images"), displayMode: .inline)
                 .onAppear {
                     loadImages()
                 }

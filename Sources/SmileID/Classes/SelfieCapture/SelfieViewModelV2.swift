@@ -122,6 +122,8 @@ public class SelfieViewModelV2: ObservableObject {
             .store(in: &subscribers)
 
         cameraManager.sampleBufferPublisher
+            // Drop the first ~2 seconds to allow the user to settle in
+            .dropFirst(5)
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
