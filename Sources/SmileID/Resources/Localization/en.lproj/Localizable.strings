@@ -22,6 +22,7 @@
 "Instructions.PutFaceInOval" = "Position your face in the oval";
 "Instructions.Quality" = "Move to well lit area and clear face of obstructions";
 "Instructions.Start" = "Put your face inside the oval frame and wait until it turns green";
+"Instructions.SelfieCapture" = "Position you head in camera frame. \nThen move in the direction that is indicated";
 "Instructions.Document.Front.Header" = "Submit Front of ID";
 "Instructions.Document.Front.Callout" = "We'll use it to verify your identity. Please follow the instructions below";
 "Instructions.Document.GoodLightBody" = "Make sure your ID image is taken in a well-lit environment. Ensure the ID is clear and visible.";
@@ -45,6 +46,7 @@
 "Action.TakePhoto" = "Take Photo";
 "Action.UploadPhoto" = "Upload Photo";
 "Action.Skip" = "Skip back of ID";
+"Action.GetStarted" = "Get Started";
 
 "Camera.AgentMode" = "Agent Mode";
 "Camera.Unauthorized.Title" = "Allow access to your camera";

@@ -13,15 +13,81 @@ public struct SelfieCaptureScreenV2: View {
                     .onAppear {
                         viewModel.cameraManager.switchCamera(to: .front)
                     }
-                LayoutGuideView(layoutGuideFrame: viewModel.faceLayoutGuideFrame)
 
-                if viewModel.debugEnabled {
-                    DebugView()
+                Rectangle()
+                    .fill(.white)
+                    .reverseMask {
+                        Circle()
+                            .frame(width: 260, height: 260)
+                    }
+
+                // Face Bounds Indicator
+                Circle()
+                    .stroke(.red, lineWidth: 10)
+                    .frame(width: 275, height: 275)
+                    .hidden()
+
+                // Container for Lottie Animation
+                Circle()
+                    .fill(.black.opacity(0.7))
+                    .frame(width: 260, height: 260)
+                    .overlay(
+                        Text("Lottie animation\ngoes here.")
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                    )
+
+                // Liveness Guides
+                ZStack {
+                    // Look Up Guides
+                    Circle()
+                        .trim(from: 0.85, to: 1.0)
+                        .rotation(.degrees(-65))
+                        .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+                        .foregroundColor(.gray.opacity(0.3))
+                        .frame(width: 300, height: 300)
+                    Circle()
+                        .trim(from: 0.85, to: 0.95)
+                        .rotation(.degrees(-65))
+                        .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+                        .foregroundColor(.green)
+                        .frame(width: 300, height: 300)
+                    // Look Right Guides
+                    Circle()
+                        .trim(from: 0.85, to: 1.0)
+                        .rotation(.degrees(25))
+                        .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+                        .foregroundColor(.gray.opacity(0.3))
+                        .frame(width: 300, height: 300)
+                    Circle()
+                        .trim(from: 0.85, to: 1.0)
+                        .rotation(.degrees(25))
+                        .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+                        .foregroundColor(.gray.opacity(0.3))
+                        .frame(width: 300, height: 300)
+                    // Look Left Guides
+                    Circle()
+                        .trim(from: 0.85, to: 1.0)
+                        .rotation(.degrees(210))
+                        .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+                        .foregroundColor(.gray.opacity(0.3))
+                        .frame(width: 300, height: 300)
+                    Circle()
+                        .trim(from: 0.85, to: 1.0)
+                        .rotation(.degrees(210))
+                        .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+                        .foregroundColor(.gray.opacity(0.3))
+                        .frame(width: 300, height: 300)
                 }
                 VStack {
-                    UserInstructionsView(model: viewModel)
+                    Text(viewModel.directive)
+                        .multilineTextAlignment(.center)
+                        .font(SmileID.theme.header1)
+                        .foregroundColor(SmileID.theme.accent)
+                        .padding(.top, 80)
                     Spacer()
                 }
+                .padding()
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {

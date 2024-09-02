@@ -42,20 +42,20 @@ class FaceDetectorV2: NSObject {
             selfieViewModel?.perform(action: .handleError(error))
         }
 
-        do {
-            guard let image = UIImage(pixelBuffer: imageBuffer) else {
-                return
-            }
-            guard let croppedImage = try cropToFace(image: image) else {
-                return
-            }
-            guard let convertedImage = croppedImage.pixelBuffer(width: cropSize.width, height: cropSize.height) else {
-                return
-            }
-            selfieQualityRequest(imageBuffer: convertedImage)
-        } catch {
-            selfieViewModel?.perform(action: .handleError(error))
-        }
+//        do {
+//            guard let image = UIImage(pixelBuffer: imageBuffer) else {
+//                return
+//            }
+//            guard let croppedImage = try cropToFace(image: image) else {
+//                return
+//            }
+//            guard let convertedImage = croppedImage.pixelBuffer(width: cropSize.width, height: cropSize.height) else {
+//                return
+//            }
+//            selfieQualityRequest(imageBuffer: convertedImage)
+//        } catch {
+//            selfieViewModel?.perform(action: .handleError(error))
+//        }
     }
 
     func selfieQualityRequest(imageBuffer: CVPixelBuffer) {
