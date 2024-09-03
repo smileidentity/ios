@@ -46,7 +46,7 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
 //            SmartSelfieInstructionsScreen(showAttribution: showAttribution) {
 //                acknowledgedInstructions = true
 //            }
-            SelfieCaptureInstructionsView(showAttribution: showAttribution) {
+            LivenessCaptureInstructionsView(showAttribution: showAttribution) {
                 acknowledgedInstructions = true
             }
         } else {

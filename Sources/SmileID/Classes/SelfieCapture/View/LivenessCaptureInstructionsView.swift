@@ -1,7 +1,7 @@
 import Lottie
 import SwiftUI
 
-public struct SelfieCaptureInstructionsView: View {
+public struct LivenessCaptureInstructionsView: View {
     let showAttribution: Bool
     let onInstructionsAcknowledged: () -> Void
 
