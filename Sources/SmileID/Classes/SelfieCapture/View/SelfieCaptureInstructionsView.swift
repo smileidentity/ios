@@ -1,3 +1,4 @@
+import Lottie
 import SwiftUI
 
 public struct SelfieCaptureInstructionsView: View {
@@ -6,10 +7,12 @@ public struct SelfieCaptureInstructionsView: View {
 
     public var body: some View {
         VStack {
-            Circle()
-                .stroke(SmileID.theme.onDark, lineWidth: 10)
-                .frame(width: 235, height: 235)
-                .padding(.top, 100)
+            LottieView {
+              try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)
+            }
+            .playing(loopMode: .loop)
+            .frame(width: 235, height: 235)
+            .padding(.top, 100)
             Spacer()
             Text(SmileIDResourcesHelper.localizedString(for: "Instructions.SelfieCapture"))
                 .multilineTextAlignment(.center)
