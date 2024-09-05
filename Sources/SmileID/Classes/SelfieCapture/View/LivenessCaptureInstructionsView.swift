@@ -7,11 +7,14 @@ public struct LivenessCaptureInstructionsView: View {
 
     public var body: some View {
         VStack {
-            LottieView {
-              try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)
+            ZStack {
+                TripleArcProgressView()
+//                LottieView {
+//                  try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)
+//                }
+//                .playing(loopMode: .loop)
+//                .frame(width: 235, height: 235)
             }
-            .playing(loopMode: .loop)
-            .frame(width: 235, height: 235)
             .padding(.top, 100)
             Spacer()
             Text(SmileIDResourcesHelper.localizedString(for: "Instructions.SelfieCapture"))
