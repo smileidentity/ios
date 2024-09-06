@@ -11,6 +11,7 @@ public struct DocumentCaptureScreen: View {
     let instructionsSubtitleText: String
     let captureTitleText: String
     let knownIdAspectRatio: Double?
+    let showConfirmation: Bool = true
     let onConfirm: (Data) -> Void
     let onError: (Error) -> Void
     let onSkip: () -> Void
@@ -49,64 +50,88 @@ public struct DocumentCaptureScreen: View {
     }
 
     public var body: some View {
-        if let captureError = viewModel.captureError {
-            let _ = onError(captureError)
-        } else if showInstructions, !viewModel.acknowledgedInstructions {
-            DocumentCaptureInstructionsScreen(
-                heroImage: instructionsHeroImage,
-                title: instructionsTitleText,
-                subtitle: instructionsSubtitleText,
-                showAttribution: showAttribution,
-                allowPhotoFromGallery: allowGallerySelection,
-                showSkipButton: showSkipButton,
-                onSkip: onSkip,
-                onInstructionsAcknowledgedSelectFromGallery: viewModel.onGalleryClick,
-                onInstructionsAcknowledgedTakePhoto: viewModel.onTakePhotoClick
-            )
-            .sheet(isPresented: $viewModel.showPhotoPicker) {
-                ImagePicker(onImageSelected: viewModel.onPhotoSelectedFromGallery)
+        ZStack {
+            if let captureError = viewModel.captureError {
+                errorView(error: captureError)
+            } else if showInstructions && !viewModel.acknowledgedInstructions {
+                instructionsView
+            } else if let imageToConfirm = viewModel.documentImageToConfirm {
+                confirmationView(imageToConfirm: imageToConfirm)
+            } else {
+                captureView
             }
-        } else if let imageToConfirm = viewModel.documentImageToConfirm {
-            ImageCaptureConfirmationDialog(
-                title: SmileIDResourcesHelper.localizedString(for: "Document.Confirmation.Header"),
-                subtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Confirmation.Callout"
-                ),
-                image: UIImage(data: imageToConfirm) ?? UIImage(),
-                confirmationButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Confirmation.Accept"
-                ),
-                onConfirm: { onConfirm(imageToConfirm) },
-                retakeButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Confirmation.Decline"
-                ),
-                onRetake: viewModel.onRetry,
-                scaleFactor: 1.0
-            )
-        } else {
-            CaptureScreenContent(
-                title: captureTitleText,
-                subtitle: SmileIDResourcesHelper.localizedString(for: viewModel.directive.rawValue),
-                idAspectRatio: viewModel.idAspectRatio,
-                areEdgesDetected: viewModel.areEdgesDetected,
-                showCaptureInProgress: viewModel.isCapturing,
-                showManualCaptureButton: viewModel.showManualCaptureButton,
-                cameraManager: viewModel.cameraManager,
-                onCaptureClick: viewModel.captureDocument
-            )
-            .alert(item: $viewModel.unauthorizedAlert) { alert in
-                Alert(
-                    title: Text(alert.title),
-                    message: Text(alert.message ?? ""),
-                    primaryButton: .default(
-                        Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
-                        action: {
-                            viewModel.openSettings()
-                        }
+        }
+    }
+
+    private var instructionsView: some View {
+        DocumentCaptureInstructionsScreen(
+            heroImage: instructionsHeroImage,
+            title: instructionsTitleText,
+            subtitle: instructionsSubtitleText,
+            showAttribution: showAttribution,
+            allowPhotoFromGallery: allowGallerySelection,
+            showSkipButton: showSkipButton,
+            onSkip: onSkip,
+            onInstructionsAcknowledgedSelectFromGallery: viewModel.onGalleryClick,
+            onInstructionsAcknowledgedTakePhoto: viewModel.onTakePhotoClick
+        )
+        .sheet(isPresented: $viewModel.showPhotoPicker) {
+            ImagePicker(onImageSelected: viewModel.onPhotoSelectedFromGallery)
+        }
+    }
+
+    private func errorView(error: Error) -> some View {
+        Color.clear.onAppear { onError(error) }
+    }
+
+    private func confirmationView(imageToConfirm: Data) -> some View {
+        Group {
+            if showConfirmation {
+                ImageCaptureConfirmationDialog(
+                    title: SmileIDResourcesHelper.localizedString(for: "Document.Confirmation.Header"),
+                    subtitle: SmileIDResourcesHelper.localizedString(
+                        for: "Document.Confirmation.Callout"
                     ),
-                    secondaryButton: .cancel()
+                    image: UIImage(data: imageToConfirm) ?? UIImage(),
+                    confirmationButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Document.Confirmation.Accept"
+                    ),
+                    onConfirm: { onConfirm(imageToConfirm) },
+                    retakeButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Document.Confirmation.Decline"
+                    ),
+                    onRetake: viewModel.onRetry,
+                    scaleFactor: 1.0
                 )
+            } else {
+                Color.clear.onAppear { onConfirm(imageToConfirm) }
             }
+        }
+    }
+
+    private var captureView: some View {
+        CaptureScreenContent(
+            title: captureTitleText,
+            subtitle: SmileIDResourcesHelper.localizedString(for: viewModel.directive.rawValue),
+            idAspectRatio: viewModel.idAspectRatio,
+            areEdgesDetected: viewModel.areEdgesDetected,
+            showCaptureInProgress: viewModel.isCapturing,
+            showManualCaptureButton: viewModel.showManualCaptureButton,
+            cameraManager: viewModel.cameraManager,
+            onCaptureClick: viewModel.captureDocument
+        )
+        .alert(item: $viewModel.unauthorizedAlert) { alert in
+            Alert(
+                title: Text(alert.title),
+                message: Text(alert.message ?? ""),
+                primaryButton: .default(
+                    Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
+                    action: {
+                        viewModel.openSettings()
+                    }
+                ),
+                secondaryButton: .cancel()
+            )
         }
     }
 }
