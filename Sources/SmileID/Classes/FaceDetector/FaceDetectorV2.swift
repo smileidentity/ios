@@ -8,6 +8,8 @@ protocol FaceDetectorDelegate: NSObjectProtocol {
 }
 
 class FaceDetectorV2: NSObject {
+    private var selfieQualityModel: SelfieQualityDetector?
+
     private let cropSize = (width: 120, height: 120)
     private let faceMovementThreshold: CGFloat = 0.15
 
@@ -16,6 +18,21 @@ class FaceDetectorV2: NSObject {
 
     weak var selfieViewModel: SelfieViewModelV2?
     weak var viewDelegate: FaceDetectorDelegate?
+
+    override init() {
+        super.init()
+        selfieQualityModel = createImageClassifier()
+    }
+
+    private func createImageClassifier() -> SelfieQualityDetector? {
+        do {
+            let modelConfiguration = MLModelConfiguration()
+            let coreMLModel = try SelfieQualityDetector(configuration: modelConfiguration)
+            return coreMLModel
+        } catch {
+            return nil
+        }
+    }
 
     /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
     func detect(_ imageBuffer: CVPixelBuffer) {
@@ -59,16 +76,12 @@ class FaceDetectorV2: NSObject {
     }
 
     func selfieQualityRequest(imageBuffer: CVPixelBuffer) {
-
-        guard let selfieViewModel = selfieViewModel else { return }
-
+        guard let selfieViewModel,
+                let selfieQualityModel  else { return }
         do {
-            let modelConfiguration = MLModelConfiguration()
-            let coreMLModel = try SelfieQualityDetector(configuration: modelConfiguration)
-
             let input = SelfieQualityDetectorInput(conv2d_193_input: imageBuffer)
 
-            let prediction = try coreMLModel.prediction(input: input)
+            let prediction = try selfieQualityModel.prediction(input: input)
             let output = prediction.Identity
 
             guard output.shape.count == 2,
