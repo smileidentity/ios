@@ -11,7 +11,7 @@ public struct DocumentCaptureScreen: View {
     let instructionsSubtitleText: String
     let captureTitleText: String
     let knownIdAspectRatio: Double?
-    let showConfirmation: Bool = true
+    let showConfirmation: Bool
     let onConfirm: (Data) -> Void
     let onError: (Error) -> Void
     let onSkip: () -> Void
@@ -29,6 +29,7 @@ public struct DocumentCaptureScreen: View {
         instructionsSubtitleText: String,
         captureTitleText: String,
         knownIdAspectRatio: Double?,
+        showConfirmation: Bool = true,
         onConfirm: @escaping (Data) -> Void,
         onError: @escaping (Error) -> Void,
         onSkip: @escaping () -> Void = {}
@@ -43,6 +44,7 @@ public struct DocumentCaptureScreen: View {
         self.instructionsSubtitleText = instructionsSubtitleText
         self.captureTitleText = captureTitleText
         self.knownIdAspectRatio = knownIdAspectRatio
+        self.showConfirmation = showConfirmation
         self.onConfirm = onConfirm
         self.onError = onError
         self.onSkip = onSkip
