@@ -59,9 +59,6 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var boundingYDelta: CGFloat = .zero
 
     // MARK: Constants
-    private let maxFaceYawThreshold: Double = 15
-    private let maxFaceRollThreshold: Double = 15
-    private let maxFacePitchThreshold: Double = 15
     private let livenessImageSize = 320
     private let selfieImageSize = 640
 

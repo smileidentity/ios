@@ -94,7 +94,7 @@ class SelfieQualityDetector {
 
     /// URL of model assuming it was installed in the same bundle as this class
     class var urlOfModelInThisBundle : URL {
-        let bundle = Bundle(for: self)
+        let bundle = SmileIDResourcesHelper.bundle
         return bundle.url(forResource: "SelfieQualityDetector", withExtension:"mlmodelc")!
     }
 
