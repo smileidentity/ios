@@ -22,7 +22,7 @@ public class SmileID {
 
     public private(set) static var config: Config!
     public private(set) static var useSandbox = false
-    public private(set) static var allowOfflineMode = true
+    public private(set) static var allowOfflineMode = false
     public private(set) static var callbackUrl: String = ""
     static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
