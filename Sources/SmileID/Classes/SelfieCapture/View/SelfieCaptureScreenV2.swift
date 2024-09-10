@@ -34,7 +34,6 @@ public struct SelfieCaptureScreenV2: View {
                             .fontWeight(.medium)
                             .foregroundColor(.white)
                     )
-                LivenessGuidesView()
                 VStack {
                     Text(viewModel.directive)
                         .multilineTextAlignment(.center)
@@ -44,12 +43,6 @@ public struct SelfieCaptureScreenV2: View {
                     Spacer()
                 }
                 .padding()
-
-                // Container for Lottie Animation
-                LottieView {
-                    try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)
-                }
-                .frame(width: 235, height: 235)
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {

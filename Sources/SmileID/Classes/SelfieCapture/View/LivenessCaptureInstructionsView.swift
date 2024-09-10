@@ -8,12 +8,11 @@ public struct LivenessCaptureInstructionsView: View {
     public var body: some View {
         VStack {
             ZStack {
-                TripleArcProgressView()
-//                LottieView {
-//                  try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)
-//                }
-//                .playing(loopMode: .loop)
-//                .frame(width: 235, height: 235)
+                LottieView {
+                    try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)
+                }
+                .playing(loopMode: .loop)
+                .frame(width: 235, height: 235)
             }
             .padding(.top, 100)
             Spacer()
