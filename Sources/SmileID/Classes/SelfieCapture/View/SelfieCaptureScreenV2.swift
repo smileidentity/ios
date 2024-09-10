@@ -26,8 +26,6 @@ public struct SelfieCaptureScreenV2: View {
                     .stroke(.red, lineWidth: 10)
                     .frame(width: 275, height: 275)
                     .hidden()
-
-                // Container for Lottie Animation
                 Circle()
                     .fill(.black.opacity(0.7))
                     .frame(width: 260, height: 260)
@@ -46,6 +44,12 @@ public struct SelfieCaptureScreenV2: View {
                     Spacer()
                 }
                 .padding()
+
+                // Container for Lottie Animation
+                LottieView {
+                    try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)
+                }
+                .frame(width: 235, height: 235)
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {
