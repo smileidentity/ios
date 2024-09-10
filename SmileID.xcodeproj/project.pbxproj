@@ -65,7 +65,7 @@
 		1F57B39849B01BB6E26B7F3B /* DocumentCaptureInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540FE72848132B16535C7281 /* DocumentCaptureInstructionsScreen.swift */; };
 		1F76F767069D4436C8AF6074 /* Injected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB66DD1BDD5A4C66AC800B3 /* Injected.swift */; };
 		20F003CB2C873B6900672247 /* instructions_no_progress.lottie in Resources */ = {isa = PBXBuildFile; fileRef = 20F003C72C873B6900672247 /* instructions_no_progress.lottie */; };
-		20F003CC2C873B6900672247 /* SelfieQualityDetector.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 20F003C92C873B6900672247 /* SelfieQualityDetector.mlmodelc */; };
+		20991A4E2C8625EE00C0B13E /* SelfieQualityDetector.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 20991A4C2C8625EE00C0B13E /* SelfieQualityDetector.mlmodelc */; };
 		216916E16C0F6C9CBD698C92 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1C11D7A28442BD26144875 /* ImageExtensions.swift */; };
 		2228D942A74ACE036BCC6AC3 /* OrchestratedDocumentVerificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389AF9529CF6ADA5A11D4D6 /* OrchestratedDocumentVerificationViewModel.swift */; };
 		225873F4B9CFD28079C4E610 /* FaceShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60101EA1F67FE523A8D10E2F /* FaceShape.swift */; };
@@ -762,6 +762,7 @@
 		204E25AA87E9519F31645909 /* DocumentCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureScreen.swift; sourceTree = "<group>"; };
 		2057FBF6B6724BE33B6CC727 /* DocumentCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureScreen.swift; sourceTree = "<group>"; };
 		208563C91ED929072F239DE9 /* NavigationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationHelper.swift; path = Sources/SmileID/Classes/Helpers/NavigationHelper.swift; sourceTree = "<group>"; };
+		20991A4C2C8625EE00C0B13E /* SelfieQualityDetector.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SelfieQualityDetector.mlmodelc; sourceTree = "<group>"; };
 		209BE3605849ED55515BE4BF /* OrchestratedDocumentVerificationViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationViewModel.swift; path = Sources/SmileID/Classes/DocumentVerification/Model/OrchestratedDocumentVerificationViewModel.swift; sourceTree = "<group>"; };
 		20BD76F142CABEAE07EF1F67 /* SmileIDService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDService.swift; path = Sources/SmileID/Classes/Networking/SmileIDService.swift; sourceTree = "<group>"; };
 		20CAE1873FDA57190CC2F915 /* HTTPHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPHeader.swift; path = Sources/SmileID/Classes/Networking/HTTPHeader.swift; sourceTree = "<group>"; };
@@ -6527,7 +6528,7 @@
 			isa = PBXGroup;
 			children = (
 				20F003C82C873B6900672247 /* LottieFiles */,
-				20F003CA2C873B6900672247 /* ML */,
+				20991A4D2C8625EE00C0B13E /* ML */,
 				5829A8C42BC8494F001C1E7E /* PrivacyInfo.xcprivacy */,
 				1EEFC2C02B58412300B8A934 /* Media.xcassets */,
 				1EEFC2C12B58412300B8A934 /* Fonts */,
@@ -6612,10 +6613,10 @@
 			path = LottieFiles;
 			sourceTree = "<group>";
 		};
-		20F003CA2C873B6900672247 /* ML */ = {
+		20991A4D2C8625EE00C0B13E /* ML */ = {
 			isa = PBXGroup;
 			children = (
-				20F003C92C873B6900672247 /* SelfieQualityDetector.mlmodelc */,
+				20991A4C2C8625EE00C0B13E /* SelfieQualityDetector.mlmodelc */,
 			);
 			path = ML;
 			sourceTree = "<group>";
@@ -6753,6 +6754,7 @@
 				1EEFC3342B58412400B8A934 /* Localizable.strings in Resources */,
 				20F003CB2C873B6900672247 /* instructions_no_progress.lottie in Resources */,
 				1EEFC3312B58412400B8A934 /* Media.xcassets in Resources */,
+				20991A4E2C8625EE00C0B13E /* SelfieQualityDetector.mlmodelc in Resources */,
 				1EEFC3332B58412400B8A934 /* Epilogue-Bold.ttf in Resources */,
 				1EEFC2E92B58412300B8A934 /* ARViewController.xib in Resources */,
 				1EEFC3322B58412400B8A934 /* Epilogue-Medium.ttf in Resources */,

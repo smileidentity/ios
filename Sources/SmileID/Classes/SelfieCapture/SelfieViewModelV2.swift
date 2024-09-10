@@ -59,9 +59,6 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var boundingYDelta: CGFloat = .zero
 
     // MARK: Constants
-    private let maxFaceYawThreshold: Double = 15
-    private let maxFaceRollThreshold: Double = 15
-    private let maxFacePitchThreshold: Double = 15
     private let livenessImageSize = 320
     private let selfieImageSize = 640
 
@@ -122,6 +119,8 @@ public class SelfieViewModelV2: ObservableObject {
             .store(in: &subscribers)
 
         cameraManager.sampleBufferPublisher
+            // Drop the first ~2 seconds to allow the user to settle in
+            .dropFirst(5)
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
