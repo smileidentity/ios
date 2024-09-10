@@ -4,104 +4,131 @@ import Lottie
 public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
-
-    @State private var playbackMode: LottiePlaybackMode = LottiePlaybackMode.paused
+    @State private var showImages: Bool = false
 
     public var body: some View {
-        VStack(spacing: 40) {
-            Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
-                .font(SmileID.theme.header2)
-                .foregroundColor(.primary)
-
+        GeometryReader { proxy in
             ZStack {
-                RoundedRectangle(cornerRadius: 25)
-                    .stroke(SmileID.theme.onLight, lineWidth: 20.0)
-                    CameraView(cameraManager: viewModel.cameraManager)
-                        .clipShape(.rect(cornerRadius: 25))
-                        .onAppear {
-                            viewModel.cameraManager.switchCamera(to: .front)
-                        }
-                CornerShapes()
-                RoundedRectangle(cornerRadius: 25)
-                    .foregroundColor(.white.opacity(0.8))
-                    .cutout(Ellipse().scale(x: 0.8, y: 0.8))
-            }
-            .frame(width: 300, height: 400)
-
-            if showAttribution {
-                Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .alert(item: $viewModel.unauthorizedAlert) { alert in
-            Alert(
-                title: Text(alert.title),
-                message: Text(alert.message ?? ""),
-                primaryButton: .default(
-                    Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
-                    action: {
-                        viewModel.openSettings()
+                CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
+                    .onAppear {
+                        viewModel.cameraManager.switchCamera(to: .front)
                     }
-                ),
-                secondaryButton: .cancel()
-            )
+                LayoutGuideView(layoutGuideFrame: viewModel.faceLayoutGuideFrame)
+
+                if viewModel.debugEnabled {
+                    DebugView()
+                }
+                VStack {
+                    UserInstructionsView(model: viewModel)
+                    Spacer()
+                }
+            }
+            .edgesIgnoringSafeArea(.all)
+            .onAppear {
+                viewModel.perform(action: .windowSizeDetected(proxy.frame(in: .global)))
+            }
+            .alert(item: $viewModel.unauthorizedAlert) { alert in
+                Alert(
+                    title: Text(alert.title),
+                    message: Text(alert.message ?? ""),
+                    primaryButton: .default(
+                        Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
+                        action: {
+                            viewModel.perform(action: .openApplicationSettings)
+                        }
+                    ),
+                    secondaryButton: .cancel()
+                )
+            }
+            .sheet(isPresented: $showImages) {
+                CapturedImagesView(model: viewModel)
+            }
         }
     }
 
     // swiftlint:disable identifier_name
-    @ViewBuilder func CornerShapes() -> some View {
-        VStack {
-            HStack {
-                // Top Left Corner
-                CornerShape()
-                    .stroke(SmileID.theme.success, style: StrokeStyle(lineWidth: 5))
-                    .frame(width: 40, height: 40)
-                    .rotationEffect(.degrees(90))
-                    .offset(x: -2.0, y: -2.0)
+    @ViewBuilder func DebugView() -> some View {
+        ZStack {
+            FaceBoundingBoxView(model: viewModel)
+            FaceLayoutGuideView(model: viewModel)
+            VStack(spacing: 0) {
                 Spacer()
-                // Top Right Corner
-                CornerShape()
-                    .stroke(SmileID.theme.success, style: StrokeStyle(lineWidth: 5))
-                    .frame(width: 40, height: 40)
-                    .rotationEffect(.degrees(180))
-                    .offset(x: 2.0, y: -2.0)
+                Text("xDelta: \(viewModel.boundingXDelta)")
+                Text("yDelta: \(viewModel.boundingYDelta)")
+                switch viewModel.isAcceptableBounds {
+                case .unknown:
+                    Text("Bounds - Unknown")
+                case .detectedFaceTooSmall:
+                    Text("Bounds - Face too small")
+                case .detectedFaceTooLarge:
+                    Text("Bounds - Face too large")
+                case .detectedFaceOffCentre:
+                    Text("Bounds - Face off Center")
+                case .detectedFaceAppropriateSizeAndPosition:
+                    Text("Bounds - Appropriate Size and Position")
+                }
+                Divider()
+                Text("Yaw: \(viewModel.activeLiveness.yawAngle)")
+                Text("Row: \(viewModel.activeLiveness.rollAngle)")
+                Text("Pitch: \(viewModel.activeLiveness.pitchAngle)")
+                Text("Quality: \(viewModel.faceQualityValue)")
+                Text("Fail: \(viewModel.selfieQualityValue.failed) | Pass: \(viewModel.selfieQualityValue.passed)")
+                    .font(.subheadline.weight(.medium))
+                    .padding(5)
+                    .background(Color.yellow)
+                    .clipShape(.rect(cornerRadius: 5))
+                    .padding(.bottom, 10)
+                HStack {
+                    switch viewModel.activeLiveness.faceDirection {
+                    case .left:
+                        Text("Looking Left")
+                    case .right:
+                        Text("Looking Right")
+                    case .none:
+                        Text("Looking Straight")
+                    }
+                    Spacer()
+                    Button {
+                        showImages = true
+                    } label: {
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(.yellow)
+                            .frame(width: 50, height: 50)
+                            .overlay(
+                                Text("\(viewModel.livenessImages.count + (viewModel.selfieImage != nil ? 1 : 0))")
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.primary)
+                            )
+                    }
+                }
             }
-            Spacer()
-            HStack {
-                // Bottom Left Corner
-                CornerShape()
-                    .stroke(SmileID.theme.success, style: StrokeStyle(lineWidth: 5))
-                    .frame(width: 40, height: 40)
-                    .offset(x: -2.0, y: 2.0)
-                Spacer()
-                // Bottom Right Corner
-                CornerShape()
-                    .stroke(SmileID.theme.success, style: StrokeStyle(lineWidth: 5))
-                    .frame(width: 40, height: 40)
-                    .rotationEffect(.degrees(270))
-                    .offset(x: 2.0, y: 2.0)
-            }
+            .font(.footnote)
+            .foregroundColor(.white)
+            .padding(.bottom, 40)
+            .padding(.horizontal)
         }
     }
-}
 
-struct CornerShape: Shape {
-    let width: CGFloat = 40
-    let height: CGFloat = 40
-    let cornerRadius: CGFloat = 25
-
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: 0, y: 0))
-        path.addLine(to: CGPoint(x: 0, y: height - cornerRadius))
-        path.addArc(
-            center: CGPoint(x: cornerRadius, y: height - cornerRadius),
-            radius: cornerRadius,
-            startAngle: .degrees(180),
-            endAngle: .degrees(90),
-            clockwise: true
-        )
-        path.addLine(to: CGPoint(x: width, y: height))
-        return path
+    // swiftlint:disable identifier_name
+    @ViewBuilder func CameraOverlayView() -> some View {
+        VStack {
+            HStack {
+                Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
+                    .font(SmileID.theme.header2)
+                    .foregroundColor(.primary)
+                    .padding(.bottom)
+            }
+            .background(Color.black)
+            Spacer()
+            HStack {
+                Button {
+                    viewModel.perform(action: .toggleDebugMode)
+                } label: {
+                    Image(systemName: "ladybug")
+                        .font(.title)
+                }
+                .buttonStyle(.plain)
+            }
+        }
     }
 }

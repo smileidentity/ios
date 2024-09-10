@@ -26,7 +26,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let extraPartnerParams: [String: String]
     private let faceDetector = FaceDetector()
 
-    var cameraManager = CameraManager(orientation: .portrait)
+    var cameraManager = CameraManager.shared
     var shouldAnalyzeImages = true
     var lastAutoCaptureTime = Date()
     var previousHeadRoll = Double.infinity

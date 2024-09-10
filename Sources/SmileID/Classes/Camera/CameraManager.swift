@@ -42,7 +42,9 @@ class CameraManager: NSObject, ObservableObject {
     @Published private(set) var status = Status.unconfigured
     private var orientation: Orientation
 
-    init(orientation: Orientation) {
+    static let shared: CameraManager = CameraManager(orientation: .portrait)
+
+    private init(orientation: Orientation) {
         self.orientation = orientation
         super.init()
         sessionQueue.async {

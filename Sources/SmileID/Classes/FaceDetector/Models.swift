@@ -1,19 +1,15 @@
 import Foundation
 
 enum FaceDetectionState: Equatable {
-    case sceneUnstable
-    case finalFrame
-    case multipleFacesDetected
     case faceDetected
     case noFaceDetected
     case faceDetectionErrored
-    case smileFrame
 }
 
-enum FaceObservation<T: Equatable, E: Equatable>: Equatable {
+enum FaceObservation<T> {
     case faceFound(T)
     case faceNotFound
-    case errored(E)
+    case errored(Error)
 }
 
 enum FaceBoundsState {
