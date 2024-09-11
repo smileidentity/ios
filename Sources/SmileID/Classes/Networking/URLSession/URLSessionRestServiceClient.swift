@@ -13,11 +13,14 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     typealias URLSessionResponse = (data: Data, response: URLResponse)
     let session: URLSessionPublisher
     let decoder = JSONDecoder()
+    let uploadRequestTimeout: TimeInterval
 
     public init(
-        session: URLSessionPublisher = URLSession.shared
+        session: URLSessionPublisher = URLSession.shared,
+        uploadRequestTimeout: TimeInterval = SmileID.defaultUploadRequestTimeout
     ) {
         self.session = session
+        self.uploadRequestTimeout = uploadRequestTimeout
     }
 
     func send<T: Decodable>(request: RestRequest) async throws -> T {
@@ -36,7 +39,11 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
             do {
                 let urlRequest = try request.getUploadRequest()
                 let delegate = URLDelegate(continuation: continuation)
-                let uploadSession = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
+
+                let configuration = URLSessionConfiguration.default
+                configuration.timeoutIntervalForRequest = uploadRequestTimeout
+                let uploadSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+
                 uploadSession.uploadTask(with: urlRequest, from: request.body) { data, response, error in
                     if let error = error {
                         continuation.finish(throwing: error)

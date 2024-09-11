@@ -3,6 +3,8 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
+    /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
+    public static let defaultUploadRequestTimeout: TimeInterval = 60
     public static let version = "10.2.9"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
@@ -12,7 +14,11 @@ public class SmileID {
     static let instance: SmileID = {
         let container = DependencyContainer.shared
         container.register(SmileIDServiceable.self) { SmileIDService() }
-        container.register(RestServiceClient.self) { URLSessionRestServiceClient() }
+        container.register(RestServiceClient.self) {
+            URLSessionRestServiceClient(
+                uploadRequestTimeout: SmileID.uploadRequestTimeout
+            )
+        }
         container.register(ServiceHeaderProvider.self) { DefaultServiceHeaderProvider() }
         let instance = SmileID()
         return instance
@@ -27,6 +33,8 @@ public class SmileID {
     static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     private(set) static var localizableStrings: SmileIDLocalizableStrings?
+    /// The timeout interval for upload requests. This value is initialized to the `defaultUploadRequestTimeout`.
+    private(set) static var uploadRequestTimeout: TimeInterval = SmileID.defaultUploadRequestTimeout
 
     /// This method initializes SmileID. Invoke this method once in your application lifecycle
     /// before calling any other SmileID methods.
@@ -34,11 +42,18 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
+    ///   - uploadRequestTimeout: The timeout interval for upload requests.
     public class func initialize(
         config: Config = getConfig(),
-        useSandbox: Bool = false
+        useSandbox: Bool = false,
+        uploadRequestTimeout: TimeInterval = SmileID.defaultUploadRequestTimeout
     ) {
-        initialize(apiKey: nil, config: config, useSandbox: useSandbox)
+        initialize(
+            apiKey: nil,
+            config: config,
+            useSandbox: useSandbox,
+            uploadRequestTimeout: uploadRequestTimeout
+        )
     }
 
     /// This method initializes SmileID. Invoke this method once in your application lifecylce
@@ -48,14 +63,17 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
+    ///   - uploadRequestTimeout: The timeout interval for upload requests.
     public class func initialize(
         apiKey: String? = nil,
         config: Config = getConfig(),
-        useSandbox: Bool = false
+        useSandbox: Bool = false,
+        uploadRequestTimeout: TimeInterval = SmileID.defaultUploadRequestTimeout
     ) {
         self.config = config
         self.useSandbox = useSandbox
         self.apiKey = apiKey
+        self.uploadRequestTimeout = uploadRequestTimeout
         SmileIDResourcesHelper.registerFonts()
     }
 
