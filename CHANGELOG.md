@@ -1,4 +1,8 @@
 # Release Notes
+## 10.2.10
+
+### Added
+* Document capture cleanup and optionally showing confirmation and returning the captured image if false
 
 ## 10.2.9
 
