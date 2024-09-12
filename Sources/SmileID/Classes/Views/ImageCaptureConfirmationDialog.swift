@@ -20,7 +20,7 @@ public struct ImageCaptureConfirmationDialog: View {
     public let retakeButtonText: String
     public let onRetake: () -> Void
     public let scaleFactor: Double
-    
+
     public init(
         title: String,
         subtitle: String,
@@ -40,7 +40,7 @@ public struct ImageCaptureConfirmationDialog: View {
         self.onRetake = onRetake
         self.scaleFactor = scaleFactor
     }
-    
+
     public var body: some View {
         VStack(spacing: 32) {
             VStack(spacing: 16) {
