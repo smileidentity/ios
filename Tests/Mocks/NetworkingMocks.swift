@@ -58,14 +58,11 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func upload(zip _: Data = Data(), to _: String = "") async throws -> AsyncThrowingStream<UploadResponse, Error> {
-        return AsyncThrowingStream { continuation in
-            let response = UploadResponse.response(data: Data())
-            if MockHelper.shouldFail {
-                continuation.finish(throwing: SmileIDError.request(URLError(.resourceUnavailable)))
-            } else {
-                continuation.yield(response)
-            }
+    func upload(zip _: Data = Data(), to _: String = "") async throws -> Data {
+        if MockHelper.shouldFail {
+            throw SmileIDError.request(URLError(.resourceUnavailable))
+        } else {
+            return Data()
         }
     }
 

@@ -34,28 +34,21 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    public func upload(request: RestRequest) async throws -> AsyncThrowingStream<UploadResponse, Error> {
-        AsyncThrowingStream<UploadResponse, Error> { continuation in
-            do {
-                let urlRequest = try request.getUploadRequest()
-                let delegate = URLDelegate(continuation: continuation)
+    public func upload(request: RestRequest) async throws -> Data {
+        guard let requestBody = request.body else {
+            throw SmileIDError.invalidRequestBody
+        }
 
-                let configuration = URLSessionConfiguration.default
-                configuration.timeoutIntervalForRequest = uploadRequestTimeout
-                let uploadSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        do {
+            let urlRequest = try request.getUploadRequest()
+            let configuration = URLSessionConfiguration.default
+            configuration.timeoutIntervalForRequest = uploadRequestTimeout
+            let uploadSession = URLSession(configuration: configuration)
 
-                uploadSession.uploadTask(with: urlRequest, from: request.body) { data, response, error in
-                    if let error = error {
-                        continuation.finish(throwing: error)
-                        return
-                    }
-                    if (response as? HTTPURLResponse)?.statusCode == 200 {
-                        continuation.yield(.response(data: data))
-                    }
-                }.resume()
-            } catch {
-                continuation.finish(throwing: error)
-            }
+            let urlSessionResponse = try await uploadSession.upload(for: urlRequest, from: requestBody)
+            return try checkStatusCode(urlSessionResponse)
+        } catch {
+            throw mapToAPIError(error)
         }
     }
 

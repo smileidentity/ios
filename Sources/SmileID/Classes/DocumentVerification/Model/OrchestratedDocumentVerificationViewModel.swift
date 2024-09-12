@@ -212,7 +212,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                         throw error
                     }
                 }
-                _ = try await SmileID.api.upload(
+                let _ = try await SmileID.api.upload(
                     zip: zipData,
                     to: prepUploadResponse.uploadUrl
                 )

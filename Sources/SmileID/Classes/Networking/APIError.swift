@@ -11,6 +11,7 @@ public enum SmileIDError: Error {
     case consentDenied
     case invalidJobId
     case fileNotFound(String)
+    case invalidRequestBody
 }
 
 extension SmileIDError: LocalizedError {
@@ -36,6 +37,8 @@ extension SmileIDError: LocalizedError {
             return "Invalid jobId or not found"
         case .fileNotFound(let message):
             return message
+        case .invalidRequestBody:
+            return "Invalid request body. The request data is missing or empty."
         }
     }
 }

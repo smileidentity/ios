@@ -143,7 +143,6 @@ public class SmileID {
             throw SmileIDError.fileNotFound("Prep Upload file is missing")
         }
         Task {
-            let zip: Data
             do {
                 let authRequest = AuthenticationRequest(
                     jobType: authRequestFile.jobType,
