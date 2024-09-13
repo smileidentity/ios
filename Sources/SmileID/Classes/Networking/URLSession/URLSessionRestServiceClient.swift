@@ -74,7 +74,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
             return .unknown(error.localizedDescription)
         }
     }
-    
+
     private struct ErrorResponse: Codable {
         let error: String
     }

@@ -62,7 +62,7 @@ func toErrorMessage(error: SmileIDError) -> (String, String?) {
         return (errorMessage, message)
     case let .request(error):
         return (error.localizedDescription, nil)
-    case .httpError(let code, let message):
+    case .httpError(_, let message):
         return ("", message)
     default:
         return ("Confirmation.FailureReason", nil)
