@@ -74,22 +74,33 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
             return .unknown(error.localizedDescription)
         }
     }
+    
+    private struct ErrorResponse: Codable {
+        let error: String
+    }
 
     private func checkStatusCode(_ urlSessionResponse: URLSessionResponse) throws -> Data {
+        let decoder = JSONDecoder()
         guard let httpResponse = urlSessionResponse.response as? HTTPURLResponse,
               httpResponse.isSuccess
         else {
-            if let decodedError = try? JSONDecoder().decode(
+            if let decodedError = try? decoder.decode(
                 SmileIDErrorResponse.self,
                 from: urlSessionResponse.data
             ) {
                 throw SmileIDError.api(decodedError.code, decodedError.message)
             }
-            throw SmileIDError.httpError(
-                (
+            if let httpError = try? decoder.decode(
+                ErrorResponse.self,
+                from: urlSessionResponse.data
+            ) {
+                throw SmileIDError.httpError((
                     urlSessionResponse.response as? HTTPURLResponse
-                )?.statusCode ?? 500,
-                urlSessionResponse.data
+                )?.statusCode ?? 500, httpError.error)
+            }
+            throw SmileIDError.httpError(
+                (urlSessionResponse.response as? HTTPURLResponse)?.statusCode ?? 500,
+                "Unknown error occurred"
             )
         }
 

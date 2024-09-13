@@ -6,7 +6,7 @@ public enum SmileIDError: Error {
     case decode(DecodingError)
     case unknown(String)
     case api(String, String)
-    case httpError(Int, Data)
+    case httpError(Int, String)
     case jobStatusTimeOut
     case consentDenied
     case invalidJobId
@@ -26,7 +26,7 @@ extension SmileIDError: LocalizedError {
         case .unknown(let message):
             return message
         case .httpError(let statusCode, let data):
-            return "HTTP Error with status code \(statusCode) and \(String(describing: data))"
+            return "HTTP Error with status code \(statusCode) and \(data)"
         case .api(_, let message):
             return message
         case .jobStatusTimeOut:
