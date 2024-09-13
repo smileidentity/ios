@@ -55,7 +55,8 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
-    ///   - requestTimeout: The timeout interval for all requests. An interval greater than `defaultRequestTimeout` is recommended.
+    ///   - requestTimeout: The timeout interval for all requests.
+    ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
         config: Config = getConfig(),
         useSandbox: Bool = false,
@@ -76,7 +77,8 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
-    ///   - requestTimeout: The timeout interval for all requests. An interval greater than `defaultRequestTimeout` is recommended.
+    ///   - requestTimeout: The timeout interval for all requests. 
+    ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
         apiKey: String? = nil,
         config: Config = getConfig(),
