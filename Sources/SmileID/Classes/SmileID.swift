@@ -3,7 +3,9 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
-    public static let version = "10.2.9"
+    /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
+    public static let defaultRequestTimeout: TimeInterval = 60
+    public static let version = "10.2.10"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -12,21 +14,40 @@ public class SmileID {
     static let instance: SmileID = {
         let container = DependencyContainer.shared
         container.register(SmileIDServiceable.self) { SmileIDService() }
-        container.register(RestServiceClient.self) { URLSessionRestServiceClient() }
+        container.register(RestServiceClient.self) {
+            URLSessionRestServiceClient(
+                session: SmileID.urlSession,
+                requestTimeout: SmileID.requestTimeout
+            )
+        }
         container.register(ServiceHeaderProvider.self) { DefaultServiceHeaderProvider() }
         let instance = SmileID()
         return instance
+    }()
+
+    /// A private static constant that initializes a `URLSession` with a default configuration.
+    /// This `URLSession` is used for creating `URLSessionDataTask`s in the networking layer.
+    /// The session configuration sets the timeout interval for requests to the value specified by `SmileID.requestTimeout`.
+    ///
+    /// - Returns: A `URLSession` instance with the specified configuration.
+    private static let urlSession: URLSession = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = SmileID.requestTimeout
+        let session = URLSession(configuration: configuration)
+        return session
     }()
 
     private init() {}
 
     public private(set) static var config: Config!
     public private(set) static var useSandbox = false
-    public private(set) static var allowOfflineMode = true
+    public private(set) static var allowOfflineMode = false
     public private(set) static var callbackUrl: String = ""
     static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     private(set) static var localizableStrings: SmileIDLocalizableStrings?
+    /// The timeout interval for requests. This value is initialized to the `defaultRequestTimeout`.
+    private(set) static var requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
 
     /// This method initializes SmileID. Invoke this method once in your application lifecycle
     /// before calling any other SmileID methods.
@@ -34,11 +55,19 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
+    ///   - requestTimeout: The timeout interval for all requests.
+    ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
         config: Config = getConfig(),
-        useSandbox: Bool = false
+        useSandbox: Bool = false,
+        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
-        initialize(apiKey: nil, config: config, useSandbox: useSandbox)
+        initialize(
+            apiKey: nil,
+            config: config,
+            useSandbox: useSandbox,
+            requestTimeout: requestTimeout
+        )
     }
 
     /// This method initializes SmileID. Invoke this method once in your application lifecylce
@@ -48,14 +77,18 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
+    ///   - requestTimeout: The timeout interval for all requests. 
+    ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
         apiKey: String? = nil,
         config: Config = getConfig(),
-        useSandbox: Bool = false
+        useSandbox: Bool = false,
+        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         self.config = config
         self.useSandbox = useSandbox
         self.apiKey = apiKey
+        self.requestTimeout = requestTimeout
         SmileIDResourcesHelper.registerFonts()
     }
 
@@ -125,7 +158,6 @@ public class SmileID {
             throw SmileIDError.fileNotFound("Prep Upload file is missing")
         }
         Task {
-            let zip: Data
             do {
                 let authRequest = AuthenticationRequest(
                     jobType: authRequestFile.jobType,
@@ -163,7 +195,7 @@ public class SmileID {
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId)
+                        LocalStorage.getInfoJsonFile(jobId: jobId),
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {

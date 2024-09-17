@@ -10,7 +10,7 @@ public protocol SmileIDServiceable {
     func prepUpload(request: PrepUploadRequest) async throws -> PrepUploadResponse
 
     /// Uploads files to S3. The URL should be the one returned by `prepUpload`.
-    func upload(zip: Data, to url: String) async throws -> AsyncThrowingStream<UploadResponse, Error>
+    func upload(zip: Data, to url: String) async throws -> Data
 
     /// Perform a synchronous SmartSelfie Enrollment. The response will include the final result of
     /// the enrollment.
@@ -264,7 +264,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         )
     }
 
-    public func upload(zip: Data, to url: String) async throws -> AsyncThrowingStream<UploadResponse, Error> {
+    public func upload(zip: Data, to url: String) async throws -> Data {
         try await upload(data: zip, to: url, with: .put)
     }
 
