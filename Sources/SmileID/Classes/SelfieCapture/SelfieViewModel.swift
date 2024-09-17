@@ -24,6 +24,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let allowNewEnroll: Bool
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
+    private var localMetadata: LocalMetadata
     private let faceDetector = FaceDetector()
 
     var cameraManager = CameraManager(orientation: .portrait)
@@ -65,7 +66,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         jobId: String,
         allowNewEnroll: Bool,
         skipApiSubmission: Bool,
-        extraPartnerParams: [String: String]
+        extraPartnerParams: [String: String],
+        localMetadata: LocalMetadata
     ) {
         self.isEnroll = isEnroll
         self.userId = userId
@@ -73,6 +75,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.allowNewEnroll = allowNewEnroll
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
+        self.localMetadata = localMetadata
 
         cameraManager.$status
             .receive(on: DispatchQueue.main)
@@ -89,6 +92,17 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
+    
+        localMetadata.addMetadata(
+            useBackCamera ? Metadatum.SelfieImageOrigin(cameraFacing: .backCamera)
+            : Metadatum.SelfieImageOrigin(cameraFacing: .frontCamera))
+    }
+
+    let metadataTimerStart = MonotonicTime()
+    
+    func updateLocalMetadata(_ newMetadata: LocalMetadata) {
+        self.localMetadata = newMetadata
+        objectWillChange.send()
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -266,6 +280,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     func switchCamera() {
         cameraManager.switchCamera(to: useBackCamera ? .back : .front)
+        localMetadata.metadata.removeAllOfType(Metadatum.SelfieImageOrigin.self)
+        localMetadata.addMetadata(
+            useBackCamera ? Metadatum.SelfieImageOrigin(cameraFacing: .backCamera)
+            : Metadatum.SelfieImageOrigin(cameraFacing: .frontCamera))
     }
 
     public func onSelfieRejected() {
@@ -277,6 +295,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         selfieImage = nil
         livenessImages = []
         shouldAnalyzeImages = true
+        localMetadata.metadata.removeAllOfType(Metadatum.SelfieImageOrigin.self)
+        localMetadata.metadata.removeAllOfType(Metadatum.SelfieCaptureDuration.self)
     }
 
     func onRetry() {
@@ -290,6 +310,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     public func submitJob() {
+        localMetadata.addMetadata(Metadatum.SelfieCaptureDuration(duration: metadataTimerStart.elapsedTime()))
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }
             return
@@ -314,6 +335,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         jobType: jobType,
                         enrollment: isEnroll,
                         allowNewEnroll: allowNewEnroll,
+                        localMetadata: localMetadata,
                         partnerParams: extraPartnerParams
                     )
                 }
@@ -347,6 +369,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
+                
                 let response = if isEnroll {
                     try await SmileID.api.doSmartSelfieEnrollment(
                         signature: authResponse.signature,
@@ -357,7 +380,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         partnerParams: extraPartnerParams,
                         callbackUrl: SmileID.callbackUrl,
                         sandboxResult: nil,
-                        allowNewEnroll: allowNewEnroll
+                        allowNewEnroll: allowNewEnroll,
+                        metadata: localMetadata.metadata
                     )
                 } else {
                     try await SmileID.api.doSmartSelfieAuthentication(
@@ -368,7 +392,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         livenessImages: smartSelfieLivenessImages,
                         partnerParams: extraPartnerParams,
                         callbackUrl: SmileID.callbackUrl,
-                        sandboxResult: nil
+                        sandboxResult: nil,
+                        metadata: localMetadata.metadata
                     )
                 }
                 apiResponse = response
