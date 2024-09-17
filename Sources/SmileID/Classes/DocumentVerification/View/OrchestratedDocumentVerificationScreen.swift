@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct OrchestratedDocumentVerificationScreen: View {
+    @State private var localMetadata = LocalMetadata()
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
@@ -41,13 +42,15 @@ struct OrchestratedDocumentVerificationScreen: View {
                 captureBothSides: captureBothSides,
                 selfieFile: bypassSelfieCaptureWithFile,
                 jobType: .documentVerification,
-                extraPartnerParams: extraPartnerParams
+                extraPartnerParams: extraPartnerParams,
+                localMetadata: localMetadata
             )
-        )
+        ).environmentObject(localMetadata)
     }
 }
 
 struct OrchestratedEnhancedDocumentVerificationScreen: View {
+    @State private var localMetadata = LocalMetadata()
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
@@ -88,9 +91,10 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
                 captureBothSides: captureBothSides,
                 selfieFile: bypassSelfieCaptureWithFile,
                 jobType: .enhancedDocumentVerification,
-                extraPartnerParams: extraPartnerParams
+                extraPartnerParams: extraPartnerParams,
+                localMetadata: localMetadata
             )
-        )
+        ).environmentObject(localMetadata)
     }
 }
 
@@ -149,6 +153,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         switch viewModel.step {
         case .frontDocumentCapture:
             DocumentCaptureScreen(
+                side: .front,
                 showInstructions: showInstructions,
                 showAttribution: showAttribution,
                 allowGallerySelection: allowGalleryUpload,
@@ -167,6 +172,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
             )
         case .backDocumentCapture:
             DocumentCaptureScreen(
+                side: .back,
                 showInstructions: showInstructions,
                 showAttribution: showAttribution,
                 allowGallerySelection: allowGalleryUpload,

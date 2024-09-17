@@ -30,7 +30,8 @@ protocol ServiceRunnable {
         partnerParams: [String: String]?,
         callbackUrl: String?,
         sandboxResult: Int?,
-        allowNewEnroll: Bool?
+        allowNewEnroll: Bool?,
+        metadata: Metadata
     ) async throws -> SmartSelfieResponse
 
     /// PUT service call to a particular path with a body.
@@ -84,7 +85,8 @@ extension ServiceRunnable {
         partnerParams: [String: String]? = nil,
         callbackUrl: String? = nil,
         sandboxResult: Int? = nil,
-        allowNewEnroll: Bool? = nil
+        allowNewEnroll: Bool? = nil,
+        metadata: Metadata = Metadata.default()
     ) async throws -> SmartSelfieResponse {
         let boundary = generateBoundary()
         var headers: [HTTPHeader] = []
@@ -106,6 +108,7 @@ extension ServiceRunnable {
                 callbackUrl: callbackUrl?.nilIfEmpty(),
                 sandboxResult: sandboxResult,
                 allowNewEnroll: allowNewEnroll,
+                metadata: metadata,
                 boundary: boundary
             )
         )
@@ -231,6 +234,7 @@ extension ServiceRunnable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
+        metadata: Metadata = Metadata.default(),
         boundary: String
     ) -> Data {
         let lineBreak = "\r\n"
@@ -291,6 +295,16 @@ extension ServiceRunnable {
             }
         }
 
+        // Append metadata
+        let encoder = JSONEncoder()
+        if let metadataData = try? encoder.encode(metadata.items) {
+            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(metadataData)
+            body.append(lineBreak.data(using: .utf8)!)
+        }
+        
         // Append liveness media files
         for item in livenessImages {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)

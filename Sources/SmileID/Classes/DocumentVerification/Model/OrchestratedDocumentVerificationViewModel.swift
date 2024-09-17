@@ -28,6 +28,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal var stepToRetry: DocumentCaptureFlow?
     internal var didSubmitJob: Bool = false
     internal var error: Error?
+    var localMetadata: LocalMetadata
 
     // UI properties
     @Published var acknowledgedInstructions = false
@@ -47,7 +48,8 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         captureBothSides: Bool,
         selfieFile: URL?,
         jobType: JobType,
-        extraPartnerParams: [String: String] = [:]
+        extraPartnerParams: [String: String] = [:],
+        localMetadata: LocalMetadata
     ) {
         self.userId = userId
         self.jobId = jobId
@@ -58,6 +60,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         self.selfieFile = selfieFile
         self.jobType = jobType
         self.extraPartnerParams = extraPartnerParams
+        self.localMetadata = localMetadata
     }
 
     func onFrontDocumentImageConfirmed(data: Data) {
@@ -187,6 +190,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                         jobType: jobType,
                         enrollment: false,
                         allowNewEnroll: allowNewEnroll,
+                        localMetadata: localMetadata,
                         partnerParams: extraPartnerParams
                     )
                 }
@@ -194,6 +198,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
                     allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+                    metadata: localMetadata.metadata.items,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )

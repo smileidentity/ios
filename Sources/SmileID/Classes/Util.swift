@@ -90,3 +90,20 @@ func getRelativePath(from absoluteURL: URL?) -> URL? {
         return URL(string: relativeComponents.joined(separator: "/"))
     }
 }
+
+struct MonotonicTime {
+    private let startTime: UInt64
+    
+    init() {
+        startTime = mach_absolute_time()
+    }
+    
+    func elapsedTime() -> TimeInterval {
+        let endTime = mach_absolute_time()
+        let elapsed = endTime - startTime
+        var timebase = mach_timebase_info_data_t()
+        mach_timebase_info(&timebase)
+        let elapsedNano = elapsed * UInt64(timebase.numer) / UInt64(timebase.denom)
+        return TimeInterval(elapsedNano) / TimeInterval(NSEC_PER_SEC)
+    }
+}

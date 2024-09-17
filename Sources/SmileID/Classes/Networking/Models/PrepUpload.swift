@@ -7,6 +7,7 @@ public struct PrepUploadRequest: Codable {
     // TODO - Michael will change this to a boolean
     public var allowNewEnroll: String = "false"
     public var partnerId = SmileID.config.partnerId
+    public var metadata: [Metadatum]? = nil
     public var sourceSdk = "ios"
     public var sourceSdkVersion = SmileID.version
     public var timestamp = String(Date().millisecondsSince1970)
@@ -19,6 +20,7 @@ public struct PrepUploadRequest: Codable {
         callbackUrl: String? = SmileID.callbackUrl,
         allowNewEnroll: String  = "false",
         partnerId: String = SmileID.config.partnerId,
+        metadata: [Metadatum]? = nil,
         sourceSdk: String = "ios",
         sourceSdkVersion: String = SmileID.version,
         timestamp: String = String(Date().millisecondsSince1970),
@@ -30,6 +32,7 @@ public struct PrepUploadRequest: Codable {
         self.callbackUrl = callbackUrl
         self.allowNewEnroll = allowNewEnroll
         self.partnerId = partnerId
+        self.metadata = metadata
         self.sourceSdk = sourceSdk
         self.sourceSdkVersion = sourceSdkVersion
         self.timestamp = timestamp
@@ -49,6 +52,7 @@ public struct PrepUploadRequest: Codable {
         case timestamp
         case signature
         case retry
+        case metadata
     }
 
     public func copy(retry: String? = nil) -> PrepUploadRequest {
@@ -57,6 +61,7 @@ public struct PrepUploadRequest: Codable {
             callbackUrl: callbackUrl,
             allowNewEnroll: allowNewEnroll,
             partnerId: partnerId,
+            metadata: metadata,
             sourceSdk: sourceSdk,
             sourceSdkVersion: sourceSdkVersion,
             timestamp: timestamp,

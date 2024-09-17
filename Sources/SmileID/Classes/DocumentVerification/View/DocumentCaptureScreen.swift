@@ -1,7 +1,13 @@
 import SwiftUI
 
+public enum DocumentCaptureSide {
+    case front
+    case back
+}
+
 /// This handles Instructions + Capture + Confirmation for a single side of a document
 public struct DocumentCaptureScreen: View {
+    let side: DocumentCaptureSide
     let showInstructions: Bool
     let showAttribution: Bool
     let allowGallerySelection: Bool
@@ -16,10 +22,11 @@ public struct DocumentCaptureScreen: View {
     let onError: (Error) -> Void
     let onSkip: () -> Void
 
-    @ObservedObject
-    private var viewModel: DocumentCaptureViewModel
+    @EnvironmentObject private var localMetadata: LocalMetadata
+    @ObservedObject private var viewModel: DocumentCaptureViewModel
 
     public init(
+        side: DocumentCaptureSide,
         showInstructions: Bool,
         showAttribution: Bool,
         allowGallerySelection: Bool,
@@ -33,8 +40,8 @@ public struct DocumentCaptureScreen: View {
         onConfirm: @escaping (Data) -> Void,
         onError: @escaping (Error) -> Void,
         onSkip: @escaping () -> Void = {}
-
     ) {
+        self.side = side
         self.showInstructions = showInstructions
         self.showAttribution = showAttribution
         self.allowGallerySelection = allowGallerySelection
@@ -48,7 +55,12 @@ public struct DocumentCaptureScreen: View {
         self.onConfirm = onConfirm
         self.onError = onError
         self.onSkip = onSkip
-        viewModel = DocumentCaptureViewModel(knownAspectRatio: knownIdAspectRatio)
+        
+        viewModel = DocumentCaptureViewModel(
+            knownAspectRatio: knownIdAspectRatio,
+            side: side,
+            localMetadata: LocalMetadata()
+        )
     }
 
     public var body: some View {
@@ -62,6 +74,8 @@ public struct DocumentCaptureScreen: View {
             } else {
                 captureView
             }
+        }.onAppear {
+            viewModel.updateLocalMetadata(localMetadata)
         }
     }
 

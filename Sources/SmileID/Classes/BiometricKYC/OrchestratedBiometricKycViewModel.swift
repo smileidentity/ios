@@ -13,6 +13,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     private let jobId: String
     private let allowNewEnroll: Bool
     private var extraPartnerParams: [String: String]
+    private let localMetadata = LocalMetadata()
     private var idInfo: IdInfo
 
     // MARK: - Other Properties
@@ -118,6 +119,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                         jobType: .biometricKyc,
                         enrollment: false,
                         allowNewEnroll: allowNewEnroll,
+                        localMetadata: localMetadata,
                         partnerParams: extraPartnerParams
                     )
                 }
@@ -125,6 +127,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
                     allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+                    metadata: localMetadata.metadata.items,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )

@@ -14,6 +14,7 @@ private let analysisSampleInterval: TimeInterval = 0.350
 class DocumentCaptureViewModel: ObservableObject {
     // Initializer properties
     private let knownAspectRatio: Double?
+    private var localMetadata: LocalMetadata
 
     // Other properties
     private let defaultAspectRatio: Double
@@ -23,6 +24,9 @@ class DocumentCaptureViewModel: ObservableObject {
     private var documentFirstDetectedAtTime: TimeInterval?
     private var lastAnalysisTime: TimeInterval = 0
     private var areEdgesDetectedSubscriber: AnyCancellable?
+    private let side: DocumentCaptureSide
+    private var retryCount: Int = 0
+    private(set) var documentImageOrigin: DocumentImageOriginValue?
 
     // UI properties
     @Published var unauthorizedAlert: AlertState?
@@ -37,8 +41,14 @@ class DocumentCaptureViewModel: ObservableObject {
     @Published var isCapturing = false
     @Published var cameraManager = CameraManager(orientation: .portrait)
 
-    init(knownAspectRatio: Double? = nil) {
+    init(
+        knownAspectRatio: Double? = nil,
+        side: DocumentCaptureSide,
+        localMetadata: LocalMetadata
+    ) {
         self.knownAspectRatio = knownAspectRatio
+        self.side = side
+        self.localMetadata = localMetadata
         defaultAspectRatio = knownAspectRatio ?? 1.0
         DispatchQueue.main.async { [self] in
             idAspectRatio = defaultAspectRatio
@@ -79,6 +89,7 @@ class DocumentCaptureViewModel: ObservableObject {
                     let now = Date().timeIntervalSince1970
                     let elapsedTime = now - documentFirstDetectedAtTime
                     if elapsedTime > documentAutoCaptureWaitTime && !self.isCapturing {
+                        self.documentImageOrigin = DocumentImageOriginValue.cameraAutoCapture
                         self.captureDocument()
                     }
                 } else {
@@ -88,6 +99,13 @@ class DocumentCaptureViewModel: ObservableObject {
                 self.documentFirstDetectedAtTime = nil
             }
         })
+    }
+
+    let metadataTimerStart = MonotonicTime()
+
+    func updateLocalMetadata(_ newMetadata: LocalMetadata) {
+        self.localMetadata = newMetadata
+        objectWillChange.send()
     }
 
     @objc func showManualCapture() {
@@ -117,6 +135,7 @@ class DocumentCaptureViewModel: ObservableObject {
             }
             return
         }
+        documentImageOrigin = DocumentImageOriginValue.gallery
         DispatchQueue.main.async {
             self.acknowledgedInstructions = true
             self.documentImageToConfirm = image
@@ -135,11 +154,24 @@ class DocumentCaptureViewModel: ObservableObject {
             self.isCapturing = true
             self.directive = .capturing
         }
+        documentImageOrigin = DocumentImageOriginValue.cameraManualCapture
         cameraManager.capturePhoto()
     }
 
     /// Called if the user declines the image in the capture confirmation dialog.
     func onRetry() {
+        documentImageOrigin = nil
+        switch side {
+            case .front:
+                localMetadata.metadata.removeAllOfType(Metadatum.DocumentFrontCaptureRetries.self)
+                localMetadata.metadata.removeAllOfType(Metadatum.DocumentFrontCaptureDuration.self)
+                localMetadata.metadata.removeAllOfType(Metadatum.DocumentFrontImageOrigin.self)
+            case .back:
+                localMetadata.metadata.removeAllOfType(Metadatum.DocumentBackCaptureRetries.self)
+                localMetadata.metadata.removeAllOfType(Metadatum.DocumentBackCaptureDuration.self)
+                localMetadata.metadata.removeAllOfType(Metadatum.DocumentBackImageOrigin.self)
+        }
+        retryCount += 1
         DispatchQueue.main.async {
             self.isCapturing = false
             self.acknowledgedInstructions = false
@@ -155,6 +187,16 @@ class DocumentCaptureViewModel: ObservableObject {
             imageData: image,
             aspectRatio: 1 / idAspectRatio
         )
+        switch side {
+            case .front:
+                localMetadata.addMetadata(Metadatum.DocumentFrontCaptureDuration(duration: metadataTimerStart.elapsedTime()))
+                localMetadata.addMetadata(Metadatum.DocumentFrontCaptureRetries(retries: retryCount))
+                localMetadata.addMetadata(Metadatum.DocumentFrontImageOrigin(origin: documentImageOrigin!))
+            case .back:
+                localMetadata.addMetadata(Metadatum.DocumentBackCaptureDuration(duration: metadataTimerStart.elapsedTime()))
+                localMetadata.addMetadata(Metadatum.DocumentBackCaptureRetries(retries: retryCount))
+                localMetadata.addMetadata(Metadatum.DocumentBackImageOrigin(origin: documentImageOrigin!))
+        }
         DispatchQueue.main.async { [self] in
             documentImageToConfirm = croppedImage
             isCapturing = false
