@@ -6,11 +6,12 @@ public enum SmileIDError: Error {
     case decode(DecodingError)
     case unknown(String)
     case api(String, String)
-    case httpError(Int, Data)
+    case httpError(Int, String)
     case jobStatusTimeOut
     case consentDenied
     case invalidJobId
     case fileNotFound(String)
+    case invalidRequestBody
 }
 
 extension SmileIDError: LocalizedError {
@@ -25,7 +26,7 @@ extension SmileIDError: LocalizedError {
         case .unknown(let message):
             return message
         case .httpError(let statusCode, let data):
-            return "HTTP Error with status code \(statusCode) and \(String(describing: data))"
+            return "HTTP Error with status code \(statusCode) and \(data)"
         case .api(_, let message):
             return message
         case .jobStatusTimeOut:
@@ -36,6 +37,8 @@ extension SmileIDError: LocalizedError {
             return "Invalid jobId or not found"
         case .fileNotFound(let message):
             return message
+        case .invalidRequestBody:
+            return "Invalid request body. The request data is missing or empty."
         }
     }
 }
