@@ -115,28 +115,28 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     onError(error: SmileIDError.unknown("Error getting document front file"))
                     return
                 }
-            
+
                 selfieFile = try LocalStorage.getFileByType(
                     jobId: jobId,
                     fileType: FileType.selfie
                 )
-            
+
                 livenessFiles = try LocalStorage.getFilesByType(
                     jobId: jobId,
                     fileType: FileType.liveness
                 )
-            
+
                 guard let selfieFile else {
                     // Set step to .selfieCapture so that the Retry button goes back to this step
                     step = .selfieCapture
                     onError(error: SmileIDError.unknown("Error getting selfie file"))
                     return
                 }
-            
+
                 DispatchQueue.main.async {
                     self.step = .processing(.inProgress)
                 }
-        
+
                 var allFiles = [URL]()
                 let frontDocumentUrl = try LocalStorage.createDocumentFile(
                     jobId: jobId,
@@ -212,7 +212,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                         throw error
                     }
                 }
-                _ = try await SmileID.api.upload(
+                let _ = try await SmileID.api.upload(
                     zip: zipData,
                     to: prepUploadResponse.uploadUrl
                 )
@@ -316,7 +316,7 @@ internal class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
-        if let savedFiles, 
+        if let savedFiles,
             let selfiePath = getRelativePath(from: selfieFile),
             let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
             let documentBackPath = getRelativePath(from: savedFiles.documentBack)

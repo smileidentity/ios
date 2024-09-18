@@ -42,7 +42,7 @@ protocol ServiceRunnable {
         data: Data,
         to url: String,
         with restMethod: RestMethod
-    ) async throws -> AsyncThrowingStream<UploadResponse, Error>
+    ) async throws -> Data
 }
 
 extension ServiceRunnable {
@@ -145,7 +145,7 @@ extension ServiceRunnable {
         data: Data,
         to url: String,
         with restMethod: RestMethod
-    ) async throws -> AsyncThrowingStream<UploadResponse, Error> {
+    ) async throws -> Data {
         let uploadRequest = try await createUploadRequest(
             url: url,
             method: restMethod,
