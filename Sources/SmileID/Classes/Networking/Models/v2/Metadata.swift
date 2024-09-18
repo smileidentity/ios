@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 public struct Metadata: Codable {
     public var items: [Metadatum]
