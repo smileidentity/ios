@@ -2,7 +2,7 @@ import Foundation
 
 public struct Metadata: Codable {
     public var items: [Metadatum]
-
+    
     public init(items: [Metadatum]) {
         self.items = items
     }
@@ -32,12 +32,12 @@ extension Array where Element == Metadatum {
 public class Metadatum: Codable {
     public let name: String
     public let value: String
-
+    
     public init(name: String, value: String) {
         self.name = name
         self.value = value
     }
-
+    
     required public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: .name)
@@ -47,23 +47,23 @@ public class Metadatum: Codable {
     private enum CodingKeys: String, CodingKey {
         case name, value
     }
-
+    
     public static let sdk = Metadatum(name: "sdk", value: "iOS")
     public static let sdkVersion = Metadatum(name: "sdk_version", value: SmileID.version)
     public static let clientIP = Metadatum(name: "client_ip", value: getIPAddress(useIPv4: true))
     public static let fingerprint = Metadatum(name: "fingerprint", value: "demo2")
     public static let deviceModel = Metadatum(name: "device_model", value: UIDevice.current.model)
     public static let deviceOS = Metadatum(name: "device_os", value: UIDevice.current.systemVersion)
-
+    
     public class SelfieImageOrigin: Metadatum {
-            public init(cameraFacing: CameraFacingValue) {
-                super.init(name: "selfie_image_origin", value: cameraFacing.rawValue)
-            }
-            
-            required public init(from decoder: Decoder) throws {
-                try super.init(from: decoder)
-            }
+        public init(cameraFacing: CameraFacingValue) {
+            super.init(name: "selfie_image_origin", value: cameraFacing.rawValue)
         }
+        
+        required public init(from decoder: Decoder) throws {
+            try super.init(from: decoder)
+        }
+    }
     
     public class SelfieCaptureDuration: Metadatum {
         public init(duration: TimeInterval) {
@@ -74,7 +74,7 @@ public class Metadatum: Codable {
             try super.init(from: decoder)
         }
     }
-        
+    
     public class DocumentFrontImageOrigin: Metadatum {
         public init(origin: DocumentImageOriginValue) {
             super.init(name: "document_front_image_origin", value: origin.rawValue)
@@ -84,7 +84,7 @@ public class Metadatum: Codable {
             try super.init(from: decoder)
         }
     }
-        
+    
     public class DocumentBackImageOrigin: Metadatum {
         public init(origin: DocumentImageOriginValue) {
             super.init(name: "document_back_image_origin", value: origin.rawValue)
@@ -94,7 +94,7 @@ public class Metadatum: Codable {
             try super.init(from: decoder)
         }
     }
-        
+    
     public class DocumentFrontCaptureRetries: Metadatum {
         public init(retries: Int) {
             super.init(name: "document_front_capture_retries", value: String(retries))
@@ -104,7 +104,7 @@ public class Metadatum: Codable {
             try super.init(from: decoder)
         }
     }
-        
+    
     public class DocumentBackCaptureRetries: Metadatum {
         public init(retries: Int) {
             super.init(name: "document_back_capture_retries", value: String(retries))
@@ -114,7 +114,7 @@ public class Metadatum: Codable {
             try super.init(from: decoder)
         }
     }
-        
+    
     public class DocumentFrontCaptureDuration: Metadatum {
         public init(duration: TimeInterval) {
             super.init(name: "document_front_capture_duration_ms", value: String(Int(duration * 1000)))
@@ -124,7 +124,7 @@ public class Metadatum: Codable {
             try super.init(from: decoder)
         }
     }
-        
+    
     public class DocumentBackCaptureDuration: Metadatum {
         public init(duration: TimeInterval) {
             super.init(name: "document_back_capture_duration_ms", value: String(Int(duration * 1000)))
@@ -177,7 +177,7 @@ func getIPAddress(useIPv4: Bool) -> String {
                 address = String(cString: hostname)
                 
                 if (useIPv4 && addrFamily == UInt8(AF_INET)) ||
-                   (!useIPv4 && addrFamily == UInt8(AF_INET6)) {
+                    (!useIPv4 && addrFamily == UInt8(AF_INET6)) {
                     if !useIPv4 {
                         if let percentIndex = address.firstIndex(of: "%") {
                             address = String(address[..<percentIndex]).uppercased()
@@ -190,7 +190,7 @@ func getIPAddress(useIPv4: Bool) -> String {
             }
         }
     }
-
+    
     freeifaddrs(ifaddr)
     return address
 }
