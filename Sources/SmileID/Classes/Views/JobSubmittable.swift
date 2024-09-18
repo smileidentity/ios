@@ -34,7 +34,7 @@ extension JobSubmittable {
     func upload(
         _ prepUploadResponse: PrepUploadResponse,
         zip: Data
-    ) async throws -> AsyncThrowingStream<UploadResponse, Error> {
+    ) async throws -> Data {
         try await SmileID.api.upload(zip: zip, to: prepUploadResponse.uploadUrl)
     }
 

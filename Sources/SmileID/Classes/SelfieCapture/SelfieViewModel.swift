@@ -49,10 +49,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     /// we use `errorMessageRes` to map to the actual code to the stringRes to allow localization,
     /// and use `errorMessage` to show the actual platform error message that we show if
     /// `errorMessageRes` is not set by the partner
-    @Published var errorMessageRes: String?
-    @Published var errorMessage: String?
-    @Published var processingState: ProcessingState?
-    @Published var selfieToConfirm: Data?
+    @Published public var errorMessageRes: String?
+    @Published public var errorMessage: String?
+    @Published public private(set) var processingState: ProcessingState?
+    @Published public private(set) var selfieToConfirm: Data?
     @Published var captureProgress: Double = 0
     @Published var useBackCamera = false {
         // This is toggled by a Binding
@@ -268,7 +268,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         cameraManager.switchCamera(to: useBackCamera ? .back : .front)
     }
 
-    func onSelfieRejected() {
+    public func onSelfieRejected() {
         DispatchQueue.main.async {
             self.captureProgress = 0
             self.processingState = nil
@@ -289,7 +289,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
     }
 
-    func submitJob() {
+    public func submitJob() {
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }
             return
@@ -433,7 +433,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
     }
 
-    func onFinished(callback: SmartSelfieResultDelegate) {
+    public func onFinished(callback: SmartSelfieResultDelegate) {
         if let selfieImage = selfieImage,
            let selfiePath = getRelativePath(from: selfieImage),
            livenessImages.count == numLivenessImages,

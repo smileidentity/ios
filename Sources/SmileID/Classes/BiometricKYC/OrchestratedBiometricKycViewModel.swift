@@ -46,7 +46,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     func onRetry() {
-        if let selfieFile {
+        if selfieFile != nil {
             submitJob()
         } else {
             DispatchQueue.main.async { self.step = .selfie }
@@ -56,8 +56,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     func onFinished(delegate: BiometricKycResultDelegate) {
         if let selfieFile = selfieFile,
            let livenessFiles = livenessFiles,
-           let selfiePath = getRelativePath(from: selfieFile)
-        {
+           let selfiePath = getRelativePath(from: selfieFile) {
             delegate.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
@@ -78,19 +77,19 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     jobId: jobId,
                     fileType: FileType.selfie
                 )
-            
+
                 livenessFiles = try LocalStorage.getFilesByType(
                     jobId: jobId,
                     fileType: FileType.liveness
                 )
-            
+
                 guard let selfieFile else {
                     // Set step to .selfieCapture so that the Retry button goes back to this step
                     DispatchQueue.main.async { self.step = .selfie }
                     error = SmileIDError.unknown("Error capturing selfie")
                     return
                 }
-            
+
                 var allFiles = [URL]()
                 let infoJson = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,
@@ -143,7 +142,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                         throw error
                     }
                 }
-                _ = try await SmileID.api.upload(
+                let _ = try await SmileID.api.upload(
                     zip: zipData,
                     to: prepUploadResponse.uploadUrl
                 )
@@ -179,9 +178,11 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     print("Error submitting job: \(error)")
                     let (errorMessageRes, errorMessage) = toErrorMessage(error: error)
                     self.error = error
-                    self.errorMessageRes = errorMessageRes
-                    self.errorMessage = errorMessage
-                    DispatchQueue.main.async { self.step = .processing(.error) }
+                    DispatchQueue.main.async {
+                        self.errorMessageRes = errorMessageRes
+                        self.errorMessage = errorMessage
+                        self.step = .processing(.error)
+                    }
                 }
             } catch {
                 didSubmitBiometricJob = false
