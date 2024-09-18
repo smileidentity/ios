@@ -52,7 +52,7 @@ public class Metadatum: Codable {
     public static let sdkVersion = Metadatum(name: "sdk_version", value: SmileID.version)
     public static let clientIP = Metadatum(name: "client_ip", value: getIPAddress(useIPv4: true))
     public static let fingerprint = Metadatum(name: "fingerprint", value: SmileID.deviceId)
-    public static let deviceModel = Metadatum(name: "device_model", value: UIDevice.current.model)
+    public static let deviceModel = Metadatum(name: "device_model", value: UIDevice.current.modelName)
     public static let deviceOS = Metadatum(name: "device_os", value: UIDevice.current.systemVersion)
     
     public class SelfieImageOrigin: Metadatum {
@@ -201,5 +201,39 @@ public class LocalMetadata: ObservableObject {
     func addMetadata(_ newMetadata: Metadatum) {
         metadata.items.append(newMetadata)
         objectWillChange.send()
+    }
+}
+
+extension UIDevice {
+    var modelName: String {
+        #if targetEnvironment(simulator)
+        let identifier = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"]!
+        #else
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let machineMirror = Mirror(reflecting: systemInfo.machine)
+        let identifier = machineMirror.children.reduce("") { identifier, element in
+          guard let value = element.value as? Int8, value != 0 else { return identifier }
+          return identifier + String(UnicodeScalar(UInt8(value)))
+        }
+        #endif
+        return DeviceModel.all.first { $0.identifier == identifier }?.model ?? identifier
+      }
+    
+    struct DeviceModel: Decodable {
+        let identifier: String
+        let model: String
+        static var all: [DeviceModel] {
+            let currentDevice = UIDevice.current.name
+            guard let devicesUrl = SmileIDResourcesHelper.bundle.url(forResource: "devicemodels", withExtension: "json") else { return [] }
+            do {
+                let data = try Data(contentsOf: devicesUrl)
+                let devices = try JSONDecoder().decode([DeviceModel].self, from: data)
+                return devices
+            } catch {
+                print("Error decoding device models: \(error)")
+                return []
+            }
+        }
     }
 }
