@@ -51,7 +51,7 @@ public class Metadatum: Codable {
     public static let sdk = Metadatum(name: "sdk", value: "iOS")
     public static let sdkVersion = Metadatum(name: "sdk_version", value: SmileID.version)
     public static let clientIP = Metadatum(name: "client_ip", value: getIPAddress(useIPv4: true))
-    public static let fingerprint = Metadatum(name: "fingerprint", value: "demo2")
+    public static let fingerprint = Metadatum(name: "fingerprint", value: SmileID.deviceId)
     public static let deviceModel = Metadatum(name: "device_model", value: UIDevice.current.model)
     public static let deviceOS = Metadatum(name: "device_os", value: UIDevice.current.systemVersion)
     

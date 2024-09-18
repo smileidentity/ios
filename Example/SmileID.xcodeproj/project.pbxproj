@@ -572,6 +572,7 @@
 				"${PODS_ROOT}/Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/ArkanaKeys/ArkanaKeys.framework",
 				"${BUILT_PRODUCTS_DIR}/ArkanaKeysInterfaces/ArkanaKeysInterfaces.framework",
+				"${BUILT_PRODUCTS_DIR}/FingerprintJS/FingerprintJS.framework",
 				"${BUILT_PRODUCTS_DIR}/Sentry/Sentry.framework",
 				"${BUILT_PRODUCTS_DIR}/SmileID/SmileID.framework",
 				"${BUILT_PRODUCTS_DIR}/ZIPFoundation/ZIPFoundation.framework",
@@ -582,6 +583,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ArkanaKeys.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ArkanaKeysInterfaces.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FingerprintJS.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sentry.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SmileID.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZIPFoundation.framework",
