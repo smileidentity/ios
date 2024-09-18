@@ -1,5 +1,5 @@
-import SwiftUI
 import Lottie
+import SwiftUI
 
 public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
@@ -13,15 +13,36 @@ public struct SelfieCaptureScreenV2: View {
                     .onAppear {
                         viewModel.cameraManager.switchCamera(to: .front)
                     }
-                LayoutGuideView(layoutGuideFrame: viewModel.faceLayoutGuideFrame)
 
-                if viewModel.debugEnabled {
-                    DebugView()
-                }
+                Rectangle()
+                    .fill(.white)
+                    .reverseMask {
+                        Circle()
+                            .frame(width: 260, height: 260)
+                    }
+
+                // Face Bounds Indicator
+                Circle()
+                    .stroke(.red, lineWidth: 10)
+                    .frame(width: 275, height: 275)
+                    .hidden()
+                Circle()
+                    .fill(.black.opacity(0.7))
+                    .frame(width: 260, height: 260)
+                    .overlay(
+                        Text("Lottie animation\ngoes here.")
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                    )
                 VStack {
-                    UserInstructionsView(model: viewModel)
+                    Text(viewModel.directive)
+                        .multilineTextAlignment(.center)
+                        .font(SmileID.theme.header1)
+                        .foregroundColor(SmileID.theme.accent)
+                        .padding(.top, 80)
                     Spacer()
                 }
+                .padding()
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {

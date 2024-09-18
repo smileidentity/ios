@@ -43,7 +43,7 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
 
     public var body: some View {
         if showInstructions, !acknowledgedInstructions {
-            SmartSelfieInstructionsScreen(showAttribution: showAttribution) {
+            LivenessCaptureInstructionsView(showAttribution: showAttribution) {
                 acknowledgedInstructions = true
             }
         } else {

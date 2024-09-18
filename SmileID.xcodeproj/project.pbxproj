@@ -64,6 +64,7 @@
 		1F33A24780AE0C89E89EDB3A /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D2BD3354878490B62F04FB /* NavigationBar.swift */; };
 		1F57B39849B01BB6E26B7F3B /* DocumentCaptureInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540FE72848132B16535C7281 /* DocumentCaptureInstructionsScreen.swift */; };
 		1F76F767069D4436C8AF6074 /* Injected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB66DD1BDD5A4C66AC800B3 /* Injected.swift */; };
+		20F003CB2C873B6900672247 /* instructions_no_progress.lottie in Resources */ = {isa = PBXBuildFile; fileRef = 20F003C72C873B6900672247 /* instructions_no_progress.lottie */; };
 		20991A4E2C8625EE00C0B13E /* SelfieQualityDetector.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 20991A4C2C8625EE00C0B13E /* SelfieQualityDetector.mlmodelc */; };
 		216916E16C0F6C9CBD698C92 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1C11D7A28442BD26144875 /* ImageExtensions.swift */; };
 		2228D942A74ACE036BCC6AC3 /* OrchestratedDocumentVerificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389AF9529CF6ADA5A11D4D6 /* OrchestratedDocumentVerificationViewModel.swift */; };
@@ -768,6 +769,8 @@
 		20CFB81122DB79C093EA7AF3 /* Util.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Util.swift; path = Sources/SmileID/Classes/Util.swift; sourceTree = "<group>"; };
 		20D1376E9583C6F256F44751 /* OrchestratedBiometricKycScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycScreen.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycScreen.swift; sourceTree = "<group>"; };
 		20DD4040D9134AA8DCB36716 /* NetworkUtil.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkUtil.swift; path = Sources/SmileID/Classes/Networking/NetworkUtil.swift; sourceTree = "<group>"; };
+		20F003C72C873B6900672247 /* instructions_no_progress.lottie */ = {isa = PBXFileReference; lastKnownFileType = file; path = instructions_no_progress.lottie; sourceTree = "<group>"; };
+		20F003C92C873B6900672247 /* SelfieQualityDetector.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SelfieQualityDetector.mlmodelc; sourceTree = "<group>"; };
 		20FF40672D680434F3B889C4 /* HTTPHeader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPHeader.swift; path = Sources/SmileID/Classes/Networking/HTTPHeader.swift; sourceTree = "<group>"; };
 		210B15F79B188F3B01A5B1D1 /* FontType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FontType.swift; path = Sources/SmileID/Classes/Helpers/FontType.swift; sourceTree = "<group>"; };
 		21305E202DCA6666BB4D95DD /* FontType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FontType.swift; path = Sources/SmileID/Classes/Helpers/FontType.swift; sourceTree = "<group>"; };
@@ -6524,6 +6527,7 @@
 		1EEFC2BF2B58412300B8A934 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				20F003C82C873B6900672247 /* LottieFiles */,
 				20991A4D2C8625EE00C0B13E /* ML */,
 				5829A8C42BC8494F001C1E7E /* PrivacyInfo.xcprivacy */,
 				1EEFC2C02B58412300B8A934 /* Media.xcassets */,
@@ -6599,6 +6603,14 @@
 				1EEFC3B02B5849D100B8A934 /* BaseTestCase.swift */,
 			);
 			path = DependencyContainer;
+			sourceTree = "<group>";
+		};
+		20F003C82C873B6900672247 /* LottieFiles */ = {
+			isa = PBXGroup;
+			children = (
+				20F003C72C873B6900672247 /* instructions_no_progress.lottie */,
+			);
+			path = LottieFiles;
 			sourceTree = "<group>";
 		};
 		20991A4D2C8625EE00C0B13E /* ML */ = {
@@ -6740,11 +6752,13 @@
 				1EEFC2C72B58412300B8A934 /* .swiftlint.yml in Resources */,
 				5829A8C52BC8494F001C1E7E /* PrivacyInfo.xcprivacy in Resources */,
 				1EEFC3342B58412400B8A934 /* Localizable.strings in Resources */,
+				20F003CB2C873B6900672247 /* instructions_no_progress.lottie in Resources */,
 				1EEFC3312B58412400B8A934 /* Media.xcassets in Resources */,
 				20991A4E2C8625EE00C0B13E /* SelfieQualityDetector.mlmodelc in Resources */,
 				1EEFC3332B58412400B8A934 /* Epilogue-Bold.ttf in Resources */,
 				1EEFC2E92B58412300B8A934 /* ARViewController.xib in Resources */,
 				1EEFC3322B58412400B8A934 /* Epilogue-Medium.ttf in Resources */,
+				20F003CC2C873B6900672247 /* SelfieQualityDetector.mlmodelc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
