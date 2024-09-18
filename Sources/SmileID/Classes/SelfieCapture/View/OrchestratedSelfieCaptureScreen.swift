@@ -9,11 +9,11 @@ public struct OrchestratedSelfieCaptureScreen: View {
     public let showInstructions: Bool
     public let onResult: SmartSelfieResultDelegate
     @ObservedObject var viewModel: SelfieViewModel
-
+    
     @EnvironmentObject private var localMetadata: LocalMetadata
     @State private var acknowledgedInstructions = false
     private var originalBrightness = UIScreen.main.brightness
-
+    
     public init(
         userId: String,
         jobId: String,
@@ -40,7 +40,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
             localMetadata: LocalMetadata()
         )
     }
-
+    
     public var body: some View {
         if showInstructions, !acknowledgedInstructions {
             SmartSelfieInstructionsScreen(showAttribution: showAttribution) {

@@ -16,7 +16,7 @@ struct OrchestratedDocumentVerificationScreen: View {
     let showInstructions: Bool
     let extraPartnerParams: [String: String]
     let onResult: DocumentVerificationResultDelegate
-
+    
     var body: some View {
         IOrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
@@ -65,7 +65,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     let showInstructions: Bool
     let extraPartnerParams: [String: String]
     let onResult: EnhancedDocumentVerificationResultDelegate
-
+    
     var body: some View {
         IOrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
@@ -114,7 +114,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     var extraPartnerParams: [String: String]
     let onResult: T
     @ObservedObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
-
+    
     init(
         countryCode: String,
         documentType: String?,
@@ -148,93 +148,93 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.onResult = onResult
         self.viewModel = viewModel
     }
-
+    
     var body: some View {
         switch viewModel.step {
-        case .frontDocumentCapture:
-            DocumentCaptureScreen(
-                side: .front,
-                showInstructions: showInstructions,
-                showAttribution: showAttribution,
-                allowGallerySelection: allowGalleryUpload,
-                showSkipButton: false,
-                instructionsHeroImage: SmileIDResourcesHelper.DocVFrontHero,
-                instructionsTitleText: SmileIDResourcesHelper.localizedString(
-                    for: "Instructions.Document.Front.Header"
-                ),
-                instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
-                    for: "Instructions.Document.Front.Callout"
-                ),
-                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
-                knownIdAspectRatio: idAspectRatio,
-                onConfirm: viewModel.onFrontDocumentImageConfirmed,
-                onError: viewModel.onError
-            )
-        case .backDocumentCapture:
-            DocumentCaptureScreen(
-                side: .back,
-                showInstructions: showInstructions,
-                showAttribution: showAttribution,
-                allowGallerySelection: allowGalleryUpload,
-                showSkipButton: false,
-                instructionsHeroImage: SmileIDResourcesHelper.DocVBackHero,
-                instructionsTitleText: SmileIDResourcesHelper.localizedString(
-                    for: "Instructions.Document.Back.Header"
-                ),
-                instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
-                    for: "Instructions.Document.Back.Callout"
-                ),
-                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
-                knownIdAspectRatio: idAspectRatio,
-                onConfirm: viewModel.onBackDocumentImageConfirmed,
-                onError: viewModel.onError,
-                onSkip: viewModel.onDocumentBackSkip
-            )
-        case .selfieCapture:
-            OrchestratedSelfieCaptureScreen(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: false,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: true,
-                onResult: viewModel
-            )
-        case let .processing(state):
-            ProcessingScreen(
-                processingState: state,
-                inProgressTitle: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Processing.Header"
-                ),
-                inProgressSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Processing.Callout"
-                ),
-                inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
-                successTitle: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Complete.Header"
-                ),
-                successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: $viewModel.errorMessageRes.wrappedValue ?? "Document.Complete.Callout"
-                ),
-                successIcon: SmileIDResourcesHelper.CheckBold,
-                errorTitle: SmileIDResourcesHelper.localizedString(for: "Document.Error.Header"),
-                errorSubtitle: getErrorSubtitle(
-                    errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
-                    errorMessage: $viewModel.errorMessage.wrappedValue
-                ),
-                errorIcon: SmileIDResourcesHelper.Scan,
-                continueButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Continue"
-                ),
-                onContinue: { viewModel.onFinished(delegate: onResult) },
-                retryButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Retry"),
-                onRetry: viewModel.onRetry,
-                closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
-                onClose: { viewModel.onFinished(delegate: onResult) }
-            )
+            case .frontDocumentCapture:
+                DocumentCaptureScreen(
+                    side: .front,
+                    showInstructions: showInstructions,
+                    showAttribution: showAttribution,
+                    allowGallerySelection: allowGalleryUpload,
+                    showSkipButton: false,
+                    instructionsHeroImage: SmileIDResourcesHelper.DocVFrontHero,
+                    instructionsTitleText: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.Document.Front.Header"
+                    ),
+                    instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.Document.Front.Callout"
+                    ),
+                    captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
+                    knownIdAspectRatio: idAspectRatio,
+                    onConfirm: viewModel.onFrontDocumentImageConfirmed,
+                    onError: viewModel.onError
+                )
+            case .backDocumentCapture:
+                DocumentCaptureScreen(
+                    side: .back,
+                    showInstructions: showInstructions,
+                    showAttribution: showAttribution,
+                    allowGallerySelection: allowGalleryUpload,
+                    showSkipButton: false,
+                    instructionsHeroImage: SmileIDResourcesHelper.DocVBackHero,
+                    instructionsTitleText: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.Document.Back.Header"
+                    ),
+                    instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.Document.Back.Callout"
+                    ),
+                    captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
+                    knownIdAspectRatio: idAspectRatio,
+                    onConfirm: viewModel.onBackDocumentImageConfirmed,
+                    onError: viewModel.onError,
+                    onSkip: viewModel.onDocumentBackSkip
+                )
+            case .selfieCapture:
+                OrchestratedSelfieCaptureScreen(
+                    userId: userId,
+                    jobId: jobId,
+                    isEnroll: false,
+                    allowNewEnroll: allowNewEnroll,
+                    allowAgentMode: allowAgentMode,
+                    showAttribution: showAttribution,
+                    showInstructions: showInstructions,
+                    extraPartnerParams: extraPartnerParams,
+                    skipApiSubmission: true,
+                    onResult: viewModel
+                )
+            case let .processing(state):
+                ProcessingScreen(
+                    processingState: state,
+                    inProgressTitle: SmileIDResourcesHelper.localizedString(
+                        for: "Document.Processing.Header"
+                    ),
+                    inProgressSubtitle: SmileIDResourcesHelper.localizedString(
+                        for: "Document.Processing.Callout"
+                    ),
+                    inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
+                    successTitle: SmileIDResourcesHelper.localizedString(
+                        for: "Document.Complete.Header"
+                    ),
+                    successSubtitle: SmileIDResourcesHelper.localizedString(
+                        for: $viewModel.errorMessageRes.wrappedValue ?? "Document.Complete.Callout"
+                    ),
+                    successIcon: SmileIDResourcesHelper.CheckBold,
+                    errorTitle: SmileIDResourcesHelper.localizedString(for: "Document.Error.Header"),
+                    errorSubtitle: getErrorSubtitle(
+                        errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
+                        errorMessage: $viewModel.errorMessage.wrappedValue
+                    ),
+                    errorIcon: SmileIDResourcesHelper.Scan,
+                    continueButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.Continue"
+                    ),
+                    onContinue: { viewModel.onFinished(delegate: onResult) },
+                    retryButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Retry"),
+                    onRetry: viewModel.onRetry,
+                    closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
+                    onClose: { viewModel.onFinished(delegate: onResult) }
+                )
         }
     }
 }

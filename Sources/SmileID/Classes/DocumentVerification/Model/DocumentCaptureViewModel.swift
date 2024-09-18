@@ -15,7 +15,7 @@ class DocumentCaptureViewModel: ObservableObject {
     // Initializer properties
     private let knownAspectRatio: Double?
     private var localMetadata: LocalMetadata
-
+    
     // Other properties
     private let defaultAspectRatio: Double
     private let textDetector = TextDetector()
@@ -27,7 +27,7 @@ class DocumentCaptureViewModel: ObservableObject {
     private let side: DocumentCaptureSide
     private var retryCount: Int = 0
     private(set) var documentImageOrigin: DocumentImageOriginValue?
-
+    
     // UI properties
     @Published var unauthorizedAlert: AlertState?
     @Published var acknowledgedInstructions = false
@@ -40,7 +40,7 @@ class DocumentCaptureViewModel: ObservableObject {
     @Published var captureError: Error?
     @Published var isCapturing = false
     @Published var cameraManager = CameraManager(orientation: .portrait)
-
+    
     init(
         knownAspectRatio: Double? = nil,
         side: DocumentCaptureSide,
@@ -53,26 +53,26 @@ class DocumentCaptureViewModel: ObservableObject {
         DispatchQueue.main.async { [self] in
             idAspectRatio = defaultAspectRatio
         }
-
+        
         cameraManager.$status
             .receive(on: DispatchQueue.main)
             .filter { $0 == .unauthorized }
             .map { _ in AlertState.cameraUnauthorized }
             .sink { alert in self.unauthorizedAlert = alert }
             .store(in: &subscribers)
-
+        
         cameraManager.capturedImagePublisher
             .receive(on: DispatchQueue.global())
             .compactMap { $0 }
             .sink(receiveValue: onCaptureComplete)
             .store(in: &subscribers)
-
+        
         cameraManager.sampleBufferPublisher
             .receive(on: DispatchQueue(label: "com.smileidentity.receivebuffer"))
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
-
+        
         // Show Manual Capture button after 10 seconds
         Timer.scheduledTimer(
             timeInterval: 10,
@@ -81,7 +81,7 @@ class DocumentCaptureViewModel: ObservableObject {
             userInfo: nil,
             repeats: false
         )
-
+        
         // Auto capture after 1 second of edges detected
         areEdgesDetectedSubscriber = $areEdgesDetected.sink(receiveValue: { areEdgesDetected in
             if areEdgesDetected {
@@ -100,20 +100,20 @@ class DocumentCaptureViewModel: ObservableObject {
             }
         })
     }
-
+    
     let metadataTimerStart = MonotonicTime()
-
+    
     func updateLocalMetadata(_ newMetadata: LocalMetadata) {
         self.localMetadata = newMetadata
         objectWillChange.send()
     }
-
+    
     @objc func showManualCapture() {
         DispatchQueue.main.async {
             self.showManualCaptureButton = true
         }
     }
-
+    
     /// Called when the user taps the "Take Photo" button on the instructions screen. This is NOT
     /// the same as the manual capture button.
     func onTakePhotoClick() {
@@ -122,12 +122,12 @@ class DocumentCaptureViewModel: ObservableObject {
             self.acknowledgedInstructions = true
         }
     }
-
+    
     /// Called when the user taps the "Select from Gallery" button on the instructions screen
     func onGalleryClick() {
         showPhotoPicker = true
     }
-
+    
     func onPhotoSelectedFromGallery(_ image: UIImage) {
         guard let image = image.jpegData(compressionQuality: 1.0) else {
             DispatchQueue.main.async {
@@ -142,7 +142,7 @@ class DocumentCaptureViewModel: ObservableObject {
             self.showPhotoPicker = false
         }
     }
-
+    
     /// Called when auto capture determines the image quality is sufficient OR when the user taps
     /// the manual capture button.
     func captureDocument() {
@@ -157,7 +157,7 @@ class DocumentCaptureViewModel: ObservableObject {
         documentImageOrigin = DocumentImageOriginValue.cameraManualCapture
         cameraManager.capturePhoto()
     }
-
+    
     /// Called if the user declines the image in the capture confirmation dialog.
     func onRetry() {
         documentImageOrigin = nil
@@ -181,7 +181,7 @@ class DocumentCaptureViewModel: ObservableObject {
             self.areEdgesDetected = false
         }
     }
-
+    
     private func onCaptureComplete(image: Data) {
         let croppedImage = ImageUtils.cropImageToAspectRatio(
             imageData: image,
@@ -202,7 +202,7 @@ class DocumentCaptureViewModel: ObservableObject {
             isCapturing = false
         }
     }
-
+    
     /// Analyzes a single frame from the camera. No other frame will be processed until this one
     /// completes. This is to prevent the UI from flickering between different states.
     ///
@@ -254,14 +254,14 @@ class DocumentCaptureViewModel: ObservableObject {
             }
         }
     }
-
+    
     private func resetBoundingBox() {
         DispatchQueue.main.async {
             self.areEdgesDetected = false
             self.idAspectRatio = self.defaultAspectRatio
         }
     }
-
+    
     private func isCorrectAspectRatio(
         detectedAspectRatio: Double,
         tolerance: Double = correctAspectRatioTolerance
@@ -269,7 +269,7 @@ class DocumentCaptureViewModel: ObservableObject {
         let expectedAspectRatio = knownAspectRatio ?? detectedAspectRatio
         return abs(detectedAspectRatio - expectedAspectRatio) < tolerance
     }
-
+    
     private func isRectCentered(
         detectedRect: Quadrilateral?,
         imageWidth: Double,
@@ -277,29 +277,29 @@ class DocumentCaptureViewModel: ObservableObject {
         tolerance: Double = centeredTolerance
     ) -> Bool {
         guard let detectedRect = detectedRect else { return false }
-
+        
         // Sometimes, the bounding box is out of frame. This cannot be considered centered
         // We check only left and right because the document should always fill the width but may
         // not fill the height
         if detectedRect.topLeft.x < tolerance || detectedRect.topRight.x > imageWidth - tolerance {
             return false
         }
-
+        
         let imageCenterX = imageWidth / 2
         let imageCenterY = imageHeight / 2
-
+        
         let rectCenterX = (detectedRect.topLeft.x + detectedRect.topRight.x) / 2
         let rectCenterY = (detectedRect.topLeft.y + detectedRect.bottomLeft.y) / 2
-
+        
         let deltaX = abs(imageCenterX - rectCenterX)
         let deltaY = abs(imageCenterY - rectCenterY)
-
+        
         let isCenteredHorizontally = deltaX < tolerance
         let isCenteredVertically = deltaY < tolerance
-
+        
         return isCenteredHorizontally && isCenteredVertically
     }
-
+    
     func openSettings() {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(settingsURL)

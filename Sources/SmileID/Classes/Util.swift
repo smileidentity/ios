@@ -27,7 +27,7 @@ public extension View {
 private struct StackedShape<Bottom: Shape, Top: Shape>: Shape {
     var bottom: Bottom
     var top: Top
-
+    
     func path(in rect: CGRect) -> Path {
         Path { path in
             path.addPath(bottom.path(in: rect))
@@ -43,7 +43,7 @@ enum FileType: String {
     case liveness = "si_liveness"
     case documentFront = "si_document_front"
     case documentBack = "si_document_back"
-
+    
     var name: String {
         return rawValue
     }
@@ -57,15 +57,15 @@ extension String {
 
 func toErrorMessage(error: SmileIDError) -> (String, String?) {
     switch error {
-    case .api(let code, let message):
-        let errorMessage = "Si.Error.Message.\(code)"
-        return (errorMessage, message)
-    case let .request(error):
-        return (error.localizedDescription, nil)
-    case .httpError(_, let message):
-        return ("", message)
-    default:
-        return ("Confirmation.FailureReason", nil)
+        case .api(let code, let message):
+            let errorMessage = "Si.Error.Message.\(code)"
+            return (errorMessage, message)
+        case let .request(error):
+            return (error.localizedDescription, nil)
+        case .httpError(_, let message):
+            return ("", message)
+        default:
+            return ("Confirmation.FailureReason", nil)
     }
 }
 
@@ -83,11 +83,11 @@ func getRelativePath(from absoluteURL: URL?) -> URL? {
     guard let absoluteURL = absoluteURL else {
         return nil
     }
-
+    
     let relativeComponents = absoluteURL.pathComponents
         .drop(while: { $0 != "SmileID" })
         .dropFirst()
-
+    
     if relativeComponents.isEmpty {
         return absoluteURL
     } else {

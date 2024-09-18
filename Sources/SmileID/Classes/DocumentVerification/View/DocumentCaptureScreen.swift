@@ -21,10 +21,10 @@ public struct DocumentCaptureScreen: View {
     let onConfirm: (Data) -> Void
     let onError: (Error) -> Void
     let onSkip: () -> Void
-
+    
     @EnvironmentObject private var localMetadata: LocalMetadata
     @ObservedObject private var viewModel: DocumentCaptureViewModel
-
+    
     public init(
         side: DocumentCaptureSide,
         showInstructions: Bool,
@@ -62,7 +62,7 @@ public struct DocumentCaptureScreen: View {
             localMetadata: LocalMetadata()
         )
     }
-
+    
     public var body: some View {
         ZStack {
             if let captureError = viewModel.captureError {
@@ -78,7 +78,7 @@ public struct DocumentCaptureScreen: View {
             viewModel.updateLocalMetadata(localMetadata)
         }
     }
-
+    
     private var instructionsView: some View {
         DocumentCaptureInstructionsScreen(
             heroImage: instructionsHeroImage,
@@ -95,11 +95,11 @@ public struct DocumentCaptureScreen: View {
             ImagePicker(onImageSelected: viewModel.onPhotoSelectedFromGallery)
         }
     }
-
+    
     private func errorView(error: Error) -> some View {
         Color.clear.onAppear { onError(error) }
     }
-
+    
     private func confirmationView(imageToConfirm: Data) -> some View {
         Group {
             if showConfirmation {
@@ -124,7 +124,7 @@ public struct DocumentCaptureScreen: View {
             }
         }
     }
-
+    
     private var captureView: some View {
         CaptureScreenContent(
             title: captureTitleText,
@@ -161,7 +161,7 @@ struct CaptureScreenContent: View {
     let showManualCaptureButton: Bool
     let cameraManager: CameraManager
     let onCaptureClick: () -> Void
-
+    
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             ZStack {
