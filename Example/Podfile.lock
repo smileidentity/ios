@@ -9,9 +9,9 @@ PODS:
   - FingerprintJS/SystemControl (1.5.0)
   - lottie-ios (4.4.3)
   - netfox (1.21.0)
-  - Sentry (8.32.0):
-    - Sentry/Core (= 8.32.0)
-  - Sentry/Core (8.32.0)
+  - Sentry (8.36.0):
+    - Sentry/Core (= 8.36.0)
+  - Sentry/Core (8.36.0)
   - SmileID (10.2.10):
     - FingerprintJS
     - lottie-ios (~> 4.4.2)
