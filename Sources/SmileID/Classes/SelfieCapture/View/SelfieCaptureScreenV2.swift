@@ -5,7 +5,7 @@ public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
     @State private var showImages: Bool = false
-    
+
     @State private var progress1: CGFloat = 0.3
     @State private var progress2: CGFloat = 0.8
     @State private var progress3: CGFloat = 0.5

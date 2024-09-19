@@ -8,6 +8,7 @@ struct FaceBoundingArea: View {
             Circle()
                 .stroke(.red, lineWidth: 10)
                 .frame(width: 275, height: 275)
+                .hidden()
             Circle()
                 .fill(.black.opacity(0.5))
                 .frame(width: 260, height: 260)
