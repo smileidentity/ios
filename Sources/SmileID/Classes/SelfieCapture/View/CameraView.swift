@@ -1,18 +1,18 @@
-import SwiftUI
 import AVFoundation
+import SwiftUI
 import Vision
 
 struct CameraView: UIViewControllerRepresentable {
-    typealias UIViewType = PreviewView
-    let preview: PreviewView
+  typealias UIViewType = PreviewView
+  let preview: PreviewView
 
-    init(cameraManager: CameraManager) {
-        preview = PreviewView(cameraManager: cameraManager)
-    }
+  init(cameraManager: CameraManager) {
+    preview = PreviewView(cameraManager: cameraManager)
+  }
 
-    func makeUIViewController(context: Context) -> PreviewView {
-        preview
-    }
+  func makeUIViewController(context: Context) -> PreviewView {
+    preview
+  }
 
-    func updateUIViewController(_ uiViewController: PreviewView, context: Context) {}
+  func updateUIViewController(_ uiViewController: PreviewView, context: Context) {}
 }
