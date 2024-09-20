@@ -4,8 +4,8 @@ struct LivenessGuidesView: View {
     // Configuration Properties
     var strokeLineWidth: CGFloat = 12
     var arcSize: CGSize = .init(width: 290, height: 290)
-    var progressBackground: Color = .gray.opacity(0.3)
-    var progressTint: Color = .green
+    var progressTrackColor: Color = .gray.opacity(0.3)
+    var progressFillColor: Color = .green
 
     @Binding var topArcProgress: CGFloat
     @Binding var rightArcProgress: CGFloat
@@ -21,7 +21,7 @@ struct LivenessGuidesView: View {
             ZStack {
                 ArcShape(startAngle: Angle(degrees: -30), endAngle: Angle(degrees: 30))
                     .stroke(style: StrokeStyle(lineWidth: strokeLineWidth, lineCap: .round))
-                    .foregroundColor(progressBackground)
+                    .foregroundColor(progressTrackColor)
                     .rotationEffect(Angle(degrees: 270))
                     .frame(width: arcSize.width, height: arcSize.height)
 
@@ -29,7 +29,7 @@ struct LivenessGuidesView: View {
                     startAngle: Angle(degrees: -30), endAngle: Angle(degrees: -30 + (60 * min(topArcProgress, 1.0)))
                 )
                 .stroke(style: StrokeStyle(lineWidth: strokeLineWidth, lineCap: .round))
-                .foregroundColor(progressTint)
+                .foregroundColor(progressFillColor)
                 .rotationEffect(Angle(degrees: 270))
                 .frame(width: arcSize.width, height: arcSize.height)
             }
@@ -39,7 +39,7 @@ struct LivenessGuidesView: View {
             ZStack {
                 ArcShape(startAngle: Angle(degrees: 30), endAngle: Angle(degrees: -30), clockwise: true)
                     .stroke(style: StrokeStyle(lineWidth: strokeLineWidth, lineCap: .round))
-                    .foregroundColor(progressBackground)
+                    .foregroundColor(progressTrackColor)
                     .rotationEffect(Angle(degrees: 0))
                     .frame(width: arcSize.width, height: arcSize.height)
 
@@ -48,7 +48,7 @@ struct LivenessGuidesView: View {
                     clockwise: true
                 )
                 .stroke(style: StrokeStyle(lineWidth: strokeLineWidth, lineCap: .round))
-                .foregroundColor(progressTint)
+                .foregroundColor(progressFillColor)
                 .rotationEffect(Angle(degrees: 0))
                 .frame(width: arcSize.width, height: arcSize.height)
             }
@@ -58,7 +58,7 @@ struct LivenessGuidesView: View {
             ZStack {
                 ArcShape(startAngle: Angle(degrees: -30), endAngle: Angle(degrees: 30))
                     .stroke(style: StrokeStyle(lineWidth: strokeLineWidth, lineCap: .round))
-                    .foregroundColor(progressBackground)
+                    .foregroundColor(progressTrackColor)
                     .rotationEffect(Angle(degrees: 180))
                     .frame(width: arcSize.width, height: arcSize.height)
 
@@ -66,7 +66,7 @@ struct LivenessGuidesView: View {
                     startAngle: Angle(degrees: -30), endAngle: Angle(degrees: -30 + (60 * min(leftArcProgress, 1.0)))
                 )
                 .stroke(style: StrokeStyle(lineWidth: strokeLineWidth, lineCap: .round))
-                .foregroundColor(progressTint)
+                .foregroundColor(progressFillColor)
                 .rotationEffect(Angle(degrees: 180))
                 .frame(width: arcSize.width, height: arcSize.height)
             }

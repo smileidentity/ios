@@ -34,6 +34,7 @@ public struct SelfieCaptureScreenV2: View {
                     rightArcProgress: $progress2,
                     leftArcProgress: $progress3
                 )
+                .hidden()
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {
