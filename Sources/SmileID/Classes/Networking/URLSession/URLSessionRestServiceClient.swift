@@ -75,11 +75,10 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    private struct ErrorResponse: Codable {
-        let error: String
-    }
-
     private func checkStatusCode(_ urlSessionResponse: URLSessionResponse) throws -> Data {
+        struct ErrorResponse: Codable {
+            let error: String
+        }
         let decoder = JSONDecoder()
         guard let httpResponse = urlSessionResponse.response as? HTTPURLResponse,
               httpResponse.isSuccess
