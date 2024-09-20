@@ -15,7 +15,7 @@ public struct Metadata: Codable {
       .clientIP,
       .fingerprint,
       .deviceModel,
-      .deviceOS,
+      .deviceOS
     ])
   }
 
