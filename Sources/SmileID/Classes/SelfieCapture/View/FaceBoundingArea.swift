@@ -17,7 +17,7 @@ struct FaceBoundingArea: View {
                         try await DotLottieFile.named("liveness_guides", bundle: SmileIDResourcesHelper.bundle)
                     }
                     .playing(loopMode: .loop)
-                    .frame(width: 141, height: 189)
+                    .frame(width: 224, height: 224)
                 )
         }
     }
