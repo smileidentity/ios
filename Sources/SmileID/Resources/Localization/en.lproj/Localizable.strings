@@ -47,6 +47,7 @@
 "Action.UploadPhoto" = "Upload Photo";
 "Action.Skip" = "Skip back of ID";
 "Action.GetStarted" = "Get Started";
+"Action.Cancel" = "Cancel";
 
 "Camera.AgentMode" = "Agent Mode";
 "Camera.Unauthorized.Title" = "Allow access to your camera";

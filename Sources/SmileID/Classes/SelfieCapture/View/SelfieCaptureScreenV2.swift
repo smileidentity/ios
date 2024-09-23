@@ -10,6 +10,8 @@ public struct SelfieCaptureScreenV2: View {
     @State private var progress2: CGFloat = 0.8
     @State private var progress3: CGFloat = 0.5
 
+    @Environment(\.presentationMode) private var presentationMode
+
     public var body: some View {
         GeometryReader { proxy in
             ZStack {
@@ -27,7 +29,7 @@ public struct SelfieCaptureScreenV2: View {
                             .frame(width: 260, height: 260)
                     }
 
-                FaceBoundingArea()
+                FaceBoundingArea(viewModel: viewModel)
                 UserInstructionsView(viewModel: viewModel)
                 LivenessGuidesView(
                     topArcProgress: $progress1,
@@ -35,6 +37,17 @@ public struct SelfieCaptureScreenV2: View {
                     leftArcProgress: $progress3
                 )
                 .hidden()
+
+                VStack {
+                    Spacer()
+                    Button {
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                            .foregroundColor(SmileID.theme.accent)
+                    }
+                }
+                .padding(.bottom, 40)
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {

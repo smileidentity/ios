@@ -9,7 +9,7 @@ struct UserInstructionsView: View {
                 .multilineTextAlignment(.center)
                 .font(SmileID.theme.header2)
                 .foregroundColor(SmileID.theme.accent)
-                .padding(.top, 40)
+                .padding(.top, 80)
                 .padding(.horizontal, 50)
             Spacer()
         }
