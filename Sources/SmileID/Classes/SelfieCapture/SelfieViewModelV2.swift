@@ -120,6 +120,13 @@ public class SelfieViewModelV2: ObservableObject {
 
         cameraManager.sampleBufferPublisher
             // Drop the first ~2 seconds to allow the user to settle in
+            .throttle(
+                for: 0.35,
+                scheduler: DispatchQueue.global(
+                    qos: .userInitiated
+                ),
+                latest: true
+            )
             .dropFirst(5)
             .compactMap { $0 }
             .sink(receiveValue: analyzeImage)
