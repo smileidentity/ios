@@ -300,9 +300,9 @@ private struct MyVerticalGrid: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
                     let numRows = (items.count + maxColumns - 1) / maxColumns
-                    ForEach(0 ..< numRows) { rowIndex in
+                    ForEach(0 ..< numRows, id: \.self) { rowIndex in
                         HStack(spacing: 16) {
-                            ForEach(0 ..< maxColumns) { columnIndex in
+                            ForEach(0 ..< maxColumns, id: \.self) { columnIndex in
                                 let itemIndex = rowIndex * maxColumns + columnIndex
                                 let width = geo.size.width / CGFloat(maxColumns)
                                 if itemIndex < items.count {
