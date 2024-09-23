@@ -2,6 +2,12 @@ import Lottie
 import SwiftUI
 
 struct FaceBoundingArea: View {
+    let viewModel: SelfieViewModelV2
+
+    init(viewModel: SelfieViewModelV2) {
+        self.viewModel = viewModel
+    }
+
     @State private var playbackMode: LottiePlaybackMode = .paused
 
     // Constants
@@ -13,7 +19,10 @@ struct FaceBoundingArea: View {
         ZStack {
             // Face Bounds Indicator
             Circle()
-                .stroke(.red, lineWidth: 10)
+                .stroke(
+                    viewModel.isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition ? .green : .red,
+                    lineWidth: 10
+                )
                 .frame(width: 275, height: 275)
             Circle()
                 .fill(.black.opacity(0.5))
