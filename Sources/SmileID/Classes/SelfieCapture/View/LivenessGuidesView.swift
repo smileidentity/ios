@@ -33,7 +33,7 @@ struct LivenessGuidesView: View {
                 .rotationEffect(Angle(degrees: 270))
                 .frame(width: arcSize.width, height: arcSize.height)
             }
-            .opacity(topArcOpacity)
+            .opacity(topArcProgress > 0.0 ? 1.0 : 0.0)
 
             // Right Arc
             ZStack {
@@ -52,7 +52,7 @@ struct LivenessGuidesView: View {
                 .rotationEffect(Angle(degrees: 0))
                 .frame(width: arcSize.width, height: arcSize.height)
             }
-            .opacity(rightArcOpacity)
+            .opacity(rightArcProgress > 0.0 ? 1.0 : 0.0)
 
             // Left Arc
             ZStack {
@@ -70,7 +70,7 @@ struct LivenessGuidesView: View {
                 .rotationEffect(Angle(degrees: 180))
                 .frame(width: arcSize.width, height: arcSize.height)
             }
-            .opacity(leftArcOpacity)
+            .opacity(leftArcProgress > 0.0 ? 1.0 : 0.0)
         }
     }
 }

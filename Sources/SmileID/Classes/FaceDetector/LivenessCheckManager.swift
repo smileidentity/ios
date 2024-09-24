@@ -35,17 +35,17 @@ class LivenessCheckManager: ObservableObject {
     /// The minimum threshold for yaw (left-right head movement)
     private let minYawAngleThreshold: CGFloat = 0.15
     /// The maximum threshold for yaw (left-right head movement)
-    private let maxYawAngleThreshold: CGFloat = 0.6
+    private let maxYawAngleThreshold: CGFloat = 0.3
     /// The minimum threshold for pitch (up-down head movement)
     private let minPitchAngleThreshold: CGFloat = 0.15
     /// The maximum threshold for pitch (up-down head movement)
-    private let maxPitchAngleThreshold: CGFloat = 0.6
+    private let maxPitchAngleThreshold: CGFloat = 0.3
 
     // MARK: Face Orientation Properties
-    @Published private(set) var yawAngle: Double = 0.0
-    @Published private(set) var rollAngle: Double = 0.0
-    @Published private(set) var pitchAngle: Double = 0.0
-    @Published private(set) var  faceDirection: FaceDirection = .none
+    @Published var lookLeftProgress: CGFloat = 0.0
+    @Published var lookRightProgress: CGFloat = 0.0
+    @Published var lookUpProgress: CGFloat = 0.0
+    @Published private(set) var faceDirection: FaceDirection = .none
 
     /// Initializes the LivenessCheckManager with a shuffled set of tasks.
     init() {
@@ -74,35 +74,49 @@ class LivenessCheckManager: ObservableObject {
     /// Processes face geometry data and checks for task completion
     /// - Parameter faceGeometry: The current face geometry data.
     func processFaceGeometry(_ faceGeometry: FaceGeometryModel) {
-        updateFaceOrientationValues(from: faceGeometry)
+        let yawValue = CGFloat(faceGeometry.yaw.doubleValue)
+        let pitchValue = CGFloat(faceGeometry.pitch.doubleValue)
 
-        guard let currentTask = currentTask else { return }
-
-        switch currentTask {
-        case .lookLeft:
-            let yawValue = CGFloat(faceGeometry.yaw.doubleValue)
-            if yawValue < -minYawAngleThreshold {
-                completeCurrentTask()
-            }
-        case .lookRight:
-            let yawValue = CGFloat(faceGeometry.yaw.doubleValue)
-            if yawValue > minYawAngleThreshold {
-                 completeCurrentTask()
-            }
-        case .lookUp:
-            let pitchValue = CGFloat(faceGeometry.pitch.doubleValue)
-            if pitchValue < -minPitchAngleThreshold {
-                completeCurrentTask()
-            }
-        }
+        updateFaceOrientationValues(yawValue, pitchValue)
     }
 
     /// Updates the face orientation values based on the given face geometry.
     /// - Parameter faceGeometry: The current face geometry data.
-    private func updateFaceOrientationValues(from faceGeometry: FaceGeometryModel) {
-        yawAngle = faceGeometry.yaw.doubleValue
-        rollAngle = faceGeometry.roll.doubleValue
-        pitchAngle = faceGeometry.pitch.doubleValue
+    private func updateFaceOrientationValues(
+        _ yawValue: CGFloat,
+        _ pitchValue: CGFloat
+    ) {
+        guard let currentTask = currentTask else { return }
+
+        switch currentTask {
+        case .lookLeft:
+            if yawValue < -minYawAngleThreshold {
+                let progress = yawValue
+                    .normalized(min: -minYawAngleThreshold, max: -maxYawAngleThreshold)
+                lookLeftProgress = min(max(lookLeftProgress, progress), 1.0)
+                if lookLeftProgress == 1.0 {
+                    completeCurrentTask()
+                }
+            }
+        case .lookRight:
+            if yawValue > minYawAngleThreshold {
+                let progress = yawValue
+                    .normalized(min: minYawAngleThreshold, max: maxYawAngleThreshold)
+                lookRightProgress = min(max(lookRightProgress, progress), 1.0)
+                if lookRightProgress == 1.0 {
+                    completeCurrentTask()
+                }
+            }
+        case .lookUp:
+            if pitchValue < -minPitchAngleThreshold {
+                let progress = pitchValue
+                    .normalized(min: -minPitchAngleThreshold, max: -maxPitchAngleThreshold)
+                lookUpProgress = min(max(lookUpProgress, progress), 1.0)
+                if lookUpProgress == 1.0 {
+                    completeCurrentTask()
+                }
+            }
+        }
     }
 
     /// Completes the current task and moves to the next one.
@@ -116,5 +130,11 @@ class LivenessCheckManager: ObservableObject {
             selfieViewModel?.perform(action: .activeLivenessCompleted)
             self.currentTask = nil
         }
+    }
+}
+
+extension CGFloat {
+    func normalized(min: CGFloat, max: CGFloat) -> CGFloat {
+        return (self - min) / (max - min)
     }
 }

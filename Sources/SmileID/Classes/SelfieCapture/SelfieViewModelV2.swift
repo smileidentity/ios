@@ -6,7 +6,7 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
     let cameraManager = CameraManager.shared
     let faceDetector = FaceDetectorV2()
-    let activeLiveness = LivenessCheckManager()
+    var activeLiveness = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
 
     var selfieImage: URL?
