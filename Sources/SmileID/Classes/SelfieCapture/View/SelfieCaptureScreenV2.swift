@@ -4,7 +4,6 @@ import SwiftUI
 public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
-    @State private var showImages: Bool = false
 
     @Environment(\.presentationMode) private var presentationMode
 
@@ -62,7 +61,7 @@ public struct SelfieCaptureScreenV2: View {
                     secondaryButton: .cancel()
                 )
             }
-            .sheet(isPresented: $showImages) {
+            .sheet(isPresented: $viewModel.showImages) {
                 CapturedImagesView(model: viewModel)
             }
         }

@@ -55,17 +55,19 @@ public class SelfieViewModelV2: ObservableObject {
             calculateDetectedFaceValidity()
         }
     }
-    @Published private(set) var boundingXDelta: CGFloat = .zero
-    @Published private(set) var boundingYDelta: CGFloat = .zero
 
     // MARK: Constants
     private let livenessImageSize = 320
     private let selfieImageSize = 640
+    private let numLivenessImages = 6
 
     // MARK: UI Properties
     @Published private(set) var faceQualityValue: Double = 0.0
     @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
     var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
+    // This is meant for debug purposes only.
+    @Published var showImages: Bool = false
+    @Published private(set) var isSubmittingJob: Bool = false
 
     // MARK: Private Properties
     private let isEnroll: Bool
@@ -172,8 +174,10 @@ public class SelfieViewModelV2: ObservableObject {
             handleError(error)
         }
     }
+}
 
-    // MARK: Action Handlers
+// MARK: Action Handlers
+extension SelfieViewModelV2 {
     private func handleWindowSizeChanged(toRect: CGRect) {
         faceLayoutGuideFrame = CGRect(
             x: toRect.midX - faceLayoutGuideFrame.width / 2,
@@ -238,6 +242,9 @@ public class SelfieViewModelV2: ObservableObject {
             }
             let imageUrl = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: imageData)
             livenessImages.append(imageUrl)
+            if selfieImage != nil && livenessImages.count == numLivenessImages {
+                submitJob()
+            }
         } catch {
             handleError(error)
         }
@@ -310,9 +317,6 @@ extension SelfieViewModelV2 {
     }
 
     func updateAcceptableBounds(using boundingBox: CGRect) {
-        boundingXDelta = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
-        boundingYDelta = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
-
         if boundingBox.width > 1.2 * faceLayoutGuideFrame.width {
             isAcceptableBounds = .detectedFaceTooLarge
         } else if boundingBox.width * 1.2 < faceLayoutGuideFrame.width {
@@ -361,5 +365,16 @@ extension SelfieViewModelV2 {
         isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
         isAcceptableFaceQuality &&
         isAcceptableSelfieQuality
+    }
+}
+
+// MARK: API Helpers
+extension SelfieViewModelV2 {
+    func submitJob() {
+        isSubmittingJob = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.isSubmittingJob = false
+            self.showImages = true
+        }
     }
 }
