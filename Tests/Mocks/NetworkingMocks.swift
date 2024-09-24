@@ -58,14 +58,11 @@ class MockSmileIdentityService: SmileIDServiceable {
         }
     }
 
-    func upload(zip _: Data = Data(), to _: String = "") async throws -> AsyncThrowingStream<UploadResponse, Error> {
-        return AsyncThrowingStream { continuation in
-            let response = UploadResponse.response(data: Data())
-            if MockHelper.shouldFail {
-                continuation.finish(throwing: SmileIDError.request(URLError(.resourceUnavailable)))
-            } else {
-                continuation.yield(response)
-            }
+    func upload(zip _: Data = Data(), to _: String = "") async throws -> Data {
+        if MockHelper.shouldFail {
+            throw SmileIDError.request(URLError(.resourceUnavailable))
+        } else {
+            return Data()
         }
     }
 
@@ -126,7 +123,8 @@ class MockSmileIdentityService: SmileIDServiceable {
         partnerParams _: [String: String]?,
         callbackUrl _: String?,
         sandboxResult _: Int?,
-        allowNewEnroll _: Bool?
+        allowNewEnroll _: Bool?,
+        metadata _: Metadata
     ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
@@ -155,7 +153,8 @@ class MockSmileIdentityService: SmileIDServiceable {
         livenessImages _: [MultipartBody],
         partnerParams _: [String: String]?,
         callbackUrl _: String?,
-        sandboxResult _: Int?
+        sandboxResult _: Int?,
+        metadata _: Metadata
     ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))

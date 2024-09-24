@@ -1,4 +1,24 @@
 # Release Notes
+## Unreleased
+
+### Added
+* Add metadata support
+
+## 10.2.10
+
+### Added
+* Document capture cleanup and optionally showing confirmation and returning the captured image if false
+* Added new `requestTimeout` parameter to `SmileID` class initializers to allow configuration of network request timeouts.
+
+### Changed
+* Convert network service upload function to normal async/await from AsyncThrowingStream.
+* Handle requestError with URLError and return localizedDescription for user facing alert message.
+* Handle httpError and provide a user facing message for the alert.
+
+## 10.2.9
+
+### Added
+* Document capture cleanup and optionally showing confirmation and returning the captured image if false
 
 ## 10.2.9
 

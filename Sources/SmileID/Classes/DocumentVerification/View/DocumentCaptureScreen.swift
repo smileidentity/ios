@@ -1,7 +1,13 @@
 import SwiftUI
 
+public enum DocumentCaptureSide {
+    case front
+    case back
+}
+
 /// This handles Instructions + Capture + Confirmation for a single side of a document
 public struct DocumentCaptureScreen: View {
+    let side: DocumentCaptureSide
     let showInstructions: Bool
     let showAttribution: Bool
     let allowGallerySelection: Bool
@@ -15,11 +21,12 @@ public struct DocumentCaptureScreen: View {
     let onConfirm: (Data) -> Void
     let onError: (Error) -> Void
     let onSkip: () -> Void
-
-    @ObservedObject
-    private var viewModel: DocumentCaptureViewModel
-
+    
+    @EnvironmentObject private var localMetadata: LocalMetadata
+    @ObservedObject private var viewModel: DocumentCaptureViewModel
+    
     public init(
+        side: DocumentCaptureSide,
         showInstructions: Bool,
         showAttribution: Bool,
         allowGallerySelection: Bool,
@@ -33,8 +40,8 @@ public struct DocumentCaptureScreen: View {
         onConfirm: @escaping (Data) -> Void,
         onError: @escaping (Error) -> Void,
         onSkip: @escaping () -> Void = {}
-
     ) {
+        self.side = side
         self.showInstructions = showInstructions
         self.showAttribution = showAttribution
         self.allowGallerySelection = allowGallerySelection
@@ -48,9 +55,14 @@ public struct DocumentCaptureScreen: View {
         self.onConfirm = onConfirm
         self.onError = onError
         self.onSkip = onSkip
-        viewModel = DocumentCaptureViewModel(knownAspectRatio: knownIdAspectRatio)
+        
+        viewModel = DocumentCaptureViewModel(
+            knownAspectRatio: knownIdAspectRatio,
+            side: side,
+            localMetadata: LocalMetadata()
+        )
     }
-
+    
     public var body: some View {
         ZStack {
             if let captureError = viewModel.captureError {
@@ -62,9 +74,11 @@ public struct DocumentCaptureScreen: View {
             } else {
                 captureView
             }
+        }.onAppear {
+            viewModel.updateLocalMetadata(localMetadata)
         }
     }
-
+    
     private var instructionsView: some View {
         DocumentCaptureInstructionsScreen(
             heroImage: instructionsHeroImage,
@@ -81,11 +95,11 @@ public struct DocumentCaptureScreen: View {
             ImagePicker(onImageSelected: viewModel.onPhotoSelectedFromGallery)
         }
     }
-
+    
     private func errorView(error: Error) -> some View {
         Color.clear.onAppear { onError(error) }
     }
-
+    
     private func confirmationView(imageToConfirm: Data) -> some View {
         Group {
             if showConfirmation {
@@ -110,7 +124,7 @@ public struct DocumentCaptureScreen: View {
             }
         }
     }
-
+    
     private var captureView: some View {
         CaptureScreenContent(
             title: captureTitleText,
@@ -128,9 +142,7 @@ public struct DocumentCaptureScreen: View {
                 message: Text(alert.message ?? ""),
                 primaryButton: .default(
                     Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
-                    action: {
-                        viewModel.openSettings()
-                    }
+                    action: {viewModel.openSettings()}
                 ),
                 secondaryButton: .cancel()
             )
@@ -147,7 +159,7 @@ struct CaptureScreenContent: View {
     let showManualCaptureButton: Bool
     let cameraManager: CameraManager
     let onCaptureClick: () -> Void
-
+    
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             ZStack {

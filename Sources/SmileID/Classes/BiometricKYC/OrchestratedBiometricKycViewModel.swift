@@ -8,29 +8,30 @@ internal enum BiometricKycStep {
 
 internal class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - Input Properties
-
+    
     private let userId: String
     private let jobId: String
     private let allowNewEnroll: Bool
     private var extraPartnerParams: [String: String]
+    private let localMetadata = LocalMetadata()
     private var idInfo: IdInfo
-
+    
     // MARK: - Other Properties
-
+    
     internal var selfieFile: URL?
     internal var livenessFiles: [URL]?
     private var error: Error?
     private var didSubmitBiometricJob: Bool = false
-
+    
     // MARK: - UI Properties
-
+    
     /// we use `errorMessageRes` to map to the actual code to the stringRes to allow localization,
     /// and use `errorMessage` to show the actual platform error message that we show if
     /// `errorMessageRes` is not set by the partner
     @Published var errorMessageRes: String?
     @Published var errorMessage: String?
     @Published @MainActor private(set) var step: BiometricKycStep = .selfie
-
+    
     init(
         userId: String,
         jobId: String,
@@ -44,20 +45,19 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         self.idInfo = idInfo
         self.extraPartnerParams = extraPartnerParams
     }
-
+    
     func onRetry() {
-        if let selfieFile {
+        if selfieFile != nil {
             submitJob()
         } else {
             DispatchQueue.main.async { self.step = .selfie }
         }
     }
-
+    
     func onFinished(delegate: BiometricKycResultDelegate) {
         if let selfieFile = selfieFile,
            let livenessFiles = livenessFiles,
-           let selfiePath = getRelativePath(from: selfieFile)
-        {
+           let selfiePath = getRelativePath(from: selfieFile) {
             delegate.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
@@ -69,7 +69,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
             delegate.didError(error: SmileIDError.unknown("onFinish with no result or error"))
         }
     }
-
+    
     func submitJob() {
         DispatchQueue.main.async { self.step = .processing(.inProgress) }
         Task {
@@ -78,19 +78,19 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     jobId: jobId,
                     fileType: FileType.selfie
                 )
-            
+                
                 livenessFiles = try LocalStorage.getFilesByType(
                     jobId: jobId,
                     fileType: FileType.liveness
                 )
-            
+                
                 guard let selfieFile else {
                     // Set step to .selfieCapture so that the Retry button goes back to this step
                     DispatchQueue.main.async { self.step = .selfie }
                     error = SmileIDError.unknown("Error capturing selfie")
                     return
                 }
-            
+                
                 var allFiles = [URL]()
                 let infoJson = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,
@@ -118,6 +118,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                         jobType: .biometricKyc,
                         enrollment: false,
                         allowNewEnroll: allowNewEnroll,
+                        localMetadata: localMetadata,
                         partnerParams: extraPartnerParams
                     )
                 }
@@ -125,6 +126,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
                     allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+                    metadata: localMetadata.metadata.items,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
@@ -135,15 +137,15 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     )
                 } catch let error as SmileIDError {
                     switch error {
-                    case .api("2215", _):
-                        prepUploadResponse = try await SmileID.api.prepUpload(
-                            request: prepUploadRequest.copy(retry: "true")
-                        )
-                    default:
-                        throw error
+                        case .api("2215", _):
+                            prepUploadResponse = try await SmileID.api.prepUpload(
+                                request: prepUploadRequest.copy(retry: "true")
+                            )
+                        default:
+                            throw error
                     }
                 }
-                _ = try await SmileID.api.upload(
+                let _ = try await SmileID.api.upload(
                     zip: zipData,
                     to: prepUploadResponse.uploadUrl
                 )
@@ -179,9 +181,11 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     print("Error submitting job: \(error)")
                     let (errorMessageRes, errorMessage) = toErrorMessage(error: error)
                     self.error = error
-                    self.errorMessageRes = errorMessageRes
-                    self.errorMessage = errorMessage
-                    DispatchQueue.main.async { self.step = .processing(.error) }
+                    DispatchQueue.main.async {
+                        self.errorMessageRes = errorMessageRes
+                        self.errorMessage = errorMessage
+                        self.step = .processing(.error)
+                    }
                 }
             } catch {
                 didSubmitBiometricJob = false
@@ -201,7 +205,7 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
     ) {
         submitJob()
     }
-
+    
     func didError(error _: Error) {
         error = SmileIDError.unknown("Error capturing selfie")
         DispatchQueue.main.async { self.step = .processing(.error) }

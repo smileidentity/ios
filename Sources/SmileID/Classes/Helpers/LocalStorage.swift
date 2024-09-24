@@ -62,7 +62,7 @@ public class LocalStorage {
         try createSmileFile(to: jobId, name: filename(for: FileType.liveness.name), file: data)
     }
 
-    static func createDocumentFile(
+    public static func createDocumentFile(
         jobId: String,
         fileType: FileType,
         document data: Data
@@ -178,6 +178,7 @@ public class LocalStorage {
         jobType: JobType,
         enrollment: Bool,
         allowNewEnroll: Bool,
+        localMetadata: LocalMetadata,
         partnerParams: [String: String]
     ) throws {
         do {
@@ -191,6 +192,7 @@ public class LocalStorage {
                         extras: partnerParams
                     ),
                     allowNewEnroll: String(allowNewEnroll),
+                    metadata: localMetadata.metadata.items,
                     timestamp: "", // remove this so it is not stored offline
                     signature: "" // remove this so it is not stored offline
                 )

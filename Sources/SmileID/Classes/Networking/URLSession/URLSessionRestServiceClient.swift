@@ -13,11 +13,14 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     typealias URLSessionResponse = (data: Data, response: URLResponse)
     let session: URLSessionPublisher
     let decoder = JSONDecoder()
+    let requestTimeout: TimeInterval
 
     public init(
-        session: URLSessionPublisher = URLSession.shared
+        session: URLSessionPublisher,
+        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         self.session = session
+        self.requestTimeout = requestTimeout
     }
 
     func send<T: Decodable>(request: RestRequest) async throws -> T {
@@ -31,24 +34,21 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    public func upload(request: RestRequest) async throws -> AsyncThrowingStream<UploadResponse, Error> {
-        AsyncThrowingStream<UploadResponse, Error> { continuation in
-            do {
-                let urlRequest = try request.getUploadRequest()
-                let delegate = URLDelegate(continuation: continuation)
-                let uploadSession = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
-                uploadSession.uploadTask(with: urlRequest, from: request.body) { data, response, error in
-                    if let error = error {
-                        continuation.finish(throwing: error)
-                        return
-                    }
-                    if (response as? HTTPURLResponse)?.statusCode == 200 {
-                        continuation.yield(.response(data: data))
-                    }
-                }.resume()
-            } catch {
-                continuation.finish(throwing: error)
-            }
+    public func upload(request: RestRequest) async throws -> Data {
+        guard let requestBody = request.body else {
+            throw SmileIDError.invalidRequestBody
+        }
+
+        do {
+            let urlRequest = try request.getUploadRequest()
+            let configuration = URLSessionConfiguration.default
+            configuration.timeoutIntervalForRequest = requestTimeout
+            let uploadSession = URLSession(configuration: configuration)
+
+            let urlSessionResponse = try await uploadSession.upload(for: urlRequest, from: requestBody)
+            return try checkStatusCode(urlSessionResponse)
+        } catch {
+            throw mapToAPIError(error)
         }
     }
 
@@ -76,20 +76,30 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     }
 
     private func checkStatusCode(_ urlSessionResponse: URLSessionResponse) throws -> Data {
+        struct ErrorResponse: Codable {
+            let error: String
+        }
+        let decoder = JSONDecoder()
         guard let httpResponse = urlSessionResponse.response as? HTTPURLResponse,
               httpResponse.isSuccess
         else {
-            if let decodedError = try? JSONDecoder().decode(
+            if let decodedError = try? decoder.decode(
                 SmileIDErrorResponse.self,
                 from: urlSessionResponse.data
             ) {
                 throw SmileIDError.api(decodedError.code, decodedError.message)
             }
-            throw SmileIDError.httpError(
-                (
+            if let httpError = try? decoder.decode(
+                ErrorResponse.self,
+                from: urlSessionResponse.data
+            ) {
+                throw SmileIDError.httpError((
                     urlSessionResponse.response as? HTTPURLResponse
-                )?.statusCode ?? 500,
-                urlSessionResponse.data
+                )?.statusCode ?? 500, httpError.error)
+            }
+            throw SmileIDError.httpError(
+                (urlSessionResponse.response as? HTTPURLResponse)?.statusCode ?? 500,
+                "Unknown error occurred"
             )
         }
 
