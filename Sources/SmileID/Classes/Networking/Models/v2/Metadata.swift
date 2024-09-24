@@ -3,7 +3,6 @@ import UIKit
 
 public struct Metadata: Codable {
     public var items: [Metadatum]
-
     public init(items: [Metadatum]) {
         self.items = items
     }
@@ -200,7 +199,6 @@ func getIPAddress(useIPv4: Bool) -> String {
 
 public class LocalMetadata: ObservableObject {
     @Published var metadata: Metadata = .default()
-
     public init() {}
 
     func addMetadata(_ newMetadata: Metadatum) {
@@ -230,7 +228,9 @@ extension UIDevice {
         let model: String
         static var all: [DeviceModel] {
             _ = UIDevice.current.name
-            guard let devicesUrl = SmileIDResourcesHelper.bundle.url(forResource: "devicemodels", withExtension: "json") else { return [] }
+            guard let devicesUrl = SmileIDResourcesHelper.bundle.url(
+                forResource: "devicemodels", withExtension: "json"
+            ) else { return [] }
             do {
                 let data = try Data(contentsOf: devicesUrl)
                 let devices = try JSONDecoder().decode([DeviceModel].self, from: data)
