@@ -38,7 +38,7 @@ private struct StackedShape<Bottom: Shape, Top: Shape>: Shape {
 
 extension String: Error {}
 
-enum FileType: String {
+public enum FileType: String {
     case selfie = "si_selfie"
     case liveness = "si_liveness"
     case documentFront = "si_document_front"

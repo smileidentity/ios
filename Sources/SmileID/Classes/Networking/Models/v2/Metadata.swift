@@ -199,6 +199,8 @@ func getIPAddress(useIPv4: Bool) -> String {
 public class LocalMetadata: ObservableObject {
     @Published var metadata: Metadata = Metadata.default()
     
+    public init() { }
+    
     func addMetadata(_ newMetadata: Metadatum) {
         metadata.items.append(newMetadata)
         objectWillChange.send()
@@ -225,7 +227,7 @@ extension UIDevice {
         let identifier: String
         let model: String
         static var all: [DeviceModel] {
-            let currentDevice = UIDevice.current.name
+            _ = UIDevice.current.name
             guard let devicesUrl = SmileIDResourcesHelper.bundle.url(forResource: "devicemodels", withExtension: "json") else { return [] }
             do {
                 let data = try Data(contentsOf: devicesUrl)
