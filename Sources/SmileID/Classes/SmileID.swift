@@ -1,7 +1,7 @@
+import FingerprintJS
 import Foundation
 import SwiftUI
 import UIKit
-import FingerprintJS
 
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
@@ -9,9 +9,9 @@ public class SmileID {
     public static let version = "10.2.11"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
-    
+
     public static var api: SmileIDServiceable { SmileID.instance.injectedApi }
-    
+
     static let instance: SmileID = {
         let container = DependencyContainer.shared
         container.register(SmileIDServiceable.self) { SmileIDService() }
@@ -25,7 +25,7 @@ public class SmileID {
         let instance = SmileID()
         return instance
     }()
-    
+
     /// A private static constant that initializes a `URLSession` with a default configuration.
     /// This `URLSession` is used for creating `URLSessionDataTask`s in the networking layer.
     /// The session configuration sets the timeout interval for requests to the value specified by `SmileID.requestTimeout`.
@@ -37,9 +37,9 @@ public class SmileID {
         let session = URLSession(configuration: configuration)
         return session
     }()
-    
+
     private init() {}
-    
+
     public private(set) static var config: Config!
     public private(set) static var useSandbox = false
     public private(set) static var allowOfflineMode = false
@@ -50,7 +50,7 @@ public class SmileID {
     private(set) static var localizableStrings: SmileIDLocalizableStrings?
     /// The timeout interval for requests. This value is initialized to the `defaultRequestTimeout`.
     private(set) static var requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
-    
+
     /// This method initializes SmileID. Invoke this method once in your application lifecycle
     /// before calling any other SmileID methods.
     /// - Parameters:
@@ -71,7 +71,7 @@ public class SmileID {
             requestTimeout: requestTimeout
         )
     }
-    
+
     /// This method initializes SmileID. Invoke this method once in your application lifecylce
     /// before calling any other SmileID methods.
     /// - Parameters:
@@ -103,7 +103,7 @@ public class SmileID {
             }
         }
     }
-    
+
     /// Sets the state of offline mode for the SDK.
     /// This function enables or disables the SDK's ability to operate in offline mode,
     /// where it can continue functioning without an active internet connection. When offline mode
@@ -117,17 +117,17 @@ public class SmileID {
     public class func setAllowOfflineMode(allowOfflineMode: Bool) {
         SmileID.allowOfflineMode = allowOfflineMode
     }
-    
+
     /// Retrieves a list of unsubmitted job IDs.
     public class func getUnsubmittedJobs() -> [String] {
         LocalStorage.getUnsubmittedJobs()
     }
-    
+
     /// Retrieves a list of submitted job IDs.
     public class func getSubmittedJobs() -> [String] {
         LocalStorage.getSubmittedJobs()
     }
-    
+
     /// Initiates the cleanup process for a single job by its ID.
     /// This is a convenience method that wraps the cleanup process, allowing for a single job ID
     /// to be specified for cleanup.
@@ -136,7 +136,7 @@ public class SmileID {
     public class func cleanup(jobId: String) throws {
         try cleanup(jobIds: [jobId])
     }
-    
+
     ///  Initiates the cleanup process for multiple jobs by their IDs.
     ///  If no IDs are provided, a default cleanup process is initiated that may target
     ///  specific jobs based on the implementation in com.smileidentity.util.cleanup.
@@ -150,7 +150,7 @@ public class SmileID {
             try LocalStorage.deleteAll()
         }
     }
-    
+
     /// Submits a previously captured job to SmileID for processing.
     ///
     /// - Parameters:
@@ -192,12 +192,12 @@ public class SmileID {
                     )
                 } catch let error as SmileIDError {
                     switch error {
-                        case .api("2215", _):
-                            prepUploadResponse = try await SmileID.api.prepUpload(
-                                request: prepUploadRequest.copy(retry: "true")
-                            )
-                        default:
-                            throw error
+                    case .api("2215", _):
+                        prepUploadResponse = try await SmileID.api.prepUpload(
+                            request: prepUploadRequest.copy(retry: "true")
+                        )
+                    default:
+                        throw error
                     }
                 }
                 let allFiles: [URL]
@@ -238,28 +238,28 @@ public class SmileID {
             }
         }
     }
-    
+
     /// Set the callback URL for all submitted jobs. If no value is set, the default callback URL
     /// from the partner portal will be used.
     /// - Parameter url: A valid URL pointing to your server
     public class func setCallbackUrl(url: URL?) {
         SmileID.callbackUrl = url?.absoluteString ?? ""
     }
-    
+
     /// Apply theme
     /// - Parameter theme: A `SmileIdTheme` used to override the colors and fonts used within the
     /// SDK. If no value is set, the default theme will be used.
     public class func apply(_ theme: SmileIdTheme) {
         self.theme = theme
     }
-    
+
     /// Apply localizable strings
     /// - Parameter localizableStrings: A `SmileIDLocalizableStrings`  used to override all copy
     /// used within the SDK. if no value is set, the default copy will be used.
     public class func apply(_ localizableStrings: SmileIDLocalizableStrings) {
         self.localizableStrings = localizableStrings
     }
-    
+
     /// Load the Config object from a json file
     /// - Parameter resourceName: The name of the json file. Defaults to `smile_config`
     /// - Returns: A `Config` object
@@ -270,7 +270,7 @@ public class SmileID {
         return try! decoder.decode(Config.self, from: Data(contentsOf: configUrl))
         // swiftlint:enable force_try
     }
-    
+
     /// Perform a SmartSelfie™ Enrollment
     ///
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
@@ -314,7 +314,7 @@ public class SmileID {
             onResult: delegate
         )
     }
-    
+
     /// Perform a SmartSelfie™ Authentication
     ///
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
@@ -358,7 +358,7 @@ public class SmileID {
             onResult: delegate
         )
     }
-    
+
     /// Perform a Document Verification
     /// - Parameters:
     ///   - userId: The user ID to associate with the Document Verification. Most often, this will
@@ -419,7 +419,7 @@ public class SmileID {
             onResult: delegate
         )
     }
-    
+
     /// Perform an Enhanced Document Verification
     /// - Parameters:
     ///   - userId: The user ID to associate with the Document Verification. Most often, this will
@@ -480,7 +480,7 @@ public class SmileID {
             onResult: delegate
         )
     }
-    
+
     public class func consentScreen(
         partnerIcon: UIImage,
         partnerName: String,
@@ -500,7 +500,7 @@ public class SmileID {
             onConsentDenied: onConsentDenied
         )
     }
-    
+
     /// Perform a Biometric KYC: Verify the ID information of your user and confirm that the ID
     /// actually belongs to the user. This is achieved by comparing the user's SmartSelfie™ to the
     /// user's photo in an ID authority database
