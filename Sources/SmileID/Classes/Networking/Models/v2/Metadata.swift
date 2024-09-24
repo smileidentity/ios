@@ -140,7 +140,6 @@ public enum DocumentImageOriginValue: String {
     case gallery
     case cameraAutoCapture = "camera_auto_capture"
     case cameraManualCapture = "camera_manual_capture"
-
     public var value: String {
         return rawValue
     }
@@ -170,7 +169,9 @@ func getIPAddress(useIPv4: Bool) -> String {
         let addrFamily = interface.ifa_addr.pointee.sa_family
         if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
             let name = String(cString: interface.ifa_name)
-            if name == "en0" || name == "en1" || name == "pdp_ip0" || name == "pdp_ip1" || name == "pdp_ip2" || name == "pdp_ip3" {
+            if name == "en0" || name == "en1" || name == "pdp_ip0"
+                || name == "pdp_ip1" || name == "pdp_ip2" || name == "pdp_ip3"
+            {
                 var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
                 getnameinfo(interface.ifa_addr, socklen_t(interface.ifa_addr.pointee.sa_len),
                             &hostname, socklen_t(hostname.count),
