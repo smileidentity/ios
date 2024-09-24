@@ -13,6 +13,7 @@ enum SelfieViewModelAction {
     case activeLivenessTimeout
 
     // Others
+    case setupDelayTimer
     case toggleDebugMode
     case openApplicationSettings
     case handleError(Error)

@@ -31,7 +31,6 @@ class LivenessCheckManager: ObservableObject {
     var captureImage: (() -> Void)?
 
     // MARK: Constants
-
     /// The minimum threshold for yaw (left-right head movement)
     private let minYawAngleThreshold: CGFloat = 0.15
     /// The maximum threshold for yaw (left-right head movement)
@@ -40,6 +39,8 @@ class LivenessCheckManager: ObservableObject {
     private let minPitchAngleThreshold: CGFloat = 0.15
     /// The maximum threshold for pitch (up-down head movement)
     private let maxPitchAngleThreshold: CGFloat = 0.3
+    /// The timeout duration for each task in seconds.
+    private let taskTimeoutDuration: TimeInterval = 120
 
     // MARK: Face Orientation Properties
     @Published var lookLeftProgress: CGFloat = 0.0
@@ -47,17 +48,56 @@ class LivenessCheckManager: ObservableObject {
     @Published var lookUpProgress: CGFloat = 0.0
     @Published private(set) var faceDirection: FaceDirection = .none
 
+    /// The current liveness task.
+    private(set) var currentTask: LivenessTask? {
+        didSet {
+            if currentTask != nil {
+                resetTaskTimer()
+            } else {
+                stopTaskTimer()
+            }
+        }
+    }
+    /// The timer used for task timeout.
+    private var taskTimer: Timer?
+    private var elapsedTime: TimeInterval = 0.0
+
     /// Initializes the LivenessCheckManager with a shuffled set of tasks.
     init() {
         livenessTaskSequence = [.lookLeft, .lookRight, .lookUp].shuffled()
     }
 
-    /// The current liveness task.
-    private(set) var currentTask: LivenessTask?
+    /// Cleans up resources when the manager is no longer needed.
+    deinit {
+        stopTaskTimer()
+    }
+
+    /// Resets the task timer to the initial timeout duration.
+    private func resetTaskTimer() {
+        stopTaskTimer()
+        taskTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { _ in
+            self.elapsedTime += 1
+            if self.elapsedTime == self.taskTimeoutDuration {
+                self.handleTaskTimeout()
+            }
+        }
+    }
+
+    /// Stops the current task timer.
+    private func stopTaskTimer() {
+        taskTimer?.invalidate()
+        taskTimer = nil
+    }
+
+    /// Handles the timeout event for a task.
+    private func handleTaskTimeout() {
+        stopTaskTimer()
+        selfieViewModel?.perform(action: .activeLivenessTimeout)
+    }
 
     /// Advances to the next task in the sequence
     /// - Returns: `true` if there is a next task, `false` if all tasks are completed.
-    private func  advanceToNextTask() -> Bool {
+    private func advanceToNextTask() -> Bool {
         guard currentTaskIndex < livenessTaskSequence.count - 1 else {
             return false
         }
@@ -76,7 +116,6 @@ class LivenessCheckManager: ObservableObject {
     func processFaceGeometry(_ faceGeometry: FaceGeometryModel) {
         let yawValue = CGFloat(faceGeometry.yaw.doubleValue)
         let pitchValue = CGFloat(faceGeometry.pitch.doubleValue)
-
         updateFaceOrientationValues(yawValue, pitchValue)
     }
 
@@ -91,7 +130,8 @@ class LivenessCheckManager: ObservableObject {
         switch currentTask {
         case .lookLeft:
             if yawValue < -minYawAngleThreshold {
-                let progress = yawValue
+                let progress =
+                    yawValue
                     .normalized(min: -minYawAngleThreshold, max: -maxYawAngleThreshold)
                 lookLeftProgress = min(max(lookLeftProgress, progress), 1.0)
                 if lookLeftProgress == 1.0 {
@@ -100,7 +140,8 @@ class LivenessCheckManager: ObservableObject {
             }
         case .lookRight:
             if yawValue > minYawAngleThreshold {
-                let progress = yawValue
+                let progress =
+                    yawValue
                     .normalized(min: minYawAngleThreshold, max: maxYawAngleThreshold)
                 lookRightProgress = min(max(lookRightProgress, progress), 1.0)
                 if lookRightProgress == 1.0 {
@@ -109,7 +150,8 @@ class LivenessCheckManager: ObservableObject {
             }
         case .lookUp:
             if pitchValue < -minPitchAngleThreshold {
-                let progress = pitchValue
+                let progress =
+                    pitchValue
                     .normalized(min: -minPitchAngleThreshold, max: -maxPitchAngleThreshold)
                 lookUpProgress = min(max(lookUpProgress, progress), 1.0)
                 if lookUpProgress == 1.0 {
@@ -121,7 +163,7 @@ class LivenessCheckManager: ObservableObject {
 
     /// Completes the current task and moves to the next one.
     /// If all tasks are completed, it signals the completion of the liveness challenge.
-    private func  completeCurrentTask() {
+    private func completeCurrentTask() {
         captureImage?()
         captureImage?()
 

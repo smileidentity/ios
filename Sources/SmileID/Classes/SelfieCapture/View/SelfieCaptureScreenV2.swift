@@ -14,6 +14,7 @@ public struct SelfieCaptureScreenV2: View {
                 CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
                     .onAppear {
                         viewModel.cameraManager.switchCamera(to: .front)
+                        viewModel.perform(action: .setupDelayTimer)
                     }
 
                 // CameraPreview Mask

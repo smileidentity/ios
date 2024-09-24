@@ -8,14 +8,10 @@ public class SelfieViewModelV2: ObservableObject {
     let faceDetector = FaceDetectorV2()
     var activeLiveness = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
+    var delayTimer: Timer?
 
     var selfieImage: URL?
     var livenessImages: [URL] = []
-
-    // MARK: Publishers
-    @Published private(set) var debugEnabled: Bool
-    @Published var unauthorizedAlert: AlertState?
-    @Published var directive: String = "Instructions.Start"
 
     // MARK: Publishers for Vision data
     @Published private(set) var hasDetectedValidFace: Bool
@@ -60,14 +56,19 @@ public class SelfieViewModelV2: ObservableObject {
     private let livenessImageSize = 320
     private let selfieImageSize = 640
     private let numLivenessImages = 6
+    private let delayTime: TimeInterval = 1.2
 
     // MARK: UI Properties
+    @Published private(set) var debugEnabled: Bool
+    @Published var unauthorizedAlert: AlertState?
+    @Published var directive: String = "Instructions.Start"
     @Published private(set) var faceQualityValue: Double = 0.0
     @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
     var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
     // This is meant for debug purposes only.
     @Published var showImages: Bool = false
     @Published private(set) var isSubmittingJob: Bool = false
+    @Published private(set) var elapsedDelay: TimeInterval = 0
 
     // MARK: Private Properties
     private let isEnroll: Bool
@@ -134,6 +135,10 @@ public class SelfieViewModelV2: ObservableObject {
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
     }
+    
+    deinit {
+        stopDelayTimer()
+    }
 
     private func analyzeImage(imageBuffer: CVPixelBuffer) {
         faceDetector.detect(imageBuffer)
@@ -164,7 +169,8 @@ public class SelfieViewModelV2: ObservableObject {
             // Completed at this stage: submit the images.
             return
         case .activeLivenessTimeout:
-            // Submit with forced failure reason here.
+            submitJob(forcedFailure: true)
+        case .setupDelayTimer:
             return
         case .toggleDebugMode:
             toggleDebugMode()
@@ -178,6 +184,21 @@ public class SelfieViewModelV2: ObservableObject {
 
 // MARK: Action Handlers
 extension SelfieViewModelV2 {
+    private func resetDelayTimer() {
+        stopDelayTimer()
+        delayTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            self.elapsedDelay += 1
+            if self.elapsedDelay == self.delayTime {
+                self.stopDelayTimer()
+            }
+        }
+    }
+    
+    private func stopDelayTimer() {
+        delayTimer?.invalidate()
+        delayTimer = nil
+    }
+    
     private func handleWindowSizeChanged(toRect: CGRect) {
         faceLayoutGuideFrame = CGRect(
             x: toRect.midX - faceLayoutGuideFrame.width / 2,
@@ -370,7 +391,7 @@ extension SelfieViewModelV2 {
 
 // MARK: API Helpers
 extension SelfieViewModelV2 {
-    func submitJob() {
+    func submitJob(forcedFailure: Bool = false) {
         isSubmittingJob = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             self.isSubmittingJob = false
