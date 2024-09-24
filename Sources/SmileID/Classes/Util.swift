@@ -17,7 +17,7 @@ public extension View {
     /// Cuts out the given shape from the view. This is used instead of a ZStack with a shape and a
     /// blendMode of .destinationOut because that causes issues on iOS 14 devices
     func cutout<S: Shape>(_ shape: S) -> some View {
-        self.clipShape(
+        clipShape(
             StackedShape(bottom: Rectangle(), top: shape),
             style: FillStyle(eoFill: true)
         )
@@ -27,7 +27,7 @@ public extension View {
 private struct StackedShape<Bottom: Shape, Top: Shape>: Shape {
     var bottom: Bottom
     var top: Top
-    
+
     func path(in rect: CGRect) -> Path {
         Path { path in
             path.addPath(bottom.path(in: rect))
@@ -43,7 +43,7 @@ public enum FileType: String {
     case liveness = "si_liveness"
     case documentFront = "si_document_front"
     case documentBack = "si_document_back"
-    
+
     var name: String {
         return rawValue
     }
@@ -51,21 +51,21 @@ public enum FileType: String {
 
 extension String {
     func nilIfEmpty() -> String? {
-        return self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : self
+        return trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : self
     }
 }
 
 func toErrorMessage(error: SmileIDError) -> (String, String?) {
     switch error {
-        case .api(let code, let message):
-            let errorMessage = "Si.Error.Message.\(code)"
-            return (errorMessage, message)
-        case let .request(error):
-            return (error.localizedDescription, nil)
-        case .httpError(_, let message):
-            return ("", message)
-        default:
-            return ("Confirmation.FailureReason", nil)
+    case let .api(code, message):
+        let errorMessage = "Si.Error.Message.\(code)"
+        return (errorMessage, message)
+    case let .request(error):
+        return (error.localizedDescription, nil)
+    case let .httpError(_, message):
+        return ("", message)
+    default:
+        return ("Confirmation.FailureReason", nil)
     }
 }
 
@@ -83,11 +83,11 @@ func getRelativePath(from absoluteURL: URL?) -> URL? {
     guard let absoluteURL = absoluteURL else {
         return nil
     }
-    
+
     let relativeComponents = absoluteURL.pathComponents
         .drop(while: { $0 != "SmileID" })
         .dropFirst()
-    
+
     if relativeComponents.isEmpty {
         return absoluteURL
     } else {
@@ -97,11 +97,11 @@ func getRelativePath(from absoluteURL: URL?) -> URL? {
 
 struct MonotonicTime {
     private let startTime: UInt64
-    
+
     init() {
         startTime = mach_absolute_time()
     }
-    
+
     func elapsedTime() -> TimeInterval {
         let endTime = mach_absolute_time()
         let elapsed = endTime - startTime
