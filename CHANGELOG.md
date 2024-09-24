@@ -3,6 +3,7 @@
 
 ### Added
 * Add metadata support
+* Modified access for util methods for use in wrappers
 
 ## 10.2.10
 
