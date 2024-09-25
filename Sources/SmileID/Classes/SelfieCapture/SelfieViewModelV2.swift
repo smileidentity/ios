@@ -135,7 +135,7 @@ public class SelfieViewModelV2: ObservableObject {
             .sink(receiveValue: analyzeImage)
             .store(in: &subscribers)
     }
-    
+
     deinit {
         stopDelayTimer()
     }
@@ -193,12 +193,12 @@ extension SelfieViewModelV2 {
             }
         }
     }
-    
+
     private func stopDelayTimer() {
         delayTimer?.invalidate()
         delayTimer = nil
     }
-    
+
     private func handleWindowSizeChanged(toRect: CGRect) {
         faceLayoutGuideFrame = CGRect(
             x: toRect.midX - faceLayoutGuideFrame.width / 2,
@@ -238,11 +238,13 @@ extension SelfieViewModelV2 {
 
     private func captureSelfieImage(_ pixelBuffer: CVPixelBuffer) {
         do {
-            guard let imageData = ImageUtils.resizePixelBufferToHeight(
-                pixelBuffer,
-                height: selfieImageSize,
-                orientation: .up
-            ) else {
+            guard
+                let imageData = ImageUtils.resizePixelBufferToHeight(
+                    pixelBuffer,
+                    height: selfieImageSize,
+                    orientation: .up
+                )
+            else {
                 throw SmileIDError.unknown("Error resizing selfie image")
             }
             let selfieImage = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
@@ -254,11 +256,13 @@ extension SelfieViewModelV2 {
 
     private func captureLivenessImage(_ pixelBuffer: CVPixelBuffer) {
         do {
-            guard let imageData = ImageUtils.resizePixelBufferToHeight(
-                pixelBuffer,
-                height: livenessImageSize,
-                orientation: .up
-            ) else {
+            guard
+                let imageData = ImageUtils.resizePixelBufferToHeight(
+                    pixelBuffer,
+                    height: livenessImageSize,
+                    orientation: .up
+                )
+            else {
                 throw SmileIDError.unknown("Error resizing liveness image")
             }
             let imageUrl = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: imageData)
@@ -319,9 +323,7 @@ extension SelfieViewModelV2 {
         case let .faceFound(faceGeometryModel):
             let boundingBox = faceGeometryModel.boundingBox
             updateAcceptableBounds(using: boundingBox)
-            if hasDetectedValidFace &&
-                selfieImage != nil &&
-                activeLiveness.currentTask != nil {
+            if hasDetectedValidFace && selfieImage != nil && activeLiveness.currentTask != nil {
                 activeLiveness.processFaceGeometry(faceGeometryModel)
             }
         case .faceNotFound:
@@ -383,9 +385,8 @@ extension SelfieViewModelV2 {
 
     func calculateDetectedFaceValidity() {
         hasDetectedValidFace =
-        isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
-        isAcceptableFaceQuality &&
-        isAcceptableSelfieQuality
+            isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition && isAcceptableFaceQuality
+            && isAcceptableSelfieQuality
     }
 }
 

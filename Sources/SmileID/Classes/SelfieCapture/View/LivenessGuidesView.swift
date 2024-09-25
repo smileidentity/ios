@@ -31,6 +31,7 @@ struct LivenessGuidesView: View {
                 .stroke(style: StrokeStyle(lineWidth: strokeLineWidth, lineCap: .round))
                 .foregroundColor(progressFillColor)
                 .rotationEffect(Angle(degrees: 270))
+                .animation(.linear, value: topArcProgress)
                 .frame(width: arcSize.width, height: arcSize.height)
             }
             .opacity(topArcProgress > 0.0 ? 1.0 : 0.0)
@@ -50,6 +51,7 @@ struct LivenessGuidesView: View {
                 .stroke(style: StrokeStyle(lineWidth: strokeLineWidth, lineCap: .round))
                 .foregroundColor(progressFillColor)
                 .rotationEffect(Angle(degrees: 0))
+                .animation(.linear, value: rightArcProgress)
                 .frame(width: arcSize.width, height: arcSize.height)
             }
             .opacity(rightArcProgress > 0.0 ? 1.0 : 0.0)
@@ -68,6 +70,7 @@ struct LivenessGuidesView: View {
                 .stroke(style: StrokeStyle(lineWidth: strokeLineWidth, lineCap: .round))
                 .foregroundColor(progressFillColor)
                 .rotationEffect(Angle(degrees: 180))
+                .animation(.linear, value: leftArcProgress)
                 .frame(width: arcSize.width, height: arcSize.height)
             }
             .opacity(leftArcProgress > 0.0 ? 1.0 : 0.0)
