@@ -1,12 +1,18 @@
 import SwiftUI
 
 struct UserInstructionsView: View {
-    @ObservedObject var model: SelfieViewModelV2
+    @ObservedObject var viewModel: SelfieViewModelV2
 
     var body: some View {
-        Text(model.directive)
-            .font(.title)
-            .foregroundColor(.white)
-            .padding()
+        VStack {
+            Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
+                .multilineTextAlignment(.center)
+                .font(SmileID.theme.header2)
+                .foregroundColor(SmileID.theme.accent)
+                .padding(.top, 40)
+                .padding(.horizontal, 50)
+            Spacer()
+        }
+        .padding()
     }
 }

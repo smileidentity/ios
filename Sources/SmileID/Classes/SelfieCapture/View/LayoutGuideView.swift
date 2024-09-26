@@ -11,9 +11,3 @@ struct LayoutGuideView: View {
         }
     }
 }
-
-#Preview {
-    LayoutGuideView(
-        layoutGuideFrame: CGRect(x: 0, y: 0, width: 200, height: 300)
-    )
-}

@@ -6,14 +6,20 @@ public struct SelfieCaptureScreenV2: View {
     let showAttribution: Bool
     @State private var showImages: Bool = false
 
+    @State private var progress1: CGFloat = 0.3
+    @State private var progress2: CGFloat = 0.8
+    @State private var progress3: CGFloat = 0.5
+
     public var body: some View {
         GeometryReader { proxy in
             ZStack {
+                // Camera Preview Layer
                 CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
                     .onAppear {
                         viewModel.cameraManager.switchCamera(to: .front)
                     }
 
+                // CameraPreview Mask
                 Rectangle()
                     .fill(.white)
                     .reverseMask {
@@ -21,28 +27,14 @@ public struct SelfieCaptureScreenV2: View {
                             .frame(width: 260, height: 260)
                     }
 
-                // Face Bounds Indicator
-                Circle()
-                    .stroke(.red, lineWidth: 10)
-                    .frame(width: 275, height: 275)
-                    .hidden()
-                Circle()
-                    .fill(.black.opacity(0.7))
-                    .frame(width: 260, height: 260)
-                    .overlay(
-                        Text("Lottie animation\ngoes here.")
-                            .fontWeight(.medium)
-                            .foregroundColor(.white)
-                    )
-                VStack {
-                    Text(viewModel.directive)
-                        .multilineTextAlignment(.center)
-                        .font(SmileID.theme.header1)
-                        .foregroundColor(SmileID.theme.accent)
-                        .padding(.top, 80)
-                    Spacer()
-                }
-                .padding()
+                FaceBoundingArea()
+                UserInstructionsView(viewModel: viewModel)
+                LivenessGuidesView(
+                    topArcProgress: $progress1,
+                    rightArcProgress: $progress2,
+                    leftArcProgress: $progress3
+                )
+                .hidden()
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {
