@@ -62,7 +62,7 @@ public class LocalStorage {
         try createSmileFile(to: jobId, name: filename(for: FileType.liveness.name), file: data)
     }
 
-    static func createDocumentFile(
+    public static func createDocumentFile(
         jobId: String,
         fileType: FileType,
         document data: Data
