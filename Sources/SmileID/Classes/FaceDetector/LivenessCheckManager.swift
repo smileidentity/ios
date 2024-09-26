@@ -18,6 +18,17 @@ enum LivenessTask {
             return "Look Up"
         }
     }
+    
+    var guideAnimation: CaptureGuideAnimation {
+        switch self {
+        case .lookLeft:
+            return .lookLeft
+        case .lookRight:
+            return .lookRight
+        case .lookUp:
+            return .lookUp
+        }
+    }
 }
 
 class LivenessCheckManager: ObservableObject {

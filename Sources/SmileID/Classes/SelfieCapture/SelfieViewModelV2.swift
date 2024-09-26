@@ -15,7 +15,6 @@ public class SelfieViewModelV2: ObservableObject {
 
     // MARK: Publishers for Vision data
     @Published private(set) var hasDetectedValidFace: Bool
-    @Published private(set) var hasCompletedLivenessChallenge: Bool
     @Published private(set) var faceDetectedState: FaceDetectionState {
         didSet {
             determineDirective()
@@ -62,10 +61,16 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var debugEnabled: Bool
     @Published var unauthorizedAlert: AlertState?
     @Published var directive: String = "Instructions.Start"
+    @Published private(set) var guideAnimation: CaptureGuideAnimation? {
+        didSet {
+            resetDelayTimer()
+        }
+    }
+    @Published private(set) var showGuideAnimation: Bool = false
     @Published private(set) var faceQualityValue: Double = 0.0
     @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
     var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
-    // This is meant for debug purposes only.
+    /// This is meant for debug purposes only.
     @Published var showImages: Bool = false
     @Published private(set) var isSubmittingJob: Bool = false
     @Published private(set) var elapsedDelay: TimeInterval = 0
@@ -97,7 +102,6 @@ public class SelfieViewModelV2: ObservableObject {
         self.useStrictMode = useStrictMode
 
         hasDetectedValidFace = false
-        hasCompletedLivenessChallenge = false
         faceDetectedState = .noFaceDetected
         faceGeometryState = .faceNotFound
         faceQualityState = .faceNotFound
@@ -125,9 +129,7 @@ public class SelfieViewModelV2: ObservableObject {
             // Drop the first ~2 seconds to allow the user to settle in
             .throttle(
                 for: 0.35,
-                scheduler: DispatchQueue.global(
-                    qos: .userInitiated
-                ),
+                scheduler: DispatchQueue.global(qos: .userInitiated),
                 latest: true
             )
             .dropFirst(5)
@@ -171,7 +173,7 @@ public class SelfieViewModelV2: ObservableObject {
         case .activeLivenessTimeout:
             submitJob(forcedFailure: true)
         case .setupDelayTimer:
-            return
+            resetDelayTimer()
         case .toggleDebugMode:
             toggleDebugMode()
         case .openApplicationSettings:
@@ -187,8 +189,9 @@ extension SelfieViewModelV2 {
     private func resetDelayTimer() {
         stopDelayTimer()
         delayTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            self.elapsedDelay += 1
+            self.elapsedDelay += 0.1
             if self.elapsedDelay == self.delayTime {
+                self.showGuideAnimation = true
                 self.stopDelayTimer()
             }
         }
@@ -297,24 +300,31 @@ extension SelfieViewModelV2 {
             if hasDetectedValidFace {
                 if let currentLivenessTask = activeLiveness.currentTask {
                     directive = currentLivenessTask.instruction
+                    guideAnimation = currentLivenessTask.guideAnimation
                 } else {
                     directive = ""
+                    guideAnimation = nil
                 }
             } else if isAcceptableBounds == .detectedFaceTooSmall {
                 directive = "Please bring your face closer to the camera"
+                guideAnimation = .moveCloser
             } else if isAcceptableBounds == .detectedFaceTooLarge {
                 directive = "Please hold the camera further from your face"
+                guideAnimation = .moveBack
             } else if isAcceptableBounds == .detectedFaceOffCentre {
                 directive = "Please move your face to the center of the frame"
+                guideAnimation = nil
             } else if !isAcceptableSelfieQuality {
                 directive = "Image quality is too low"
-            } else {
-                directive = "We cannot take your photo right now"
+                guideAnimation = nil
             }
         case .noFaceDetected:
             directive = "Please look at the camera"
+            guideAnimation = .headInView
         case .faceDetectionErrored:
-            directive = "An unexpected error ocurred"
+            directive = ""
+            guideAnimation = nil
+            return
         }
     }
 
