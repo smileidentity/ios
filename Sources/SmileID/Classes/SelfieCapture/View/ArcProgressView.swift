@@ -51,6 +51,8 @@ struct ArcProgressView: View {
 }
 
 struct ArcShape: Shape {
+    var startAngle: CGFloat = 180
+    var endAngle: CGFloat = 120
     var clockwise: Bool = false
 
     func path(in rect: CGRect) -> Path {
@@ -58,8 +60,8 @@ struct ArcShape: Shape {
         path.addArc(
             center: CGPoint(x: rect.midX, y: rect.midY),
             radius: rect.width / 2,
-            startAngle: Angle(degrees: 180),
-            endAngle: Angle(degrees: clockwise ? 90 : -90),
+            startAngle: Angle(degrees: startAngle),
+            endAngle: Angle(degrees: clockwise ? endAngle : -endAngle),
             clockwise: clockwise
         )
         return path
