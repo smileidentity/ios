@@ -2,63 +2,11 @@ import ARKit
 import Combine
 import Foundation
 
-enum SelfieCaptureInstruction {
-    case headInFrame
-    case moveBack
-    case moveCloser
-    case lookStraight
-    case goodLight
-    case lookLeft
-    case lookRight
-    case lookUp
-    
-    var instruction: String {
-        switch self {
-        case .headInFrame:
-            return "Position your head in view"
-        case .moveCloser:
-            return "Move closer"
-        case .moveBack:
-            return "Move back"
-        case .lookStraight:
-            return "Position your head in view"
-        case .goodLight:
-            return "Move to a well lit room"
-        case .lookLeft:
-            return "Turn your head to the left"
-        case .lookRight:
-            return "Turn your head to the right"
-        case .lookUp:
-            return "Turn your head slightly up"
-        }
-    }
-    
-    var guideAnimation: CaptureGuideAnimation {
-        switch self {
-        case .headInFrame:
-            return .headInFrame
-        case .moveCloser:
-            return .moveCloser
-        case .moveBack:
-            return .moveBack
-        case .lookStraight:
-            return .headInFrame
-        case .goodLight:
-            return .goodLight
-        case .lookLeft:
-            return .lookLeft
-        case .lookRight:
-            return .lookRight
-        case .lookUp:
-            return .lookUp
-        }
-    }
-}
-
 public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
     let cameraManager = CameraManager.shared
     let faceDetector = FaceDetectorV2()
+    var faceValidator = FaceValidator()
     var activeLiveness = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
@@ -75,19 +23,15 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: UI Properties
     @Published private(set) var debugEnabled: Bool
     @Published var unauthorizedAlert: AlertState?
-    @Published var userInstruction: SelfieCaptureInstruction? {
-        didSet {
-            resetGuideAnimationDelayTimer()
-        }
-    }
+    @Published private(set) var userInstruction: SelfieCaptureInstruction?
     @Published private(set) var showGuideAnimation: Bool = false
     @Published private(set) var faceQualityValue: Double = 0.0
     @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
     var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
-    /// This is meant for debug purposes only.
-    @Published var showImages: Bool = false
     @Published private(set) var isSubmittingJob: Bool = false
     @Published var elapsedGuideAnimationDelay: TimeInterval = 0
+    /// This is meant for debug purposes only.
+    @Published var showImages: Bool = false
 
     // MARK: Private Properties
     private let isEnroll: Bool
@@ -149,10 +93,10 @@ public class SelfieViewModelV2: ObservableObject {
 
     private func analyzeImage(imageBuffer: CVPixelBuffer) {
         faceDetector.detect(imageBuffer)
-//        if hasDetectedValidFace && selfieImage == nil {
-//            captureSelfieImage(imageBuffer)
-//            activeLiveness.initiateLivenessCheck()
-//        }
+        if faceValidator.hasDetectedValidFace && selfieImage == nil {
+            captureSelfieImage(imageBuffer)
+            activeLiveness.initiateLivenessCheck()
+        }
 
         activeLiveness.captureImage = { [weak self] in
             self?.captureLivenessImage(imageBuffer)
@@ -167,6 +111,12 @@ public class SelfieViewModelV2: ObservableObject {
             handleWindowSizeChanged(toRect: windowRect)
         case let .updateUserInstruction(instruction):
             publishUserInstruction(instruction)
+        case let .faceObservationDetected(faceObservation):
+            handleFaceObservation(faceObservation)
+        case let .faceQualityObservationDetected(faceQualityObservation):
+            handleFaceQualityResult(.faceFound(faceQualityObservation))
+        case let .selfieQualityObservationDetected(selfieQualityObservation):
+            handleSelfieQualityResult(.faceFound(selfieQualityObservation))
         case .activeLivenessCompleted:
             if selfieImage != nil && livenessImages.count == numLivenessImages {
                 submitJob()
@@ -182,6 +132,21 @@ public class SelfieViewModelV2: ObservableObject {
         case let .handleError(error):
             handleError(error)
         }
+    }
+    
+    private func handleFaceObservation(_ faceGeometryModel: FaceGeometryModel) {
+        faceValidator.processUpdatedFaceGeometry()
+        if faceValidator.hasDetectedValidFace && selfieImage != nil && activeLiveness.currentTask != nil {
+            activeLiveness.processFaceGeometry(faceGeometryModel)
+        }
+    }
+    
+    private func handleFaceQualityResult(_ faceGeometry: FaceObservation<FaceQualityModel>) {
+        faceValidator.processUpdatedFaceQuality()
+    }
+    
+    private func handleSelfieQualityResult(_ faceGeometry: FaceObservation<SelfieQualityModel>) {
+        faceValidator.processUpdatedSelfieQuality()
     }
     
     private func publishUserInstruction(_ instruction: SelfieCaptureInstruction?) {
@@ -270,6 +235,15 @@ extension SelfieViewModelV2 {
 
     private func toggleDebugMode() {
         debugEnabled.toggle()
+    }
+}
+
+extension SelfieViewModelV2: FaceValidatorDelegate {
+    func updateInstruction(_ instruction: SelfieCaptureInstruction?) {
+        if self.userInstruction != instruction {
+            self.userInstruction = instruction
+            resetGuideAnimationDelayTimer()
+        }
     }
 }
 
