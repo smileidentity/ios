@@ -5,10 +5,7 @@ enum SelfieViewModelAction {
     case windowSizeDetected(CGRect)
 
     // Face Detection Actions
-    case noFaceDetected
-    case faceObservationDetected(FaceGeometryModel)
-    case faceQualityObservationDetected(FaceQualityModel)
-    case selfieQualityObservationDetected(SelfieQualityModel)
+    case updateUserInstruction(SelfieCaptureInstruction?)
     case activeLivenessCompleted
     case activeLivenessTimeout
 
