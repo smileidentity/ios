@@ -55,7 +55,7 @@ public class SelfieViewModelV2: ObservableObject {
     private let livenessImageSize = 320
     private let selfieImageSize = 640
     private let numLivenessImages = 6
-    private let delayTime: TimeInterval = 1.2
+    private let delayTime: TimeInterval = 5
 
     // MARK: UI Properties
     @Published private(set) var debugEnabled: Bool
@@ -73,7 +73,7 @@ public class SelfieViewModelV2: ObservableObject {
     /// This is meant for debug purposes only.
     @Published var showImages: Bool = false
     @Published private(set) var isSubmittingJob: Bool = false
-    @Published private(set) var elapsedDelay: TimeInterval = 0
+    @Published var elapsedDelay: TimeInterval = 0
 
     // MARK: Private Properties
     private let isEnroll: Bool
@@ -155,6 +155,7 @@ public class SelfieViewModelV2: ObservableObject {
     }
 
     // MARK: Actions
+    // swiftlint:disable cyclomatic_complexity
     func perform(action: SelfieViewModelAction) {
         switch action {
         case let .windowSizeDetected(windowRect):
@@ -168,8 +169,9 @@ public class SelfieViewModelV2: ObservableObject {
         case let .selfieQualityObservationDetected(selfieQualityObservation):
             publishSelfieQualityObservation(selfieQualityObservation)
         case .activeLivenessCompleted:
-            // Completed at this stage: submit the images.
-            return
+            if selfieImage != nil && livenessImages.count == numLivenessImages {
+                submitJob()
+            }
         case .activeLivenessTimeout:
             submitJob(forcedFailure: true)
         case .setupDelayTimer:
@@ -187,9 +189,11 @@ public class SelfieViewModelV2: ObservableObject {
 // MARK: Action Handlers
 extension SelfieViewModelV2 {
     private func resetDelayTimer() {
+        elapsedDelay = 0
+        showGuideAnimation = false
         stopDelayTimer()
-        delayTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            self.elapsedDelay += 0.1
+        delayTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            self.elapsedDelay += 1
             if self.elapsedDelay == self.delayTime {
                 self.showGuideAnimation = true
                 self.stopDelayTimer()
@@ -270,9 +274,6 @@ extension SelfieViewModelV2 {
             }
             let imageUrl = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: imageData)
             livenessImages.append(imageUrl)
-            if selfieImage != nil && livenessImages.count == numLivenessImages {
-                submitJob()
-            }
         } catch {
             handleError(error)
         }
@@ -313,14 +314,18 @@ extension SelfieViewModelV2 {
                 guideAnimation = .moveBack
             } else if isAcceptableBounds == .detectedFaceOffCentre {
                 directive = "Please move your face to the center of the frame"
-                guideAnimation = nil
+                guideAnimation = .headInFrame
             } else if !isAcceptableSelfieQuality {
                 directive = "Image quality is too low"
-                guideAnimation = nil
+                guideAnimation = .goodLight
             }
         case .noFaceDetected:
-            directive = "Please look at the camera"
-            guideAnimation = .headInView
+            if directive != "Please look at the camera" {
+                directive = "Please look at the camera"
+            }
+            if guideAnimation != .headInFrame {
+                guideAnimation = .headInFrame
+            }
         case .faceDetectionErrored:
             directive = ""
             guideAnimation = nil

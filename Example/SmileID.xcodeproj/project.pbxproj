@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1B229387BA34905BADB7776E /* Pods_SmileID_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 718422487EFECF403E12E64E /* Pods_SmileID_Example.framework */; };
 		1E59E33E2BA1E64C00D2BAD2 /* PartnerParamsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E59E33D2BA1E64C00D2BAD2 /* PartnerParamsTests.swift */; };
 		1E60ED372A29C306002695FF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED322A29C306002695FF /* HomeViewController.swift */; };
 		1E60ED382A29C306002695FF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED332A29C306002695FF /* Constants.swift */; };
@@ -64,6 +63,8 @@
 		6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */; };
 		6AC98C0E9305B4B3EB66ED35 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC980584C522B17A099E098 /* Util.swift */; };
 		6AC98F5682012E19C815AE70 /* DocumentSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */; };
+		7A41A4E7F2F61443C92D1410 /* Pods_SmileID_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D2FA3DD9146D52A19577F54 /* Pods_SmileID_Tests.framework */; };
+		7C1E37843B470E1ECF8A2260 /* Pods_SmileID_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BAC74F0F90CC68EE4E8873 /* Pods_SmileID_Example.framework */; };
 		918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */; };
 		918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E12A52E36A00D6FB7F /* XCTestExtension.swift */; };
 		918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */; };
@@ -72,7 +73,6 @@
 		91CB21A52AC10C61005AEBF5 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */; };
 		91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC32AB481FE00A8D36B /* PollingTests.swift */; };
 		91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */; };
-		CAF00E3C75F6ADCC1E5AE60A /* Pods_SmileID_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF55180EE707E0648C395190 /* Pods_SmileID_Tests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,7 +86,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0C27F5BE0A9BAAD20932D47D /* Pods-SmileID_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.debug.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		1E59E33D2BA1E64C00D2BAD2 /* PartnerParamsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartnerParamsTests.swift; sourceTree = "<group>"; };
 		1E60ED322A29C306002695FF /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1E60ED332A29C306002695FF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -118,8 +117,6 @@
 		20C360C72C454C130008DBDE /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+TextSelection.swift"; sourceTree = "<group>"; };
 		20F3D6F52C25F5C100B32751 /* SmileID.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SmileID.xcdatamodel; sourceTree = "<group>"; };
-		3736E6936005080B51DC930F /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
-		38D85EC9740D09436F10E980 /* Pods-SmileID_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Tests.debug.xcconfig"; path = "Target Support Files/Pods-SmileID_Tests/Pods-SmileID_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestartableTimerTest.swift; sourceTree = "<group>"; };
 		58C5F1D72B05925800A6080C /* BiometricKycWithIdInputScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricKycWithIdInputScreen.swift; sourceTree = "<group>"; };
@@ -147,7 +144,8 @@
 		6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentSelectorViewModel.swift; sourceTree = "<group>"; };
 		6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		718422487EFECF403E12E64E /* Pods_SmileID_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E907B7A51A30501D222F7A1 /* Pods-SmileID_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Tests.debug.xcconfig"; path = "Target Support Files/Pods-SmileID_Tests/Pods-SmileID_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		8D2FA3DD9146D52A19577F54 /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionRestServiceClientTests.swift; sourceTree = "<group>"; };
 		918321E12A52E36A00D6FB7F /* XCTestExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XCTestExtension.swift; path = ../../Tests/XCTestExtension.swift; sourceTree = "<group>"; };
 		918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyContainerTests.swift; sourceTree = "<group>"; };
@@ -158,9 +156,11 @@
 		91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateSignatureTests.swift; sourceTree = "<group>"; };
 		94E7560A47E255DD8215C183 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		9755B6A19CF28DE212F24C83 /* SmileID.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SmileID.podspec; path = ../SmileID.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		AF55180EE707E0648C395190 /* Pods_SmileID_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA3576C81141A6C8FB2A3ECF /* Pods-SmileID_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Tests.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Tests/Pods-SmileID_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		C8CD2E3DB817D8C6334E9240 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		EC1A4BF74BF20D4385E0CEA1 /* Pods-SmileID_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Tests.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Tests/Pods-SmileID_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		E8BAC74F0F90CC68EE4E8873 /* Pods_SmileID_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmileID_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EAC22FC6E2C754C1D6B827F7 /* Pods-SmileID_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.release.xcconfig"; sourceTree = "<group>"; };
+		ED20D3A26C43CE815DC17A5F /* Pods-SmileID_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Example.debug.xcconfig"; path = "Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,7 +168,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B229387BA34905BADB7776E /* Pods_SmileID_Example.framework in Frameworks */,
+				7C1E37843B470E1ECF8A2260 /* Pods_SmileID_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,7 +176,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CAF00E3C75F6ADCC1E5AE60A /* Pods_SmileID_Tests.framework in Frameworks */,
+				7A41A4E7F2F61443C92D1410 /* Pods_SmileID_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +278,15 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		356C3F5818E6FD9EB9DB6AD4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E8BAC74F0F90CC68EE4E8873 /* Pods_SmileID_Example.framework */,
+				8D2FA3DD9146D52A19577F54 /* Pods_SmileID_Tests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		58C5F1D62B05922100A6080C /* BiometricKYC */ = {
 			isa = PBXGroup;
 			children = (
@@ -297,7 +306,7 @@
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
 				828BF541E068101B2E6ED55F /* Pods */,
-				E88F96F2DEFAFF10CCF982E2 /* Frameworks */,
+				356C3F5818E6FD9EB9DB6AD4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -403,10 +412,10 @@
 		828BF541E068101B2E6ED55F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0C27F5BE0A9BAAD20932D47D /* Pods-SmileID_Example.debug.xcconfig */,
-				3736E6936005080B51DC930F /* Pods-SmileID_Example.release.xcconfig */,
-				38D85EC9740D09436F10E980 /* Pods-SmileID_Tests.debug.xcconfig */,
-				EC1A4BF74BF20D4385E0CEA1 /* Pods-SmileID_Tests.release.xcconfig */,
+				ED20D3A26C43CE815DC17A5F /* Pods-SmileID_Example.debug.xcconfig */,
+				EAC22FC6E2C754C1D6B827F7 /* Pods-SmileID_Example.release.xcconfig */,
+				6E907B7A51A30501D222F7A1 /* Pods-SmileID_Tests.debug.xcconfig */,
+				BA3576C81141A6C8FB2A3ECF /* Pods-SmileID_Tests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -443,15 +452,6 @@
 			path = ../../Tests/Mocks;
 			sourceTree = "<group>";
 		};
-		E88F96F2DEFAFF10CCF982E2 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				718422487EFECF403E12E64E /* Pods_SmileID_Example.framework */,
-				AF55180EE707E0648C395190 /* Pods_SmileID_Tests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -459,13 +459,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SmileID_Example" */;
 			buildPhases = (
-				A8844648E240C4012E2F4931 /* [CP] Check Pods Manifest.lock */,
+				CBA71781AF69B78CA901C352 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				917D79282AA8024400FA6624 /* SwiftLint */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				C0BE335FFECD4DF6892309F3 /* Upload Debug Symbols to Sentry */,
-				E71DEE69CE1BFE014013BDFC /* [CP] Embed Pods Frameworks */,
+				81AA40A9DF7958775C866BAD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -480,7 +480,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SmileID_Tests" */;
 			buildPhases = (
-				E594EEEB073850BE36B39940 /* [CP] Check Pods Manifest.lock */,
+				43AC4A9752FE774CAA6A9ECC /* [CP] Check Pods Manifest.lock */,
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
@@ -563,62 +563,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		917D79282AA8024400FA6624 /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../Sources\n\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
-		};
-		A8844648E240C4012E2F4931 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SmileID_Example-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C0BE335FFECD4DF6892309F3 /* Upload Debug Symbols to Sentry */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-			);
-			name = "Upload Debug Symbols to Sentry";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=smile-identity\nexport SENTRY_PROJECT=ios\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
-		};
-		E594EEEB073850BE36B39940 /* [CP] Check Pods Manifest.lock */ = {
+		43AC4A9752FE774CAA6A9ECC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -640,7 +585,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E71DEE69CE1BFE014013BDFC /* [CP] Embed Pods Frameworks */ = {
+		81AA40A9DF7958775C866BAD /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -670,6 +615,61 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		917D79282AA8024400FA6624 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../Sources\n\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
+		C0BE335FFECD4DF6892309F3 /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=smile-identity\nexport SENTRY_PROJECT=ios\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+		};
+		CBA71781AF69B78CA901C352 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SmileID_Example-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -881,7 +881,7 @@
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0C27F5BE0A9BAAD20932D47D /* Pods-SmileID_Example.debug.xcconfig */;
+			baseConfigurationReference = ED20D3A26C43CE815DC17A5F /* Pods-SmileID_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -914,7 +914,7 @@
 		};
 		607FACF11AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3736E6936005080B51DC930F /* Pods-SmileID_Example.release.xcconfig */;
+			baseConfigurationReference = EAC22FC6E2C754C1D6B827F7 /* Pods-SmileID_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -946,7 +946,7 @@
 		};
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38D85EC9740D09436F10E980 /* Pods-SmileID_Tests.debug.xcconfig */;
+			baseConfigurationReference = 6E907B7A51A30501D222F7A1 /* Pods-SmileID_Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -978,7 +978,7 @@
 		};
 		607FACF41AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EC1A4BF74BF20D4385E0CEA1 /* Pods-SmileID_Tests.release.xcconfig */;
+			baseConfigurationReference = BA3576C81141A6C8FB2A3ECF /* Pods-SmileID_Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";

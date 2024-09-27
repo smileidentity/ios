@@ -25,8 +25,11 @@ public struct SelfieCaptureScreenV2: View {
                             .frame(width: 260, height: 260)
                     }
 
-                FaceBoundingArea(viewModel: viewModel)
-                    .hidden()
+                FaceBoundingArea(
+                    isAcceptableBounds: viewModel.isAcceptableBounds,
+                    showGuideAnimation: viewModel.showGuideAnimation,
+                    guideAnimation: viewModel.guideAnimation
+                )
                 UserInstructionsView(viewModel: viewModel)
                 LivenessGuidesView(
                     topArcProgress: $viewModel.activeLiveness.lookUpProgress,
@@ -36,14 +39,17 @@ public struct SelfieCaptureScreenV2: View {
 
                 VStack {
                     Spacer()
+                    Text("\(viewModel.elapsedDelay)")
+                        .font(.title)
                     Button {
+                        viewModel.cameraManager.pauseSession()
                         presentationMode.wrappedValue.dismiss()
                     } label: {
                         Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
                             .foregroundColor(SmileID.theme.accent)
                     }
                 }
-                .padding(.bottom, 40)
+                .padding(.vertical, 40)
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {

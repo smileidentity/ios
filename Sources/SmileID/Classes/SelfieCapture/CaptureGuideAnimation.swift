@@ -1,19 +1,19 @@
 import Foundation
 
-enum CaptureGuideAnimation {
+enum CaptureGuideAnimation: Equatable {
     case goodLight
-    case headInView
+    case headInFrame
     case moveBack
     case moveCloser
     case lookRight
     case lookLeft
     case lookUp
-    
+
     var fileName: String {
         switch self {
         case .goodLight:
             return "light_animation"
-        case .headInView:
+        case .headInFrame:
             return "positioning"
         case .moveBack:
             return "positioning"
@@ -30,6 +30,12 @@ enum CaptureGuideAnimation {
 
     var animationProgressRange: ClosedRange<CGFloat> {
         switch self {
+        case .headInFrame:
+            return 0...0.28
+        case .moveBack:
+            return 0.38...0.67
+        case .moveCloser:
+            return 0.73...1.0
         case .lookRight:
             return 0...0.4
         case .lookLeft:
