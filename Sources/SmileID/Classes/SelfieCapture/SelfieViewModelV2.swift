@@ -21,17 +21,15 @@ public class SelfieViewModelV2: ObservableObject {
     private let guideAnimationDelayTime: TimeInterval = 5
 
     // MARK: UI Properties
-    @Published private(set) var debugEnabled: Bool
     @Published var unauthorizedAlert: AlertState?
     @Published private(set) var userInstruction: SelfieCaptureInstruction?
+    @Published private(set) var hasDetectedValidFace: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
-    @Published private(set) var faceQualityValue: Double = 0.0
-    @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
-    var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
     @Published private(set) var isSubmittingJob: Bool = false
     @Published var elapsedGuideAnimationDelay: TimeInterval = 0
     /// This is meant for debug purposes only.
     @Published var showImages: Bool = false
+    var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
 
     // MARK: Private Properties
     private let isEnroll: Bool
@@ -59,13 +57,7 @@ public class SelfieViewModelV2: ObservableObject {
         self.extraPartnerParams = extraPartnerParams
         self.useStrictMode = useStrictMode
 
-        #if DEBUG
-            debugEnabled = true
-        #else
-            debugEnabled = false
-        #endif
-
-        self.faceDetector.selfieViewModel = self
+        self.faceValidator.delegate = self
 
         cameraManager.$status
             .receive(on: DispatchQueue.main)
@@ -83,7 +75,7 @@ public class SelfieViewModelV2: ObservableObject {
             )
             .dropFirst(5)
             .compactMap { $0 }
-            .sink(receiveValue: analyzeImage)
+            .sink(receiveValue: analyzeFrame)
             .store(in: &subscribers)
     }
 
@@ -91,9 +83,9 @@ public class SelfieViewModelV2: ObservableObject {
         stopGuideAnimationDelayTimer()
     }
 
-    private func analyzeImage(imageBuffer: CVPixelBuffer) {
-        faceDetector.detect(imageBuffer)
-        if faceValidator.hasDetectedValidFace && selfieImage == nil {
+    private func analyzeFrame(imageBuffer: CVPixelBuffer) {
+        faceDetector.processImageBuffer(imageBuffer)
+        if hasDetectedValidFace && selfieImage == nil {
             captureSelfieImage(imageBuffer)
             activeLiveness.initiateLivenessCheck()
         }
@@ -104,19 +96,10 @@ public class SelfieViewModelV2: ObservableObject {
     }
 
     // MARK: Actions
-    // swiftlint:disable cyclomatic_complexity
     func perform(action: SelfieViewModelAction) {
         switch action {
         case let .windowSizeDetected(windowRect):
             handleWindowSizeChanged(toRect: windowRect)
-        case let .updateUserInstruction(instruction):
-            publishUserInstruction(instruction)
-        case let .faceObservationDetected(faceObservation):
-            handleFaceObservation(faceObservation)
-        case let .faceQualityObservationDetected(faceQualityObservation):
-            handleFaceQualityResult(.faceFound(faceQualityObservation))
-        case let .selfieQualityObservationDetected(selfieQualityObservation):
-            handleSelfieQualityResult(.faceFound(selfieQualityObservation))
         case .activeLivenessCompleted:
             if selfieImage != nil && livenessImages.count == numLivenessImages {
                 submitJob()
@@ -125,30 +108,13 @@ public class SelfieViewModelV2: ObservableObject {
             submitJob(forcedFailure: true)
         case .setupDelayTimer:
             resetGuideAnimationDelayTimer()
-        case .toggleDebugMode:
-            toggleDebugMode()
         case .openApplicationSettings:
             openSettings()
         case let .handleError(error):
             handleError(error)
         }
     }
-    
-    private func handleFaceObservation(_ faceGeometryModel: FaceGeometryModel) {
-        faceValidator.processUpdatedFaceGeometry()
-        if faceValidator.hasDetectedValidFace && selfieImage != nil && activeLiveness.currentTask != nil {
-            activeLiveness.processFaceGeometry(faceGeometryModel)
-        }
-    }
-    
-    private func handleFaceQualityResult(_ faceGeometry: FaceObservation<FaceQualityModel>) {
-        faceValidator.processUpdatedFaceQuality()
-    }
-    
-    private func handleSelfieQualityResult(_ faceGeometry: FaceObservation<SelfieQualityModel>) {
-        faceValidator.processUpdatedSelfieQuality()
-    }
-    
+
     private func publishUserInstruction(_ instruction: SelfieCaptureInstruction?) {
         DispatchQueue.main.async {
             if self.userInstruction != instruction {
@@ -232,18 +198,36 @@ extension SelfieViewModelV2 {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(settingsURL)
     }
+}
 
-    private func toggleDebugMode() {
-        debugEnabled.toggle()
+extension SelfieViewModelV2: FaceDetectorResultDelegate {
+    func faceDetector(
+        _ detector: FaceDetectorV2,
+        didDetectFace faceGeometry: FaceGeometryData,
+        withFaceQuality faceQuality: Float,
+        selfieQuality: SelfieQualityData,
+        brightness: Int
+    ) {
+        faceValidator
+            .validate(
+                faceGeometry: faceGeometry,
+                selfieQuality: selfieQuality,
+                brightness: brightness
+            )
+        if hasDetectedValidFace && selfieImage != nil && activeLiveness.currentTask != nil {
+            activeLiveness.processFaceGeometry(faceGeometry)
+        }
+    }
+
+    func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: any Error) {
+        print(error.localizedDescription)
     }
 }
 
 extension SelfieViewModelV2: FaceValidatorDelegate {
-    func updateInstruction(_ instruction: SelfieCaptureInstruction?) {
-        if self.userInstruction != instruction {
-            self.userInstruction = instruction
-            resetGuideAnimationDelayTimer()
-        }
+    func updateValidationResult(_ result: FaceValidationResult) {
+        self.hasDetectedValidFace = result.hasDetectedValidFace
+        self.publishUserInstruction(result.userInstruction)
     }
 }
 

@@ -5,7 +5,7 @@ struct UserInstructionsView: View {
 
     var body: some View {
         VStack {
-            Text(SmileIDResourcesHelper.localizedString(for: viewModel.directive))
+            Text(SmileIDResourcesHelper.localizedString(for: viewModel.userInstruction?.instruction ?? ""))
                 .multilineTextAlignment(.center)
                 .font(SmileID.theme.header2)
                 .foregroundColor(SmileID.theme.accent)

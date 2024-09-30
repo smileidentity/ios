@@ -7,10 +7,6 @@ public struct SelfieCaptureScreenV2: View {
 
     @Environment(\.presentationMode) private var presentationMode
 
-    @State private var progress1: CGFloat = 0.3
-    @State private var progress2: CGFloat = 0.8
-    @State private var progress3: CGFloat = 0.5
-
     public var body: some View {
         GeometryReader { proxy in
             ZStack {
@@ -30,9 +26,9 @@ public struct SelfieCaptureScreenV2: View {
                     }
 
                 FaceBoundingArea(
-                    isAcceptableBounds: viewModel.isAcceptableBounds,
+                    hasDetectedValidFace: viewModel.hasDetectedValidFace,
                     showGuideAnimation: viewModel.showGuideAnimation,
-                    guideAnimation: viewModel.guideAnimation
+                    guideAnimation: viewModel.userInstruction?.guideAnimation
                 )
                 UserInstructionsView(viewModel: viewModel)
                 LivenessGuidesView(
@@ -43,7 +39,7 @@ public struct SelfieCaptureScreenV2: View {
 
                 VStack {
                     Spacer()
-                    Text("\(viewModel.elapsedDelay)")
+                    Text("\(viewModel.elapsedGuideAnimationDelay)")
                         .font(.title)
                     Button {
                         viewModel.cameraManager.pauseSession()

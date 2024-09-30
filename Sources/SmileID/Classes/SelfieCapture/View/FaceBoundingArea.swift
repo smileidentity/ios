@@ -2,7 +2,7 @@ import Lottie
 import SwiftUI
 
 struct FaceBoundingArea: View {
-    var isAcceptableBounds: FaceBoundsState
+    var hasDetectedValidFace: Bool
     var showGuideAnimation: Bool
     var guideAnimation: CaptureGuideAnimation?
 
@@ -13,14 +13,13 @@ struct FaceBoundingArea: View {
             // Face Bounds Indicator
             Circle()
                 .stroke(
-                    isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition ? .green : .red,
+                    hasDetectedValidFace ? .green : .red,
                     lineWidth: 10
                 )
                 .frame(width: 275, height: 275)
 
             if let guideAnimation = guideAnimation,
-                showGuideAnimation
-            {
+                showGuideAnimation {
                 Circle()
                     .fill(.black.opacity(0.5))
                     .frame(width: 260, height: 260)

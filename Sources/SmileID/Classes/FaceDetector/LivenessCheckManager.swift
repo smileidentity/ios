@@ -18,7 +18,7 @@ enum LivenessTask {
             return "Look Up"
         }
     }
-    
+
     var guideAnimation: CaptureGuideAnimation {
         switch self {
         case .lookLeft:
@@ -124,7 +124,7 @@ class LivenessCheckManager: ObservableObject {
 
     /// Processes face geometry data and checks for task completion
     /// - Parameter faceGeometry: The current face geometry data.
-    func processFaceGeometry(_ faceGeometry: FaceGeometryModel) {
+    func processFaceGeometry(_ faceGeometry: FaceGeometryData) {
         let yawValue = CGFloat(faceGeometry.yaw.doubleValue)
         let pitchValue = CGFloat(faceGeometry.pitch.doubleValue)
         updateFaceOrientationValues(yawValue, pitchValue)

@@ -1,147 +1,97 @@
 import Foundation
 
 protocol FaceValidatorDelegate: AnyObject {
-    func updateInstruction(_ instruction: SelfieCaptureInstruction?)
+    func updateValidationResult(_ result: FaceValidationResult)
+}
+
+struct FaceValidationResult {
+    let userInstruction: SelfieCaptureInstruction?
+    let isAcceptableSelfieQuality: Bool
+    let hasDetectedValidFace: Bool
 }
 
 final class FaceValidator {
-    var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
     weak var delegate: FaceValidatorDelegate?
-    
-    // MARK: Publishers for Vision data
-    private(set) var hasDetectedValidFace: Bool
-    private var faceDetectedState: FaceDetectionState {
-        didSet {
-            determineDirective()
-        }
-    }
-    private var faceGeometryState: FaceObservation<FaceGeometryModel> {
-        didSet {
-            processUpdatedFaceGeometry()
-        }
-    }
-    private var faceQualityState: FaceObservation<FaceQualityModel> {
-        didSet {
-            processUpdatedFaceQuality()
-        }
-    }
-    private var selfieQualityState: FaceObservation<SelfieQualityModel> {
-        didSet {
-            processUpdatedSelfieQuality()
-        }
-    }
-    private var isAcceptableBounds: FaceBoundsState {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    private var isAcceptableFaceQuality: Bool {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    private var isAcceptableSelfieQuality: Bool {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
+    private var faceLayoutGuideFrame: CGRect = .zero
+    private let selfieQualityThreshold: Float = 0.5
+    private var faceBoundsState: FaceBoundsState = .unknown
+    private var isAcceptableSelfieQuality: Bool = false
+    private var hasDetectedValidFace: Bool = false
+
+    init() {}
+
+    func setLayoutGuideFrame(with frame: CGRect) {
+        self.faceLayoutGuideFrame = frame
     }
 
-    init() {
-        self.hasDetectedValidFace = false
-        self.faceDetectedState = .noFaceDetected
-        self.faceGeometryState = .faceNotFound
-        self.faceQualityState = .faceNotFound
-        self.selfieQualityState = .faceNotFound
-        self.isAcceptableBounds = .unknown
-        self.isAcceptableFaceQuality = false
-        self.isAcceptableSelfieQuality = false
+    func validate(
+        faceGeometry: FaceGeometryData,
+        selfieQuality: SelfieQualityData,
+        brightness: Int
+    ) {
+        // process the values and perform validation checks
+        // 1 - check face bounds
+        faceBoundsState = checkAcceptableBounds(using: faceGeometry.boundingBox)
+        // 2 - check selfie quality
+        isAcceptableSelfieQuality = checkSelfieQuality(selfieQuality)
+
+        // 3 - check detected valid face that's ready for selfie capture
+        hasDetectedValidFace = checkValidFace(brightness: brightness)
     }
 
-    // MARK: Perform Checks
-    func determineDirective() {
-        switch faceDetectedState {
-        case .faceDetected:
-            if hasDetectedValidFace {
-                delegate?.updateInstruction(nil)
-            } else if isAcceptableBounds == .detectedFaceTooSmall {
-                delegate?.updateInstruction(.moveCloser)
-            } else if isAcceptableBounds == .detectedFaceTooLarge {
-                delegate?.updateInstruction(.moveBack)
-            } else if isAcceptableBounds == .detectedFaceOffCentre {
-                delegate?.updateInstruction(.headInFrame)
-            } else if !isAcceptableSelfieQuality {
-                delegate?.updateInstruction(.goodLight)
-            }
-        case .noFaceDetected:
-            delegate?.updateInstruction(.headInFrame)
-        case .faceDetectionErrored:
-            delegate?.updateInstruction(nil)
+    private func invalidateFaceGeometryState() {
+        faceBoundsState = .unknown
+    }
+
+    private func publishValidationResult(faceGeometryData: FaceGeometryData) {
+        let userInstruction = getUserInstruction(from: faceGeometryData)
+        let validationResult = FaceValidationResult(
+            userInstruction: userInstruction,
+            isAcceptableSelfieQuality: isAcceptableSelfieQuality,
+            hasDetectedValidFace: hasDetectedValidFace
+        )
+        delegate?.updateValidationResult(validationResult)
+    }
+
+    private func getUserInstruction(from faceGeometryData: FaceGeometryData) -> SelfieCaptureInstruction? {
+        if hasDetectedValidFace {
+            return nil
+        } else if faceBoundsState == .detectedFaceTooSmall {
+            return .moveCloser
+        } else if faceBoundsState == .detectedFaceTooLarge {
+            return .moveBack
+        } else if faceBoundsState == .detectedFaceOffCentre {
+            return .headInFrame
+        } else if !isAcceptableSelfieQuality {
+            return .goodLight
         }
+        return nil
     }
 
-    func processUpdatedFaceGeometry() {
-        switch faceGeometryState {
-        case let .faceFound(faceGeometryModel):
-            let boundingBox = faceGeometryModel.boundingBox
-            updateAcceptableBounds(using: boundingBox)
-        case .faceNotFound:
-            invalidateFaceGeometryState()
-        case let .errored(error):
-            print(error.localizedDescription)
-            invalidateFaceGeometryState()
-        }
-    }
-
-    func invalidateFaceGeometryState() {
-        // This is where we reset all the face geometry values.
-        isAcceptableBounds = .unknown
-    }
-
-    func updateAcceptableBounds(using boundingBox: CGRect) {
+    // MARK: Validation Checks
+    private func checkAcceptableBounds(using boundingBox: CGRect) -> FaceBoundsState {
         if boundingBox.width > 1.2 * faceLayoutGuideFrame.width {
-            isAcceptableBounds = .detectedFaceTooLarge
+            return .detectedFaceTooLarge
         } else if boundingBox.width * 1.2 < faceLayoutGuideFrame.width {
-            isAcceptableBounds = .detectedFaceTooSmall
+            return .detectedFaceTooSmall
         } else {
             if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 50 {
-                isAcceptableBounds = .detectedFaceOffCentre
+                return .detectedFaceOffCentre
             } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 50 {
-                isAcceptableBounds = .detectedFaceOffCentre
+                return .detectedFaceOffCentre
             } else {
-                isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
+                return .detectedFaceAppropriateSizeAndPosition
             }
         }
     }
 
-    func processUpdatedFaceQuality() {
-        switch faceQualityState {
-        case let .faceFound(faceQualityModel):
-            // Check acceptable range here.
-            isAcceptableFaceQuality = faceQualityModel.quality > 0.2
-        case .faceNotFound:
-            isAcceptableFaceQuality = false
-        case let .errored(error):
-            print(error.localizedDescription)
-            isAcceptableFaceQuality = false
-        }
+    private func checkSelfieQuality(_ value: SelfieQualityData) -> Bool {
+        return value.passed >= selfieQualityThreshold
     }
 
-    func processUpdatedSelfieQuality() {
-        switch selfieQualityState {
-        case let .faceFound(selfieQualityModel):
-            // Check acceptable range here.
-            isAcceptableSelfieQuality = selfieQualityModel.passed > 0.5
-        case .faceNotFound:
-            isAcceptableSelfieQuality = false
-        case let .errored(error):
-            print(error.localizedDescription)
-            isAcceptableSelfieQuality = false
-        }
-    }
-
-    func calculateDetectedFaceValidity() {
-        hasDetectedValidFace =
-            isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition && isAcceptableFaceQuality
-            && isAcceptableSelfieQuality
+    private func checkValidFace(brightness: Int) -> Bool {
+        return faceBoundsState == .detectedFaceAppropriateSizeAndPosition &&
+        isAcceptableSelfieQuality &&
+        brightness > 80 && brightness < 200
     }
 }

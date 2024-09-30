@@ -9,7 +9,7 @@ enum SelfieCaptureInstruction {
     case lookLeft
     case lookRight
     case lookUp
-    
+
     var instruction: String {
         switch self {
         case .headInFrame:
@@ -30,7 +30,7 @@ enum SelfieCaptureInstruction {
             return "Turn your head slightly up"
         }
     }
-    
+
     var guideAnimation: CaptureGuideAnimation {
         switch self {
         case .headInFrame:
