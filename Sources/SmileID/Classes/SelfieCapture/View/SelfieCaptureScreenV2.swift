@@ -7,6 +7,10 @@ public struct SelfieCaptureScreenV2: View {
 
     @Environment(\.presentationMode) private var presentationMode
 
+    @State private var progress1: CGFloat = 0.3
+    @State private var progress2: CGFloat = 0.8
+    @State private var progress3: CGFloat = 0.5
+
     public var body: some View {
         GeometryReader { proxy in
             ZStack {
@@ -60,7 +64,9 @@ public struct SelfieCaptureScreenV2: View {
                     title: Text(alert.title),
                     message: Text(alert.message ?? ""),
                     primaryButton: .default(
-                        Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
+                        Text(
+                            SmileIDResourcesHelper.localizedString(
+                                for: "Camera.Unauthorized.PrimaryAction")),
                         action: {
                             viewModel.perform(action: .openApplicationSettings)
                         }
