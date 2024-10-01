@@ -6,29 +6,6 @@ enum LivenessTask {
     case lookLeft
     case lookRight
     case lookUp
-
-    /// The user-friendly instruction for each task.
-    var instruction: String {
-        switch self {
-        case .lookLeft:
-            return "Look Left"
-        case .lookRight:
-            return "Look Right"
-        case .lookUp:
-            return "Look Up"
-        }
-    }
-
-    var guideAnimation: CaptureGuideAnimation {
-        switch self {
-        case .lookLeft:
-            return .lookLeft
-        case .lookRight:
-            return .lookRight
-        case .lookUp:
-            return .lookUp
-        }
-    }
 }
 
 class LivenessCheckManager: ObservableObject {
@@ -57,7 +34,6 @@ class LivenessCheckManager: ObservableObject {
     @Published var lookLeftProgress: CGFloat = 0.0
     @Published var lookRightProgress: CGFloat = 0.0
     @Published var lookUpProgress: CGFloat = 0.0
-    @Published private(set) var faceDirection: FaceDirection = .none
 
     /// The current liveness task.
     private(set) var currentTask: LivenessTask? {

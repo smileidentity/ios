@@ -6,13 +6,20 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
     let cameraManager = CameraManager.shared
     let faceDetector = FaceDetectorV2()
-    var faceValidator = FaceValidator()
+    private let faceValidator = FaceValidator()
     var activeLiveness = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
 
-    var selfieImage: URL?
-    var livenessImages: [URL] = []
+    private var selfieImage: URL?
+    private var livenessImages: [URL] = []
+    // MARK: Computed Properties
+    private var shouldBeginLivenessChallenge: Bool {
+        hasDetectedValidFace && selfieImage != nil && activeLiveness.currentTask != nil
+    }
+    private var shouldSubmitJob: Bool {
+        selfieImage != nil && livenessImages.count == numLivenessImages
+    }
 
     // MARK: Constants
     private let livenessImageSize = 320
@@ -27,9 +34,7 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var showGuideAnimation: Bool = false
     @Published private(set) var isSubmittingJob: Bool = false
     @Published var elapsedGuideAnimationDelay: TimeInterval = 0
-    /// This is meant for debug purposes only.
-    @Published var showImages: Bool = false
-    var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
+    private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
 
     // MARK: Private Properties
     private let isEnroll: Bool
@@ -56,8 +61,18 @@ public class SelfieViewModelV2: ObservableObject {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
         self.useStrictMode = useStrictMode
+        self.initialSetup()
+    }
 
+    deinit {
+        stopGuideAnimationDelayTimer()
+    }
+
+    private func initialSetup() {
         self.faceValidator.delegate = self
+        self.faceDetector.resultDelegate = self
+        self.faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
+        self.userInstruction = .headInFrame
 
         cameraManager.$status
             .receive(on: DispatchQueue.main)
@@ -79,10 +94,6 @@ public class SelfieViewModelV2: ObservableObject {
             .store(in: &subscribers)
     }
 
-    deinit {
-        stopGuideAnimationDelayTimer()
-    }
-
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
         faceDetector.processImageBuffer(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
@@ -101,9 +112,7 @@ public class SelfieViewModelV2: ObservableObject {
         case let .windowSizeDetected(windowRect):
             handleWindowSizeChanged(toRect: windowRect)
         case .activeLivenessCompleted:
-            if selfieImage != nil && livenessImages.count == numLivenessImages {
-                submitJob()
-            }
+            if shouldSubmitJob { submitJob() }
         case .activeLivenessTimeout:
             submitJob(forcedFailure: true)
         case .setupDelayTimer:
@@ -116,10 +125,8 @@ public class SelfieViewModelV2: ObservableObject {
     }
 
     private func publishUserInstruction(_ instruction: SelfieCaptureInstruction?) {
-        DispatchQueue.main.async {
-            if self.userInstruction != instruction {
-                self.userInstruction = instruction
-            }
+        if self.userInstruction != instruction {
+            self.userInstruction = instruction
             self.resetGuideAnimationDelayTimer()
         }
     }
@@ -152,6 +159,7 @@ extension SelfieViewModelV2 {
             width: faceLayoutGuideFrame.width,
             height: faceLayoutGuideFrame.height
         )
+        faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
     }
 
     private func captureSelfieImage(_ pixelBuffer: CVPixelBuffer) {
@@ -200,6 +208,7 @@ extension SelfieViewModelV2 {
     }
 }
 
+// MARK: FaceDetectorResultDelegate Methods
 extension SelfieViewModelV2: FaceDetectorResultDelegate {
     func faceDetector(
         _ detector: FaceDetectorV2,
@@ -214,20 +223,26 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
                 selfieQuality: selfieQuality,
                 brightness: brightness
             )
-        if hasDetectedValidFace && selfieImage != nil && activeLiveness.currentTask != nil {
+        if shouldBeginLivenessChallenge {
             activeLiveness.processFaceGeometry(faceGeometry)
         }
     }
 
-    func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: any Error) {
+    func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error) {
+        DispatchQueue.main.async {
+            self.publishUserInstruction(.headInFrame)
+        }
         print(error.localizedDescription)
     }
 }
 
+// MARK: FaceValidatorDelegate Methods
 extension SelfieViewModelV2: FaceValidatorDelegate {
     func updateValidationResult(_ result: FaceValidationResult) {
-        self.hasDetectedValidFace = result.hasDetectedValidFace
-        self.publishUserInstruction(result.userInstruction)
+        DispatchQueue.main.async {
+            self.hasDetectedValidFace = result.hasDetectedValidFace
+            self.publishUserInstruction(result.userInstruction)
+        }
     }
 }
 
@@ -237,7 +252,6 @@ extension SelfieViewModelV2 {
         isSubmittingJob = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             self.isSubmittingJob = false
-            self.showImages = true
         }
     }
 }

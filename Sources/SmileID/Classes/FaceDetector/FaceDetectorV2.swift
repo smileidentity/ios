@@ -7,6 +7,7 @@ enum FaceDetectorError: Error {
     case unableToLoadSelfieModel
     case invalidSelfieModelOutput
     case noFaceDetected
+    case unableToCropImage
 }
 
 protocol FaceDetectorViewDelegate: NSObjectProtocol {
@@ -77,10 +78,7 @@ class FaceDetectorV2: NSObject {
                 self.viewDelegate?.convertFromMetadataToPreviewRect(rect: faceObservation.boundingBox) ?? .zero
             let brightness = self.calculateBrightness(imageBuffer)
 
-            guard let croppedImage = try self.cropImageToFace(imageBuffer, boundingBox: faceObservation.boundingBox)
-            else {
-                return
-            }
+            let croppedImage = try self.cropImageToFace(imageBuffer, boundingBox: faceObservation.boundingBox)
             guard let convertedImage = croppedImage.pixelBuffer(width: cropSize.width, height: cropSize.height) else {
                 return
             }
@@ -139,11 +137,11 @@ class FaceDetectorV2: NSObject {
     private func cropImageToFace(
         _ imageBuffer: CVPixelBuffer,
         boundingBox: CGRect
-    ) throws -> UIImage? {
+    ) throws -> UIImage {
         guard let image = UIImage(pixelBuffer: imageBuffer),
             let cgImage = image.cgImage
         else {
-            return nil
+            throw FaceDetectorError.unableToCropImage
         }
 
         let size = CGSize(
@@ -158,7 +156,7 @@ class FaceDetectorV2: NSObject {
         let faceRect = CGRect(origin: origin, size: size)
 
         guard let croppedImage = cgImage.cropping(to: faceRect) else {
-            return nil
+            throw FaceDetectorError.unableToCropImage
         }
 
         return UIImage(cgImage: croppedImage)
