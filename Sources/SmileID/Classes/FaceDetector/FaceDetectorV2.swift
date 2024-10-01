@@ -55,7 +55,6 @@ class FaceDetectorV2: NSObject {
 
     /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
     func processImageBuffer(_ imageBuffer: CVPixelBuffer) {
-
         let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest()
         let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest()
 

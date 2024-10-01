@@ -13,21 +13,21 @@ enum SelfieCaptureInstruction {
     var instruction: String {
         switch self {
         case .headInFrame:
-            return "Position your head in view"
+            return "Instructions.PositionHeadInView"
         case .moveCloser:
-            return "Move closer"
+            return "Instructions.MoveCloser"
         case .moveBack:
-            return "Move back"
+            return "Instructions.MoveBack"
         case .lookStraight:
-            return "Position your head in view"
+            return "Instructions.PositionHeadInView"
         case .goodLight:
             return "Move to a well lit room"
         case .lookLeft:
-            return "Turn your head to the left"
+            return "Instructions.TurnHeadLeft"
         case .lookRight:
-            return "Turn your head to the right"
+            return "Instructions.TurnHeadRight"
         case .lookUp:
-            return "Turn your head slightly up"
+            return "Instructions.TurnHeadUp"
         }
     }
 

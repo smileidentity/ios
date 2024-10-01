@@ -39,8 +39,6 @@ public struct SelfieCaptureScreenV2: View {
 
                 VStack {
                     Spacer()
-                    Text("\(viewModel.elapsedGuideAnimationDelay)")
-                        .font(.title)
                     Button {
                         viewModel.cameraManager.pauseSession()
                         presentationMode.wrappedValue.dismiss()

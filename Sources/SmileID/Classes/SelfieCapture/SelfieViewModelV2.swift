@@ -25,7 +25,7 @@ public class SelfieViewModelV2: ObservableObject {
     private let livenessImageSize = 320
     private let selfieImageSize = 640
     private let numLivenessImages = 6
-    private let guideAnimationDelayTime: TimeInterval = 5
+    private let guideAnimationDelayTime: TimeInterval = 3
 
     // MARK: UI Properties
     @Published var unauthorizedAlert: AlertState?
