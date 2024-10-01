@@ -1,4 +1,9 @@
 # Release Notes
+## 10.2.12
+
+### Added
+* Modified access for selfie instruction screen for use in wrappers
+
 ## 10.2.11
 
 ### Added
