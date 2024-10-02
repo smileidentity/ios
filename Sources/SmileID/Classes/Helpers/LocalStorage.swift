@@ -70,7 +70,7 @@ public class LocalStorage {
         try createSmileFile(to: jobId, name: filename(for: fileType.name), file: data)
     }
 
-    static func getFileByType(
+    public static func getFileByType(
         jobId: String,
         fileType: FileType,
         submitted: Bool = false
@@ -79,7 +79,7 @@ public class LocalStorage {
         return contents.first(where: { $0.lastPathComponent.contains(fileType.name) })
     }
 
-    static func getFilesByType(
+    public static func getFilesByType(
         jobId: String,
         fileType: FileType,
         submitted: Bool = false
