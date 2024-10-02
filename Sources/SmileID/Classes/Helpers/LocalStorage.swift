@@ -48,14 +48,14 @@ public class LocalStorage {
         "\(name)_\(Date().millisecondsSince1970).jpg"
     }
 
-    static func createSelfieFile(
+    public static func createSelfieFile(
         jobId: String,
         selfieFile data: Data
     ) throws -> URL {
         try createSmileFile(to: jobId, name: filename(for: FileType.selfie.name), file: data)
     }
 
-    static func createLivenessFile(
+    public static func createLivenessFile(
         jobId: String,
         livenessFile data: Data
     ) throws -> URL {
