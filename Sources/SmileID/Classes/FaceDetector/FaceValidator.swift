@@ -29,7 +29,8 @@ final class FaceValidator {
     func validate(
         faceGeometry: FaceGeometryData,
         selfieQuality: SelfieQualityData,
-        brightness: Int
+        brightness: Int,
+        currentLivenessTask: LivenessTask?
     ) {
         // process the values and perform validation checks
         // 1 - check face bounds
@@ -54,7 +55,8 @@ final class FaceValidator {
             from: faceBoundsState,
             detectedValidFace: hasDetectedValidFace,
             isAcceptableBrightness: isAcceptableBrightness,
-            isAcceptableSelfieQuality: isAcceptableSelfieQuality
+            isAcceptableSelfieQuality: isAcceptableSelfieQuality,
+            livenessTask: currentLivenessTask
         )
 
         let validationResult = FaceValidationResult(
@@ -69,16 +71,27 @@ final class FaceValidator {
         from faceBoundsState: FaceBoundsState,
         detectedValidFace: Bool,
         isAcceptableBrightness: Bool,
-        isAcceptableSelfieQuality: Bool
+        isAcceptableSelfieQuality: Bool,
+        livenessTask: LivenessTask?
     ) -> SelfieCaptureInstruction? {
         if detectedValidFace {
+            if let livenessTask {
+                switch livenessTask {
+                case .lookLeft:
+                    return .lookLeft
+                case .lookRight:
+                    return .lookRight
+                case .lookUp:
+                    return .lookUp
+                }
+            }
             return nil
+        } else if faceBoundsState == .detectedFaceOffCentre {
+            return .headInFrame
         } else if faceBoundsState == .detectedFaceTooSmall {
             return .moveCloser
         } else if faceBoundsState == .detectedFaceTooLarge {
             return .moveBack
-        } else if faceBoundsState == .detectedFaceOffCentre {
-            return .headInFrame
         } else if !isAcceptableSelfieQuality || !isAcceptableBrightness {
             return .goodLight
         }

@@ -36,8 +36,6 @@ class FaceDetectorV2: NSObject {
     weak var viewDelegate: FaceDetectorViewDelegate?
     weak var resultDelegate: FaceDetectorResultDelegate?
 
-    // private let visionQueue = DispatchQueue(label: "com.smileidentity.ios.visionQueue")
-
     override init() {
         super.init()
         selfieQualityModel = createImageClassifier()

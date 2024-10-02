@@ -15,10 +15,13 @@ public class SelfieViewModelV2: ObservableObject {
     private var livenessImages: [URL] = []
     // MARK: Computed Properties
     private var shouldBeginLivenessChallenge: Bool {
-        hasDetectedValidFace && selfieImage != nil && activeLiveness.currentTask != nil
+        hasDetectedValidFace &&
+        selfieImage != nil &&
+        activeLiveness.currentTask != nil
     }
     private var shouldSubmitJob: Bool {
-        selfieImage != nil && livenessImages.count == numLivenessImages
+        selfieImage != nil &&
+        livenessImages.count == numLivenessImages
     }
 
     // MARK: Constants
@@ -221,7 +224,8 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
             .validate(
                 faceGeometry: faceGeometry,
                 selfieQuality: selfieQuality,
-                brightness: brightness
+                brightness: brightness,
+                currentLivenessTask: self.activeLiveness.currentTask
             )
         if shouldBeginLivenessChallenge {
             activeLiveness.processFaceGeometry(faceGeometry)
