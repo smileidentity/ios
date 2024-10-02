@@ -75,11 +75,9 @@ class FaceDetectorV2: NSObject {
                 self.viewDelegate?.convertFromMetadataToPreviewRect(rect: faceObservation.boundingBox) ?? .zero
             let brightness = self.calculateBrightness(imageBuffer)
 
-            let croppedImage = try self.cropImageToFace(imageBuffer, boundingBox: faceObservation.boundingBox)
-            guard let convertedImage = croppedImage.pixelBuffer(width: cropSize.width, height: cropSize.height) else {
-                return
-            }
-            let selfieQualityData = try self.selfieQualityRequest(imageBuffer: convertedImage)
+            let croppedImage = try self.cropImageToFace(imageBuffer)
+
+            let selfieQualityData = try self.selfieQualityRequest(imageBuffer: croppedImage)
 
             if #available(iOS 15.0, *) {
                 let faceGeometryData = FaceGeometryData(
@@ -132,14 +130,26 @@ class FaceDetectorV2: NSObject {
     }
 
     private func cropImageToFace(
-        _ imageBuffer: CVPixelBuffer,
-        boundingBox: CGRect
-    ) throws -> UIImage {
+        _ imageBuffer: CVPixelBuffer
+    ) throws -> CVPixelBuffer {
         guard let image = UIImage(pixelBuffer: imageBuffer),
             let cgImage = image.cgImage
         else {
             throw FaceDetectorError.unableToCropImage
         }
+
+        let request = VNDetectFaceRectanglesRequest()
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+
+        try handler.perform([request])
+
+        guard let results = request.results,
+            let face = results.first
+        else {
+            throw FaceDetectorError.unableToCropImage
+        }
+
+        let boundingBox = face.boundingBox
 
         let size = CGSize(
             width: boundingBox.width * image.size.width,
@@ -152,11 +162,16 @@ class FaceDetectorV2: NSObject {
 
         let faceRect = CGRect(origin: origin, size: size)
 
-        guard let croppedImage = cgImage.cropping(to: faceRect) else {
+        guard let croppedCGImage = cgImage.cropping(to: faceRect) else {
             throw FaceDetectorError.unableToCropImage
         }
 
-        return UIImage(cgImage: croppedImage)
+        let croppedImage = UIImage(cgImage: croppedCGImage)
+        guard let resizedImage = croppedImage.pixelBuffer(width: cropSize.width, height: cropSize.height) else {
+            throw FaceDetectorError.unableToCropImage
+        }
+
+        return resizedImage
     }
 
     private func calculateBrightness(_ imageBuffer: CVPixelBuffer) -> Int {
