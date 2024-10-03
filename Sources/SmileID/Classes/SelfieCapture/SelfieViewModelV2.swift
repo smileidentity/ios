@@ -7,7 +7,7 @@ public class SelfieViewModelV2: ObservableObject {
     let cameraManager = CameraManager.shared
     let faceDetector = FaceDetectorV2()
     private let faceValidator = FaceValidator()
-    var activeLiveness = LivenessCheckManager()
+    var livenessCheckManager = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
 
@@ -20,7 +20,7 @@ public class SelfieViewModelV2: ObservableObject {
     private var shouldBeginLivenessChallenge: Bool {
         hasDetectedValidFace &&
         selfieImage != nil &&
-        activeLiveness.currentTask != nil
+        livenessCheckManager.currentTask != nil
     }
     private var shouldSubmitJob: Bool {
         selfieImage != nil &&
@@ -76,8 +76,20 @@ public class SelfieViewModelV2: ObservableObject {
     private func initialSetup() {
         self.faceValidator.delegate = self
         self.faceDetector.resultDelegate = self
+        self.livenessCheckManager.selfieViewModel = self
+
         self.faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
         self.userInstruction = .headInFrame
+
+        livenessCheckManager.$lookLeftProgress
+            .merge(
+                with: livenessCheckManager.$lookRightProgress,
+                livenessCheckManager.$lookUpProgress
+            )
+            .sink { [weak self] _ in
+                self?.resetGuideAnimationDelayTimer()
+            }
+            .store(in: &subscribers)
 
         cameraManager.$status
             .receive(on: DispatchQueue.main)
@@ -103,10 +115,10 @@ public class SelfieViewModelV2: ObservableObject {
         faceDetector.processImageBuffer(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
             captureSelfieImage(imageBuffer)
-            activeLiveness.initiateLivenessCheck()
+            livenessCheckManager.initiateLivenessCheck()
         }
 
-        activeLiveness.captureImage = { [weak self] in
+        livenessCheckManager.captureImage = { [weak self] in
             self?.captureLivenessImage(imageBuffer)
         }
     }
@@ -117,7 +129,9 @@ public class SelfieViewModelV2: ObservableObject {
         case let .windowSizeDetected(windowRect):
             handleWindowSizeChanged(toRect: windowRect)
         case .activeLivenessCompleted:
-            if shouldSubmitJob { submitJob() }
+            if shouldSubmitJob {
+                submitJob()
+            }
         case .activeLivenessTimeout:
             submitJob(forcedFailure: true)
         case .setupDelayTimer:
@@ -227,10 +241,10 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
                 faceGeometry: faceGeometry,
                 selfieQuality: selfieQuality,
                 brightness: brightness,
-                currentLivenessTask: self.activeLiveness.currentTask
+                currentLivenessTask: self.livenessCheckManager.currentTask
             )
         if shouldBeginLivenessChallenge {
-            activeLiveness.processFaceGeometry(faceGeometry)
+            livenessCheckManager.processFaceGeometry(faceGeometry)
         }
     }
 
@@ -256,9 +270,8 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 // MARK: API Helpers
 extension SelfieViewModelV2 {
     func submitJob(forcedFailure: Bool = false) {
-        isSubmittingJob = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.isSubmittingJob = false
+        DispatchQueue.main.async {
+            self.isSubmittingJob = true
             self.isShowingImages = true
         }
     }

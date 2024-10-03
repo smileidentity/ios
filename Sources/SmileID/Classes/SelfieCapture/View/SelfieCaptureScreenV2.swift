@@ -33,9 +33,9 @@ public struct SelfieCaptureScreenV2: View {
                 UserInstructionsView(viewModel: viewModel)
                 if viewModel.faceInBounds {
                     LivenessGuidesView(
-                        topArcProgress: $viewModel.activeLiveness.lookUpProgress,
-                        rightArcProgress: $viewModel.activeLiveness.lookRightProgress,
-                        leftArcProgress: $viewModel.activeLiveness.lookLeftProgress
+                        topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
+                        rightArcProgress: $viewModel.livenessCheckManager.lookRightProgress,
+                        leftArcProgress: $viewModel.livenessCheckManager.lookLeftProgress
                     )
                 }
 
