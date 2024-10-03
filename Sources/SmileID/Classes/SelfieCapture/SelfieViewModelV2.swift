@@ -11,9 +11,10 @@ public class SelfieViewModelV2: ObservableObject {
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
 
+    // MARK: Private Properties
     private var selfieImage: URL?
     private var livenessImages: [URL] = []
-    // MARK: Computed Properties
+    private var hasDetectedValidFace: Bool = false
     private var shouldBeginLivenessChallenge: Bool {
         hasDetectedValidFace &&
         selfieImage != nil &&
@@ -33,13 +34,13 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: UI Properties
     @Published var unauthorizedAlert: AlertState?
     @Published private(set) var userInstruction: SelfieCaptureInstruction?
-    @Published private(set) var hasDetectedValidFace: Bool = false
+    @Published private(set) var faceInBounds: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
     @Published private(set) var isSubmittingJob: Bool = false
     @Published var elapsedGuideAnimationDelay: TimeInterval = 0
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
 
-    // MARK: Private Properties
+    // MARK: Injected Properties
     private let isEnroll: Bool
     private let userId: String
     private let jobId: String
@@ -244,6 +245,7 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
 extension SelfieViewModelV2: FaceValidatorDelegate {
     func updateValidationResult(_ result: FaceValidationResult) {
         DispatchQueue.main.async {
+            self.faceInBounds = result.faceInBounds
             self.hasDetectedValidFace = result.hasDetectedValidFace
             self.publishUserInstruction(result.userInstruction)
         }

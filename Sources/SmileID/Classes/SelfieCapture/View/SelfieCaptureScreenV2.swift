@@ -26,16 +26,18 @@ public struct SelfieCaptureScreenV2: View {
                     }
 
                 FaceBoundingArea(
-                    hasDetectedValidFace: viewModel.hasDetectedValidFace,
+                    faceInBounds: viewModel.faceInBounds,
                     showGuideAnimation: viewModel.showGuideAnimation,
                     guideAnimation: viewModel.userInstruction?.guideAnimation
                 )
                 UserInstructionsView(viewModel: viewModel)
-                LivenessGuidesView(
-                    topArcProgress: $viewModel.activeLiveness.lookUpProgress,
-                    rightArcProgress: $viewModel.activeLiveness.lookRightProgress,
-                    leftArcProgress: $viewModel.activeLiveness.lookLeftProgress
-                )
+                if viewModel.faceInBounds {
+                    LivenessGuidesView(
+                        topArcProgress: $viewModel.activeLiveness.lookUpProgress,
+                        rightArcProgress: $viewModel.activeLiveness.lookRightProgress,
+                        leftArcProgress: $viewModel.activeLiveness.lookLeftProgress
+                    )
+                }
 
                 VStack {
                     Spacer()

@@ -6,8 +6,8 @@ protocol FaceValidatorDelegate: AnyObject {
 
 struct FaceValidationResult {
     let userInstruction: SelfieCaptureInstruction?
-    let isAcceptableSelfieQuality: Bool
     let hasDetectedValidFace: Bool
+    let faceInBounds: Bool
 }
 
 final class FaceValidator {
@@ -32,25 +32,24 @@ final class FaceValidator {
         brightness: Int,
         currentLivenessTask: LivenessTask?
     ) {
-        // process the values and perform validation checks
-        // 1 - check face bounds
+        // check face bounds
         let faceBoundsState = checkAcceptableBounds(using: faceGeometry.boundingBox)
         let isAcceptableBounds = faceBoundsState == .detectedFaceAppropriateSizeAndPosition
 
-        // 2 - check brightness
+        // check brightness
         let isAcceptableBrightness = luminanceThreshold.contains(brightness)
 
-        // 3 - check selfie quality
+        // check selfie quality
         let isAcceptableSelfieQuality = checkSelfieQuality(selfieQuality)
 
-        // 4 - check detected valid face that's ready for selfie capture
+        // check that face is ready for capture
         let hasDetectedValidFace = checkValidFace(
             isAcceptableBounds,
             isAcceptableBrightness,
             isAcceptableSelfieQuality
         )
 
-        // get instruction to show to the user
+        // determine what instruction/animation to display to users
         let userInstruction = userInstruction(
             from: faceBoundsState,
             detectedValidFace: hasDetectedValidFace,
@@ -61,8 +60,8 @@ final class FaceValidator {
 
         let validationResult = FaceValidationResult(
             userInstruction: userInstruction,
-            isAcceptableSelfieQuality: isAcceptableSelfieQuality,
-            hasDetectedValidFace: hasDetectedValidFace
+            hasDetectedValidFace: hasDetectedValidFace,
+            faceInBounds: isAcceptableBounds
         )
         delegate?.updateValidationResult(validationResult)
     }
