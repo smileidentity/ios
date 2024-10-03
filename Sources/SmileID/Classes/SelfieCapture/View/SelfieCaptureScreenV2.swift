@@ -70,6 +70,9 @@ public struct SelfieCaptureScreenV2: View {
                     secondaryButton: .cancel()
                 )
             }
+            .sheet(isPresented: $viewModel.isShowingImages) {
+                SelfieProcessingView(model: viewModel)
+            }
         }
     }
 }

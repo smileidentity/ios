@@ -12,8 +12,10 @@ public class SelfieViewModelV2: ObservableObject {
     private var guideAnimationDelayTimer: Timer?
 
     // MARK: Private Properties
-    private var selfieImage: URL?
-    private var livenessImages: [URL] = []
+    private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
+    private var elapsedGuideAnimationDelay: TimeInterval = 0
+    var selfieImage: URL?
+    var livenessImages: [URL] = []
     private var hasDetectedValidFace: Bool = false
     private var shouldBeginLivenessChallenge: Bool {
         hasDetectedValidFace &&
@@ -37,8 +39,7 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var faceInBounds: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
     @Published private(set) var isSubmittingJob: Bool = false
-    @Published var elapsedGuideAnimationDelay: TimeInterval = 0
-    private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
+    @Published var isShowingImages: Bool = false
 
     // MARK: Injected Properties
     private let isEnroll: Bool
@@ -258,6 +259,7 @@ extension SelfieViewModelV2 {
         isSubmittingJob = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             self.isSubmittingJob = false
+            self.isShowingImages = true
         }
     }
 }
