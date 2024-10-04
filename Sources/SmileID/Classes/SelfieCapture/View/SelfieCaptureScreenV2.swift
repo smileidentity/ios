@@ -31,8 +31,10 @@ public struct SelfieCaptureScreenV2: View {
                     guideAnimation: viewModel.userInstruction?.guideAnimation
                 )
                 UserInstructionsView(viewModel: viewModel)
-                if viewModel.faceInBounds {
+                if let currentLivenessTask = viewModel.livenessCheckManager.currentTask,
+                    viewModel.faceInBounds {
                     LivenessGuidesView(
+                        currentLivenessTask: currentLivenessTask,
                         topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
                         rightArcProgress: $viewModel.livenessCheckManager.lookRightProgress,
                         leftArcProgress: $viewModel.livenessCheckManager.lookLeftProgress

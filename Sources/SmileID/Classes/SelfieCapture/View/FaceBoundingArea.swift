@@ -3,6 +3,7 @@ import SwiftUI
 
 struct FaceBoundingArea: View {
     var faceInBounds: Bool
+    var selfieCaptured: Bool
     var showGuideAnimation: Bool
     var guideAnimation: CaptureGuideAnimation?
 
@@ -11,7 +12,7 @@ struct FaceBoundingArea: View {
     var body: some View {
         ZStack {
             // Face Bounds Indicator
-            if !faceInBounds {
+            if selfieCaptured {
                 Circle()
                     .stroke(
                         faceInBounds ? .green : .red,

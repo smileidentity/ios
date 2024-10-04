@@ -87,7 +87,9 @@ public class SelfieViewModelV2: ObservableObject {
                 livenessCheckManager.$lookUpProgress
             )
             .sink { [weak self] _ in
-                self?.resetGuideAnimationDelayTimer()
+                DispatchQueue.main.async {
+                    self?.resetGuideAnimationDelayTimer()
+                }
             }
             .store(in: &subscribers)
 

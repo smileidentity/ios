@@ -146,7 +146,7 @@ class FaceDetectorV2: NSObject {
         guard let results = request.results,
             let face = results.first
         else {
-            throw FaceDetectorError.unableToCropImage
+            throw FaceDetectorError.noFaceDetected
         }
 
         let boundingBox = face.boundingBox
