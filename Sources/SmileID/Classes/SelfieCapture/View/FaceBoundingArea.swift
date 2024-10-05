@@ -12,14 +12,12 @@ struct FaceBoundingArea: View {
     var body: some View {
         ZStack {
             // Face Bounds Indicator
-            if selfieCaptured {
-                Circle()
-                    .stroke(
-                        faceInBounds ? .green : .red,
-                        lineWidth: 10
-                    )
-                    .frame(width: 275, height: 275)
-            }
+            Circle()
+                .stroke(
+                    faceInBounds ? selfieCaptured ? .clear : .green : .red,
+                    lineWidth: 10
+                )
+                .frame(width: 275, height: 275)
 
             if let guideAnimation = guideAnimation,
                 showGuideAnimation {

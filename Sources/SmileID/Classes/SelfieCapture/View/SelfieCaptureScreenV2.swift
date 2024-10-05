@@ -2,7 +2,7 @@ import Lottie
 import SwiftUI
 
 public struct SelfieCaptureScreenV2: View {
-    @ObservedObject var viewModel: SelfieViewModelV2
+    @Backport.StateObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
 
     @Environment(\.presentationMode) private var presentationMode
@@ -27,6 +27,7 @@ public struct SelfieCaptureScreenV2: View {
 
                 FaceBoundingArea(
                     faceInBounds: viewModel.faceInBounds,
+                    selfieCaptured: viewModel.selfieCaptured,
                     showGuideAnimation: viewModel.showGuideAnimation,
                     guideAnimation: viewModel.userInstruction?.guideAnimation
                 )

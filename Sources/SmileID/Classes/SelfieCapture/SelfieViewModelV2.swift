@@ -37,6 +37,7 @@ public class SelfieViewModelV2: ObservableObject {
     @Published var unauthorizedAlert: AlertState?
     @Published private(set) var userInstruction: SelfieCaptureInstruction?
     @Published private(set) var faceInBounds: Bool = false
+    @Published private(set) var selfieCaptured: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
     @Published private(set) var isSubmittingJob: Bool = false
     @Published var isShowingImages: Bool = false
@@ -196,6 +197,7 @@ extension SelfieViewModelV2 {
             }
             let selfieImage = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
             self.selfieImage = selfieImage
+            self.selfieCaptured = self.selfieImage != nil
         } catch {
             handleError(error)
         }

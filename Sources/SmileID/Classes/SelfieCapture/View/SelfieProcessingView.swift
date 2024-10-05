@@ -5,43 +5,26 @@ struct SelfieProcessingView: View {
     @State private var images: [UIImage] = []
 
     var body: some View {
-        NavigationView {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading) {
-                    if let selfieURL = model.selfieImage,
-                       let selfieImage = loadImage(from: selfieURL) {
-                        Image(uiImage: selfieImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 148, height: 320)
-                    } else {
-                        Text("No selfie image")
-                            .font(.title)
-                    }
-                    if !images.isEmpty {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(images, id: \.self) { image in
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 148, height: 320)
-                                }
-                            }
-                        }
-                    } else {
-                        Text("No liveness images")
-                            .font(.title)
-                    }
-                    Spacer()
+        VStack {
+            Text(SmileIDResourcesHelper.localizedString(for: "Submitting"))
+                .font(SmileID.theme.header4)
+            Text(SmileIDResourcesHelper.localizedString(for: "Your authentication failed"))
+                .font(SmileID.theme.header4)
+            ZStack {
+                Circle()
+                    .fill()
+                    .frame(width: 260, height: 260)
+                    .padding(.top, 40)
+                if #available(iOS 14.0, *) {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                } else {
+                    // Fallback on earlier versions
                 }
-                .foregroundColor(.primary)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .navigationBarTitle(Text("Captured Images"), displayMode: .inline)
-                .onAppear {
-                    loadImages()
-                }
+            }
+            Spacer()
+            SmileButton(title: "Confirmation.Retry") {
+                print("Retry button tapped")
             }
         }
     }

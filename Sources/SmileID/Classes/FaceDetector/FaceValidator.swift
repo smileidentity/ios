@@ -15,7 +15,7 @@ final class FaceValidator {
     private var faceLayoutGuideFrame: CGRect = .zero
 
     // MARK: Constants
-    private let selfieQualityThreshold: Float = 0.5
+    private let selfieQualityThreshold: Float = 1.5
     private let luminanceThreshold: ClosedRange<Int> = 80...200
     private let faceBoundsMultiplier: CGFloat = 1.2
     private let faceBoundsThreshold: CGFloat = 50
