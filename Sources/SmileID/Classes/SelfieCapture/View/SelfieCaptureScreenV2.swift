@@ -12,10 +12,6 @@ public struct SelfieCaptureScreenV2: View {
             ZStack {
                 // Camera Preview Layer
                 CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
-                    .onAppear {
-                        viewModel.cameraManager.switchCamera(to: .front)
-                        viewModel.perform(action: .setupDelayTimer)
-                    }
 
                 // CameraPreview Mask
                 Rectangle()
@@ -69,6 +65,7 @@ public struct SelfieCaptureScreenV2: View {
             .navigationBarHidden(true)
             .onAppear {
                 viewModel.perform(action: .windowSizeDetected(proxy.frame(in: .global)))
+                viewModel.perform(action: .onViewAppear)
             }
             .onDisappear {
                 viewModel.cameraManager.pauseSession()

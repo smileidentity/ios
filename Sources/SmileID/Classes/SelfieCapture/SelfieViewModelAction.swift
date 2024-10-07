@@ -2,6 +2,7 @@ import Foundation
 
 enum SelfieViewModelAction {
     // View Setup Actions
+    case onViewAppear
     case windowSizeDetected(CGRect)
 
     // Face Detection Actions
@@ -9,7 +10,6 @@ enum SelfieViewModelAction {
     case activeLivenessTimeout
 
     // Others
-    case setupDelayTimer
     case openApplicationSettings
     case handleError(Error)
 }

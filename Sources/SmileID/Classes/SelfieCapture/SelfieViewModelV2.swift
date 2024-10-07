@@ -14,7 +14,11 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Private Properties
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
-    var selfieImage: URL?
+    var selfieImage: URL? {
+        didSet {
+            self.selfieCaptured = self.selfieImage != nil
+        }
+    }
     var livenessImages: [URL] = []
     private var hasDetectedValidFace: Bool = false
     private var shouldBeginLivenessChallenge: Bool {
@@ -39,8 +43,8 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var faceInBounds: Bool = false
     @Published private(set) var selfieCaptured: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
-    @Published private(set) var isSubmittingJob: Bool = false
     @Published var showProcessingView: Bool = false
+    @Published public private(set) var processingState: ProcessingState?
 
     // MARK: Injected Properties
     private let isEnroll: Bool
@@ -137,8 +141,8 @@ public class SelfieViewModelV2: ObservableObject {
             }
         case .activeLivenessTimeout:
             submitJob(forcedFailure: true)
-        case .setupDelayTimer:
-            resetGuideAnimationDelayTimer()
+        case .onViewAppear:
+            handleViewAppeared()
         case .openApplicationSettings:
             openSettings()
         case let .handleError(error):
@@ -173,6 +177,18 @@ extension SelfieViewModelV2 {
         guideAnimationDelayTimer?.invalidate()
         guideAnimationDelayTimer = nil
     }
+    
+    private func handleViewAppeared() {
+        cameraManager.switchCamera(to: .front)
+        resetGuideAnimationDelayTimer()
+        resetSelfieCaptureState()
+    }
+    
+    private func resetSelfieCaptureState() {
+        selfieImage = nil
+        livenessImages = []
+        processingState = nil
+    }
 
     private func handleWindowSizeChanged(toRect: CGRect) {
         faceLayoutGuideFrame = CGRect(
@@ -197,7 +213,6 @@ extension SelfieViewModelV2 {
             }
             let selfieImage = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
             self.selfieImage = selfieImage
-            self.selfieCaptured = self.selfieImage != nil
         } catch {
             handleError(error)
         }
@@ -275,7 +290,7 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 extension SelfieViewModelV2 {
     func submitJob(forcedFailure: Bool = false) {
         DispatchQueue.main.async {
-            self.isSubmittingJob = true
+            self.processingState = .inProgress
             self.showProcessingView = true
         }
     }
