@@ -135,7 +135,7 @@ class FaceDetectorV2: NSObject {
         guard let image = UIImage(pixelBuffer: imageBuffer),
             let cgImage = image.cgImage
         else {
-            throw FaceDetectorError.unableToCropImage
+            throw FaceDetectorError.noFaceDetected
         }
 
         let request = VNDetectFaceRectanglesRequest()
