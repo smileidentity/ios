@@ -73,9 +73,10 @@ class FaceDetectorV2: NSObject {
 
             let convertedBoundingBox =
                 self.viewDelegate?.convertFromMetadataToPreviewRect(rect: faceObservation.boundingBox) ?? .zero
-            let brightness = self.calculateBrightness(imageBuffer)
 
-            let croppedImage = try self.cropImageToFace(imageBuffer)
+            let uiImage = UIImage(pixelBuffer: imageBuffer)
+            let brightness = self.calculateBrightness(uiImage)
+            let croppedImage = try self.cropImageToFace(uiImage)
 
             let selfieQualityData = try self.selfieQualityRequest(imageBuffer: croppedImage)
 
@@ -130,12 +131,10 @@ class FaceDetectorV2: NSObject {
     }
 
     private func cropImageToFace(
-        _ imageBuffer: CVPixelBuffer
+        _ image: UIImage?
     ) throws -> CVPixelBuffer {
-        guard let image = UIImage(pixelBuffer: imageBuffer),
-            let cgImage = image.cgImage
-        else {
-            throw FaceDetectorError.noFaceDetected
+        guard let image, let cgImage = image.cgImage else {
+            throw FaceDetectorError.unableToCropImage
         }
 
         let request = VNDetectFaceRectanglesRequest()
@@ -146,7 +145,7 @@ class FaceDetectorV2: NSObject {
         guard let results = request.results,
             let face = results.first
         else {
-            throw FaceDetectorError.unableToCropImage
+            throw FaceDetectorError.noFaceDetected
         }
 
         let boundingBox = face.boundingBox
@@ -174,9 +173,8 @@ class FaceDetectorV2: NSObject {
         return resizedImage
     }
 
-    private func calculateBrightness(_ imageBuffer: CVPixelBuffer) -> Int {
-        guard let image = UIImage(pixelBuffer: imageBuffer),
-            let cgImage = image.cgImage,
+    private func calculateBrightness(_ image: UIImage?) -> Int {
+        guard let image, let cgImage = image.cgImage,
             let imageData = cgImage.dataProvider?.data,
             let dataPointer = CFDataGetBytePtr(imageData)
         else {
