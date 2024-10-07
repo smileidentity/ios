@@ -45,7 +45,6 @@ public struct SelfieCaptureScreenV2: View {
                 VStack {
                     Spacer()
                     Button {
-                        viewModel.cameraManager.pauseSession()
                         presentationMode.wrappedValue.dismiss()
                     } label: {
                         Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
@@ -53,10 +52,26 @@ public struct SelfieCaptureScreenV2: View {
                     }
                 }
                 .padding(.vertical, 40)
+
+                NavigationLink(
+                    destination: SelfieProcessingView(
+                        model: viewModel,
+                        didTapRetry: {
+                            viewModel.showProcessingView = false
+                        }
+                    ),
+                    isActive: $viewModel.showProcessingView,
+                    label: { EmptyView()
+                    }
+                )
             }
             .edgesIgnoringSafeArea(.all)
+            .navigationBarHidden(true)
             .onAppear {
                 viewModel.perform(action: .windowSizeDetected(proxy.frame(in: .global)))
+            }
+            .onDisappear {
+                viewModel.cameraManager.pauseSession()
             }
             .alert(item: $viewModel.unauthorizedAlert) { alert in
                 Alert(
@@ -72,9 +87,6 @@ public struct SelfieCaptureScreenV2: View {
                     ),
                     secondaryButton: .cancel()
                 )
-            }
-            .sheet(isPresented: $viewModel.isShowingImages) {
-                SelfieProcessingView(model: viewModel)
             }
         }
     }

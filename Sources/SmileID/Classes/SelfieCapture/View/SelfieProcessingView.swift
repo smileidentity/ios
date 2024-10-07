@@ -2,43 +2,40 @@ import SwiftUI
 
 struct SelfieProcessingView: View {
     var model: SelfieViewModelV2
-    @State private var images: [UIImage] = []
+    var didTapRetry: () -> Void
+
+    @Environment(\.presentationMode) private var presentationMode
 
     var body: some View {
         VStack {
-            Text(SmileIDResourcesHelper.localizedString(for: "Submitting"))
-                .font(SmileID.theme.header4)
-            Text(SmileIDResourcesHelper.localizedString(for: "Your authentication failed"))
-                .font(SmileID.theme.header4)
-            ZStack {
+            VStack {
+                Text(SmileIDResourcesHelper.localizedString(for: "Submitting"))
+                    .font(SmileID.theme.header2)
+                Text(SmileIDResourcesHelper.localizedString(for: "Your authentication failed"))
+                    .font(SmileID.theme.body)
+            }
+            .foregroundColor(SmileID.theme.accent)
+            .padding(.top, 40)
+
+            ZStack(alignment: .center) {
                 Circle()
-                    .fill()
-                    .frame(width: 260, height: 260)
-                    .padding(.top, 40)
-                if #available(iOS 14.0, *) {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                } else {
-                    // Fallback on earlier versions
-                }
+                    .fill(Color(hex: "060606"))
+                CircularProgressView()
             }
+            .frame(width: 260, height: 260)
+            .padding(.top, 40)
+
             Spacer()
+
             SmileButton(title: "Confirmation.Retry") {
-                print("Retry button tapped")
+                self.didTapRetry()
+            }
+
+            SmileButton(title: "Action.Done") {
+                self.presentationMode.wrappedValue.dismiss()
             }
         }
-    }
-
-    private func loadImages() {
-        images = model.livenessImages.compactMap {
-            loadImage(from: $0)
-        }
-    }
-
-    private func loadImage(from url: URL) -> UIImage? {
-        guard let imageData = try? Data(contentsOf: url) else {
-            return nil
-        }
-        return UIImage(data: imageData)
+        .padding()
+        .navigationBarHidden(true)
     }
 }

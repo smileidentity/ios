@@ -40,7 +40,7 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var selfieCaptured: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
     @Published private(set) var isSubmittingJob: Bool = false
-    @Published var isShowingImages: Bool = false
+    @Published var showProcessingView: Bool = false
 
     // MARK: Injected Properties
     private let isEnroll: Bool
@@ -276,7 +276,7 @@ extension SelfieViewModelV2 {
     func submitJob(forcedFailure: Bool = false) {
         DispatchQueue.main.async {
             self.isSubmittingJob = true
-            self.isShowingImages = true
+            self.showProcessingView = true
         }
     }
 }
