@@ -144,7 +144,7 @@ public class SelfieViewModelV2: ObservableObject {
             handleWindowSizeChanged(toRect: windowRect)
         case .activeLivenessCompleted:
             Task {
-                try await handleSubmission()
+                try await handleSubmission(forcedFailure: false)
             }
         case .activeLivenessTimeout:
             Task {
@@ -249,14 +249,8 @@ extension SelfieViewModelV2 {
         print(error.localizedDescription)
     }
 
-    private func handleSubmission(forcedFailure: Bool = false) async throws {
-        do {
-            try await submitJob()
-        } catch {
-            print("Error submitting job: \(error)")
-            self.error = error
-            DispatchQueue.main.async { self.processingState = .error }
-        }
+    private func handleSubmission(forcedFailure: Bool) async throws {
+        try await submitJob(forcedFailure: forcedFailure)
     }
 
     private func openSettings() {
@@ -307,7 +301,7 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 
 // MARK: API Helpers
 extension SelfieViewModelV2 {
-    public func submitJob(forcedFailure: Bool = false) async throws {
+    public func submitJob(forcedFailure: Bool) async throws {
         // Create an instance of SelfieJobSubmissionManager to manage the submission process
         let submissionManager = SelfieJobSubmissionManager(
             userId: self.userId,
