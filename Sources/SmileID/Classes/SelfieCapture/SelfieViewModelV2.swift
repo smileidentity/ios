@@ -10,6 +10,7 @@ public class SelfieViewModelV2: ObservableObject {
     var livenessCheckManager = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
+    let metadataTimerStart = MonotonicTime()
 
     // MARK: Private Properties
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
@@ -30,6 +31,10 @@ public class SelfieViewModelV2: ObservableObject {
         selfieImage != nil &&
         livenessImages.count == numLivenessImages
     }
+    private var apiResponse: SmartSelfieResponse?
+    private var error: Error?
+    @Published public var errorMessageRes: String?
+    @Published public var errorMessage: String?
 
     // MARK: Constants
     private let livenessImageSize = 320
@@ -54,6 +59,7 @@ public class SelfieViewModelV2: ObservableObject {
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
     private let useStrictMode: Bool
+    private var localMetadata: LocalMetadata
 
     public init(
         isEnroll: Bool,
@@ -62,7 +68,8 @@ public class SelfieViewModelV2: ObservableObject {
         allowNewEnroll: Bool,
         skipApiSubmission: Bool,
         extraPartnerParams: [String: String],
-        useStrictMode: Bool
+        useStrictMode: Bool,
+        localMetadata: LocalMetadata
     ) {
         self.isEnroll = isEnroll
         self.userId = userId
@@ -71,6 +78,7 @@ public class SelfieViewModelV2: ObservableObject {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
         self.useStrictMode = useStrictMode
+        self.localMetadata = localMetadata
         self.initialSetup()
     }
 
@@ -288,10 +296,188 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 
 // MARK: API Helpers
 extension SelfieViewModelV2 {
-    func submitJob(forcedFailure: Bool = false) {
-        DispatchQueue.main.async {
-            self.processingState = .inProgress
-            self.showProcessingView = true
+//    func submitJob(forcedFailure: Bool = false) {
+//        DispatchQueue.main.async {
+//            self.processingState = .inProgress
+//            self.showProcessingView = true
+//        }
+//    }
+    
+    public func submitJob(forcedFailure: Bool = false) {
+        localMetadata.addMetadata(
+            Metadatum.SelfieCaptureDuration(duration: metadataTimerStart.elapsedTime()))
+        if skipApiSubmission {
+            DispatchQueue.main.async { self.processingState = .success }
+            return
+        }
+        DispatchQueue.main.async { self.processingState = .inProgress }
+        Task {
+            do {
+                guard let selfieImage, livenessImages.count == numLivenessImages else {
+                    throw SmileIDError.unknown("Selfie capture failed")
+                }
+                let jobType =
+                    isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
+                let authRequest = AuthenticationRequest(
+                    jobType: jobType,
+                    enrollment: isEnroll,
+                    jobId: jobId,
+                    userId: userId
+                )
+                if SmileID.allowOfflineMode {
+                    try LocalStorage.saveOfflineJob(
+                        jobId: jobId,
+                        userId: userId,
+                        jobType: jobType,
+                        enrollment: isEnroll,
+                        allowNewEnroll: allowNewEnroll,
+                        localMetadata: localMetadata,
+                        partnerParams: extraPartnerParams
+                    )
+                }
+                let authResponse = try await SmileID.api.authenticate(request: authRequest)
+
+                var smartSelfieLivenessImages = [MultipartBody]()
+                var smartSelfieImage: MultipartBody?
+                if let selfie = try? Data(contentsOf: selfieImage),
+                    let media = MultipartBody(
+                        withImage: selfie,
+                        forKey: selfieImage.lastPathComponent,
+                        forName: selfieImage.lastPathComponent
+                    )
+                {
+                    smartSelfieImage = media
+                }
+                if !livenessImages.isEmpty {
+                    let livenessImageInfos = livenessImages.compactMap {
+                        liveness -> MultipartBody? in
+                        if let data = try? Data(contentsOf: liveness) {
+                            return MultipartBody(
+                                withImage: data,
+                                forKey: liveness.lastPathComponent,
+                                forName: liveness.lastPathComponent
+                            )
+                        }
+                        return nil
+                    }
+
+                    smartSelfieLivenessImages.append(
+                        contentsOf: livenessImageInfos.compactMap { $0 })
+                }
+                guard let smartSelfieImage = smartSelfieImage,
+                    smartSelfieLivenessImages.count == numLivenessImages
+                else {
+                    throw SmileIDError.unknown("Selfie capture failed")
+                }
+
+                let response =
+                    if isEnroll {
+                        try await SmileID.api.doSmartSelfieEnrollment(
+                            signature: authResponse.signature,
+                            timestamp: authResponse.timestamp,
+                            selfieImage: smartSelfieImage,
+                            livenessImages: smartSelfieLivenessImages,
+                            userId: userId,
+                            partnerParams: extraPartnerParams,
+                            callbackUrl: SmileID.callbackUrl,
+                            sandboxResult: nil,
+                            allowNewEnroll: allowNewEnroll,
+                            metadata: localMetadata.metadata
+                        )
+                    } else {
+                        try await SmileID.api.doSmartSelfieAuthentication(
+                            signature: authResponse.signature,
+                            timestamp: authResponse.timestamp,
+                            userId: userId,
+                            selfieImage: smartSelfieImage,
+                            livenessImages: smartSelfieLivenessImages,
+                            partnerParams: extraPartnerParams,
+                            callbackUrl: SmileID.callbackUrl,
+                            sandboxResult: nil,
+                            metadata: localMetadata.metadata
+                        )
+                    }
+                apiResponse = response
+                do {
+                    try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                    self.selfieImage = try LocalStorage.getFileByType(
+                        jobId: jobId,
+                        fileType: FileType.selfie,
+                        submitted: true
+                    )
+                    self.livenessImages =
+                        try LocalStorage.getFilesByType(
+                            jobId: jobId,
+                            fileType: FileType.liveness,
+                            submitted: true
+                        ) ?? []
+                } catch {
+                    print("Error moving job to submitted directory: \(error)")
+                    self.error = error
+                }
+                DispatchQueue.main.async { self.processingState = .success }
+            } catch let error as SmileIDError {
+                do {
+                    let didMove = try LocalStorage.handleOfflineJobFailure(
+                        jobId: self.jobId,
+                        error: error
+                    )
+                    if didMove {
+                        self.selfieImage = try LocalStorage.getFileByType(
+                            jobId: jobId,
+                            fileType: FileType.selfie,
+                            submitted: true
+                        )
+                        self.livenessImages =
+                            try LocalStorage.getFilesByType(
+                                jobId: jobId,
+                                fileType: FileType.liveness,
+                                submitted: true
+                            ) ?? []
+                    }
+                } catch {
+                    print("Error moving job to submitted directory: \(error)")
+                    self.error = error
+                    return
+                }
+                if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
+                    DispatchQueue.main.async {
+                        self.errorMessageRes = "Offline.Message"
+                        self.processingState = .success
+                    }
+                } else {
+                    print("Error submitting job: \(error)")
+                    let (errorMessageRes, errorMessage) = toErrorMessage(error: error)
+                    self.error = error
+                    self.errorMessageRes = errorMessageRes
+                    self.errorMessage = errorMessage
+                    DispatchQueue.main.async { self.processingState = .error }
+                }
+            } catch {
+                print("Error submitting job: \(error)")
+                self.error = error
+                DispatchQueue.main.async { self.processingState = .error }
+            }
+        }
+    }
+
+    public func onFinished(callback: SmartSelfieResultDelegate) {
+        if let selfieImage = selfieImage,
+            let selfiePath = getRelativePath(from: selfieImage),
+            livenessImages.count == numLivenessImages,
+            !livenessImages.contains(where: { getRelativePath(from: $0) == nil })
+        {
+            let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
+
+            callback.didSucceed(
+                selfieImage: selfiePath,
+                livenessImages: livenessImagesPaths,
+                apiResponse: apiResponse
+            )
+        } else if let error = error {
+            callback.didError(error: error)
+        } else {
+            callback.didError(error: SmileIDError.unknown("Unknown error"))
         }
     }
 }
