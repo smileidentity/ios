@@ -3,7 +3,7 @@ import Foundation
 enum SelfieViewModelAction {
     // View Setup Actions
     case onViewAppear
-    case windowSizeDetected(CGRect)
+    case windowSizeDetected(CGSize)
 
     // Face Detection Actions
     case activeLivenessCompleted

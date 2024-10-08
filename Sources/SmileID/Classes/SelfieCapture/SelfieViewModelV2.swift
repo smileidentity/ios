@@ -16,7 +16,9 @@ public class SelfieViewModelV2: ObservableObject {
     private var elapsedGuideAnimationDelay: TimeInterval = 0
     var selfieImage: URL? {
         didSet {
-            self.selfieCaptured = self.selfieImage != nil
+            DispatchQueue.main.async {
+                self.selfieCaptured = self.selfieImage != nil
+            }
         }
     }
     var livenessImages: [URL] = []
@@ -199,10 +201,10 @@ extension SelfieViewModelV2 {
         processingState = nil
     }
 
-    private func handleWindowSizeChanged(toRect: CGRect) {
+    private func handleWindowSizeChanged(toRect: CGSize) {
         faceLayoutGuideFrame = CGRect(
-            x: toRect.midX - faceLayoutGuideFrame.width / 2,
-            y: toRect.midY - faceLayoutGuideFrame.height / 2,
+            x: (toRect.width / 2) - faceLayoutGuideFrame.width / 2,
+            y: (toRect.height / 2) - faceLayoutGuideFrame.height / 2,
             width: faceLayoutGuideFrame.width,
             height: faceLayoutGuideFrame.height
         )
@@ -302,6 +304,9 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 // MARK: API Helpers
 extension SelfieViewModelV2 {
     public func submitJob(forcedFailure: Bool) async throws {
+        DispatchQueue.main.async {
+            self.showProcessingView = true
+        }
         // Create an instance of SelfieJobSubmissionManager to manage the submission process
         let submissionManager = SelfieJobSubmissionManager(
             userId: self.userId,

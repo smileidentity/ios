@@ -64,7 +64,7 @@ public struct SelfieCaptureScreenV2: View {
             .edgesIgnoringSafeArea(.all)
             .navigationBarHidden(true)
             .onAppear {
-                viewModel.perform(action: .windowSizeDetected(proxy.frame(in: .global)))
+                viewModel.perform(action: .windowSizeDetected(proxy.size))
                 viewModel.perform(action: .onViewAppear)
             }
             .onDisappear {
