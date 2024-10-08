@@ -186,13 +186,13 @@ extension SelfieViewModelV2 {
         guideAnimationDelayTimer?.invalidate()
         guideAnimationDelayTimer = nil
     }
-    
+
     private func handleViewAppeared() {
         cameraManager.switchCamera(to: .front)
         resetGuideAnimationDelayTimer()
         resetSelfieCaptureState()
     }
-    
+
     private func resetSelfieCaptureState() {
         selfieImage = nil
         livenessImages = []
@@ -322,8 +322,7 @@ extension SelfieViewModelV2 {
         if let selfieImage = selfieImage,
             let selfiePath = getRelativePath(from: selfieImage),
             livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil })
-        {
+            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
             let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
 
             callback.didSucceed(
