@@ -2,7 +2,7 @@ import Lottie
 import SwiftUI
 
 public struct SelfieCaptureScreenV2: View {
-    @Backport.StateObject var viewModel: SelfieViewModelV2
+    @ObservedObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
 
     @Environment(\.presentationMode) private var presentationMode
