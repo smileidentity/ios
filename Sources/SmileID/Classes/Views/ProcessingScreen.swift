@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-public enum ProcessingState {
+public enum ProcessingState: Equatable {
     case inProgress
     case success
     case error
@@ -11,15 +11,6 @@ public enum ProcessingState {
         case .inProgress: return "Submitting"
         case .success: return "Successful"
         case .error: return "Failed"
-        }
-    }
-    
-    var subtitle: String? {
-        switch self {
-        case .inProgress: return nil
-        case .success: return nil
-        case .error:
-            return "Your authentication failed"
         }
     }
 }

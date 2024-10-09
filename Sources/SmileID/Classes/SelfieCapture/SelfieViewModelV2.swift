@@ -172,7 +172,7 @@ extension SelfieViewModelV2 {
     private func resetGuideAnimationDelayTimer() {
         elapsedGuideAnimationDelay = 0
         showGuideAnimation = false
-        stopGuideAnimationDelayTimer()
+        guard guideAnimationDelayTimer == nil else { return }
         guideAnimationDelayTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             self.elapsedGuideAnimationDelay += 1
             if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
@@ -183,6 +183,7 @@ extension SelfieViewModelV2 {
     }
 
     private func stopGuideAnimationDelayTimer() {
+        guard guideAnimationDelayTimer != nil else { return }
         guideAnimationDelayTimer?.invalidate()
         guideAnimationDelayTimer = nil
     }

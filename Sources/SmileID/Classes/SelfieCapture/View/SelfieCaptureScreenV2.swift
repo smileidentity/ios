@@ -53,6 +53,7 @@ public struct SelfieCaptureScreenV2: View {
                     NavigationLink(
                         destination: SelfieProcessingView(
                             processingState: processingState,
+                            errorMessage: viewModel.errorMessageRes ?? viewModel.errorMessage,
                             didTapRetry: {
                                 viewModel.showProcessingView = false
                             },

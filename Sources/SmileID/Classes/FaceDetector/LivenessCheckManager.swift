@@ -28,7 +28,7 @@ class LivenessCheckManager: ObservableObject {
     /// The maximum threshold for pitch (up-down head movement)
     private let maxPitchAngleThreshold: CGFloat = 0.3
     /// The timeout duration for each task in seconds.
-    private let taskTimeoutDuration: TimeInterval = 120
+    private let taskTimeoutDuration: TimeInterval = 10.0
 
     // MARK: Face Orientation Properties
     @Published var lookLeftProgress: CGFloat = 0.0
@@ -61,17 +61,24 @@ class LivenessCheckManager: ObservableObject {
 
     /// Resets the task timer to the initial timeout duration.
     private func resetTaskTimer() {
-        stopTaskTimer()
-        taskTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { _ in
-            self.elapsedTime += 1
-            if self.elapsedTime == self.taskTimeoutDuration {
-                self.handleTaskTimeout()
-            }
+        guard taskTimer == nil else { return }
+        DispatchQueue.main.async {
+            self.taskTimer = Timer.scheduledTimer(
+                timeInterval: 1.0, target: self, selector: #selector(self.taskTimerFired), userInfo: nil,
+                repeats: true)
+        }
+    }
+
+    @objc private func taskTimerFired() {
+        self.elapsedTime += 1
+        if self.elapsedTime == self.taskTimeoutDuration {
+            self.handleTaskTimeout()
         }
     }
 
     /// Stops the current task timer.
     private func stopTaskTimer() {
+        guard taskTimer != nil else { return }
         taskTimer?.invalidate()
         taskTimer = nil
     }

@@ -24,6 +24,7 @@ public protocol SmileIDServiceable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
+        failureReason: FailureReason?,
         metadata: Metadata
     ) async throws -> SmartSelfieResponse
 
@@ -38,6 +39,7 @@ public protocol SmileIDServiceable {
         partnerParams: [String: String]?,
         callbackUrl: String?,
         sandboxResult: Int?,
+        failureReason: FailureReason?,
         metadata: Metadata
     ) async throws -> SmartSelfieResponse
 
@@ -222,6 +224,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         callbackUrl: String? = SmileID.callbackUrl,
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
+        failureReason: FailureReason? = nil,
         metadata: Metadata = Metadata.default()
     ) async throws -> SmartSelfieResponse {
         try await multipart(
@@ -235,6 +238,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
             callbackUrl: callbackUrl,
             sandboxResult: sandboxResult,
             allowNewEnroll: allowNewEnroll,
+            failureReason: failureReason,
             metadata: metadata
         )
     }
@@ -248,6 +252,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         partnerParams: [String: String]? = nil,
         callbackUrl: String? = SmileID.callbackUrl,
         sandboxResult: Int? = nil,
+        failureReason: FailureReason? = nil,
         metadata: Metadata = Metadata.default()
     ) async throws -> SmartSelfieResponse {
         try await multipart(
@@ -260,6 +265,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
             partnerParams: partnerParams,
             callbackUrl: callbackUrl,
             sandboxResult: sandboxResult,
+            failureReason: failureReason,
             metadata: metadata
         )
     }

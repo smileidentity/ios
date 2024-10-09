@@ -16,7 +16,7 @@ final class SelfieJobSubmissionManager {
     private var livenessImages: [URL]
     private var extraPartnerParams: [String: String]
     private let localMetadata: LocalMetadata
-    
+
     weak var delegate: SelfieJobSubmissionDelegate?
 
     // MARK: - Initializer
@@ -67,14 +67,15 @@ final class SelfieJobSubmissionManager {
             let response = try await submitJobRequest(
                 authResponse: authResponse,
                 smartSelfieImage: smartSelfieImage,
-                smartSelfieLivenessImages: smartSelfieLivenessImages
+                smartSelfieLivenessImages: smartSelfieLivenessImages,
+                forcedFailure: forcedFailure
             )
 
             // Update local storage after successful submission
             try updateLocalStorageAfterSuccess()
 
             // Send out api response after successful submission
-                self.delegate?.submissionDidSucceed(response)
+            self.delegate?.submissionDidSucceed(response)
         } catch let error as SmileIDError {
             handleJobSubmissionFailure(error: error)
         }
@@ -146,7 +147,8 @@ final class SelfieJobSubmissionManager {
     private func submitJobRequest(
         authResponse: AuthenticationResponse,
         smartSelfieImage: MultipartBody,
-        smartSelfieLivenessImages: [MultipartBody]
+        smartSelfieLivenessImages: [MultipartBody],
+        forcedFailure: Bool
     ) async throws -> SmartSelfieResponse {
         if isEnroll {
             return try await SmileID.api
@@ -160,6 +162,7 @@ final class SelfieJobSubmissionManager {
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
                     allowNewEnroll: allowNewEnroll,
+                    failureReason: forcedFailure ? .activeLivenessTimedOut : nil,
                     metadata: localMetadata.metadata
                 )
         } else {
@@ -173,6 +176,7 @@ final class SelfieJobSubmissionManager {
                     partnerParams: extraPartnerParams,
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
+                    failureReason: forcedFailure ? .activeLivenessTimedOut : nil,
                     metadata: localMetadata.metadata
                 )
         }
@@ -213,7 +217,7 @@ final class SelfieJobSubmissionManager {
             self.delegate?.submissionDidFail(with: error, errorMessage: nil, errorMessageRes: "Offline.Message")
         } else {
             let (errorMessageRes, errorMessage) = toErrorMessage(error: error)
-                self.delegate?.submissionDidFail(with: error, errorMessage: errorMessage, errorMessageRes: errorMessageRes)
+            self.delegate?.submissionDidFail(with: error, errorMessage: errorMessage, errorMessageRes: errorMessageRes)
         }
     }
 }

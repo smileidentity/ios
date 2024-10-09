@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SelfieProcessingView: View {
     var processingState: ProcessingState
+    var errorMessage: String?
     var didTapRetry: () -> Void
     var didTapdone: () -> Void
 
@@ -12,7 +13,7 @@ struct SelfieProcessingView: View {
             VStack {
                 Text(SmileIDResourcesHelper.localizedString(for: processingState.title))
                     .font(SmileID.theme.header2)
-                Text(SmileIDResourcesHelper.localizedString(for: processingState.subtitle ?? ""))
+                Text(SmileIDResourcesHelper.localizedString(for: errorMessage ?? ""))
                     .font(SmileID.theme.body)
             }
             .foregroundColor(SmileID.theme.accent)
