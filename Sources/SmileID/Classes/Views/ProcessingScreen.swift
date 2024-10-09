@@ -5,6 +5,23 @@ public enum ProcessingState {
     case inProgress
     case success
     case error
+
+    var title: String {
+        switch self {
+        case .inProgress: return "Submitting"
+        case .success: return "Successful"
+        case .error: return "Failed"
+        }
+    }
+    
+    var subtitle: String? {
+        switch self {
+        case .inProgress: return nil
+        case .success: return nil
+        case .error:
+            return "Your authentication failed"
+        }
+    }
 }
 
 /// This screen represents a generic Processing state. It has 3 sub-states: In Progress, Success, and

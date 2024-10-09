@@ -10,6 +10,7 @@ public class SelfieViewModelV2: ObservableObject {
     var livenessCheckManager = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
+    private let metadataTimerStart = MonotonicTime()
 
     // MARK: Private Properties
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
@@ -24,13 +25,10 @@ public class SelfieViewModelV2: ObservableObject {
     var livenessImages: [URL] = []
     private var hasDetectedValidFace: Bool = false
     private var shouldBeginLivenessChallenge: Bool {
-        hasDetectedValidFace &&
-        selfieImage != nil &&
-        livenessCheckManager.currentTask != nil
+        hasDetectedValidFace && selfieImage != nil && livenessCheckManager.currentTask != nil
     }
     private var shouldSubmitJob: Bool {
-        selfieImage != nil &&
-        livenessImages.count == numLivenessImages
+        selfieImage != nil && livenessImages.count == numLivenessImages
     }
     private var apiResponse: SmartSelfieResponse?
     private var error: Error?
@@ -301,11 +299,19 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
     }
 }
 
-// MARK: API Helpers
-extension SelfieViewModelV2 {
+// MARK: Selfie Job Submission
+extension SelfieViewModelV2: SelfieJobSubmissionDelegate {
     public func submitJob(forcedFailure: Bool) async throws {
-        DispatchQueue.main.async {
-            self.showProcessingView = true
+        self.processingState = .inProgress
+        self.showProcessingView = true
+
+        // Add metadata before submission
+        addSelfieCaptureDurationMetaData()
+
+        if skipApiSubmission {
+            // Skip API submission and update processing state to success
+            self.processingState = .success
+            return
         }
         // Create an instance of SelfieJobSubmissionManager to manage the submission process
         let submissionManager = SelfieJobSubmissionManager(
@@ -317,17 +323,23 @@ extension SelfieViewModelV2 {
             selfieImage: self.selfieImage,
             livenessImages: self.livenessImages,
             extraPartnerParams: self.extraPartnerParams,
-            localMetadata: self.localMetadata,
-            skipApiSubmission: self.skipApiSubmission
+            localMetadata: self.localMetadata
         )
+        submissionManager.delegate = self
         try await submissionManager.submitJob(forcedFailure: forcedFailure)
+    }
+
+    private func addSelfieCaptureDurationMetaData() {
+        localMetadata.addMetadata(
+            Metadatum.SelfieCaptureDuration(duration: metadataTimerStart.elapsedTime()))
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let selfieImage = selfieImage,
             let selfiePath = getRelativePath(from: selfieImage),
             livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
+            !livenessImages.contains(where: { getRelativePath(from: $0) == nil })
+        {
             let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
 
             callback.didSucceed(
@@ -339,6 +351,28 @@ extension SelfieViewModelV2 {
             callback.didError(error: error)
         } else {
             callback.didError(error: SmileIDError.unknown("Unknown error"))
+        }
+    }
+
+    // MARK: SelfieJobSubmissionDelegate Methods
+
+    func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
+        DispatchQueue.main.async {
+            self.apiResponse = apiResponse
+            self.processingState = .success
+        }
+    }
+
+    func submissionDidFail(
+        with error: Error,
+        errorMessage: String?,
+        errorMessageRes: String?
+    ) {
+        DispatchQueue.main.async {
+            self.error = error
+            self.errorMessage = errorMessage
+            self.errorMessageRes = errorMessageRes
+            self.processingState = .error
         }
     }
 }

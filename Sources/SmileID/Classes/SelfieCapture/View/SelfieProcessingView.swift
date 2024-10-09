@@ -1,38 +1,54 @@
 import SwiftUI
 
 struct SelfieProcessingView: View {
-    var model: SelfieViewModelV2
+    var processingState: ProcessingState
     var didTapRetry: () -> Void
+    var didTapdone: () -> Void
 
     @Environment(\.presentationMode) private var presentationMode
 
     var body: some View {
         VStack {
             VStack {
-                Text(SmileIDResourcesHelper.localizedString(for: "Submitting"))
+                Text(SmileIDResourcesHelper.localizedString(for: processingState.title))
                     .font(SmileID.theme.header2)
-                Text(SmileIDResourcesHelper.localizedString(for: "Your authentication failed"))
+                Text(SmileIDResourcesHelper.localizedString(for: processingState.subtitle ?? ""))
                     .font(SmileID.theme.body)
             }
             .foregroundColor(SmileID.theme.accent)
             .padding(.top, 40)
 
-            ZStack(alignment: .center) {
-                Circle()
-                    .fill(Color(hex: "060606"))
-                CircularProgressView()
-            }
-            .frame(width: 260, height: 260)
-            .padding(.top, 40)
+            switch processingState {
+            case .inProgress:
+                ZStack(alignment: .center) {
+                    Circle()
+                        .fill(Color(hex: "060606"))
+                    CircularProgressView()
+                }
+                .frame(width: 260, height: 260)
+                .padding(.top, 40)
 
-            Spacer()
+                Spacer()
+            case .success:
+                ZStack(alignment: .center) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 48, height: 48)
+                        .foregroundColor(SmileID.theme.success)
+                }
+                .frame(width: 260, height: 260)
+                .padding(.top, 40)
 
-            SmileButton(title: "Confirmation.Retry") {
-                self.didTapRetry()
-            }
-
-            SmileButton(title: "Action.Done") {
-                self.presentationMode.wrappedValue.dismiss()
+                Spacer()
+                SmileButton(title: "Action.Done") {
+                    self.presentationMode.wrappedValue.dismiss()
+                }
+            case .error:
+                Spacer()
+                SmileButton(title: "Confirmation.Retry") {
+                    self.didTapRetry()
+                }
             }
         }
         .padding()

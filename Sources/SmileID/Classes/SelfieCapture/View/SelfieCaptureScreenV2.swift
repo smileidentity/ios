@@ -49,17 +49,22 @@ public struct SelfieCaptureScreenV2: View {
                 }
                 .padding(.vertical, 40)
 
-                NavigationLink(
-                    destination: SelfieProcessingView(
-                        model: viewModel,
-                        didTapRetry: {
-                            viewModel.showProcessingView = false
+                if let processingState = viewModel.processingState {
+                    NavigationLink(
+                        destination: SelfieProcessingView(
+                            processingState: processingState,
+                            didTapRetry: {
+                                viewModel.showProcessingView = false
+                            },
+                            didTapdone: {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        ),
+                        isActive: $viewModel.showProcessingView,
+                        label: { EmptyView()
                         }
-                    ),
-                    isActive: $viewModel.showProcessingView,
-                    label: { EmptyView()
-                    }
-                )
+                    )
+                }
             }
             .edgesIgnoringSafeArea(.all)
             .navigationBarHidden(true)

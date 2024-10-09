@@ -1,5 +1,10 @@
 import SwiftUI
 
+protocol SelfieJobSubmissionDelegate: AnyObject {
+    func submissionDidSucceed(_ apiResponse: SmartSelfieResponse)
+    func submissionDidFail(with error: Error, errorMessage: String?, errorMessageRes: String?)
+}
+
 final class SelfieJobSubmissionManager {
     // MARK: - Properties
     private let userId: String
@@ -11,17 +16,9 @@ final class SelfieJobSubmissionManager {
     private var livenessImages: [URL]
     private var extraPartnerParams: [String: String]
     private let localMetadata: LocalMetadata
-    private let skipApiSubmission: Bool
+    
+    weak var delegate: SelfieJobSubmissionDelegate?
 
-    public var apiResponse: SmartSelfieResponse?
-    public var processingState: ProcessingState?
-    public var error: Error?
-    public var errorMessageRes: String?
-    public var errorMessage: String?
-    
-    // MARK: Dependencies
-    private let metadataTimerStart = MonotonicTime()
-    
     // MARK: - Initializer
     init(
         userId: String,
@@ -31,9 +28,8 @@ final class SelfieJobSubmissionManager {
         allowNewEnroll: Bool,
         selfieImage: URL?,
         livenessImages: [URL],
-        extraPartnerParams: [String : String],
-        localMetadata: LocalMetadata,
-        skipApiSubmission: Bool
+        extraPartnerParams: [String: String],
+        localMetadata: LocalMetadata
     ) {
         self.userId = userId
         self.jobId = jobId
@@ -44,21 +40,9 @@ final class SelfieJobSubmissionManager {
         self.livenessImages = livenessImages
         self.extraPartnerParams = extraPartnerParams
         self.localMetadata = localMetadata
-        self.skipApiSubmission = skipApiSubmission
     }
-    
+
     func submitJob(forcedFailure: Bool = false) async throws {
-        // Add metadata before submission
-        addSelfieCaptureDurationMetaData()
-
-        if skipApiSubmission {
-            // Skip API submission and update processing state to success
-            updateProcessingState(.success)
-            return
-        }
-
-        updateProcessingState(.inProgress)
-
         do {
             // Validate that the necessary selfie data is present
             try validateImages(forcedFailure: forcedFailure)
@@ -72,60 +56,46 @@ final class SelfieJobSubmissionManager {
             if SmileID.allowOfflineMode {
                 try saveOfflineMode(jobType: jobType)
             }
-            
+
             // Authenticate the request with the API
             let authResponse = try await SmileID.api.authenticate(request: authRequest)
-            
+
             // Prepare the images for submission
             let (smartSelfieImage, smartSelfieLivenessImages) = try prepareImagesForSubmission()
-            
+
             // Submit the job data to the API
             let response = try await submitJobRequest(
                 authResponse: authResponse,
                 smartSelfieImage: smartSelfieImage,
                 smartSelfieLivenessImages: smartSelfieLivenessImages
             )
-            
+
             // Update local storage after successful submission
             try updateLocalStorageAfterSuccess()
-            
-            // Update state after successful submission
-            updateProcessingState(.success)
-            apiResponse = response
+
+            // Send out api response after successful submission
+                self.delegate?.submissionDidSucceed(response)
         } catch let error as SmileIDError {
             handleJobSubmissionFailure(error: error)
-        }
-    }
-    
-    private func addSelfieCaptureDurationMetaData() {
-        localMetadata.addMetadata(
-            Metadatum.SelfieCaptureDuration(duration: metadataTimerStart.elapsedTime()))
-    }
-
-    private func updateProcessingState(_ state: ProcessingState) {
-        DispatchQueue.main.async {
-            self.processingState = state
         }
     }
 
     private func validateImages(forcedFailure: Bool) throws {
         if forcedFailure {
-            guard let selfieImage else {
+            guard selfieImage != nil else {
                 throw SmileIDError.unknown("Selfie capture failed")
             }
         } else {
-            guard let selfieImage, livenessImages.count == numLivenessImages else {
+            guard selfieImage != nil, livenessImages.count == numLivenessImages else {
                 throw SmileIDError.unknown("Selfie capture failed")
             }
         }
     }
-    
+
     private func determineJobType() -> JobType {
-        return isEnroll ?
-        JobType.smartSelfieEnrollment :
-        JobType.smartSelfieAuthentication
+        return isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
     }
-    
+
     private func createAuthRequest(jobType: JobType) -> AuthenticationRequest {
         return AuthenticationRequest(
             jobType: jobType,
@@ -134,7 +104,7 @@ final class SelfieJobSubmissionManager {
             userId: userId
         )
     }
-    
+
     private func saveOfflineMode(jobType: JobType) throws {
         try LocalStorage.saveOfflineJob(
             jobId: jobId,
@@ -146,32 +116,33 @@ final class SelfieJobSubmissionManager {
             partnerParams: extraPartnerParams
         )
     }
-    
+
     private func prepareImagesForSubmission() throws -> (MultipartBody, [MultipartBody]) {
         guard let smartSelfieImage = createMultipartBody(from: selfieImage) else {
             throw SmileIDError.unknown("Failed to process selfie image")
         }
-        
+
         let smartSelfieLivenessImages = livenessImages.compactMap {
             createMultipartBody(from: $0)
         }
         guard smartSelfieLivenessImages.count == numLivenessImages else {
             throw SmileIDError.unknown("Liveness image count mismatch")
         }
-        
+
         return (smartSelfieImage, smartSelfieLivenessImages)
     }
-    
+
     private func createMultipartBody(from fileURL: URL?) -> MultipartBody? {
         guard let fileURL = fileURL,
-                let imageData = try? Data(contentsOf: fileURL) else { return nil }
+            let imageData = try? Data(contentsOf: fileURL)
+        else { return nil }
         return MultipartBody(
             withImage: imageData,
             forKey: fileURL.lastPathComponent,
             forName: fileURL.lastPathComponent
         )
     }
-    
+
     private func submitJobRequest(
         authResponse: AuthenticationResponse,
         smartSelfieImage: MultipartBody,
@@ -206,11 +177,11 @@ final class SelfieJobSubmissionManager {
                 )
         }
     }
-    
+
     private func updateLocalStorageAfterSuccess() throws {
         // Move the job to the submitted jobs directory for record-keeping
         try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
-        
+
         // Update the references to the submitted selfie and liveness images
         self.selfieImage = try LocalStorage.getFileByType(
             jobId: jobId,
@@ -224,31 +195,25 @@ final class SelfieJobSubmissionManager {
                 submitted: true
             ) ?? []
     }
-    
+
     private func handleJobSubmissionFailure(error: SmileIDError) {
         do {
             let didMove = try LocalStorage.handleOfflineJobFailure(jobId: self.jobId, error: error)
             if didMove {
                 self.selfieImage = try LocalStorage.getFileByType(jobId: jobId, fileType: .selfie, submitted: true)
-                self.livenessImages = try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness, submitted: true) ?? []
+                self.livenessImages =
+                    try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness, submitted: true) ?? []
             }
         } catch {
-            self.error = error
-            updateProcessingState(.error)
+            self.delegate?.submissionDidFail(with: error, errorMessage: nil, errorMessageRes: nil)
             return
         }
-        
+
         if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
-            DispatchQueue.main.async {
-                self.errorMessageRes = "Offline.Message"
-                self.processingState = .success
-            }
+            self.delegate?.submissionDidFail(with: error, errorMessage: nil, errorMessageRes: "Offline.Message")
         } else {
             let (errorMessageRes, errorMessage) = toErrorMessage(error: error)
-            self.error = error
-            self.errorMessageRes = errorMessageRes
-            self.errorMessage = errorMessage
-            updateProcessingState(.error)
+                self.delegate?.submissionDidFail(with: error, errorMessage: errorMessage, errorMessageRes: errorMessageRes)
         }
     }
 }
