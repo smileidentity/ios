@@ -28,7 +28,7 @@ class LivenessCheckManager: ObservableObject {
     /// The maximum threshold for pitch (up-down head movement)
     private let maxPitchAngleThreshold: CGFloat = 0.3
     /// The timeout duration for each task in seconds.
-    private let taskTimeoutDuration: TimeInterval = 10.0
+    private let taskTimeoutDuration: TimeInterval = 120
 
     // MARK: Face Orientation Properties
     @Published var lookLeftProgress: CGFloat = 0.0

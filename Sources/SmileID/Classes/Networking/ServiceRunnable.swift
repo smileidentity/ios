@@ -336,7 +336,7 @@ extension ServiceRunnable {
         body.append("Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
         body.append(selfieImage.data)
         body.append(lineBreak.data(using: .utf8)!)
-        
+
         // Append failure reason if available
         if let failureReason {
             let activeLivenessTimedOutString = "\(failureReason == .activeLivenessTimedOut)"
