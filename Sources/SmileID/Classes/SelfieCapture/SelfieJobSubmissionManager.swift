@@ -1,11 +1,11 @@
 import SwiftUI
 
-protocol SelfieJobSubmissionDelegate: AnyObject {
+protocol SelfieSubmissionDelegate: AnyObject {
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse)
     func submissionDidFail(with error: Error, errorMessage: String?, errorMessageRes: String?)
 }
 
-final class SelfieJobSubmissionManager {
+final class SelfieSubmissionManager {
     // MARK: - Properties
     private let userId: String
     private let jobId: String
@@ -17,7 +17,7 @@ final class SelfieJobSubmissionManager {
     private var extraPartnerParams: [String: String]
     private let localMetadata: LocalMetadata
 
-    weak var delegate: SelfieJobSubmissionDelegate?
+    weak var delegate: SelfieSubmissionDelegate?
 
     // MARK: - Initializer
     init(

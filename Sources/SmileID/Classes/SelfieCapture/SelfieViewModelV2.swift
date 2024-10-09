@@ -301,7 +301,7 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 }
 
 // MARK: Selfie Job Submission
-extension SelfieViewModelV2: SelfieJobSubmissionDelegate {
+extension SelfieViewModelV2: SelfieSubmissionDelegate {
     public func submitJob(forcedFailure: Bool) async throws {
         DispatchQueue.main.async {
             self.processingState = .inProgress
@@ -316,8 +316,8 @@ extension SelfieViewModelV2: SelfieJobSubmissionDelegate {
             self.processingState = .success
             return
         }
-        // Create an instance of SelfieJobSubmissionManager to manage the submission process
-        let submissionManager = SelfieJobSubmissionManager(
+        // Create an instance of SelfieSubmissionManager to manage the submission process
+        let submissionManager = SelfieSubmissionManager(
             userId: self.userId,
             jobId: self.jobId,
             isEnroll: self.isEnroll,
