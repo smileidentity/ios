@@ -37,7 +37,7 @@ class CameraViewController: UIViewController {
     }
 }
 
-extension CameraViewController: FaceDetectorDelegate {
+extension CameraViewController: FaceDetectorViewDelegate {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
         guard let previewLayer = previewLayer else {
             return CGRect.zero

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CapturedImagesView: View {
+struct SelfieProcessingView: View {
     var model: SelfieViewModelV2
     @State private var images: [UIImage] = []
 

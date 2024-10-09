@@ -1,6 +1,6 @@
 import Foundation
 
-struct FaceGeometryModel: Equatable {
+struct FaceGeometryData: Equatable {
     let boundingBox: CGRect
     let roll: NSNumber
     let yaw: NSNumber
@@ -14,17 +14,17 @@ enum FaceDirection {
     case none
 }
 
-struct FaceQualityModel {
+struct FaceQualityData {
     let quality: Float
 }
 
-struct SelfieQualityModel {
+struct SelfieQualityData {
     let failed: Float
     let passed: Float
 }
 
-extension SelfieQualityModel {
-    static var zero: SelfieQualityModel {
-        return SelfieQualityModel(failed: 0, passed: 0)
+extension SelfieQualityData {
+    static var zero: SelfieQualityData {
+        return SelfieQualityData(failed: 0, passed: 0)
     }
 }

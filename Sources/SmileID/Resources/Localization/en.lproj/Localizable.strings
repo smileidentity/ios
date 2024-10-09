@@ -14,6 +14,7 @@
 "Instructions.Action" = "I'm Ready";
 "Instructions.UnableToDetectFace" = "Unable to detect face. Please ensure your face is in the oval";
 "Instructions.MoveCloser" = "Move closer";
+"Instructions.MoveBack" = "Move back";
 "Instructions.MoveFarther" = "Move farther away";
 "Instructions.UnknownError" = "We cannot take your photo right now";
 "Instructions.MultipleFaces" = "Ensure only one face is visible";
@@ -21,8 +22,13 @@
 "Instructions.Capturing" = "Capturing…";
 "Instructions.PutFaceInOval" = "Position your face in the oval";
 "Instructions.Quality" = "Move to well lit area and clear face of obstructions";
+"Instructions.Brightness" = "Move to a well lit room";
 "Instructions.Start" = "Put your face inside the oval frame and wait until it turns green";
 "Instructions.SelfieCapture" = "Position you head in camera frame. \nThen move in the direction that is indicated";
+"Instructions.PositionHeadInView" = "Position your head in view";
+"Instructions.TurnHeadLeft" = "Turn your head to the left";
+"Instructions.TurnHeadRight" = "Turn your head to the right";
+"Instructions.TurnHeadUp" = "Turn your head slightly up";
 "Instructions.Document.Front.Header" = "Submit Front of ID";
 "Instructions.Document.Front.Callout" = "We'll use it to verify your identity. Please follow the instructions below";
 "Instructions.Document.GoodLightBody" = "Make sure your ID image is taken in a well-lit environment. Ensure the ID is clear and visible.";
@@ -47,6 +53,7 @@
 "Action.UploadPhoto" = "Upload Photo";
 "Action.Skip" = "Skip back of ID";
 "Action.GetStarted" = "Get Started";
+"Action.Cancel" = "Cancel";
 
 "Camera.AgentMode" = "Agent Mode";
 "Camera.Unauthorized.Title" = "Allow access to your camera";

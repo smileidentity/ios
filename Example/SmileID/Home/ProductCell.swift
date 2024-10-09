@@ -41,8 +41,12 @@ struct ProductCell: View {
                 .frame(maxWidth: .infinity)
                 .background(SmileID.theme.accent)
                 .cornerRadius(8)
-                .sheet(isPresented: $isPresented, content: { AnyView(content())
-                })
+                .fullScreenCover(
+                    isPresented: $isPresented,
+                    content: {
+                        AnyView(content())
+                    }
+                )
             }
         )
     }

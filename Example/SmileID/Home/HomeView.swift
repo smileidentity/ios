@@ -4,11 +4,10 @@ import SwiftUI
 struct HomeView: View {
     let version = SmileID.version
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
-    @ObservedObject var viewModel: HomeViewModel
-    @ObservedObject var networkMonitor = NetworkMonitor.shared
+    @StateObject var viewModel: HomeViewModel
 
     init(config: Config) {
-        viewModel = HomeViewModel(config: config)
+        _viewModel = StateObject(wrappedValue: HomeViewModel(config: config))
     }
 
     var body: some View {
@@ -300,9 +299,9 @@ private struct MyVerticalGrid: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
                     let numRows = (items.count + maxColumns - 1) / maxColumns
-                    ForEach(0 ..< numRows) { rowIndex in
+                    ForEach(0 ..< numRows, id: \.self) { rowIndex in
                         HStack(spacing: 16) {
-                            ForEach(0 ..< maxColumns) { columnIndex in
+                            ForEach(0 ..< maxColumns, id: \.self) { columnIndex in
                                 let itemIndex = rowIndex * maxColumns + columnIndex
                                 let width = geo.size.width / CGFloat(maxColumns)
                                 if itemIndex < items.count {

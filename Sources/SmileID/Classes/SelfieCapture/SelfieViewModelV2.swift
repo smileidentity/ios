@@ -6,68 +6,42 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
     let cameraManager = CameraManager.shared
     let faceDetector = FaceDetectorV2()
-    let activeLiveness = LivenessCheckManager()
+    private let faceValidator = FaceValidator()
+    var livenessCheckManager = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
+    private var guideAnimationDelayTimer: Timer?
 
+    // MARK: Private Properties
+    private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
+    private var elapsedGuideAnimationDelay: TimeInterval = 0
     var selfieImage: URL?
     var livenessImages: [URL] = []
-
-    // MARK: Publishers
-    @Published private(set) var debugEnabled: Bool
-    @Published var unauthorizedAlert: AlertState?
-    @Published var directive: String = "Instructions.Start"
-
-    // MARK: Publishers for Vision data
-    @Published private(set) var hasDetectedValidFace: Bool
-    @Published private(set) var hasCompletedLivenessChallenge: Bool
-    @Published private(set) var faceDetectedState: FaceDetectionState {
-        didSet {
-            determineDirective()
-        }
+    private var hasDetectedValidFace: Bool = false
+    private var shouldBeginLivenessChallenge: Bool {
+        hasDetectedValidFace &&
+        selfieImage != nil &&
+        livenessCheckManager.currentTask != nil
     }
-    @Published private(set) var faceGeometryState: FaceObservation<FaceGeometryModel> {
-        didSet {
-            processUpdatedFaceGeometry()
-        }
+    private var shouldSubmitJob: Bool {
+        selfieImage != nil &&
+        livenessImages.count == numLivenessImages
     }
-    @Published private(set) var faceQualityState: FaceObservation<FaceQualityModel> {
-        didSet {
-            processUpdatedFaceQuality()
-        }
-    }
-    @Published private(set) var selfieQualityState: FaceObservation<SelfieQualityModel> {
-        didSet {
-            processUpdatedSelfieQuality()
-        }
-    }
-    @Published private(set) var isAcceptableBounds: FaceBoundsState {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    @Published private(set) var isAcceptableFaceQuality: Bool {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    @Published private(set) var isAcceptableSelfieQuality: Bool {
-        didSet {
-            calculateDetectedFaceValidity()
-        }
-    }
-    @Published private(set) var boundingXDelta: CGFloat = .zero
-    @Published private(set) var boundingYDelta: CGFloat = .zero
 
     // MARK: Constants
     private let livenessImageSize = 320
     private let selfieImageSize = 640
+    private let numLivenessImages = 6
+    private let guideAnimationDelayTime: TimeInterval = 3
 
     // MARK: UI Properties
-    @Published private(set) var faceQualityValue: Double = 0.0
-    @Published private(set) var selfieQualityValue: SelfieQualityModel = .zero
-    var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
+    @Published var unauthorizedAlert: AlertState?
+    @Published private(set) var userInstruction: SelfieCaptureInstruction?
+    @Published private(set) var faceInBounds: Bool = false
+    @Published private(set) var showGuideAnimation: Bool = false
+    @Published private(set) var isSubmittingJob: Bool = false
+    @Published var isShowingImages: Bool = false
 
-    // MARK: Private Properties
+    // MARK: Injected Properties
     private let isEnroll: Bool
     private let userId: String
     private let jobId: String
@@ -92,24 +66,30 @@ public class SelfieViewModelV2: ObservableObject {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
         self.useStrictMode = useStrictMode
+        self.initialSetup()
+    }
 
-        hasDetectedValidFace = false
-        hasCompletedLivenessChallenge = false
-        faceDetectedState = .noFaceDetected
-        faceGeometryState = .faceNotFound
-        faceQualityState = .faceNotFound
-        selfieQualityState = .faceNotFound
-        isAcceptableBounds = .unknown
-        isAcceptableFaceQuality = false
-        isAcceptableSelfieQuality = false
+    deinit {
+        stopGuideAnimationDelayTimer()
+    }
 
-        #if DEBUG
-            debugEnabled = true
-        #else
-            debugEnabled = false
-        #endif
+    private func initialSetup() {
+        self.faceValidator.delegate = self
+        self.faceDetector.resultDelegate = self
+        self.livenessCheckManager.selfieViewModel = self
 
-        self.faceDetector.selfieViewModel = self
+        self.faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
+        self.userInstruction = .headInFrame
+
+        livenessCheckManager.$lookLeftProgress
+            .merge(
+                with: livenessCheckManager.$lookRightProgress,
+                livenessCheckManager.$lookUpProgress
+            )
+            .sink { [weak self] _ in
+                self?.resetGuideAnimationDelayTimer()
+            }
+            .store(in: &subscribers)
 
         cameraManager.$status
             .receive(on: DispatchQueue.main)
@@ -120,20 +100,25 @@ public class SelfieViewModelV2: ObservableObject {
 
         cameraManager.sampleBufferPublisher
             // Drop the first ~2 seconds to allow the user to settle in
+            .throttle(
+                for: 0.35,
+                scheduler: DispatchQueue.global(qos: .userInitiated),
+                latest: true
+            )
             .dropFirst(5)
             .compactMap { $0 }
-            .sink(receiveValue: analyzeImage)
+            .sink(receiveValue: analyzeFrame)
             .store(in: &subscribers)
     }
 
-    private func analyzeImage(imageBuffer: CVPixelBuffer) {
-        faceDetector.detect(imageBuffer)
+    private func analyzeFrame(imageBuffer: CVPixelBuffer) {
+        faceDetector.processImageBuffer(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
             captureSelfieImage(imageBuffer)
-            activeLiveness.initiateLivenessCheck()
+            livenessCheckManager.initiateLivenessCheck()
         }
 
-        activeLiveness.captureImage = { [weak self] in
+        livenessCheckManager.captureImage = { [weak self] in
             self?.captureLivenessImage(imageBuffer)
         }
     }
@@ -143,22 +128,14 @@ public class SelfieViewModelV2: ObservableObject {
         switch action {
         case let .windowSizeDetected(windowRect):
             handleWindowSizeChanged(toRect: windowRect)
-        case .noFaceDetected:
-            publishNoFaceObserved()
-        case let .faceObservationDetected(faceObservation):
-            publishFaceObservation(faceObservation)
-        case let .faceQualityObservationDetected(faceQualityObservation):
-            publishFaceQualityObservation(faceQualityObservation)
-        case let .selfieQualityObservationDetected(selfieQualityObservation):
-            publishSelfieQualityObservation(selfieQualityObservation)
         case .activeLivenessCompleted:
-            // Completed at this stage: submit the images.
-            return
+            if shouldSubmitJob {
+                submitJob()
+            }
         case .activeLivenessTimeout:
-            // Submit with forced failure reason here.
-            return
-        case .toggleDebugMode:
-            toggleDebugMode()
+            submitJob(forcedFailure: true)
+        case .setupDelayTimer:
+            resetGuideAnimationDelayTimer()
         case .openApplicationSettings:
             openSettings()
         case let .handleError(error):
@@ -166,7 +143,34 @@ public class SelfieViewModelV2: ObservableObject {
         }
     }
 
-    // MARK: Action Handlers
+    private func publishUserInstruction(_ instruction: SelfieCaptureInstruction?) {
+        if self.userInstruction != instruction {
+            self.userInstruction = instruction
+            self.resetGuideAnimationDelayTimer()
+        }
+    }
+}
+
+// MARK: Action Handlers
+extension SelfieViewModelV2 {
+    private func resetGuideAnimationDelayTimer() {
+        elapsedGuideAnimationDelay = 0
+        showGuideAnimation = false
+        stopGuideAnimationDelayTimer()
+        guideAnimationDelayTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            self.elapsedGuideAnimationDelay += 1
+            if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
+                self.showGuideAnimation = true
+                self.stopGuideAnimationDelayTimer()
+            }
+        }
+    }
+
+    private func stopGuideAnimationDelayTimer() {
+        guideAnimationDelayTimer?.invalidate()
+        guideAnimationDelayTimer = nil
+    }
+
     private func handleWindowSizeChanged(toRect: CGRect) {
         faceLayoutGuideFrame = CGRect(
             x: toRect.midX - faceLayoutGuideFrame.width / 2,
@@ -174,43 +178,18 @@ public class SelfieViewModelV2: ObservableObject {
             width: faceLayoutGuideFrame.width,
             height: faceLayoutGuideFrame.height
         )
-    }
-
-    private func publishNoFaceObserved() {
-        DispatchQueue.main.async { [self] in
-            faceDetectedState = .noFaceDetected
-            faceGeometryState = .faceNotFound
-        }
-    }
-
-    private func publishFaceObservation(_ faceGeometryModel: FaceGeometryModel) {
-        DispatchQueue.main.async { [self] in
-            faceDetectedState = .faceDetected
-            faceGeometryState = .faceFound(faceGeometryModel)
-        }
-    }
-
-    private func publishFaceQualityObservation(_ faceQualityModel: FaceQualityModel) {
-        DispatchQueue.main.async { [self] in
-            faceDetectedState = .faceDetected
-            faceQualityState = .faceFound(faceQualityModel)
-        }
-    }
-
-    private func publishSelfieQualityObservation(_ selfieQualityModel: SelfieQualityModel) {
-        DispatchQueue.main.async { [self] in
-            faceDetectedState = .faceDetected
-            selfieQualityState = .faceFound(selfieQualityModel)
-        }
+        faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
     }
 
     private func captureSelfieImage(_ pixelBuffer: CVPixelBuffer) {
         do {
-            guard let imageData = ImageUtils.resizePixelBufferToHeight(
-                pixelBuffer,
-                height: selfieImageSize,
-                orientation: .up
-            ) else {
+            guard
+                let imageData = ImageUtils.resizePixelBufferToHeight(
+                    pixelBuffer,
+                    height: selfieImageSize,
+                    orientation: .up
+                )
+            else {
                 throw SmileIDError.unknown("Error resizing selfie image")
             }
             let selfieImage = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
@@ -222,11 +201,13 @@ public class SelfieViewModelV2: ObservableObject {
 
     private func captureLivenessImage(_ pixelBuffer: CVPixelBuffer) {
         do {
-            guard let imageData = ImageUtils.resizePixelBufferToHeight(
-                pixelBuffer,
-                height: livenessImageSize,
-                orientation: .up
-            ) else {
+            guard
+                let imageData = ImageUtils.resizePixelBufferToHeight(
+                    pixelBuffer,
+                    height: livenessImageSize,
+                    orientation: .up
+                )
+            else {
                 throw SmileIDError.unknown("Error resizing liveness image")
             }
             let imageUrl = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: imageData)
@@ -244,115 +225,54 @@ public class SelfieViewModelV2: ObservableObject {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(settingsURL)
     }
+}
 
-    private func toggleDebugMode() {
-        debugEnabled.toggle()
+// MARK: FaceDetectorResultDelegate Methods
+extension SelfieViewModelV2: FaceDetectorResultDelegate {
+    func faceDetector(
+        _ detector: FaceDetectorV2,
+        didDetectFace faceGeometry: FaceGeometryData,
+        withFaceQuality faceQuality: Float,
+        selfieQuality: SelfieQualityData,
+        brightness: Int
+    ) {
+        faceValidator
+            .validate(
+                faceGeometry: faceGeometry,
+                selfieQuality: selfieQuality,
+                brightness: brightness,
+                currentLivenessTask: self.livenessCheckManager.currentTask
+            )
+        if shouldBeginLivenessChallenge {
+            livenessCheckManager.processFaceGeometry(faceGeometry)
+        }
+    }
+
+    func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error) {
+        DispatchQueue.main.async {
+            self.publishUserInstruction(.headInFrame)
+        }
+        print(error.localizedDescription)
     }
 }
 
-// MARK: Helpers
+// MARK: FaceValidatorDelegate Methods
+extension SelfieViewModelV2: FaceValidatorDelegate {
+    func updateValidationResult(_ result: FaceValidationResult) {
+        DispatchQueue.main.async {
+            self.faceInBounds = result.faceInBounds
+            self.hasDetectedValidFace = result.hasDetectedValidFace
+            self.publishUserInstruction(result.userInstruction)
+        }
+    }
+}
+
+// MARK: API Helpers
 extension SelfieViewModelV2 {
-    func determineDirective() {
-        switch faceDetectedState {
-        case .faceDetected:
-            if hasDetectedValidFace {
-                if let currentLivenessTask = activeLiveness.currentTask {
-                    directive = currentLivenessTask.instruction
-                } else {
-                    directive = ""
-                }
-            } else if isAcceptableBounds == .detectedFaceTooSmall {
-                directive = "Please bring your face closer to the camera"
-            } else if isAcceptableBounds == .detectedFaceTooLarge {
-                directive = "Please hold the camera further from your face"
-            } else if isAcceptableBounds == .detectedFaceOffCentre {
-                directive = "Please move your face to the center of the frame"
-            } else if !isAcceptableSelfieQuality {
-                directive = "Image quality is too low"
-            } else {
-                directive = "We cannot take your photo right now"
-            }
-        case .noFaceDetected:
-            directive = "Please look at the camera"
-        case .faceDetectionErrored:
-            directive = "An unexpected error ocurred"
+    func submitJob(forcedFailure: Bool = false) {
+        DispatchQueue.main.async {
+            self.isSubmittingJob = true
+            self.isShowingImages = true
         }
-    }
-
-    func processUpdatedFaceGeometry() {
-        switch faceGeometryState {
-        case let .faceFound(faceGeometryModel):
-            let boundingBox = faceGeometryModel.boundingBox
-            updateAcceptableBounds(using: boundingBox)
-            if hasDetectedValidFace &&
-                selfieImage != nil &&
-                activeLiveness.currentTask != nil {
-                activeLiveness.processFaceGeometry(faceGeometryModel)
-            }
-        case .faceNotFound:
-            invalidateFaceGeometryState()
-        case let .errored(error):
-            print(error.localizedDescription)
-            invalidateFaceGeometryState()
-        }
-    }
-
-    func invalidateFaceGeometryState() {
-        // This is where we reset all the face geometry values.
-        isAcceptableBounds = .unknown
-    }
-
-    func updateAcceptableBounds(using boundingBox: CGRect) {
-        boundingXDelta = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
-        boundingYDelta = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
-
-        if boundingBox.width > 1.2 * faceLayoutGuideFrame.width {
-            isAcceptableBounds = .detectedFaceTooLarge
-        } else if boundingBox.width * 1.2 < faceLayoutGuideFrame.width {
-            isAcceptableBounds = .detectedFaceTooSmall
-        } else {
-            if abs(boundingBox.midX - faceLayoutGuideFrame.midX) > 50 {
-                isAcceptableBounds = .detectedFaceOffCentre
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > 50 {
-                isAcceptableBounds = .detectedFaceOffCentre
-            } else {
-                isAcceptableBounds = .detectedFaceAppropriateSizeAndPosition
-            }
-        }
-    }
-
-    func processUpdatedFaceQuality() {
-        switch faceQualityState {
-        case let .faceFound(faceQualityModel):
-            // Check acceptable range here.
-            isAcceptableFaceQuality = faceQualityModel.quality > 0.2
-            faceQualityValue = Double(faceQualityModel.quality)
-        case .faceNotFound:
-            isAcceptableFaceQuality = false
-        case let .errored(error):
-            print(error.localizedDescription)
-            isAcceptableFaceQuality = false
-        }
-    }
-
-    func processUpdatedSelfieQuality() {
-        switch selfieQualityState {
-        case let .faceFound(selfieQualityModel):
-            // Check acceptable range here.
-            isAcceptableSelfieQuality = selfieQualityModel.passed > 0.5
-            selfieQualityValue = selfieQualityModel
-        case .faceNotFound:
-            isAcceptableSelfieQuality = false
-        case let .errored(error):
-            print(error.localizedDescription)
-            isAcceptableSelfieQuality = false
-        }
-    }
-
-    func calculateDetectedFaceValidity() {
-        hasDetectedValidFace =
-        isAcceptableBounds == .detectedFaceAppropriateSizeAndPosition &&
-        isAcceptableFaceQuality &&
-        isAcceptableSelfieQuality
     }
 }
