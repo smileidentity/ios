@@ -302,8 +302,10 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 // MARK: Selfie Job Submission
 extension SelfieViewModelV2: SelfieJobSubmissionDelegate {
     public func submitJob(forcedFailure: Bool) async throws {
-        self.processingState = .inProgress
-        self.showProcessingView = true
+        DispatchQueue.main.async {
+            self.processingState = .inProgress
+            self.showProcessingView = true
+        }
 
         // Add metadata before submission
         addSelfieCaptureDurationMetaData()
@@ -338,8 +340,7 @@ extension SelfieViewModelV2: SelfieJobSubmissionDelegate {
         if let selfieImage = selfieImage,
             let selfiePath = getRelativePath(from: selfieImage),
             livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil })
-        {
+            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
             let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
 
             callback.didSucceed(
