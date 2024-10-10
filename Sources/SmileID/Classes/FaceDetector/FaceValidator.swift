@@ -125,8 +125,6 @@ final class FaceValidator {
         _ isAcceptableBrightness: Bool,
         _ isAcceptableSelfieQuality: Bool
     ) -> Bool {
-        return isAcceptableBounds &&
-        isAcceptableBrightness &&
-        isAcceptableSelfieQuality
+        return isAcceptableBounds && isAcceptableBrightness && isAcceptableSelfieQuality
     }
 }

@@ -13,6 +13,8 @@ public struct LivenessCaptureInstructionsView: View {
         self.viewModel = viewModel
     }
 
+    @Environment(\.presentationMode) private var presentationMode
+
     public var body: some View {
         VStack {
             HStack {

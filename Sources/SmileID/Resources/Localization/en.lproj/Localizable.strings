@@ -22,6 +22,7 @@
 "Instructions.Capturing" = "Capturing…";
 "Instructions.PutFaceInOval" = "Position your face in the oval";
 "Instructions.Quality" = "Move to well lit area and clear face of obstructions";
+"Instructions.Brightness" = "Move to a well lit room";
 "Instructions.Start" = "Put your face inside the oval frame and wait until it turns green";
 "Instructions.SelfieCapture" = "Position you head in camera frame. \nThen move in the direction that is indicated";
 "Instructions.PositionHeadInView" = "Position your head in view";

@@ -21,7 +21,7 @@ enum SelfieCaptureInstruction {
         case .lookStraight:
             return "Instructions.PositionHeadInView"
         case .goodLight:
-            return "Move to a well lit room"
+            return "Instructions.Brightness"
         case .lookLeft:
             return "Instructions.TurnHeadLeft"
         case .lookRight:

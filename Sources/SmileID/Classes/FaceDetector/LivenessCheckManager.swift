@@ -64,7 +64,8 @@ class LivenessCheckManager: ObservableObject {
         guard taskTimer == nil else { return }
         DispatchQueue.main.async {
             self.taskTimer = Timer.scheduledTimer(
-                timeInterval: 1.0, target: self, selector: #selector(self.taskTimerFired), userInfo: nil,
+                timeInterval: 1.0, target: self, selector: #selector(self.taskTimerFired),
+                userInfo: nil,
                 repeats: true)
         }
     }

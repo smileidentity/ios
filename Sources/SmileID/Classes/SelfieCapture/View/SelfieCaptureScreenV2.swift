@@ -29,7 +29,8 @@ public struct SelfieCaptureScreenV2: View {
                 )
                 UserInstructionsView(viewModel: viewModel)
                 if let currentLivenessTask = viewModel.livenessCheckManager.currentTask,
-                    viewModel.faceInBounds {
+                    viewModel.faceInBounds
+                {
                     LivenessGuidesView(
                         currentLivenessTask: currentLivenessTask,
                         topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
@@ -62,7 +63,8 @@ public struct SelfieCaptureScreenV2: View {
                             }
                         ),
                         isActive: $viewModel.showProcessingView,
-                        label: { EmptyView()
+                        label: {
+                            EmptyView()
                         }
                     )
                 }
