@@ -10,22 +10,30 @@ public class SelfieViewModelV2: ObservableObject {
     var livenessCheckManager = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
+    private let metadataTimerStart = MonotonicTime()
 
     // MARK: Private Properties
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
-    var selfieImage: URL?
+    var selfieImage: URL? {
+        didSet {
+            DispatchQueue.main.async {
+                self.selfieCaptured = self.selfieImage != nil
+            }
+        }
+    }
     var livenessImages: [URL] = []
     private var hasDetectedValidFace: Bool = false
     private var shouldBeginLivenessChallenge: Bool {
-        hasDetectedValidFace &&
-        selfieImage != nil &&
-        livenessCheckManager.currentTask != nil
+        hasDetectedValidFace && selfieImage != nil && livenessCheckManager.currentTask != nil
     }
     private var shouldSubmitJob: Bool {
-        selfieImage != nil &&
-        livenessImages.count == numLivenessImages
+        selfieImage != nil && livenessImages.count == numLivenessImages
     }
+    private var apiResponse: SmartSelfieResponse?
+    private var error: Error?
+    @Published public var errorMessageRes: String?
+    @Published public var errorMessage: String?
 
     // MARK: Constants
     private let livenessImageSize = 320
@@ -37,9 +45,10 @@ public class SelfieViewModelV2: ObservableObject {
     @Published var unauthorizedAlert: AlertState?
     @Published private(set) var userInstruction: SelfieCaptureInstruction?
     @Published private(set) var faceInBounds: Bool = false
+    @Published private(set) var selfieCaptured: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
-    @Published private(set) var isSubmittingJob: Bool = false
-    @Published var isShowingImages: Bool = false
+    @Published var showProcessingView: Bool = false
+    @Published public private(set) var processingState: ProcessingState?
 
     // MARK: Injected Properties
     private let isEnroll: Bool
@@ -49,6 +58,7 @@ public class SelfieViewModelV2: ObservableObject {
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
     private let useStrictMode: Bool
+    private var localMetadata: LocalMetadata
 
     public init(
         isEnroll: Bool,
@@ -57,7 +67,8 @@ public class SelfieViewModelV2: ObservableObject {
         allowNewEnroll: Bool,
         skipApiSubmission: Bool,
         extraPartnerParams: [String: String],
-        useStrictMode: Bool
+        useStrictMode: Bool,
+        localMetadata: LocalMetadata
     ) {
         self.isEnroll = isEnroll
         self.userId = userId
@@ -66,6 +77,7 @@ public class SelfieViewModelV2: ObservableObject {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
         self.useStrictMode = useStrictMode
+        self.localMetadata = localMetadata
         self.initialSetup()
     }
 
@@ -87,7 +99,9 @@ public class SelfieViewModelV2: ObservableObject {
                 livenessCheckManager.$lookUpProgress
             )
             .sink { [weak self] _ in
-                self?.resetGuideAnimationDelayTimer()
+                DispatchQueue.main.async {
+                    self?.resetGuideAnimationDelayTimer()
+                }
             }
             .store(in: &subscribers)
 
@@ -129,13 +143,15 @@ public class SelfieViewModelV2: ObservableObject {
         case let .windowSizeDetected(windowRect):
             handleWindowSizeChanged(toRect: windowRect)
         case .activeLivenessCompleted:
-            if shouldSubmitJob {
-                submitJob()
+            Task {
+                try await handleSubmission(forcedFailure: false)
             }
         case .activeLivenessTimeout:
-            submitJob(forcedFailure: true)
-        case .setupDelayTimer:
-            resetGuideAnimationDelayTimer()
+            Task {
+                try await handleSubmission(forcedFailure: true)
+            }
+        case .onViewAppear:
+            handleViewAppeared()
         case .openApplicationSettings:
             openSettings()
         case let .handleError(error):
@@ -156,7 +172,7 @@ extension SelfieViewModelV2 {
     private func resetGuideAnimationDelayTimer() {
         elapsedGuideAnimationDelay = 0
         showGuideAnimation = false
-        stopGuideAnimationDelayTimer()
+        guard guideAnimationDelayTimer == nil else { return }
         guideAnimationDelayTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             self.elapsedGuideAnimationDelay += 1
             if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
@@ -167,14 +183,27 @@ extension SelfieViewModelV2 {
     }
 
     private func stopGuideAnimationDelayTimer() {
+        guard guideAnimationDelayTimer != nil else { return }
         guideAnimationDelayTimer?.invalidate()
         guideAnimationDelayTimer = nil
     }
 
-    private func handleWindowSizeChanged(toRect: CGRect) {
+    private func handleViewAppeared() {
+        cameraManager.switchCamera(to: .front)
+        resetGuideAnimationDelayTimer()
+        resetSelfieCaptureState()
+    }
+
+    private func resetSelfieCaptureState() {
+        selfieImage = nil
+        livenessImages = []
+        processingState = nil
+    }
+
+    private func handleWindowSizeChanged(toRect: CGSize) {
         faceLayoutGuideFrame = CGRect(
-            x: toRect.midX - faceLayoutGuideFrame.width / 2,
-            y: toRect.midY - faceLayoutGuideFrame.height / 2,
+            x: (toRect.width / 2) - faceLayoutGuideFrame.width / 2,
+            y: (toRect.height / 2) - faceLayoutGuideFrame.height / 2,
             width: faceLayoutGuideFrame.width,
             height: faceLayoutGuideFrame.height
         )
@@ -219,6 +248,10 @@ extension SelfieViewModelV2 {
 
     private func handleError(_ error: Error) {
         print(error.localizedDescription)
+    }
+
+    private func handleSubmission(forcedFailure: Bool) async throws {
+        try await submitJob(forcedFailure: forcedFailure)
     }
 
     private func openSettings() {
@@ -267,12 +300,81 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
     }
 }
 
-// MARK: API Helpers
-extension SelfieViewModelV2 {
-    func submitJob(forcedFailure: Bool = false) {
+// MARK: Selfie Job Submission
+extension SelfieViewModelV2: SelfieSubmissionDelegate {
+    public func submitJob(forcedFailure: Bool) async throws {
         DispatchQueue.main.async {
-            self.isSubmittingJob = true
-            self.isShowingImages = true
+            self.processingState = .inProgress
+            self.showProcessingView = true
+        }
+
+        // Add metadata before submission
+        addSelfieCaptureDurationMetaData()
+
+        if skipApiSubmission {
+            // Skip API submission and update processing state to success
+            self.processingState = .success
+            return
+        }
+        // Create an instance of SelfieSubmissionManager to manage the submission process
+        let submissionManager = SelfieSubmissionManager(
+            userId: self.userId,
+            jobId: self.jobId,
+            isEnroll: self.isEnroll,
+            numLivenessImages: self.numLivenessImages,
+            allowNewEnroll: self.allowNewEnroll,
+            selfieImage: self.selfieImage,
+            livenessImages: self.livenessImages,
+            extraPartnerParams: self.extraPartnerParams,
+            localMetadata: self.localMetadata
+        )
+        submissionManager.delegate = self
+        try await submissionManager.submitJob(forcedFailure: forcedFailure)
+    }
+
+    private func addSelfieCaptureDurationMetaData() {
+        localMetadata.addMetadata(
+            Metadatum.SelfieCaptureDuration(duration: metadataTimerStart.elapsedTime()))
+    }
+
+    public func onFinished(callback: SmartSelfieResultDelegate) {
+        if let selfieImage = selfieImage,
+            let selfiePath = getRelativePath(from: selfieImage),
+            livenessImages.count == numLivenessImages,
+            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
+            let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
+
+            callback.didSucceed(
+                selfieImage: selfiePath,
+                livenessImages: livenessImagesPaths,
+                apiResponse: apiResponse
+            )
+        } else if let error = error {
+            callback.didError(error: error)
+        } else {
+            callback.didError(error: SmileIDError.unknown("Unknown error"))
+        }
+    }
+
+    // MARK: SelfieJobSubmissionDelegate Methods
+
+    func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
+        DispatchQueue.main.async {
+            self.apiResponse = apiResponse
+            self.processingState = .success
+        }
+    }
+
+    func submissionDidFail(
+        with error: Error,
+        errorMessage: String?,
+        errorMessageRes: String?
+    ) {
+        DispatchQueue.main.async {
+            self.error = error
+            self.errorMessage = errorMessage
+            self.errorMessageRes = errorMessageRes
+            self.processingState = .error
         }
     }
 }

@@ -5,17 +5,13 @@ public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
 
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.modalMode) private var modalMode
 
     public var body: some View {
         GeometryReader { proxy in
             ZStack {
                 // Camera Preview Layer
                 CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
-                    .onAppear {
-                        viewModel.cameraManager.switchCamera(to: .front)
-                        viewModel.perform(action: .setupDelayTimer)
-                    }
 
                 // CameraPreview Mask
                 Rectangle()
@@ -27,12 +23,15 @@ public struct SelfieCaptureScreenV2: View {
 
                 FaceBoundingArea(
                     faceInBounds: viewModel.faceInBounds,
+                    selfieCaptured: viewModel.selfieCaptured,
                     showGuideAnimation: viewModel.showGuideAnimation,
                     guideAnimation: viewModel.userInstruction?.guideAnimation
                 )
                 UserInstructionsView(viewModel: viewModel)
-                if viewModel.faceInBounds {
+                if let currentLivenessTask = viewModel.livenessCheckManager.currentTask,
+                    viewModel.faceInBounds {
                     LivenessGuidesView(
+                        currentLivenessTask: currentLivenessTask,
                         topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
                         rightArcProgress: $viewModel.livenessCheckManager.lookRightProgress,
                         leftArcProgress: $viewModel.livenessCheckManager.lookLeftProgress
@@ -42,18 +41,38 @@ public struct SelfieCaptureScreenV2: View {
                 VStack {
                     Spacer()
                     Button {
-                        viewModel.cameraManager.pauseSession()
-                        presentationMode.wrappedValue.dismiss()
+                        self.modalMode.wrappedValue = false
                     } label: {
                         Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
                             .foregroundColor(SmileID.theme.accent)
                     }
                 }
                 .padding(.vertical, 40)
+
+                if let processingState = viewModel.processingState {
+                    NavigationLink(
+                        destination: SelfieProcessingView(
+                            processingState: processingState,
+                            errorMessage: viewModel.errorMessageRes ?? viewModel.errorMessage,
+                            didTapRetry: {
+                                viewModel.showProcessingView = false
+                            }
+                        ),
+                        isActive: $viewModel.showProcessingView,
+                        label: {
+                            EmptyView()
+                        }
+                    )
+                }
             }
             .edgesIgnoringSafeArea(.all)
+            .navigationBarHidden(true)
             .onAppear {
-                viewModel.perform(action: .windowSizeDetected(proxy.frame(in: .global)))
+                viewModel.perform(action: .windowSizeDetected(proxy.size))
+                viewModel.perform(action: .onViewAppear)
+            }
+            .onDisappear {
+                viewModel.cameraManager.pauseSession()
             }
             .alert(item: $viewModel.unauthorizedAlert) { alert in
                 Alert(
@@ -69,9 +88,6 @@ public struct SelfieCaptureScreenV2: View {
                     ),
                     secondaryButton: .cancel()
                 )
-            }
-            .sheet(isPresented: $viewModel.isShowingImages) {
-                SelfieProcessingView(model: viewModel)
             }
         }
     }
