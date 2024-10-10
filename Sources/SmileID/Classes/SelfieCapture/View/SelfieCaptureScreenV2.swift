@@ -5,7 +5,7 @@ public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
 
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.modalMode) private var modalMode
 
     public var body: some View {
         GeometryReader { proxy in
@@ -29,8 +29,7 @@ public struct SelfieCaptureScreenV2: View {
                 )
                 UserInstructionsView(viewModel: viewModel)
                 if let currentLivenessTask = viewModel.livenessCheckManager.currentTask,
-                    viewModel.faceInBounds
-                {
+                    viewModel.faceInBounds {
                     LivenessGuidesView(
                         currentLivenessTask: currentLivenessTask,
                         topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
@@ -42,7 +41,7 @@ public struct SelfieCaptureScreenV2: View {
                 VStack {
                     Spacer()
                     Button {
-                        presentationMode.wrappedValue.dismiss()
+                        self.modalMode.wrappedValue = false
                     } label: {
                         Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
                             .foregroundColor(SmileID.theme.accent)
@@ -57,9 +56,6 @@ public struct SelfieCaptureScreenV2: View {
                             errorMessage: viewModel.errorMessageRes ?? viewModel.errorMessage,
                             didTapRetry: {
                                 viewModel.showProcessingView = false
-                            },
-                            didTapdone: {
-                                presentationMode.wrappedValue.dismiss()
                             }
                         ),
                         isActive: $viewModel.showProcessingView,

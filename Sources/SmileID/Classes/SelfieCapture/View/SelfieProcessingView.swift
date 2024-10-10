@@ -4,9 +4,8 @@ struct SelfieProcessingView: View {
     var processingState: ProcessingState
     var errorMessage: String?
     var didTapRetry: () -> Void
-    var didTapdone: () -> Void
 
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.modalMode) private var modalMode
 
     var body: some View {
         VStack {
@@ -43,7 +42,7 @@ struct SelfieProcessingView: View {
 
                 Spacer()
                 SmileButton(title: "Action.Done") {
-                    self.presentationMode.wrappedValue.dismiss()
+                    self.modalMode.wrappedValue = false
                 }
             case .error:
                 Spacer()

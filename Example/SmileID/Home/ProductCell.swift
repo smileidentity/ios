@@ -1,18 +1,18 @@
 import SmileID
 import SwiftUI
 
-struct ProductCell: View {
+struct ProductCell<Content: View>: View {
     let image: String
     let name: String
     let onClick: (() -> Void)?
-    @ViewBuilder let content: () -> any View
+    @ViewBuilder let content: () -> Content
     @State private var isPresented: Bool = false
 
     init(
         image: String,
         name: String,
         onClick: (() -> Void)? = nil,
-        @ViewBuilder content: @escaping () -> any View
+        @ViewBuilder content: @escaping () -> Content
     ) {
         self.image = image
         self.name = name
@@ -44,7 +44,10 @@ struct ProductCell: View {
                 .fullScreenCover(
                     isPresented: $isPresented,
                     content: {
-                        AnyView(content())
+                        NavigationView {
+                            content()
+                        }
+                        .environment(\.modalMode, $isPresented)
                     }
                 )
             }

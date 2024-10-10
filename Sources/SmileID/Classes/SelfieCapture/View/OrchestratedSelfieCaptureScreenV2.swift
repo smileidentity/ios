@@ -42,18 +42,16 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
     }
 
     public var body: some View {
-        NavigationView {
-            if showInstructions {
-                LivenessCaptureInstructionsView(
-                    showAttribution: showAttribution,
-                    viewModel: viewModel
-                )
-            } else {
-                SelfieCaptureScreenV2(
-                    viewModel: viewModel,
-                    showAttribution: showAttribution
-                )
-            }
+        if showInstructions {
+            LivenessCaptureInstructionsView(
+                showAttribution: showAttribution,
+                viewModel: viewModel
+            )
+        } else {
+            SelfieCaptureScreenV2(
+                viewModel: viewModel,
+                showAttribution: showAttribution
+            )
         }
     }
 }

@@ -2,7 +2,7 @@ import Lottie
 import SwiftUI
 
 public struct LivenessCaptureInstructionsView: View {
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.modalMode) private var modalMode
     @State private var showSelfieCaptureView: Bool = false
 
     private let showAttribution: Bool
@@ -17,7 +17,7 @@ public struct LivenessCaptureInstructionsView: View {
         VStack {
             HStack {
                 Button {
-                    presentationMode.wrappedValue.dismiss()
+                    self.modalMode.wrappedValue = false
                 } label: {
                     Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
                         .foregroundColor(SmileID.theme.accent)
@@ -49,7 +49,7 @@ public struct LivenessCaptureInstructionsView: View {
                     ),
                     isActive: $showSelfieCaptureView
                 ) { EmptyView() }
-                
+
                 SmileButton(
                     title: "Action.GetStarted",
                     clicked: {
