@@ -13,7 +13,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let minFaceAreaThreshold = 0.125
     private let maxFaceAreaThreshold = 0.25
     private let faceRotationThreshold = 0.03
-    private let faceRollThreshold = 0.02// roll has a smaller range than yaw
+    private let faceRollThreshold = 0.025// roll has a smaller range than yaw
     private let numLivenessImages = 7
     private let numTotalSteps = 8 // numLivenessImages + 1 selfie image
     private let livenessImageSize = 320
