@@ -12,7 +12,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let maxFaceCenteredThreshold = 0.9
     private let minFaceAreaThreshold = 0.125
     private let maxFaceAreaThreshold = 0.25
-    private let faceRotationThreshold = 0.035
+    private let faceRotationThreshold = 0.03
+    private let faceRollThreshold = 0.02// roll has a smaller range than yaw
     private let numLivenessImages = 7
     private let numTotalSteps = 8 // numLivenessImages + 1 selfie image
     private let livenessImageSize = 320
@@ -267,7 +268,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             self.previousHeadPitch = face.pitch?.doubleValue ?? Double.infinity
         }
         
-        return didPitchChange || rollDelta > faceRotationThreshold || yawDelta > faceRotationThreshold
+        return didPitchChange || rollDelta > faceRollThreshold || yawDelta > faceRotationThreshold
     }
     
     func onSmiling(isSmiling: Bool) {
