@@ -8,9 +8,9 @@ public enum ProcessingState: Equatable {
 
     var title: String {
         switch self {
-        case .inProgress: return "Submitting"
-        case .success: return "Successful"
-        case .error: return "Failed"
+        case .inProgress: return "ProcessingState.Submitting"
+        case .success: return "ProcessingState.Successful"
+        case .error: return "ProcessingState.Failed"
         }
     }
 }

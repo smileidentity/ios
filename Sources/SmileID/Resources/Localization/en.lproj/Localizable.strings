@@ -43,6 +43,9 @@
 "Confirmation.ProcessingSelfie" = "Processing Selfie";
 "Confirmation.Time" = "Just a few more seconds";
 "Confirmation.SelfieCaptureComplete" = "Selfie Capture Complete";
+"ProcessingState.Submitting" = "Submitting";
+"ProcessingState.Successful" = "Successful";
+"ProcessingState.Failed" = "Failed";
 "Confirmation.SuccessBody" = "Your selfie was successfully taken. You can now proceed.";
 "Confirmation.Continue" = "Continue";
 "Confirmation.Failure" = "Your selfie failed to process";
