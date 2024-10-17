@@ -20,8 +20,7 @@ struct FaceBoundingArea: View {
                 .frame(width: 275, height: 275)
 
             if let guideAnimation = guideAnimation,
-                showGuideAnimation
-            {
+                showGuideAnimation {
                 Circle()
                     .fill(.black.opacity(0.5))
                     .frame(width: 260, height: 260)

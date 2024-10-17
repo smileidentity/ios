@@ -250,8 +250,7 @@ extension ServiceRunnable {
                 let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(
                     using: .utf8),
                 let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8),
-                let lineBreakData = lineBreak.data(using: .utf8)
-            {
+                let lineBreakData = lineBreak.data(using: .utf8) {
                 body.append(boundaryData)
                 body.append(dispositionData)
                 body.append(contentTypeData)
