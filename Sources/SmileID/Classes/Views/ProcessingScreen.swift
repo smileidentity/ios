@@ -1,10 +1,18 @@
 import Foundation
 import SwiftUI
 
-public enum ProcessingState {
+public enum ProcessingState: Equatable {
     case inProgress
     case success
     case error
+
+    var title: String {
+        switch self {
+        case .inProgress: return "ProcessingState.Submitting"
+        case .success: return "ProcessingState.Successful"
+        case .error: return "ProcessingState.Failed"
+        }
+    }
 }
 
 /// This screen represents a generic Processing state. It has 3 sub-states: In Progress, Success, and

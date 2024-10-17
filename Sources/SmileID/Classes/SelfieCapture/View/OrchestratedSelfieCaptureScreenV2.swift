@@ -8,9 +8,8 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
     public let showAttribution: Bool
     public let showInstructions: Bool
     public let onResult: SmartSelfieResultDelegate
-    @ObservedObject var viewModel: SelfieViewModelV2
+    private let viewModel: SelfieViewModelV2
 
-    @State private var acknowledgedInstructions = false
     private var originalBrightness = UIScreen.main.brightness
 
     public init(
@@ -30,24 +29,30 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
         self.onResult = onResult
-        viewModel = SelfieViewModelV2(
+        self.viewModel = SelfieViewModelV2(
             isEnroll: isEnroll,
             userId: userId,
             jobId: jobId,
             allowNewEnroll: allowNewEnroll,
             skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
-            useStrictMode: useStrictMode
+            useStrictMode: useStrictMode,
+            onResult: onResult,
+            localMetadata: LocalMetadata()
         )
     }
 
     public var body: some View {
-        if showInstructions, !acknowledgedInstructions {
-            LivenessCaptureInstructionsView(showAttribution: showAttribution) {
-                acknowledgedInstructions = true
-            }
+        if showInstructions {
+            LivenessCaptureInstructionsView(
+                showAttribution: showAttribution,
+                viewModel: viewModel
+            )
         } else {
-            SelfieCaptureScreenV2(viewModel: viewModel, showAttribution: showAttribution)
+            SelfieCaptureScreenV2(
+                viewModel: viewModel,
+                showAttribution: showAttribution
+            )
         }
     }
 }

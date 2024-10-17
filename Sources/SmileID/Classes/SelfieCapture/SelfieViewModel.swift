@@ -365,8 +365,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     smartSelfieImage = media
                 }
                 if !livenessImages.isEmpty {
-                    let livenessImageInfos = livenessImages.compactMap {
-                        liveness -> MultipartBody? in
+                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultipartBody? in
                         if let data = try? Data(contentsOf: liveness) {
                             return MultipartBody(
                                 withImage: data,
@@ -398,6 +397,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             callbackUrl: SmileID.callbackUrl,
                             sandboxResult: nil,
                             allowNewEnroll: allowNewEnroll,
+                            failureReason: nil,
                             metadata: localMetadata.metadata
                         )
                     } else {
@@ -410,6 +410,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             partnerParams: extraPartnerParams,
                             callbackUrl: SmileID.callbackUrl,
                             sandboxResult: nil,
+                            failureReason: nil,
                             metadata: localMetadata.metadata
                         )
                     }

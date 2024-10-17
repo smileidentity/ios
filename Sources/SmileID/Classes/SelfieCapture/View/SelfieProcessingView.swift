@@ -1,61 +1,78 @@
 import SwiftUI
 
 struct SelfieProcessingView: View {
-    var model: SelfieViewModelV2
-    @State private var images: [UIImage] = []
+    @ObservedObject var viewModel: SelfieViewModelV2
+
+    @Environment(\.modalMode) private var modalMode
 
     var body: some View {
-        NavigationView {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading) {
-                    if let selfieURL = model.selfieImage,
-                       let selfieImage = loadImage(from: selfieURL) {
-                        Image(uiImage: selfieImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 148, height: 320)
-                    } else {
-                        Text("No selfie image")
-                            .font(.title)
-                    }
-                    if !images.isEmpty {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(images, id: \.self) { image in
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 148, height: 320)
-                                }
-                            }
-                        }
-                    } else {
-                        Text("No liveness images")
-                            .font(.title)
-                    }
-                    Spacer()
-                }
-                .foregroundColor(.primary)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .navigationBarTitle(Text("Captured Images"), displayMode: .inline)
-                .onAppear {
-                    loadImages()
+        VStack {
+            VStack {
+                Text(SmileIDResourcesHelper.localizedString(for: viewModel.processingState?.title ?? ""))
+                    .font(SmileID.theme.header2)
+                if let errorMessageRes = viewModel.errorMessageRes, !errorMessageRes.isEmpty {
+                    Text(
+                        SmileIDResourcesHelper.localizedString(
+                            for: errorMessageRes)
+                    )
+                    .font(SmileID.theme.body)
+                } else {
+                    Text(
+                        SmileIDResourcesHelper.localizedString(
+                            for: viewModel.errorMessage ?? "")
+                    )
+                    .font(SmileID.theme.body)
                 }
             }
-        }
-    }
+            .foregroundColor(SmileID.theme.accent)
+            .padding(.top, 40)
 
-    private func loadImages() {
-        images = model.livenessImages.compactMap {
-            loadImage(from: $0)
-        }
-    }
+            switch viewModel.processingState {
+            case .inProgress:
+                ZStack(alignment: .center) {
+                    Circle()
+                        .fill(Color(hex: "060606"))
+                    CircularProgressView()
+                }
+                .frame(width: 260, height: 260)
+                .padding(.top, 40)
 
-    private func loadImage(from url: URL) -> UIImage? {
-        guard let imageData = try? Data(contentsOf: url) else {
-            return nil
+                Spacer()
+            case .success:
+                ZStack(alignment: .center) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 48, height: 48)
+                        .foregroundColor(SmileID.theme.success)
+                }
+                .frame(width: 260, height: 260)
+                .padding(.top, 40)
+
+                Spacer()
+                SmileButton(title: "Confirmation.Continue") {
+                    modalMode.wrappedValue = false
+                    viewModel.perform(action: .jobProcessingDone)
+                }
+            case .error:
+                Spacer()
+                SmileButton(title: "Confirmation.Retry") {
+                    viewModel.perform(action: .retryJobSubmission)
+                }
+                Button {
+                    modalMode.wrappedValue = false
+                    viewModel.perform(action: .jobProcessingDone)
+                } label: {
+                    Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"))
+                        .font(SmileID.theme.button)
+                        .foregroundColor(SmileID.theme.accent)
+                }
+                .padding(.top)
+            case .none:
+                EmptyView()
+            }
         }
-        return UIImage(data: imageData)
+        .padding()
+        .navigationBarHidden(true)
     }
 }
