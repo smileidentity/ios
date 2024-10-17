@@ -77,7 +77,7 @@ final class SelfieSubmissionManager {
             // Send out api response after successful submission
             self.delegate?.submissionDidSucceed(response)
         } catch let error as SmileIDError {
-            handleJobSubmissionFailure(error: error)
+            handleJobSubmissionFailure(error)
         }
     }
 
@@ -200,24 +200,35 @@ final class SelfieSubmissionManager {
             ) ?? []
     }
 
-    private func handleJobSubmissionFailure(error: SmileIDError) {
+    private func handleJobSubmissionFailure(_ smileIDError: SmileIDError) {
         do {
-            let didMove = try LocalStorage.handleOfflineJobFailure(jobId: self.jobId, error: error)
+            let didMove = try LocalStorage.handleOfflineJobFailure(jobId: self.jobId, error: smileIDError)
             if didMove {
                 self.selfieImage = try LocalStorage.getFileByType(jobId: jobId, fileType: .selfie, submitted: true)
                 self.livenessImages =
                     try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness, submitted: true) ?? []
             }
         } catch {
-            self.delegate?.submissionDidFail(with: error, errorMessage: nil, errorMessageRes: nil)
+            let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
+            self.delegate?
+                .submissionDidFail(
+                    with: error,
+                    errorMessage: errorMessageRes,
+                    errorMessageRes: errorMessage
+                )
             return
         }
 
-        if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
-            self.delegate?.submissionDidFail(with: error, errorMessage: nil, errorMessageRes: "Offline.Message")
+        if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: smileIDError) {
+            self.delegate?.submissionDidFail(with: smileIDError, errorMessage: nil, errorMessageRes: "Offline.Message")
         } else {
-            let (errorMessageRes, errorMessage) = toErrorMessage(error: error)
-            self.delegate?.submissionDidFail(with: error, errorMessage: errorMessage, errorMessageRes: errorMessageRes)
+            let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
+            self.delegate?
+                .submissionDidFail(
+                    with: smileIDError,
+                    errorMessage: errorMessage,
+                    errorMessageRes: errorMessageRes
+                )
         }
     }
 }

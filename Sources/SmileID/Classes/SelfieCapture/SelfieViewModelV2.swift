@@ -30,6 +30,7 @@ public class SelfieViewModelV2: ObservableObject {
     private var shouldSubmitJob: Bool {
         selfieImage != nil && livenessImages.count == numLivenessImages
     }
+    private var forcedFailure: Bool = false
     private var apiResponse: SmartSelfieResponse?
     private var error: Error?
     @Published public var errorMessageRes: String?
@@ -58,6 +59,7 @@ public class SelfieViewModelV2: ObservableObject {
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
     private let useStrictMode: Bool
+    private let onResult: SmartSelfieResultDelegate
     private var localMetadata: LocalMetadata
 
     public init(
@@ -68,6 +70,7 @@ public class SelfieViewModelV2: ObservableObject {
         skipApiSubmission: Bool,
         extraPartnerParams: [String: String],
         useStrictMode: Bool,
+        onResult: SmartSelfieResultDelegate,
         localMetadata: LocalMetadata
     ) {
         self.isEnroll = isEnroll
@@ -77,6 +80,7 @@ public class SelfieViewModelV2: ObservableObject {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
         self.useStrictMode = useStrictMode
+        self.onResult = onResult
         self.localMetadata = localMetadata
         self.initialSetup()
     }
@@ -143,15 +147,15 @@ public class SelfieViewModelV2: ObservableObject {
         case let .windowSizeDetected(windowRect):
             handleWindowSizeChanged(toRect: windowRect)
         case .activeLivenessCompleted:
-            Task {
-                try await handleSubmission(forcedFailure: false)
-            }
+            handleSubmission(forcedFailure: false)
         case .activeLivenessTimeout:
-            Task {
-                try await handleSubmission(forcedFailure: true)
-            }
+            handleSubmission(forcedFailure: true)
         case .onViewAppear:
             handleViewAppeared()
+        case .jobProcessingDone:
+            onFinished(callback: onResult)
+        case .retryJobSubmission:
+            handleSubmission(forcedFailure: false)
         case .openApplicationSettings:
             openSettings()
         case let .handleError(error):
@@ -198,6 +202,7 @@ extension SelfieViewModelV2 {
         selfieImage = nil
         livenessImages = []
         processingState = nil
+        forcedFailure = false
     }
 
     private func handleWindowSizeChanged(toRect: CGSize) {
@@ -250,8 +255,11 @@ extension SelfieViewModelV2 {
         print(error.localizedDescription)
     }
 
-    private func handleSubmission(forcedFailure: Bool) async throws {
-        try await submitJob(forcedFailure: forcedFailure)
+    private func handleSubmission(forcedFailure: Bool) {
+        self.forcedFailure = forcedFailure
+        Task {
+            try await submitJob()
+        }
     }
 
     private func openSettings() {
@@ -302,7 +310,7 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 
 // MARK: Selfie Job Submission
 extension SelfieViewModelV2: SelfieSubmissionDelegate {
-    public func submitJob(forcedFailure: Bool) async throws {
+    public func submitJob() async throws {
         DispatchQueue.main.async {
             self.processingState = .inProgress
             self.showProcessingView = true
@@ -329,7 +337,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
             localMetadata: self.localMetadata
         )
         submissionManager.delegate = self
-        try await submissionManager.submitJob(forcedFailure: forcedFailure)
+        try await submissionManager.submitJob(forcedFailure: self.forcedFailure)
     }
 
     private func addSelfieCaptureDurationMetaData() {

@@ -1,24 +1,33 @@
 import SwiftUI
 
 struct SelfieProcessingView: View {
-    var processingState: ProcessingState
-    var errorMessage: String?
-    var didTapRetry: () -> Void
+    @ObservedObject var viewModel: SelfieViewModelV2
 
     @Environment(\.modalMode) private var modalMode
 
     var body: some View {
         VStack {
             VStack {
-                Text(SmileIDResourcesHelper.localizedString(for: processingState.title))
+                Text(SmileIDResourcesHelper.localizedString(for: viewModel.processingState?.title ?? ""))
                     .font(SmileID.theme.header2)
-                Text(SmileIDResourcesHelper.localizedString(for: errorMessage ?? ""))
+                if let errorMessageRes = viewModel.errorMessageRes, !errorMessageRes.isEmpty {
+                    Text(
+                        SmileIDResourcesHelper.localizedString(
+                            for: errorMessageRes)
+                    )
                     .font(SmileID.theme.body)
+                } else {
+                    Text(
+                        SmileIDResourcesHelper.localizedString(
+                            for: viewModel.errorMessage ?? "")
+                    )
+                    .font(SmileID.theme.body)
+                }
             }
             .foregroundColor(SmileID.theme.accent)
             .padding(.top, 40)
 
-            switch processingState {
+            switch viewModel.processingState {
             case .inProgress:
                 ZStack(alignment: .center) {
                     Circle()
@@ -41,14 +50,26 @@ struct SelfieProcessingView: View {
                 .padding(.top, 40)
 
                 Spacer()
-                SmileButton(title: "Action.Done") {
-                    self.modalMode.wrappedValue = false
+                SmileButton(title: "Confirmation.Continue") {
+                    modalMode.wrappedValue = false
+                    viewModel.perform(action: .jobProcessingDone)
                 }
             case .error:
                 Spacer()
                 SmileButton(title: "Confirmation.Retry") {
-                    self.didTapRetry()
+                    viewModel.perform(action: .retryJobSubmission)
                 }
+                Button {
+                    modalMode.wrappedValue = false
+                    viewModel.perform(action: .jobProcessingDone)
+                } label: {
+                    Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"))
+                        .font(SmileID.theme.button)
+                        .foregroundColor(SmileID.theme.accent)
+                }
+                .padding(.top)
+            case .none:
+                EmptyView()
             }
         }
         .padding()

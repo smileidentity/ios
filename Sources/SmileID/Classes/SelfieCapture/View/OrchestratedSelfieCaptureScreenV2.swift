@@ -37,6 +37,7 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
             skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
             useStrictMode: useStrictMode,
+            onResult: onResult,
             localMetadata: LocalMetadata()
         )
     }

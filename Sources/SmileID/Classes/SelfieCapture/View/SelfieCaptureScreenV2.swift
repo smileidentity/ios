@@ -49,21 +49,11 @@ public struct SelfieCaptureScreenV2: View {
                 }
                 .padding(.vertical, 40)
 
-                if let processingState = viewModel.processingState {
-                    NavigationLink(
-                        destination: SelfieProcessingView(
-                            processingState: processingState,
-                            errorMessage: viewModel.errorMessageRes ?? viewModel.errorMessage,
-                            didTapRetry: {
-                                viewModel.showProcessingView = false
-                            }
-                        ),
-                        isActive: $viewModel.showProcessingView,
-                        label: {
-                            EmptyView()
-                        }
-                    )
-                }
+                NavigationLink(
+                    destination: SelfieProcessingView(viewModel: viewModel),
+                    isActive: $viewModel.showProcessingView,
+                    label: { EmptyView() }
+                )
             }
             .edgesIgnoringSafeArea(.all)
             .navigationBarHidden(true)

@@ -9,6 +9,9 @@ enum SelfieViewModelAction {
     case activeLivenessCompleted
     case activeLivenessTimeout
 
+    case jobProcessingDone
+    case retryJobSubmission
+
     // Others
     case openApplicationSettings
     case handleError(Error)
