@@ -20,7 +20,6 @@ Then get certs and profiles:
 ```shell
 bundle exec fastlane run get_certificates
 bundle exec fastlane match development --readonly
-bundle exec fastlane match adhoc --readonly
 bundle exec fastlane match appstore --readonly
 ```
 
