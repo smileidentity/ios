@@ -1,5 +1,5 @@
 git_url "git@github.com:smileidentity/ios-certificates.git"
 git_branch("main")
 storage_mode "git"
-# type "appstore"
+type "appstore"
 type "development"
