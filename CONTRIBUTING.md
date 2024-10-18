@@ -16,6 +16,13 @@ We use [`rake`](https://github.com/ruby/rake) for task automation.
 - iOS 13 or higher
 - Xcode 14 or higher
 
+Then get certs and profiles:
+```shell
+bundle exec fastlane run get_certificates
+bundle exec fastlane match development --readonly
+bundle exec fastlane match appstore --readonly
+```
+
 ## Sentry setup (Sample app only)
 
 ```shell
