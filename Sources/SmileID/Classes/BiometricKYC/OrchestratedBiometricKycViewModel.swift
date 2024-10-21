@@ -170,7 +170,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                     self.error = error
                     return
                 }
-                if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
+                if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: error) {
                     didSubmitBiometricJob = true
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"

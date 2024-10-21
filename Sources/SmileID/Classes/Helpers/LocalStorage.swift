@@ -276,22 +276,11 @@ public class LocalStorage {
         error: SmileIDError
     ) throws -> Bool {
         var didMove = false
-        if !(SmileID.allowOfflineMode && isNetworkFailure(error: error)) {
+        if !(SmileID.allowOfflineMode && SmileIDError.isNetworkFailure(error: error)) {
             try LocalStorage.moveToSubmittedJobs(jobId: jobId)
             didMove = true
         }
         return didMove
-    }
-
-    static func isNetworkFailure(
-        error: SmileIDError
-    ) -> Bool {
-        switch error {
-        case .httpError:
-            true
-        default:
-            false
-        }
     }
 
     public static func toZip(uploadRequest: UploadRequest) throws -> Data {

@@ -263,7 +263,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     self.onError(error: error)
                     return
                 }
-                if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
+                if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: error) {
                     didSubmitJob = true
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"

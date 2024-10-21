@@ -438,7 +438,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     self.error = error
                     return
                 }
-                if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
+                if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: error) {
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"
                         self.processingState = .success
