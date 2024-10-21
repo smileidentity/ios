@@ -4,11 +4,10 @@ import SwiftUI
 struct HomeView: View {
     let version = SmileID.version
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
-    @ObservedObject var viewModel: HomeViewModel
-    @ObservedObject var networkMonitor = NetworkMonitor.shared
+    @StateObject var viewModel: HomeViewModel
 
     init(config: Config) {
-        viewModel = HomeViewModel(config: config)
+        _viewModel =  StateObject(wrappedValue: HomeViewModel(config: config))
     }
 
     var body: some View {
