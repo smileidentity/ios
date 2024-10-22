@@ -60,7 +60,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     for: "Confirmation.SelfieCaptureComplete"
                 ),
                 successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: $viewModel.errorMessageRes.wrappedValue ?? "Confirmation.SuccessBody"
+                    for: "Confirmation.SuccessBody"
                 ),
                 successIcon: SmileIDResourcesHelper.CheckBold,
                 errorTitle: SmileIDResourcesHelper.localizedString(

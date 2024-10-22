@@ -12,16 +12,13 @@ public enum SmileIDError: Error {
     case invalidJobId
     case fileNotFound(String)
     case invalidRequestBody
-    
+
     static func isNetworkFailure(
         error: SmileIDError
     ) -> Bool {
-        switch error {
-        case .httpError:
-            true
-        default:
-            false
-        }
+        guard case let .request(urlError) = error else { return false }
+        let value = urlError.code == .notConnectedToInternet
+        return value
     }
 }
 
