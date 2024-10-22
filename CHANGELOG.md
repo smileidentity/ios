@@ -1,4 +1,19 @@
 # Release Notes
+## 10.2.14
+
+### Changed
+* Changed thresholds for liveness photos movement
+
+## 10.2.13
+
+### Added
+* Modified access selfie and liveness images util functions
+
+## 10.2.12
+
+### Added
+* Modified access for selfie instruction screen for use in wrappers
+
 ## 10.2.11
 
 ### Added
