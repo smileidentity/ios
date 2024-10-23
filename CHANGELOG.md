@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Changed
-* Break down `submitJob()` function for BiometricKYC for easier readability and debugging.
+* Split up `submitJob()` functionalities for BiometricKYC for easier readability and debugging.
 * Remove setting process screen sucess state subtitle with `errorMessageRes`.
 
 ### Fixed
