@@ -57,8 +57,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     func onFinished(delegate: BiometricKycResultDelegate) {
         if let selfieFile = selfieFile,
             let livenessFiles = livenessFiles,
-            let selfiePath = getRelativePath(from: selfieFile)
-        {
+            let selfiePath = getRelativePath(from: selfieFile) {
             delegate.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
@@ -114,7 +113,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
             fileType: FileType.liveness
         )
 
-        guard let selfieFile else {
+        guard selfieFile != nil else {
             // Set step to .selfieCapture so that the Retry button goes back to this step
             updateStep(.selfie)
             error = SmileIDError.unknown("Error capturing selfie")
