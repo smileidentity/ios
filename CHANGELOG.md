@@ -1,4 +1,14 @@
 # Release Notes
+
+## [Unreleased]
+
+### Changed
+* Break down `submitJob()` function for BiometricKYC for easier readability and debugging.
+* Remove setting process screen sucess state subtitle with `errorMessageRes`.
+
+### Fixed
+* Improve how we handle offline job failure scenario.
+
 ## 10.2.14
 
 ### Changed
