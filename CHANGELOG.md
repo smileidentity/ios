@@ -4,7 +4,8 @@
 
 ### Changed
 * Split up `submitJob()` functionalities for BiometricKYC for easier readability and debugging.
-* Remove setting process screen sucess state subtitle with `errorMessageRes`.
+* Remove setting job processing screen sucess state subtitle with `errorMessageRes`.
+* Modify how we check for network failure due to internet connection and move the `isNetworkFailure()` function into a more appropriate scope.
 
 ### Fixed
 * Improve how we handle offline job failure scenario.
