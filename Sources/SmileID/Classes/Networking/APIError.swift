@@ -16,9 +16,8 @@ public enum SmileIDError: Error {
     static func isNetworkFailure(
         error: SmileIDError
     ) -> Bool {
-        guard case let .request(urlError) = error else { return false }
-        let value = urlError.code == .notConnectedToInternet
-        return value
+        guard case .request = error else { return false }
+        return true
     }
 }
 
