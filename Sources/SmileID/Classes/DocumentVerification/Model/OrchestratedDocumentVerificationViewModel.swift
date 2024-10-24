@@ -348,7 +348,6 @@ internal class OrchestratedDocumentVerificationViewModel:
 
 // swiftlint:disable opening_brace
 internal class OrchestratedEnhancedDocumentVerificationViewModel:
-    // swiftlint:disable line_length
     IOrchestratedDocumentVerificationViewModel<
         EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
     >
