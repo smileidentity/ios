@@ -17,7 +17,7 @@ class HomeViewModel: ObservableObject,
     @Published var toastMessage = ""
     @Published var showToast = false
     @Published var partnerId: String
-    @ObservedObject var networkMonitor = NetworkMonitor.shared
+    var networkMonitor = NetworkMonitor.shared
 
     @Published private(set) var smartSelfieEnrollmentUserId = generateUserId()
     @Published private(set) var newUserId: String = generateUserId()
