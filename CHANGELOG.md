@@ -1,4 +1,9 @@
 # Release Notes
+## 10.2.14
+
+### Changed
+* Changed thresholds for liveness photos movement
+
 ## 10.2.13
 
 ### Added
