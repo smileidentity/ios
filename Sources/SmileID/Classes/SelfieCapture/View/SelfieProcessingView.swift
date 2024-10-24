@@ -31,7 +31,7 @@ struct SelfieProcessingView: View {
             case .inProgress:
                 ZStack(alignment: .center) {
                     Circle()
-                        .fill(Color(hex: "060606"))
+                        .fill(SmileID.theme.tertiary)
                     CircularProgressView()
                 }
                 .frame(width: 260, height: 260)
