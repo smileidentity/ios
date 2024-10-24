@@ -399,6 +399,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             callbackUrl: SmileID.callbackUrl,
                             sandboxResult: nil,
                             allowNewEnroll: allowNewEnroll,
+                            failureReason: nil,
                             metadata: localMetadata.metadata
                         )
                     } else {
@@ -411,6 +412,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             partnerParams: extraPartnerParams,
                             callbackUrl: SmileID.callbackUrl,
                             sandboxResult: nil,
+                            failureReason: nil,
                             metadata: localMetadata.metadata
                         )
                     }

@@ -43,6 +43,9 @@
 "Confirmation.ProcessingSelfie" = "Processing Selfie";
 "Confirmation.Time" = "Just a few more seconds";
 "Confirmation.SelfieCaptureComplete" = "Selfie Capture Complete";
+"ProcessingState.Submitting" = "Submitting";
+"ProcessingState.Successful" = "Successful";
+"ProcessingState.Failed" = "Failed";
 "Confirmation.SuccessBody" = "Your selfie was successfully taken. You can now proceed.";
 "Confirmation.Continue" = "Continue";
 "Confirmation.Failure" = "Your selfie failed to process";
@@ -54,6 +57,7 @@
 "Action.Skip" = "Skip back of ID";
 "Action.GetStarted" = "Get Started";
 "Action.Cancel" = "Cancel";
+"Action.Done" = "Done";
 
 "Camera.AgentMode" = "Agent Mode";
 "Camera.Unauthorized.Title" = "Allow access to your camera";
