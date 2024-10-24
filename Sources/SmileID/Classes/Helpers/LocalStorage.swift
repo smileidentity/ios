@@ -276,22 +276,11 @@ public class LocalStorage {
         error: SmileIDError
     ) throws -> Bool {
         var didMove = false
-        if !(SmileID.allowOfflineMode && isNetworkFailure(error: error)) {
+        if !SmileID.allowOfflineMode && !SmileIDError.isNetworkFailure(error: error) {
             try LocalStorage.moveToSubmittedJobs(jobId: jobId)
             didMove = true
         }
         return didMove
-    }
-
-    static func isNetworkFailure(
-        error: SmileIDError
-    ) -> Bool {
-        switch error {
-        case .httpError:
-            true
-        default:
-            false
-        }
     }
 
     public static func toZip(uploadRequest: UploadRequest) throws -> Data {
@@ -313,9 +302,6 @@ public class LocalStorage {
             throw SmileIDError.fileNotFound("Job not found")
         }
 
-        // Get the URL for the JSON file
-        let jsonUrl = try LocalStorage.getInfoJsonFile(jobId: finalDestinationFolder)
-
         // Create full URLs for all images
         let imageUrls = uploadRequest.images.map { imageInfo in
             URL(fileURLWithPath: finalDestinationFolder).appendingPathComponent(imageInfo.fileName)
@@ -324,6 +310,7 @@ public class LocalStorage {
         var allUrls = imageUrls
 
         do {
+            // Get the URL for the JSON file
             let jsonUrl = try LocalStorage.getInfoJsonFile(jobId: finalDestinationFolder)
             allUrls.append(jsonUrl)
         } catch {
