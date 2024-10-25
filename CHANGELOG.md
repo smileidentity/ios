@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased]
+## 10.2.15
 
 ### Changed
 * Split up `submitJob()` functionalities for BiometricKYC for easier readability and debugging.
