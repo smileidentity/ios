@@ -12,6 +12,13 @@ public enum SmileIDError: Error {
     case invalidJobId
     case fileNotFound(String)
     case invalidRequestBody
+
+    static func isNetworkFailure(
+        error: SmileIDError
+    ) -> Bool {
+        guard case .request = error else { return false }
+        return true
+    }
 }
 
 extension SmileIDError: LocalizedError {

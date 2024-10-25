@@ -18,7 +18,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal let captureBothSides: Bool
     internal let jobType: JobType
     internal let extraPartnerParams: [String: String]
-    
+
     // Other properties
     internal var documentFrontFile: Data?
     internal var documentBackFile: Data?
@@ -29,7 +29,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     internal var didSubmitJob: Bool = false
     internal var error: Error?
     var localMetadata: LocalMetadata
-    
+
     // UI properties
     @Published var acknowledgedInstructions = false
     /// we use `errorMessageRes` to map to the actual code to the stringRes to allow localization,
@@ -38,7 +38,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     @Published var errorMessageRes: String?
     @Published var errorMessage: String?
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
-    
+
     internal init(
         userId: String,
         jobId: String,
@@ -62,7 +62,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         self.extraPartnerParams = extraPartnerParams
         self.localMetadata = localMetadata
     }
-    
+
     func onFrontDocumentImageConfirmed(data: Data) {
         documentFrontFile = data
         if captureBothSides {
@@ -75,18 +75,18 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             }
         }
     }
-    
+
     func onBackDocumentImageConfirmed(data: Data) {
         documentBackFile = data
         DispatchQueue.main.async {
             self.step = .selfieCapture
         }
     }
-    
+
     func acknowledgeInstructions() {
         acknowledgedInstructions = true
     }
-    
+
     func onError(error: Error) {
         self.error = error
         stepToRetry = step
@@ -94,7 +94,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             self.step = .processing(.error)
         }
     }
-    
+
     func onDocumentBackSkip() {
         if selfieFile == nil {
             DispatchQueue.main.async {
@@ -104,11 +104,11 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             submitJob()
         }
     }
-    
+
     func onFinished(delegate _: T) {
         fatalError("Must override onFinished")
     }
-    
+
     func submitJob() {
         Task {
             do {
@@ -118,28 +118,28 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     onError(error: SmileIDError.unknown("Error getting document front file"))
                     return
                 }
-                
+
                 selfieFile = try LocalStorage.getFileByType(
                     jobId: jobId,
                     fileType: FileType.selfie
                 )
-                
+
                 livenessFiles = try LocalStorage.getFilesByType(
                     jobId: jobId,
                     fileType: FileType.liveness
                 )
-                
+
                 guard let selfieFile else {
                     // Set step to .selfieCapture so that the Retry button goes back to this step
                     step = .selfieCapture
                     onError(error: SmileIDError.unknown("Error getting selfie file"))
                     return
                 }
-                
+
                 DispatchQueue.main.async {
                     self.step = .processing(.inProgress)
                 }
-                
+
                 var allFiles = [URL]()
                 let frontDocumentUrl = try LocalStorage.createDocumentFile(
                     jobId: jobId,
@@ -197,7 +197,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
-                    allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+                    allowNewEnroll: String(allowNewEnroll),  // TODO: - Fix when Michael changes this to boolean
                     metadata: localMetadata.metadata.items,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
@@ -209,12 +209,12 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     )
                 } catch let error as SmileIDError {
                     switch error {
-                        case .api("2215", _):
-                            prepUploadResponse = try await SmileID.api.prepUpload(
-                                request: prepUploadRequest.copy(retry: "true")
-                            )
-                        default:
-                            throw error
+                    case .api("2215", _):
+                        prepUploadResponse = try await SmileID.api.prepUpload(
+                            request: prepUploadRequest.copy(retry: "true")
+                        )
+                    default:
+                        throw error
                     }
                 }
                 let _ = try await SmileID.api.upload(
@@ -224,16 +224,18 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 didSubmitJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
-                    self.selfieFile = try LocalStorage.getFileByType(
-                        jobId: jobId,
-                        fileType: FileType.selfie,
-                        submitted: true
-                    ) ?? selfieFile
-                    self.livenessFiles = try LocalStorage.getFilesByType(
-                        jobId: jobId,
-                        fileType: FileType.liveness,
-                        submitted: true
-                    ) ?? []
+                    self.selfieFile =
+                        try LocalStorage.getFileByType(
+                            jobId: jobId,
+                            fileType: FileType.selfie,
+                            submitted: true
+                        ) ?? selfieFile
+                    self.livenessFiles =
+                        try LocalStorage.getFilesByType(
+                            jobId: jobId,
+                            fileType: FileType.liveness,
+                            submitted: true
+                        ) ?? []
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.onError(error: error)
@@ -247,23 +249,25 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                         error: error
                     )
                     if didMove {
-                        self.selfieFile = try LocalStorage.getFileByType(
-                            jobId: jobId,
-                            fileType: FileType.selfie,
-                            submitted: true
-                        ) ?? selfieFile
-                        self.livenessFiles = try LocalStorage.getFilesByType(
-                            jobId: jobId,
-                            fileType: FileType.liveness,
-                            submitted: true
-                        ) ?? []
+                        self.selfieFile =
+                            try LocalStorage.getFileByType(
+                                jobId: jobId,
+                                fileType: FileType.selfie,
+                                submitted: true
+                            ) ?? selfieFile
+                        self.livenessFiles =
+                            try LocalStorage.getFilesByType(
+                                jobId: jobId,
+                                fileType: FileType.liveness,
+                                submitted: true
+                            ) ?? []
                     }
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.onError(error: error)
                     return
                 }
-                if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
+                if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: error) {
                     didSubmitJob = true
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"
@@ -284,7 +288,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
             }
         }
     }
-    
+
     /// If stepToRetry is ProcessingScreen, we're retrying a network issue, so we need to kick off
     /// the resubmission manually. Otherwise, we're retrying a capture error, so we just need to
     /// reset the UI state
@@ -310,7 +314,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
     ) {
         submitJob()
     }
-    
+
     func didError(error: Error) {
         onError(error: SmileIDError.unknown("Error capturing selfie"))
     }
@@ -322,9 +326,9 @@ internal class OrchestratedDocumentVerificationViewModel:
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
-           let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
-           let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+            let selfiePath = getRelativePath(from: selfieFile),
+            let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
+            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
         {
             delegate.didSucceed(
                 selfie: selfiePath,
@@ -344,14 +348,15 @@ internal class OrchestratedDocumentVerificationViewModel:
 
 // swiftlint:disable opening_brace
 internal class OrchestratedEnhancedDocumentVerificationViewModel:
-    // swiftlint:disable line_length
-    IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult>
+    IOrchestratedDocumentVerificationViewModel<
+        EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
+    >
 {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles,
-           let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
-           let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+            let selfiePath = getRelativePath(from: selfieFile),
+            let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
+            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
         {
             delegate.didSucceed(
                 selfie: selfiePath,

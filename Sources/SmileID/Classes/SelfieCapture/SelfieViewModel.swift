@@ -438,7 +438,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     self.error = error
                     return
                 }
-                if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: error) {
+                if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: error) {
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"
                         self.processingState = .success
@@ -463,8 +463,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         if let selfieImage = selfieImage,
            let selfiePath = getRelativePath(from: selfieImage),
            livenessImages.count == numLivenessImages,
-           !livenessImages.contains(where: { getRelativePath(from: $0) == nil })
-        {
+           !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
             let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
 
             callback.didSucceed(
