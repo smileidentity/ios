@@ -219,7 +219,7 @@ final class SelfieSubmissionManager {
             return
         }
 
-        if SmileID.allowOfflineMode, LocalStorage.isNetworkFailure(error: smileIDError) {
+        if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: smileIDError) {
             self.delegate?.submissionDidFail(with: smileIDError, errorMessage: nil, errorMessageRes: "Offline.Message")
         } else {
             let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
