@@ -12,18 +12,19 @@ struct FaceBoundingArea: View {
     var body: some View {
         ZStack {
             // Face Bounds Indicator
-            Circle()
+            FaceShape()
                 .stroke(
-                    faceInBounds ? selfieCaptured ? .clear : .green : .red,
-                    lineWidth: 10
+                    faceInBounds ? selfieCaptured ? .clear : SmileID.theme.success : SmileID.theme.error,
+                    style: StrokeStyle(lineWidth: 10)
                 )
-                .frame(width: 275, height: 275)
+                .frame(width: 270, height: 370)
+                .opacity(0)
 
             if let guideAnimation = guideAnimation,
                 showGuideAnimation {
-                Circle()
+                FaceShape()
                     .fill(.black.opacity(0.5))
-                    .frame(width: 260, height: 260)
+                    .frame(width: 250, height: 350)
                     .overlay(
                         LottieView {
                             try await DotLottieFile
@@ -35,7 +36,7 @@ struct FaceBoundingArea: View {
                         .playbackMode(playbackMode)
                         .frame(width: 224, height: 224)
                     )
-                    .clipShape(.circle)
+                    .clipShape(FaceShape())
                     .onAppear {
                         playbackMode = getPlaybackMode(guideAnimation)
                     }

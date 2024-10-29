@@ -29,6 +29,11 @@ public struct SelfieCaptureScreenV2: View {
                     )
                     .cornerRadius(40)
 
+                    if let selfieImage = viewModel.selfieImage,
+                        viewModel.processingState != nil {
+                        SelfiePreviewView(image: selfieImage)
+                    }
+
                     RoundedRectangle(cornerRadius: 40)
                         .fill(SmileID.theme.tertiary.opacity(0.8))
                         .reverseMask(alignment: .top) {
@@ -38,13 +43,13 @@ public struct SelfieCaptureScreenV2: View {
                         }
                     VStack {
                         ZStack {
-                            FaceShape()
-                                .stroke(
-                                    SmileID.theme.success,
-                                    style: StrokeStyle(lineWidth: 10, lineCap: .round)
-                                )
-                                .frame(width: 270, height: 370)
-                                .opacity(0)
+                            FaceBoundingArea(
+                                faceInBounds: viewModel.faceInBounds,
+                                selfieCaptured: viewModel.selfieCaptured,
+                                showGuideAnimation: viewModel.showGuideAnimation,
+                                guideAnimation: viewModel.userInstruction?.guideAnimation
+                            )
+                            .hidden()
                             if let currentLivenessTask = viewModel.livenessCheckManager.currentTask {
                                 LivenessGuidesView(
                                     currentLivenessTask: currentLivenessTask,
@@ -56,20 +61,22 @@ public struct SelfieCaptureScreenV2: View {
                         }
                         .padding(.top, 50)
                         Spacer()
-                        Text(SmileIDResourcesHelper.localizedString(for: viewModel.userInstruction?.instruction ?? ""))
-                            .font(SmileID.theme.header2)
-                            .foregroundColor(SmileID.theme.onDark)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(3)
-                            .minimumScaleFactor(0.8)
-                            .padding(20)
+                        UserInstructionsView(
+                            instruction: viewModel.userInstruction?.instruction ?? ""
+                        )
                         Spacer()
                     }
+
+//                    if let processingState = viewModel.processingState {
+//                        SubmissionStatusView(processState: processingState)
+//                    }
+                    SubmissionStatusView(processState: .inProgress)
+                        .padding(.bottom, 40)
                 }
                 .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 4)
                 .padding(.horizontal)
                 .frame(height: 520)
-                .fixedSize(horizontal: false, vertical: true)
+                // .fixedSize(horizontal: false, vertical: true)
 
                 if showAttribution {
                     Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
@@ -77,21 +84,15 @@ public struct SelfieCaptureScreenV2: View {
 
                 Spacer()
 
-                VStack {
-                    SmileButton(title: "Confirmation.Retry") {
+                SelfieActionsView(
+                    retryAction: {
                         viewModel.perform(action: .retryJobSubmission)
-                    }
-                    Button {
+                    },
+                    cancelAction: {
                         modalMode.wrappedValue = false
                         viewModel.perform(action: .jobProcessingDone)
-                    } label: {
-                        Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                            .font(SmileID.theme.button)
-                            .foregroundColor(SmileID.theme.error)
                     }
-                    .padding(.top)
-                }
-                .padding(.horizontal, 65)
+                )
             }
             .navigationBarHidden(true)
             .onAppear {

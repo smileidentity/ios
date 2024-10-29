@@ -15,7 +15,8 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Private Properties
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
-    var selfieImage: URL? {
+    var selfieImage: UIImage?
+    var selfieImageURL: URL? {
         didSet {
             DispatchQueue.main.async {
                 self.selfieCaptured = self.selfieImage != nil
@@ -226,8 +227,8 @@ extension SelfieViewModelV2 {
             else {
                 throw SmileIDError.unknown("Error resizing selfie image")
             }
-            let selfieImage = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
-            self.selfieImage = selfieImage
+            self.selfieImage = UIImage(data: imageData)
+            self.selfieImageURL = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
         } catch {
             handleError(error)
         }
@@ -331,7 +332,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
             isEnroll: self.isEnroll,
             numLivenessImages: self.numLivenessImages,
             allowNewEnroll: self.allowNewEnroll,
-            selfieImage: self.selfieImage,
+            selfieImage: self.selfieImageURL,
             livenessImages: self.livenessImages,
             extraPartnerParams: self.extraPartnerParams,
             localMetadata: self.localMetadata
@@ -347,7 +348,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let selfieImage = selfieImage,
-            let selfiePath = getRelativePath(from: selfieImage),
+           let selfiePath = getRelativePath(from: selfieImageURL),
             livenessImages.count == numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
             let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
