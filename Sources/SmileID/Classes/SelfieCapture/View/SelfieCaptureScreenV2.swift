@@ -9,53 +9,90 @@ public struct SelfieCaptureScreenV2: View {
 
     public var body: some View {
         GeometryReader { proxy in
-            ZStack {
-                // Camera Preview Layer
-                CameraView(cameraManager: viewModel.cameraManager, selfieViewModel: viewModel)
-
-                // CameraPreview Mask
-                Rectangle()
-                    .fill(.white)
-                    .reverseMask {
-                        Circle()
-                            .frame(width: 260, height: 260)
-                    }
-
-                FaceBoundingArea(
-                    faceInBounds: viewModel.faceInBounds,
-                    selfieCaptured: viewModel.selfieCaptured,
-                    showGuideAnimation: viewModel.showGuideAnimation,
-                    guideAnimation: viewModel.userInstruction?.guideAnimation
-                )
-                UserInstructionsView(viewModel: viewModel)
-                if let currentLivenessTask = viewModel.livenessCheckManager.currentTask,
-                    viewModel.faceInBounds {
-                    LivenessGuidesView(
-                        currentLivenessTask: currentLivenessTask,
-                        topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
-                        rightArcProgress: $viewModel.livenessCheckManager.lookRightProgress,
-                        leftArcProgress: $viewModel.livenessCheckManager.lookLeftProgress
-                    )
-                }
-
-                VStack {
+            VStack(spacing: 10) {
+                HStack {
                     Spacer()
                     Button {
-                        self.modalMode.wrappedValue = false
+                        modalMode.wrappedValue = false
+                        viewModel.perform(action: .jobProcessingDone)
                     } label: {
-                        Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                            .foregroundColor(SmileID.theme.accent)
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title)
                     }
                 }
-                .padding(.vertical, 40)
+                .padding(.horizontal, 20)
 
-                NavigationLink(
-                    destination: SelfieProcessingView(viewModel: viewModel),
-                    isActive: $viewModel.showProcessingView,
-                    label: { EmptyView() }
-                )
+                ZStack {
+                    CameraView(
+                        cameraManager: viewModel.cameraManager,
+                        selfieViewModel: viewModel
+                    )
+                    .cornerRadius(40)
+
+                    RoundedRectangle(cornerRadius: 40)
+                        .fill(SmileID.theme.tertiary.opacity(0.8))
+                        .reverseMask(alignment: .top) {
+                            FaceShape()
+                                .frame(width: 250, height: 350)
+                                .padding(.top, 60)
+                        }
+                    VStack {
+                        ZStack {
+                            FaceShape()
+                                .stroke(
+                                    SmileID.theme.success,
+                                    style: StrokeStyle(lineWidth: 10, lineCap: .round)
+                                )
+                                .frame(width: 270, height: 370)
+                                .opacity(0)
+                            if let currentLivenessTask = viewModel.livenessCheckManager.currentTask {
+                                LivenessGuidesView(
+                                    currentLivenessTask: currentLivenessTask,
+                                    topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
+                                    rightArcProgress: $viewModel.livenessCheckManager.lookRightProgress,
+                                    leftArcProgress: $viewModel.livenessCheckManager.lookLeftProgress
+                                )
+                            }
+                        }
+                        .padding(.top, 50)
+                        Spacer()
+                        Text(SmileIDResourcesHelper.localizedString(for: viewModel.userInstruction?.instruction ?? ""))
+                            .font(SmileID.theme.header2)
+                            .foregroundColor(SmileID.theme.onDark)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(3)
+                            .minimumScaleFactor(0.8)
+                            .padding(20)
+                        Spacer()
+                    }
+                }
+                .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 4)
+                .padding(.horizontal)
+                .frame(height: 520)
+                .fixedSize(horizontal: false, vertical: true)
+
+                if showAttribution {
+                    Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                }
+
+                Spacer()
+
+                VStack {
+                    SmileButton(title: "Confirmation.Retry") {
+                        viewModel.perform(action: .retryJobSubmission)
+                    }
+                    Button {
+                        modalMode.wrappedValue = false
+                        viewModel.perform(action: .jobProcessingDone)
+                    } label: {
+                        Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                            .font(SmileID.theme.button)
+                            .foregroundColor(SmileID.theme.error)
+                    }
+                    .padding(.top)
+                }
+                .padding(.horizontal, 65)
             }
-            .edgesIgnoringSafeArea(.all)
             .navigationBarHidden(true)
             .onAppear {
                 viewModel.perform(action: .windowSizeDetected(proxy.size))
