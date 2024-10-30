@@ -7,12 +7,17 @@ struct FaceBoundingArea: View {
     var showGuideAnimation: Bool
     var guideAnimation: CaptureGuideAnimation?
 
+    private let faceShape = FaceShape()
     @State private var playbackMode: LottiePlaybackMode = .paused
 
     var body: some View {
         ZStack {
+            Rectangle()
+                .stroke(Color.red, lineWidth: 5.0)
+                .frame(width: 250, height: 350)
+
             // Face Bounds Indicator
-            FaceShape()
+            faceShape
                 .stroke(
                     faceInBounds ? selfieCaptured ? .clear : SmileID.theme.success : SmileID.theme.error,
                     style: StrokeStyle(lineWidth: 10)
@@ -22,9 +27,9 @@ struct FaceBoundingArea: View {
 
             if let guideAnimation = guideAnimation,
                 showGuideAnimation {
-                FaceShape()
+                faceShape
                     .fill(.black.opacity(0.5))
-                    .frame(width: 260, height: 360)
+                    .frame(width: 270, height: 370)
                     .overlay(
                         LottieView {
                             try await DotLottieFile
@@ -36,7 +41,7 @@ struct FaceBoundingArea: View {
                         .playbackMode(playbackMode)
                         .frame(width: 224, height: 224)
                     )
-                    .clipShape(FaceShape())
+                    .clipShape(faceShape)
                     .onAppear {
                         playbackMode = getPlaybackMode(guideAnimation)
                     }

@@ -207,9 +207,10 @@ extension SelfieViewModelV2 {
     }
 
     private func handleWindowSizeChanged(toRect: CGSize) {
+        let topPadding: CGFloat = 100
         faceLayoutGuideFrame = CGRect(
             x: (toRect.width / 2) - faceLayoutGuideFrame.width / 2,
-            y: (toRect.height / 2) - faceLayoutGuideFrame.height / 2,
+            y: topPadding,
             width: faceLayoutGuideFrame.width,
             height: faceLayoutGuideFrame.height
         )

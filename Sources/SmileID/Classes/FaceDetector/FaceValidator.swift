@@ -17,7 +17,7 @@ final class FaceValidator {
     // MARK: Constants
     private let selfieQualityThreshold: Float = 0.5
     private let luminanceThreshold: ClosedRange<Int> = 80...200
-    private let faceBoundsMultiplier: CGFloat = 1.5
+    private let faceBoundsMultiplier: CGFloat = 1.2
     private let faceBoundsThreshold: CGFloat = 50
 
     init() {}
@@ -99,21 +99,23 @@ final class FaceValidator {
 
     // MARK: Validation Checks
     private func checkAcceptableBounds(using boundingBox: CGRect) -> FaceBoundsState {
-        if boundingBox.width > faceBoundsMultiplier * faceLayoutGuideFrame.width {
+        let maxFaceWidth = faceBoundsMultiplier * faceLayoutGuideFrame.width
+        let minFaceWidth = faceLayoutGuideFrame.width / faceBoundsMultiplier
+
+        if boundingBox.width > maxFaceWidth {
             return .detectedFaceTooLarge
-        } else if boundingBox.width * faceBoundsMultiplier < faceLayoutGuideFrame.width {
+        } else if boundingBox.width < minFaceWidth {
             return .detectedFaceTooSmall
-        } else {
-            if abs(
-                boundingBox.midX - faceLayoutGuideFrame.midX
-            ) > faceBoundsThreshold {
-                return .detectedFaceOffCentre
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > faceBoundsThreshold {
-                return .detectedFaceOffCentre
-            } else {
-                return .detectedFaceAppropriateSizeAndPosition
-            }
         }
+
+        let horizontalOffset = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
+        let verticalOffset = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
+
+        if horizontalOffset > faceBoundsThreshold || verticalOffset > faceBoundsThreshold {
+            return .detectedFaceOffCentre
+        }
+
+        return .detectedFaceAppropriateSizeAndPosition
     }
 
     private func checkSelfieQuality(_ value: SelfieQualityData) -> Bool {
