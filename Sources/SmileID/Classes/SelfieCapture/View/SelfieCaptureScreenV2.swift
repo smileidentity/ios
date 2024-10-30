@@ -1,68 +1,84 @@
-import Lottie
 import SwiftUI
 
 public struct SelfieCaptureScreenV2: View {
     @ObservedObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
 
+    private let faceShape = FaceShape()
     @Environment(\.modalMode) private var modalMode
 
     public var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 10) {
-                ZStack {
-                    CameraView(
-                        cameraManager: viewModel.cameraManager,
-                        selfieViewModel: viewModel
-                    )
-                    .cornerRadius(40)
-
-                    if let selfieImage = viewModel.selfieImage,
-                        viewModel.processingState != nil {
-                        SelfiePreviewView(image: selfieImage)
-                    }
-
-                    RoundedRectangle(cornerRadius: 40)
-                        .fill(SmileID.theme.tertiary.opacity(0.8))
-                        .reverseMask(alignment: .top) {
-                            FaceShape()
-                                .frame(width: 250, height: 350)
-                                .padding(.top, 60)
-                        }
-                    VStack {
-                        ZStack {
-                            FaceBoundingArea(
-                                faceInBounds: viewModel.faceInBounds,
-                                selfieCaptured: viewModel.selfieCaptured,
-                                showGuideAnimation: viewModel.showGuideAnimation,
-                                guideAnimation: viewModel.userInstruction?.guideAnimation
-                            )
-                            if let currentLivenessTask = viewModel.livenessCheckManager.currentTask {
-                                LivenessGuidesView(
-                                    currentLivenessTask: currentLivenessTask,
-                                    topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
-                                    rightArcProgress: $viewModel.livenessCheckManager.lookRightProgress,
-                                    leftArcProgress: $viewModel.livenessCheckManager.lookLeftProgress
-                                )
-                            }
-                        }
-                        .padding(.top, 50)
-                        Spacer()
-                        UserInstructionsView(
-                            instruction: viewModel.userInstruction?.instruction ?? ""
+                switch viewModel.selfieCaptureState {
+                case .capturingSelfie:
+                    ZStack {
+                        CameraView(
+                            cameraManager: viewModel.cameraManager,
+                            selfieViewModel: viewModel
                         )
-                        Spacer()
-                    }
+                        .cornerRadius(40)
 
-                    if let processingState = viewModel.processingState {
+                        RoundedRectangle(cornerRadius: 40)
+                            .fill(SmileID.theme.tertiary.opacity(0.8))
+                            .reverseMask(alignment: .top) {
+                                faceShape
+                                    .frame(width: 250, height: 350)
+                                    .padding(.top, 60)
+                            }
+                        VStack {
+                            ZStack {
+                                FaceBoundingArea(
+                                    faceInBounds: viewModel.faceInBounds,
+                                    selfieCaptured: viewModel.selfieCaptured,
+                                    showGuideAnimation: viewModel.showGuideAnimation,
+                                    guideAnimation: viewModel.userInstruction?.guideAnimation
+                                )
+                                if let currentLivenessTask = viewModel.livenessCheckManager.currentTask {
+                                    LivenessGuidesView(
+                                        currentLivenessTask: currentLivenessTask,
+                                        topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
+                                        rightArcProgress: $viewModel.livenessCheckManager.lookRightProgress,
+                                        leftArcProgress: $viewModel.livenessCheckManager.lookLeftProgress
+                                    )
+                                }
+                            }
+                            .padding(.top, 50)
+                            Spacer()
+                            UserInstructionsView(
+                                instruction: viewModel.userInstruction?.instruction ?? ""
+                            )
+                            Spacer()
+                        }
+                    }
+                    .selfieCaptureFrameBackground()
+                case let .processing(processingState):
+                    ZStack {
+                        if let selfieImage = viewModel.selfieImage {
+                            SelfiePreviewView(image: selfieImage)
+                        }
+                        RoundedRectangle(cornerRadius: 40)
+                            .fill(SmileID.theme.tertiary.opacity(0.8))
+                            .reverseMask(alignment: .top) {
+                                faceShape
+                                    .frame(width: 250, height: 350)
+                                    .padding(.top, 60)
+                            }
                         SubmissionStatusView(processState: processingState)
                             .padding(.bottom, 40)
                     }
+                    .selfieCaptureFrameBackground()
+
+                    Spacer()
+                    SelfieActionsView(
+                        processingState: processingState,
+                        retryAction: { viewModel.perform(action: .retryJobSubmission) },
+                        doneAction: {
+                            modalMode.wrappedValue = false
+                            viewModel.perform(action: .jobProcessingDone)
+                        }
+                    )
                 }
-                .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 4)
-                .frame(height: 520)
-                .padding(.horizontal)
-                .padding(.top, 40)
 
                 if showAttribution {
                     Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
@@ -70,16 +86,15 @@ public struct SelfieCaptureScreenV2: View {
 
                 Spacer()
 
-                SelfieActionsView(
-                    processingState: viewModel.processingState,
-                    retryAction: {
-                        viewModel.perform(action: .retryJobSubmission)
-                    },
-                    cancelAction: {
-                        modalMode.wrappedValue = false
-                        viewModel.perform(action: .jobProcessingDone)
-                    }
-                )
+                Button {
+                    modalMode.wrappedValue = false
+                    viewModel.perform(action: .jobProcessingDone)
+                } label: {
+                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                        .font(SmileID.theme.button)
+                        .foregroundColor(SmileID.theme.error)
+                }
+                .padding(.top)
             }
             .navigationBarHidden(true)
             .onAppear {
@@ -105,5 +120,15 @@ public struct SelfieCaptureScreenV2: View {
                 )
             }
         }
+    }
+}
+
+extension View {
+    func selfieCaptureFrameBackground() -> some View {
+        self
+            .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 4)
+            .frame(height: 520)
+            .padding(.horizontal)
+            .padding(.top, 40)
     }
 }

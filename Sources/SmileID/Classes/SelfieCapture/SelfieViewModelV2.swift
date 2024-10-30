@@ -49,8 +49,7 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var faceInBounds: Bool = false
     @Published private(set) var selfieCaptured: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
-    @Published var showProcessingView: Bool = false
-    @Published public private(set) var processingState: ProcessingState?
+    @Published private(set) var selfieCaptureState: SelfieCaptureState = .capturingSelfie
 
     // MARK: Injected Properties
     private let isEnroll: Bool
@@ -62,6 +61,11 @@ public class SelfieViewModelV2: ObservableObject {
     private let useStrictMode: Bool
     private let onResult: SmartSelfieResultDelegate
     private var localMetadata: LocalMetadata
+
+    enum SelfieCaptureState: Equatable {
+        case capturingSelfie
+        case processing(ProcessingState)
+    }
 
     public init(
         isEnroll: Bool,
@@ -202,7 +206,7 @@ extension SelfieViewModelV2 {
     private func resetSelfieCaptureState() {
         selfieImage = nil
         livenessImages = []
-        processingState = nil
+        selfieCaptureState = .capturingSelfie
         forcedFailure = false
     }
 
@@ -314,8 +318,7 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 extension SelfieViewModelV2: SelfieSubmissionDelegate {
     public func submitJob() async throws {
         DispatchQueue.main.async {
-            self.processingState = .inProgress
-            self.showProcessingView = true
+            self.selfieCaptureState = .processing(.inProgress)
         }
 
         // Add metadata before submission
@@ -323,7 +326,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
 
         if skipApiSubmission {
             // Skip API submission and update processing state to success
-            self.processingState = .success
+            self.selfieCaptureState = .processing(.success)
             return
         }
         // Create an instance of SelfieSubmissionManager to manage the submission process
@@ -348,7 +351,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
-        if let selfieImage = selfieImage,
+        if let selfieImageURL = selfieImageURL,
            let selfiePath = getRelativePath(from: selfieImageURL),
             livenessImages.count == numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
@@ -371,7 +374,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
         DispatchQueue.main.async {
             self.apiResponse = apiResponse
-            self.processingState = .success
+            self.selfieCaptureState = .processing(.success)
         }
     }
 
@@ -384,7 +387,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
             self.error = error
             self.errorMessage = errorMessage
             self.errorMessageRes = errorMessageRes
-            self.processingState = .error
+            self.selfieCaptureState = .processing(.error)
         }
     }
 }

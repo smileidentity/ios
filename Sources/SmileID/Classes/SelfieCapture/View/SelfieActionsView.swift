@@ -1,27 +1,25 @@
 import SwiftUI
 
 struct SelfieActionsView: View {
-    var processingState: ProcessingState?
+    var processingState: ProcessingState
     var retryAction: () -> Void
-    var cancelAction: () -> Void
+    var doneAction: () -> Void
 
     var body: some View {
         VStack {
-            if let processingState = processingState,
-                processingState == .error {
+            Spacer()
+            switch processingState {
+            case .inProgress:
+                EmptyView()
+            case .success:
+                SmileButton(title: "Action.Done") {
+                    doneAction()
+                }
+            case .error:
                 SmileButton(title: "Confirmation.Retry") {
                     retryAction()
                 }
             }
-            Spacer()
-            Button {
-                cancelAction()
-            } label: {
-                Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                    .font(SmileID.theme.button)
-                    .foregroundColor(SmileID.theme.error)
-            }
-            .padding(.top)
         }
         .padding(.horizontal, 65)
     }
