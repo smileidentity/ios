@@ -13,7 +13,7 @@ public class SelfieViewModelV2: ObservableObject {
     private let metadataTimerStart = MonotonicTime()
 
     // MARK: Private Properties
-    private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
+    private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 250, height: 350)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
     var selfieImage: UIImage?
     var selfieImageURL: URL? {

@@ -10,18 +10,6 @@ public struct SelfieCaptureScreenV2: View {
     public var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 10) {
-                HStack {
-                    Spacer()
-                    Button {
-                        modalMode.wrappedValue = false
-                        viewModel.perform(action: .jobProcessingDone)
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title)
-                    }
-                }
-                .padding(.horizontal, 20)
-
                 ZStack {
                     CameraView(
                         cameraManager: viewModel.cameraManager,
@@ -49,7 +37,6 @@ public struct SelfieCaptureScreenV2: View {
                                 showGuideAnimation: viewModel.showGuideAnimation,
                                 guideAnimation: viewModel.userInstruction?.guideAnimation
                             )
-                            .hidden()
                             if let currentLivenessTask = viewModel.livenessCheckManager.currentTask {
                                 LivenessGuidesView(
                                     currentLivenessTask: currentLivenessTask,
@@ -67,16 +54,15 @@ public struct SelfieCaptureScreenV2: View {
                         Spacer()
                     }
 
-//                    if let processingState = viewModel.processingState {
-//                        SubmissionStatusView(processState: processingState)
-//                    }
-                    SubmissionStatusView(processState: .inProgress)
-                        .padding(.bottom, 40)
+                    if let processingState = viewModel.processingState {
+                        SubmissionStatusView(processState: processingState)
+                            .padding(.bottom, 40)
+                    }
                 }
                 .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 4)
-                .padding(.horizontal)
                 .frame(height: 520)
-                // .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal)
+                .padding(.top, 40)
 
                 if showAttribution {
                     Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
@@ -85,6 +71,7 @@ public struct SelfieCaptureScreenV2: View {
                 Spacer()
 
                 SelfieActionsView(
+                    processingState: viewModel.processingState,
                     retryAction: {
                         viewModel.perform(action: .retryJobSubmission)
                     },

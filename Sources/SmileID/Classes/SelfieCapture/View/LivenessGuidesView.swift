@@ -8,21 +8,19 @@ struct LivenessGuidesView: View {
 
     var body: some View {
         ZStack {
-            // Top Arc
-            ArcProgressView(progress: topArcProgress)
+            ArcProgressView(position: .top, progress: topArcProgress)
                 .rotationEffect(Angle(degrees: 60))
                 .opacity(currentLivenessTask == .lookUp ? 1.0 : 0.0)
                 .animation(.easeInOut(duration: 0.2), value: currentLivenessTask)
+                .padding(.bottom, 120)
 
-            // Right Arc
-            ArcProgressView(progress: rightArcProgress, clockwise: true)
-                .rotationEffect(Angle(degrees: -150))
+            ArcProgressView(position: .right, progress: rightArcProgress, clockwise: true)
+                .rotationEffect(Angle(degrees: -155))
                 .opacity(currentLivenessTask == .lookRight ? 1.0 : 0.0)
                 .animation(.easeInOut(duration: 0.2), value: currentLivenessTask)
 
-            // Left Arc
-            ArcProgressView(progress: leftArcProgress)
-                .rotationEffect(Angle(degrees: -30))
+            ArcProgressView(position: .left, progress: leftArcProgress)
+                .rotationEffect(Angle(degrees: -25))
                 .opacity(currentLivenessTask == .lookLeft ? 1.0 : 0.0)
                 .animation(.easeInOut(duration: 0.2), value: currentLivenessTask)
         }

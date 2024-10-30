@@ -24,7 +24,7 @@ struct FaceBoundingArea: View {
                 showGuideAnimation {
                 FaceShape()
                     .fill(.black.opacity(0.5))
-                    .frame(width: 250, height: 350)
+                    .frame(width: 260, height: 360)
                     .overlay(
                         LottieView {
                             try await DotLottieFile

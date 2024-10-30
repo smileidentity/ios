@@ -1,14 +1,19 @@
 import SwiftUI
 
 struct SelfieActionsView: View {
+    var processingState: ProcessingState?
     var retryAction: () -> Void
     var cancelAction: () -> Void
-    
+
     var body: some View {
         VStack {
-            SmileButton(title: "Confirmation.Retry") {
-                retryAction()
+            if let processingState = processingState,
+                processingState == .error {
+                SmileButton(title: "Confirmation.Retry") {
+                    retryAction()
+                }
             }
+            Spacer()
             Button {
                 cancelAction()
             } label: {
