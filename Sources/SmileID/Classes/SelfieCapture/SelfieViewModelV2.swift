@@ -1,6 +1,6 @@
 import ARKit
 import Combine
-import Foundation
+import SwiftUI
 
 public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
@@ -65,6 +65,15 @@ public class SelfieViewModelV2: ObservableObject {
     enum SelfieCaptureState: Equatable {
         case capturingSelfie
         case processing(ProcessingState)
+
+        var title: String {
+            switch self {
+            case .capturingSelfie:
+                return "Instructions.Capturing"
+            case let .processing(processingState):
+                return processingState.title
+            }
+        }
     }
 
     public init(
@@ -122,13 +131,13 @@ public class SelfieViewModelV2: ObservableObject {
             .store(in: &subscribers)
 
         cameraManager.sampleBufferPublisher
-            // Drop the first ~2 seconds to allow the user to settle in
             .throttle(
                 for: 0.35,
                 scheduler: DispatchQueue.global(qos: .userInitiated),
                 latest: true
             )
-            .dropFirst(5)
+            // Drop the first ~2 seconds to allow the user to settle in
+             .dropFirst(5)
             .compactMap { $0 }
             .sink(receiveValue: analyzeFrame)
             .store(in: &subscribers)
@@ -149,8 +158,8 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Actions
     func perform(action: SelfieViewModelAction) {
         switch action {
-        case let .windowSizeDetected(windowRect):
-            handleWindowSizeChanged(toRect: windowRect)
+        case let .windowSizeDetected(windowRect, safeAreaInsets):
+            handleWindowSizeChanged(toRect: windowRect, edgeInsets: safeAreaInsets)
         case .activeLivenessCompleted:
             handleSubmission(forcedFailure: false)
         case .activeLivenessTimeout:
@@ -210,8 +219,9 @@ extension SelfieViewModelV2 {
         forcedFailure = false
     }
 
-    private func handleWindowSizeChanged(toRect: CGSize) {
-        let topPadding: CGFloat = 100
+    private func handleWindowSizeChanged(toRect: CGSize, edgeInsets: EdgeInsets) {
+        let topPadding: CGFloat = edgeInsets.top + 100
+        print(edgeInsets.top)
         faceLayoutGuideFrame = CGRect(
             x: (toRect.width / 2) - faceLayoutGuideFrame.width / 2,
             y: topPadding,

@@ -12,10 +12,6 @@ struct FaceBoundingArea: View {
 
     var body: some View {
         ZStack {
-            Rectangle()
-                .stroke(Color.red, lineWidth: 5.0)
-                .frame(width: 250, height: 350)
-
             // Face Bounds Indicator
             faceShape
                 .stroke(
@@ -23,7 +19,6 @@ struct FaceBoundingArea: View {
                     style: StrokeStyle(lineWidth: 10)
                 )
                 .frame(width: 270, height: 370)
-                .opacity(0)
 
             if let guideAnimation = guideAnimation,
                 showGuideAnimation {

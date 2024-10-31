@@ -1,9 +1,9 @@
-import Foundation
+import SwiftUI
 
 enum SelfieViewModelAction {
     // View Setup Actions
     case onViewAppear
-    case windowSizeDetected(CGSize)
+    case windowSizeDetected(CGSize, EdgeInsets)
 
     // Face Detection Actions
     case activeLivenessCompleted

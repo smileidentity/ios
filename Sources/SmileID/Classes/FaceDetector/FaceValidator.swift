@@ -17,7 +17,7 @@ final class FaceValidator {
     // MARK: Constants
     private let selfieQualityThreshold: Float = 0.5
     private let luminanceThreshold: ClosedRange<Int> = 80...200
-    private let faceBoundsMultiplier: CGFloat = 1.2
+    private let faceBoundsMultiplier: CGFloat = 1.4
     private let faceBoundsThreshold: CGFloat = 50
 
     init() {}
@@ -33,7 +33,10 @@ final class FaceValidator {
         currentLivenessTask: LivenessTask?
     ) {
         // check face bounds
-        let faceBoundsState = checkAcceptableBounds(using: faceGeometry.boundingBox)
+        let faceBoundsState = checkFaceSizeAndPosition(
+            using: faceGeometry.boundingBox,
+            shouldCheckCentering: currentLivenessTask == nil
+        )
         let isAcceptableBounds = faceBoundsState == .detectedFaceAppropriateSizeAndPosition
 
         // check brightness
@@ -98,8 +101,8 @@ final class FaceValidator {
     }
 
     // MARK: Validation Checks
-    private func checkAcceptableBounds(using boundingBox: CGRect) -> FaceBoundsState {
-        let maxFaceWidth = faceBoundsMultiplier * faceLayoutGuideFrame.width
+    private func checkFaceSizeAndPosition(using boundingBox: CGRect, shouldCheckCentering: Bool) -> FaceBoundsState {
+        let maxFaceWidth = faceLayoutGuideFrame.width - 20
         let minFaceWidth = faceLayoutGuideFrame.width / faceBoundsMultiplier
 
         if boundingBox.width > maxFaceWidth {
@@ -108,11 +111,13 @@ final class FaceValidator {
             return .detectedFaceTooSmall
         }
 
-        let horizontalOffset = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
-        let verticalOffset = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
-
-        if horizontalOffset > faceBoundsThreshold || verticalOffset > faceBoundsThreshold {
-            return .detectedFaceOffCentre
+        if shouldCheckCentering {
+            let horizontalOffset = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
+            let verticalOffset = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
+            
+            if horizontalOffset > faceBoundsThreshold || verticalOffset > faceBoundsThreshold {
+                return .detectedFaceOffCentre
+            }
         }
 
         return .detectedFaceAppropriateSizeAndPosition

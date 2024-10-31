@@ -45,13 +45,18 @@ public struct SelfieCaptureScreenV2: View {
                             }
                             .padding(.top, 50)
                             Spacer()
-                            UserInstructionsView(
-                                instruction: viewModel.userInstruction?.instruction ?? ""
-                            )
+                            if let userInstruction = viewModel.userInstruction {
+                                UserInstructionsView(
+                                    instruction: userInstruction.instruction
+                                )
+                            }
                             Spacer()
                         }
                     }
                     .selfieCaptureFrameBackground()
+                    if showAttribution {
+                        Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                    }
                 case let .processing(processingState):
                     ZStack {
                         if let selfieImage = viewModel.selfieImage {
@@ -68,6 +73,9 @@ public struct SelfieCaptureScreenV2: View {
                             .padding(.bottom, 40)
                     }
                     .selfieCaptureFrameBackground()
+                    if showAttribution {
+                        Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                    }
 
                     Spacer()
                     SelfieActionsView(
@@ -78,10 +86,6 @@ public struct SelfieCaptureScreenV2: View {
                             viewModel.perform(action: .jobProcessingDone)
                         }
                     )
-                }
-
-                if showAttribution {
-                    Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                 }
 
                 Spacer()
@@ -98,7 +102,7 @@ public struct SelfieCaptureScreenV2: View {
             }
             .navigationBarHidden(true)
             .onAppear {
-                viewModel.perform(action: .windowSizeDetected(proxy.size))
+                viewModel.perform(action: .windowSizeDetected(proxy.size, proxy.safeAreaInsets))
                 viewModel.perform(action: .onViewAppear)
             }
             .onDisappear {
