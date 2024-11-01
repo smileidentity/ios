@@ -4,8 +4,8 @@ struct ArcProgressView: View {
     // Configuration Properties
     var strokeLineWidth: CGFloat = 12
     var arcSize: CGSize = .init(width: 270, height: 270)
-    var progressTrackColor: Color = .gray.opacity(0.3)
-    var progressFillColor: Color = SmileID.theme.onDark
+    var progressTrackColor: Color = SmileID.theme.onDark
+    var progressFillColor: Color = SmileID.theme.success
 
     // View Properties
     var position: Position
