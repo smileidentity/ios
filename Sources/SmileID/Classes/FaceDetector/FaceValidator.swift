@@ -114,7 +114,7 @@ final class FaceValidator {
         if shouldCheckCentering {
             let horizontalOffset = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
             let verticalOffset = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
-            
+
             if horizontalOffset > faceBoundsThreshold || verticalOffset > faceBoundsThreshold {
                 return .detectedFaceOffCentre
             }
