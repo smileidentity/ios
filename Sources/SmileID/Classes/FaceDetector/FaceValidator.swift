@@ -17,7 +17,7 @@ final class FaceValidator {
     // MARK: Constants
     private let selfieQualityThreshold: Float = 0.5
     private let luminanceThreshold: ClosedRange<Int> = 80...200
-    private let faceBoundsMultiplier: CGFloat = 1.4
+    private let faceBoundsMultiplier: CGFloat = 1.5
     private let faceBoundsThreshold: CGFloat = 50
 
     init() {}
