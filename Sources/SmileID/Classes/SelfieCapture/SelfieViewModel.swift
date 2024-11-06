@@ -304,7 +304,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     func cleanup() {
         do {
-            try LocalStorage.delete(at: [jobId])
+            try LocalStorage.deleteLivenessAndSelfieFiles(at: [jobId])
         } catch {
             debugPrint(error.localizedDescription)
         }
