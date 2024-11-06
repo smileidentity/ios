@@ -10,16 +10,16 @@ struct HomeView: View {
         _viewModel = StateObject(wrappedValue: HomeViewModel(config: config))
     }
 
+    let columns = [GridItem(.flexible()), GridItem(.flexible())]
+
     var body: some View {
         NavigationView {
             VStack(spacing: 24) {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
-
-                MyVerticalGrid(
-                    maxColumns: 2,
-                    items: [
+                ScrollView(showsIndicators: false) {
+                    LazyVGrid(columns: columns) {
                         ProductCell(
                             image: "smart_selfie_enroll",
                             name: "SmartSelfie™ Enrollment",
@@ -38,7 +38,7 @@ struct HomeView: View {
                                     )
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "smart_selfie_authentication",
                             name: "SmartSelfie™ Authentication",
@@ -51,7 +51,7 @@ struct HomeView: View {
                                     delegate: viewModel
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "smart_selfie_enroll",
                             name: "SmartSelfie™ Enrollment (Strict Mode)",
@@ -71,7 +71,7 @@ struct HomeView: View {
                                     )
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "smart_selfie_authentication",
                             name: "SmartSelfie™ Authentication (Strict Mode)",
@@ -85,7 +85,7 @@ struct HomeView: View {
                                     delegate: viewModel
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "enhanced_kyc",
                             name: "Enhanced KYC",
@@ -101,7 +101,7 @@ struct HomeView: View {
                                     )
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "biometric",
                             name: "Biometric KYC",
@@ -117,7 +117,7 @@ struct HomeView: View {
                                     )
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "document",
                             name: "\nDocument Verification",
@@ -131,7 +131,7 @@ struct HomeView: View {
                                     delegate: viewModel
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "enhanced_doc_v",
                             name: "Enhanced Document Verification",
@@ -146,10 +146,8 @@ struct HomeView: View {
                                 )
                             }
                         )
-                    ].map {
-                        AnyView($0)
                     }
-                )
+                }
 
                 Text("Partner \(viewModel.partnerId) - Version \(version) - Build \(build)")
                     .font(SmileID.theme.body)

@@ -28,7 +28,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private var localMetadata: LocalMetadata
     private let faceDetector = FaceDetector()
 
-    var cameraManager = CameraManager(orientation: .portrait)
+    var cameraManager = CameraManager.shared
     var shouldAnalyzeImages = true
     var lastAutoCaptureTime = Date()
     var previousHeadRoll = Double.infinity
@@ -95,8 +95,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             .store(in: &subscribers)
 
         localMetadata.addMetadata(
-            useBackCamera ? Metadatum.SelfieImageOrigin(cameraFacing: .backCamera)
-                : Metadatum.SelfieImageOrigin(cameraFacing: .frontCamera))
+            useBackCamera
+            ? Metadatum.SelfieImageOrigin(cameraFacing: .backCamera)
+            : Metadatum.SelfieImageOrigin(cameraFacing: .frontCamera)
+        )
     }
 
     let metadataTimerStart = MonotonicTime()
@@ -382,6 +384,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         callbackUrl: SmileID.callbackUrl,
                         sandboxResult: nil,
                         allowNewEnroll: allowNewEnroll,
+                        failureReason: nil,
                         metadata: localMetadata.metadata
                     )
                 } else {
@@ -394,6 +397,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         partnerParams: extraPartnerParams,
                         callbackUrl: SmileID.callbackUrl,
                         sandboxResult: nil,
+                        failureReason: nil,
                         metadata: localMetadata.metadata
                     )
                 }

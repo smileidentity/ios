@@ -1,18 +1,25 @@
 import SwiftUI
 
 struct UserInstructionsView: View {
-    @ObservedObject var viewModel: SelfieViewModelV2
+    var instruction: String
+    var message: String?
 
     var body: some View {
         VStack {
-            Text(SmileIDResourcesHelper.localizedString(for: viewModel.userInstruction?.instruction ?? ""))
-                .multilineTextAlignment(.center)
+            Spacer(minLength: 0)
+            Text(SmileIDResourcesHelper.localizedString(for: instruction))
                 .font(SmileID.theme.header2)
-                .foregroundColor(SmileID.theme.accent)
-                .padding(.top, 80)
-                .padding(.horizontal, 50)
-            Spacer()
+                .foregroundColor(SmileID.theme.onDark)
+                .multilineTextAlignment(.center)
+                .lineLimit(3)
+                .minimumScaleFactor(0.8)
+            if let message = message {
+                Text(message)
+                    .multilineTextAlignment(.center)
+                    .font(SmileID.theme.header5)
+                    .foregroundColor(SmileID.theme.onDark)
+            }
         }
-        .padding()
+        .padding(20)
     }
 }

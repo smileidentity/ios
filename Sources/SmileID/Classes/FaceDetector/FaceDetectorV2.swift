@@ -67,12 +67,14 @@ class FaceDetectorV2: NSObject {
                 let faceObservation = faceDetections.first,
                 let faceQualityObservation = faceQualityObservations.first
             else {
-                self.resultDelegate?.faceDetector(self, didFailWithError: FaceDetectorError.noFaceDetected)
+                self.resultDelegate?.faceDetector(
+                    self, didFailWithError: FaceDetectorError.noFaceDetected)
                 return
             }
 
             let convertedBoundingBox =
-                self.viewDelegate?.convertFromMetadataToPreviewRect(rect: faceObservation.boundingBox) ?? .zero
+                self.viewDelegate?.convertFromMetadataToPreviewRect(
+                    rect: faceObservation.boundingBox) ?? .zero
 
             let uiImage = UIImage(pixelBuffer: imageBuffer)
             let brightness = self.calculateBrightness(uiImage)
@@ -166,7 +168,10 @@ class FaceDetectorV2: NSObject {
         }
 
         let croppedImage = UIImage(cgImage: croppedCGImage)
-        guard let resizedImage = croppedImage.pixelBuffer(width: cropSize.width, height: cropSize.height) else {
+        guard
+            let resizedImage = croppedImage.pixelBuffer(
+                width: cropSize.width, height: cropSize.height)
+        else {
             throw FaceDetectorError.unableToCropImage
         }
 

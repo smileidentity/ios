@@ -124,6 +124,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         callbackUrl _: String?,
         sandboxResult _: Int?,
         allowNewEnroll _: Bool?,
+        failureReason: FailureReason?,
         metadata _: Metadata
     ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {
@@ -154,6 +155,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         partnerParams _: [String: String]?,
         callbackUrl _: String?,
         sandboxResult _: Int?,
+        failureReason: FailureReason?,
         metadata _: Metadata
     ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {

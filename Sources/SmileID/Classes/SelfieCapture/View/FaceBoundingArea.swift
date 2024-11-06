@@ -3,28 +3,28 @@ import SwiftUI
 
 struct FaceBoundingArea: View {
     var faceInBounds: Bool
+    var selfieCaptured: Bool
     var showGuideAnimation: Bool
     var guideAnimation: CaptureGuideAnimation?
 
+    private let faceShape = FaceShape()
     @State private var playbackMode: LottiePlaybackMode = .paused
 
     var body: some View {
         ZStack {
             // Face Bounds Indicator
-            if !faceInBounds {
-                Circle()
-                    .stroke(
-                        faceInBounds ? .green : .red,
-                        lineWidth: 10
-                    )
-                    .frame(width: 275, height: 275)
-            }
+            faceShape
+                .stroke(
+                    faceInBounds ? selfieCaptured ? .clear : SmileID.theme.success : SmileID.theme.error,
+                    style: StrokeStyle(lineWidth: 10)
+                )
+                .frame(width: 270, height: 370)
 
             if let guideAnimation = guideAnimation,
                 showGuideAnimation {
-                Circle()
+                faceShape
                     .fill(.black.opacity(0.5))
-                    .frame(width: 260, height: 260)
+                    .frame(width: 270, height: 370)
                     .overlay(
                         LottieView {
                             try await DotLottieFile
@@ -36,7 +36,7 @@ struct FaceBoundingArea: View {
                         .playbackMode(playbackMode)
                         .frame(width: 224, height: 224)
                     )
-                    .clipShape(.circle)
+                    .clipShape(faceShape)
                     .onAppear {
                         playbackMode = getPlaybackMode(guideAnimation)
                     }

@@ -17,7 +17,7 @@ final class FaceValidator {
     // MARK: Constants
     private let selfieQualityThreshold: Float = 0.5
     private let luminanceThreshold: ClosedRange<Int> = 80...200
-    private let faceBoundsMultiplier: CGFloat = 1.2
+    private let faceBoundsMultiplier: CGFloat = 1.5
     private let faceBoundsThreshold: CGFloat = 50
 
     init() {}
@@ -33,7 +33,10 @@ final class FaceValidator {
         currentLivenessTask: LivenessTask?
     ) {
         // check face bounds
-        let faceBoundsState = checkAcceptableBounds(using: faceGeometry.boundingBox)
+        let faceBoundsState = checkFaceSizeAndPosition(
+            using: faceGeometry.boundingBox,
+            shouldCheckCentering: currentLivenessTask == nil
+        )
         let isAcceptableBounds = faceBoundsState == .detectedFaceAppropriateSizeAndPosition
 
         // check brightness
@@ -98,22 +101,26 @@ final class FaceValidator {
     }
 
     // MARK: Validation Checks
-    private func checkAcceptableBounds(using boundingBox: CGRect) -> FaceBoundsState {
-        if boundingBox.width > faceBoundsMultiplier * faceLayoutGuideFrame.width {
+    private func checkFaceSizeAndPosition(using boundingBox: CGRect, shouldCheckCentering: Bool) -> FaceBoundsState {
+        let maxFaceWidth = faceLayoutGuideFrame.width - 20
+        let minFaceWidth = faceLayoutGuideFrame.width / faceBoundsMultiplier
+
+        if boundingBox.width > maxFaceWidth {
             return .detectedFaceTooLarge
-        } else if boundingBox.width * faceBoundsMultiplier < faceLayoutGuideFrame.width {
+        } else if boundingBox.width < minFaceWidth {
             return .detectedFaceTooSmall
-        } else {
-            if abs(
-                boundingBox.midX - faceLayoutGuideFrame.midX
-            ) > faceBoundsThreshold {
+        }
+
+        if shouldCheckCentering {
+            let horizontalOffset = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
+            let verticalOffset = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
+
+            if horizontalOffset > faceBoundsThreshold || verticalOffset > faceBoundsThreshold {
                 return .detectedFaceOffCentre
-            } else if abs(boundingBox.midY - faceLayoutGuideFrame.midY) > faceBoundsThreshold {
-                return .detectedFaceOffCentre
-            } else {
-                return .detectedFaceAppropriateSizeAndPosition
             }
         }
+
+        return .detectedFaceAppropriateSizeAndPosition
     }
 
     private func checkSelfieQuality(_ value: SelfieQualityData) -> Bool {
@@ -125,8 +132,6 @@ final class FaceValidator {
         _ isAcceptableBrightness: Bool,
         _ isAcceptableSelfieQuality: Bool
     ) -> Bool {
-        return isAcceptableBounds &&
-        isAcceptableBrightness &&
-        isAcceptableSelfieQuality
+        return isAcceptableBounds && isAcceptableBrightness && isAcceptableSelfieQuality
     }
 }
