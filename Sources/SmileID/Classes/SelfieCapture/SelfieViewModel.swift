@@ -137,7 +137,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         }
                         selfieImage = nil
                         livenessImages = []
-                        cleanup()
+                        cleanUpSelfieCapture()
                     }
                     return
                 }
@@ -297,12 +297,12 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         selfieImage = nil
         livenessImages = []
         shouldAnalyzeImages = true
-        cleanup()
+        cleanUpSelfieCapture()
         localMetadata.metadata.removeAllOfType(Metadatum.SelfieImageOrigin.self)
         localMetadata.metadata.removeAllOfType(Metadatum.SelfieCaptureDuration.self)
     }
 
-    func cleanup() {
+    func cleanUpSelfieCapture() {
         do {
             try LocalStorage.deleteLivenessAndSelfieFiles(at: [jobId])
         } catch {
