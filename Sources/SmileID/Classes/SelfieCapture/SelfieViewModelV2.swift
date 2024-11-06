@@ -161,15 +161,18 @@ public class SelfieViewModelV2: ObservableObject {
         case let .windowSizeDetected(windowRect, safeAreaInsets):
             handleWindowSizeChanged(toRect: windowRect, edgeInsets: safeAreaInsets)
         case .activeLivenessCompleted:
-            handleSubmission(forcedFailure: false)
+            self.cameraManager.pauseSession()
+            handleSubmission()
         case .activeLivenessTimeout:
-            handleSubmission(forcedFailure: true)
+            self.forcedFailure = true
+            self.cameraManager.pauseSession()
+            handleSubmission()
         case .onViewAppear:
             handleViewAppeared()
         case .jobProcessingDone:
             onFinished(callback: onResult)
         case .retryJobSubmission:
-            handleSubmission(forcedFailure: false)
+            handleSubmission()
         case .openApplicationSettings:
             openSettings()
         case let .handleError(error):
@@ -271,8 +274,10 @@ extension SelfieViewModelV2 {
         print(error.localizedDescription)
     }
 
-    private func handleSubmission(forcedFailure: Bool) {
-        self.forcedFailure = forcedFailure
+    private func handleSubmission() {
+        DispatchQueue.main.async {
+            self.selfieCaptureState = .processing(.inProgress)
+        }
         Task {
             try await submitJob()
         }
@@ -327,10 +332,6 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 // MARK: Selfie Job Submission
 extension SelfieViewModelV2: SelfieSubmissionDelegate {
     public func submitJob() async throws {
-        DispatchQueue.main.async {
-            self.selfieCaptureState = .processing(.inProgress)
-        }
-
         // Add metadata before submission
         addSelfieCaptureDurationMetaData()
 

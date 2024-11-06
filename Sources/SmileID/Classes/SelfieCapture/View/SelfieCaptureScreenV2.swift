@@ -50,7 +50,6 @@ public struct SelfieCaptureScreenV2: View {
                                     instruction: userInstruction.instruction
                                 )
                             }
-                            Spacer()
                         }
                     }
                     .selfieCaptureFrameBackground()
@@ -69,6 +68,16 @@ public struct SelfieCaptureScreenV2: View {
                                     .frame(width: 250, height: 350)
                                     .padding(.top, 60)
                             }
+                        VStack {
+                            Spacer()
+                            UserInstructionsView(
+                                instruction: processingState.title,
+                                message: getErrorSubtitle(
+                                    errorMessageRes: viewModel.errorMessageRes,
+                                    errorMessage: viewModel.errorMessage
+                                )
+                            )
+                        }
                         SubmissionStatusView(processState: processingState)
                             .padding(.bottom, 40)
                     }
@@ -98,7 +107,6 @@ public struct SelfieCaptureScreenV2: View {
                         .font(SmileID.theme.button)
                         .foregroundColor(SmileID.theme.error)
                 }
-                .padding(.top)
             }
             .navigationBarHidden(true)
             .onAppear {
