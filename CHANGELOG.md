@@ -1,5 +1,9 @@
 # Release Notes
 
+## 10.2.16
+### Fixed
+* Clear images on retry or start capture with the same jobId
+
 ## 10.2.15
 
 ### Changed
