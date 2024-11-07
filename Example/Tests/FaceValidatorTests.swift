@@ -22,187 +22,122 @@ class FaceValidatorTests: XCTestCase {
     }
 
     func testValidateWithValidFace() {
-        let faceGeometry = FaceGeometryData(
-            boundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
-            roll: 0.0,
-            yaw: 0.0,
-            pitch: 0.0,
-            direction: .none
+        let result = performValidation(
+            faceBoundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
+            selfieQualityData: SelfieQualityData(failed: 0.1, passed: 0.9),
+            brighness: 100
         )
 
-        faceValidator.validate(
-            faceGeometry: faceGeometry,
-            selfieQuality: SelfieQualityData(failed: 0.1, passed: 0.9),
-            brightness: 100,
-            currentLivenessTask: nil
-        )
-
-        guard let mockValidationResult = mockDelegate.validationResult else {
-            XCTFail("Validation result should not be nil")
-            return
-        }
-
-        XCTAssertTrue(mockValidationResult.faceInBounds)
-        XCTAssertTrue(mockValidationResult.hasDetectedValidFace)
-        XCTAssertNil(mockValidationResult.userInstruction)
+        XCTAssertTrue(result.faceInBounds)
+        XCTAssertTrue(result.hasDetectedValidFace)
+        XCTAssertNil(result.userInstruction)
     }
 
     func testValidateWithFaceTooSmall() {
-        let faceGeometry = FaceGeometryData(
-            boundingBox: CGRect(x: 65, y: 164, width: 100, height: 100),
-            roll: 0.0,
-            yaw: 0.0,
-            pitch: 0.0,
-            direction: .none
+        let result = performValidation(
+            faceBoundingBox: CGRect(x: 65, y: 164, width: 100, height: 100),
+            selfieQualityData: SelfieQualityData(failed: 0.1, passed: 0.9),
+            brighness: 100
         )
 
-        faceValidator.validate(
-            faceGeometry: faceGeometry,
-            selfieQuality: SelfieQualityData(failed: 0.1, passed: 0.9),
-            brightness: 100,
-            currentLivenessTask: nil
-        )
-
-        guard let mockValidationResult = mockDelegate.validationResult else {
-            XCTFail("Validation result should not be nil")
-            return
-        }
-
-        XCTAssertFalse(mockValidationResult.faceInBounds)
-        XCTAssertFalse(mockValidationResult.hasDetectedValidFace)
-        XCTAssertEqual(mockValidationResult.userInstruction, .moveCloser)
+        XCTAssertFalse(result.faceInBounds)
+        XCTAssertFalse(result.hasDetectedValidFace)
+        XCTAssertEqual(result.userInstruction, .moveCloser)
     }
 
     func testValidateWithFaceTooLarge() {
-        let faceGeometry = FaceGeometryData(
-            boundingBox: CGRect(x: 65, y: 164, width: 250, height: 250),
-            roll: 0.0,
-            yaw: 0.0,
-            pitch: 0.0,
-            direction: .none
+        let result = performValidation(
+            faceBoundingBox: CGRect(x: 65, y: 164, width: 250, height: 250),
+            selfieQualityData: SelfieQualityData(failed: 0.1, passed: 0.9),
+            brighness: 100
         )
 
-        faceValidator.validate(
-            faceGeometry: faceGeometry,
-            selfieQuality: SelfieQualityData(failed: 0.1, passed: 0.9),
-            brightness: 100,
-            currentLivenessTask: nil
-        )
-
-        guard let mockValidationResult = mockDelegate.validationResult else {
-            XCTFail("Validation result should not be nil")
-            return
-        }
-
-        XCTAssertFalse(mockValidationResult.faceInBounds)
-        XCTAssertFalse(mockValidationResult.hasDetectedValidFace)
-        XCTAssertEqual(mockValidationResult.userInstruction, .moveBack)
+        XCTAssertFalse(result.faceInBounds)
+        XCTAssertFalse(result.hasDetectedValidFace)
+        XCTAssertEqual(result.userInstruction, .moveBack)
     }
+
     func testValidWithFaceOffCentre() {
-        let faceGeometry = FaceGeometryData(
-            boundingBox: CGRect(x: 125, y: 164, width: 190, height: 190),
-            roll: 0.0,
-            yaw: 0.0,
-            pitch: 0.0,
-            direction: .none
+        let result = performValidation(
+            faceBoundingBox: CGRect(x: 125, y: 164, width: 190, height: 190),
+            selfieQualityData: SelfieQualityData(failed: 0.1, passed: 0.9),
+            brighness: 100
         )
 
-        faceValidator.validate(
-            faceGeometry: faceGeometry,
-            selfieQuality: SelfieQualityData(failed: 0.1, passed: 0.9),
-            brightness: 100,
-            currentLivenessTask: nil
-        )
-
-        guard let mockValidationResult = mockDelegate.validationResult else {
-            XCTFail("Validation result should not be nil")
-            return
-        }
-
-        XCTAssertFalse(mockValidationResult.faceInBounds)
-        XCTAssertFalse(mockValidationResult.hasDetectedValidFace)
-        XCTAssertEqual(mockValidationResult.userInstruction, .headInFrame)
+        XCTAssertFalse(result.faceInBounds)
+        XCTAssertFalse(result.hasDetectedValidFace)
+        XCTAssertEqual(result.userInstruction, .headInFrame)
     }
 
     func testValidateWithPoorBrightness() {
-        let faceGeometry = FaceGeometryData(
-            boundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
-            roll: 0.0,
-            yaw: 0.0,
-            pitch: 0.0,
-            direction: .none
+        let result = performValidation(
+            faceBoundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
+            selfieQualityData: SelfieQualityData(failed: 0.1, passed: 0.9),
+            brighness: 70
         )
 
-        faceValidator.validate(
-            faceGeometry: faceGeometry,
-            selfieQuality: SelfieQualityData(failed: 0.1, passed: 0.9),
-            brightness: 70,
-            currentLivenessTask: nil
-        )
-
-        guard let mockValidationResult = mockDelegate.validationResult else {
-            XCTFail("Validation result should not be nil")
-            return
-        }
-
-        XCTAssertTrue(mockValidationResult.faceInBounds)
-        XCTAssertFalse(mockValidationResult.hasDetectedValidFace)
-        XCTAssertEqual(mockValidationResult.userInstruction, .goodLight)
+        XCTAssertTrue(result.faceInBounds)
+        XCTAssertFalse(result.hasDetectedValidFace)
+        XCTAssertEqual(result.userInstruction, .goodLight)
     }
 
     func testValidateWithPoorSelfieQuality() {
-        let faceGeometry = FaceGeometryData(
-            boundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
-            roll: 0.0,
-            yaw: 0.0,
-            pitch: 0.0,
-            direction: .none
+        let result = performValidation(
+            faceBoundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
+            selfieQualityData: SelfieQualityData(failed: 0.6, passed: 0.4),
+            brighness: 70
         )
 
-        faceValidator.validate(
-            faceGeometry: faceGeometry,
-            selfieQuality: SelfieQualityData(failed: 0.6, passed: 0.4),
-            brightness: 70,
-            currentLivenessTask: nil
-        )
-
-        guard let mockValidationResult = mockDelegate.validationResult else {
-            XCTFail("Validation result should not be nil")
-            return
-        }
-
-        XCTAssertTrue(mockValidationResult.faceInBounds)
-        XCTAssertFalse(mockValidationResult.hasDetectedValidFace)
-        XCTAssertEqual(mockValidationResult.userInstruction, .goodLight)
+        XCTAssertTrue(result.faceInBounds)
+        XCTAssertFalse(result.hasDetectedValidFace)
+        XCTAssertEqual(result.userInstruction, .goodLight)
     }
 
     func testValidateWithLivenessTask() {
-        let faceGeometry = FaceGeometryData(
-            boundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
-            roll: 0.0,
-            yaw: 0.0,
-            pitch: 0.0,
-            direction: .none
+        let result = performValidation(
+            faceBoundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
+            selfieQualityData: SelfieQualityData(failed: 0.3, passed: 0.7),
+            brighness: 100,
+            livenessTask: .lookLeft
         )
 
+        XCTAssertTrue(result.faceInBounds)
+        XCTAssertTrue(result.hasDetectedValidFace)
+        XCTAssertEqual(result.userInstruction, .lookLeft)
+    }
+}
+
+// MARK: - Helpers
+extension FaceValidatorTests {
+    func performValidation(
+        faceBoundingBox: CGRect,
+        selfieQualityData: SelfieQualityData,
+        brighness: Int,
+        livenessTask: LivenessTask? = nil
+    ) -> FaceValidationResult {
+        let faceGeometry = FaceGeometryData(
+            boundingBox: faceBoundingBox,
+            roll: 0,
+            yaw: 0,
+            pitch: 0,
+            direction: .none
+        )
         faceValidator.validate(
             faceGeometry: faceGeometry,
-            selfieQuality: SelfieQualityData(failed: 0.3, passed: 0.7),
-            brightness: 100,
-            currentLivenessTask: .lookLeft
+            selfieQuality: selfieQualityData,
+            brightness: brighness,
+            currentLivenessTask: livenessTask
         )
 
         guard let mockValidationResult = mockDelegate.validationResult else {
             XCTFail("Validation result should not be nil")
-            return
+            return FaceValidationResult(userInstruction: nil, hasDetectedValidFace: false, faceInBounds: false)
         }
-
-        XCTAssertTrue(mockValidationResult.faceInBounds)
-        XCTAssertTrue(mockValidationResult.hasDetectedValidFace)
-        XCTAssertEqual(mockValidationResult.userInstruction, .lookLeft)
+        return mockValidationResult
     }
 }
 
+// MARK: - Mocks
 class MockFaceValidatorDelegate: FaceValidatorDelegate {
     var validationResult: FaceValidationResult?
 
