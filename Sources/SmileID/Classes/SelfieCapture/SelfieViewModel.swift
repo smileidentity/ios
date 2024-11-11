@@ -139,6 +139,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         }
                         selfieImage = nil
                         livenessImages = []
+                        cleanUpSelfieCapture()
                     }
                     return
                 }
@@ -298,8 +299,17 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         selfieImage = nil
         livenessImages = []
         shouldAnalyzeImages = true
+        cleanUpSelfieCapture()
         localMetadata.metadata.removeAllOfType(Metadatum.SelfieImageOrigin.self)
         localMetadata.metadata.removeAllOfType(Metadatum.SelfieCaptureDuration.self)
+    }
+
+    func cleanUpSelfieCapture() {
+        do {
+            try LocalStorage.deleteLivenessAndSelfieFiles(at: [jobId])
+        } catch {
+            debugPrint(error.localizedDescription)
+        }
     }
 
     func onRetry() {
@@ -467,7 +477,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         if let selfieImage = selfieImage,
            let selfiePath = getRelativePath(from: selfieImage),
            livenessImages.count == numLivenessImages,
-           !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
+           !livenessImages.contains(where: { getRelativePath(from: $0) == nil })
+        {
             let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
 
             callback.didSucceed(

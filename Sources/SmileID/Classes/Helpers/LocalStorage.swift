@@ -356,6 +356,26 @@ public class LocalStorage {
             try fileManager.removeItem(atPath: defaultDirectory.relativePath)
         }
     }
+
+    static func deleteLivenessAndSelfieFiles(at jobIds: [String]) throws {
+        func deleteMatchingFiles(in directory: URL) throws {
+            let contents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            try contents.forEach { url in
+                let filename = url.lastPathComponent
+                if filename.starts(with: "si_liveness_") || filename.starts(with: "si_selfie_") {
+                    try delete(at: url)
+                }
+            }
+        }
+
+        try jobIds.forEach { jobId in
+            let unsubmittedJob = try unsubmittedJobDirectory.appendingPathComponent(jobId)
+            try deleteMatchingFiles(in: unsubmittedJob)
+
+            let submittedJob = try submittedJobDirectory.appendingPathComponent(jobId)
+            try deleteMatchingFiles(in: submittedJob)
+        }
+    }
 }
 
 public extension Date {
