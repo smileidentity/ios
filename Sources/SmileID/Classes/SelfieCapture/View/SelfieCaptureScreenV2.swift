@@ -72,10 +72,10 @@ public struct SelfieCaptureScreenV2: View {
                             Spacer()
                             UserInstructionsView(
                                 instruction: processingState.title,
-                                message: getErrorSubtitle(
+                                message: processingState == .error ? getErrorSubtitle(
                                     errorMessageRes: viewModel.errorMessageRes,
                                     errorMessage: viewModel.errorMessage
-                                )
+                                ) : nil
                             )
                         }
                         SubmissionStatusView(processState: processingState)

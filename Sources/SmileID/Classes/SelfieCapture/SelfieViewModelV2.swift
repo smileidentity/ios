@@ -32,6 +32,7 @@ public class SelfieViewModelV2: ObservableObject {
     private var shouldSubmitJob: Bool {
         selfieImage != nil && livenessImages.count == numLivenessImages
     }
+    private var submissionTask: Task<Void, Error>?
     private var forcedFailure: Bool = false
     private var apiResponse: SmartSelfieResponse?
     private var error: Error?
@@ -102,6 +103,8 @@ public class SelfieViewModelV2: ObservableObject {
 
     deinit {
         stopGuideAnimationDelayTimer()
+        submissionTask?.cancel()
+        submissionTask = nil
     }
 
     private func initialSetup() {
@@ -128,7 +131,7 @@ public class SelfieViewModelV2: ObservableObject {
             .receive(on: DispatchQueue.main)
             .filter { $0 == .unauthorized }
             .map { _ in AlertState.cameraUnauthorized }
-            .sink { alert in self.unauthorizedAlert = alert }
+            .sink { [weak self] alert in self?.unauthorizedAlert = alert }
             .store(in: &subscribers)
 
         cameraManager.sampleBufferPublisher
@@ -140,7 +143,9 @@ public class SelfieViewModelV2: ObservableObject {
             // Drop the first ~2 seconds to allow the user to settle in
              .dropFirst(5)
             .compactMap { $0 }
-            .sink(receiveValue: analyzeFrame)
+            .sink { [weak self] imageBuffer in
+                self?.analyzeFrame(imageBuffer: imageBuffer)
+            }
             .store(in: &subscribers)
     }
 
@@ -215,7 +220,6 @@ extension SelfieViewModelV2 {
 
     private func handleWindowSizeChanged(toRect: CGSize, edgeInsets: EdgeInsets) {
         let topPadding: CGFloat = edgeInsets.top + 100
-        print(edgeInsets.top)
         faceLayoutGuideFrame = CGRect(
             x: (toRect.width / 2) - faceLayoutGuideFrame.width / 2,
             y: topPadding,
@@ -269,7 +273,7 @@ extension SelfieViewModelV2 {
         DispatchQueue.main.async {
             self.selfieCaptureState = .processing(.inProgress)
         }
-        Task {
+        submissionTask = Task {
             try await submitJob()
         }
     }
@@ -305,7 +309,6 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
         DispatchQueue.main.async {
             self.publishUserInstruction(.headInFrame)
         }
-        print(error.localizedDescription)
     }
 }
 
@@ -330,8 +333,10 @@ extension SelfieViewModelV2: LivenessCheckManagerDelegate {
     }
 
     func didCompleteLivenessChallenge() {
-        self.cameraManager.pauseSession()
-        handleSubmission()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.cameraManager.pauseSession()
+            self.handleSubmission()
+        }
     }
 
     func livenessChallengeTimeout() {
@@ -367,7 +372,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
             isEnroll: self.isEnroll,
             numLivenessImages: self.numLivenessImages,
             allowNewEnroll: self.allowNewEnroll,
-            selfieImage: self.selfieImageURL,
+            selfieImageUrl: self.selfieImageURL,
             livenessImages: self.livenessImages,
             extraPartnerParams: self.extraPartnerParams,
             localMetadata: self.localMetadata
