@@ -8,15 +8,19 @@ enum LivenessTask {
     case lookUp
 }
 
+protocol LivenessCheckManagerDelegate: AnyObject {
+    func didCompleteLivenessTask()
+    func didCompleteLivenessChallenge()
+    func livenessChallengeTimeout()
+}
+
 class LivenessCheckManager: ObservableObject {
     /// The sequence of liveness tasks to be performed.
     private var livenessTaskSequence: [LivenessTask] = []
     /// The index pointing to the current task in the sequence.
     private var currentTaskIndex: Int = 0
-    /// The view model associated with the selfie capture process.
-    weak var selfieViewModel: SelfieViewModelV2?
-    /// A closure to trigger photo capture during the liveness check.
-    var captureImage: (() -> Void)?
+
+    weak var delegate: LivenessCheckManagerDelegate?
 
     // MARK: Constants
     /// The minimum threshold for yaw (left-right head movement)
@@ -88,7 +92,8 @@ class LivenessCheckManager: ObservableObject {
     /// Handles the timeout event for a task.
     private func handleTaskTimeout() {
         stopTaskTimer()
-        selfieViewModel?.perform(action: .activeLivenessTimeout)
+        // Capture random liveness images to complete required number:
+        delegate?.livenessChallengeTimeout()
     }
 
     /// Advances to the next task in the sequence
@@ -160,12 +165,11 @@ class LivenessCheckManager: ObservableObject {
     /// Completes the current task and moves to the next one.
     /// If all tasks are completed, it signals the completion of the liveness challenge.
     private func completeCurrentTask() {
-        captureImage?()
-        captureImage?()
+        delegate?.didCompleteLivenessTask()
 
         if !advanceToNextTask() {
             // Liveness challenge complete
-            selfieViewModel?.perform(action: .activeLivenessCompleted)
+            delegate?.didCompleteLivenessChallenge()
             self.currentTask = nil
         }
     }

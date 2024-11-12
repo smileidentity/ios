@@ -15,15 +15,16 @@ public class SelfieViewModelV2: ObservableObject {
     // MARK: Private Properties
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 250, height: 350)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
+    private var currentFrameBuffer: CVPixelBuffer?
     var selfieImage: UIImage?
-    var selfieImageURL: URL? {
+    private var selfieImageURL: URL? {
         didSet {
             DispatchQueue.main.async {
                 self.selfieCaptured = self.selfieImage != nil
             }
         }
     }
-    var livenessImages: [URL] = []
+    private var livenessImages: [URL] = []
     private var hasDetectedValidFace: Bool = false
     private var shouldBeginLivenessChallenge: Bool {
         hasDetectedValidFace && selfieImage != nil && livenessCheckManager.currentTask != nil
@@ -106,7 +107,7 @@ public class SelfieViewModelV2: ObservableObject {
     private func initialSetup() {
         self.faceValidator.delegate = self
         self.faceDetector.resultDelegate = self
-        self.livenessCheckManager.selfieViewModel = self
+        self.livenessCheckManager.delegate = self
 
         self.faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
         self.userInstruction = .headInFrame
@@ -144,14 +145,11 @@ public class SelfieViewModelV2: ObservableObject {
     }
 
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
+        currentFrameBuffer = imageBuffer
         faceDetector.processImageBuffer(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
             captureSelfieImage(imageBuffer)
             livenessCheckManager.initiateLivenessCheck()
-        }
-
-        livenessCheckManager.captureImage = { [weak self] in
-            self?.captureLivenessImage(imageBuffer)
         }
     }
 
@@ -160,13 +158,6 @@ public class SelfieViewModelV2: ObservableObject {
         switch action {
         case let .windowSizeDetected(windowRect, safeAreaInsets):
             handleWindowSizeChanged(toRect: windowRect, edgeInsets: safeAreaInsets)
-        case .activeLivenessCompleted:
-            self.cameraManager.pauseSession()
-            handleSubmission()
-        case .activeLivenessTimeout:
-            self.forcedFailure = true
-            self.cameraManager.pauseSession()
-            handleSubmission()
         case .onViewAppear:
             handleViewAppeared()
         case .jobProcessingDone:
@@ -271,7 +262,7 @@ extension SelfieViewModelV2 {
     }
 
     private func handleError(_ error: Error) {
-        print(error.localizedDescription)
+        debugPrint(error.localizedDescription)
     }
 
     private func handleSubmission() {
@@ -326,6 +317,35 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
             self.hasDetectedValidFace = result.hasDetectedValidFace
             self.publishUserInstruction(result.userInstruction)
         }
+    }
+}
+
+// MARK: LivenessCheckManagerDelegate Methods
+extension SelfieViewModelV2: LivenessCheckManagerDelegate {
+    func didCompleteLivenessTask() {
+        // capture liveness image twice
+        guard let imageBuffer = currentFrameBuffer else { return }
+        captureLivenessImage(imageBuffer)
+        captureLivenessImage(imageBuffer)
+    }
+
+    func didCompleteLivenessChallenge() {
+        self.cameraManager.pauseSession()
+        handleSubmission()
+    }
+
+    func livenessChallengeTimeout() {
+        let remainingImages = numLivenessImages - livenessImages.count
+        let count = remainingImages > 0 ? remainingImages : 0
+        for _ in 0..<count {
+            if let imageBuffer = currentFrameBuffer {
+                captureLivenessImage(imageBuffer)
+            }
+        }
+
+        self.forcedFailure = true
+        self.cameraManager.pauseSession()
+        handleSubmission()
     }
 }
 
