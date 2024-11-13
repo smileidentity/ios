@@ -42,10 +42,10 @@ final class SelfieSubmissionManager {
         self.localMetadata = localMetadata
     }
 
-    func submitJob(forcedFailure: Bool = false) async throws {
+    func submitJob(failureReason: FailureReason? = nil) async throws {
         do {
             // Validate that the necessary selfie data is present
-            try validateImages(forcedFailure: forcedFailure)
+            try validateImages()
 
             // Determine the type of job (enrollment or authentication)
             let jobType = determineJobType()
@@ -68,7 +68,7 @@ final class SelfieSubmissionManager {
                 authResponse: authResponse,
                 smartSelfieImage: smartSelfieImage,
                 smartSelfieLivenessImages: smartSelfieLivenessImages,
-                forcedFailure: forcedFailure
+                failureReason: failureReason
             )
 
             // Update local storage after successful submission
@@ -81,15 +81,10 @@ final class SelfieSubmissionManager {
         }
     }
 
-    private func validateImages(forcedFailure: Bool) throws {
-        if forcedFailure {
-            guard selfieImageUrl != nil else {
-                throw SmileIDError.unknown("Selfie capture failed")
-            }
-        } else {
-            guard selfieImageUrl != nil, livenessImages.count == numLivenessImages else {
-                throw SmileIDError.unknown("Selfie capture failed")
-            }
+    private func validateImages() throws {
+        guard selfieImageUrl != nil,
+                livenessImages.count == numLivenessImages else {
+            throw SmileIDError.unknown("Selfie capture failed")
         }
     }
 
@@ -150,7 +145,7 @@ final class SelfieSubmissionManager {
         authResponse: AuthenticationResponse,
         smartSelfieImage: MultipartBody,
         smartSelfieLivenessImages: [MultipartBody],
-        forcedFailure: Bool
+        failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse {
         if isEnroll {
             return try await SmileID.api
@@ -164,7 +159,7 @@ final class SelfieSubmissionManager {
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
                     allowNewEnroll: allowNewEnroll,
-                    failureReason: forcedFailure ? .activeLivenessTimedOut : nil,
+                    failureReason: failureReason,
                     metadata: localMetadata.metadata
                 )
         } else {
@@ -178,7 +173,7 @@ final class SelfieSubmissionManager {
                     partnerParams: extraPartnerParams,
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
-                    failureReason: forcedFailure ? .activeLivenessTimedOut : nil,
+                    failureReason: failureReason,
                     metadata: localMetadata.metadata
                 )
         }

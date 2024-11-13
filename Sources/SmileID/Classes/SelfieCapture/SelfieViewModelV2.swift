@@ -33,7 +33,7 @@ public class SelfieViewModelV2: ObservableObject {
         selfieImage != nil && livenessImages.count == numLivenessImages
     }
     private var submissionTask: Task<Void, Error>?
-    private var forcedFailure: Bool = false
+    private var failureReason: FailureReason?
     private var apiResponse: SmartSelfieResponse?
     private var error: Error?
     @Published public var errorMessageRes: String?
@@ -215,7 +215,7 @@ extension SelfieViewModelV2 {
         selfieImage = nil
         livenessImages = []
         selfieCaptureState = .capturingSelfie
-        forcedFailure = false
+        failureReason = nil
     }
 
     private func handleWindowSizeChanged(toRect: CGSize, edgeInsets: EdgeInsets) {
@@ -348,7 +348,7 @@ extension SelfieViewModelV2: LivenessCheckManagerDelegate {
             }
         }
 
-        self.forcedFailure = true
+        self.failureReason = .mobileActiveLivenessTimeout
         self.cameraManager.pauseSession()
         handleSubmission()
     }
@@ -378,7 +378,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
             localMetadata: self.localMetadata
         )
         submissionManager.delegate = self
-        try await submissionManager.submitJob(forcedFailure: self.forcedFailure)
+        try await submissionManager.submitJob(failureReason: self.failureReason)
     }
 
     private func addSelfieCaptureDurationMetaData() {

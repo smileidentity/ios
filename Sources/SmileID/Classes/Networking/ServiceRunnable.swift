@@ -337,15 +337,13 @@ extension ServiceRunnable {
         body.append(lineBreak.data(using: .utf8)!)
 
         // Append failure reason if available
-        if let failureReason {
-            let activeLivenessTimedOutString = "\(failureReason == .activeLivenessTimedOut)"
-            if let valueData = "\(activeLivenessTimedOutString)\(lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append(
-                    "Content-Disposition: form-data; name=\"\(failureReason.key)\"\(lineBreak + lineBreak)".data(
-                        using: .utf8)!)
-                body.append(valueData)
-            }
+        if let failureReason,
+           let failureReasonData = try? encoder.encode(failureReason) {
+            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(using: .utf8)!)
+            body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(failureReasonData)
+            body.append(lineBreak.data(using: .utf8)!)
         }
 
         // Append final boundary
