@@ -92,7 +92,6 @@ class LivenessCheckManager: ObservableObject {
     /// Handles the timeout event for a task.
     private func handleTaskTimeout() {
         stopTaskTimer()
-        // Capture random liveness images to complete required number:
         delegate?.livenessChallengeTimeout()
     }
 
