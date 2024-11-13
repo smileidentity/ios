@@ -273,6 +273,7 @@ extension SelfieViewModelV2 {
         DispatchQueue.main.async {
             self.selfieCaptureState = .processing(.inProgress)
         }
+        guard submissionTask == nil else { return }
         submissionTask = Task {
             try await submitJob()
         }
