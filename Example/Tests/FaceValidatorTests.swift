@@ -3,8 +3,8 @@ import XCTest
 @testable import SmileID
 
 class FaceValidatorTests: XCTestCase {
-    var faceValidator: FaceValidator!
-    var mockDelegate: MockFaceValidatorDelegate!
+    private var faceValidator: FaceValidator!
+    private var mockDelegate: MockFaceValidatorDelegate!
 
     override func setUp() {
         super.setUp()

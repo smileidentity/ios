@@ -16,9 +16,9 @@ protocol LivenessCheckManagerDelegate: AnyObject {
 
 class LivenessCheckManager: ObservableObject {
     /// The sequence of liveness tasks to be performed.
-    private var livenessTaskSequence: [LivenessTask] = []
+    private(set) var livenessTaskSequence: [LivenessTask] = []
     /// The index pointing to the current task in the sequence.
-    private var currentTaskIndex: Int = 0
+    private(set) var currentTaskIndex: Int = 0
 
     weak var delegate: LivenessCheckManagerDelegate?
 

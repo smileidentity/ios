@@ -38,6 +38,7 @@
 		20B6D5EA2C21CA9E0023D51C /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */; };
 		20B6D5EC2C21CE660023D51C /* DataStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5EB2C21CE660023D51C /* DataStoreError.swift */; };
 		20C360C82C454C130008DBDE /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C360C72C454C130008DBDE /* RootViewModel.swift */; };
+		20DDAB3C2CE5F02C00F7F7BA /* LivenessCheckManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DDAB3B2CE5F02C00F7F7BA /* LivenessCheckManagerTests.swift */; };
 		20DFA0EC2C21917100AC2AE7 /* View+TextSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */; };
 		20F3D6F32C25F4D700B32751 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		20F3D6F62C25F5C100B32751 /* SmileID.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 20F3D6F42C25F5C100B32751 /* SmileID.xcdatamodeld */; };
@@ -118,6 +119,7 @@
 		20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		20B6D5EB2C21CE660023D51C /* DataStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreError.swift; sourceTree = "<group>"; };
 		20C360C72C454C130008DBDE /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
+		20DDAB3B2CE5F02C00F7F7BA /* LivenessCheckManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivenessCheckManagerTests.swift; sourceTree = "<group>"; };
 		20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+TextSelection.swift"; sourceTree = "<group>"; };
 		20F3D6F52C25F5C100B32751 /* SmileID.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SmileID.xcdatamodel; sourceTree = "<group>"; };
 		23822FF3F5838ECB320564F5 /* Pods-SmileID_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileID_Tests.release.xcconfig"; path = "Target Support Files/Pods-SmileID_Tests/Pods-SmileID_Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -371,6 +373,7 @@
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 				585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */,
 				204C95A02CDA455600A07386 /* FaceValidatorTests.swift */,
+				20DDAB3B2CE5F02C00F7F7BA /* LivenessCheckManagerTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -749,6 +752,7 @@
 				918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */,
 				204C95A12CDA455600A07386 /* FaceValidatorTests.swift in Sources */,
 				918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */,
+				20DDAB3C2CE5F02C00F7F7BA /* LivenessCheckManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
