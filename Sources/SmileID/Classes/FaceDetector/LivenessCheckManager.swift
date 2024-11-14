@@ -2,7 +2,7 @@ import Foundation
 import Vision
 
 /// Represents the different tasks in an active liveness check.
-enum LivenessTask {
+enum LivenessTask: CaseIterable {
     case lookLeft
     case lookRight
     case lookUp
@@ -18,7 +18,7 @@ class LivenessCheckManager: ObservableObject {
     /// The sequence of liveness tasks to be performed.
     private(set) var livenessTaskSequence: [LivenessTask] = []
     /// The index pointing to the current task in the sequence.
-    private(set) var currentTaskIndex: Int = 0
+    private var currentTaskIndex: Int = 0
 
     weak var delegate: LivenessCheckManagerDelegate?
 
@@ -32,7 +32,7 @@ class LivenessCheckManager: ObservableObject {
     /// The maximum threshold for pitch (up-down head movement)
     private let maxPitchAngleThreshold: CGFloat = 0.3
     /// The timeout duration for each task in seconds.
-    private let taskTimeoutDuration: TimeInterval = 120
+    private let taskTimeoutDuration: TimeInterval
 
     // MARK: Face Orientation Properties
     @Published var lookLeftProgress: CGFloat = 0.0
@@ -40,22 +40,27 @@ class LivenessCheckManager: ObservableObject {
     @Published var lookUpProgress: CGFloat = 0.0
 
     /// The current liveness task.
-    private(set) var currentTask: LivenessTask? {
+    var currentTask: LivenessTask? {
         didSet {
-            if currentTask != nil {
-                resetTaskTimer()
-            } else {
-                stopTaskTimer()
-            }
+            handleTaskChange()
         }
     }
     /// The timer used for task timeout.
-    private var taskTimer: Timer?
+    private let taskTimer: TimerProtocol
+    private let dispatchQueue: DispatchQueueType
     private var elapsedTime: TimeInterval = 0.0
 
     /// Initializes the LivenessCheckManager with a shuffled set of tasks.
-    init() {
-        livenessTaskSequence = [.lookLeft, .lookRight, .lookUp].shuffled()
+    init(
+        taskTimer: TimerProtocol = RealTimer(),
+        taskTimeoutDuration: TimeInterval = 120,
+        dispatchQueue: DispatchQueueType = DispatchQueue.main,
+        livenessTaskSequence: [LivenessTask] = LivenessTask.allCases.shuffled()
+    ) {
+        self.taskTimer = taskTimer
+        self.taskTimeoutDuration = taskTimeoutDuration
+        self.dispatchQueue = dispatchQueue
+        self.livenessTaskSequence = livenessTaskSequence
     }
 
     /// Cleans up resources when the manager is no longer needed.
@@ -65,11 +70,11 @@ class LivenessCheckManager: ObservableObject {
 
     /// Resets the task timer to the initial timeout duration.
     private func resetTaskTimer() {
-        guard taskTimer == nil else { return }
-        DispatchQueue.main.async {
-            self.taskTimer = Timer.scheduledTimer(
-                withTimeInterval: 1.0,
-                repeats: true) { [weak self] _ in
+        stopTaskTimer()
+        elapsedTime = 0.0
+
+        dispatchQueue.async {
+            self.taskTimer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
                 self?.taskTimerFired()
             }
         }
@@ -84,15 +89,21 @@ class LivenessCheckManager: ObservableObject {
 
     /// Stops the current task timer.
     private func stopTaskTimer() {
-        guard taskTimer != nil else { return }
-        taskTimer?.invalidate()
-        taskTimer = nil
+        taskTimer.invalidate()
     }
 
     /// Handles the timeout event for a task.
     private func handleTaskTimeout() {
         stopTaskTimer()
         delegate?.livenessChallengeTimeout()
+    }
+
+    private func handleTaskChange() {
+        if currentTask != nil {
+            resetTaskTimer()
+        } else {
+            stopTaskTimer()
+        }
     }
 
     /// Advances to the next task in the sequence
@@ -108,7 +119,7 @@ class LivenessCheckManager: ObservableObject {
 
     /// Sets the initial task for the liveness check.
     func initiateLivenessCheck() {
-        currentTask = livenessTaskSequence[currentTaskIndex]
+        currentTask = livenessTaskSequence.first
     }
 
     /// Processes face geometry data and checks for task completion
