@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 class HapticManager {
     static let shared = HapticManager()
