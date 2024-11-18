@@ -28,7 +28,8 @@ public class SmileID {
 
     /// A private static constant that initializes a `URLSession` with a default configuration.
     /// This `URLSession` is used for creating `URLSessionDataTask`s in the networking layer.
-    /// The session configuration sets the timeout interval for requests to the value specified by `SmileID.requestTimeout`.
+    /// The session configuration sets the timeout interval for requests to the value specified by
+    /// `SmileID.requestTimeout`.
     ///
     /// - Returns: A `URLSession` instance with the specified configuration.
     private static let urlSession: URLSession = {
@@ -207,7 +208,7 @@ public class SmileID {
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId),
+                        LocalStorage.getInfoJsonFile(jobId: jobId)
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {
