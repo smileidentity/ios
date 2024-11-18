@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.2.16"
+    public static let version = "10.2.17"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -28,7 +28,8 @@ public class SmileID {
 
     /// A private static constant that initializes a `URLSession` with a default configuration.
     /// This `URLSession` is used for creating `URLSessionDataTask`s in the networking layer.
-    /// The session configuration sets the timeout interval for requests to the value specified by `SmileID.requestTimeout`.
+    /// The session configuration sets the timeout interval for requests to the value specified by
+    /// `SmileID.requestTimeout`.
     ///
     /// - Returns: A `URLSession` instance with the specified configuration.
     private static let urlSession: URLSession = {
@@ -207,7 +208,7 @@ public class SmileID {
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId),
+                        LocalStorage.getInfoJsonFile(jobId: jobId)
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {
@@ -289,6 +290,7 @@ public class SmileID {
     ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
     ///     screen
     ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
+    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
     public class func smartSelfieEnrollmentScreen(
@@ -298,6 +300,7 @@ public class SmileID {
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
@@ -310,7 +313,7 @@ public class SmileID {
             showAttribution: showAttribution,
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: false,
+            skipApiSubmission: skipApiSubmission,
             onResult: delegate
         )
     }
@@ -333,6 +336,7 @@ public class SmileID {
     ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
     ///     screen
     ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
+    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
     public class func smartSelfieAuthenticationScreen(
@@ -342,6 +346,7 @@ public class SmileID {
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
@@ -354,7 +359,7 @@ public class SmileID {
             showAttribution: showAttribution,
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: false,
+            skipApiSubmission: skipApiSubmission,
             onResult: delegate
         )
     }
@@ -384,6 +389,7 @@ public class SmileID {
     ///   - showInstructions: Whether to deactivate capture screen's instructions for Document
     ///   Verification (NB! If instructions are disabled, gallery upload won't be possible)
     ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
+    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func documentVerificationScreen(
@@ -399,6 +405,7 @@ public class SmileID {
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
         showAttribution: Bool = true,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: DocumentVerificationResultDelegate
     ) -> some View {
@@ -415,6 +422,7 @@ public class SmileID {
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
+            skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
             onResult: delegate
         )
@@ -445,6 +453,7 @@ public class SmileID {
     ///   - showInstructions: Whether to deactivate capture screen's instructions for Document
     ///   Verification (NB! If instructions are disabled, gallery upload won't be possible)
     ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
+    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func enhancedDocumentVerificationScreen(
@@ -459,6 +468,7 @@ public class SmileID {
         allowAgentMode: Bool = false,
         allowGalleryUpload: Bool = false,
         showInstructions: Bool = true,
+        skipApiSubmission: Bool = false,
         showAttribution: Bool = true,
         extraPartnerParams: [String: String] = [:],
         delegate: EnhancedDocumentVerificationResultDelegate
@@ -476,6 +486,7 @@ public class SmileID {
             allowGalleryUpload: allowGalleryUpload,
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
+            skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
             onResult: delegate
         )
@@ -516,6 +527,7 @@ public class SmileID {
     ///   the front camera will be used.
     ///  - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
     ///  - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
+    ///  - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///  - extraPartnerParams: Custom values specific to partners
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
