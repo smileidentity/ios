@@ -39,7 +39,7 @@ class DocumentCaptureViewModel: ObservableObject {
     @Published var documentImageToConfirm: Data?
     @Published var captureError: Error?
     @Published var isCapturing = false
-    var cameraManager = CameraManager.shared
+    var cameraManager = CameraManager(orientation: .portrait)
 
     init(
         knownAspectRatio: Double? = nil,

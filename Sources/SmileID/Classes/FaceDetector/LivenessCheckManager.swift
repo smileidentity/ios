@@ -8,6 +8,16 @@ enum LivenessTask: CaseIterable {
     case lookUp
 }
 
+protocol LivenessManagerProtocol {
+    var delegate: LivenessCheckManagerDelegate? { get  set }
+    var currentTask: LivenessTask? { get set }
+    var lookLeftProgress: CGFloat { get set }
+    var lookRightProgress: CGFloat { get set }
+    var lookUpProgress: CGFloat { get set }
+    func initiateLivenessCheck()
+    func processFaceGeometry(_ faceGeometry: FaceGeometryData)
+}
+
 protocol LivenessCheckManagerDelegate: AnyObject {
     func didCompleteLivenessTask()
     func didCompleteLivenessChallenge()
@@ -184,6 +194,9 @@ class LivenessCheckManager: ObservableObject {
         }
     }
 }
+
+extension LivenessCheckManager: LivenessManagerProtocol {}
+    
 
 extension CGFloat {
     func normalized(min: CGFloat, max: CGFloat) -> CGFloat {

@@ -10,6 +10,12 @@ enum FaceDetectorError: Error {
     case unableToCropImage
 }
 
+protocol FaceDetectorProtocol {
+    var viewDelegate: FaceDetectorViewDelegate? { get set }
+    var resultDelegate: FaceDetectorResultDelegate? { get set }
+    func processImageBuffer(_ imageBuffer: CVPixelBuffer)
+}
+
 protocol FaceDetectorViewDelegate: NSObjectProtocol {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect
 }
@@ -215,3 +221,5 @@ class FaceDetectorV2: NSObject {
         }
     }
 }
+
+extension FaceDetectorV2: FaceDetectorProtocol {}

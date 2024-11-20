@@ -4,22 +4,23 @@ import SwiftUI
 
 public class SelfieViewModelV2: ObservableObject {
     // MARK: Dependencies
-    let cameraManager = CameraManager.shared
-    let faceDetector = FaceDetectorV2()
-    private let faceValidator = FaceValidator()
-    var livenessCheckManager = LivenessCheckManager()
-    private var subscribers = Set<AnyCancellable>()
-    private var guideAnimationDelayTimer: Timer?
+    let cameraManager: CameraManager
+    var faceDetector: FaceDetectorProtocol
+    private var faceValidator: FaceValidatorProtocol
+    var livenessCheckManager: LivenessCheckManager
+    private var delayTimer: TimerProtocol
+    private let dispatchQueue: DispatchQueueType
     private let metadataTimerStart = MonotonicTime()
 
     // MARK: Private Properties
+    private var subscribers = Set<AnyCancellable>()
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 250, height: 350)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
     private var currentFrameBuffer: CVPixelBuffer?
     var selfieImage: UIImage?
     private var selfieImageURL: URL? {
         didSet {
-            DispatchQueue.main.async {
+            dispatchQueue.async {
                 self.selfieCaptured = self.selfieImage != nil
             }
         }
@@ -54,48 +55,28 @@ public class SelfieViewModelV2: ObservableObject {
     @Published private(set) var selfieCaptureState: SelfieCaptureState = .capturingSelfie
 
     // MARK: Injected Properties
-    private let isEnroll: Bool
-    private let userId: String
-    private let jobId: String
-    private let allowNewEnroll: Bool
-    private let skipApiSubmission: Bool
-    private let extraPartnerParams: [String: String]
-    private let useStrictMode: Bool
+    let selfieCaptureConfig: SelfieCaptureConfig
     private let onResult: SmartSelfieResultDelegate
     private var localMetadata: LocalMetadata
 
-    enum SelfieCaptureState: Equatable {
-        case capturingSelfie
-        case processing(ProcessingState)
-
-        var title: String {
-            switch self {
-            case .capturingSelfie:
-                return "Instructions.Capturing"
-            case let .processing(processingState):
-                return processingState.title
-            }
-        }
-    }
-
-    public init(
-        isEnroll: Bool,
-        userId: String,
-        jobId: String,
-        allowNewEnroll: Bool,
-        skipApiSubmission: Bool,
-        extraPartnerParams: [String: String],
-        useStrictMode: Bool,
+    init(
+        cameraManager: CameraManager = CameraManager(orientation: .portrait),
+        faceDetector: FaceDetectorProtocol = FaceDetectorV2(),
+        faceValidator: FaceValidatorProtocol = FaceValidator(),
+        livenessCheckManager: LivenessCheckManager = LivenessCheckManager(),
+        delayTimer: TimerProtocol = RealTimer(),
+        dispatchQueue: DispatchQueueType = DispatchQueue.main,
+        selfieCaptureConfig: SelfieCaptureConfig,
         onResult: SmartSelfieResultDelegate,
         localMetadata: LocalMetadata
     ) {
-        self.isEnroll = isEnroll
-        self.userId = userId
-        self.jobId = jobId
-        self.allowNewEnroll = allowNewEnroll
-        self.skipApiSubmission = skipApiSubmission
-        self.extraPartnerParams = extraPartnerParams
-        self.useStrictMode = useStrictMode
+        self.cameraManager = cameraManager
+        self.faceDetector = faceDetector
+        self.faceValidator = faceValidator
+        self.livenessCheckManager = livenessCheckManager
+        self.delayTimer = delayTimer
+        self.dispatchQueue = dispatchQueue
+        self.selfieCaptureConfig = selfieCaptureConfig
         self.onResult = onResult
         self.localMetadata = localMetadata
         self.initialSetup()
@@ -115,12 +96,12 @@ public class SelfieViewModelV2: ObservableObject {
         self.faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
         self.userInstruction = .headInFrame
 
-        livenessCheckManager.$lookLeftProgress
+        livenessCheckManager.$lookUpProgress
             .merge(
                 with: livenessCheckManager.$lookRightProgress,
                 livenessCheckManager.$lookUpProgress
             )
-            .sink { [weak self] _ in
+            .sink { [weak self] (progress: CGFloat) in
                 DispatchQueue.main.async {
                     self?.resetGuideAnimationDelayTimer()
                 }
@@ -190,8 +171,8 @@ extension SelfieViewModelV2 {
     private func resetGuideAnimationDelayTimer() {
         elapsedGuideAnimationDelay = 0
         showGuideAnimation = false
-        guard guideAnimationDelayTimer == nil else { return }
-        guideAnimationDelayTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+
+        delayTimer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             self.elapsedGuideAnimationDelay += 1
             if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
                 self.showGuideAnimation = true
@@ -201,9 +182,7 @@ extension SelfieViewModelV2 {
     }
 
     private func stopGuideAnimationDelayTimer() {
-        guard guideAnimationDelayTimer != nil else { return }
-        guideAnimationDelayTimer?.invalidate()
-        guideAnimationDelayTimer = nil
+        delayTimer.invalidate()
     }
 
     private func handleViewAppeared() {
@@ -242,7 +221,10 @@ extension SelfieViewModelV2 {
                 throw SmileIDError.unknown("Error resizing selfie image")
             }
             self.selfieImage = UIImage(data: imageData)
-            self.selfieImageURL = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
+            self.selfieImageURL = try LocalStorage.createSelfieFile(
+                jobId: selfieCaptureConfig.jobId,
+                selfieFile: imageData
+            )
         } catch {
             handleError(error)
         }
@@ -259,7 +241,10 @@ extension SelfieViewModelV2 {
             else {
                 throw SmileIDError.unknown("Error resizing liveness image")
             }
-            let imageUrl = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: imageData)
+            let imageUrl = try LocalStorage.createLivenessFile(
+                jobId: selfieCaptureConfig.jobId,
+                livenessFile: imageData
+            )
             livenessImages.append(imageUrl)
         } catch {
             handleError(error)
@@ -271,7 +256,7 @@ extension SelfieViewModelV2 {
     }
 
     private func handleSubmission() {
-        DispatchQueue.main.async {
+        dispatchQueue.async {
             self.selfieCaptureState = .processing(.inProgress)
         }
         guard submissionTask == nil else { return }
@@ -308,7 +293,7 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
     }
 
     func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error) {
-        DispatchQueue.main.async {
+        dispatchQueue.async {
             self.publishUserInstruction(.headInFrame)
         }
     }
@@ -317,7 +302,7 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
 // MARK: FaceValidatorDelegate Methods
 extension SelfieViewModelV2: FaceValidatorDelegate {
     func updateValidationResult(_ result: FaceValidationResult) {
-        DispatchQueue.main.async {
+        dispatchQueue.async {
             self.faceInBounds = result.faceInBounds
             self.hasDetectedValidFace = result.hasDetectedValidFace
             self.publishUserInstruction(result.userInstruction)
@@ -337,7 +322,7 @@ extension SelfieViewModelV2: LivenessCheckManagerDelegate {
 
     func didCompleteLivenessChallenge() {
         HapticManager.shared.notification(type: .success)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        dispatchQueue.asyncAfter(deadline: .now() + 1) {
             self.cameraManager.pauseSession()
             self.handleSubmission()
         }
@@ -364,21 +349,17 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
         // Add metadata before submission
         addSelfieCaptureDurationMetaData()
 
-        if skipApiSubmission {
+        if selfieCaptureConfig.skipApiSubmission {
             // Skip API submission and update processing state to success
             self.selfieCaptureState = .processing(.success)
             return
         }
         // Create an instance of SelfieSubmissionManager to manage the submission process
         let submissionManager = SelfieSubmissionManager(
-            userId: self.userId,
-            jobId: self.jobId,
-            isEnroll: self.isEnroll,
+            selfieCaptureConfig: selfieCaptureConfig,
             numLivenessImages: self.numLivenessImages,
-            allowNewEnroll: self.allowNewEnroll,
             selfieImageUrl: self.selfieImageURL,
             livenessImages: self.livenessImages,
-            extraPartnerParams: self.extraPartnerParams,
             localMetadata: self.localMetadata
         )
         submissionManager.delegate = self
@@ -413,7 +394,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
 
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
         HapticManager.shared.notification(type: .success)
-        DispatchQueue.main.async {
+        dispatchQueue.async {
             self.apiResponse = apiResponse
             self.selfieCaptureState = .processing(.success)
         }
@@ -425,7 +406,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
         errorMessageRes: String?
     ) {
         HapticManager.shared.notification(type: .error)
-        DispatchQueue.main.async {
+        dispatchQueue.async {
             self.error = error
             self.errorMessage = errorMessage
             self.errorMessageRes = errorMessageRes

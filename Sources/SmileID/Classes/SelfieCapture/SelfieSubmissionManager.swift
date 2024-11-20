@@ -7,38 +7,26 @@ protocol SelfieSubmissionDelegate: AnyObject {
 
 final class SelfieSubmissionManager {
     // MARK: - Properties
-    private let userId: String
-    private let jobId: String
-    private let isEnroll: Bool
+    private let selfieCaptureConfig: SelfieCaptureConfig
     private let numLivenessImages: Int
-    private let allowNewEnroll: Bool
     private var selfieImageUrl: URL?
     private var livenessImages: [URL]
-    private var extraPartnerParams: [String: String]
     private let localMetadata: LocalMetadata
 
     weak var delegate: SelfieSubmissionDelegate?
 
     // MARK: - Initializer
     init(
-        userId: String,
-        jobId: String,
-        isEnroll: Bool,
+        selfieCaptureConfig: SelfieCaptureConfig,
         numLivenessImages: Int,
-        allowNewEnroll: Bool,
         selfieImageUrl: URL?,
         livenessImages: [URL],
-        extraPartnerParams: [String: String],
         localMetadata: LocalMetadata
     ) {
-        self.userId = userId
-        self.jobId = jobId
-        self.isEnroll = isEnroll
+        self.selfieCaptureConfig = selfieCaptureConfig
         self.numLivenessImages = numLivenessImages
-        self.allowNewEnroll = allowNewEnroll
         self.selfieImageUrl = selfieImageUrl
         self.livenessImages = livenessImages
-        self.extraPartnerParams = extraPartnerParams
         self.localMetadata = localMetadata
     }
 
@@ -89,27 +77,27 @@ final class SelfieSubmissionManager {
     }
 
     private func determineJobType() -> JobType {
-        return isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
+        return selfieCaptureConfig.isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
     }
 
     private func createAuthRequest(jobType: JobType) -> AuthenticationRequest {
         return AuthenticationRequest(
             jobType: jobType,
-            enrollment: isEnroll,
-            jobId: jobId,
-            userId: userId
+            enrollment: selfieCaptureConfig.isEnroll,
+            jobId: selfieCaptureConfig.jobId,
+            userId: selfieCaptureConfig.userId
         )
     }
 
     private func saveOfflineMode(jobType: JobType) throws {
         try LocalStorage.saveOfflineJob(
-            jobId: jobId,
-            userId: userId,
+            jobId: selfieCaptureConfig.jobId,
+            userId: selfieCaptureConfig.userId,
             jobType: jobType,
-            enrollment: isEnroll,
-            allowNewEnroll: allowNewEnroll,
+            enrollment: selfieCaptureConfig.isEnroll,
+            allowNewEnroll: selfieCaptureConfig.allowNewEnroll,
             localMetadata: localMetadata,
-            partnerParams: extraPartnerParams
+            partnerParams: selfieCaptureConfig.extraPartnerParams
         )
     }
 
@@ -147,18 +135,18 @@ final class SelfieSubmissionManager {
         smartSelfieLivenessImages: [MultipartBody],
         failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse {
-        if isEnroll {
+        if selfieCaptureConfig.isEnroll {
             return try await SmileID.api
                 .doSmartSelfieEnrollment(
                     signature: authResponse.signature,
                     timestamp: authResponse.timestamp,
                     selfieImage: smartSelfieImage,
                     livenessImages: smartSelfieLivenessImages,
-                    userId: userId,
-                    partnerParams: extraPartnerParams,
+                    userId: selfieCaptureConfig.userId,
+                    partnerParams: selfieCaptureConfig.extraPartnerParams,
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
-                    allowNewEnroll: allowNewEnroll,
+                    allowNewEnroll: selfieCaptureConfig.allowNewEnroll,
                     failureReason: failureReason,
                     metadata: localMetadata.metadata
                 )
@@ -167,10 +155,10 @@ final class SelfieSubmissionManager {
                 .doSmartSelfieAuthentication(
                     signature: authResponse.signature,
                     timestamp: authResponse.timestamp,
-                    userId: userId,
+                    userId: selfieCaptureConfig.userId,
                     selfieImage: smartSelfieImage,
                     livenessImages: smartSelfieLivenessImages,
-                    partnerParams: extraPartnerParams,
+                    partnerParams: selfieCaptureConfig.extraPartnerParams,
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
                     failureReason: failureReason,
@@ -181,17 +169,17 @@ final class SelfieSubmissionManager {
 
     private func updateLocalStorageAfterSuccess() throws {
         // Move the job to the submitted jobs directory for record-keeping
-        try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+        try LocalStorage.moveToSubmittedJobs(jobId: selfieCaptureConfig.jobId)
 
         // Update the references to the submitted selfie and liveness images
         self.selfieImageUrl = try LocalStorage.getFileByType(
-            jobId: jobId,
+            jobId: selfieCaptureConfig.jobId,
             fileType: FileType.selfie,
             submitted: true
         )
         self.livenessImages =
             try LocalStorage.getFilesByType(
-                jobId: jobId,
+                jobId: selfieCaptureConfig.jobId,
                 fileType: FileType.liveness,
                 submitted: true
             ) ?? []
@@ -199,11 +187,11 @@ final class SelfieSubmissionManager {
 
     private func handleJobSubmissionFailure(_ smileIDError: SmileIDError) {
         do {
-            let didMove = try LocalStorage.handleOfflineJobFailure(jobId: self.jobId, error: smileIDError)
+            let didMove = try LocalStorage.handleOfflineJobFailure(jobId: selfieCaptureConfig.jobId, error: smileIDError)
             if didMove {
-                self.selfieImageUrl = try LocalStorage.getFileByType(jobId: jobId, fileType: .selfie, submitted: true)
+                self.selfieImageUrl = try LocalStorage.getFileByType(jobId: selfieCaptureConfig.jobId, fileType: .selfie, submitted: true)
                 self.livenessImages =
-                    try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness, submitted: true) ?? []
+                try LocalStorage.getFilesByType(jobId: selfieCaptureConfig.jobId, fileType: .liveness, submitted: true) ?? []
             }
         } catch {
             let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)

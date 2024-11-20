@@ -1,5 +1,16 @@
 import Foundation
 
+protocol FaceValidatorProtocol {
+    var delegate: FaceValidatorDelegate? { get set }
+    func setLayoutGuideFrame(with frame: CGRect)
+    func validate(
+        faceGeometry: FaceGeometryData,
+        selfieQuality: SelfieQualityData,
+        brightness: Int,
+        currentLivenessTask: LivenessTask?
+    )
+}
+
 protocol FaceValidatorDelegate: AnyObject {
     func updateValidationResult(_ result: FaceValidationResult)
 }
@@ -135,3 +146,5 @@ final class FaceValidator {
         return isAcceptableBounds && isAcceptableBrightness && isAcceptableSelfieQuality
     }
 }
+
+extension FaceValidator: FaceValidatorProtocol {}

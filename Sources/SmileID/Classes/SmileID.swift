@@ -299,21 +299,24 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         useStrictMode: Bool = false,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
         if useStrictMode {
             OrchestratedSelfieCaptureScreenV2(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: true,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                useStrictMode: useStrictMode,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: false,
+                selfieCaptureConfig: SelfieCaptureConfig(
+                    isEnroll: true,
+                    userId: userId,
+                    jobId: jobId,
+                    allowNewEnroll: allowNewEnroll,
+                    skipApiSubmission: skipApiSubmission,
+                    useStrictMode: useStrictMode,
+                    allowAgentMode: allowAgentMode,
+                    showAttribution: showAttribution,
+                    showInstructions: showInstructions,
+                    extraPartnerParams: extraPartnerParams
+                ),
                 onResult: delegate
             )
         } else {
@@ -360,21 +363,24 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         useStrictMode: Bool = false,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
         if useStrictMode {
             OrchestratedSelfieCaptureScreenV2(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: true,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                useStrictMode: useStrictMode,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: false,
+                selfieCaptureConfig: SelfieCaptureConfig(
+                    isEnroll: true,
+                    userId: userId,
+                    jobId: jobId,
+                    allowNewEnroll: allowNewEnroll,
+                    skipApiSubmission: skipApiSubmission,
+                    useStrictMode: useStrictMode,
+                    allowAgentMode: allowAgentMode,
+                    showAttribution: showAttribution,
+                    showInstructions: showInstructions,
+                    extraPartnerParams: extraPartnerParams
+                ),
                 onResult: delegate
             )
         } else {

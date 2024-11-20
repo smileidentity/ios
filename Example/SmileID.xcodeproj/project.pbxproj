@@ -28,6 +28,7 @@
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
 		20343AFA2C2086D3003536F5 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF92C2086D3003536F5 /* EmptyStateView.swift */; };
 		204C95A12CDA455600A07386 /* FaceValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204C95A02CDA455600A07386 /* FaceValidatorTests.swift */; };
+		204EBFA32CED36030073220F /* SelfieViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204EBFA22CED36030073220F /* SelfieViewModelTests.swift */; };
 		205FB4A52C29AF1500FDE64F /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205FB4A42C29AF1500FDE64F /* Date+Extensions.swift */; };
 		205FB4A72C2C32A500FDE64F /* JobItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205FB4A62C2C32A500FDE64F /* JobItemModel.swift */; };
 		2089720E2C2624EE00D07D68 /* DataStoreClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2089720D2C2624EE00D07D68 /* DataStoreClient.swift */; };
@@ -109,6 +110,7 @@
 		20343AF12C206CEC003536F5 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
 		20343AF92C2086D3003536F5 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		204C95A02CDA455600A07386 /* FaceValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceValidatorTests.swift; sourceTree = "<group>"; };
+		204EBFA22CED36030073220F /* SelfieViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfieViewModelTests.swift; sourceTree = "<group>"; };
 		205FB4A42C29AF1500FDE64F /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		205FB4A62C2C32A500FDE64F /* JobItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobItemModel.swift; sourceTree = "<group>"; };
 		2089720D2C2624EE00D07D68 /* DataStoreClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreClient.swift; sourceTree = "<group>"; };
@@ -374,6 +376,7 @@
 				585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */,
 				204C95A02CDA455600A07386 /* FaceValidatorTests.swift */,
 				20DDAB3B2CE5F02C00F7F7BA /* LivenessCheckManagerTests.swift */,
+				204EBFA22CED36030073220F /* SelfieViewModelTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -751,6 +754,7 @@
 				58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */,
 				918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */,
 				204C95A12CDA455600A07386 /* FaceValidatorTests.swift in Sources */,
+				204EBFA32CED36030073220F /* SelfieViewModelTests.swift in Sources */,
 				918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */,
 				20DDAB3C2CE5F02C00F7F7BA /* LivenessCheckManagerTests.swift in Sources */,
 			);
