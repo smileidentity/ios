@@ -101,8 +101,8 @@ public class SelfieViewModelV2: ObservableObject {
                 with: livenessCheckManager.$lookRightProgress,
                 livenessCheckManager.$lookUpProgress
             )
-            .sink { [weak self] (progress: CGFloat) in
-                DispatchQueue.main.async {
+            .sink { [weak self] _ in
+                self?.dispatchQueue.async {
                     self?.resetGuideAnimationDelayTimer()
                 }
             }
