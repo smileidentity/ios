@@ -7,17 +7,28 @@ import XCTest
 final class SelfieViewModelTests: XCTestCase {
 
     var selfieViewModel: SelfieViewModelV2!
+
+    // mock delegates
     var mockResultDelegate: MockSmartSelfieResultDelegate!
     var mockFaceValidatorDelegate: MockFaceValidatorDelegate!
+
+    // mock dependencies
+    var stubCameraManager: StubCameraManager!
     var mockFaceValidator: MockFaceValidator!
     var mockFaceDetector: MockFaceDetector!
 
     override func setUp() {
         super.setUp()
+        // initialise mocks
         mockResultDelegate = MockSmartSelfieResultDelegate()
         mockFaceValidatorDelegate = MockFaceValidatorDelegate()
+
+        stubCameraManager = StubCameraManager()
+        mockFaceValidator = MockFaceValidator()
+        mockFaceDetector = MockFaceDetector()
+
         selfieViewModel = SelfieViewModelV2(
-            cameraManager: StubCameraManager(),
+            cameraManager: stubCameraManager,
             faceDetector: mockFaceDetector,
             faceValidator: mockFaceValidator,
             livenessCheckManager: StubLivenessManager(),
@@ -58,46 +69,6 @@ final class SelfieViewModelTests: XCTestCase {
             )
         selfieViewModel.perform(action: .onViewAppear)
 
-        // when view appears:
-        // windowSizeDetected is called
-        // faceLayoutGuideFrame of mockFaceValidator should be set.
-
-        // mockFaceDetector should analyze pixel buffer and return face observation
-
-        // mockFaceValidator should also return some results
-
-        // check the results from mockFaceValidator is good,
-        // selfie should be captured and there should be a URL for selfieImage set.
-        // which means we have to mock LocalStorage which is a singleton
-
-        // liveness check manager should now be initiated
-        // check that a current task is set.
-        // if no progress is emitted from liveness manager after the timeout then
-        // check that animation has started playing for that task
-        // now let the progress be emitted
-        // check that liveness images are captured when task is completed
-        // when timeout check how many images are captured before submitting to verify the logic of capturing remaining random liveness images.
-
-        // check when we send job processing done
-        // cameramanager pause should be called.
-
-        // check if all tasks are complete
-        // check that submission starts
-        // mock the submission manager:
-        // when it returns success: check the selfie capture state
-        // and when it returns failure check the state again
-
-        // check when there is a timeout from liveness manager
-        // check that submission happens
-
-        // others
-        // check that alert shows when camera permission denied
-        // and it doesn't show when permission is granted.
-
-        // mock UIApplication
-        // check that it called open url when permission is denied and directed to settings.
-
-        // XCTAssertEqual(mockFaceValidator., <#T##expression2: Equatable##Equatable#>)
         XCTAssertEqual(selfieViewModel.selfieCaptureState, .capturingSelfie)
     }
 }
