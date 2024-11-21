@@ -196,7 +196,6 @@ class LivenessCheckManager: ObservableObject {
 }
 
 extension LivenessCheckManager: LivenessManagerProtocol {}
-    
 
 extension CGFloat {
     func normalized(min: CGFloat, max: CGFloat) -> CGFloat {

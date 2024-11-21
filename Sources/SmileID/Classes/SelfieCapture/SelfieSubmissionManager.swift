@@ -187,11 +187,22 @@ final class SelfieSubmissionManager {
 
     private func handleJobSubmissionFailure(_ smileIDError: SmileIDError) {
         do {
-            let didMove = try LocalStorage.handleOfflineJobFailure(jobId: selfieCaptureConfig.jobId, error: smileIDError)
+            let didMove = try LocalStorage.handleOfflineJobFailure(
+                jobId: selfieCaptureConfig.jobId,
+                error: smileIDError
+            )
             if didMove {
-                self.selfieImageUrl = try LocalStorage.getFileByType(jobId: selfieCaptureConfig.jobId, fileType: .selfie, submitted: true)
+                self.selfieImageUrl = try LocalStorage.getFileByType(
+                    jobId: selfieCaptureConfig.jobId,
+                    fileType: .selfie,
+                    submitted: true
+                )
                 self.livenessImages =
-                try LocalStorage.getFilesByType(jobId: selfieCaptureConfig.jobId, fileType: .liveness, submitted: true) ?? []
+                try LocalStorage.getFilesByType(
+                    jobId: selfieCaptureConfig.jobId,
+                    fileType: .liveness,
+                    submitted: true
+                ) ?? []
             }
         } catch {
             let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)

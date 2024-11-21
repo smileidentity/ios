@@ -131,7 +131,7 @@ final class DispatchQueueMock: DispatchQueueType {
     func asyncAfter(deadline: DispatchTime, execute work: @escaping @Sendable () -> Void) {
         work()
     }
-    
+
     func async(execute work: @escaping @convention(block) () -> Void) {
         work()
     }

@@ -66,7 +66,7 @@ final class SelfieViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFrameLayoutGuide() {
+    func testFaceLayoutGuideFrame() {
         let windowSize = CGSize(width: 393, height: 852)
         let safeArea = EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         selfieViewModel.perform(action: .windowSizeDetected(windowSize, safeArea))
