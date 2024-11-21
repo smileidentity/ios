@@ -1,4 +1,5 @@
 import AVFoundation
+import SwiftUICore
 import Combine
 import XCTest
 
@@ -16,6 +17,7 @@ final class SelfieViewModelTests: XCTestCase {
     var stubCameraManager: StubCameraManager!
     var mockFaceValidator: MockFaceValidator!
     var mockFaceDetector: MockFaceDetector!
+    var stubLivenessManager: StubLivenessManager!
 
     override func setUp() {
         super.setUp()
@@ -26,12 +28,13 @@ final class SelfieViewModelTests: XCTestCase {
         stubCameraManager = StubCameraManager()
         mockFaceValidator = MockFaceValidator()
         mockFaceDetector = MockFaceDetector()
+        stubLivenessManager = StubLivenessManager()
 
         selfieViewModel = SelfieViewModelV2(
             cameraManager: stubCameraManager,
             faceDetector: mockFaceDetector,
             faceValidator: mockFaceValidator,
-            livenessCheckManager: StubLivenessManager(),
+            livenessCheckManager: stubLivenessManager,
             delayTimer: MockTimer(),
             dispatchQueue: DispatchQueueMock(),
             selfieCaptureConfig: SelfieCaptureConfig(
@@ -55,20 +58,24 @@ final class SelfieViewModelTests: XCTestCase {
         selfieViewModel = nil
         mockResultDelegate = nil
         mockFaceValidatorDelegate = nil
+        
         mockFaceDetector = nil
+        mockFaceValidator = nil
+        stubCameraManager = nil
+        stubLivenessManager = nil
         super.tearDown()
     }
 
-    func testBasics() {
-        selfieViewModel
-            .perform(
-                action: .windowSizeDetected(
-                    .zero,
-                    .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                )
-            )
+    func testFrameLayoutGuide() {
+        let windowSize = CGSize(width: 393, height: 852)
+        let safeArea = EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        selfieViewModel.perform(action: .windowSizeDetected(windowSize, safeArea))
         selfieViewModel.perform(action: .onViewAppear)
-
+        
+        XCTAssertEqual(
+            mockFaceValidator.faceGuideFrame,
+            CGRect(x: 71.5, y: 100, width: 250, height: 350)
+        )
         XCTAssertEqual(selfieViewModel.selfieCaptureState, .capturingSelfie)
     }
 }
@@ -85,9 +92,11 @@ class MockFaceDetector: FaceDetectorProtocol {
 
 class MockFaceValidator: FaceValidatorProtocol {
     weak var delegate: FaceValidatorDelegate?
+    
+    var faceGuideFrame: CGRect = .zero
 
     func setLayoutGuideFrame(with frame: CGRect) {
-        // set layout guide
+        faceGuideFrame = frame
     }
 
     func validate(
