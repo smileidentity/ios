@@ -28,7 +28,8 @@ public class SmileID {
 
     /// A private static constant that initializes a `URLSession` with a default configuration.
     /// This `URLSession` is used for creating `URLSessionDataTask`s in the networking layer.
-    /// The session configuration sets the timeout interval for requests to the value specified by `SmileID.requestTimeout`.
+    /// The session configuration sets the timeout interval for requests
+    /// to the value specified by `SmileID.requestTimeout`.
     ///
     /// - Returns: A `URLSession` instance with the specified configuration.
     private static let urlSession: URLSession = {
@@ -299,21 +300,24 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         useStrictMode: Bool = false,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
         if useStrictMode {
             OrchestratedSelfieCaptureScreenV2(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: true,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                useStrictMode: useStrictMode,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: false,
+                selfieCaptureConfig: SelfieCaptureConfig(
+                    isEnroll: true,
+                    userId: userId,
+                    jobId: jobId,
+                    allowNewEnroll: allowNewEnroll,
+                    skipApiSubmission: skipApiSubmission,
+                    useStrictMode: useStrictMode,
+                    allowAgentMode: allowAgentMode,
+                    showAttribution: showAttribution,
+                    showInstructions: showInstructions,
+                    extraPartnerParams: extraPartnerParams
+                ),
                 onResult: delegate
             )
         } else {
@@ -360,21 +364,24 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         useStrictMode: Bool = false,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
         if useStrictMode {
             OrchestratedSelfieCaptureScreenV2(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: true,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                useStrictMode: useStrictMode,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: false,
+                selfieCaptureConfig: SelfieCaptureConfig(
+                    isEnroll: true,
+                    userId: userId,
+                    jobId: jobId,
+                    allowNewEnroll: allowNewEnroll,
+                    skipApiSubmission: skipApiSubmission,
+                    useStrictMode: useStrictMode,
+                    allowAgentMode: allowAgentMode,
+                    showAttribution: showAttribution,
+                    showInstructions: showInstructions,
+                    extraPartnerParams: extraPartnerParams
+                ),
                 onResult: delegate
             )
         } else {

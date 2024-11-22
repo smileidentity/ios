@@ -1,6 +1,13 @@
 import Foundation
+import Combine
 import AVFoundation
 import SwiftUI
+
+protocol CameraManagerProtocol {
+    var status: CameraManager.Status { get }
+    var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher { get }
+    func switchCamera(to position: AVCaptureDevice.Position)
+}
 
 class CameraManager: NSObject, ObservableObject {
 
@@ -42,9 +49,7 @@ class CameraManager: NSObject, ObservableObject {
     @Published private(set) var status = Status.unconfigured
     private var orientation: Orientation
 
-    static let shared: CameraManager = CameraManager(orientation: .portrait)
-
-    private init(orientation: Orientation) {
+    init(orientation: Orientation) {
         self.orientation = orientation
         super.init()
         sessionQueue.async {
@@ -181,6 +186,8 @@ class CameraManager: NSObject, ObservableObject {
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
     }
 }
+
+extension CameraManager: CameraManagerProtocol {}
 
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(

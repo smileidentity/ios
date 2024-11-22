@@ -28,7 +28,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private var localMetadata: LocalMetadata
     private let faceDetector = FaceDetector()
 
-    var cameraManager = CameraManager.shared
+    var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
     var lastAutoCaptureTime = Date()
     var previousHeadRoll = Double.infinity
