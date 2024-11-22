@@ -23,12 +23,14 @@
 		1ED53F722A2F28590020BEFB /* SmileEnvironmentToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */; };
 		1ED53F732A2F28590020BEFB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F692A2F28590020BEFB /* HomeView.swift */; };
 		1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
+		2015C18A2CF0B57E0012CC3E /* sample_selfie.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 2015C1892CF0B57E0012CC3E /* sample_selfie.jpg */; };
 		20343AED2C1C825D003536F5 /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEC2C1C825D003536F5 /* JobsView.swift */; };
 		20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEE2C206BDF003536F5 /* JobListItem.swift */; };
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
 		20343AFA2C2086D3003536F5 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF92C2086D3003536F5 /* EmptyStateView.swift */; };
 		204C95A12CDA455600A07386 /* FaceValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204C95A02CDA455600A07386 /* FaceValidatorTests.swift */; };
 		204EBFA32CED36030073220F /* SelfieViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204EBFA22CED36030073220F /* SelfieViewModelTests.swift */; };
+		204FBFD92CF0747500DD0E6A /* FaceDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204FBFD82CF0747500DD0E6A /* FaceDetectorTests.swift */; };
 		205FB4A52C29AF1500FDE64F /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205FB4A42C29AF1500FDE64F /* Date+Extensions.swift */; };
 		205FB4A72C2C32A500FDE64F /* JobItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205FB4A62C2C32A500FDE64F /* JobItemModel.swift */; };
 		2089720E2C2624EE00D07D68 /* DataStoreClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2089720D2C2624EE00D07D68 /* DataStoreClient.swift */; };
@@ -105,12 +107,14 @@
 		1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterUserIDView.swift; sourceTree = "<group>"; };
 		1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileEnvironmentToggleButton.swift; sourceTree = "<group>"; };
 		1ED53F692A2F28590020BEFB /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		2015C1892CF0B57E0012CC3E /* sample_selfie.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sample_selfie.jpg; sourceTree = "<group>"; };
 		20343AEC2C1C825D003536F5 /* JobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsView.swift; sourceTree = "<group>"; };
 		20343AEE2C206BDF003536F5 /* JobListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListItem.swift; sourceTree = "<group>"; };
 		20343AF12C206CEC003536F5 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
 		20343AF92C2086D3003536F5 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		204C95A02CDA455600A07386 /* FaceValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceValidatorTests.swift; sourceTree = "<group>"; };
 		204EBFA22CED36030073220F /* SelfieViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfieViewModelTests.swift; sourceTree = "<group>"; };
+		204FBFD82CF0747500DD0E6A /* FaceDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectorTests.swift; sourceTree = "<group>"; };
 		205FB4A42C29AF1500FDE64F /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		205FB4A62C2C32A500FDE64F /* JobItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobItemModel.swift; sourceTree = "<group>"; };
 		2089720D2C2624EE00D07D68 /* DataStoreClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreClient.swift; sourceTree = "<group>"; };
@@ -195,6 +199,18 @@
 				1E59E33D2BA1E64C00D2BAD2 /* PartnerParamsTests.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		2015C1862CF0ADCA0012CC3E /* SelfieCapture */ = {
+			isa = PBXGroup;
+			children = (
+				204C95A02CDA455600A07386 /* FaceValidatorTests.swift */,
+				20DDAB3B2CE5F02C00F7F7BA /* LivenessCheckManagerTests.swift */,
+				204EBFA22CED36030073220F /* SelfieViewModelTests.swift */,
+				204FBFD82CF0747500DD0E6A /* FaceDetectorTests.swift */,
+				2015C1892CF0B57E0012CC3E /* sample_selfie.jpg */,
+			);
+			path = SelfieCapture;
 			sourceTree = "<group>";
 		};
 		20343AF02C206C8D003536F5 /* Models */ = {
@@ -368,15 +384,13 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				2015C1862CF0ADCA0012CC3E /* SelfieCapture */,
 				918321E22A52E36A00D6FB7F /* DependencyContainer */,
 				918321E52A52E36A00D6FB7F /* Mocks */,
 				918321DF2A52E36A00D6FB7F /* Networking */,
 				918321E12A52E36A00D6FB7F /* XCTestExtension.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 				585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */,
-				204C95A02CDA455600A07386 /* FaceValidatorTests.swift */,
-				20DDAB3B2CE5F02C00F7F7BA /* LivenessCheckManagerTests.swift */,
-				204EBFA22CED36030073220F /* SelfieViewModelTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -566,6 +580,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2015C18A2CF0B57E0012CC3E /* sample_selfie.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -752,6 +767,7 @@
 				91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */,
 				585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */,
 				58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */,
+				204FBFD92CF0747500DD0E6A /* FaceDetectorTests.swift in Sources */,
 				918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */,
 				204C95A12CDA455600A07386 /* FaceValidatorTests.swift in Sources */,
 				204EBFA32CED36030073220F /* SelfieViewModelTests.swift in Sources */,

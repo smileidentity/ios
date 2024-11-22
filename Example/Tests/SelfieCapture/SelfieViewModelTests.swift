@@ -78,6 +78,15 @@ final class SelfieViewModelTests: XCTestCase {
         )
         XCTAssertEqual(selfieViewModel.selfieCaptureState, .capturingSelfie)
     }
+    
+    /*
+    func testInitialStates() {
+        selfieViewModel.perform(action: .onViewAppear)
+        
+    }
+    */
+    
+    // func 
 }
 
 // MARK: Mocks & Stubs

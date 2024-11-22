@@ -17,7 +17,7 @@ public class SelfieViewModelV2: ObservableObject {
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 250, height: 350)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
     private var currentFrameBuffer: CVPixelBuffer?
-    var selfieImage: UIImage?
+    private(set) var selfieImage: UIImage?
     private var selfieImageURL: URL? {
         didSet {
             dispatchQueue.async {
@@ -25,8 +25,8 @@ public class SelfieViewModelV2: ObservableObject {
             }
         }
     }
-    private var livenessImages: [URL] = []
-    private var hasDetectedValidFace: Bool = false
+    private(set) var livenessImages: [URL] = []
+    private(set) var hasDetectedValidFace: Bool = false
     private var shouldBeginLivenessChallenge: Bool {
         hasDetectedValidFace && selfieImage != nil && livenessCheckManager.currentTask != nil
     }
@@ -34,8 +34,8 @@ public class SelfieViewModelV2: ObservableObject {
         selfieImage != nil && livenessImages.count == numLivenessImages
     }
     private var submissionTask: Task<Void, Error>?
-    private var failureReason: FailureReason?
-    private var apiResponse: SmartSelfieResponse?
+    private(set) var failureReason: FailureReason?
+    private(set) var apiResponse: SmartSelfieResponse?
     private var error: Error?
     @Published public var errorMessageRes: String?
     @Published public var errorMessage: String?

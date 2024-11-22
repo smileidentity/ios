@@ -16,7 +16,7 @@ protocol FaceDetectorProtocol {
     func processImageBuffer(_ imageBuffer: CVPixelBuffer)
 }
 
-protocol FaceDetectorViewDelegate: NSObjectProtocol {
+protocol FaceDetectorViewDelegate: AnyObject {
     func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect
 }
 
@@ -31,36 +31,59 @@ protocol FaceDetectorResultDelegate: AnyObject {
     func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error)
 }
 
+protocol SelfieQualityDetectorProtocol {
+    func predict(imageBuffer: CVPixelBuffer) throws -> SelfieQualityData
+}
+
+protocol VNSequenceRequestHandlerProtocol {
+    func perform(
+        _ requests: [VNRequest],
+        on pixelBuffer: CVPixelBuffer,
+        orientation: CGImagePropertyOrientation
+    ) throws
+}
+
+extension VNSequenceRequestHandler: VNSequenceRequestHandlerProtocol {}
+
+protocol VNImageRequestHandlerProtocol {
+    func perform(_ requests: [VNRequest]) throws
+}
+
+extension VNImageRequestHandler: VNImageRequestHandlerProtocol {}
+
 class FaceDetectorV2: NSObject {
-    private var selfieQualityModel: SelfieQualityDetector?
+    private let selfieQualityDetector: SelfieQualityDetectorProtocol
 
     private let cropSize = (width: 120, height: 120)
     private let faceMovementThreshold: CGFloat = 0.15
 
-    private var sequenceHandler = VNSequenceRequestHandler()
+    private let sequenceHandler: VNSequenceRequestHandlerProtocol
+    private var imageRequestHandler: VNImageRequestHandlerProtocol?
+    var VNDetectFaceRectanglesRequestClass = VNDetectFaceRectanglesRequest.self
+    var VNDetectFaceCaptureQualityRequestClass = VNDetectFaceCaptureQualityRequest.self
 
     weak var viewDelegate: FaceDetectorViewDelegate?
     weak var resultDelegate: FaceDetectorResultDelegate?
 
-    override init() {
-        super.init()
-        selfieQualityModel = createImageClassifier()
-    }
-
-    private func createImageClassifier() -> SelfieQualityDetector? {
-        do {
-            let modelConfiguration = MLModelConfiguration()
-            let coreMLModel = try SelfieQualityDetector(configuration: modelConfiguration)
-            return coreMLModel
-        } catch {
-            return nil
-        }
+    init(
+        sequenceHandler: VNSequenceRequestHandlerProtocol = VNSequenceRequestHandler(),
+        imageRequestHandler: VNImageRequestHandlerProtocol? = nil,
+        selfieQualityDetector: SelfieQualityDetectorProtocol = SelfieQualityDetectorWrapper()
+    ) {
+        self.sequenceHandler = sequenceHandler
+        self.imageRequestHandler = imageRequestHandler
+        self.selfieQualityDetector = selfieQualityDetector
     }
 
     /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
     func processImageBuffer(_ imageBuffer: CVPixelBuffer) {
-        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest()
-        let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest()
+        let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequestClass.init()
+        let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequestClass.init()
+
+        #if targetEnvironment(simulator)
+            detectFaceRectanglesRequest.usesCPUOnly = true
+            detectCaptureQualityRequest.usesCPUOnly = true
+        #endif
 
         do {
             try sequenceHandler.perform(
@@ -86,7 +109,7 @@ class FaceDetectorV2: NSObject {
             let brightness = self.calculateBrightness(uiImage)
             let croppedImage = try self.cropImageToFace(uiImage)
 
-            let selfieQualityData = try self.selfieQualityRequest(imageBuffer: croppedImage)
+            let selfieQualityData = try self.selfieQualityDetector.predict(imageBuffer: croppedImage)
 
             if #available(iOS 15.0, *) {
                 let faceGeometryData = FaceGeometryData(
@@ -112,43 +135,22 @@ class FaceDetectorV2: NSObject {
         }
     }
 
-    func selfieQualityRequest(imageBuffer: CVPixelBuffer) throws -> SelfieQualityData {
-        guard let selfieQualityModel else {
-            throw FaceDetectorError.unableToLoadSelfieModel
-        }
-        let input = SelfieQualityDetectorInput(conv2d_193_input: imageBuffer)
-
-        let prediction = try selfieQualityModel.prediction(input: input)
-        let output = prediction.Identity
-
-        guard output.shape.count == 2,
-            output.shape[0] == 1,
-            output.shape[1] == 2
-        else {
-            throw FaceDetectorError.invalidSelfieModelOutput
-        }
-
-        let passScore = output[0].floatValue
-        let failScore = output[1].floatValue
-
-        let selfieQualityData = SelfieQualityData(
-            failed: failScore,
-            passed: passScore
-        )
-        return selfieQualityData
-    }
-
-    private func cropImageToFace(
+    func cropImageToFace(
         _ image: UIImage?
     ) throws -> CVPixelBuffer {
         guard let image, let cgImage = image.cgImage else {
             throw FaceDetectorError.unableToCropImage
         }
 
-        let request = VNDetectFaceRectanglesRequest()
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        let request = VNDetectFaceRectanglesRequestClass.init()
+        #if targetEnvironment(simulator)
+            request.usesCPUOnly = true
+        #endif
+        if imageRequestHandler == nil {
+            imageRequestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        }
 
-        try handler.perform([request])
+        try imageRequestHandler?.perform([request])
 
         guard let results = request.results,
             let face = results.first
@@ -184,7 +186,7 @@ class FaceDetectorV2: NSObject {
         return resizedImage
     }
 
-    private func calculateBrightness(_ image: UIImage?) -> Int {
+    func calculateBrightness(_ image: UIImage?) -> Int {
         guard let image, let cgImage = image.cgImage,
             let imageData = cgImage.dataProvider?.data,
             let dataPointer = CFDataGetBytePtr(imageData)
