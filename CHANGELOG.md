@@ -1,5 +1,12 @@
 # Release Notes
 
+## 10.2.17
+### Added skipApiSubmission: Whether to skip api submission to SmileID and return only captured images on SmartSelfie enrollment, SmartSelfie authentic , Document verification and Enhanced DocV
+
+## 10.2.16
+### Fixed
+* Clear images on retry or start capture with the same jobId
+
 ## 10.2.15
 
 ### Changed
