@@ -17,7 +17,8 @@ final class FaceValidator {
     // MARK: Constants
     private let selfieQualityThreshold: Float = 0.5
     private let luminanceThreshold: ClosedRange<Int> = 80...200
-    private let faceBoundsMultiplier: CGFloat = 1.5
+    private let selfiefaceBoundsMultiplier: CGFloat = 1.5
+    private let livenessfaceBoundsMultiplier: CGFloat = 2.2
     private let faceBoundsThreshold: CGFloat = 50
 
     init() {}
@@ -101,8 +102,12 @@ final class FaceValidator {
     }
 
     // MARK: Validation Checks
-    private func checkFaceSizeAndPosition(using boundingBox: CGRect, shouldCheckCentering: Bool) -> FaceBoundsState {
+    private func checkFaceSizeAndPosition(
+        using boundingBox: CGRect,
+        shouldCheckCentering: Bool
+    ) -> FaceBoundsState {
         let maxFaceWidth = faceLayoutGuideFrame.width - 20
+        let faceBoundsMultiplier = shouldCheckCentering ? selfiefaceBoundsMultiplier : livenessfaceBoundsMultiplier
         let minFaceWidth = faceLayoutGuideFrame.width / faceBoundsMultiplier
 
         if boundingBox.width > maxFaceWidth {
