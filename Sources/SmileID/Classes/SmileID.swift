@@ -304,6 +304,7 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         useStrictMode: Bool = false,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
@@ -318,7 +319,7 @@ public class SmileID {
                 showInstructions: showInstructions,
                 useStrictMode: useStrictMode,
                 extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: false,
+                skipApiSubmission: skipApiSubmission,
                 onResult: delegate
             )
         } else {
@@ -331,7 +332,7 @@ public class SmileID {
                 showAttribution: showAttribution,
                 showInstructions: showInstructions,
                 extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: false,
+                skipApiSubmission: skipApiSubmission,
                 onResult: delegate
             )
         }
