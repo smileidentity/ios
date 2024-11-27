@@ -154,6 +154,7 @@ public class SelfieViewModelV2: ObservableObject {
         faceDetector.processImageBuffer(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
             captureSelfieImage(imageBuffer)
+            HapticManager.shared.notification(type: .success)
             livenessCheckManager.initiateLivenessCheck()
         }
     }
@@ -331,6 +332,7 @@ extension SelfieViewModelV2: LivenessCheckManagerDelegate {
         guard let imageBuffer = currentFrameBuffer else { return }
         captureLivenessImage(imageBuffer)
         captureLivenessImage(imageBuffer)
+        HapticManager.shared.notification(type: .success)
     }
 
     func didCompleteLivenessChallenge() {
@@ -409,6 +411,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
     // MARK: SelfieJobSubmissionDelegate Methods
 
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
+        HapticManager.shared.notification(type: .success)
         DispatchQueue.main.async {
             self.apiResponse = apiResponse
             self.selfieCaptureState = .processing(.success)
@@ -420,6 +423,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
         errorMessage: String?,
         errorMessageRes: String?
     ) {
+        HapticManager.shared.notification(type: .error)
         DispatchQueue.main.async {
             self.error = error
             self.errorMessage = errorMessage
