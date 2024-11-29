@@ -10,8 +10,6 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
     public let onResult: SmartSelfieResultDelegate
     private let viewModel: SelfieViewModelV2
 
-    private var originalBrightness = UIScreen.main.brightness
-
     public init(
         userId: String,
         jobId: String,

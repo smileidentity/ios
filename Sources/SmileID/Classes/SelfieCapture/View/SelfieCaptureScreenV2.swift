@@ -7,6 +7,8 @@ public struct SelfieCaptureScreenV2: View {
     private let faceShape = FaceShape()
     @Environment(\.modalMode) private var modalMode
 
+    private(set) var originalBrightness = UIScreen.main.brightness
+
     public var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 10) {
@@ -111,10 +113,12 @@ public struct SelfieCaptureScreenV2: View {
             }
             .navigationBarHidden(true)
             .onAppear {
+                UIScreen.main.brightness = 1
                 viewModel.perform(action: .windowSizeDetected(proxy.size, proxy.safeAreaInsets))
                 viewModel.perform(action: .onViewAppear)
             }
             .onDisappear {
+                UIScreen.main.brightness = originalBrightness
                 viewModel.cameraManager.pauseSession()
             }
             .alert(item: $viewModel.unauthorizedAlert) { alert in
