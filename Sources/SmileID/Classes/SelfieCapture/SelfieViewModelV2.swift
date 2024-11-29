@@ -141,7 +141,7 @@ public class SelfieViewModelV2: ObservableObject {
                 latest: true
             )
             // Drop the first ~2 seconds to allow the user to settle in
-             .dropFirst(5)
+            .dropFirst(5)
             .compactMap { $0 }
             .sink { [weak self] imageBuffer in
                 self?.analyzeFrame(imageBuffer: imageBuffer)
@@ -237,15 +237,45 @@ extension SelfieViewModelV2 {
                     pixelBuffer,
                     height: selfieImageSize,
                     orientation: .up
-                )
+                ),
+                let uiImage = UIImage(data: imageData)
             else {
                 throw SmileIDError.unknown("Error resizing selfie image")
             }
-            self.selfieImage = UIImage(data: imageData)
+            self.selfieImage = flipImageForPreview(uiImage)
             self.selfieImageURL = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
         } catch {
             handleError(error)
         }
+    }
+
+    private func flipImageForPreview(_ image: UIImage) -> UIImage? {
+        guard let cgImage = image.cgImage else { return nil }
+
+        let contextSize = CGSize(width: image.size.height, height: image.size.width)
+        UIGraphicsBeginImageContextWithOptions(contextSize, false, 1.0)
+        defer { UIGraphicsEndImageContext() }
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+        // Apply a 90° clockwise rotation
+        // Translate the context to the center before rotating
+        // to ensure the image rotates around it center
+        context.translateBy(x: contextSize.width / 2, y: contextSize.height / 2)
+        context.rotate(by: .pi / 2)
+
+        // Flip the context horizontally to compensate for the mirroring effect.
+        context.scaleBy(x: -1.0, y: 1.0)
+
+        // Draw the image
+        context.draw(
+            cgImage,
+            in: CGRect(
+                x: -image.size.width / 2, y: -image.size.height / 2, width: image.size.width, height: image.size.height)
+        )
+
+        let correctedImage = UIGraphicsGetImageFromCurrentImageContext()
+        return correctedImage
     }
 
     private func captureLivenessImage(_ pixelBuffer: CVPixelBuffer) {
@@ -391,7 +421,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let selfieImageURL = selfieImageURL,
-           let selfiePath = getRelativePath(from: selfieImageURL),
+            let selfiePath = getRelativePath(from: selfieImageURL),
             livenessImages.count == numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
             let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
