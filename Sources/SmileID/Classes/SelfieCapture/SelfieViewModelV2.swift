@@ -324,14 +324,12 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
         _ detector: FaceDetectorV2,
         didDetectFace faceGeometry: FaceGeometryData,
         withFaceQuality faceQuality: Float,
-        selfieQuality: SelfieQualityData,
-        brightness: Int
+        selfieQuality: SelfieQualityData
     ) {
         faceValidator
             .validate(
                 faceGeometry: faceGeometry,
                 selfieQuality: selfieQuality,
-                brightness: brightness,
                 currentLivenessTask: self.livenessCheckManager.currentTask
             )
         if shouldBeginLivenessChallenge {
