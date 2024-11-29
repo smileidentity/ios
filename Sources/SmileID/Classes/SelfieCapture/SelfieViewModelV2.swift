@@ -252,20 +252,20 @@ extension SelfieViewModelV2 {
     private func flipImageForPreview(_ image: UIImage) -> UIImage? {
         guard let cgImage = image.cgImage else { return nil }
 
-        let contextSize = CGSize(width: image.size.height, height: image.size.width)
+        let contextSize = CGSize(width: image.size.width, height: image.size.height)
         UIGraphicsBeginImageContextWithOptions(contextSize, false, 1.0)
-        defer { UIGraphicsEndImageContext() }
+        defer {
+            UIGraphicsEndImageContext()
+        }
         guard let context = UIGraphicsGetCurrentContext() else {
             return nil
         }
-        // Apply a 90° clockwise rotation
-        // Translate the context to the center before rotating
-        // to ensure the image rotates around it center
-        context.translateBy(x: contextSize.width / 2, y: contextSize.height / 2)
-        context.rotate(by: .pi / 2)
 
-        // Flip the context horizontally to compensate for the mirroring effect.
-        context.scaleBy(x: -1.0, y: 1.0)
+        // Apply a 180° counterclockwise rotation
+        // Translate the context to the center before rotating
+        // to ensure the image rotates around its center
+        context.translateBy(x: contextSize.width / 2, y: contextSize.height / 2)
+        context.rotate(by: -.pi)
 
         // Draw the image
         context.draw(
@@ -274,7 +274,9 @@ extension SelfieViewModelV2 {
                 x: -image.size.width / 2, y: -image.size.height / 2, width: image.size.width, height: image.size.height)
         )
 
+        // Get the new UIImage from the context
         let correctedImage = UIGraphicsGetImageFromCurrentImageContext()
+
         return correctedImage
     }
 
@@ -358,10 +360,16 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 // MARK: LivenessCheckManagerDelegate Methods
 extension SelfieViewModelV2: LivenessCheckManagerDelegate {
     func didCompleteLivenessTask() {
-        // capture liveness image twice
-        guard let imageBuffer = currentFrameBuffer else { return }
-        captureLivenessImage(imageBuffer)
-        captureLivenessImage(imageBuffer)
+        // capture first frame
+        guard let firstFrameBuffer = currentFrameBuffer else { return }
+        captureLivenessImage(firstFrameBuffer)
+
+        // capture a second frame after a slight delay
+        // to ensure it's a different frame
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+            guard let secondFrameBuffer = self?.currentFrameBuffer else { return }
+            self?.captureLivenessImage(secondFrameBuffer)
+        }
         HapticManager.shared.notification(type: .success)
     }
 
