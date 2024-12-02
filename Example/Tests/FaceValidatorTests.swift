@@ -24,7 +24,7 @@ class FaceValidatorTests: XCTestCase {
     func testValidateWithValidFace() {
         let result = performValidation(
             faceBoundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
-            selfieQualityData: SelfieQualityData(failed: 0.1, passed: 0.9)
+            faceQuality: 0.5
         )
 
         XCTAssertTrue(result.faceInBounds)
@@ -35,7 +35,7 @@ class FaceValidatorTests: XCTestCase {
     func testValidateWithFaceTooSmall() {
         let result = performValidation(
             faceBoundingBox: CGRect(x: 65, y: 164, width: 100, height: 100),
-            selfieQualityData: SelfieQualityData(failed: 0.1, passed: 0.9)
+            faceQuality: 0.5
         )
 
         XCTAssertFalse(result.faceInBounds)
@@ -46,7 +46,7 @@ class FaceValidatorTests: XCTestCase {
     func testValidateWithFaceTooLarge() {
         let result = performValidation(
             faceBoundingBox: CGRect(x: 65, y: 164, width: 250, height: 250),
-            selfieQualityData: SelfieQualityData(failed: 0.1, passed: 0.9)
+            faceQuality: 0.5
         )
 
         XCTAssertFalse(result.faceInBounds)
@@ -57,7 +57,7 @@ class FaceValidatorTests: XCTestCase {
     func testValidWithFaceOffCentre() {
         let result = performValidation(
             faceBoundingBox: CGRect(x: 125, y: 164, width: 190, height: 190),
-            selfieQualityData: SelfieQualityData(failed: 0.1, passed: 0.9)
+            faceQuality: 0.5
         )
 
         XCTAssertFalse(result.faceInBounds)
@@ -65,10 +65,10 @@ class FaceValidatorTests: XCTestCase {
         XCTAssertEqual(result.userInstruction, .headInFrame)
     }
 
-    func testValidateWithPoorSelfieQuality() {
+    func testValidateWithPoorFaceQuality() {
         let result = performValidation(
             faceBoundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
-            selfieQualityData: SelfieQualityData(failed: 0.6, passed: 0.4)
+            faceQuality: 0.2
         )
 
         XCTAssertTrue(result.faceInBounds)
@@ -79,7 +79,7 @@ class FaceValidatorTests: XCTestCase {
     func testValidateWithLivenessTask() {
         let result = performValidation(
             faceBoundingBox: CGRect(x: 65, y: 164, width: 190, height: 190),
-            selfieQualityData: SelfieQualityData(failed: 0.3, passed: 0.7),
+            faceQuality: 0.3,
             livenessTask: .lookLeft
         )
 
@@ -93,7 +93,7 @@ class FaceValidatorTests: XCTestCase {
 extension FaceValidatorTests {
     func performValidation(
         faceBoundingBox: CGRect,
-        selfieQualityData: SelfieQualityData,
+        faceQuality: Float,
         livenessTask: LivenessTask? = nil
     ) -> FaceValidationResult {
         let faceGeometry = FaceGeometryData(
@@ -105,7 +105,7 @@ extension FaceValidatorTests {
         )
         faceValidator.validate(
             faceGeometry: faceGeometry,
-            selfieQuality: selfieQualityData,
+            faceQuality: faceQuality,
             currentLivenessTask: livenessTask
         )
 

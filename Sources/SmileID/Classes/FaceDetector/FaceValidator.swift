@@ -15,7 +15,7 @@ final class FaceValidator {
     private var faceLayoutGuideFrame: CGRect = .zero
 
     // MARK: Constants
-    private let selfieQualityThreshold: Float = 0.5
+    private let faceQualityThreshold: Float = 0.25
     private let luminanceThreshold: ClosedRange<Int> = 40...200
     private let selfiefaceBoundsMultiplier: CGFloat = 1.5
     private let livenessfaceBoundsMultiplier: CGFloat = 2.2
@@ -29,7 +29,7 @@ final class FaceValidator {
 
     func validate(
         faceGeometry: FaceGeometryData,
-        selfieQuality: SelfieQualityData,
+        faceQuality: Float,
         currentLivenessTask: LivenessTask?
     ) {
         // check face bounds
@@ -39,20 +39,20 @@ final class FaceValidator {
         )
         let isAcceptableBounds = faceBoundsState == .detectedFaceAppropriateSizeAndPosition
 
-        // check selfie quality
-        let isAcceptableSelfieQuality = checkSelfieQuality(selfieQuality)
+        // check face quality
+        let isAcceptableFaceQuality = checkFaceQuality(faceQuality)
 
         // check that face is ready for capture
         let hasDetectedValidFace = checkValidFace(
             isAcceptableBounds,
-            isAcceptableSelfieQuality
+            isAcceptableFaceQuality
         )
 
         // determine what instruction/animation to display to users
         let userInstruction = userInstruction(
             from: faceBoundsState,
             detectedValidFace: hasDetectedValidFace,
-            isAcceptableSelfieQuality: isAcceptableSelfieQuality,
+            isAcceptableFaceQuality: isAcceptableFaceQuality,
             livenessTask: currentLivenessTask
         )
 
@@ -67,7 +67,7 @@ final class FaceValidator {
     private func userInstruction(
         from faceBoundsState: FaceBoundsState,
         detectedValidFace: Bool,
-        isAcceptableSelfieQuality: Bool,
+        isAcceptableFaceQuality: Bool,
         livenessTask: LivenessTask?
     ) -> SelfieCaptureInstruction? {
         if detectedValidFace {
@@ -88,7 +88,7 @@ final class FaceValidator {
             return .moveCloser
         } else if faceBoundsState == .detectedFaceTooLarge {
             return .moveBack
-        } else if !isAcceptableSelfieQuality {
+        } else if !isAcceptableFaceQuality {
             return .goodLight
         }
         return nil
@@ -121,8 +121,8 @@ final class FaceValidator {
         return .detectedFaceAppropriateSizeAndPosition
     }
 
-    private func checkSelfieQuality(_ value: SelfieQualityData) -> Bool {
-        return value.passed >= selfieQualityThreshold
+    private func checkFaceQuality(_ value: Float) -> Bool {
+        return value >= faceQualityThreshold
     }
 
     private func checkValidFace(

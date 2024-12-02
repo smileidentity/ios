@@ -18,8 +18,7 @@ protocol FaceDetectorResultDelegate: AnyObject {
     func faceDetector(
         _ detector: FaceDetectorV2,
         didDetectFace faceGeometry: FaceGeometryData,
-        withFaceQuality faceQuality: Float,
-        selfieQuality: SelfieQualityData
+        withFaceQuality faceQuality: Float
     )
     func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error)
 }
@@ -75,11 +74,6 @@ class FaceDetectorV2: NSObject {
                 self.viewDelegate?.convertFromMetadataToPreviewRect(
                     rect: faceObservation.boundingBox) ?? .zero
 
-            let uiImage = UIImage(pixelBuffer: imageBuffer)
-            let croppedImage = try self.cropImageToFace(uiImage)
-
-            let selfieQualityData = try self.selfieQualityRequest(imageBuffer: croppedImage)
-
             if #available(iOS 15.0, *) {
                 let faceGeometryData = FaceGeometryData(
                     boundingBox: convertedBoundingBox,
@@ -92,8 +86,7 @@ class FaceDetectorV2: NSObject {
                     .faceDetector(
                         self,
                         didDetectFace: faceGeometryData,
-                        withFaceQuality: faceQualityObservation.faceCaptureQuality ?? 0.0,
-                        selfieQuality: selfieQualityData
+                        withFaceQuality: faceQualityObservation.faceCaptureQuality ?? 0.0
                     )
             } else {
                 // Fallback on earlier versions

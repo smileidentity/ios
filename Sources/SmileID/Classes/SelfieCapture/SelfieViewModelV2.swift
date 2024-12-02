@@ -323,13 +323,12 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
     func faceDetector(
         _ detector: FaceDetectorV2,
         didDetectFace faceGeometry: FaceGeometryData,
-        withFaceQuality faceQuality: Float,
-        selfieQuality: SelfieQualityData
+        withFaceQuality faceQuality: Float
     ) {
         faceValidator
             .validate(
                 faceGeometry: faceGeometry,
-                selfieQuality: selfieQuality,
+                faceQuality: faceQuality,
                 currentLivenessTask: self.livenessCheckManager.currentTask
             )
         if shouldBeginLivenessChallenge {
