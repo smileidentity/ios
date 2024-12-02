@@ -102,9 +102,9 @@ public class SelfieViewModelV2: ObservableObject {
     }
 
     deinit {
+        subscribers.removeAll()
         stopGuideAnimationDelayTimer()
-        submissionTask?.cancel()
-        submissionTask = nil
+        invalidateSubmissionTask()
     }
 
     private func initialSetup() {
@@ -120,6 +120,7 @@ public class SelfieViewModelV2: ObservableObject {
                 with: livenessCheckManager.$lookRightProgress,
                 livenessCheckManager.$lookUpProgress
             )
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 DispatchQueue.main.async {
                     self?.resetGuideAnimationDelayTimer()
@@ -135,6 +136,7 @@ public class SelfieViewModelV2: ObservableObject {
             .store(in: &subscribers)
 
         cameraManager.sampleBufferPublisher
+            .receive(on: DispatchQueue.main)
             .throttle(
                 for: 0.35,
                 scheduler: DispatchQueue.global(qos: .userInitiated),
@@ -446,6 +448,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
     // MARK: SelfieJobSubmissionDelegate Methods
 
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
+        invalidateSubmissionTask()
         HapticManager.shared.notification(type: .success)
         DispatchQueue.main.async {
             self.apiResponse = apiResponse
@@ -458,6 +461,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
         errorMessage: String?,
         errorMessageRes: String?
     ) {
+        invalidateSubmissionTask()
         HapticManager.shared.notification(type: .error)
         DispatchQueue.main.async {
             self.error = error
@@ -465,5 +469,10 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
             self.errorMessageRes = errorMessageRes
             self.selfieCaptureState = .processing(.error)
         }
+    }
+
+    func invalidateSubmissionTask() {
+        submissionTask?.cancel()
+        submissionTask = nil
     }
 }
