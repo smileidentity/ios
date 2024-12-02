@@ -118,7 +118,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
 
         do {
-            try faceDetector.detect(imageBuffer: image) { [self] request, error in
+            try faceDetector.detect(imageBuffer: image) { [weak self] request, error in
+                guard let self else { return }
                 if let error {
                     print("Error analyzing image: \(error.localizedDescription)")
                     self.error = error
@@ -192,8 +193,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
                 let userNeedsToSmile = livenessImages.count > numLivenessImages / 2
 
-                DispatchQueue.main.async { [self] in
-                    directive = userNeedsToSmile ? "Instructions.Smile" : "Instructions.Capturing"
+                DispatchQueue.main.async {
+                    self.directive = userNeedsToSmile ? "Instructions.Smile" : "Instructions.Capturing"
                 }
 
                 // TODO: Use mouth deformation as an alternate signal for non-ARKit capture
