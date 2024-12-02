@@ -82,7 +82,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             .receive(on: DispatchQueue.main)
             .filter { $0 == .unauthorized }
             .map { _ in AlertState.cameraUnauthorized }
-            .sink { alert in self.unauthorizedAlert = alert }
+            .sink { [weak self] alert in self?.unauthorizedAlert = alert }
             .store(in: &subscribers)
 
         cameraManager.sampleBufferPublisher
@@ -91,7 +91,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             // Drop the first ~2 seconds to allow the user to settle in
             .dropFirst(5)
             .compactMap { $0 }
-            .sink(receiveValue: analyzeImage)
+            .sink { [weak self] imageBuffer in
+                self?.analyzeImage(image: imageBuffer)
+            }
             .store(in: &subscribers)
 
         localMetadata.addMetadata(
