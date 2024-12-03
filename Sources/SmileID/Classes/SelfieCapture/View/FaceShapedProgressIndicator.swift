@@ -4,7 +4,7 @@ import SwiftUI
 struct FaceShapedProgressIndicator: View {
     let progress: Double
     private let strokeWidth = 10
-    private let faceShape = FaceShape().scale(x: 0.8, y: 0.6).offset(y: -50)
+    private let faceShape = FaceShape().scale(x: 0.8, y: 0.55).offset(y: -50)
     private let bgColor = Color.white.opacity(0.8)
     var body: some View {
         bgColor

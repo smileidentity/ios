@@ -19,7 +19,6 @@ protocol FaceDetectorResultDelegate: AnyObject {
         _ detector: FaceDetectorV2,
         didDetectFace faceGeometry: FaceGeometryData,
         withFaceQuality faceQuality: Float,
-        selfieQuality: SelfieQualityData,
         brightness: Int
     )
     func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error)
@@ -78,9 +77,6 @@ class FaceDetectorV2: NSObject {
 
             let uiImage = UIImage(pixelBuffer: imageBuffer)
             let brightness = self.calculateBrightness(uiImage)
-            let croppedImage = try self.cropImageToFace(uiImage)
-
-            let selfieQualityData = try self.selfieQualityRequest(imageBuffer: croppedImage)
 
             if #available(iOS 15.0, *) {
                 let faceGeometryData = FaceGeometryData(
@@ -95,7 +91,6 @@ class FaceDetectorV2: NSObject {
                         self,
                         didDetectFace: faceGeometryData,
                         withFaceQuality: faceQualityObservation.faceCaptureQuality ?? 0.0,
-                        selfieQuality: selfieQualityData,
                         brightness: brightness
                     )
             } else {
@@ -180,8 +175,8 @@ class FaceDetectorV2: NSObject {
 
     private func calculateBrightness(_ image: UIImage?) -> Int {
         guard let image, let cgImage = image.cgImage,
-            let imageData = cgImage.dataProvider?.data,
-            let dataPointer = CFDataGetBytePtr(imageData)
+              let imageData = cgImage.dataProvider?.data,
+              let dataPointer = CFDataGetBytePtr(imageData)
         else {
             return 0
         }

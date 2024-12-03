@@ -8,6 +8,7 @@ enum CaptureGuideAnimation: Equatable {
     case lookRight
     case lookLeft
     case lookUp
+    case turnPhoneUp
 
     var fileName: String {
         switch self {
@@ -25,6 +26,8 @@ enum CaptureGuideAnimation: Equatable {
             return "liveness_guides"
         case .lookUp:
             return "liveness_guides"
+        case .turnPhoneUp:
+            return "positioning"
         }
     }
 

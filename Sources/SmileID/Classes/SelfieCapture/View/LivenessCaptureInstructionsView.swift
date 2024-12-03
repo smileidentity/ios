@@ -2,7 +2,6 @@ import Lottie
 import SwiftUI
 
 public struct LivenessCaptureInstructionsView: View {
-    @Environment(\.modalMode) private var modalMode
     @State private var showSelfieCaptureView: Bool = false
 
     private let showAttribution: Bool
@@ -15,16 +14,6 @@ public struct LivenessCaptureInstructionsView: View {
 
     public var body: some View {
         VStack {
-            HStack {
-                Button {
-                    self.modalMode.wrappedValue = false
-                } label: {
-                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                        .foregroundColor(SmileID.theme.accent)
-                }
-                Spacer()
-            }
-
             ZStack {
                 LottieView {
                     try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)

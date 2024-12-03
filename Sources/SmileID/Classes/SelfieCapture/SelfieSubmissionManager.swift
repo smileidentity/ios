@@ -12,7 +12,7 @@ final class SelfieSubmissionManager {
     private let isEnroll: Bool
     private let numLivenessImages: Int
     private let allowNewEnroll: Bool
-    private var selfieImage: URL?
+    private var selfieImageUrl: URL?
     private var livenessImages: [URL]
     private var extraPartnerParams: [String: String]
     private let localMetadata: LocalMetadata
@@ -26,7 +26,7 @@ final class SelfieSubmissionManager {
         isEnroll: Bool,
         numLivenessImages: Int,
         allowNewEnroll: Bool,
-        selfieImage: URL?,
+        selfieImageUrl: URL?,
         livenessImages: [URL],
         extraPartnerParams: [String: String],
         localMetadata: LocalMetadata
@@ -36,16 +36,16 @@ final class SelfieSubmissionManager {
         self.isEnroll = isEnroll
         self.numLivenessImages = numLivenessImages
         self.allowNewEnroll = allowNewEnroll
-        self.selfieImage = selfieImage
+        self.selfieImageUrl = selfieImageUrl
         self.livenessImages = livenessImages
         self.extraPartnerParams = extraPartnerParams
         self.localMetadata = localMetadata
     }
 
-    func submitJob(forcedFailure: Bool = false) async throws {
+    func submitJob(failureReason: FailureReason? = nil) async throws {
         do {
             // Validate that the necessary selfie data is present
-            try validateImages(forcedFailure: forcedFailure)
+            try validateImages()
 
             // Determine the type of job (enrollment or authentication)
             let jobType = determineJobType()
@@ -68,7 +68,7 @@ final class SelfieSubmissionManager {
                 authResponse: authResponse,
                 smartSelfieImage: smartSelfieImage,
                 smartSelfieLivenessImages: smartSelfieLivenessImages,
-                forcedFailure: forcedFailure
+                failureReason: failureReason
             )
 
             // Update local storage after successful submission
@@ -81,15 +81,10 @@ final class SelfieSubmissionManager {
         }
     }
 
-    private func validateImages(forcedFailure: Bool) throws {
-        if forcedFailure {
-            guard selfieImage != nil else {
-                throw SmileIDError.unknown("Selfie capture failed")
-            }
-        } else {
-            guard selfieImage != nil, livenessImages.count == numLivenessImages else {
-                throw SmileIDError.unknown("Selfie capture failed")
-            }
+    private func validateImages() throws {
+        guard selfieImageUrl != nil,
+                livenessImages.count == numLivenessImages else {
+            throw SmileIDError.unknown("Selfie capture failed")
         }
     }
 
@@ -119,8 +114,8 @@ final class SelfieSubmissionManager {
     }
 
     private func prepareImagesForSubmission() throws -> (MultipartBody, [MultipartBody]) {
-        guard let smartSelfieImage = createMultipartBody(from: selfieImage) else {
-            throw SmileIDError.unknown("Failed to process selfie image")
+        guard let smartSelfieImage = createMultipartBody(from: selfieImageUrl) else {
+            throw SmileIDError.fileNotFound("Could not create multipart body for file")
         }
 
         let smartSelfieLivenessImages = livenessImages.compactMap {
@@ -136,7 +131,9 @@ final class SelfieSubmissionManager {
     private func createMultipartBody(from fileURL: URL?) -> MultipartBody? {
         guard let fileURL = fileURL,
             let imageData = try? Data(contentsOf: fileURL)
-        else { return nil }
+        else {
+            return nil
+        }
         return MultipartBody(
             withImage: imageData,
             forKey: fileURL.lastPathComponent,
@@ -148,7 +145,7 @@ final class SelfieSubmissionManager {
         authResponse: AuthenticationResponse,
         smartSelfieImage: MultipartBody,
         smartSelfieLivenessImages: [MultipartBody],
-        forcedFailure: Bool
+        failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse {
         if isEnroll {
             return try await SmileID.api
@@ -162,7 +159,7 @@ final class SelfieSubmissionManager {
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
                     allowNewEnroll: allowNewEnroll,
-                    failureReason: forcedFailure ? .activeLivenessTimedOut : nil,
+                    failureReason: failureReason,
                     metadata: localMetadata.metadata
                 )
         } else {
@@ -176,7 +173,7 @@ final class SelfieSubmissionManager {
                     partnerParams: extraPartnerParams,
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
-                    failureReason: forcedFailure ? .activeLivenessTimedOut : nil,
+                    failureReason: failureReason,
                     metadata: localMetadata.metadata
                 )
         }
@@ -187,7 +184,7 @@ final class SelfieSubmissionManager {
         try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
 
         // Update the references to the submitted selfie and liveness images
-        self.selfieImage = try LocalStorage.getFileByType(
+        self.selfieImageUrl = try LocalStorage.getFileByType(
             jobId: jobId,
             fileType: FileType.selfie,
             submitted: true
@@ -204,7 +201,7 @@ final class SelfieSubmissionManager {
         do {
             let didMove = try LocalStorage.handleOfflineJobFailure(jobId: self.jobId, error: smileIDError)
             if didMove {
-                self.selfieImage = try LocalStorage.getFileByType(jobId: jobId, fileType: .selfie, submitted: true)
+                self.selfieImageUrl = try LocalStorage.getFileByType(jobId: jobId, fileType: .selfie, submitted: true)
                 self.livenessImages =
                     try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness, submitted: true) ?? []
             }
