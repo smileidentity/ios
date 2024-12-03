@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct SelfieCaptureScreenV2: View {
-    @ObservedObject var viewModel: SelfieViewModelV2
+    @Backport.StateObject var viewModel: SelfieViewModelV2
     let showAttribution: Bool
 
     private let faceShape = FaceShape()
