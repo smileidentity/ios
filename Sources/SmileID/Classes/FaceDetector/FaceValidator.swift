@@ -30,6 +30,7 @@ final class FaceValidator {
     func validate(
         faceGeometry: FaceGeometryData,
         faceQuality: Float,
+        brightness: Int,
         currentLivenessTask: LivenessTask?
     ) {
         // check face bounds
@@ -39,12 +40,16 @@ final class FaceValidator {
         )
         let isAcceptableBounds = faceBoundsState == .detectedFaceAppropriateSizeAndPosition
 
+        // check brightness
+        let isAcceptableBrightness = luminanceThreshold.contains(brightness)
+
         // check face quality
         let isAcceptableFaceQuality = checkFaceQuality(faceQuality)
 
         // check that face is ready for capture
         let hasDetectedValidFace = checkValidFace(
             isAcceptableBounds,
+            isAcceptableBrightness,
             isAcceptableFaceQuality
         )
 
@@ -52,6 +57,7 @@ final class FaceValidator {
         let userInstruction = userInstruction(
             from: faceBoundsState,
             detectedValidFace: hasDetectedValidFace,
+            isAcceptableBrightness: isAcceptableBrightness,
             isAcceptableFaceQuality: isAcceptableFaceQuality,
             livenessTask: currentLivenessTask
         )
@@ -67,6 +73,7 @@ final class FaceValidator {
     private func userInstruction(
         from faceBoundsState: FaceBoundsState,
         detectedValidFace: Bool,
+        isAcceptableBrightness: Bool,
         isAcceptableFaceQuality: Bool,
         livenessTask: LivenessTask?
     ) -> SelfieCaptureInstruction? {
@@ -88,7 +95,7 @@ final class FaceValidator {
             return .moveCloser
         } else if faceBoundsState == .detectedFaceTooLarge {
             return .moveBack
-        } else if !isAcceptableFaceQuality {
+        } else if !isAcceptableFaceQuality || !isAcceptableBrightness {
             return .goodLight
         }
         return nil
@@ -127,8 +134,9 @@ final class FaceValidator {
 
     private func checkValidFace(
         _ isAcceptableBounds: Bool,
-        _ isAcceptableSelfieQuality: Bool
+        _ isAcceptableBrightness: Bool,
+        _ isAcceptableFaceQuality: Bool
     ) -> Bool {
-        return isAcceptableBounds && isAcceptableSelfieQuality
+        return isAcceptableBounds && isAcceptableBrightness && isAcceptableFaceQuality
     }
 }

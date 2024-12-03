@@ -18,7 +18,8 @@ protocol FaceDetectorResultDelegate: AnyObject {
     func faceDetector(
         _ detector: FaceDetectorV2,
         didDetectFace faceGeometry: FaceGeometryData,
-        withFaceQuality faceQuality: Float
+        withFaceQuality faceQuality: Float,
+        brightness: Int
     )
     func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error)
 }
@@ -74,6 +75,9 @@ class FaceDetectorV2: NSObject {
                 self.viewDelegate?.convertFromMetadataToPreviewRect(
                     rect: faceObservation.boundingBox) ?? .zero
 
+            let uiImage = UIImage(pixelBuffer: imageBuffer)
+            let brightness = self.calculateBrightness(uiImage)
+
             if #available(iOS 15.0, *) {
                 let faceGeometryData = FaceGeometryData(
                     boundingBox: convertedBoundingBox,
@@ -86,7 +90,8 @@ class FaceDetectorV2: NSObject {
                     .faceDetector(
                         self,
                         didDetectFace: faceGeometryData,
-                        withFaceQuality: faceQualityObservation.faceCaptureQuality ?? 0.0
+                        withFaceQuality: faceQualityObservation.faceCaptureQuality ?? 0.0,
+                        brightness: brightness
                     )
             } else {
                 // Fallback on earlier versions
@@ -166,6 +171,28 @@ class FaceDetectorV2: NSObject {
         }
 
         return resizedImage
+    }
+
+    private func calculateBrightness(_ image: UIImage?) -> Int {
+        guard let image, let cgImage = image.cgImage,
+              let imageData = cgImage.dataProvider?.data,
+              let dataPointer = CFDataGetBytePtr(imageData)
+        else {
+            return 0
+        }
+
+        let bytesPerPixel = cgImage.bitsPerPixel / cgImage.bitsPerComponent
+        let dataLength = CFDataGetLength(imageData)
+        var result = 0.0
+        for index in stride(from: 0, to: dataLength, by: bytesPerPixel) {
+            let red = dataPointer[index]
+            let green = dataPointer[index + 1]
+            let blue = dataPointer[index + 2]
+            result += 0.299 * Double(red) + 0.587 * Double(green) + 0.114 * Double(blue)
+        }
+        let pixelsCount = dataLength / bytesPerPixel
+        let brightness = Int(result) / pixelsCount
+        return brightness
     }
 
     private func faceDirection(faceObservation: VNFaceObservation) -> FaceDirection {
