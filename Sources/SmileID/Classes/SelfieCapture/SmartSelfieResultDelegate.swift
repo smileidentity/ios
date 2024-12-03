@@ -18,4 +18,7 @@ public protocol SmartSelfieResultDelegate {
     /// An error occurred during the selfie capture session
     /// - Parameter error: The error returned from a failed selfie capture
     func didError(error: Error)
+
+    /// The selfie capture operation was canceled.
+    func didCancel()
 }

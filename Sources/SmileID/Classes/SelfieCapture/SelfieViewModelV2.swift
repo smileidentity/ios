@@ -454,7 +454,7 @@ extension SelfieViewModelV2: SelfieSubmissionDelegate {
         } else if let error = error {
             callback.didError(error: error)
         } else {
-            callback.didError(error: SmileIDError.unknown("Unknown error"))
+            callback.didCancel()
         }
     }
 
