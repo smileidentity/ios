@@ -114,11 +114,13 @@ public struct SelfieCaptureScreenV2: View {
             .navigationBarHidden(true)
             .onAppear {
                 UIScreen.main.brightness = 1
+                UIApplication.shared.isIdleTimerDisabled = true
                 viewModel.perform(action: .windowSizeDetected(proxy.size, proxy.safeAreaInsets))
                 viewModel.perform(action: .onViewAppear)
             }
             .onDisappear {
                 UIScreen.main.brightness = originalBrightness
+                UIApplication.shared.isIdleTimerDisabled = false
                 viewModel.cameraManager.pauseSession()
             }
             .alert(item: $viewModel.unauthorizedAlert) { alert in
