@@ -13,6 +13,9 @@ public class SelfieViewModelV2: ObservableObject {
     private let metadataTimerStart = MonotonicTime()
 
     // MARK: Private Properties
+    private var deviceOrientation: UIDeviceOrientation {
+        return UIDevice.current.orientation
+    }
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 250, height: 350)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
     private var currentFrameBuffer: CVPixelBuffer?
@@ -146,9 +149,17 @@ public class SelfieViewModelV2: ObservableObject {
             .dropFirst(5)
             .compactMap { $0 }
             .sink { [weak self] imageBuffer in
-                self?.analyzeFrame(imageBuffer: imageBuffer)
+                self?.handleCameraImageBuffer(imageBuffer)
             }
             .store(in: &subscribers)
+    }
+
+    private func handleCameraImageBuffer(_ imageBuffer: CVPixelBuffer) {
+        if deviceOrientation == .portrait {
+            analyzeFrame(imageBuffer: imageBuffer)
+        } else {
+            publishUserInstruction(.turnPhoneUp)
+        }
     }
 
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
@@ -165,7 +176,7 @@ public class SelfieViewModelV2: ObservableObject {
     func perform(action: SelfieViewModelAction) {
         switch action {
         case let .windowSizeDetected(windowRect, safeAreaInsets):
-            handleWindowSizeChanged(toRect: windowRect, edgeInsets: safeAreaInsets)
+            handleWindowSizeChanged(to: windowRect, edgeInsets: safeAreaInsets)
         case .onViewAppear:
             handleViewAppeared()
         case .jobProcessingDone:
@@ -221,10 +232,10 @@ extension SelfieViewModelV2 {
         failureReason = nil
     }
 
-    private func handleWindowSizeChanged(toRect: CGSize, edgeInsets: EdgeInsets) {
+    private func handleWindowSizeChanged(to rect: CGSize, edgeInsets: EdgeInsets) {
         let topPadding: CGFloat = edgeInsets.top + 100
         faceLayoutGuideFrame = CGRect(
-            x: (toRect.width / 2) - faceLayoutGuideFrame.width / 2,
+            x: (rect.width / 2) - faceLayoutGuideFrame.width / 2,
             y: topPadding,
             width: faceLayoutGuideFrame.width,
             height: faceLayoutGuideFrame.height
