@@ -26,6 +26,7 @@ public struct LivenessCaptureInstructionsView: View {
             Text(SmileIDResourcesHelper.localizedString(for: "Instructions.SelfieCapture"))
                 .multilineTextAlignment(.center)
                 .font(SmileID.theme.header4)
+                .lineSpacing(4)
                 .foregroundColor(SmileID.theme.tertiary)
 
             Spacer()
