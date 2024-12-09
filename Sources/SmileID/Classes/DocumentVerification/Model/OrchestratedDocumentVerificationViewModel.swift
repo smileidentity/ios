@@ -8,26 +8,27 @@ enum DocumentCaptureFlow: Equatable {
     case processing(ProcessingState)
 }
 
-internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject {
+class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject {
     // Input properties
-    internal let userId: String
-    internal let jobId: String
-    internal let allowNewEnroll: Bool
-    internal let countryCode: String
-    internal let documentType: String?
-    internal let captureBothSides: Bool
-    internal let jobType: JobType
-    internal let extraPartnerParams: [String: String]
+    let userId: String
+    let jobId: String
+    let allowNewEnroll: Bool
+    let countryCode: String
+    let documentType: String?
+    let captureBothSides: Bool
+    let skipApiSubmission: Bool
+    let jobType: JobType
+    let extraPartnerParams: [String: String]
 
     // Other properties
-    internal var documentFrontFile: Data?
-    internal var documentBackFile: Data?
-    internal var selfieFile: URL?
-    internal var livenessFiles: [URL]?
-    internal var savedFiles: DocumentCaptureResultStore?
-    internal var stepToRetry: DocumentCaptureFlow?
-    internal var didSubmitJob: Bool = false
-    internal var error: Error?
+    var documentFrontFile: Data?
+    var documentBackFile: Data?
+    var selfieFile: URL?
+    var livenessFiles: [URL]?
+    var savedFiles: DocumentCaptureResultStore?
+    var stepToRetry: DocumentCaptureFlow?
+    var didSubmitJob: Bool = false
+    var error: Error?
     var localMetadata: LocalMetadata
 
     // UI properties
@@ -39,13 +40,14 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
     @Published var errorMessage: String?
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
-    internal init(
+    init(
         userId: String,
         jobId: String,
         allowNewEnroll: Bool,
         countryCode: String,
         documentType: String?,
         captureBothSides: Bool,
+        skipApiSubmission: Bool,
         selfieFile: URL?,
         jobType: JobType,
         extraPartnerParams: [String: String] = [:],
@@ -57,6 +59,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
         self.countryCode = countryCode
         self.documentType = documentType
         self.captureBothSides = captureBothSides
+        self.skipApiSubmission = skipApiSubmission
         self.selfieFile = selfieFile
         self.jobType = jobType
         self.extraPartnerParams = extraPartnerParams
@@ -177,6 +180,10 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                     selfie: selfieFile,
                     livenessImages: livenessFiles ?? []
                 )
+                if skipApiSubmission {
+                    DispatchQueue.main.async { self.step = .processing(.success) }
+                    return
+                }
                 let authRequest = AuthenticationRequest(
                     jobType: jobType,
                     enrollment: false,
@@ -197,7 +204,7 @@ internal class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: Obse
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
-                    allowNewEnroll: String(allowNewEnroll),  // TODO: - Fix when Michael changes this to boolean
+                    allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
                     metadata: localMetadata.metadata.items,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
@@ -321,14 +328,14 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 }
 
 // swiftlint:disable opening_brace
-internal class OrchestratedDocumentVerificationViewModel:
+class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
-            let selfiePath = getRelativePath(from: selfieFile),
-            let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
-            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+           let selfiePath = getRelativePath(from: selfieFile),
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
+           let documentBackPath = getRelativePath(from: savedFiles.documentBack)
         {
             delegate.didSucceed(
                 selfie: selfiePath,
@@ -347,16 +354,16 @@ internal class OrchestratedDocumentVerificationViewModel:
 }
 
 // swiftlint:disable opening_brace
-internal class OrchestratedEnhancedDocumentVerificationViewModel:
+class OrchestratedEnhancedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<
         EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
     >
 {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles,
-            let selfiePath = getRelativePath(from: selfieFile),
-            let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
-            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+           let selfiePath = getRelativePath(from: selfieFile),
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
+           let documentBackPath = getRelativePath(from: savedFiles.documentBack)
         {
             delegate.didSucceed(
                 selfie: selfiePath,

@@ -68,19 +68,23 @@ public extension SmileIdTheme {
 
     // TO-DO: Rename fonts when Kwame comes up with a naming convention
     var header1: Font {
-        EpilogueFont.bold(with: 32)
+        DMSansFont.bold(with: 24)
     }
 
     var header2: Font {
-        EpilogueFont.bold(with: 20)
+        DMSansFont.bold(with: 20)
+    }
+
+    var header3: Font {
+        DMSansFont.medium(with: 20)
     }
 
     var header4: Font {
-        EpilogueFont.bold(with: 16)
+        DMSansFont.medium(with: 16)
     }
 
     var header5: Font {
-        EpilogueFont.medium(with: 12)
+        DMSansFont.medium(with: 12)
     }
 
     var button: Font {
@@ -88,7 +92,7 @@ public extension SmileIdTheme {
     }
 
     var body: Font {
-        EpilogueFont.medium(with: 14)
+        DMSansFont.regular(with: 16)
     }
 }
 

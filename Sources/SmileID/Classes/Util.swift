@@ -79,6 +79,10 @@ func toErrorMessage(error: SmileIDError) -> (String, String?) {
         return (error.localizedDescription, nil)
     case let .httpError(_, message):
         return ("", message)
+    case let .fileNotFound(message):
+        return (message, nil)
+    case let .unknown(message):
+        return (message, nil)
     default:
         return ("Confirmation.FailureReason", nil)
     }

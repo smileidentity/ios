@@ -29,6 +29,7 @@
 "Instructions.TurnHeadLeft" = "Turn your head to the left";
 "Instructions.TurnHeadRight" = "Turn your head to the right";
 "Instructions.TurnHeadUp" = "Turn your head slightly up";
+"Instructions.TurnPhoneUp" = "Turn your phone to portrait mode";
 "Instructions.Document.Front.Header" = "Submit Front of ID";
 "Instructions.Document.Front.Callout" = "We'll use it to verify your identity. Please follow the instructions below";
 "Instructions.Document.GoodLightBody" = "Make sure your ID image is taken in a well-lit environment. Ensure the ID is clear and visible.";

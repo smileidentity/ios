@@ -22,24 +22,18 @@ struct FaceBoundingArea: View {
 
             if let guideAnimation = guideAnimation,
                 showGuideAnimation {
-                faceShape
-                    .fill(.black.opacity(0.5))
-                    .frame(width: 270, height: 370)
-                    .overlay(
-                        LottieView {
-                            try await DotLottieFile
-                                .named(
-                                    guideAnimation.fileName,
-                                    bundle: SmileIDResourcesHelper.bundle
-                                )
-                        }
-                        .playbackMode(playbackMode)
-                        .frame(width: 224, height: 224)
-                    )
-                    .clipShape(faceShape)
-                    .onAppear {
-                        playbackMode = getPlaybackMode(guideAnimation)
-                    }
+                LottieView {
+                    try await DotLottieFile
+                        .named(
+                            guideAnimation.fileName,
+                            bundle: SmileIDResourcesHelper.bundle
+                        )
+                }
+                .playbackMode(playbackMode)
+                .frame(width: 224, height: 224)
+                .onAppear {
+                    playbackMode = getPlaybackMode(guideAnimation)
+                }
             }
         }
     }

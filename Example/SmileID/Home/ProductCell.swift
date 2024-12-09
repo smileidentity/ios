@@ -46,6 +46,16 @@ struct ProductCell<Content: View>: View {
                     content: {
                         NavigationView {
                             content()
+                                .toolbar {
+                                    ToolbarItem(placement: .cancellationAction) {
+                                        Button {
+                                            isPresented = false
+                                        } label: {
+                                            Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                                                .foregroundColor(SmileID.theme.accent)
+                                        }
+                                    }
+                                }
                         }
                         .environment(\.modalMode, $isPresented)
                     }

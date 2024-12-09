@@ -24,7 +24,7 @@ struct WelcomeScreen: View {
                 .padding(.vertical)
 
             Text("To begin testing, you need to add a configuration from the Smile Portal")
-                .font(EpilogueFont.regular(with: 16))
+                .font(DMSansFont.regular(with: 16))
                 .foregroundColor(SmileID.theme.onLight)
                 .padding(.vertical)
 

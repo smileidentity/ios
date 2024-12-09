@@ -9,6 +9,7 @@ enum SelfieCaptureInstruction {
     case lookLeft
     case lookRight
     case lookUp
+    case turnPhoneUp
 
     var instruction: String {
         switch self {
@@ -28,6 +29,8 @@ enum SelfieCaptureInstruction {
             return "Instructions.TurnHeadRight"
         case .lookUp:
             return "Instructions.TurnHeadUp"
+        case .turnPhoneUp:
+            return "Instructions.TurnPhoneUp"
         }
     }
 
@@ -49,6 +52,8 @@ enum SelfieCaptureInstruction {
             return .lookRight
         case .lookUp:
             return .lookUp
+        case .turnPhoneUp:
+            return .turnPhoneUp
         }
     }
 }
