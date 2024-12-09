@@ -92,7 +92,7 @@ class CameraManager: NSObject, ObservableObject {
             status = .failed
             return
         }
-        cameraName = camera.localizedName
+        cameraName = camera.uniqueID
 
         do {
             let cameraInput = try AVCaptureDeviceInput(device: camera)
