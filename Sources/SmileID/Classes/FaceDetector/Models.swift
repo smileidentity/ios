@@ -17,6 +17,7 @@ enum FaceBoundsState {
     case detectedFaceTooSmall
     case detectedFaceTooLarge
     case detectedFaceOffCentre
+    case detectedFaceNotWithinFrame
     case detectedFaceAppropriateSizeAndPosition
 }
 

@@ -408,10 +408,8 @@ extension SelfieViewModelV2: LivenessCheckManagerDelegate {
         let remainingImages = numLivenessImages - livenessImages.count
         let count = remainingImages > 0 ? remainingImages : 0
         for _ in 0..<count {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
-                if let imageBuffer = self?.currentFrameBuffer {
-                    self?.captureLivenessImage(imageBuffer)
-                }
+            if let imageBuffer = self.currentFrameBuffer {
+                self.captureLivenessImage(imageBuffer)
             }
         }
 

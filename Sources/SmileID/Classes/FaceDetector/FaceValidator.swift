@@ -89,7 +89,8 @@ final class FaceValidator {
                 }
             }
             return nil
-        } else if faceBoundsState == .detectedFaceOffCentre {
+        } else if faceBoundsState == .detectedFaceOffCentre
+                    || faceBoundsState == .detectedFaceNotWithinFrame {
             return .headInFrame
         } else if faceBoundsState == .detectedFaceTooSmall {
             return .moveCloser
@@ -110,12 +111,14 @@ final class FaceValidator {
         let faceBoundsMultiplier = shouldCheckCentering ? selfiefaceBoundsMultiplier : livenessfaceBoundsMultiplier
         let minFaceWidth = faceLayoutGuideFrame.width / faceBoundsMultiplier
 
+        // check how far/close face is
         if boundingBox.width > maxFaceWidth {
             return .detectedFaceTooLarge
         } else if boundingBox.width < minFaceWidth {
             return .detectedFaceTooSmall
         }
 
+        // check that face is centered for selfie capture only
         if shouldCheckCentering {
             let horizontalOffset = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
             let verticalOffset = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
