@@ -16,7 +16,7 @@ public struct LivenessCaptureInstructionsView: View {
         VStack {
             ZStack {
                 LottieView {
-                    try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)
+                    try await DotLottieFile.named("instruction_screen_with_side_bar", bundle: SmileIDResourcesHelper.bundle)
                 }
                 .playing(loopMode: .loop)
                 .frame(width: 235, height: 235)
