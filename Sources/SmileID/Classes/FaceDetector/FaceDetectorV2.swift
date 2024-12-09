@@ -78,24 +78,31 @@ class FaceDetectorV2: NSObject {
             let uiImage = UIImage(pixelBuffer: imageBuffer)
             let brightness = self.calculateBrightness(uiImage)
 
+            let faceGeometryData: FaceGeometryData
             if #available(iOS 15.0, *) {
-                let faceGeometryData = FaceGeometryData(
+                faceGeometryData = FaceGeometryData(
                     boundingBox: convertedBoundingBox,
                     roll: faceObservation.roll ?? 0.0,
                     yaw: faceObservation.yaw ?? 0.0,
                     pitch: faceObservation.pitch ?? 0.0,
                     direction: faceDirection(faceObservation: faceObservation)
                 )
-                self.resultDelegate?
-                    .faceDetector(
-                        self,
-                        didDetectFace: faceGeometryData,
-                        withFaceQuality: faceQualityObservation.faceCaptureQuality ?? 0.0,
-                        brightness: brightness
-                    )
-            } else {
-                // Fallback on earlier versions
+            } else { // Fallback on earlier versions
+                faceGeometryData = FaceGeometryData(
+                    boundingBox: convertedBoundingBox,
+                    roll: faceObservation.roll ?? 0.0,
+                    yaw: faceObservation.yaw ?? 0.0,
+                    pitch: 0.0,
+                    direction: faceDirection(faceObservation: faceObservation)
+                )
             }
+            self.resultDelegate?
+                .faceDetector(
+                    self,
+                    didDetectFace: faceGeometryData,
+                    withFaceQuality: faceQualityObservation.faceCaptureQuality ?? 0.0,
+                    brightness: brightness
+                )
         } catch {
             self.resultDelegate?.faceDetector(self, didFailWithError: error)
         }

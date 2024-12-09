@@ -29,6 +29,7 @@ public class SelfieViewModelV2: ObservableObject {
     }
     private var livenessImages: [URL] = []
     private var hasDetectedValidFace: Bool = false
+    private var isCapturingLivenessImages = false
     private var shouldBeginLivenessChallenge: Bool {
         hasDetectedValidFace && selfieImage != nil && livenessCheckManager.currentTask != nil
     }
@@ -346,7 +347,7 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
                 brightness: brightness,
                 currentLivenessTask: self.livenessCheckManager.currentTask
             )
-        if shouldBeginLivenessChallenge {
+        if shouldBeginLivenessChallenge && !isCapturingLivenessImages {
             livenessCheckManager.processFaceGeometry(faceGeometry)
         }
     }
@@ -372,17 +373,28 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 // MARK: LivenessCheckManagerDelegate Methods
 extension SelfieViewModelV2: LivenessCheckManagerDelegate {
     func didCompleteLivenessTask() {
-        // capture first frame
-        guard let firstFrameBuffer = currentFrameBuffer else { return }
-        captureLivenessImage(firstFrameBuffer)
+        isCapturingLivenessImages = true
+        let capturedFrames = 0
+        captureNextFrame(capturedFrames: capturedFrames)
+    }
 
-        // capture a second frame after a slight delay
-        // to ensure it's a different frame
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
-            guard let secondFrameBuffer = self?.currentFrameBuffer else { return }
-            self?.captureLivenessImage(secondFrameBuffer)
+    private func captureNextFrame(capturedFrames: Int) {
+        let maxFrames = LivenessTask.numberOfFramesToCapture
+        guard capturedFrames < maxFrames,
+              let currentFrame = currentFrameBuffer else {
+            return
         }
-        HapticManager.shared.notification(type: .success)
+
+        captureLivenessImage(currentFrame)
+        let nextCapturedFrames = capturedFrames + 1
+        if nextCapturedFrames < maxFrames {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+                self?.captureNextFrame(capturedFrames: nextCapturedFrames)
+            }
+        } else {
+            isCapturingLivenessImages = false
+            HapticManager.shared.notification(type: .success)
+        }
     }
 
     func didCompleteLivenessChallenge() {

@@ -6,6 +6,14 @@ enum LivenessTask {
     case lookLeft
     case lookRight
     case lookUp
+
+    static var numberOfFramesToCapture: Int {
+        if #available(iOS 15.0, *) {
+            return 2
+        } else {
+            return 3
+        }
+    }
 }
 
 protocol LivenessCheckManagerDelegate: AnyObject {
@@ -55,7 +63,11 @@ class LivenessCheckManager: ObservableObject {
 
     /// Initializes the LivenessCheckManager with a shuffled set of tasks.
     init() {
-        livenessTaskSequence = [.lookLeft, .lookRight, .lookUp].shuffled()
+        if #available(iOS 15.0, *) {
+            livenessTaskSequence = [.lookLeft, .lookRight, .lookUp].shuffled()
+        } else {
+            livenessTaskSequence = [.lookLeft, .lookRight].shuffled()
+        }
     }
 
     /// Cleans up resources when the manager is no longer needed.
@@ -69,7 +81,8 @@ class LivenessCheckManager: ObservableObject {
         DispatchQueue.main.async {
             self.taskTimer = Timer.scheduledTimer(
                 withTimeInterval: 1.0,
-                repeats: true) { [weak self] _ in
+                repeats: true
+            ) { [weak self] _ in
                 self?.taskTimerFired()
             }
         }
