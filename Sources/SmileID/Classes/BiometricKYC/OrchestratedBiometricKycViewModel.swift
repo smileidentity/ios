@@ -244,29 +244,28 @@ internal class OrchestratedBiometricKycViewModel: BaseSubmissionViewModel<Biomet
     }
     
     public override func createSubmission() throws -> BaseJobSubmission<BiometricKycResult> {
-        guard let selfieImage = selfieImage,
-              !livenessFiles?.isEmpty == numLivenessImages else {
+        guard let selfieImage = selfieFile,
+              livenessFiles != nil else {
             throw SmileIDError.unknown("Selfie images missing")
         }
         return BiometricKYCSubmission(
             userId: userId,
             jobId: jobId,
             allowNewEnroll: allowNewEnroll,
+            livenessFiles: livenessFiles,
             selfieFile: selfieImage,
             idInfo: idInfo,
-            livenessFiles: livenessFiles,
             extraPartnerParams: extraPartnerParams,
             metadata: localMetadata.metadata
         )
     }
     
     public override func triggerProcessingState() {
-        DispatchQueue.main.async { self.processingState = .inProgress }
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.inProgress) }
     }
     
     public override func handleSuccess(data: BiometricKycResult) {
-        apiResponse = data.apiResponse
-        DispatchQueue.main.async { self.processingState = .success }
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.success) }
     }
     
     public override func handleError(error: Error) {
@@ -276,11 +275,11 @@ internal class OrchestratedBiometricKycViewModel: BaseSubmissionViewModel<Biomet
             self.error = error
             self.errorMessageRes = errorMessageRes
             self.errorMessage = errorMessage
-            DispatchQueue.main.async { self.processingState = .error }
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
         } else {
             print("Error submitting job: \(error)")
             self.error = error
-            DispatchQueue.main.async { self.processingState = .error }
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
         }
     }
     
@@ -300,7 +299,7 @@ internal class OrchestratedBiometricKycViewModel: BaseSubmissionViewModel<Biomet
     public override func handleOfflineSuccess() {
         DispatchQueue.main.async {
             self.errorMessageRes = "Offline.Message"
-            self.step = .success
+            self.step = .processing(<#T##ProcessingState#>)
         }
     }
 }
