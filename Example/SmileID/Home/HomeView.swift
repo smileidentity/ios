@@ -54,7 +54,7 @@ struct HomeView: View {
                         )
                         ProductCell(
                             image: "smart_selfie_enroll",
-                            name: "SmartSelfie™ Enrollment (Strict Mode)\n(BETA)",
+                            name: "SmartSelfie™ Enrollment (Enhanced)",
                             onClick: {
                                 viewModel.onProductClicked()
                             },
@@ -74,7 +74,7 @@ struct HomeView: View {
                         )
                         ProductCell(
                             image: "smart_selfie_authentication",
-                            name: "SmartSelfie™ Authentication (Strict Mode)\n(BETA)",
+                            name: "SmartSelfie™ Authentication (Enhanced)",
                             onClick: {
                                 viewModel.onProductClicked()
                             },

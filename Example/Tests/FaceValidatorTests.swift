@@ -75,7 +75,7 @@ class FaceValidatorTests: XCTestCase {
             faceQuality: 0.5,
             brighness: 35
         )
-        
+
         XCTAssertTrue(result.faceInBounds)
         XCTAssertFalse(result.hasDetectedValidFace)
         XCTAssertEqual(result.userInstruction, .goodLight)

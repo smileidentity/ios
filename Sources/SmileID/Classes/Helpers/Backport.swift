@@ -1,3 +1,4 @@
+// swiftlint:disable all
 import SwiftUI
 import ObjectiveC
 
