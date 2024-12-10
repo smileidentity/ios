@@ -41,6 +41,9 @@ struct ProductCell<Content: View>: View {
                 .frame(maxWidth: .infinity)
                 .background(SmileID.theme.accent)
                 .cornerRadius(8)
+//                .sheet(isPresented: $isPresented) {
+//                    content()
+//                }
                 .fullScreenCover(
                     isPresented: $isPresented,
                     content: {

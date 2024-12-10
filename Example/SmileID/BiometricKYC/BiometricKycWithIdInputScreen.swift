@@ -6,7 +6,7 @@ struct BiometricKycWithIdInputScreen: View {
     let delegate: BiometricKycResultDelegate
 
     @State private var selectedCountry: CountryInfo?
-    @ObservedObject var viewModel: BiometricKycWithIdInputScreenViewModel
+    @StateObject var viewModel: BiometricKycWithIdInputScreenViewModel
 
     var body: some View {
         switch viewModel.step {
@@ -19,25 +19,27 @@ struct BiometricKycWithIdInputScreen: View {
             }
                 .frame(maxWidth: .infinity)
         case .idTypeSelection(let countryList):
-            SearchableDropdownSelector(
-                items: countryList,
-                selectedItem: selectedCountry,
-                itemDisplayName: { $0.name },
-                onItemSelected: { selectedCountry = $0 }
-            )
-            if let selectedCountry = selectedCountry {
-                RadioGroupSelector(
-                    title: "Select ID Type",
-                    items: selectedCountry.availableIdTypes,
-                    itemDisplayName: { $0.label },
-                    onItemSelected: { idType in
-                        viewModel.onIdTypeSelected(
-                            country: selectedCountry.countryCode,
-                            idType: idType.idTypeKey,
-                            requiredFields: idType.requiredFields ?? []
-                        )
-                    }
+            VStack {
+                SearchableDropdownSelector(
+                    items: countryList,
+                    selectedItem: selectedCountry,
+                    itemDisplayName: { $0.name },
+                    onItemSelected: { selectedCountry = $0 }
                 )
+                if let selectedCountry = selectedCountry {
+                    RadioGroupSelector(
+                        title: "Select ID Type",
+                        items: selectedCountry.availableIdTypes,
+                        itemDisplayName: { $0.label },
+                        onItemSelected: { idType in
+                            viewModel.onIdTypeSelected(
+                                country: selectedCountry.countryCode,
+                                idType: idType.idTypeKey,
+                                requiredFields: idType.requiredFields ?? []
+                            )
+                        }
+                    )
+                }
             }
         case .consent(let country, let idType, let requiredFields):
             SmileID.consentScreen(
