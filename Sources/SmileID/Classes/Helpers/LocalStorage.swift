@@ -9,7 +9,7 @@ public class LocalStorage {
     private static let previewImageName = "PreviewImage.jpg"
     private static let jsonEncoder = JSONEncoder()
     private static let jsonDecoder = JSONDecoder()
-
+    
     static var defaultDirectory: URL {
         get throws {
             let documentDirectory = try FileManager.default.url(
@@ -21,19 +21,19 @@ public class LocalStorage {
             return documentDirectory.appendingPathComponent(defaultFolderName)
         }
     }
-
+    
     static var unsubmittedJobDirectory: URL {
         get throws {
             try defaultDirectory.appendingPathComponent(unsubmittedFolderName)
         }
     }
-
+    
     static var submittedJobDirectory: URL {
         get throws {
             try defaultDirectory.appendingPathComponent(submittedFolderName)
         }
     }
-
+    
     private static func createSmileFile(
         to folder: String,
         name: String,
@@ -43,25 +43,25 @@ public class LocalStorage {
         let destinationFolder = try unsubmittedJobDirectory.appendingPathComponent(folder)
         return try write(data, to: destinationFolder.appendingPathComponent(name))
     }
-
+    
     private static func filename(for name: String) -> String {
         "\(name)_\(Date().millisecondsSince1970).jpg"
     }
-
+    
     public static func createSelfieFile(
         jobId: String,
         selfieFile data: Data
     ) throws -> URL {
         try createSmileFile(to: jobId, name: filename(for: FileType.selfie.name), file: data)
     }
-
+    
     public static func createLivenessFile(
         jobId: String,
         livenessFile data: Data
     ) throws -> URL {
         try createSmileFile(to: jobId, name: filename(for: FileType.liveness.name), file: data)
     }
-
+    
     public static func createDocumentFile(
         jobId: String,
         fileType: FileType,
@@ -69,7 +69,7 @@ public class LocalStorage {
     ) throws -> URL {
         try createSmileFile(to: jobId, name: filename(for: fileType.name), file: data)
     }
-
+    
     public static func getFileByType(
         jobId: String,
         fileType: FileType,
@@ -78,7 +78,7 @@ public class LocalStorage {
         let contents = try getDirectoryContents(jobId: jobId, submitted: submitted)
         return contents.first(where: { $0.lastPathComponent.contains(fileType.name) })
     }
-
+    
     public static func getFilesByType(
         jobId: String,
         fileType: FileType,
@@ -87,7 +87,7 @@ public class LocalStorage {
         let contents = try getDirectoryContents(jobId: jobId, submitted: submitted)
         return contents.filter { $0.lastPathComponent.contains(fileType.name) }
     }
-
+    
     static func createInfoJsonFile(
         jobId: String,
         idInfo: IdInfo? = nil,
@@ -130,22 +130,22 @@ public class LocalStorage {
         ))
         return try createSmileFile(to: jobId, name: "info.json", file: data)
     }
-
+    
     static func getInfoJsonFile(
         jobId: String
     ) throws -> URL {
         let contents = try getDirectoryContents(jobId: jobId)
         return contents.first(where: { $0.lastPathComponent == "info.json" })!
     }
-
-    private static func createPrepUploadFile(
+    
+    static func createPrepUploadFile(
         jobId: String,
         prepUpload: PrepUploadRequest
     ) throws -> URL {
         let data = try jsonEncoder.encode(prepUpload)
         return try createSmileFile(to: jobId, name: "prep_upload.json", file: data)
     }
-
+    
     static func fetchPrepUploadFile(
         jobId: String
     ) throws -> PrepUploadRequest {
@@ -154,15 +154,15 @@ public class LocalStorage {
         let data = try Data(contentsOf: preupload!)
         return try jsonDecoder.decode(PrepUploadRequest.self, from: data)
     }
-
-    private static func createAuthenticationRequestFile(
+    
+    static func createAuthenticationRequestFile(
         jobId: String,
         authentationRequest: AuthenticationRequest
     ) throws -> URL {
         let data = try jsonEncoder.encode(authentationRequest)
         return try createSmileFile(to: jobId, name: "authentication_request.json", file: data)
     }
-
+    
     static func fetchAuthenticationRequestFile(
         jobId: String
     ) throws -> AuthenticationRequest {
@@ -171,7 +171,7 @@ public class LocalStorage {
         let data = try Data(contentsOf: authenticationrequest!)
         return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
     }
-
+    
     static func saveOfflineJob(
         jobId: String,
         userId: String,
@@ -209,7 +209,7 @@ public class LocalStorage {
             )
         }
     }
-
+    
     private static func write(_ data: Data, to url: URL, options completeFileProtection: Bool = true) throws -> URL {
         let directoryURL = url.deletingLastPathComponent()
         try fileManager.createDirectory(
@@ -226,11 +226,11 @@ public class LocalStorage {
             return url
         }
     }
-
+    
     private static func createDirectory(at url: URL) throws {
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
     }
-
+    
     private static func getDirectoryContents(
         jobId: String,
         submitted: Bool = false
@@ -239,7 +239,7 @@ public class LocalStorage {
         let folderPathURL = baseDirectory.appendingPathComponent(jobId)
         return try fileManager.contentsOfDirectory(at: folderPathURL, includingPropertiesForKeys: nil)
     }
-
+    
     static func getUnsubmittedJobs() -> [String] {
         do {
             return try fileManager.contentsOfDirectory(atPath: unsubmittedJobDirectory.relativePath)
@@ -248,7 +248,7 @@ public class LocalStorage {
             return []
         }
     }
-
+    
     static func getSubmittedJobs() -> [String] {
         do {
             return try fileManager.contentsOfDirectory(atPath: submittedJobDirectory.relativePath)
@@ -257,7 +257,7 @@ public class LocalStorage {
             return []
         }
     }
-
+    
     static func moveToSubmittedJobs(jobId: String) throws {
         try createDirectory(at: submittedJobDirectory)
         let unsubmittedFileDirectory = try unsubmittedJobDirectory.appendingPathComponent(jobId)
@@ -267,7 +267,7 @@ public class LocalStorage {
         }
         try fileManager.moveItem(at: unsubmittedFileDirectory, to: submittedFileDirectory)
     }
-
+    
     /// Moves files from unsubmitted to submitted when not in Offline Mode, or if it was not a
     /// network error
     /// Returns: true if files were moved
@@ -282,7 +282,7 @@ public class LocalStorage {
         }
         return didMove
     }
-
+    
     public static func toZip(uploadRequest: UploadRequest) throws -> Data {
         var destinationFolder: String?
         // Extract directory paths from all images and check for consistency
@@ -296,19 +296,19 @@ public class LocalStorage {
                 destinationFolder = folder
             }
         }
-
+        
         // Ensure a destination folder was found
         guard let finalDestinationFolder = destinationFolder else {
             throw SmileIDError.fileNotFound("Job not found")
         }
-
+        
         // Create full URLs for all images
         let imageUrls = uploadRequest.images.map { imageInfo in
             URL(fileURLWithPath: finalDestinationFolder).appendingPathComponent(imageInfo.fileName)
         }
-
+        
         var allUrls = imageUrls
-
+        
         do {
             // Get the URL for the JSON file
             let jsonUrl = try LocalStorage.getInfoJsonFile(jobId: finalDestinationFolder)
@@ -316,11 +316,11 @@ public class LocalStorage {
         } catch {
             debugPrint("Warning: info.json file not found. Continuing without it.")
         }
-
+        
         // Zip all files
         return try zipFiles(at: allUrls)
     }
-
+    
     public static func zipFiles(at urls: [URL]) throws -> Data {
         let archive = try Archive(accessMode: .create)
         for url in urls {
@@ -328,20 +328,20 @@ public class LocalStorage {
         }
         return archive.data!
     }
-
+    
     private static func extractDirectoryPath(from path: String) -> String? {
         let url = URL(fileURLWithPath: path)
         // Remove the last component and add a trailing slash
         let directoryPath = url.deletingLastPathComponent().path + "/"
         return directoryPath
     }
-
+    
     private static func delete(at url: URL) throws {
         if fileManager.fileExists(atPath: url.relativePath) {
             try fileManager.removeItem(atPath: url.relativePath)
         }
     }
-
+    
     static func delete(at jobIds: [String]) throws {
         try jobIds.forEach {
             let unsubmittedJob = try unsubmittedJobDirectory.appendingPathComponent($0)
@@ -350,13 +350,13 @@ public class LocalStorage {
             try delete(at: submittedJob)
         }
     }
-
+    
     static func deleteAll() throws {
         if try fileManager.fileExists(atPath: defaultDirectory.relativePath) {
             try fileManager.removeItem(atPath: defaultDirectory.relativePath)
         }
     }
-
+    
     static func deleteLivenessAndSelfieFiles(at jobIds: [String]) throws {
         func deleteMatchingFiles(in directory: URL) throws {
             let contents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
@@ -367,11 +367,11 @@ public class LocalStorage {
                 }
             }
         }
-
+        
         try jobIds.forEach { jobId in
             let unsubmittedJob = try unsubmittedJobDirectory.appendingPathComponent(jobId)
             try deleteMatchingFiles(in: unsubmittedJob)
-
+            
             let submittedJob = try submittedJobDirectory.appendingPathComponent(jobId)
             try deleteMatchingFiles(in: submittedJob)
         }
@@ -381,5 +381,23 @@ public class LocalStorage {
 public extension Date {
     var millisecondsSince1970: Int64 {
         Int64((timeIntervalSince1970 * 1000.0).rounded())
+    }
+}
+
+public extension URL {
+    func asDocumentFrontImage() -> UploadImageInfo {
+        return UploadImageInfo(imageTypeId: .idCardJpgFile, fileName: lastPathComponent)
+    }
+    
+    func asDocumentBackImage() -> UploadImageInfo {
+        return UploadImageInfo(imageTypeId: .idCardRearJpgFile, fileName: lastPathComponent)
+    }
+    
+    func asSelfieImage() -> UploadImageInfo {
+        return UploadImageInfo(imageTypeId: .selfieJpgFile, fileName: lastPathComponent)
+    }
+    
+    func asLivenessImage() -> UploadImageInfo {
+        return UploadImageInfo(imageTypeId: .livenessJpgFile, fileName: lastPathComponent)
     }
 }
