@@ -484,7 +484,9 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     func submissionDidFail(
         with error: Error,
         errorMessage: String?,
-        errorMessageRes: String?
+        errorMessageRes: String?,
+        updatedSelfieImageUrl: URL?,
+        updatedLivenessImages: [URL]
     ) {
         invalidateSubmissionTask()
         HapticManager.shared.notification(type: .error)
@@ -493,6 +495,8 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             self.errorMessage = errorMessage
             self.errorMessageRes = errorMessageRes
             self.selfieCaptureState = .processing(.error)
+            self.selfieImageURL = updatedSelfieImageUrl
+            self.livenessImages = updatedLivenessImages
         }
     }
 

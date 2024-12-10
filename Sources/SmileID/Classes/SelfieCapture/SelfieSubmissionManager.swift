@@ -2,7 +2,13 @@ import SwiftUI
 
 protocol SelfieSubmissionDelegate: AnyObject {
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse)
-    func submissionDidFail(with error: Error, errorMessage: String?, errorMessageRes: String?)
+    func submissionDidFail(
+        with error: Error,
+        errorMessage: String?,
+        errorMessageRes: String?,
+        updatedSelfieImageUrl: URL?,
+        updatedLivenessImages: [URL]
+    )
 }
 
 final class SelfieSubmissionManager {
@@ -211,20 +217,31 @@ final class SelfieSubmissionManager {
                 .submissionDidFail(
                     with: error,
                     errorMessage: errorMessageRes,
-                    errorMessageRes: errorMessage
+                    errorMessageRes: errorMessage,
+                    updatedSelfieImageUrl: selfieImageUrl,
+                    updatedLivenessImages: livenessImages
                 )
             return
         }
 
         if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: smileIDError) {
-            self.delegate?.submissionDidFail(with: smileIDError, errorMessage: nil, errorMessageRes: "Offline.Message")
+            self.delegate?
+                .submissionDidFail(
+                    with: smileIDError,
+                    errorMessage: nil,
+                    errorMessageRes: "Offline.Message",
+                    updatedSelfieImageUrl: selfieImageUrl,
+                    updatedLivenessImages: livenessImages
+                )
         } else {
             let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
             self.delegate?
                 .submissionDidFail(
                     with: smileIDError,
                     errorMessage: errorMessage,
-                    errorMessageRes: errorMessageRes
+                    errorMessageRes: errorMessageRes,
+                    updatedSelfieImageUrl: selfieImageUrl,
+                    updatedLivenessImages: livenessImages
                 )
         }
     }

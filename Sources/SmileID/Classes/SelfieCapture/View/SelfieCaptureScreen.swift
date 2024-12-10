@@ -4,13 +4,8 @@ import SwiftUI
 
 /// The actual selfie capture screen, which shows the camera preview and the progress indicator
 public struct SelfieCaptureScreen: View {
+    @Backport.StateObject var viewModel: SelfieViewModel
     let allowAgentMode: Bool
-    @ObservedObject var viewModel: SelfieViewModel
-
-    public init(allowAgentMode: Bool, viewModel: SelfieViewModel) {
-        self.allowAgentMode = allowAgentMode
-        self.viewModel = viewModel
-    }
 
     public var body: some View {
         ZStack {
