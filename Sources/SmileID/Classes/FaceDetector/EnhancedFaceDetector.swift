@@ -16,15 +16,15 @@ protocol FaceDetectorViewDelegate: NSObjectProtocol {
 
 protocol FaceDetectorResultDelegate: AnyObject {
     func faceDetector(
-        _ detector: FaceDetectorV2,
+        _ detector: EnhancedFaceDetector,
         didDetectFace faceGeometry: FaceGeometryData,
         withFaceQuality faceQuality: Float,
         brightness: Int
     )
-    func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error)
+    func faceDetector(_ detector: EnhancedFaceDetector, didFailWithError error: Error)
 }
 
-class FaceDetectorV2: NSObject {
+class EnhancedFaceDetector: NSObject {
     private var selfieQualityModel: SelfieQualityDetector?
 
     private let cropSize = (width: 120, height: 120)

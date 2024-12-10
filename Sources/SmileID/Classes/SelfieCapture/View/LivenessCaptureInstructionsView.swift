@@ -5,9 +5,9 @@ public struct LivenessCaptureInstructionsView: View {
     @State private var showSelfieCaptureView: Bool = false
 
     private let showAttribution: Bool
-    private let viewModel: SelfieViewModelV2
+    private let viewModel: EnhancedSmartSelfieViewModel
 
-    public init(showAttribution: Bool, viewModel: SelfieViewModelV2) {
+    public init(showAttribution: Bool, viewModel: EnhancedSmartSelfieViewModel) {
         self.showAttribution = showAttribution
         self.viewModel = viewModel
     }
@@ -37,7 +37,7 @@ public struct LivenessCaptureInstructionsView: View {
 
             VStack(spacing: 20) {
                 NavigationLink(
-                    destination: SelfieCaptureScreenV2(
+                    destination: EnhancedSelfieCaptureScreen(
                         viewModel: viewModel,
                         showAttribution: showAttribution
                     ),

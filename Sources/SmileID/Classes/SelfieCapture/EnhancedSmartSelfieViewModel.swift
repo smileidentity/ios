@@ -2,10 +2,10 @@ import ARKit
 import Combine
 import SwiftUI
 
-public class SelfieViewModelV2: ObservableObject {
+public class EnhancedSmartSelfieViewModel: ObservableObject {
     // MARK: Dependencies
     let cameraManager = CameraManager.shared
-    let faceDetector = FaceDetectorV2()
+    let faceDetector = EnhancedFaceDetector()
     private let faceValidator = FaceValidator()
     var livenessCheckManager = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
@@ -200,7 +200,7 @@ public class SelfieViewModelV2: ObservableObject {
 }
 
 // MARK: Action Handlers
-extension SelfieViewModelV2 {
+extension EnhancedSmartSelfieViewModel {
     private func resetGuideAnimationDelayTimer() {
         elapsedGuideAnimationDelay = 0
         showGuideAnimation = false
@@ -333,9 +333,9 @@ extension SelfieViewModelV2 {
 }
 
 // MARK: FaceDetectorResultDelegate Methods
-extension SelfieViewModelV2: FaceDetectorResultDelegate {
+extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
     func faceDetector(
-        _ detector: FaceDetectorV2,
+        _ detector: EnhancedFaceDetector,
         didDetectFace faceGeometry: FaceGeometryData,
         withFaceQuality faceQuality: Float,
         brightness: Int
@@ -352,7 +352,7 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
         }
     }
 
-    func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error) {
+    func faceDetector(_ detector: EnhancedFaceDetector, didFailWithError error: Error) {
         DispatchQueue.main.async {
             self.publishUserInstruction(.headInFrame)
         }
@@ -360,7 +360,7 @@ extension SelfieViewModelV2: FaceDetectorResultDelegate {
 }
 
 // MARK: FaceValidatorDelegate Methods
-extension SelfieViewModelV2: FaceValidatorDelegate {
+extension EnhancedSmartSelfieViewModel: FaceValidatorDelegate {
     func updateValidationResult(_ result: FaceValidationResult) {
         DispatchQueue.main.async {
             self.faceInBounds = result.faceInBounds
@@ -371,7 +371,7 @@ extension SelfieViewModelV2: FaceValidatorDelegate {
 }
 
 // MARK: LivenessCheckManagerDelegate Methods
-extension SelfieViewModelV2: LivenessCheckManagerDelegate {
+extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
     func didCompleteLivenessTask() {
         isCapturingLivenessImages = true
         let capturedFrames = 0
@@ -420,7 +420,7 @@ extension SelfieViewModelV2: LivenessCheckManagerDelegate {
 }
 
 // MARK: Selfie Job Submission
-extension SelfieViewModelV2: SelfieSubmissionDelegate {
+extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     public func submitJob() async throws {
         // Add metadata before submission
         addSelfieCaptureDurationMetaData()

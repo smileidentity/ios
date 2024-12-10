@@ -3,12 +3,12 @@ import SwiftUI
 
 /// Orchestrates the selfie capture flow - navigates between instructions, requesting permissions,
 /// showing camera view, and displaying processing screen
-public struct OrchestratedSelfieCaptureScreenV2: View {
+public struct OrchestratedEnhancedSelfieCaptureScreen: View {
     public let allowAgentMode: Bool
     public let showAttribution: Bool
     public let showInstructions: Bool
     public let onResult: SmartSelfieResultDelegate
-    private let viewModel: SelfieViewModelV2
+    private let viewModel: EnhancedSmartSelfieViewModel
 
     public init(
         userId: String,
@@ -27,7 +27,7 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
         self.onResult = onResult
-        self.viewModel = SelfieViewModelV2(
+        self.viewModel = EnhancedSmartSelfieViewModel(
             isEnroll: isEnroll,
             userId: userId,
             jobId: jobId,
@@ -47,7 +47,7 @@ public struct OrchestratedSelfieCaptureScreenV2: View {
                 viewModel: viewModel
             )
         } else {
-            SelfieCaptureScreenV2(
+            EnhancedSelfieCaptureScreen(
                 viewModel: viewModel,
                 showAttribution: showAttribution
             )

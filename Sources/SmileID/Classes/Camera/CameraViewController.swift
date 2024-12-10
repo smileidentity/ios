@@ -3,7 +3,7 @@ import Vision
 import AVFoundation
 
 class CameraViewController: UIViewController {
-    var faceDetector: FaceDetectorV2?
+    var faceDetector: EnhancedFaceDetector?
 
     var previewLayer: AVCaptureVideoPreviewLayer?
     private weak var cameraManager: CameraManager?
