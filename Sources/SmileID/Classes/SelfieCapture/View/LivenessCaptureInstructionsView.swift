@@ -2,32 +2,25 @@ import Lottie
 import SwiftUI
 
 public struct LivenessCaptureInstructionsView: View {
-    @Environment(\.modalMode) private var modalMode
     @State private var showSelfieCaptureView: Bool = false
 
     private let showAttribution: Bool
-    private let viewModel: SelfieViewModelV2
+    private let viewModel: EnhancedSmartSelfieViewModel
 
-    public init(showAttribution: Bool, viewModel: SelfieViewModelV2) {
+    public init(showAttribution: Bool, viewModel: EnhancedSmartSelfieViewModel) {
         self.showAttribution = showAttribution
         self.viewModel = viewModel
     }
 
     public var body: some View {
         VStack {
-            HStack {
-                Button {
-                    self.modalMode.wrappedValue = false
-                } label: {
-                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                        .foregroundColor(SmileID.theme.accent)
-                }
-                Spacer()
-            }
-
             ZStack {
                 LottieView {
-                    try await DotLottieFile.named("instructions_no_progress", bundle: SmileIDResourcesHelper.bundle)
+                    try await DotLottieFile
+                        .named(
+                            "instruction_screen_with_side_bar",
+                            bundle: SmileIDResourcesHelper.bundle
+                        )
                 }
                 .playing(loopMode: .loop)
                 .frame(width: 235, height: 235)
@@ -37,13 +30,14 @@ public struct LivenessCaptureInstructionsView: View {
             Text(SmileIDResourcesHelper.localizedString(for: "Instructions.SelfieCapture"))
                 .multilineTextAlignment(.center)
                 .font(SmileID.theme.header4)
+                .lineSpacing(4)
                 .foregroundColor(SmileID.theme.tertiary)
 
             Spacer()
 
             VStack(spacing: 20) {
                 NavigationLink(
-                    destination: SelfieCaptureScreenV2(
+                    destination: EnhancedSelfieCaptureScreen(
                         viewModel: viewModel,
                         showAttribution: showAttribution
                     ),

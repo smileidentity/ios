@@ -8,11 +8,12 @@ enum CaptureGuideAnimation: Equatable {
     case lookRight
     case lookLeft
     case lookUp
+    case turnPhoneUp
 
     var fileName: String {
         switch self {
         case .goodLight:
-            return "light_animation"
+            return "light_animation_with_bg"
         case .headInFrame:
             return "positioning"
         case .moveBack:
@@ -20,11 +21,13 @@ enum CaptureGuideAnimation: Equatable {
         case .moveCloser:
             return "positioning"
         case .lookRight:
-            return "liveness_guides"
+            return "liveness_guides_with_bg"
         case .lookLeft:
-            return "liveness_guides"
+            return "liveness_guides_with_bg"
         case .lookUp:
-            return "liveness_guides"
+            return "liveness_guides_with_bg"
+        case .turnPhoneUp:
+            return "device_orientation"
         }
     }
 

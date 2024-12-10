@@ -1,11 +1,13 @@
 import SwiftUI
 
-public struct SelfieCaptureScreenV2: View {
-    @ObservedObject var viewModel: SelfieViewModelV2
+public struct EnhancedSelfieCaptureScreen: View {
+    @Backport.StateObject var viewModel: EnhancedSmartSelfieViewModel
     let showAttribution: Bool
 
     private let faceShape = FaceShape()
     @Environment(\.modalMode) private var modalMode
+
+    private(set) var originalBrightness = UIScreen.main.brightness
 
     public var body: some View {
         GeometryReader { proxy in
@@ -34,7 +36,8 @@ public struct SelfieCaptureScreenV2: View {
                                     showGuideAnimation: viewModel.showGuideAnimation,
                                     guideAnimation: viewModel.userInstruction?.guideAnimation
                                 )
-                                if let currentLivenessTask = viewModel.livenessCheckManager.currentTask {
+                                if let currentLivenessTask = viewModel.livenessCheckManager.currentTask,
+                                    viewModel.faceInBounds {
                                     LivenessGuidesView(
                                         currentLivenessTask: currentLivenessTask,
                                         topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
@@ -72,10 +75,10 @@ public struct SelfieCaptureScreenV2: View {
                             Spacer()
                             UserInstructionsView(
                                 instruction: processingState.title,
-                                message: getErrorSubtitle(
+                                message: processingState == .error ? getErrorSubtitle(
                                     errorMessageRes: viewModel.errorMessageRes,
                                     errorMessage: viewModel.errorMessage
-                                )
+                                ) : nil
                             )
                         }
                         SubmissionStatusView(processState: processingState)
@@ -110,10 +113,14 @@ public struct SelfieCaptureScreenV2: View {
             }
             .navigationBarHidden(true)
             .onAppear {
+                UIScreen.main.brightness = 1
+                UIApplication.shared.isIdleTimerDisabled = true
                 viewModel.perform(action: .windowSizeDetected(proxy.size, proxy.safeAreaInsets))
                 viewModel.perform(action: .onViewAppear)
             }
             .onDisappear {
+                UIScreen.main.brightness = originalBrightness
+                UIApplication.shared.isIdleTimerDisabled = false
                 viewModel.cameraManager.pauseSession()
             }
             .alert(item: $viewModel.unauthorizedAlert) { alert in

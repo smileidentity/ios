@@ -16,16 +16,15 @@ protocol FaceDetectorViewDelegate: NSObjectProtocol {
 
 protocol FaceDetectorResultDelegate: AnyObject {
     func faceDetector(
-        _ detector: FaceDetectorV2,
+        _ detector: EnhancedFaceDetector,
         didDetectFace faceGeometry: FaceGeometryData,
         withFaceQuality faceQuality: Float,
-        selfieQuality: SelfieQualityData,
         brightness: Int
     )
-    func faceDetector(_ detector: FaceDetectorV2, didFailWithError error: Error)
+    func faceDetector(_ detector: EnhancedFaceDetector, didFailWithError error: Error)
 }
 
-class FaceDetectorV2: NSObject {
+class EnhancedFaceDetector: NSObject {
     private var selfieQualityModel: SelfieQualityDetector?
 
     private let cropSize = (width: 120, height: 120)
@@ -78,29 +77,32 @@ class FaceDetectorV2: NSObject {
 
             let uiImage = UIImage(pixelBuffer: imageBuffer)
             let brightness = self.calculateBrightness(uiImage)
-            let croppedImage = try self.cropImageToFace(uiImage)
 
-            let selfieQualityData = try self.selfieQualityRequest(imageBuffer: croppedImage)
-
+            let faceGeometryData: FaceGeometryData
             if #available(iOS 15.0, *) {
-                let faceGeometryData = FaceGeometryData(
+                faceGeometryData = FaceGeometryData(
                     boundingBox: convertedBoundingBox,
                     roll: faceObservation.roll ?? 0.0,
                     yaw: faceObservation.yaw ?? 0.0,
                     pitch: faceObservation.pitch ?? 0.0,
                     direction: faceDirection(faceObservation: faceObservation)
                 )
-                self.resultDelegate?
-                    .faceDetector(
-                        self,
-                        didDetectFace: faceGeometryData,
-                        withFaceQuality: faceQualityObservation.faceCaptureQuality ?? 0.0,
-                        selfieQuality: selfieQualityData,
-                        brightness: brightness
-                    )
-            } else {
-                // Fallback on earlier versions
+            } else { // Fallback on earlier versions
+                faceGeometryData = FaceGeometryData(
+                    boundingBox: convertedBoundingBox,
+                    roll: faceObservation.roll ?? 0.0,
+                    yaw: faceObservation.yaw ?? 0.0,
+                    pitch: 0.0,
+                    direction: faceDirection(faceObservation: faceObservation)
+                )
             }
+            self.resultDelegate?
+                .faceDetector(
+                    self,
+                    didDetectFace: faceGeometryData,
+                    withFaceQuality: faceQualityObservation.faceCaptureQuality ?? 0.0,
+                    brightness: brightness
+                )
         } catch {
             self.resultDelegate?.faceDetector(self, didFailWithError: error)
         }
@@ -180,8 +182,8 @@ class FaceDetectorV2: NSObject {
 
     private func calculateBrightness(_ image: UIImage?) -> Int {
         guard let image, let cgImage = image.cgImage,
-            let imageData = cgImage.dataProvider?.data,
-            let dataPointer = CFDataGetBytePtr(imageData)
+              let imageData = cgImage.dataProvider?.data,
+              let dataPointer = CFDataGetBytePtr(imageData)
         else {
             return 0
         }

@@ -35,6 +35,8 @@ class CameraManager: NSObject, ObservableObject {
         (session.inputs.first as? AVCaptureDeviceInput)?.device.position
     }
 
+    private(set) var cameraName: String?
+
     // Used to queue and then resume tasks while waiting for Camera permissions
     private let sessionQueue = DispatchQueue(label: "com.smileidentity.ios")
     private let videoOutput = AVCaptureVideoDataOutput()
@@ -90,6 +92,7 @@ class CameraManager: NSObject, ObservableObject {
             status = .failed
             return
         }
+        cameraName = camera.uniqueID
 
         do {
             let cameraInput = try AVCaptureDeviceInput(device: camera)

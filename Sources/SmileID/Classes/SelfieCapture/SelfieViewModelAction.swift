@@ -5,10 +5,7 @@ enum SelfieViewModelAction {
     case onViewAppear
     case windowSizeDetected(CGSize, EdgeInsets)
 
-    // Face Detection Actions
-    case activeLivenessCompleted
-    case activeLivenessTimeout
-
+    // Job Submission Actions
     case jobProcessingDone
     case retryJobSubmission
 

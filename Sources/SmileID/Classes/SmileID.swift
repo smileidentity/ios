@@ -309,7 +309,7 @@ public class SmileID {
         delegate: SmartSelfieResultDelegate
     ) -> some View {
         if useStrictMode {
-            OrchestratedSelfieCaptureScreenV2(
+            OrchestratedEnhancedSelfieCaptureScreen(
                 userId: userId,
                 jobId: jobId,
                 isEnroll: true,
@@ -371,7 +371,7 @@ public class SmileID {
         delegate: SmartSelfieResultDelegate
     ) -> some View {
         if useStrictMode {
-            OrchestratedSelfieCaptureScreenV2(
+            OrchestratedEnhancedSelfieCaptureScreen(
                 userId: userId,
                 jobId: jobId,
                 isEnroll: true,

@@ -8,7 +8,7 @@ struct CameraView: UIViewControllerRepresentable {
 
     init(
         cameraManager: CameraManager,
-        selfieViewModel: SelfieViewModelV2? = nil
+        selfieViewModel: EnhancedSmartSelfieViewModel? = nil
     ) {
         let controller = CameraViewController(cameraManager: cameraManager)
         controller.faceDetector = selfieViewModel?.faceDetector
