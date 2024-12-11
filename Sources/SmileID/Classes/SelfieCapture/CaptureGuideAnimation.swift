@@ -15,17 +15,17 @@ enum CaptureGuideAnimation: Equatable {
         case .goodLight:
             return "light_animation_with_bg"
         case .headInFrame:
-            return "positioning"
+            return "positioning_with_bg"
         case .moveBack:
-            return "positioning"
+            return "positioning_with_bg"
         case .moveCloser:
-            return "positioning"
+            return "positioning_with_bg"
         case .lookRight:
-            return "liveness_guides_with_bg"
+            return "headdirection_with_bg"
         case .lookLeft:
-            return "liveness_guides_with_bg"
+            return "headdirection_with_bg"
         case .lookUp:
-            return "liveness_guides_with_bg"
+            return "headdirection_with_bg"
         case .turnPhoneUp:
             return "device_orientation"
         }
