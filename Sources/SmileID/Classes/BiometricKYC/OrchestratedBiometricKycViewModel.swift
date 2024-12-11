@@ -6,7 +6,7 @@ internal enum BiometricKycStep {
     case processing(ProcessingState)
 }
 
-internal class OrchestratedBiometricKycViewModel: ObservableObject {
+internal class OrchestratedBiometricKycViewModel: BaseSubmissionViewModel<BiometricKycResult> {
     // MARK: - Input Properties
 
     private let userId: String
@@ -75,7 +75,6 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         Task {
             do {
                 try await handleJobSubmission()
-                updateStep(.processing(.success))
             } catch let error as SmileIDError {
                 handleSubmissionFailure(error)
             } catch {
@@ -89,17 +88,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
     private func handleJobSubmission() async throws {
         try fetchRequiredFiles()
-
-        let zipData = try createZipData()
-
-        let authResponse = try await authenticate()
-
-        let preUploadResponse = try await prepareForUpload(authResponse: authResponse)
-
-        try await uploadFiles(zipData: zipData, uploadUrl: preUploadResponse.uploadUrl)
-        didSubmitBiometricJob = true
-
-        try moveJobToSubmittedDirectory()
+        submitJob(jobId: self.jobId,skipApiSubmission: false,offlineMode: SmileID.allowOfflineMode)
     }
 
     private func fetchRequiredFiles() throws {
@@ -240,6 +229,66 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
             self.error = smileIDError
             updateErrorMessages(errorMessage: errorMessage, errorMessageRes: errorMessageRes)
             updateStep(.processing(.error))
+        }
+    }
+    
+    public override func createSubmission() throws -> BaseJobSubmission<BiometricKycResult> {
+        guard let selfieImage = selfieFile,
+              livenessFiles != nil else {
+            throw SmileIDError.unknown("Selfie images missing")
+        }
+        return BiometricKYCSubmission(
+            userId: userId,
+            jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
+            livenessFiles: livenessFiles,
+            selfieFile: selfieImage,
+            idInfo: idInfo,
+            extraPartnerParams: extraPartnerParams,
+            metadata: localMetadata.metadata
+        )
+    }
+    
+    public override func triggerProcessingState() {
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.inProgress) }
+    }
+    
+    public override func handleSuccess(data: BiometricKycResult) {
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.success) }
+    }
+    
+    public override func handleError(error: Error) {
+        if let smileError = error as? SmileIDError {
+            print("Error submitting job: \(error)")
+            let (errorMessageRes, errorMessage) = toErrorMessage(error: smileError)
+            self.error = error
+            self.errorMessageRes = errorMessageRes
+            self.errorMessage = errorMessage
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
+        } else {
+            print("Error submitting job: \(error)")
+            self.error = error
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
+        }
+    }
+    
+    public override func handleSubmissionFiles(jobId: String) throws {
+        self.selfieFile = try LocalStorage.getFileByType(
+            jobId: jobId,
+            fileType: FileType.selfie,
+            submitted: true
+        )
+        self.livenessFiles = try LocalStorage.getFilesByType(
+            jobId: jobId,
+            fileType: FileType.liveness,
+            submitted: true
+        ) ?? []
+    }
+    
+    public override func handleOfflineSuccess() {
+        DispatchQueue.main.async {
+            self.errorMessageRes = "Offline.Message"
+            self.step = .processing(ProcessingState.success)
         }
     }
 }
