@@ -75,7 +75,6 @@ internal class OrchestratedBiometricKycViewModel: BaseSubmissionViewModel<Biomet
         Task {
             do {
                 try await handleJobSubmission()
-                updateStep(.processing(.success))
             } catch let error as SmileIDError {
                 handleSubmissionFailure(error)
             } catch {
@@ -89,17 +88,7 @@ internal class OrchestratedBiometricKycViewModel: BaseSubmissionViewModel<Biomet
 
     private func handleJobSubmission() async throws {
         try fetchRequiredFiles()
-
-        let zipData = try createZipData()
-
-        let authResponse = try await authenticate()
-
-        let preUploadResponse = try await prepareForUpload(authResponse: authResponse)
-
-        try await uploadFiles(zipData: zipData, uploadUrl: preUploadResponse.uploadUrl)
-        didSubmitBiometricJob = true
-
-        try moveJobToSubmittedDirectory()
+        submitJob(jobId: self.jobId,skipApiSubmission: false,offlineMode: SmileID.allowOfflineMode)
     }
 
     private func fetchRequiredFiles() throws {
@@ -299,7 +288,7 @@ internal class OrchestratedBiometricKycViewModel: BaseSubmissionViewModel<Biomet
     public override func handleOfflineSuccess() {
         DispatchQueue.main.async {
             self.errorMessageRes = "Offline.Message"
-            self.step = .processing(<#T##ProcessingState#>)
+            self.step = .processing(ProcessingState.success)
         }
     }
 }

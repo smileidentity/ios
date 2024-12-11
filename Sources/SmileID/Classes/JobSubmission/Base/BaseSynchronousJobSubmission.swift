@@ -51,8 +51,11 @@ public class BaseSynchronousJobSubmission<ResultType: CaptureResult, ApiResponse
     /// - Parameter didSubmit: Whether the job was submitted to the backend
     /// - Returns: Success result object
     public override func createSuccessResult(didSubmit: Bool) async throws -> SmileIDResult<ResultType>.Success<ResultType> {
-        let authResponse = try await executeAuthentication()
-        let apiResponse = try await getApiResponse(authResponse: authResponse)
+        var apiResponse : ApiResponse? = nil
+        if(didSubmit){
+            let authResponse = try await executeAuthentication()
+            apiResponse = try await getApiResponse(authResponse: authResponse)
+        }
         return try await createSynchronousResult(result: apiResponse)
     }
 }

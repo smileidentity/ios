@@ -133,32 +133,32 @@ public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, S
     
     public override func createSynchronousResult(result: SmartSelfieResponse?) async throws -> SmileIDResult<SmartSelfieResult>.Success<SmartSelfieResult> {
         // Move files from unsubmitted to submitted directories
-        var selfieFileResult: URL?
-        var livenessImagesResult: [URL]?
+        var selfieFileResult = self.selfieFile
+        var livenessImagesResult = self.livenessFiles
         
         do {
-            try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
-            selfieFileResult = try LocalStorage.getFileByType(
-                jobId: jobId,
-                fileType: FileType.selfie,
-                submitted: true
-            )
-            livenessImagesResult = try LocalStorage.getFilesByType(
-                jobId: jobId,
-                fileType: FileType.liveness,
-                submitted: true
-            ) ?? []
+            if let result = result{
+                try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                guard let selfieFileResult = try LocalStorage.getFileByType(
+                    jobId: jobId,
+                    fileType: FileType.selfie,
+                    submitted: true
+                ) else{
+                    throw SmileIDError.unknown("Selfie file not found")
+                }
+                livenessImagesResult = try LocalStorage.getFilesByType(
+                    jobId: jobId,
+                    fileType: FileType.liveness,
+                    submitted: true
+                ) ?? []
+            }
         } catch {
             print("Error moving job to submitted directory: \(error)")
             throw error
         }
         
-        guard let selfieFile = selfieFileResult else {
-            throw SmileIDError.unknown("Selfie submission failed")
-        }
-        
         let captureResult = SelfieCaptureResult(
-            selfieImage: selfieFile,
+            selfieImage: selfieFileResult,
             livenessImages: livenessImagesResult
         )
         
