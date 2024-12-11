@@ -1,9 +1,11 @@
 import ARKit
+import CoreMotion
 import Combine
 import SwiftUI
 
 public class EnhancedSmartSelfieViewModel: ObservableObject {
     // MARK: Dependencies
+    private let motionManager = CMMotionManager()
     let cameraManager = CameraManager.shared
     let faceDetector = EnhancedFaceDetector()
     private let faceValidator = FaceValidator()
@@ -13,8 +15,9 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private let metadataTimerStart = MonotonicTime()
 
     // MARK: Private Properties
-    private var deviceOrientation: UIDeviceOrientation {
-        return UIDevice.current.orientation
+    private var motionDeviceOrientation: UIDeviceOrientation = UIDevice.current.orientation
+    private var unlockedDeviceOrientation: UIDeviceOrientation {
+        UIDevice.current.orientation
     }
     private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 250, height: 350)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
@@ -109,6 +112,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         subscribers.removeAll()
         stopGuideAnimationDelayTimer()
         invalidateSubmissionTask()
+        motionManager.stopDeviceMotionUpdates()
     }
 
     private func initialSetup() {
@@ -153,13 +157,29 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
                 self?.handleCameraImageBuffer(imageBuffer)
             }
             .store(in: &subscribers)
+
+        if motionManager.isDeviceMotionAvailable {
+            motionManager.startDeviceMotionUpdates(to: OperationQueue()) {[weak self] deviceMotion, _ in
+                guard let gravity = deviceMotion?.gravity else { return }
+                if abs(gravity.y) < abs(gravity.x) {
+                    self?.motionDeviceOrientation = gravity.x > 0 ? .landscapeRight : .landscapeLeft
+                } else {
+                    self?.motionDeviceOrientation = gravity.y > 0 ? .portraitUpsideDown : .portrait
+                }
+            }
+        }
     }
 
     private func handleCameraImageBuffer(_ imageBuffer: CVPixelBuffer) {
-        if deviceOrientation == .portrait {
+        let currentOrientation: UIDeviceOrientation = motionManager.isDeviceMotionAvailable
+        ? motionDeviceOrientation : unlockedDeviceOrientation
+        if currentOrientation == .portrait {
             analyzeFrame(imageBuffer: imageBuffer)
         } else {
-            publishUserInstruction(.turnPhoneUp)
+            DispatchQueue.main.async {
+                self.faceInBounds = false
+                self.publishUserInstruction(.turnPhoneUp)
+            }
         }
     }
 
@@ -205,7 +225,10 @@ extension EnhancedSmartSelfieViewModel {
         elapsedGuideAnimationDelay = 0
         showGuideAnimation = false
         guard guideAnimationDelayTimer == nil else { return }
-        guideAnimationDelayTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+        guideAnimationDelayTimer = Timer.scheduledTimer(
+            withTimeInterval: 1,
+            repeats: true
+        ) { _ in
             self.elapsedGuideAnimationDelay += 1
             if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
                 self.showGuideAnimation = true
