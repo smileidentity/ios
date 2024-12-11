@@ -28,11 +28,11 @@ struct HomeView: View {
                             },
                             content: {
                                 SmileID.smartSelfieEnrollmentScreen(
-                                    userId: viewModel.smartSelfieEnrollmentUserId,
+                                    userId: viewModel.newUserId,
                                     jobId: viewModel.newJobId,
                                     allowAgentMode: true,
                                     delegate: SmartSelfieEnrollmentDelegate(
-                                        userId: viewModel.smartSelfieEnrollmentUserId,
+                                        userId: viewModel.newUserId,
                                         onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                                         onError: viewModel.didError
                                     )
@@ -47,7 +47,7 @@ struct HomeView: View {
                             },
                             content: {
                                 SmartSelfieAuthWithUserIdEntry(
-                                    initialUserId: viewModel.smartSelfieEnrollmentUserId,
+                                    initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
                                     delegate: viewModel
                                 )
                             }
@@ -60,12 +60,12 @@ struct HomeView: View {
                             },
                             content: {
                                 SmileID.smartSelfieEnrollmentScreen(
-                                    userId: viewModel.smartSelfieEnrollmentUserId,
+                                    userId: viewModel.newUserId,
                                     jobId: viewModel.newJobId,
                                     allowAgentMode: true,
                                     useStrictMode: true,
                                     delegate: SmartSelfieEnrollmentDelegate(
-                                        userId: viewModel.smartSelfieEnrollmentUserId,
+                                        userId: viewModel.newUserId,
                                         onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                                         onError: viewModel.didError
                                     )
@@ -80,7 +80,7 @@ struct HomeView: View {
                             },
                             content: {
                                 SmartSelfieAuthWithUserIdEntry(
-                                    initialUserId: viewModel.smartSelfieEnrollmentUserId,
+                                    initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
                                     useStrictMode: true,
                                     delegate: viewModel
                                 )

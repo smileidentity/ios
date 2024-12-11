@@ -374,7 +374,7 @@ public class SmileID {
             OrchestratedEnhancedSelfieCaptureScreen(
                 userId: userId,
                 jobId: jobId,
-                isEnroll: true,
+                isEnroll: false,
                 allowNewEnroll: allowNewEnroll,
                 allowAgentMode: allowAgentMode,
                 showAttribution: showAttribution,

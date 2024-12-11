@@ -19,7 +19,10 @@ class HomeViewModel: ObservableObject,
     @Published var partnerId: String
     var networkMonitor = NetworkMonitor.shared
 
-    @Published private(set) var smartSelfieEnrollmentUserId = generateUserId()
+    var lastSelfieEnrollmentUserId: String? {
+        guard let value = UIPasteboard.general.string else { return nil }
+        return value.hasPrefix("user-") ? value : nil
+    }
     @Published private(set) var newUserId: String = generateUserId()
     @Published private(set) var newJobId: String = generateJobId()
 
