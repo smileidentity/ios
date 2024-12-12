@@ -8,7 +8,7 @@ enum DocumentCaptureFlow: Equatable {
     case processing(ProcessingState)
 }
 
-class IOrchestratedDocumentVerificationViewModel<T, U: JobResult,S:CaptureResult>: BaseSubmissionViewModel<S> {
+class IOrchestratedDocumentVerificationViewModel<T, U: JobResult, S: CaptureResult>: BaseSubmissionViewModel<S> {
     // Input properties
     let userId: String
     let jobId: String
@@ -163,12 +163,63 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult,S:CaptureResult
                 if let livenessFiles {
                     allFiles.append(contentsOf: livenessFiles)
                 }
-                
+                let infoJson = try LocalStorage.createInfoJsonFile(
+                    jobId: jobId,
+                    idInfo: IdInfo(country: countryCode),
+                    documentFront: frontDocumentUrl,
+                    documentBack: backDocumentUrl,
+                    selfie: selfieFile,
+                    livenessImages: livenessFiles
+                )
+                submitJob(jobId: self.jobId, skipApiSubmission: false, offlineMode: SmileID.allowOfflineMode)
             } catch {
                 didSubmitJob = false
                 print("Error submitting job: \(error)")
                 self.onError(error: error)
             }
+        }
+    }
+
+    override public func triggerProcessingState() {
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.inProgress) }
+    }
+
+    override public func handleSuccess(data _: S) {
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.success) }
+    }
+
+    override public func handleError(error: Error) {
+        if let smileError = error as? SmileIDError {
+            print("Error submitting job: \(error)")
+            let (errorMessageRes, errorMessage) = toErrorMessage(error: smileError)
+            self.error = error
+            self.errorMessageRes = errorMessageRes
+            self.errorMessage = errorMessage
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
+        } else {
+            print("Error submitting job: \(error)")
+            self.error = error
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
+        }
+    }
+
+    override public func handleSubmissionFiles(jobId: String) throws {
+        selfieFile = try LocalStorage.getFileByType(
+            jobId: jobId,
+            fileType: FileType.selfie,
+            submitted: true
+        )
+        livenessFiles = try LocalStorage.getFilesByType(
+            jobId: jobId,
+            fileType: FileType.liveness,
+            submitted: true
+        ) ?? []
+    }
+
+    override public func handleOfflineSuccess() {
+        DispatchQueue.main.async {
+            self.errorMessageRes = "Offline.Message"
+            self.step = .processing(ProcessingState.success)
         }
     }
 
@@ -205,8 +256,26 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 
 // swiftlint:disable opening_brace
 class OrchestratedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult,DocumentVerificationResult>
+    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate,
+    DocumentVerificationJobResult, DocumentVerificationResult>
 {
+    override func createSubmission() throws -> BaseJobSubmission<DocumentVerificationResult> {
+        guard let selfieImage = selfieFile,
+              livenessFiles != nil
+        else {
+            throw SmileIDError.unknown("Selfie image missing")
+        }
+        guard let documentFront = try LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront) else {
+            throw SmileIDError.unknown("Document image missing")
+        }
+        let documentBack = try LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack)
+        return DocumentVerificationSubmission(jobId: jobId, userId: userId, countryCode: countryCode,
+                                              allowNewEnroll: allowNewEnroll, documentFrontFile: documentFront,
+                                              selfieFile: selfieImage, documentBackFile: documentBack,
+                                              livenessFiles: livenessFiles,
+                                              extraPartnerParams: extraPartnerParams)
+    }
+
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
@@ -230,10 +299,27 @@ class OrchestratedDocumentVerificationViewModel:
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedEnhancedDocumentVerificationViewModel:IOrchestratedDocumentVerificationViewModel<
-EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult,EnhancedDocumentVerificationResult
-    >
-{
+class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel
+<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult,
+    EnhancedDocumentVerificationResult
+> {
+    override func createSubmission() throws -> BaseJobSubmission<EnhancedDocumentVerificationResult> {
+        guard let selfieImage = selfieFile,
+              livenessFiles != nil
+        else {
+            throw SmileIDError.unknown("Selfie image missing")
+        }
+        guard let documentFront = try LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront) else {
+            throw SmileIDError.unknown("Document image missing")
+        }
+        let documentBack = try LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack)
+        return EnhancedDocumentVerificationSubmission(jobId: jobId, userId: userId, countryCode: countryCode,
+                                                      documentType: documentType, allowNewEnroll: allowNewEnroll,
+                                                      documentFrontFile: documentFront, selfieFile: selfieImage,
+                                                      documentBackFile: documentBack, livenessFiles: livenessFiles,
+                                                      extraPartnerParams: extraPartnerParams)
+    }
+
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),

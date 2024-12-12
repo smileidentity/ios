@@ -7,7 +7,7 @@
 
 public class BaseDocumentVerificationSubmission<ResultType: CaptureResult>: BaseJobSubmission<ResultType> {
     // MARK: - Properties
-    
+
     private let userId: String
     private let jobType: JobType
     private let countryCode: String
@@ -19,9 +19,9 @@ public class BaseDocumentVerificationSubmission<ResultType: CaptureResult>: Base
     private let livenessFiles: [URL]?
     private let extraPartnerParams: [String: String]
     private let metadata: [Metadatum]?
-    
+
     // MARK: - Initialization
-    
+
     public init(
         jobId: String,
         userId: String,
@@ -49,10 +49,10 @@ public class BaseDocumentVerificationSubmission<ResultType: CaptureResult>: Base
         self.metadata = metadata
         super.init(jobId: jobId)
     }
-    
+
     // MARK: - Overridden Methods
-    
-    public override func createAuthRequest() -> AuthenticationRequest {
+
+    override public func createAuthRequest() -> AuthenticationRequest {
         return AuthenticationRequest(
             jobType: jobType,
             enrollment: false,
@@ -62,11 +62,11 @@ public class BaseDocumentVerificationSubmission<ResultType: CaptureResult>: Base
             idType: documentType
         )
     }
-    
-    public override func createPrepUploadRequest(authResponse: AuthenticationResponse? = nil) -> PrepUploadRequest {
-        let partnerParams = authResponse?.partnerParams.copy(extras: extraPartnerParams) ?? PartnerParams(jobId: jobId, userId: userId, jobType: jobType, extras: extraPartnerParams)
-        
-        
+
+    override public func createPrepUploadRequest(authResponse: AuthenticationResponse? = nil) -> PrepUploadRequest {
+        let partnerParams = authResponse?.partnerParams.copy(extras: extraPartnerParams)
+            ?? PartnerParams(jobId: jobId, userId: userId, jobType: jobType, extras: extraPartnerParams)
+
         return PrepUploadRequest(
             partnerParams: partnerParams,
             allowNewEnroll: String(allowNewEnroll),
@@ -75,24 +75,34 @@ public class BaseDocumentVerificationSubmission<ResultType: CaptureResult>: Base
             signature: authResponse?.signature ?? ""
         )
     }
-    
-    public override func createUploadRequest(authResponse: AuthenticationResponse?) -> UploadRequest {
+
+    override public func createUploadRequest(authResponse _: AuthenticationResponse?) -> UploadRequest {
         let frontImageInfo = documentFrontFile.asDocumentFrontImage()
         let backImageInfo = documentBackFile?.asDocumentBackImage()
         let selfieImageInfo = selfieFile.asSelfieImage()
         let livenessImageInfo = livenessFiles?.map { $0.asLivenessImage() } ?? []
-        
+
         return UploadRequest(
             images: [frontImageInfo] +
-            (backImageInfo.map { [$0] } ?? []) +
-            [selfieImageInfo] +
-            livenessImageInfo,
-            idInfo : IdInfo(country: countryCode, idType: documentType)
+                (backImageInfo.map { [$0] } ?? []) +
+                [selfieImageInfo] +
+                livenessImageInfo,
+            idInfo: IdInfo(country: countryCode, idType: documentType)
         )
     }
-    
+
+    override public func createSuccessResult(didSubmit: Bool) async throws ->
+        SmileIDResult<ResultType>.Success<ResultType> {
+        let result = createResultInstance(selfieFile: selfieFile,
+                                          documentFrontFile: documentFrontFile,
+                                          livenessFiles: livenessFiles,
+                                          documentBackFile: documentBackFile,
+                                          didSubmitJob: didSubmit)
+        return SmileIDResult.Success(result: result)
+    }
+
     // MARK: - Abstract Methods
-    
+
     /// Creates the result instance for the document verification submission
     /// - Parameters:
     ///   - selfieFile: The selfie file URL
@@ -102,11 +112,11 @@ public class BaseDocumentVerificationSubmission<ResultType: CaptureResult>: Base
     ///   - didSubmitJob: Whether the job was submitted
     /// - Returns: Result instance of type ResultType
     open func createResultInstance(
-        selfieFile: URL,
-        documentFrontFile: URL,
-        livenessFiles: [URL]?,
-        documentBackFile: URL?,
-        didSubmitJob: Bool
+        selfieFile _: URL,
+        documentFrontFile _: URL,
+        livenessFiles _: [URL]?,
+        documentBackFile _: URL?,
+        didSubmitJob _: Bool
     ) -> ResultType {
         fatalError("Must be implemented by subclass")
     }
