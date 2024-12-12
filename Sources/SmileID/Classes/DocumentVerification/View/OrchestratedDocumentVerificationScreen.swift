@@ -104,7 +104,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     }
 }
 
-private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
+private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult, S: CaptureResult>: View {
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
@@ -120,7 +120,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let skipApiSubmission: Bool
     var extraPartnerParams: [String: String]
     let onResult: T
-    @ObservedObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
+    @ObservedObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U, S>
 
     init(
         countryCode: String,
@@ -138,7 +138,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         skipApiSubmission: Bool,
         extraPartnerParams: [String: String],
         onResult: T,
-        viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
+        viewModel: IOrchestratedDocumentVerificationViewModel<T, U, S>
     ) {
         self.countryCode = countryCode
         self.documentType = documentType
