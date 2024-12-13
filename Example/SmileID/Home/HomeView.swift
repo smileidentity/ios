@@ -7,8 +7,10 @@ struct HomeView: View {
     @StateObject var viewModel: HomeViewModel
 
     init(config: Config) {
-        _viewModel =  StateObject(wrappedValue: HomeViewModel(config: config))
+        _viewModel = StateObject(wrappedValue: HomeViewModel(config: config))
     }
+
+    let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
         NavigationView {
@@ -16,10 +18,8 @@ struct HomeView: View {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
-
-                MyVerticalGrid(
-                    maxColumns: 2,
-                    items: [
+                ScrollView(showsIndicators: false) {
+                    LazyVGrid(columns: columns) {
                         ProductCell(
                             image: "smart_selfie_enroll",
                             name: "SmartSelfie™ Enrollment",
@@ -28,17 +28,17 @@ struct HomeView: View {
                             },
                             content: {
                                 SmileID.smartSelfieEnrollmentScreen(
-                                    userId: viewModel.smartSelfieEnrollmentUserId,
+                                    userId: viewModel.newUserId,
                                     jobId: viewModel.newJobId,
                                     allowAgentMode: true,
                                     delegate: SmartSelfieEnrollmentDelegate(
-                                        userId: viewModel.smartSelfieEnrollmentUserId,
+                                        userId: viewModel.newUserId,
                                         onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                                         onError: viewModel.didError
                                     )
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "smart_selfie_authentication",
                             name: "SmartSelfie™ Authentication",
@@ -47,11 +47,45 @@ struct HomeView: View {
                             },
                             content: {
                                 SmartSelfieAuthWithUserIdEntry(
-                                    initialUserId: viewModel.smartSelfieEnrollmentUserId,
+                                    initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
                                     delegate: viewModel
                                 )
                             }
-                        ),
+                        )
+                        ProductCell(
+                            image: "smart_selfie_enroll",
+                            name: "SmartSelfie™ Enrollment (Enhanced)",
+                            onClick: {
+                                viewModel.onProductClicked()
+                            },
+                            content: {
+                                SmileID.smartSelfieEnrollmentScreen(
+                                    userId: viewModel.newUserId,
+                                    jobId: viewModel.newJobId,
+                                    allowAgentMode: true,
+                                    useStrictMode: true,
+                                    delegate: SmartSelfieEnrollmentDelegate(
+                                        userId: viewModel.newUserId,
+                                        onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                                        onError: viewModel.didError
+                                    )
+                                )
+                            }
+                        )
+                        ProductCell(
+                            image: "smart_selfie_authentication",
+                            name: "SmartSelfie™ Authentication (Enhanced)",
+                            onClick: {
+                                viewModel.onProductClicked()
+                            },
+                            content: {
+                                SmartSelfieAuthWithUserIdEntry(
+                                    initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                                    useStrictMode: true,
+                                    delegate: viewModel
+                                )
+                            }
+                        )
                         ProductCell(
                             image: "enhanced_kyc",
                             name: "Enhanced KYC",
@@ -67,7 +101,7 @@ struct HomeView: View {
                                     )
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "biometric",
                             name: "Biometric KYC",
@@ -83,7 +117,7 @@ struct HomeView: View {
                                     )
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "document",
                             name: "\nDocument Verification",
@@ -97,7 +131,7 @@ struct HomeView: View {
                                     delegate: viewModel
                                 )
                             }
-                        ),
+                        )
                         ProductCell(
                             image: "enhanced_doc_v",
                             name: "Enhanced Document Verification",
@@ -112,10 +146,8 @@ struct HomeView: View {
                                 )
                             }
                         )
-                    ].map {
-                        AnyView($0)
                     }
-                )
+                }
 
                 Text("Partner \(viewModel.partnerId) - Version \(version) - Build \(build)")
                     .font(SmileID.theme.body)
@@ -164,7 +196,9 @@ struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
 
 private struct SmartSelfieAuthWithUserIdEntry: View {
     let initialUserId: String
+    var useStrictMode: Bool = false
     let delegate: SmartSelfieResultDelegate
+
     @State private var userId: String?
 
     var body: some View {
@@ -172,6 +206,7 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
             SmileID.smartSelfieAuthenticationScreen(
                 userId: userId,
                 allowAgentMode: true,
+                useStrictMode: useStrictMode,
                 delegate: delegate
             )
         } else {
@@ -262,9 +297,9 @@ private struct MyVerticalGrid: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
                     let numRows = (items.count + maxColumns - 1) / maxColumns
-                    ForEach(0 ..< numRows) { rowIndex in
+                    ForEach(0 ..< numRows, id: \.self) { rowIndex in
                         HStack(spacing: 16) {
-                            ForEach(0 ..< maxColumns) { columnIndex in
+                            ForEach(0 ..< maxColumns, id: \.self) { columnIndex in
                                 let itemIndex = rowIndex * maxColumns + columnIndex
                                 let width = geo.size.width / CGFloat(maxColumns)
                                 if itemIndex < items.count {

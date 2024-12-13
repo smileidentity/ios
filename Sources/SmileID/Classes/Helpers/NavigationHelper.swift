@@ -16,3 +16,14 @@ extension View {
         }
     }
 }
+
+public struct ModalModeKey: EnvironmentKey {
+    public static let defaultValue = Binding<Bool>.constant(false)
+}
+
+extension EnvironmentValues {
+    public var modalMode: Binding<Bool> {
+        get { self[ModalModeKey.self] }
+        set { self[ModalModeKey.self] = newValue }
+    }
+}

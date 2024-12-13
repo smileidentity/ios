@@ -2,7 +2,9 @@ import UIKit
 import Vision
 import AVFoundation
 
-class PreviewView: UIViewController {
+class CameraViewController: UIViewController {
+    var faceDetector: EnhancedFaceDetector?
+
     var previewLayer: AVCaptureVideoPreviewLayer?
     private weak var cameraManager: CameraManager?
 
@@ -17,6 +19,7 @@ class PreviewView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        faceDetector?.viewDelegate = self
         configurePreviewLayer()
     }
 
@@ -34,7 +37,16 @@ class PreviewView: UIViewController {
     }
 }
 
-extension PreviewView: RectangleDetectionDelegate {
+extension CameraViewController: FaceDetectorViewDelegate {
+    func convertFromMetadataToPreviewRect(rect: CGRect) -> CGRect {
+        guard let previewLayer = previewLayer else {
+            return CGRect.zero
+        }
+        return previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
+    }
+}
+
+extension CameraViewController: RectangleDetectionDelegate {
     func didDetectQuad(
         quad: Quadrilateral?,
         _ imageSize: CGSize,

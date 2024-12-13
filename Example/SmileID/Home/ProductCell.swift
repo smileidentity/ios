@@ -1,18 +1,18 @@
 import SmileID
 import SwiftUI
 
-struct ProductCell: View {
+struct ProductCell<Content: View>: View {
     let image: String
     let name: String
     let onClick: (() -> Void)?
-    @ViewBuilder let content: () -> any View
+    @ViewBuilder let content: () -> Content
     @State private var isPresented: Bool = false
 
     init(
         image: String,
         name: String,
         onClick: (() -> Void)? = nil,
-        @ViewBuilder content: @escaping () -> any View
+        @ViewBuilder content: @escaping () -> Content
     ) {
         self.image = image
         self.name = name
@@ -41,8 +41,24 @@ struct ProductCell: View {
                 .frame(maxWidth: .infinity)
                 .background(SmileID.theme.accent)
                 .cornerRadius(8)
-                .sheet(isPresented: $isPresented, content: { AnyView(content())
-                })
+                .fullScreenCover(
+                    isPresented: $isPresented,
+                    content: {
+                        NavigationView {
+                            content()
+                                .toolbar {
+                                    ToolbarItem(placement: .cancellationAction) {
+                                        Button {
+                                            isPresented = false
+                                        } label: {
+                                            Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                                                .foregroundColor(SmileID.theme.accent)
+                                        }
+                                    }
+                                }
+                        }
+                    }
+                )
             }
         )
     }

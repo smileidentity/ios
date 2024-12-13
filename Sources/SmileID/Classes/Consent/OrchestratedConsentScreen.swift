@@ -74,7 +74,7 @@ public struct ConsentScreen: View {
                 .padding(16)
 
             VStack(spacing: 16) {
-                ForEach(0..<consentInfos.count) { index in
+                ForEach(0..<consentInfos.count, id: \.self) { index in
                     let consentInfo = consentInfos[index]
                     HStack(alignment: .top, spacing: 16) {
                         Image(uiImage: consentInfo.0)
@@ -100,8 +100,8 @@ public struct ConsentScreen: View {
                         .frame(maxWidth: .infinity)
                 }
             }
-                .frame(maxWidth: .infinity)
-                .padding(4)
+            .frame(maxWidth: .infinity)
+            .padding(4)
 
             Spacer()
             Divider()
@@ -117,6 +117,7 @@ public struct ConsentScreen: View {
             Text(SmileIDResourcesHelper.localizedString(for: "Consent.Disclaimer", partnerName))
                 .foregroundColor(SmileID.theme.onLight)
                 .font(SmileID.theme.body)
+                .multilineTextAlignment(.center)
             VStack(spacing: 8) {
                 Button(action: onConsentGranted) {
                     Text(SmileIDResourcesHelper.localizedString(for: "Consent.Allow"))
@@ -124,11 +125,11 @@ public struct ConsentScreen: View {
                         .font(SmileID.theme.button)
                         .frame(maxWidth: .infinity)
                 }
-                    .background(SmileID.theme.accent)
-                    .foregroundColor(SmileID.theme.onDark)
-                    .cornerRadius(60)
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal)
+                .background(SmileID.theme.accent)
+                .foregroundColor(SmileID.theme.onDark)
+                .cornerRadius(60)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal)
 
                 Button(action: onCancel) {
                     Text(SmileIDResourcesHelper.localizedString(for: "Consent.Cancel"))
@@ -136,20 +137,21 @@ public struct ConsentScreen: View {
                         .font(SmileID.theme.button)
                         .frame(maxWidth: .infinity)
                 }
-                    .background(Color.clear)
-                    .foregroundColor(SmileID.theme.accent)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 60)
-                            .stroke(SmileID.theme.accent, lineWidth: 4)
-                    )
-                    .cornerRadius(60)
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal)
+                .background(Color.clear)
+                .foregroundColor(SmileID.theme.accent)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 60)
+                        .stroke(SmileID.theme.accent, lineWidth: 4)
+                )
+                .cornerRadius(60)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal)
                 if showAttribution {
                     Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                 }
             }
-        }.preferredColorScheme(.light)
+        }
+        .preferredColorScheme(.light)
     }
 }
 

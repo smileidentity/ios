@@ -76,6 +76,9 @@ public class SmileIDResourcesHelper {
     public static var ConsentContactDetails = SmileIDResourcesHelper.image("ConsentContactDetails")!
     public static var ConsentDocumentInfo = SmileIDResourcesHelper.image("ConsentDocumentInfo")!
     public static var ConsentPersonalInfo = SmileIDResourcesHelper.image("ConsentPersonalInfo")!
+    public static var Loader = SmileIDResourcesHelper.image("Loader")!
+    public static var Checkmark = SmileIDResourcesHelper.image("Checkmark")!
+    public static var Xmark = SmileIDResourcesHelper.image("Xmark")!
 
     /// Size of font.
     public static let pointSize: CGFloat = 16
