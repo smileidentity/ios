@@ -6,7 +6,7 @@ import SwiftUI
 public class EnhancedSmartSelfieViewModel: ObservableObject {
     // MARK: Dependencies
     private let motionManager = CMMotionManager()
-    let cameraManager = CameraManager.shared
+    let cameraManager = CameraManager(orientation: .portrait)
     let faceDetector = EnhancedFaceDetector()
     private let faceValidator = FaceValidator()
     var livenessCheckManager = LivenessCheckManager()
@@ -135,6 +135,9 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             }
             .store(in: &subscribers)
 
+        if cameraManager.session.canSetSessionPreset(.vga640x480) {
+            cameraManager.session.sessionPreset = .vga640x480
+        }
         cameraManager.$status
             .receive(on: DispatchQueue.main)
             .filter { $0 == .unauthorized }
