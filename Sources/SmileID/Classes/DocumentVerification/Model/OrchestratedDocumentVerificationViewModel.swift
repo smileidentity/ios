@@ -165,7 +165,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 }
                 let info = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,
-                    idInfo: IdInfo(country: countryCode),
+                    idInfo: IdInfo(country: countryCode, idType: documentType),
                     documentFront: frontDocumentUrl,
                     documentBack: backDocumentUrl,
                     selfie: selfieFile,
