@@ -254,6 +254,7 @@ extension EnhancedSmartSelfieViewModel {
         livenessImages = []
         selfieCaptureState = .capturingSelfie
         failureReason = nil
+        resetSelfieCaptureMetadata()
     }
 
     private func handleWindowSizeChanged(to rect: CGSize, edgeInsets: EdgeInsets) {
@@ -446,7 +447,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     public func submitJob() async throws {
         // Add metadata before submission
-        addSelfieCaptureDurationMetaData()
+        addSelfieCaptureMetaData()
 
         if skipApiSubmission {
             // Skip API submission and update processing state to success
@@ -469,9 +470,15 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         try await submissionManager.submitJob(failureReason: self.failureReason)
     }
 
-    private func addSelfieCaptureDurationMetaData() {
+    private func addSelfieCaptureMetaData() {
         localMetadata.addMetadata(
             Metadatum.SelfieCaptureDuration(duration: metadataTimerStart.elapsedTime()))
+        localMetadata.addMetadata(Metadatum.ActiveLivenessType(livenessType: LivenessType.headPose))
+    }
+    
+    private func resetSelfieCaptureMetadata() {
+        localMetadata.metadata.removeAllOfType(Metadatum.SelfieCaptureDuration.self)
+        localMetadata.metadata.removeAllOfType(Metadatum.ActiveLivenessType.self)
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
