@@ -91,9 +91,9 @@ public struct EnhancedSelfieCaptureScreen: View {
 
                     Spacer()
                     SelfieActionsView(
-                        processingState: processingState,
+                        captureState: viewModel.selfieCaptureState,
                         retryAction: { viewModel.perform(action: .retryJobSubmission) },
-                        doneAction: {
+                        cancelAction: {
                             modalMode.wrappedValue = false
                             viewModel.perform(action: .jobProcessingDone)
                         }
