@@ -6,7 +6,7 @@ enum SelfieViewModelAction {
     case windowSizeDetected(CGSize, EdgeInsets)
 
     // Job Submission Actions
-    case jobProcessingDone
+    case cancelSelfieCapture
     case retryJobSubmission
 
     // Others

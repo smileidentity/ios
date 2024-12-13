@@ -96,7 +96,7 @@ public struct EnhancedSelfieCaptureScreen: View {
                     captureState: viewModel.selfieCaptureState,
                     retryAction: { viewModel.perform(action: .retryJobSubmission) },
                     cancelAction: {
-                        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+                        viewModel.perform(action: .cancelSelfieCapture)
                     }
                 )
             }
