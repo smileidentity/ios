@@ -1,6 +1,6 @@
 # Release Notes
 
-## Unreleased
+## 10.3.0
 
 * Fixed missing idType on Document Verification Jobs
 * Introduce screens for the new Enhanced Selfie Capture Enrollment and Authentication Products.
