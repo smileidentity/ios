@@ -490,8 +490,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             )
         } else if let error = error {
             callback.didError(error: error)
-        } else {
-            callback.didCancel()
         }
     }
 

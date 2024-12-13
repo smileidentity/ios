@@ -57,7 +57,6 @@ struct ProductCell<Content: View>: View {
                                     }
                                 }
                         }
-                        .environment(\.modalMode, $isPresented)
                     }
                 )
             }
