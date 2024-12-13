@@ -378,7 +378,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             Metadatum.SelfieCaptureDuration(
                 duration: metadataTimerStart.elapsedTime()))
         localMetadata.addMetadata(
-            Metadatum.ActiveLivenessType(livenessType: LivenessType.headPose))
+            Metadatum.ActiveLivenessType(livenessType: LivenessType.smile))
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }
             return
