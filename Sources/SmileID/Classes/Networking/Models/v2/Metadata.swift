@@ -11,6 +11,7 @@ public struct Metadata: Codable {
         Metadata(items: [
             .sdk,
             .sdkVersion,
+            .activeLivenessVersion,
             .clientIP,
             .fingerprint,
             .deviceModel,
@@ -50,10 +51,21 @@ public class Metadatum: Codable {
 
     public static let sdk = Metadatum(name: "sdk", value: "iOS")
     public static let sdkVersion = Metadatum(name: "sdk_version", value: SmileID.version)
+    public static let activeLivenessVersion = Metadatum(name: "active_liveness_version", value: "1.0.0")
     public static let clientIP = Metadatum(name: "client_ip", value: getIPAddress(useIPv4: true))
     public static let fingerprint = Metadatum(name: "fingerprint", value: SmileID.deviceId)
     public static let deviceModel = Metadatum(name: "device_model", value: UIDevice.current.modelName)
     public static let deviceOS = Metadatum(name: "device_os", value: UIDevice.current.systemVersion)
+    
+    public class ActiveLivenessType: Metadatum {
+        public init(livenessType: LivenessType) {
+            super.init(name: "active_liveness_type", value: livenessType.rawValue)
+        }
+
+        public required init(from decoder: Decoder) throws {
+            try super.init(from: decoder)
+        }
+    }
 
     public class SelfieImageOrigin: Metadatum {
         public init(cameraFacing: CameraFacingValue) {
@@ -134,6 +146,11 @@ public class Metadatum: Codable {
             try super.init(from: decoder)
         }
     }
+}
+
+public enum LivenessType: String, Codable {
+    case headPose = "head_pose"
+    case smile = "smile"
 }
 
 public enum DocumentImageOriginValue: String {
