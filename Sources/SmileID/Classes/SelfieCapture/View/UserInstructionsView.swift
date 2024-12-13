@@ -11,7 +11,7 @@ struct UserInstructionsView: View {
                 .font(SmileID.theme.header2)
                 .foregroundColor(SmileID.theme.onDark)
                 .multilineTextAlignment(.center)
-                .lineLimit(3)
+                .lineLimit(2)
                 .minimumScaleFactor(0.8)
             if let message = message {
                 Text(message)

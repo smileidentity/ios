@@ -7,7 +7,6 @@ struct SelfieActionsView: View {
 
     var body: some View {
         VStack {
-            // Spacer()
             switch captureState {
             case .capturingSelfie:
                 cancelButton
@@ -27,7 +26,7 @@ struct SelfieActionsView: View {
         }
         .padding(.horizontal, 65)
     }
-    
+
     var cancelButton: some View {
         Button {
             cancelAction()
