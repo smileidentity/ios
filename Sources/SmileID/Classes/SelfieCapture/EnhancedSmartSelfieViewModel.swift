@@ -511,9 +511,17 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     private func addSelfieCaptureMetaData() {
         localMetadata.addMetadata(
             Metadatum.SelfieCaptureDuration(
-                duration: metadataTimerStart.elapsedTime()))
+                duration: metadataTimerStart.elapsedTime())
+        )
         localMetadata.addMetadata(
-            Metadatum.ActiveLivenessType(livenessType: LivenessType.headPose))
+            Metadatum.ActiveLivenessType(livenessType: LivenessType.headPose)
+        )
+        localMetadata.addMetadata(
+            Metadatum(
+                name: "camera_name",
+                value: cameraManager.cameraName ?? "Unknown Camera Name"
+            )
+        )
     }
 
     private func resetSelfieCaptureMetadata() {
@@ -528,8 +536,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             let selfiePath = getRelativePath(from: selfieImageURL),
             livenessImages.count == numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            )
-        {
+            ) {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }

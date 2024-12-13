@@ -12,11 +12,10 @@ public struct Metadata: Codable {
             .sdk,
             .sdkVersion,
             .activeLivenessVersion,
-            .cameraName,
             .clientIP,
             .fingerprint,
             .deviceModel,
-            .deviceOS,
+            .deviceOS
         ])
     }
 
@@ -55,9 +54,6 @@ public class Metadatum: Codable {
         name: "sdk_version", value: SmileID.version)
     public static let activeLivenessVersion = Metadatum(
         name: "active_liveness_version", value: "1.0.0")
-    public static let cameraName = Metadatum(
-        name: "camera_name",
-        value: CameraManager.shared.cameraName ?? "Unknown Camera Name")
     public static let clientIP = Metadatum(
         name: "client_ip", value: getIPAddress(useIPv4: true))
     public static let fingerprint = Metadatum(
