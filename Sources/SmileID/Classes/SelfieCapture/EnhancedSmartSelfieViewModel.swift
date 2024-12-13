@@ -121,7 +121,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         self.livenessCheckManager.delegate = self
 
         self.faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
-        self.userInstruction = .headInFrame
 
         livenessCheckManager.$lookLeftProgress
             .merge(
