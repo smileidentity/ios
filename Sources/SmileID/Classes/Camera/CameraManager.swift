@@ -1,5 +1,5 @@
-import Foundation
 import AVFoundation
+import Foundation
 import SwiftUI
 
 class CameraManager: NSObject, ObservableObject {
@@ -21,7 +21,9 @@ class CameraManager: NSObject, ObservableObject {
     @Published var sampleBuffer: CVPixelBuffer?
     @Published var capturedImage: Data?
 
-    var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher { $sampleBuffer }
+    var sampleBufferPublisher: Published<CVPixelBuffer?>.Publisher {
+        $sampleBuffer
+    }
     var capturedImagePublisher: Published<Data?>.Publisher { $capturedImage }
     let videoOutputQueue = DispatchQueue(
         label: "com.smileidentity.videooutput",
@@ -50,7 +52,8 @@ class CameraManager: NSObject, ObservableObject {
         self.orientation = orientation
         super.init()
         sessionQueue.async {
-            self.videoOutput.setSampleBufferDelegate(self, queue: self.videoOutputQueue)
+            self.videoOutput.setSampleBufferDelegate(
+                self, queue: self.videoOutputQueue)
         }
         checkPermissions()
     }
@@ -62,28 +65,28 @@ class CameraManager: NSObject, ObservableObject {
     }
 
     private func checkPermissions() {
-      switch AVCaptureDevice.authorizationStatus(for: .video) {
-      case .notDetermined:
-        sessionQueue.suspend()
-        AVCaptureDevice.requestAccess(for: .video) { authorized in
-          if !authorized {
-            self.status = .unauthorized
-            self.set(error: .deniedAuthorization)
-          }
-          self.sessionQueue.resume()
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .notDetermined:
+            sessionQueue.suspend()
+            AVCaptureDevice.requestAccess(for: .video) { authorized in
+                if !authorized {
+                    self.status = .unauthorized
+                    self.set(error: .deniedAuthorization)
+                }
+                self.sessionQueue.resume()
+            }
+        case .restricted:
+            status = .unauthorized
+            set(error: .restrictedAuthorization)
+        case .denied:
+            status = .unauthorized
+            set(error: .deniedAuthorization)
+        case .authorized:
+            break
+        @unknown default:
+            status = .unauthorized
+            set(error: .unknownAuthorization)
         }
-      case .restricted:
-        status = .unauthorized
-        set(error: .restrictedAuthorization)
-      case .denied:
-        status = .unauthorized
-        set(error: .deniedAuthorization)
-      case .authorized:
-        break
-      @unknown default:
-        status = .unauthorized
-        set(error: .unknownAuthorization)
-      }
     }
 
     private func addCameraInput(position: AVCaptureDevice.Position) {
@@ -92,7 +95,8 @@ class CameraManager: NSObject, ObservableObject {
             status = .failed
             return
         }
-        cameraName = camera.uniqueID
+
+        getCameraName(for: camera)
 
         do {
             let cameraInput = try AVCaptureDeviceInput(device: camera)
@@ -108,25 +112,45 @@ class CameraManager: NSObject, ObservableObject {
         }
     }
 
-    private func getCameraForPosition(_ position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+    private func getCameraName(for camera: AVCaptureDevice) {
+        var manufacturer: String
+        if #available(iOS 14.0, *) {
+            manufacturer = camera.manufacturer
+        } else {
+            manufacturer = "Apple Inc."
+        }
+        cameraName =
+            "\(manufacturer) \(camera.localizedName) \(camera.deviceType.rawValue)"
+    }
+
+    private func getCameraForPosition(_ position: AVCaptureDevice.Position)
+        -> AVCaptureDevice?
+    {
         switch position {
         case .front:
-            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+            return AVCaptureDevice.default(
+                .builtInWideAngleCamera, for: .video, position: .front)
         case .back:
-            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+            return AVCaptureDevice.default(
+                .builtInWideAngleCamera, for: .video, position: .back)
         default:
-            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+            return AVCaptureDevice.default(
+                .builtInWideAngleCamera, for: .video, position: .front)
         }
     }
 
     private func configureVideoOutput() {
         session.removeOutput(videoOutput)
         session.removeOutput(photoOutput)
-        if session.canAddOutput(videoOutput), session.canAddOutput(photoOutput) {
+        if session.canAddOutput(videoOutput), session.canAddOutput(photoOutput)
+        {
             session.addOutput(photoOutput)
             session.addOutput(videoOutput)
             videoOutput.videoSettings =
-            [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
+                [
+                    kCVPixelBufferPixelFormatTypeKey as String:
+                        kCVPixelFormatType_32BGRA
+                ]
             if orientation == .portrait {
                 let videoConnection = videoOutput.connection(with: .video)
                 videoConnection?.videoOrientation = .portrait
@@ -141,7 +165,9 @@ class CameraManager: NSObject, ObservableObject {
         checkPermissions()
         sessionQueue.async { [self] in
             if !session.isRunning {
-                if let currentInput = session.inputs.first as? AVCaptureDeviceInput {
+                if let currentInput = session.inputs.first
+                    as? AVCaptureDeviceInput
+                {
                     session.removeInput(currentInput)
                 }
                 addCameraInput(position: position)
@@ -149,7 +175,9 @@ class CameraManager: NSObject, ObservableObject {
                 session.startRunning()
             } else {
                 session.beginConfiguration()
-                if let currentInput = session.inputs.first as? AVCaptureDeviceInput {
+                if let currentInput = session.inputs.first
+                    as? AVCaptureDeviceInput
+                {
                     session.removeInput(currentInput)
                 }
                 addCameraInput(position: position)
@@ -174,7 +202,9 @@ class CameraManager: NSObject, ObservableObject {
     }
 
     internal func capturePhoto() {
-        guard let connection = photoOutput.connection(with: .video), connection.isEnabled, connection.isActive else {
+        guard let connection = photoOutput.connection(with: .video),
+            connection.isEnabled, connection.isActive
+        else {
             set(error: .cameraUnavailable)
             print("Camera unavailable")
             return
@@ -191,7 +221,8 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+        else { return }
         self.sampleBuffer = imageBuffer
     }
 }
