@@ -205,8 +205,7 @@ func getIPAddress(useIPv4: Bool) -> String {
         if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
             let name = String(cString: interface.ifa_name)
             if name == "en0" || name == "en1" || name == "pdp_ip0"
-                || name == "pdp_ip1" || name == "pdp_ip2" || name == "pdp_ip3"
-            {
+                || name == "pdp_ip1" || name == "pdp_ip2" || name == "pdp_ip3" {
                 var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
                 getnameinfo(
                     interface.ifa_addr,
@@ -216,8 +215,7 @@ func getIPAddress(useIPv4: Bool) -> String {
                 address = String(cString: hostname)
 
                 if (useIPv4 && addrFamily == UInt8(AF_INET))
-                    || (!useIPv4 && addrFamily == UInt8(AF_INET6))
-                {
+                    || (!useIPv4 && addrFamily == UInt8(AF_INET6)) {
                     if !useIPv4 {
                         if let percentIndex = address.firstIndex(of: "%") {
                             address = String(address[..<percentIndex])
@@ -255,8 +253,7 @@ extension UIDevice {
             var systemInfo = utsname()
             uname(&systemInfo)
             let machineMirror = Mirror(reflecting: systemInfo.machine)
-            let identifier = machineMirror.children.reduce("") {
-                identifier, element in
+            let identifier = machineMirror.children.reduce("") { identifier, element in
                 guard let value = element.value as? Int8, value != 0 else {
                     return identifier
                 }

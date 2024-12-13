@@ -128,8 +128,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
 
         do {
-            try faceDetector.detect(imageBuffer: image) {
-                [weak self] request, error in
+            try faceDetector.detect(imageBuffer: image) { [weak self] request, error in
                 guard let self else { return }
                 if let error {
                     print(
@@ -429,8 +428,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     smartSelfieImage = media
                 }
                 if !livenessImages.isEmpty {
-                    let livenessImageInfos = livenessImages.compactMap {
-                        liveness -> MultipartBody? in
+                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultipartBody? in
                         if let data = try? Data(contentsOf: liveness) {
                             return MultipartBody(
                                 withImage: data,

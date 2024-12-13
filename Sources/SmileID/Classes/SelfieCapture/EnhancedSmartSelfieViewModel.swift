@@ -165,8 +165,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             .store(in: &subscribers)
 
         if motionManager.isDeviceMotionAvailable {
-            motionManager.startDeviceMotionUpdates(to: OperationQueue()) {
-                [weak self] deviceMotion, _ in
+            motionManager.startDeviceMotionUpdates(to: OperationQueue()) { [weak self] deviceMotion, _ in
                 guard let gravity = deviceMotion?.gravity else { return }
                 if abs(gravity.y) < abs(gravity.x) {
                     self?.motionDeviceOrientation =
@@ -449,8 +448,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
         captureLivenessImage(currentFrame)
         let nextCapturedFrames = capturedFrames + 1
         if nextCapturedFrames < maxFrames {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
                 self?.captureNextFrame(capturedFrames: nextCapturedFrames)
             }
         } else {

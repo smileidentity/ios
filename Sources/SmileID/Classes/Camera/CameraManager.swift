@@ -122,8 +122,7 @@ class CameraManager: NSObject, ObservableObject {
     }
 
     private func getCameraForPosition(_ position: AVCaptureDevice.Position)
-        -> AVCaptureDevice?
-    {
+        -> AVCaptureDevice? {
         switch position {
         case .front:
             return AVCaptureDevice.default(
@@ -140,8 +139,7 @@ class CameraManager: NSObject, ObservableObject {
     private func configureVideoOutput() {
         session.removeOutput(videoOutput)
         session.removeOutput(photoOutput)
-        if session.canAddOutput(videoOutput), session.canAddOutput(photoOutput)
-        {
+        if session.canAddOutput(videoOutput), session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
             session.addOutput(videoOutput)
             videoOutput.videoSettings =
@@ -164,8 +162,7 @@ class CameraManager: NSObject, ObservableObject {
         sessionQueue.async { [self] in
             if !session.isRunning {
                 if let currentInput = session.inputs.first
-                    as? AVCaptureDeviceInput
-                {
+                    as? AVCaptureDeviceInput {
                     session.removeInput(currentInput)
                 }
                 addCameraInput(position: position)
@@ -174,8 +171,7 @@ class CameraManager: NSObject, ObservableObject {
             } else {
                 session.beginConfiguration()
                 if let currentInput = session.inputs.first
-                    as? AVCaptureDeviceInput
-                {
+                    as? AVCaptureDeviceInput {
                     session.removeInput(currentInput)
                 }
                 addCameraInput(position: position)
