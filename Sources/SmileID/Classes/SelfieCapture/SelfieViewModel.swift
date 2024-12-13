@@ -28,7 +28,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private var localMetadata: LocalMetadata
     private let faceDetector = FaceDetector()
 
-    var cameraManager = CameraManager.shared
+    var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
     var lastAutoCaptureTime = Date()
     var previousHeadRoll = Double.infinity
@@ -82,6 +82,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.extraPartnerParams = extraPartnerParams
         self.localMetadata = localMetadata
 
+        if cameraManager.session.canSetSessionPreset(.vga640x480) {
+            cameraManager.session.sessionPreset = .vga640x480
+        }
         cameraManager.$status
             .receive(on: DispatchQueue.main)
             .filter { $0 == .unauthorized }

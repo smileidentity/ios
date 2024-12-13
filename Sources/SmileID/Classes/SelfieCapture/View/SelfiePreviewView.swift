@@ -7,7 +7,7 @@ struct SelfiePreviewView: View {
         Image(uiImage: image)
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .frame(height: 520)
+            .frame(height: 480)
             .clipShape(.rect(cornerRadius: 40))
     }
 }
