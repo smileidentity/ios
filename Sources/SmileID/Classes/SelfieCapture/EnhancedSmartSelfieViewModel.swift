@@ -6,7 +6,7 @@ import SwiftUI
 public class EnhancedSmartSelfieViewModel: ObservableObject {
     // MARK: Dependencies
     private let motionManager = CMMotionManager()
-    let cameraManager = CameraManager.shared
+    let cameraManager = CameraManager(orientation: .portrait)
     let faceDetector = EnhancedFaceDetector()
     private let faceValidator = FaceValidator()
     var livenessCheckManager = LivenessCheckManager()
@@ -121,7 +121,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         self.livenessCheckManager.delegate = self
 
         self.faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
-        self.userInstruction = .headInFrame
 
         livenessCheckManager.$lookLeftProgress
             .merge(
@@ -136,6 +135,9 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             }
             .store(in: &subscribers)
 
+        if cameraManager.session.canSetSessionPreset(.vga640x480) {
+            cameraManager.session.sessionPreset = .vga640x480
+        }
         cameraManager.$status
             .receive(on: DispatchQueue.main)
             .filter { $0 == .unauthorized }
@@ -200,8 +202,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             handleWindowSizeChanged(to: windowRect, edgeInsets: safeAreaInsets)
         case .onViewAppear:
             handleViewAppeared()
-        case .jobProcessingDone:
-            onFinished(callback: onResult)
+        case .cancelSelfieCapture:
+            handleCancelSelfieCapture()
         case .retryJobSubmission:
             handleSubmission()
         case .openApplicationSettings:
@@ -353,6 +355,21 @@ extension EnhancedSmartSelfieViewModel {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(settingsURL)
     }
+
+    private func handleCancelSelfieCapture() {
+        invalidateSubmissionTask()
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+    }
+
+    private func dismissSelfieCapture() {
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(
+            animated: true,
+            completion: { [weak self] in
+                guard let self else { return }
+                self.onFinished(callback: self.onResult)
+            }
+        )
+    }
 }
 
 // MARK: FaceDetectorResultDelegate Methods
@@ -488,8 +505,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             )
         } else if let error = error {
             callback.didError(error: error)
-        } else {
-            callback.didCancel()
         }
     }
 
@@ -501,6 +516,10 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         DispatchQueue.main.async {
             self.apiResponse = apiResponse
             self.selfieCaptureState = .processing(.success)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.dismissSelfieCapture()
         }
     }
 

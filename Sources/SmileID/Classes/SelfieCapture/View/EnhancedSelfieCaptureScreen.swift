@@ -5,9 +5,8 @@ public struct EnhancedSelfieCaptureScreen: View {
     let showAttribution: Bool
 
     private let faceShape = FaceShape()
-    @Environment(\.modalMode) private var modalMode
-
     private(set) var originalBrightness = UIScreen.main.brightness
+    private let cameraContainerHeight: CGFloat = 480
 
     public var body: some View {
         GeometryReader { proxy in
@@ -20,14 +19,16 @@ public struct EnhancedSelfieCaptureScreen: View {
                             selfieViewModel: viewModel
                         )
                         .cornerRadius(40)
+                        .frame(height: cameraContainerHeight)
 
                         RoundedRectangle(cornerRadius: 40)
                             .fill(SmileID.theme.tertiary.opacity(0.8))
                             .reverseMask(alignment: .top) {
                                 faceShape
                                     .frame(width: 250, height: 350)
-                                    .padding(.top, 60)
+                                    .padding(.top, 50)
                             }
+                            .frame(height: cameraContainerHeight)
                         VStack {
                             ZStack {
                                 FaceBoundingArea(
@@ -55,7 +56,7 @@ public struct EnhancedSelfieCaptureScreen: View {
                             }
                         }
                     }
-                    .selfieCaptureFrameBackground()
+                    .selfieCaptureFrameBackground(cameraContainerHeight)
                     if showAttribution {
                         Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                     }
@@ -69,8 +70,9 @@ public struct EnhancedSelfieCaptureScreen: View {
                             .reverseMask(alignment: .top) {
                                 faceShape
                                     .frame(width: 250, height: 350)
-                                    .padding(.top, 60)
+                                    .padding(.top, 50)
                             }
+                            .frame(height: cameraContainerHeight)
                         VStack {
                             Spacer()
                             UserInstructionsView(
@@ -84,33 +86,21 @@ public struct EnhancedSelfieCaptureScreen: View {
                         SubmissionStatusView(processState: processingState)
                             .padding(.bottom, 40)
                     }
-                    .selfieCaptureFrameBackground()
+                    .selfieCaptureFrameBackground(cameraContainerHeight)
                     if showAttribution {
                         Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                     }
-
-                    Spacer()
-                    SelfieActionsView(
-                        processingState: processingState,
-                        retryAction: { viewModel.perform(action: .retryJobSubmission) },
-                        doneAction: {
-                            modalMode.wrappedValue = false
-                            viewModel.perform(action: .jobProcessingDone)
-                        }
-                    )
                 }
-
                 Spacer()
-
-                Button {
-                    modalMode.wrappedValue = false
-                    viewModel.perform(action: .jobProcessingDone)
-                } label: {
-                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                        .font(SmileID.theme.button)
-                        .foregroundColor(SmileID.theme.error)
-                }
+                SelfieActionsView(
+                    captureState: viewModel.selfieCaptureState,
+                    retryAction: { viewModel.perform(action: .retryJobSubmission) },
+                    cancelAction: {
+                        viewModel.perform(action: .cancelSelfieCapture)
+                    }
+                )
             }
+            .padding(.vertical, 20)
             .navigationBarHidden(true)
             .onAppear {
                 UIScreen.main.brightness = 1
@@ -143,11 +133,10 @@ public struct EnhancedSelfieCaptureScreen: View {
 }
 
 extension View {
-    func selfieCaptureFrameBackground() -> some View {
+    func selfieCaptureFrameBackground(_ containerHeight: CGFloat) -> some View {
         self
             .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 4)
-            .frame(height: 520)
+            .frame(height: containerHeight)
             .padding(.horizontal)
-            .padding(.top, 40)
     }
 }

@@ -9,18 +9,17 @@ struct SubmissionStatusView: View {
             CircularProgressView()
                 .frame(width: 48, height: 48)
         case .success:
-            StatusImage("checkmark.circle.fill", color: SmileID.theme.success)
+            StatusImage(SmileIDResourcesHelper.Checkmark)
         case .error:
-            StatusImage("xmark.circle.fill", color: SmileID.theme.error)
+            StatusImage(SmileIDResourcesHelper.Xmark)
         }
     }
 
     // swiftlint:disable identifier_name
-    @ViewBuilder func StatusImage(_ image: String, color: Color) -> some View {
-        Image(systemName: image)
+    @ViewBuilder func StatusImage(_ uiImage: UIImage) -> some View {
+        Image(uiImage: uiImage)
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: 48, height: 48)
-            .foregroundColor(color)
     }
 }

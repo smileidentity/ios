@@ -7,6 +7,7 @@ enum FaceDetectorError: Error {
     case unableToLoadSelfieModel
     case invalidSelfieModelOutput
     case noFaceDetected
+    case multipleFacesDetected
     case unableToCropImage
 }
 
@@ -68,6 +69,11 @@ class EnhancedFaceDetector: NSObject {
             else {
                 self.resultDelegate?.faceDetector(
                     self, didFailWithError: FaceDetectorError.noFaceDetected)
+                return
+            }
+
+            guard faceDetections.count == 1 else {
+                self.resultDelegate?.faceDetector(self, didFailWithError: FaceDetectorError.multipleFacesDetected)
                 return
             }
 

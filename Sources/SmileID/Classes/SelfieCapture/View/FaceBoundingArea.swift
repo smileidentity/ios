@@ -16,9 +16,9 @@ struct FaceBoundingArea: View {
             faceShape
                 .stroke(
                     faceInBounds ? selfieCaptured ? .clear : SmileID.theme.success : SmileID.theme.error,
-                    style: StrokeStyle(lineWidth: 10)
+                    style: StrokeStyle(lineWidth: 8)
                 )
-                .frame(width: 270, height: 370)
+                .frame(width: 260, height: 360)
 
             if let guideAnimation = guideAnimation,
                 showGuideAnimation {
