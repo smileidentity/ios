@@ -1,6 +1,6 @@
 import ARKit
-import CoreMotion
 import Combine
+import CoreMotion
 import SwiftUI
 
 public class EnhancedSmartSelfieViewModel: ObservableObject {
@@ -15,11 +15,13 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private let metadataTimerStart = MonotonicTime()
 
     // MARK: Private Properties
-    private var motionDeviceOrientation: UIDeviceOrientation = UIDevice.current.orientation
+    private var motionDeviceOrientation: UIDeviceOrientation = UIDevice.current
+        .orientation
     private var unlockedDeviceOrientation: UIDeviceOrientation {
         UIDevice.current.orientation
     }
-    private var faceLayoutGuideFrame = CGRect(x: 0, y: 0, width: 250, height: 350)
+    private var faceLayoutGuideFrame = CGRect(
+        x: 0, y: 0, width: 250, height: 350)
     private var elapsedGuideAnimationDelay: TimeInterval = 0
     private var currentFrameBuffer: CVPixelBuffer?
     var selfieImage: UIImage?
@@ -34,7 +36,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var hasDetectedValidFace: Bool = false
     private var isCapturingLivenessImages = false
     private var shouldBeginLivenessChallenge: Bool {
-        hasDetectedValidFace && selfieImage != nil && livenessCheckManager.currentTask != nil
+        hasDetectedValidFace && selfieImage != nil
+            && livenessCheckManager.currentTask != nil
     }
     private var shouldSubmitJob: Bool {
         selfieImage != nil && livenessImages.count == numLivenessImages
@@ -58,7 +61,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     @Published private(set) var faceInBounds: Bool = false
     @Published private(set) var selfieCaptured: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
-    @Published private(set) var selfieCaptureState: SelfieCaptureState = .capturingSelfie
+    @Published private(set) var selfieCaptureState: SelfieCaptureState =
+        .capturingSelfie
 
     // MARK: Injected Properties
     private let isEnroll: Bool
@@ -161,20 +165,23 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             .store(in: &subscribers)
 
         if motionManager.isDeviceMotionAvailable {
-            motionManager.startDeviceMotionUpdates(to: OperationQueue()) {[weak self] deviceMotion, _ in
+            motionManager.startDeviceMotionUpdates(to: OperationQueue()) { [weak self] deviceMotion, _ in
                 guard let gravity = deviceMotion?.gravity else { return }
                 if abs(gravity.y) < abs(gravity.x) {
-                    self?.motionDeviceOrientation = gravity.x > 0 ? .landscapeRight : .landscapeLeft
+                    self?.motionDeviceOrientation =
+                        gravity.x > 0 ? .landscapeRight : .landscapeLeft
                 } else {
-                    self?.motionDeviceOrientation = gravity.y > 0 ? .portraitUpsideDown : .portrait
+                    self?.motionDeviceOrientation =
+                        gravity.y > 0 ? .portraitUpsideDown : .portrait
                 }
             }
         }
     }
 
     private func handleCameraImageBuffer(_ imageBuffer: CVPixelBuffer) {
-        let currentOrientation: UIDeviceOrientation = motionManager.isDeviceMotionAvailable
-        ? motionDeviceOrientation : unlockedDeviceOrientation
+        let currentOrientation: UIDeviceOrientation =
+            motionManager.isDeviceMotionAvailable
+            ? motionDeviceOrientation : unlockedDeviceOrientation
         if currentOrientation == .portrait {
             analyzeFrame(imageBuffer: imageBuffer)
         } else {
@@ -213,7 +220,9 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         }
     }
 
-    private func publishUserInstruction(_ instruction: SelfieCaptureInstruction?) {
+    private func publishUserInstruction(
+        _ instruction: SelfieCaptureInstruction?
+    ) {
         if self.userInstruction != instruction {
             self.userInstruction = instruction
             self.resetGuideAnimationDelayTimer()
@@ -256,9 +265,12 @@ extension EnhancedSmartSelfieViewModel {
         livenessImages = []
         selfieCaptureState = .capturingSelfie
         failureReason = nil
+        resetSelfieCaptureMetadata()
     }
 
-    private func handleWindowSizeChanged(to rect: CGSize, edgeInsets: EdgeInsets) {
+    private func handleWindowSizeChanged(
+        to rect: CGSize, edgeInsets: EdgeInsets
+    ) {
         let topPadding: CGFloat = edgeInsets.top + 100
         faceLayoutGuideFrame = CGRect(
             x: (rect.width / 2) - faceLayoutGuideFrame.width / 2,
@@ -282,7 +294,8 @@ extension EnhancedSmartSelfieViewModel {
                 throw SmileIDError.unknown("Error resizing selfie image")
             }
             self.selfieImage = flipImageForPreview(uiImage)
-            self.selfieImageURL = try LocalStorage.createSelfieFile(jobId: jobId, selfieFile: imageData)
+            self.selfieImageURL = try LocalStorage.createSelfieFile(
+                jobId: jobId, selfieFile: imageData)
         } catch {
             handleError(error)
         }
@@ -291,7 +304,8 @@ extension EnhancedSmartSelfieViewModel {
     private func flipImageForPreview(_ image: UIImage) -> UIImage? {
         guard let cgImage = image.cgImage else { return nil }
 
-        let contextSize = CGSize(width: image.size.width, height: image.size.height)
+        let contextSize = CGSize(
+            width: image.size.width, height: image.size.height)
         UIGraphicsBeginImageContextWithOptions(contextSize, false, 1.0)
         defer {
             UIGraphicsEndImageContext()
@@ -310,7 +324,8 @@ extension EnhancedSmartSelfieViewModel {
         context.draw(
             cgImage,
             in: CGRect(
-                x: -image.size.width / 2, y: -image.size.height / 2, width: image.size.width, height: image.size.height)
+                x: -image.size.width / 2, y: -image.size.height / 2,
+                width: image.size.width, height: image.size.height)
         )
 
         // Get the new UIImage from the context
@@ -330,7 +345,8 @@ extension EnhancedSmartSelfieViewModel {
             else {
                 throw SmileIDError.unknown("Error resizing liveness image")
             }
-            let imageUrl = try LocalStorage.createLivenessFile(jobId: jobId, livenessFile: imageData)
+            let imageUrl = try LocalStorage.createLivenessFile(
+                jobId: jobId, livenessFile: imageData)
             livenessImages.append(imageUrl)
         } catch {
             handleError(error)
@@ -352,7 +368,8 @@ extension EnhancedSmartSelfieViewModel {
     }
 
     private func openSettings() {
-        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString)
+        else { return }
         UIApplication.shared.open(settingsURL)
     }
 
@@ -392,7 +409,9 @@ extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
         }
     }
 
-    func faceDetector(_ detector: EnhancedFaceDetector, didFailWithError error: Error) {
+    func faceDetector(
+        _ detector: EnhancedFaceDetector, didFailWithError error: Error
+    ) {
         DispatchQueue.main.async {
             self.publishUserInstruction(.headInFrame)
         }
@@ -421,7 +440,8 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
     private func captureNextFrame(capturedFrames: Int) {
         let maxFrames = LivenessTask.numberOfFramesToCapture
         guard capturedFrames < maxFrames,
-              let currentFrame = currentFrameBuffer else {
+            let currentFrame = currentFrameBuffer
+        else {
             return
         }
 
@@ -463,7 +483,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     public func submitJob() async throws {
         // Add metadata before submission
-        addSelfieCaptureDurationMetaData()
+        addSelfieCaptureMetaData()
 
         if skipApiSubmission {
             // Skip API submission and update processing state to success
@@ -486,17 +506,38 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         try await submissionManager.submitJob(failureReason: self.failureReason)
     }
 
-    private func addSelfieCaptureDurationMetaData() {
+    private func addSelfieCaptureMetaData() {
         localMetadata.addMetadata(
-            Metadatum.SelfieCaptureDuration(duration: metadataTimerStart.elapsedTime()))
+            Metadatum.SelfieCaptureDuration(
+                duration: metadataTimerStart.elapsedTime())
+        )
+        localMetadata.addMetadata(
+            Metadatum.ActiveLivenessType(livenessType: LivenessType.headPose)
+        )
+        localMetadata.addMetadata(
+            Metadatum(
+                name: "camera_name",
+                value: cameraManager.cameraName ?? "Unknown Camera Name"
+            )
+        )
+    }
+
+    private func resetSelfieCaptureMetadata() {
+        localMetadata.metadata.removeAllOfType(
+            Metadatum.SelfieCaptureDuration.self)
+        localMetadata.metadata.removeAllOfType(
+            Metadatum.ActiveLivenessType.self)
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let selfieImageURL = selfieImageURL,
             let selfiePath = getRelativePath(from: selfieImageURL),
             livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) {
-            let livenessImagesPaths = livenessImages.compactMap { getRelativePath(from: $0) }
+            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
+            ) {
+            let livenessImagesPaths = livenessImages.compactMap {
+                getRelativePath(from: $0)
+            }
 
             callback.didSucceed(
                 selfieImage: selfiePath,
