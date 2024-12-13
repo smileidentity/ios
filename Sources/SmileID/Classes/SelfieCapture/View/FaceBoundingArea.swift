@@ -16,7 +16,7 @@ struct FaceBoundingArea: View {
             faceShape
                 .stroke(
                     faceInBounds ? selfieCaptured ? .clear : SmileID.theme.success : SmileID.theme.error,
-                    style: StrokeStyle(lineWidth: 10)
+                    style: StrokeStyle(lineWidth: 8)
                 )
                 .frame(width: 270, height: 370)
 
