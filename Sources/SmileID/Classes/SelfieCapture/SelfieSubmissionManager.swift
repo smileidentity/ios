@@ -14,7 +14,6 @@ protocol SelfieSubmissionDelegate: AnyObject {
 final class SelfieSubmissionManager {
     // MARK: - Properties
     private let userId: String
-    private let jobId: String
     private let isEnroll: Bool
     private let numLivenessImages: Int
     private let allowNewEnroll: Bool
@@ -28,7 +27,6 @@ final class SelfieSubmissionManager {
     // MARK: - Initializer
     init(
         userId: String,
-        jobId: String,
         isEnroll: Bool,
         numLivenessImages: Int,
         allowNewEnroll: Bool,
@@ -38,7 +36,6 @@ final class SelfieSubmissionManager {
         localMetadata: LocalMetadata
     ) {
         self.userId = userId
-        self.jobId = jobId
         self.isEnroll = isEnroll
         self.numLivenessImages = numLivenessImages
         self.allowNewEnroll = allowNewEnroll
@@ -102,14 +99,14 @@ final class SelfieSubmissionManager {
         return AuthenticationRequest(
             jobType: jobType,
             enrollment: isEnroll,
-            jobId: jobId,
             userId: userId
         )
     }
 
+    // we need to discuss this
     private func saveOfflineMode(jobType: JobType) throws {
         try LocalStorage.saveOfflineJob(
-            jobId: jobId,
+            jobId: userId,
             userId: userId,
             jobType: jobType,
             enrollment: isEnroll,
@@ -187,17 +184,17 @@ final class SelfieSubmissionManager {
 
     private func updateLocalStorageAfterSuccess() throws {
         // Move the job to the submitted jobs directory for record-keeping
-        try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+        try LocalStorage.moveToSubmittedJobs(jobId: self.userId)
 
         // Update the references to the submitted selfie and liveness images
         self.selfieImageUrl = try LocalStorage.getFileByType(
-            jobId: jobId,
+            jobId: userId,
             fileType: FileType.selfie,
             submitted: true
         )
         self.livenessImages =
             try LocalStorage.getFilesByType(
-                jobId: jobId,
+                jobId: userId,
                 fileType: FileType.liveness,
                 submitted: true
             ) ?? []
@@ -205,11 +202,11 @@ final class SelfieSubmissionManager {
 
     private func handleJobSubmissionFailure(_ smileIDError: SmileIDError) {
         do {
-            let didMove = try LocalStorage.handleOfflineJobFailure(jobId: self.jobId, error: smileIDError)
+            let didMove = try LocalStorage.handleOfflineJobFailure(jobId: self.userId, error: smileIDError)
             if didMove {
-                self.selfieImageUrl = try LocalStorage.getFileByType(jobId: jobId, fileType: .selfie, submitted: true)
+                self.selfieImageUrl = try LocalStorage.getFileByType(jobId: userId, fileType: .selfie, submitted: true)
                 self.livenessImages =
-                    try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness, submitted: true) ?? []
+                    try LocalStorage.getFilesByType(jobId: userId, fileType: .liveness, submitted: true) ?? []
             }
         } catch {
             let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)

@@ -67,11 +67,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     // MARK: Injected Properties
     private let isEnroll: Bool
     private let userId: String
-    private let jobId: String
     private let allowNewEnroll: Bool
-    private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
-    private let useStrictMode: Bool
     private let onResult: SmartSelfieResultDelegate
     private var localMetadata: LocalMetadata
 
@@ -92,21 +89,15 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     public init(
         isEnroll: Bool,
         userId: String,
-        jobId: String,
         allowNewEnroll: Bool,
-        skipApiSubmission: Bool,
         extraPartnerParams: [String: String],
-        useStrictMode: Bool,
         onResult: SmartSelfieResultDelegate,
         localMetadata: LocalMetadata
     ) {
         self.isEnroll = isEnroll
         self.userId = userId
-        self.jobId = jobId
         self.allowNewEnroll = allowNewEnroll
-        self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
-        self.useStrictMode = useStrictMode
         self.onResult = onResult
         self.localMetadata = localMetadata
         self.initialSetup()
@@ -294,8 +285,9 @@ extension EnhancedSmartSelfieViewModel {
                 throw SmileIDError.unknown("Error resizing selfie image")
             }
             self.selfieImage = flipImageForPreview(uiImage)
+            // we use a userId and not a jobId here
             self.selfieImageURL = try LocalStorage.createSelfieFile(
-                jobId: jobId, selfieFile: imageData)
+                jobId: userId, selfieFile: imageData)
         } catch {
             handleError(error)
         }
@@ -345,8 +337,9 @@ extension EnhancedSmartSelfieViewModel {
             else {
                 throw SmileIDError.unknown("Error resizing liveness image")
             }
+            // we use a userId and not a jobId here
             let imageUrl = try LocalStorage.createLivenessFile(
-                jobId: jobId, livenessFile: imageData)
+                jobId: userId, livenessFile: imageData)
             livenessImages.append(imageUrl)
         } catch {
             handleError(error)
@@ -485,15 +478,9 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         // Add metadata before submission
         addSelfieCaptureMetaData()
 
-        if skipApiSubmission {
-            // Skip API submission and update processing state to success
-            self.selfieCaptureState = .processing(.success)
-            return
-        }
         // Create an instance of SelfieSubmissionManager to manage the submission process
         let submissionManager = SelfieSubmissionManager(
             userId: self.userId,
-            jobId: self.jobId,
             isEnroll: self.isEnroll,
             numLivenessImages: self.numLivenessImages,
             allowNewEnroll: self.allowNewEnroll,

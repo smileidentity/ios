@@ -308,21 +308,6 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        if useStrictMode {
-            OrchestratedEnhancedSelfieCaptureScreen(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: true,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                useStrictMode: useStrictMode,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: skipApiSubmission,
-                onResult: delegate
-            )
-        } else {
             OrchestratedSelfieCaptureScreen(
                 userId: userId,
                 jobId: jobId,
@@ -335,7 +320,39 @@ public class SmileID {
                 skipApiSubmission: skipApiSubmission,
                 onResult: delegate
             )
-        }
+    }
+    
+    /// Perform a SmartSelfie™ Enrollment
+    ///
+    /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
+    ///
+    /// - Parameters:
+    ///   - userId: The user ID to associate with the SmartSelfie™ Enrollment. Most often, this will
+    ///     correspond to a unique User ID within your own system. If not provided, a random user ID
+    ///     will be generated.
+    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
+    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
+    ///     screen
+    ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
+    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
+    @ViewBuilder public class func smartSelfieEnrollmentScreenEnhanced(
+        userId: String = generateUserId(),
+        allowNewEnroll: Bool = false,
+        showAttribution: Bool = true,
+        showInstructions: Bool = true,
+        extraPartnerParams: [String: String] = [:],
+        delegate: SmartSelfieResultDelegate
+    ) -> some View {
+        OrchestratedEnhancedSelfieCaptureScreen(
+            userId: userId,
+            isEnroll: true,
+            allowNewEnroll: allowNewEnroll,
+            showAttribution: showAttribution,
+            showInstructions: showInstructions,
+            extraPartnerParams: extraPartnerParams,
+            onResult: delegate
+        )
     }
 
     /// Perform a SmartSelfie™ Authentication
@@ -370,34 +387,51 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        if useStrictMode {
-            OrchestratedEnhancedSelfieCaptureScreen(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: false,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                useStrictMode: useStrictMode,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: false,
-                onResult: delegate
-            )
-        } else {
-            OrchestratedSelfieCaptureScreen(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: false,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: false,
-                onResult: delegate
-            )
-        }
+        OrchestratedSelfieCaptureScreen(
+            userId: userId,
+            jobId: jobId,
+            isEnroll: false,
+            allowNewEnroll: allowNewEnroll,
+            allowAgentMode: allowAgentMode,
+            showAttribution: showAttribution,
+            showInstructions: showInstructions,
+            extraPartnerParams: extraPartnerParams,
+            skipApiSubmission: false,
+            onResult: delegate
+        )
+    }
+    
+    /// Perform a SmartSelfie™ Authentication
+    ///
+    /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
+    ///
+    /// - Parameters:
+    ///   - userId: The user ID to associate with the SmartSelfie™ Enrollment. Most often, this will
+    ///     correspond to a unique User ID within your own system. If not provided, a random user ID
+    ///     will be generated.
+    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
+    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
+    ///     screen
+    ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
+    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
+    @ViewBuilder public class func smartSelfieAuthenticationScreenEnhanced(
+        userId: String,
+        allowNewEnroll: Bool = false,
+        showAttribution: Bool = true,
+        showInstructions: Bool = true,
+        extraPartnerParams: [String: String] = [:],
+        delegate: SmartSelfieResultDelegate
+    ) -> some View {
+        OrchestratedEnhancedSelfieCaptureScreen(
+            userId: userId,
+            isEnroll: false,
+            allowNewEnroll: allowNewEnroll,
+            showAttribution: showAttribution,
+            showInstructions: showInstructions,
+            extraPartnerParams: extraPartnerParams,
+            onResult: delegate
+        )
     }
 
     /// Perform a Document Verification

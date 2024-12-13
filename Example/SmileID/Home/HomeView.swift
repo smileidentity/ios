@@ -59,11 +59,8 @@ struct HomeView: View {
                                 viewModel.onProductClicked()
                             },
                             content: {
-                                SmileID.smartSelfieEnrollmentScreen(
+                                SmileID.smartSelfieEnrollmentScreenEnhanced(
                                     userId: viewModel.newUserId,
-                                    jobId: viewModel.newJobId,
-                                    allowAgentMode: true,
-                                    useStrictMode: true,
                                     delegate: SmartSelfieEnrollmentDelegate(
                                         userId: viewModel.newUserId,
                                         onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
@@ -79,9 +76,8 @@ struct HomeView: View {
                                 viewModel.onProductClicked()
                             },
                             content: {
-                                SmartSelfieAuthWithUserIdEntry(
+                                SmartSelfieAuthEnhancedWithUserIdEntry(
                                     initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                                    useStrictMode: true,
                                     delegate: viewModel
                                 )
                             }
@@ -196,7 +192,6 @@ struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
 
 private struct SmartSelfieAuthWithUserIdEntry: View {
     let initialUserId: String
-    var useStrictMode: Bool = false
     let delegate: SmartSelfieResultDelegate
 
     @State private var userId: String?
@@ -206,7 +201,26 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
             SmileID.smartSelfieAuthenticationScreen(
                 userId: userId,
                 allowAgentMode: true,
-                useStrictMode: useStrictMode,
+                delegate: delegate
+            )
+        } else {
+            EnterUserIDView(initialUserId: initialUserId) { userId in
+                self.userId = userId
+            }
+        }
+    }
+}
+
+private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
+    let initialUserId: String
+    let delegate: SmartSelfieResultDelegate
+
+    @State private var userId: String?
+
+    var body: some View {
+        if let userId {
+            SmileID.smartSelfieAuthenticationScreenEnhanced(
+                userId: userId,
                 delegate: delegate
             )
         } else {
