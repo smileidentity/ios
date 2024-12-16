@@ -321,7 +321,7 @@ public class SmileID {
                 onResult: delegate
             )
     }
-    
+
     /// Perform a SmartSelfie™ Enrollment
     ///
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
@@ -400,7 +400,7 @@ public class SmileID {
             onResult: delegate
         )
     }
-    
+
     /// Perform a SmartSelfie™ Authentication
     ///
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
