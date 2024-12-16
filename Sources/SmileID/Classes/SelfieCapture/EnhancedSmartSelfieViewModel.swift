@@ -368,17 +368,7 @@ extension EnhancedSmartSelfieViewModel {
 
     private func handleCancelSelfieCapture() {
         invalidateSubmissionTask()
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
-    }
-
-    private func dismissSelfieCapture() {
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(
-            animated: true,
-            completion: { [weak self] in
-                guard let self else { return }
-                self.onFinished(callback: self.onResult)
-            }
-        )
+        onFinished(callback: onResult)
     }
 }
 
@@ -533,6 +523,8 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             )
         } else if let error = error {
             callback.didError(error: error)
+        } else {
+            callback.didError(error: SmileIDError.operationCanceled("User cancelled"))
         }
     }
 
@@ -547,7 +539,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.dismissSelfieCapture()
+            self.onFinished(callback: self.onResult)
         }
     }
 

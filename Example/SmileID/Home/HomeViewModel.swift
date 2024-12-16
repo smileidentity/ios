@@ -55,8 +55,13 @@ class HomeViewModel: ObservableObject,
 
     @objc func didError(error: Error) {
         dismissModal()
-        showToast = true
-        toastMessage = error.localizedDescription
+        if let smileIDError = error as? SmileIDError,
+            case .operationCanceled = smileIDError {
+            return
+        } else {
+            showToast = true
+            toastMessage = error.localizedDescription
+        }
     }
 
     private func showToast(message: String) {

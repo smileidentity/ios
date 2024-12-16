@@ -8,6 +8,14 @@ public struct EnhancedSelfieCaptureScreen: View {
     private(set) var originalBrightness = UIScreen.main.brightness
     private let cameraContainerHeight: CGFloat = 480
 
+    public init(
+        viewModel: EnhancedSmartSelfieViewModel,
+        showAttribution: Bool
+    ) {
+        self._viewModel = Backport.StateObject(wrappedValue: viewModel)
+        self.showAttribution = showAttribution
+    }
+
     public var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 10) {

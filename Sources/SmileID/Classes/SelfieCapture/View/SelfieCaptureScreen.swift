@@ -7,6 +7,11 @@ public struct SelfieCaptureScreen: View {
     @Backport.StateObject var viewModel: SelfieViewModel
     let allowAgentMode: Bool
 
+    public init(viewModel: SelfieViewModel, allowAgentMode: Bool) {
+        self._viewModel = Backport.StateObject(wrappedValue: viewModel)
+        self.allowAgentMode = allowAgentMode
+    }
+
     public var body: some View {
         ZStack {
             let agentMode = viewModel.useBackCamera

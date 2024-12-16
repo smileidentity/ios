@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.3.1"
+    public static let version = "10.3.2"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -321,7 +321,7 @@ public class SmileID {
                 onResult: delegate
             )
     }
-    
+
     /// Perform a SmartSelfie™ Enrollment
     ///
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
@@ -400,7 +400,7 @@ public class SmileID {
             onResult: delegate
         )
     }
-    
+
     /// Perform a SmartSelfie™ Authentication
     ///
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
