@@ -368,7 +368,11 @@ extension EnhancedSmartSelfieViewModel {
 
     private func handleCancelSelfieCapture() {
         invalidateSubmissionTask()
-        onResult.didError(error: SmileIDError.operationCanceled("User cancelled"))
+        if let error {
+            onResult.didError(error: error)
+        } else {
+            onResult.didError(error: SmileIDError.operationCanceled("User cancelled"))
+        }
     }
 }
 
