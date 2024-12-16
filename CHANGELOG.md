@@ -1,5 +1,18 @@
 # Release Notes
 
+## 10.3.2
+
+### Fixed
+* Allow navigation events to be handled inside `SmartSelfieResultDelegate` methods as opposed to providing concrete platform specific navigation implementation. 
+
+### Changed
+* Expose the initializers for `SelfieCaptureScreen` and `EnhancedSelfieCaptureScreen`
+
+## 10.3.1
+
+* Update version for podspec release tag.
+
+
 ## 10.3.0
 
 * Fixed missing idType on Document Verification Jobs
