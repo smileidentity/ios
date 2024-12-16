@@ -55,11 +55,6 @@ final class SelfieSubmissionManager {
             // Create an authentication request based on the job type
             let authRequest = createAuthRequest(jobType: jobType)
 
-            // Save the job locally if offline mode is allowed
-            if SmileID.allowOfflineMode {
-                try saveOfflineMode(jobType: jobType)
-            }
-
             // Authenticate the request with the API
             let authResponse = try await SmileID.api.authenticate(request: authRequest)
 
@@ -73,9 +68,6 @@ final class SelfieSubmissionManager {
                 smartSelfieLivenessImages: smartSelfieLivenessImages,
                 failureReason: failureReason
             )
-
-            // Update local storage after successful submission
-            try updateLocalStorageAfterSuccess()
 
             // Send out api response after successful submission
             self.delegate?.submissionDidSucceed(response)
@@ -100,19 +92,6 @@ final class SelfieSubmissionManager {
             jobType: jobType,
             enrollment: isEnroll,
             userId: userId
-        )
-    }
-
-    // we need to discuss this
-    private func saveOfflineMode(jobType: JobType) throws {
-        try LocalStorage.saveOfflineJob(
-            jobId: userId,
-            userId: userId,
-            jobType: jobType,
-            enrollment: isEnroll,
-            allowNewEnroll: allowNewEnroll,
-            localMetadata: localMetadata,
-            partnerParams: extraPartnerParams
         )
     }
 
@@ -182,64 +161,15 @@ final class SelfieSubmissionManager {
         }
     }
 
-    private func updateLocalStorageAfterSuccess() throws {
-        // Move the job to the submitted jobs directory for record-keeping
-        try LocalStorage.moveToSubmittedJobs(jobId: self.userId)
-
-        // Update the references to the submitted selfie and liveness images
-        self.selfieImageUrl = try LocalStorage.getFileByType(
-            jobId: userId,
-            fileType: FileType.selfie,
-            submitted: true
-        )
-        self.livenessImages =
-            try LocalStorage.getFilesByType(
-                jobId: userId,
-                fileType: FileType.liveness,
-                submitted: true
-            ) ?? []
-    }
-
     private func handleJobSubmissionFailure(_ smileIDError: SmileIDError) {
-        do {
-            let didMove = try LocalStorage.handleOfflineJobFailure(jobId: self.userId, error: smileIDError)
-            if didMove {
-                self.selfieImageUrl = try LocalStorage.getFileByType(jobId: userId, fileType: .selfie, submitted: true)
-                self.livenessImages =
-                    try LocalStorage.getFilesByType(jobId: userId, fileType: .liveness, submitted: true) ?? []
-            }
-        } catch {
-            let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
-            self.delegate?
-                .submissionDidFail(
-                    with: error,
-                    errorMessage: errorMessageRes,
-                    errorMessageRes: errorMessage,
-                    updatedSelfieImageUrl: selfieImageUrl,
-                    updatedLivenessImages: livenessImages
-                )
-            return
-        }
-
-        if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: smileIDError) {
-            self.delegate?
-                .submissionDidFail(
-                    with: smileIDError,
-                    errorMessage: nil,
-                    errorMessageRes: "Offline.Message",
-                    updatedSelfieImageUrl: selfieImageUrl,
-                    updatedLivenessImages: livenessImages
-                )
-        } else {
-            let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
-            self.delegate?
-                .submissionDidFail(
-                    with: smileIDError,
-                    errorMessage: errorMessage,
-                    errorMessageRes: errorMessageRes,
-                    updatedSelfieImageUrl: selfieImageUrl,
-                    updatedLivenessImages: livenessImages
-                )
-        }
+        let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
+        self.delegate?
+            .submissionDidFail(
+                with: smileIDError,
+                errorMessage: errorMessage,
+                errorMessageRes: errorMessageRes,
+                updatedSelfieImageUrl: selfieImageUrl,
+                updatedLivenessImages: livenessImages
+            )
     }
 }
