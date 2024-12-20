@@ -1,5 +1,13 @@
 # Release Notes
 
+## 10.3.3
+
+### Changed
+* Device orientation instruction text to match Android
+
+### Removed
+* Pre-compiled `SelfieQualityModel.mlmodelc` file used for selfie quality check was producing files not supported by SPM.
+
 ## 10.3.2
 
 ### Fixed
