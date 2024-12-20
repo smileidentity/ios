@@ -26,8 +26,6 @@ protocol FaceDetectorResultDelegate: AnyObject {
 }
 
 class EnhancedFaceDetector: NSObject {
-    private var selfieQualityModel: SelfieQualityDetector?
-
     private let cropSize = (width: 120, height: 120)
     private let faceMovementThreshold: CGFloat = 0.15
 
@@ -38,17 +36,6 @@ class EnhancedFaceDetector: NSObject {
 
     override init() {
         super.init()
-        selfieQualityModel = createImageClassifier()
-    }
-
-    private func createImageClassifier() -> SelfieQualityDetector? {
-        do {
-            let modelConfiguration = MLModelConfiguration()
-            let coreMLModel = try SelfieQualityDetector(configuration: modelConfiguration)
-            return coreMLModel
-        } catch {
-            return nil
-        }
     }
 
     /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
@@ -112,32 +99,6 @@ class EnhancedFaceDetector: NSObject {
         } catch {
             self.resultDelegate?.faceDetector(self, didFailWithError: error)
         }
-    }
-
-    func selfieQualityRequest(imageBuffer: CVPixelBuffer) throws -> SelfieQualityData {
-        guard let selfieQualityModel else {
-            throw FaceDetectorError.unableToLoadSelfieModel
-        }
-        let input = SelfieQualityDetectorInput(conv2d_193_input: imageBuffer)
-
-        let prediction = try selfieQualityModel.prediction(input: input)
-        let output = prediction.Identity
-
-        guard output.shape.count == 2,
-            output.shape[0] == 1,
-            output.shape[1] == 2
-        else {
-            throw FaceDetectorError.invalidSelfieModelOutput
-        }
-
-        let passScore = output[0].floatValue
-        let failScore = output[1].floatValue
-
-        let selfieQualityData = SelfieQualityData(
-            failed: failScore,
-            passed: passScore
-        )
-        return selfieQualityData
     }
 
     private func cropImageToFace(
