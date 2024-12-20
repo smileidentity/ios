@@ -25,7 +25,7 @@ public struct LivenessCaptureInstructionsView: View {
                 .playing(loopMode: .loop)
                 .frame(width: 235, height: 235)
             }
-            .padding(.top, 100)
+            .padding(.top, 80)
             Spacer()
             Text(SmileIDResourcesHelper.localizedString(for: "Instructions.SelfieCapture"))
                 .multilineTextAlignment(.center)
