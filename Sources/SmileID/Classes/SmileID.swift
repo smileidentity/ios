@@ -96,13 +96,20 @@ public class SmileID {
         SmileIDResourcesHelper.registerFonts()
         let fingerprinter = FingerprinterFactory.getInstance()
         Task {
-            /// The fingerprint isn't currently as stable as the Device Identifier, because the v
-            /// alues might change between OS updates or when the user changes settings
+            /// The fingerprint isn't currently as stable as the Device Identifier, because the
+            /// values might change between OS updates or when the user changes settings
             /// used to compute the previous value.
             /// https://github.com/fingerprintjs/fingerprintjs-ios
             if let fingerprint = await fingerprinter.getDeviceId() {
                 deviceId = fingerprint
             }
+        }
+        // Initialize Sentry.
+        SentrySDK.start { options in
+            options.dsn = "https://d81c446178994daaa52af05a8b3072b9@o1154186.ingest.us.sentry.io/4504162971353088"
+            options.debug = true
+            options.tracesSampleRate = 1.0
+            options.profilesSampleRate = 1.0
         }
     }
 
