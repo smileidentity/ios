@@ -54,6 +54,8 @@
 "Confirmation.Retry" = "Retry";
 "Confirmation.Close" = "Close";
 "Action.TakePhoto" = "Take Photo";
+"Action.CaptureFront" = "Front of ID";
+"Action.CaptureBack" = "Back of ID";
 "Action.UploadPhoto" = "Upload Photo";
 "Action.Skip" = "Skip back of ID";
 "Action.GetStarted" = "Get Started";
