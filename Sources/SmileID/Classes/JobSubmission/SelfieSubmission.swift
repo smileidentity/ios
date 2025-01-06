@@ -7,7 +7,7 @@
 
 public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, SmartSelfieResponse> {
     // MARK: - Properties
-    
+
     private let isEnroll: Bool
     private let userId: String
     private let allowNewEnroll: Bool
@@ -15,9 +15,9 @@ public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, S
     private let livenessFiles: [URL]
     private let extraPartnerParams: [String: String]
     private let metadata: Metadata
-    
+
     // MARK: - Initialization
-    
+
     public init(
         isEnroll: Bool,
         userId: String,
@@ -37,10 +37,10 @@ public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, S
         self.metadata = metadata
         super.init(jobId: jobId)
     }
-    
+
     // MARK: - Overridden Methods
-    
-    public override func createAuthRequest() -> AuthenticationRequest {
+
+    override public func createAuthRequest() -> AuthenticationRequest {
         return AuthenticationRequest(
             jobType: isEnroll ? .smartSelfieEnrollment : .smartSelfieAuthentication,
             enrollment: isEnroll,
@@ -48,8 +48,8 @@ public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, S
             userId: userId
         )
     }
-    
-    public override func createPrepUploadRequest(authResponse: AuthenticationResponse? = nil) -> PrepUploadRequest {
+
+    override public func createPrepUploadRequest(authResponse: AuthenticationResponse? = nil) -> PrepUploadRequest {
         return PrepUploadRequest(
             partnerParams: PartnerParams(
                 jobId: jobId,
@@ -63,16 +63,16 @@ public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, S
             signature: authResponse?.signature ?? ""
         )
     }
-    
-    public override func createUploadRequest(authResponse: AuthenticationResponse?) -> UploadRequest {
+
+    override public func createUploadRequest(authResponse _: AuthenticationResponse?) -> UploadRequest {
         return UploadRequest(
             images: [selfieFile.asSelfieImage()] + livenessFiles.map { url in
                 url.asLivenessImage()
             }
         )
     }
-    
-    public override func getApiResponse(authResponse:AuthenticationResponse) async throws -> SmartSelfieResponse? {
+
+    override public func getApiResponse(authResponse: AuthenticationResponse) async throws -> SmartSelfieResponse? {
         var smartSelfieImage: MultipartBody?
         var smartSelfieLivenessImages = [MultipartBody]()
         if let selfie = try? Data(contentsOf: selfieFile), let media = MultipartBody(
@@ -93,7 +93,7 @@ public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, S
                 }
                 return nil
             }
-            
+
             smartSelfieLivenessImages.append(contentsOf: livenessImageInfos.compactMap { $0 })
         }
         guard let smartSelfieImage = smartSelfieImage,
@@ -101,7 +101,7 @@ public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, S
         else {
             throw SmileIDError.unknown("Selfie submission failed")
         }
-        
+
         let response = if isEnroll {
             try await SmileID.api.doSmartSelfieEnrollment(
                 signature: authResponse.signature,
@@ -130,20 +130,20 @@ public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, S
         }
         return response
     }
-    
-    public override func createSynchronousResult(result: SmartSelfieResponse?) async throws -> SmileIDResult<SmartSelfieResult>.Success<SmartSelfieResult> {
+
+    override public func createSynchronousResult(result: SmartSelfieResponse?) async throws -> SmileIDResult<SmartSelfieResult>.Success<SmartSelfieResult> {
         // Move files from unsubmitted to submitted directories
-        var selfieFileResult = self.selfieFile
-        var livenessImagesResult = self.livenessFiles
-        
+        var selfieFileResult = selfieFile
+        var livenessImagesResult = livenessFiles
+
         do {
-            if let result = result{
-                try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+            if let result = result {
+                try LocalStorage.moveToSubmittedJobs(jobId: jobId)
                 guard let selfieFileResult = try LocalStorage.getFileByType(
                     jobId: jobId,
                     fileType: FileType.selfie,
                     submitted: true
-                ) else{
+                ) else {
                     throw SmileIDError.unknown("Selfie file not found")
                 }
                 livenessImagesResult = try LocalStorage.getFilesByType(
@@ -156,18 +156,18 @@ public class SelfieSubmission: BaseSynchronousJobSubmission<SmartSelfieResult, S
             print("Error moving job to submitted directory: \(error)")
             throw error
         }
-        
+
         let captureResult = SelfieCaptureResult(
             selfieImage: selfieFileResult,
             livenessImages: livenessImagesResult
         )
-        
+
         let finalResult = SmartSelfieResult(
             captureData: captureResult,
             didSubmitJob: true,
             apiResponse: result
         )
-        
+
         return SmileIDResult.Success(result: finalResult)
     }
 }

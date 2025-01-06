@@ -7,7 +7,7 @@
 
 public class BiometricKYCSubmission: BaseJobSubmission<BiometricKycResult> {
     // MARK: - Properties
-    
+
     private let userId: String
     private let allowNewEnroll: Bool
     private let livenessFiles: [URL]?
@@ -15,9 +15,9 @@ public class BiometricKYCSubmission: BaseJobSubmission<BiometricKycResult> {
     private let idInfo: IdInfo
     private let extraPartnerParams: [String: String]
     private let metadata: Metadata
-    
+
     // MARK: - Initialization
-    
+
     public init(
         userId: String,
         jobId: String,
@@ -37,10 +37,10 @@ public class BiometricKYCSubmission: BaseJobSubmission<BiometricKycResult> {
         self.metadata = metadata
         super.init(jobId: jobId)
     }
-    
+
     // MARK: - BaseJobSubmission Overrides
-    
-    public override func createAuthRequest() -> AuthenticationRequest {
+
+    override public func createAuthRequest() -> AuthenticationRequest {
         return AuthenticationRequest(
             jobType: .biometricKyc,
             enrollment: false,
@@ -50,16 +50,16 @@ public class BiometricKYCSubmission: BaseJobSubmission<BiometricKycResult> {
             idType: idInfo.idType
         )
     }
-    
-    public override func createPrepUploadRequest(authResponse: AuthenticationResponse? = nil) -> PrepUploadRequest {
+
+    override public func createPrepUploadRequest(authResponse: AuthenticationResponse? = nil) -> PrepUploadRequest {
         let partnerParams = authResponse?.partnerParams.copy(extras: extraPartnerParams) ??
-        PartnerParams(
-            jobId: jobId,
-            userId: userId,
-            jobType: .biometricKyc,
-            extras: extraPartnerParams
-        )
-        
+            PartnerParams(
+                jobId: jobId,
+                userId: userId,
+                jobType: .biometricKyc,
+                extras: extraPartnerParams
+            )
+
         return PrepUploadRequest(
             partnerParams: partnerParams,
             allowNewEnroll: String(allowNewEnroll),
@@ -68,18 +68,18 @@ public class BiometricKYCSubmission: BaseJobSubmission<BiometricKycResult> {
             signature: authResponse?.signature ?? ""
         )
     }
-    
-    public override func createUploadRequest(authResponse: AuthenticationResponse?) -> UploadRequest {
+
+    override public func createUploadRequest(authResponse _: AuthenticationResponse?) -> UploadRequest {
         let selfieImageInfo = selfieFile.asSelfieImage()
         let livenessImageInfo = livenessFiles?.map { $0.asLivenessImage() } ?? []
-        
+
         return UploadRequest(
             images: [selfieImageInfo] + livenessImageInfo,
             idInfo: idInfo.copy(entered: true)
         )
     }
-    
-    public override func createSuccessResult(didSubmit: Bool) async throws -> SmileIDResult<BiometricKycResult>.Success<BiometricKycResult> {
+
+    override public func createSuccessResult(didSubmit: Bool) async throws -> SmileIDResult<BiometricKycResult>.Success<BiometricKycResult> {
         let result = BiometricKycResult(
             captureData: SelfieCaptureResult(
                 selfieImage: selfieFile,
@@ -87,7 +87,7 @@ public class BiometricKYCSubmission: BaseJobSubmission<BiometricKycResult> {
             ),
             didSubmitJob: didSubmit
         )
-        
+
         return SmileIDResult.Success(result: result)
     }
 }

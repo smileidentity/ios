@@ -7,46 +7,46 @@
 
 public class BaseJobSubmission<ResultType: CaptureResult> {
     // MARK: - Properties
-    
+
     public let jobId: String
-    
+
     // MARK: - Initialization
-    
+
     public init(jobId: String) {
         self.jobId = jobId
     }
-    
+
     // MARK: - Methods to Override
-    
+
     /// Creates the authentication request for the job submission
     /// - Returns: Authentication request object
     public func createAuthRequest() -> AuthenticationRequest {
         fatalError("Must be implemented by subclass")
     }
-    
+
     /// Creates the prep upload request for the job submission
     /// - Parameter authResponse: Optional authentication response from previous step
     /// - Returns: Prep upload request object
-    public func createPrepUploadRequest(authResponse: AuthenticationResponse? = nil) -> PrepUploadRequest {
+    public func createPrepUploadRequest(authResponse _: AuthenticationResponse? = nil) -> PrepUploadRequest {
         fatalError("Must be implemented by subclass")
     }
-    
+
     /// Creates the upload request for the job submission
     /// - Parameter authResponse: Optional authentication response from previous step
     /// - Returns: Upload request object
-    public func createUploadRequest(authResponse: AuthenticationResponse?) -> UploadRequest {
+    public func createUploadRequest(authResponse _: AuthenticationResponse?) -> UploadRequest {
         fatalError("Must be implemented by subclass")
     }
-    
+
     /// Creates the success result for the job submission
     /// - Parameter didSubmit: Whether the job was submitted to the backend
     /// - Returns: Success result object
-    public func createSuccessResult(didSubmit: Bool) async throws -> SmileIDResult<ResultType>.Success<ResultType> {
+    public func createSuccessResult(didSubmit _: Bool) async throws -> SmileIDResult<ResultType>.Success<ResultType> {
         fatalError("Must be implemented by subclass")
     }
-    
+
     // MARK: - Public Methods
-    
+
     /// Executes the job submission process
     /// - Parameters:
     ///   - skipApiSubmission: If true, skips the API submission
@@ -67,25 +67,25 @@ public class BaseJobSubmission<ResultType: CaptureResult> {
             return .error(error)
         }
     }
-    
+
     /// Handles offline preparation logic
     /// Override this method to implement custom offline preparation
     public func handleOfflinePreparation() async throws {
         let authRequest = createAuthRequest()
-        try  LocalStorage.createAuthenticationRequestFile(jobId: jobId, authentationRequest: authRequest)
+        try LocalStorage.createAuthenticationRequestFile(jobId: jobId, authentationRequest: authRequest)
         try LocalStorage.createPrepUploadFile(
             jobId: jobId,
             prepUpload: createPrepUploadRequest()
         )
     }
-    
+
     // MARK: - Private Methods
-    
+
     func executeApiSubmission(offlineMode: Bool) async throws -> SmileIDResult<ResultType> {
         if offlineMode {
             try await handleOfflinePreparation()
         }
-        
+
         do {
             let authResponse = try await executeAuthentication()
             let prepUploadResponse = try await executePrepUpload(authResponse: authResponse)
@@ -96,7 +96,7 @@ public class BaseJobSubmission<ResultType: CaptureResult> {
             return .error(error)
         }
     }
-    
+
     func executeAuthentication() async throws -> AuthenticationResponse {
         do {
             return try await SmileID.api.authenticate(request: createAuthRequest())
@@ -106,14 +106,14 @@ public class BaseJobSubmission<ResultType: CaptureResult> {
             throw error
         }
     }
-    
+
     private func executePrepUpload(
         authResponse: AuthenticationResponse?
     ) async throws -> PrepUploadResponse {
         let prepUploadRequest = createPrepUploadRequest(authResponse: authResponse)
         return try await executePrepUploadWithRetry(prepUploadRequest: prepUploadRequest)
     }
-    
+
     private func executePrepUploadWithRetry(
         prepUploadRequest: PrepUploadRequest,
         isRetry: Bool = false
@@ -130,7 +130,7 @@ public class BaseJobSubmission<ResultType: CaptureResult> {
             }
         }
     }
-    
+
     private func executeUpload(
         authResponse: AuthenticationResponse?,
         prepUploadResponse: PrepUploadResponse
@@ -144,7 +144,7 @@ public class BaseJobSubmission<ResultType: CaptureResult> {
                     LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                     LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                     LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                    LocalStorage.getInfoJsonFile(jobId: jobId)
+                    LocalStorage.getInfoJsonFile(jobId: jobId),
                 ].compactMap { $0 }
                 allFiles = livenessFiles + additionalFiles
             } catch {
@@ -156,9 +156,8 @@ public class BaseJobSubmission<ResultType: CaptureResult> {
             throw error
         }
     }
-    
+
     // MARK: - Constants
-    
 }
 
 private enum SmileErrorConstants {

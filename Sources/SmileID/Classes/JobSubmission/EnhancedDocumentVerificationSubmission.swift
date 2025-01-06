@@ -7,7 +7,7 @@
 
 public class EnhancedDocumentVerificationSubmission: BaseDocumentVerificationSubmission<EnhancedDocumentVerificationResult> {
     // MARK: - Initialization
-    
+
     public init(
         jobId: String,
         userId: String,
@@ -37,8 +37,7 @@ public class EnhancedDocumentVerificationSubmission: BaseDocumentVerificationSub
         )
     }
 
-    
-    public override func createResultInstance(
+    override public func createResultInstance(
         selfieFile: URL,
         documentFrontFile: URL,
         livenessFiles: [URL]?,

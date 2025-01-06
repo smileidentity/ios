@@ -14,7 +14,7 @@ public struct SmartSelfieResult: CaptureResult {
     public let captureData: SelfieCaptureResult
     public let didSubmitJob: Bool
     public let apiResponse: SmartSelfieResponse?
-    
+
     public init(
         captureData: SelfieCaptureResult,
         didSubmitJob: Bool,
@@ -29,7 +29,7 @@ public struct SmartSelfieResult: CaptureResult {
 public struct DocumentVerificationResult: CaptureResult {
     public let captureData: DocumentCaptureResult
     public let didSubmitJob: Bool
-    
+
     public init(
         captureData: DocumentCaptureResult,
         didSubmitJob: Bool
@@ -42,7 +42,7 @@ public struct DocumentVerificationResult: CaptureResult {
 public struct EnhancedDocumentVerificationResult: CaptureResult {
     public let captureData: DocumentCaptureResult
     public let didSubmitJob: Bool
-    
+
     public init(
         captureData: DocumentCaptureResult,
         didSubmitJob: Bool
@@ -55,7 +55,7 @@ public struct EnhancedDocumentVerificationResult: CaptureResult {
 public struct BiometricKycResult: CaptureResult {
     public let captureData: SelfieCaptureResult
     public let didSubmitJob: Bool
-    
+
     public init(
         captureData: SelfieCaptureResult,
         didSubmitJob: Bool
@@ -70,10 +70,10 @@ public struct BiometricKycResult: CaptureResult {
 public enum SmileIDResult<T: CaptureResult> {
     case success(Success<T>)
     case error(Error)
-    
+
     public struct Success<ResultType: CaptureResult> {
         public let result: ResultType
-        
+
         public init(result: ResultType) {
             self.result = result
         }

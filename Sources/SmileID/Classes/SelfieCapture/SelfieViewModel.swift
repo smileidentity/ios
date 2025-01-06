@@ -13,12 +13,12 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
     private let minFaceAreaThreshold = 0.125
     private let maxFaceAreaThreshold = 0.25
     private let faceRotationThreshold = 0.03
-    private let faceRollThreshold = 0.025  // roll has a smaller range than yaw
+    private let faceRollThreshold = 0.025 // roll has a smaller range than yaw
     private let numLivenessImages = 7
-    private let numTotalSteps = 8  // numLivenessImages + 1 selfie image
+    private let numTotalSteps = 8 // numLivenessImages + 1 selfie image
     private let livenessImageSize = 320
     private let selfieImageSize = 640
-    
+
     private let isEnroll: Bool
     private let userId: String
     private let jobId: String
@@ -27,7 +27,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
     private let extraPartnerParams: [String: String]
     private var localMetadata: LocalMetadata
     private let faceDetector = FaceDetector()
-    
+
     var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
     var lastAutoCaptureTime = Date()
@@ -48,7 +48,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
         CVPixelBuffer?, Never
     >()
     private var subscribers = Set<AnyCancellable>()
-    
+
     // UI Properties
     @Published var unauthorizedAlert: AlertState?
     @Published var directive: String = "Instructions.Start"
@@ -64,7 +64,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
         // This is toggled by a Binding
         didSet { switchCamera() }
     }
-    
+
     public init(
         isEnroll: Bool,
         userId: String,
@@ -91,7 +91,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
             .map { _ in AlertState.cameraUnauthorized }
             .sink { [weak self] alert in self?.unauthorizedAlert = alert }
             .store(in: &subscribers)
-        
+
         cameraManager.sampleBufferPublisher
             .merge(with: arKitFramePublisher)
             .throttle(
@@ -112,21 +112,21 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                 : Metadatum.SelfieImageOrigin(cameraFacing: .frontCamera)
         )
     }
-    
+
     let metadataTimerStart = MonotonicTime()
-    
+
     func updateLocalMetadata(_ newMetadata: LocalMetadata) {
         localMetadata = newMetadata
         objectWillChange.send()
     }
-    
+
     // swiftlint:disable cyclomatic_complexity
     func analyzeImage(image: CVPixelBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
         if !shouldAnalyzeImages || elapsedtime < intraImageMinDelay {
             return
         }
-        
+
         do {
             try faceDetector.detect(imageBuffer: image) { [weak self] request, error in
                 guard let self else { return }
@@ -142,7 +142,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                     print("Did not receive the expected [VNFaceObservation]")
                     return
                 }
-                
+
                 if results.count == 0 {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.UnableToDetectFace"
@@ -159,7 +159,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                     }
                     return
                 }
-                
+
                 // Ensure only 1 face is in frame
                 if results.count > 1 {
                     DispatchQueue.main.async {
@@ -167,18 +167,18 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                     }
                     return
                 }
-                
+
                 guard let face = results.first else {
                     print("Unexpectedly got an empty face array")
                     return
                 }
-                
+
                 // The coordinate system of the bounding box in VNFaceObservation is such that
                 // the camera view spans [0-1]x[0-1] and the face is within that. Since we don't
                 // need to draw on the camera view, we don't need to convert this to the view's
                 // coordinate system. We can calculate out of bounds and face area directly on this
                 let boundingBox = face.boundingBox
-                
+
                 // Check that the corners of the face bounding box are within frame
                 if boundingBox.minX < minFaceCenteredThreshold
                     || boundingBox.minY < minFaceCenteredThreshold
@@ -190,7 +190,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                     }
                     return
                 }
-                
+
                 // image's area is equal to 1. so (bbox area / image area) == bbox area
                 let faceFillRatio = boundingBox.width * boundingBox.height
                 if faceFillRatio < minFaceAreaThreshold {
@@ -199,7 +199,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                     }
                     return
                 }
-                
+
                 if faceFillRatio > maxFaceAreaThreshold {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.MoveFarther"
@@ -208,7 +208,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                 }
 
                 if let quality = face.faceCaptureQuality,
-                    quality < faceCaptureQualityThreshold
+                   quality < faceCaptureQualityThreshold
                 {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.Quality"
@@ -222,14 +222,14 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                 DispatchQueue.main.async {
                     self.directive =
                         userNeedsToSmile
-                        ? "Instructions.Smile" : "Instructions.Capturing"
+                            ? "Instructions.Smile" : "Instructions.Capturing"
                 }
-                
+
                 // TODO: Use mouth deformation as an alternate signal for non-ARKit capture
                 if userNeedsToSmile, currentlyUsingArKit, !isSmiling {
                     return
                 }
-                
+
                 // Perform the rotation checks *after* changing directive to Capturing -- we don't
                 // want to explicitly tell the user to move their head
                 if !hasFaceRotatedEnough(face: face) {
@@ -245,38 +245,40 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                     if livenessImages.count < numLivenessImages {
                         guard
                             let imageData =
-                                ImageUtils.resizePixelBufferToHeight(
-                                    image,
-                                    height: livenessImageSize,
-                                    orientation: orientation
-                                )
+                            ImageUtils.resizePixelBufferToHeight(
+                                image,
+                                height: livenessImageSize,
+                                orientation: orientation
+                            )
                         else {
                             throw SmileIDError.unknown(
                                 "Error resizing liveness image")
                         }
                         let imageUrl = try LocalStorage.createLivenessFile(
-                            jobId: jobId, livenessFile: imageData)
+                            jobId: jobId, livenessFile: imageData
+                        )
                         livenessImages.append(imageUrl)
                         DispatchQueue.main.async {
                             self.captureProgress =
                                 Double(self.livenessImages.count)
-                                / Double(self.numTotalSteps)
+                                    / Double(self.numTotalSteps)
                         }
                     } else {
                         shouldAnalyzeImages = false
                         guard
                             let imageData =
-                                ImageUtils.resizePixelBufferToHeight(
-                                    image,
-                                    height: selfieImageSize,
-                                    orientation: orientation
-                                )
+                            ImageUtils.resizePixelBufferToHeight(
+                                image,
+                                height: selfieImageSize,
+                                orientation: orientation
+                            )
                         else {
                             throw SmileIDError.unknown(
                                 "Error resizing selfie image")
                         }
                         let selfieImage = try LocalStorage.createSelfieFile(
-                            jobId: jobId, selfieFile: imageData)
+                            jobId: jobId, selfieFile: imageData
+                        )
                         self.selfieImage = selfieImage
                         DispatchQueue.main.async {
                             self.captureProgress = 1
@@ -295,7 +297,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
             return
         }
     }
-    
+
     func hasFaceRotatedEnough(face: VNFaceObservation) -> Bool {
         guard let roll = face.roll?.doubleValue, let yaw = face.yaw?.doubleValue
         else {
@@ -311,7 +313,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
         }
         let rollDelta = abs(roll - previousHeadRoll)
         let yawDelta = abs(yaw - previousHeadYaw)
-        
+
         previousHeadRoll = face.roll?.doubleValue ?? Double.infinity
         previousHeadYaw = face.yaw?.doubleValue ?? Double.infinity
         if #available(iOS 15, *) {
@@ -321,15 +323,15 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
         return didPitchChange || rollDelta > faceRollThreshold
             || yawDelta > faceRotationThreshold
     }
-    
+
     func onSmiling(isSmiling: Bool) {
         self.isSmiling = isSmiling
     }
-    
+
     func onARKitFrame(frame: ARFrame) {
         arKitFramePublisher.send(frame.capturedImage)
     }
-    
+
     func switchCamera() {
         cameraManager.switchCamera(to: useBackCamera ? .back : .front)
         localMetadata.metadata.removeAllOfType(Metadatum.SelfieImageOrigin.self)
@@ -338,7 +340,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
                 ? Metadatum.SelfieImageOrigin(cameraFacing: .backCamera)
                 : Metadatum.SelfieImageOrigin(cameraFacing: .frontCamera))
     }
-    
+
     public func onSelfieRejected() {
         DispatchQueue.main.async {
             self.captureProgress = 0
@@ -355,7 +357,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
         localMetadata.metadata.removeAllOfType(
             Metadatum.SelfieCaptureDuration.self)
     }
-    
+
     func cleanUpSelfieCapture() {
         do {
             try LocalStorage.deleteLivenessAndSelfieFiles(at: [jobId])
@@ -363,7 +365,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
             debugPrint(error.localizedDescription)
         }
     }
-    
+
     func onRetry() {
         // If selfie file is present, all captures were completed, so we're retrying a network issue
         if selfieImage != nil, livenessImages.count == numLivenessImages {
@@ -373,7 +375,7 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
             DispatchQueue.main.async { self.processingState = nil }
         }
     }
-    
+
     public func submitJob() {
         localMetadata.addMetadata(
             Metadatum.SelfieCaptureDuration(
@@ -386,13 +388,13 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
         }
         submitJob(jobId: jobId, skipApiSubmission: skipApiSubmission, offlineMode: SmileID.allowOfflineMode)
     }
-    
+
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let selfieImage = selfieImage,
-            let selfiePath = getRelativePath(from: selfieImage),
-            livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            )
+           let selfiePath = getRelativePath(from: selfieImage),
+           livenessImages.count == numLivenessImages,
+           !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
+           )
         {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
@@ -409,17 +411,17 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
             callback.didError(error: SmileIDError.unknown("Unknown error"))
         }
     }
-    
+
     func openSettings() {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString)
         else { return }
         UIApplication.shared.open(settingsURL)
     }
-    
-    
-    public override func createSubmission() throws -> BaseJobSubmission<SmartSelfieResult> {
+
+    override public func createSubmission() throws -> BaseJobSubmission<SmartSelfieResult> {
         guard let selfieImage = selfieImage,
-              livenessImages.count == numLivenessImages else {
+              livenessImages.count == numLivenessImages
+        else {
             throw SmileIDError.unknown("Selfie images missing")
         }
         return SelfieSubmission(
@@ -433,17 +435,17 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
             metadata: localMetadata.metadata
         )
     }
-    
-    public override func triggerProcessingState() {
+
+    override public func triggerProcessingState() {
         DispatchQueue.main.async { self.processingState = .inProgress }
     }
-    
-    public override func handleSuccess(data: SmartSelfieResult) {
+
+    override public func handleSuccess(data: SmartSelfieResult) {
         apiResponse = data.apiResponse
         DispatchQueue.main.async { self.processingState = .success }
     }
-    
-    public override func handleError(error: Error) {
+
+    override public func handleError(error: Error) {
         if let smileError = error as? SmileIDError {
             print("Error submitting job: \(error)")
             let (errorMessageRes, errorMessage) = toErrorMessage(error: smileError)
@@ -457,21 +459,21 @@ public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitS
             DispatchQueue.main.async { self.processingState = .error }
         }
     }
-    
-    public override func handleSubmissionFiles(jobId: String) throws {
-        self.selfieImage = try LocalStorage.getFileByType(
+
+    override public func handleSubmissionFiles(jobId: String) throws {
+        selfieImage = try LocalStorage.getFileByType(
             jobId: jobId,
             fileType: FileType.selfie,
             submitted: true
         )
-        self.livenessImages = try LocalStorage.getFilesByType(
+        livenessImages = try LocalStorage.getFilesByType(
             jobId: jobId,
             fileType: FileType.liveness,
             submitted: true
         ) ?? []
     }
-    
-    public override func handleOfflineSuccess() {
+
+    override public func handleOfflineSuccess() {
         DispatchQueue.main.async {
             self.errorMessageRes = "Offline.Message"
             self.processingState = .success
