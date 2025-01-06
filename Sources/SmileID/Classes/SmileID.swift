@@ -1,5 +1,6 @@
 import FingerprintJS
 import Foundation
+import Sentry
 import SwiftUI
 import UIKit
 
