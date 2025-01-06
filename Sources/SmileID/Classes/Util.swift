@@ -24,6 +24,21 @@ public extension View {
     }
 }
 
+extension View {
+    @inlinable func reverseMask<Mask: View>(
+        alignment: Alignment = .center,
+        @ViewBuilder _ mask: () -> Mask
+    ) -> some View {
+        self.mask(
+            ZStack(alignment: alignment) {
+                Rectangle()
+                mask()
+                    .blendMode(.destinationOut)
+            }
+        )
+    }
+}
+
 private struct StackedShape<Bottom: Shape, Top: Shape>: Shape {
     var bottom: Bottom
     var top: Top
@@ -64,6 +79,10 @@ func toErrorMessage(error: SmileIDError) -> (String, String?) {
         return (error.localizedDescription, nil)
     case let .httpError(_, message):
         return ("", message)
+    case let .fileNotFound(message):
+        return (message, nil)
+    case let .unknown(message):
+        return (message, nil)
     default:
         return ("Confirmation.FailureReason", nil)
     }

@@ -36,11 +36,12 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
                         Spacer()
                         Text(itemDisplayName(selectedItem))
                             .foregroundColor(SmileID.theme.accent)
-                            .onTapGesture { onItemSelected(nil) }
                         Spacer()
                         Image(systemName: "arrowtriangle.down.circle.fill")
                             .foregroundColor(SmileID.theme.accent)
                     }
+                    .contentShape(.rect)
+                    .onTapGesture { onItemSelected(nil) }
                 } else {
                     ZStack(alignment: .leading) {
                         Image(systemName: "magnifyingglass")

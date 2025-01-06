@@ -67,8 +67,8 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     for: "Confirmation.Failure"
                 ),
                 errorSubtitle: getErrorSubtitle(
-                    errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
-                    errorMessage: $viewModel.errorMessage.wrappedValue
+                    errorMessageRes: viewModel.errorMessageRes,
+                    errorMessage: viewModel.errorMessage
                 ),
                 errorIcon: SmileIDResourcesHelper.Scan,
                 continueButtonText: SmileIDResourcesHelper.localizedString(
@@ -105,8 +105,8 @@ public struct OrchestratedSelfieCaptureScreen: View {
             )
         } else {
             SelfieCaptureScreen(
-                allowAgentMode: allowAgentMode,
-                viewModel: viewModel
+                viewModel: viewModel,
+                allowAgentMode: allowAgentMode
             )
             .onAppear {
                 viewModel.updateLocalMetadata(localMetadata)

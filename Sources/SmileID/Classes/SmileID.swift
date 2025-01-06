@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.2.17"
+    public static let version = "10.3.3"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -164,7 +164,8 @@ public class SmileID {
         if !jobIds.contains(jobId) {
             throw SmileIDError.invalidJobId
         }
-        guard let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId) else {
+        guard let authRequestFile = try? LocalStorage.fetchAuthenticationRequestFile(jobId: jobId)
+        else {
             throw SmileIDError.fileNotFound("Authentication Request file is missing")
         }
         guard let prepUploadFile = try? LocalStorage.fetchPrepUploadFile(jobId: jobId) else {
@@ -180,7 +181,8 @@ public class SmileID {
                 )
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: prepUploadFile.partnerParams.extras),
+                    partnerParams: authResponse.partnerParams.copy(
+                        extras: prepUploadFile.partnerParams.extras),
                     // TODO: - Fix when Michael changes this to boolean
                     allowNewEnroll: String(prepUploadFile.allowNewEnroll),
                     timestamp: authResponse.timestamp,
@@ -203,7 +205,8 @@ public class SmileID {
                 }
                 let allFiles: [URL]
                 do {
-                    let livenessFiles = try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness) ?? []
+                    let livenessFiles =
+                        try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness) ?? []
                     let additionalFiles = try [
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
@@ -293,27 +296,61 @@ public class SmileID {
     ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
-    public class func smartSelfieEnrollmentScreen(
+    @ViewBuilder public class func smartSelfieEnrollmentScreen(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
         allowNewEnroll: Bool = false,
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
+        useStrictMode: Bool = false,
         skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        OrchestratedSelfieCaptureScreen(
+            OrchestratedSelfieCaptureScreen(
+                userId: userId,
+                jobId: jobId,
+                isEnroll: true,
+                allowNewEnroll: allowNewEnroll,
+                allowAgentMode: allowAgentMode,
+                showAttribution: showAttribution,
+                showInstructions: showInstructions,
+                extraPartnerParams: extraPartnerParams,
+                skipApiSubmission: skipApiSubmission,
+                onResult: delegate
+            )
+    }
+
+    /// Perform a SmartSelfie™ Enrollment
+    ///
+    /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
+    ///
+    /// - Parameters:
+    ///   - userId: The user ID to associate with the SmartSelfie™ Enrollment. Most often, this will
+    ///     correspond to a unique User ID within your own system. If not provided, a random user ID
+    ///     will be generated.
+    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
+    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
+    ///     screen
+    ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
+    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
+    @ViewBuilder public class func smartSelfieEnrollmentScreenEnhanced(
+        userId: String = generateUserId(),
+        allowNewEnroll: Bool = false,
+        showAttribution: Bool = true,
+        showInstructions: Bool = true,
+        extraPartnerParams: [String: String] = [:],
+        delegate: SmartSelfieResultDelegate
+    ) -> some View {
+        OrchestratedEnhancedSelfieCaptureScreen(
             userId: userId,
-            jobId: jobId,
             isEnroll: true,
             allowNewEnroll: allowNewEnroll,
-            allowAgentMode: allowAgentMode,
             showAttribution: showAttribution,
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: skipApiSubmission,
             onResult: delegate
         )
     }
@@ -339,14 +376,14 @@ public class SmileID {
     ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
-    public class func smartSelfieAuthenticationScreen(
+    @ViewBuilder public class func smartSelfieAuthenticationScreen(
         userId: String,
         jobId: String = generateJobId(),
         allowNewEnroll: Bool = false,
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
-        skipApiSubmission: Bool = false,
+        useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
@@ -359,7 +396,40 @@ public class SmileID {
             showAttribution: showAttribution,
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: skipApiSubmission,
+            skipApiSubmission: false,
+            onResult: delegate
+        )
+    }
+
+    /// Perform a SmartSelfie™ Authentication
+    ///
+    /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
+    ///
+    /// - Parameters:
+    ///   - userId: The user ID to associate with the SmartSelfie™ Enrollment. Most often, this will
+    ///     correspond to a unique User ID within your own system. If not provided, a random user ID
+    ///     will be generated.
+    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
+    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
+    ///     screen
+    ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
+    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
+    @ViewBuilder public class func smartSelfieAuthenticationScreenEnhanced(
+        userId: String,
+        allowNewEnroll: Bool = false,
+        showAttribution: Bool = true,
+        showInstructions: Bool = true,
+        extraPartnerParams: [String: String] = [:],
+        delegate: SmartSelfieResultDelegate
+    ) -> some View {
+        OrchestratedEnhancedSelfieCaptureScreen(
+            userId: userId,
+            isEnroll: false,
+            allowNewEnroll: allowNewEnroll,
+            showAttribution: showAttribution,
+            showInstructions: showInstructions,
+            extraPartnerParams: extraPartnerParams,
             onResult: delegate
         )
     }

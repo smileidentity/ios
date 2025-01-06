@@ -1,9 +1,37 @@
 # Release Notes
 
+## 10.3.3
+
+### Changed
+* Device orientation instruction text to match Android
+
+### Removed
+* Pre-compiled `SelfieQualityModel.mlmodelc` file used for selfie quality check was producing files not supported by SPM.
+
+## 10.3.2
+
+### Fixed
+* Allow navigation events to be handled inside `SmartSelfieResultDelegate` methods as opposed to providing concrete platform specific navigation implementation. 
+
+### Changed
+* Expose the initializers for `SelfieCaptureScreen` and `EnhancedSelfieCaptureScreen`
+
+## 10.3.1
+
+* Update version for podspec release tag.
+
+
+## 10.3.0
+
+* Fixed missing idType on Document Verification Jobs
+* Introduce screens for the new Enhanced Selfie Capture Enrollment and Authentication Products.
+
 ## 10.2.17
-### Added skipApiSubmission: Whether to skip api submission to SmileID and return only captured images on SmartSelfie enrollment, SmartSelfie authentic , Document verification and Enhanced DocV
+
+* Added skipApiSubmission: Whether to skip api submission to SmileID and return only captured images on SmartSelfie enrollment, SmartSelfie authentic , Document verification and Enhanced DocV
 
 ## 10.2.16
+
 ### Fixed
 * Clear images on retry or start capture with the same jobId
 

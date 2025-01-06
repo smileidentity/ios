@@ -3,16 +3,21 @@ import AVFoundation
 import Vision
 
 struct CameraView: UIViewControllerRepresentable {
-    typealias UIViewType = PreviewView
-    let preview: PreviewView
+    typealias UIViewType = CameraViewController
+    let cameraViewController: CameraViewController
 
-    init(cameraManager: CameraManager) {
-        preview = PreviewView(cameraManager: cameraManager)
+    init(
+        cameraManager: CameraManager,
+        selfieViewModel: EnhancedSmartSelfieViewModel? = nil
+    ) {
+        let controller = CameraViewController(cameraManager: cameraManager)
+        controller.faceDetector = selfieViewModel?.faceDetector
+        cameraViewController = controller
     }
 
-    func makeUIViewController(context: Context) -> PreviewView {
-        preview
+    func makeUIViewController(context: Context) -> CameraViewController {
+        cameraViewController
     }
 
-    func updateUIViewController(_ uiViewController: PreviewView, context: Context) {}
+    func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {}
 }

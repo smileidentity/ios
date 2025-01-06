@@ -18,25 +18,27 @@ struct EnhancedKycWithIdInputScreen: View {
             }
             .frame(maxWidth: .infinity)
         case .idTypeSelection(let countryList):
-            SearchableDropdownSelector(
-                items: countryList,
-                selectedItem: selectedCountry,
-                itemDisplayName: { $0.name },
-                onItemSelected: { selectedCountry = $0 }
-            )
-            if let selectedCountry = selectedCountry {
-                RadioGroupSelector(
-                    title: "Select ID Type",
-                    items: selectedCountry.availableIdTypes,
-                    itemDisplayName: { $0.label },
-                    onItemSelected: { idType in
-                        viewModel.onIdTypeSelected(
-                            country: selectedCountry.countryCode,
-                            idType: idType.idTypeKey,
-                            requiredFields: idType.requiredFields ?? []
-                        )
-                    }
+            VStack {
+                SearchableDropdownSelector(
+                    items: countryList,
+                    selectedItem: selectedCountry,
+                    itemDisplayName: { $0.name },
+                    onItemSelected: { selectedCountry = $0 }
                 )
+                if let selectedCountry = selectedCountry {
+                    RadioGroupSelector(
+                        title: "Select ID Type",
+                        items: selectedCountry.availableIdTypes,
+                        itemDisplayName: { $0.label },
+                        onItemSelected: { idType in
+                            viewModel.onIdTypeSelected(
+                                country: selectedCountry.countryCode,
+                                idType: idType.idTypeKey,
+                                requiredFields: idType.requiredFields ?? []
+                            )
+                        }
+                    )
+                }
             }
         case .consent(let country, let idType, let requiredFields):
             SmileID.consentScreen(
