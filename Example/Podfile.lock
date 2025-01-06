@@ -9,13 +9,13 @@ PODS:
   - FingerprintJS/SystemControl (1.5.0)
   - lottie-ios (4.4.3)
   - netfox (1.21.0)
-  - Sentry (8.36.0):
-    - Sentry/Core (= 8.36.0)
-  - Sentry/Core (8.36.0)
+  - Sentry (8.43.0):
+    - Sentry/Core (= 8.43.0)
+  - Sentry/Core (8.43.0)
   - SmileID (10.3.3):
     - FingerprintJS
     - lottie-ios (~> 4.4.2)
-    - Sentry
+    - Sentry (~> 8.43.0)
     - ZIPFoundation (~> 0.9)
   - SwiftLint (0.55.1)
   - ZIPFoundation (0.9.19)
@@ -24,7 +24,7 @@ DEPENDENCIES:
   - ArkanaKeys (from `./ArkanaKeys/ArkanaKeys/`)
   - ArkanaKeysInterfaces (from `./ArkanaKeys/ArkanaKeysInterfaces/`)
   - netfox
-  - Sentry
+  - Sentry (~> 8.43.0)
   - SmileID (from `../`)
   - SwiftLint
 
@@ -51,11 +51,11 @@ SPEC CHECKSUMS:
   FingerprintJS: 96410117a394cca04d0f1e2374944c8697f2cceb
   lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
-  Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
-  SmileID: 73b3db387a88091a573c109a25f572ad790505dd
+  Sentry: 532b281a53b1b45a523fd592f608956fb36e577c
+  SmileID: a7157bf607d875c0c1503f9c20ba1da01bd7afdb
   SwiftLint: 3fe909719babe5537c552ee8181c0031392be933
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: ebb96bfc1b5a0c7f6061ff1e91ac138e67c1d9f4
+PODFILE CHECKSUM: 3d594b06532c72adf95b06a33b17603190f6e8bb
 
 COCOAPODS: 1.16.2
