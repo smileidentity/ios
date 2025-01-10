@@ -112,7 +112,7 @@ public class SmileID {
             options.profilesSampleRate = 1.0
         }
         SentrySDK.configureScope { scope in
-            scope.setTag(value: "partner_id", key: SmileID.config.partnerId)
+            scope.setTag(value: SmileID.config.partnerId, key: "partner_id")
             let user = Sentry.User()
             user.userId = SmileID.config.partnerId
             scope.setUser(user)
