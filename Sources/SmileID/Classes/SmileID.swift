@@ -111,6 +111,12 @@ public class SmileID {
             options.tracesSampleRate = 1.0
             options.profilesSampleRate = 1.0
         }
+        SentrySDK.configureScope { scope in
+            scope.setTag(value: "partner_id", key: SmileID.config.partnerId)
+            let user = Sentry.User()
+            user.userId = SmileID.config.partnerId
+            scope.setUser(user)
+        }
     }
 
     /// Sets the state of offline mode for the SDK.
