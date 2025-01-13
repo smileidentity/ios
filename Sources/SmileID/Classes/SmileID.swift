@@ -40,6 +40,11 @@ public class SmileID {
         return session
     }()
 
+    // MARK: Sentry Hub
+    static var sentryHub: SentryHub?
+
+    // MARK: init
+
     private init() {}
 
     public private(set) static var config: Config!
@@ -104,19 +109,7 @@ public class SmileID {
                 deviceId = fingerprint
             }
         }
-        // Initialize Sentry.
-        SentrySDK.start { options in
-            options.dsn = "https://d81c446178994daaa52af05a8b3072b9@o1154186.ingest.us.sentry.io/4504162971353088"
-            options.debug = true
-            options.tracesSampleRate = 1.0
-            options.profilesSampleRate = 1.0
-        }
-        SentrySDK.configureScope { scope in
-            scope.setTag(value: SmileID.config.partnerId, key: "partner_id")
-            let user = Sentry.User()
-            user.userId = SmileID.config.partnerId
-            scope.setUser(user)
-        }
+        // self.setupSentry()
     }
 
     /// Sets the state of offline mode for the SDK.
