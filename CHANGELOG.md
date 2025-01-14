@@ -1,4 +1,8 @@
 # Release Notes
+## 10.3.4
+
+### Fixed
+* Document capture screen title to reflect capture side
 
 ## 10.3.3
 
