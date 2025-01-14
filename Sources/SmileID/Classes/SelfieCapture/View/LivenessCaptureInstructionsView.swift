@@ -44,12 +44,6 @@ public struct LivenessCaptureInstructionsView: View {
                     isActive: $showSelfieCaptureView
                 ) { EmptyView() }
 
-                Button {
-                    fatalError("Test SDK Crash")
-                } label: {
-                    Text("Force a crash")
-                }
-
                 SmileButton(
                     title: "Action.GetStarted",
                     clicked: {

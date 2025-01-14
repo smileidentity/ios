@@ -40,11 +40,6 @@ public class SmileID {
         return session
     }()
 
-    // MARK: Sentry Hub
-    static var sentryHub: SentryHub?
-
-    // MARK: init
-
     private init() {}
 
     public private(set) static var config: Config!
@@ -109,7 +104,6 @@ public class SmileID {
                 deviceId = fingerprint
             }
         }
-        // self.setupSentry()
     }
 
     /// Sets the state of offline mode for the SDK.

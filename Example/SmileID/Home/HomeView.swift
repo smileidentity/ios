@@ -18,11 +18,6 @@ struct HomeView: View {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
-                Button {
-                    fatalError("Test Demo app Crash")
-                } label: {
-                    Text("Force a crash")
-                }
                 ScrollView(showsIndicators: false) {
                     LazyVGrid(columns: columns) {
                         ProductCell(
