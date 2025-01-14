@@ -16,7 +16,8 @@ let package = Package(
         .package(url: "https://github.com/weichsel/ZIPFoundation.git", .upToNextMajor(from: "0.9.0")),
         .package(url: "https://github.com/airbnb/lottie-spm", from: "4.4.2"),
         .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", from: "1.5.0"),
-        .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.43.0")
+        .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.43.0"),
+        .package(name: "ArkanaKeys", path: "./ArkanaKeys")
     ],
     targets: [
         .target(
@@ -25,7 +26,8 @@ let package = Package(
                 .product(name: "ZIPFoundation", package: "ZIPFoundation"),
                 .product(name: "FingerprintJS", package: "fingerprintjs-ios"),
                 .product(name: "Lottie", package: "lottie-spm"),
-                .product(name: "Sentry", package: "sentry-cocoa")
+                .product(name: "Sentry", package: "sentry-cocoa"),
+                .product(name: "ArkanaKeys", package: "ArkanaKeys")
             ],
             path: "Sources/SmileID",
             resources: [.process("Resources")]

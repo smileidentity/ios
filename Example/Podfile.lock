@@ -13,6 +13,8 @@ PODS:
     - Sentry/Core (= 8.43.0)
   - Sentry/Core (8.43.0)
   - SmileID (10.3.3):
+    - ArkanaKeys
+    - ArkanaKeysInterfaces
     - FingerprintJS
     - lottie-ios (~> 4.4.2)
     - Sentry (~> 8.43.0)
@@ -52,7 +54,7 @@ SPEC CHECKSUMS:
   lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
   Sentry: 532b281a53b1b45a523fd592f608956fb36e577c
-  SmileID: a7157bf607d875c0c1503f9c20ba1da01bd7afdb
+  SmileID: 7430d186554216b80ee6c95ecdefa7b0847a2c2a
   SwiftLint: 3fe909719babe5537c552ee8181c0031392be933
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 

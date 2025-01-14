@@ -1,3 +1,4 @@
+import ArkanaKeys
 import Sentry
 
 protocol ErrorReportingService {
@@ -12,8 +13,7 @@ class SentryErrorReporter {
     private init() {
         // setup sentry options
         let options = Sentry.Options()
-        // TODO: Protect this DSN
-        options.dsn = "https://d81c446178994daaa52af05a8b3072b9@o1154186.ingest.us.sentry.io/4504162971353088"
+        options.dsn = ArkanaKeys.Global.sENTRY_DSN
         options.releaseName = SmileID.version
         options.enableCrashHandler = true
         options.debug = true
