@@ -8,12 +8,18 @@ protocol ErrorReportingService {
 class SentryErrorReporter {
     static let shared: SentryErrorReporter = SentryErrorReporter()
 
-    private let sentryHub: SentryHub
+    private var sentryHub: SentryHub?
 
-    private init() {
+    private init() {}
+
+    deinit {
+        disable()
+    }
+
+    func enable() {
         // setup sentry options
         let options = Sentry.Options()
-        options.dsn = ArkanaKeys.Global.sENTRY_DSN
+        options.dsn = ArkanaKeys.Global().sENTRY_DSN
         options.releaseName = SmileID.version
         options.enableCrashHandler = true
         options.debug = true
@@ -31,10 +37,16 @@ class SentryErrorReporter {
         let sentryClient = SentryClient(options: options)
         self.sentryHub = SentryHub(client: sentryClient, andScope: scope)
     }
+
+    func disable() {
+        sentryHub?.getClient()?.options.enableCrashHandler = false
+        sentryHub?.close()
+        sentryHub = nil
+    }
 }
 
 extension SentryErrorReporter: ErrorReportingService {
     func captureError(_ error: any Error, userInfo: [String: Any]? = nil) {
-        sentryHub.capture(error: error)
+        sentryHub?.capture(error: error)
     }
 }
