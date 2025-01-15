@@ -4,10 +4,10 @@ import SwiftUI
 struct HomeView: View {
     let version = SmileID.version
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
-    @StateObject var viewModel: HomeViewModel
+    @ObservedObject var viewModel: HomeViewModel
 
     init(config: Config) {
-        _viewModel = StateObject(wrappedValue: HomeViewModel(config: config))
+        self.viewModel = HomeViewModel(config: config)
     }
 
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
