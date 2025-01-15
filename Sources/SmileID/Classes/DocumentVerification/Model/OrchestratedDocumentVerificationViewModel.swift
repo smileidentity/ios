@@ -8,7 +8,7 @@ enum DocumentCaptureFlow: Equatable {
     case processing(ProcessingState)
 }
 
-class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject {
+class IOrchestratedDocumentVerificationViewModel<T, U: JobResult, S: CaptureResult>: BaseSubmissionViewModel<S> {
     // Input properties
     let userId: String
     let jobId: String
@@ -163,7 +163,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 if let livenessFiles {
                     allFiles.append(contentsOf: livenessFiles)
                 }
-                let info = try LocalStorage.createInfoJsonFile(
+                let infoJson = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,
                     idInfo: IdInfo(country: countryCode, idType: documentType),
                     documentFront: frontDocumentUrl,
@@ -171,128 +171,55 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     selfie: selfieFile,
                     livenessImages: livenessFiles
                 )
-                allFiles.append(info)
-                let zipData = try LocalStorage.zipFiles(at: allFiles)
-                self.savedFiles = DocumentCaptureResultStore(
-                    allFiles: allFiles,
-                    documentFront: frontDocumentUrl,
-                    documentBack: backDocumentUrl,
-                    selfie: selfieFile,
-                    livenessImages: livenessFiles ?? []
-                )
-                if skipApiSubmission {
-                    DispatchQueue.main.async { self.step = .processing(.success) }
-                    return
-                }
-                let authRequest = AuthenticationRequest(
-                    jobType: jobType,
-                    enrollment: false,
-                    jobId: jobId,
-                    userId: userId
-                )
-                if SmileID.allowOfflineMode {
-                    try LocalStorage.saveOfflineJob(
-                        jobId: jobId,
-                        userId: userId,
-                        jobType: jobType,
-                        enrollment: false,
-                        allowNewEnroll: allowNewEnroll,
-                        localMetadata: localMetadata,
-                        partnerParams: extraPartnerParams
-                    )
-                }
-                let authResponse = try await SmileID.api.authenticate(request: authRequest)
-                let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
-                    allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
-                    metadata: localMetadata.metadata.items,
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                let prepUploadResponse: PrepUploadResponse
-                do {
-                    prepUploadResponse = try await SmileID.api.prepUpload(
-                        request: prepUploadRequest
-                    )
-                } catch let error as SmileIDError {
-                    switch error {
-                    case .api("2215", _):
-                        prepUploadResponse = try await SmileID.api.prepUpload(
-                            request: prepUploadRequest.copy(retry: "true")
-                        )
-                    default:
-                        throw error
-                    }
-                }
-                let _ = try await SmileID.api.upload(
-                    zip: zipData,
-                    to: prepUploadResponse.uploadUrl
-                )
-                didSubmitJob = true
-                do {
-                    try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
-                    self.selfieFile =
-                        try LocalStorage.getFileByType(
-                            jobId: jobId,
-                            fileType: FileType.selfie,
-                            submitted: true
-                        ) ?? selfieFile
-                    self.livenessFiles =
-                        try LocalStorage.getFilesByType(
-                            jobId: jobId,
-                            fileType: FileType.liveness,
-                            submitted: true
-                        ) ?? []
-                } catch {
-                    print("Error moving job to submitted directory: \(error)")
-                    self.onError(error: error)
-                    return
-                }
-                DispatchQueue.main.async { self.step = .processing(.success) }
-            } catch let error as SmileIDError {
-                do {
-                    let didMove = try LocalStorage.handleOfflineJobFailure(
-                        jobId: self.jobId,
-                        error: error
-                    )
-                    if didMove {
-                        self.selfieFile =
-                            try LocalStorage.getFileByType(
-                                jobId: jobId,
-                                fileType: FileType.selfie,
-                                submitted: true
-                            ) ?? selfieFile
-                        self.livenessFiles =
-                            try LocalStorage.getFilesByType(
-                                jobId: jobId,
-                                fileType: FileType.liveness,
-                                submitted: true
-                            ) ?? []
-                    }
-                } catch {
-                    print("Error moving job to submitted directory: \(error)")
-                    self.onError(error: error)
-                    return
-                }
-                if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: error) {
-                    didSubmitJob = true
-                    DispatchQueue.main.async {
-                        self.errorMessageRes = "Offline.Message"
-                        self.step = .processing(.success)
-                    }
-                } else {
-                    didSubmitJob = false
-                    print("Error submitting job: \(error)")
-                    self.onError(error: error)
-                    let (errorMessageRes, errorMessage) = toErrorMessage(error: error)
-                    self.errorMessageRes = errorMessageRes
-                    self.errorMessage = errorMessage
-                }
+                submitJob(jobId: self.jobId, skipApiSubmission: false, offlineMode: SmileID.allowOfflineMode)
             } catch {
                 didSubmitJob = false
                 print("Error submitting job: \(error)")
                 self.onError(error: error)
             }
+        }
+    }
+
+    override public func triggerProcessingState() {
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.inProgress) }
+    }
+
+    override public func handleSuccess(data _: S) {
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.success) }
+    }
+
+    override public func handleError(error: Error) {
+        if let smileError = error as? SmileIDError {
+            print("Error submitting job: \(error)")
+            let (errorMessageRes, errorMessage) = toErrorMessage(error: smileError)
+            self.error = error
+            self.errorMessageRes = errorMessageRes
+            self.errorMessage = errorMessage
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
+        } else {
+            print("Error submitting job: \(error)")
+            self.error = error
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
+        }
+    }
+
+    override public func handleSubmissionFiles(jobId: String) throws {
+        selfieFile = try LocalStorage.getFileByType(
+            jobId: jobId,
+            fileType: FileType.selfie,
+            submitted: true
+        )
+        livenessFiles = try LocalStorage.getFilesByType(
+            jobId: jobId,
+            fileType: FileType.liveness,
+            submitted: true
+        ) ?? []
+    }
+
+    override public func handleOfflineSuccess() {
+        DispatchQueue.main.async {
+            self.errorMessageRes = "Offline.Message"
+            self.step = .processing(ProcessingState.success)
         }
     }
 
@@ -329,8 +256,26 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 
 // swiftlint:disable opening_brace
 class OrchestratedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
+    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate,
+    DocumentVerificationJobResult, DocumentVerificationResult>
 {
+    override func createSubmission() throws -> BaseJobSubmission<DocumentVerificationResult> {
+        guard let selfieImage = selfieFile,
+              livenessFiles != nil
+        else {
+            throw SmileIDError.unknown("Selfie image missing")
+        }
+        guard let documentFront = try LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront) else {
+            throw SmileIDError.unknown("Document image missing")
+        }
+        let documentBack = try LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack)
+        return DocumentVerificationSubmission(jobId: jobId, userId: userId, countryCode: countryCode,
+                                              allowNewEnroll: allowNewEnroll, documentFrontFile: documentFront,
+                                              selfieFile: selfieImage, documentBackFile: documentBack,
+                                              livenessFiles: livenessFiles,
+                                              extraPartnerParams: extraPartnerParams)
+    }
+
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
@@ -354,11 +299,27 @@ class OrchestratedDocumentVerificationViewModel:
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedEnhancedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<
-        EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
-    >
-{
+class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel
+<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult,
+    EnhancedDocumentVerificationResult
+> {
+    override func createSubmission() throws -> BaseJobSubmission<EnhancedDocumentVerificationResult> {
+        guard let selfieImage = selfieFile,
+              livenessFiles != nil
+        else {
+            throw SmileIDError.unknown("Selfie image missing")
+        }
+        guard let documentFront = try LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront) else {
+            throw SmileIDError.unknown("Document image missing")
+        }
+        let documentBack = try LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack)
+        return EnhancedDocumentVerificationSubmission(jobId: jobId, userId: userId, countryCode: countryCode,
+                                                      documentType: documentType, allowNewEnroll: allowNewEnroll,
+                                                      documentFrontFile: documentFront, selfieFile: selfieImage,
+                                                      documentBackFile: documentBack, livenessFiles: livenessFiles,
+                                                      extraPartnerParams: extraPartnerParams)
+    }
+
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),

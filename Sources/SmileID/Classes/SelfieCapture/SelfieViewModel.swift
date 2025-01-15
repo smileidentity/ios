@@ -3,7 +3,7 @@ import Combine
 import Foundation
 
 // swiftlint:disable opening_brace
-public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
+public class SelfieViewModel: BaseSubmissionViewModel<SmartSelfieResult>, ARKitSmileDelegate {
     // Constants
     private let intraImageMinDelay: TimeInterval = 0.35
     private let noFaceResetDelay: TimeInterval = 3
@@ -13,9 +13,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let minFaceAreaThreshold = 0.125
     private let maxFaceAreaThreshold = 0.25
     private let faceRotationThreshold = 0.03
-    private let faceRollThreshold = 0.025  // roll has a smaller range than yaw
+    private let faceRollThreshold = 0.025 // roll has a smaller range than yaw
     private let numLivenessImages = 7
-    private let numTotalSteps = 8  // numLivenessImages + 1 selfie image
+    private let numTotalSteps = 8 // numLivenessImages + 1 selfie image
     private let livenessImageSize = 320
     private let selfieImageSize = 640
 
@@ -105,7 +105,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 self?.analyzeImage(image: imageBuffer)
             }
             .store(in: &subscribers)
-
+        cleanUpSelfieCapture()
         localMetadata.addMetadata(
             useBackCamera
                 ? Metadatum.SelfieImageOrigin(cameraFacing: .backCamera)
@@ -156,7 +156,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         }
                         selfieImage = nil
                         livenessImages = []
-                        cleanUpSelfieCapture()
                     }
                     return
                 }
@@ -209,7 +208,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
 
                 if let quality = face.faceCaptureQuality,
-                    quality < faceCaptureQualityThreshold
+                   quality < faceCaptureQualityThreshold
                 {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.Quality"
@@ -223,7 +222,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 DispatchQueue.main.async {
                     self.directive =
                         userNeedsToSmile
-                        ? "Instructions.Smile" : "Instructions.Capturing"
+                            ? "Instructions.Smile" : "Instructions.Capturing"
                 }
 
                 // TODO: Use mouth deformation as an alternate signal for non-ARKit capture
@@ -246,38 +245,40 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     if livenessImages.count < numLivenessImages {
                         guard
                             let imageData =
-                                ImageUtils.resizePixelBufferToHeight(
-                                    image,
-                                    height: livenessImageSize,
-                                    orientation: orientation
-                                )
+                            ImageUtils.resizePixelBufferToHeight(
+                                image,
+                                height: livenessImageSize,
+                                orientation: orientation
+                            )
                         else {
                             throw SmileIDError.unknown(
                                 "Error resizing liveness image")
                         }
                         let imageUrl = try LocalStorage.createLivenessFile(
-                            jobId: jobId, livenessFile: imageData)
+                            jobId: jobId, livenessFile: imageData
+                        )
                         livenessImages.append(imageUrl)
                         DispatchQueue.main.async {
                             self.captureProgress =
                                 Double(self.livenessImages.count)
-                                / Double(self.numTotalSteps)
+                                    / Double(self.numTotalSteps)
                         }
                     } else {
                         shouldAnalyzeImages = false
                         guard
                             let imageData =
-                                ImageUtils.resizePixelBufferToHeight(
-                                    image,
-                                    height: selfieImageSize,
-                                    orientation: orientation
-                                )
+                            ImageUtils.resizePixelBufferToHeight(
+                                image,
+                                height: selfieImageSize,
+                                orientation: orientation
+                            )
                         else {
                             throw SmileIDError.unknown(
                                 "Error resizing selfie image")
                         }
                         let selfieImage = try LocalStorage.createSelfieFile(
-                            jobId: jobId, selfieFile: imageData)
+                            jobId: jobId, selfieFile: imageData
+                        )
                         self.selfieImage = selfieImage
                         DispatchQueue.main.async {
                             self.captureProgress = 1
@@ -385,171 +386,15 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             DispatchQueue.main.async { self.processingState = .success }
             return
         }
-        DispatchQueue.main.async { self.processingState = .inProgress }
-        Task {
-            do {
-                guard let selfieImage, livenessImages.count == numLivenessImages
-                else {
-                    throw SmileIDError.unknown("Selfie capture failed")
-                }
-                let jobType =
-                    isEnroll
-                    ? JobType.smartSelfieEnrollment
-                    : JobType.smartSelfieAuthentication
-                let authRequest = AuthenticationRequest(
-                    jobType: jobType,
-                    enrollment: isEnroll,
-                    jobId: jobId,
-                    userId: userId
-                )
-                if SmileID.allowOfflineMode {
-                    try LocalStorage.saveOfflineJob(
-                        jobId: jobId,
-                        userId: userId,
-                        jobType: jobType,
-                        enrollment: isEnroll,
-                        allowNewEnroll: allowNewEnroll,
-                        localMetadata: localMetadata,
-                        partnerParams: extraPartnerParams
-                    )
-                }
-                let authResponse = try await SmileID.api.authenticate(
-                    request: authRequest)
-
-                var smartSelfieLivenessImages = [MultipartBody]()
-                var smartSelfieImage: MultipartBody?
-                if let selfie = try? Data(contentsOf: selfieImage),
-                    let media = MultipartBody(
-                        withImage: selfie,
-                        forKey: selfieImage.lastPathComponent,
-                        forName: selfieImage.lastPathComponent
-                    )
-                {
-                    smartSelfieImage = media
-                }
-                if !livenessImages.isEmpty {
-                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultipartBody? in
-                        if let data = try? Data(contentsOf: liveness) {
-                            return MultipartBody(
-                                withImage: data,
-                                forKey: liveness.lastPathComponent,
-                                forName: liveness.lastPathComponent
-                            )
-                        }
-                        return nil
-                    }
-
-                    smartSelfieLivenessImages.append(
-                        contentsOf: livenessImageInfos.compactMap { $0 })
-                }
-                guard let smartSelfieImage = smartSelfieImage,
-                    smartSelfieLivenessImages.count == numLivenessImages
-                else {
-                    throw SmileIDError.unknown("Selfie capture failed")
-                }
-
-                let response =
-                    if isEnroll {
-                        try await SmileID.api.doSmartSelfieEnrollment(
-                            signature: authResponse.signature,
-                            timestamp: authResponse.timestamp,
-                            selfieImage: smartSelfieImage,
-                            livenessImages: smartSelfieLivenessImages,
-                            userId: userId,
-                            partnerParams: extraPartnerParams,
-                            callbackUrl: SmileID.callbackUrl,
-                            sandboxResult: nil,
-                            allowNewEnroll: allowNewEnroll,
-                            failureReason: nil,
-                            metadata: localMetadata.metadata
-                        )
-                    } else {
-                        try await SmileID.api.doSmartSelfieAuthentication(
-                            signature: authResponse.signature,
-                            timestamp: authResponse.timestamp,
-                            userId: userId,
-                            selfieImage: smartSelfieImage,
-                            livenessImages: smartSelfieLivenessImages,
-                            partnerParams: extraPartnerParams,
-                            callbackUrl: SmileID.callbackUrl,
-                            sandboxResult: nil,
-                            failureReason: nil,
-                            metadata: localMetadata.metadata
-                        )
-                    }
-                apiResponse = response
-                do {
-                    try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
-                    self.selfieImage = try LocalStorage.getFileByType(
-                        jobId: jobId,
-                        fileType: FileType.selfie,
-                        submitted: true
-                    )
-                    self.livenessImages =
-                        try LocalStorage.getFilesByType(
-                            jobId: jobId,
-                            fileType: FileType.liveness,
-                            submitted: true
-                        ) ?? []
-                } catch {
-                    print("Error moving job to submitted directory: \(error)")
-                    self.error = error
-                }
-                DispatchQueue.main.async { self.processingState = .success }
-            } catch let error as SmileIDError {
-                do {
-                    let didMove = try LocalStorage.handleOfflineJobFailure(
-                        jobId: self.jobId,
-                        error: error
-                    )
-                    if didMove {
-                        self.selfieImage = try LocalStorage.getFileByType(
-                            jobId: jobId,
-                            fileType: FileType.selfie,
-                            submitted: true
-                        )
-                        self.livenessImages =
-                            try LocalStorage.getFilesByType(
-                                jobId: jobId,
-                                fileType: FileType.liveness,
-                                submitted: true
-                            ) ?? []
-                    }
-                } catch {
-                    print("Error moving job to submitted directory: \(error)")
-                    self.error = error
-                    return
-                }
-                if SmileID.allowOfflineMode,
-                    SmileIDError.isNetworkFailure(error: error)
-                {
-                    DispatchQueue.main.async {
-                        self.errorMessageRes = "Offline.Message"
-                        self.processingState = .success
-                    }
-                } else {
-                    print("Error submitting job: \(error)")
-                    let (errorMessageRes, errorMessage) = toErrorMessage(
-                        error: error)
-                    self.error = error
-                    self.errorMessageRes = errorMessageRes
-                    self.errorMessage = errorMessage
-                    DispatchQueue.main.async { self.processingState = .error }
-                }
-            } catch {
-                print("Error submitting job: \(error)")
-                self.error = error
-                DispatchQueue.main.async { self.processingState = .error }
-            }
-        }
+        submitJob(jobId: jobId, skipApiSubmission: skipApiSubmission, offlineMode: SmileID.allowOfflineMode)
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let selfieImage = selfieImage,
-            let selfiePath = getRelativePath(from: selfieImage),
-            livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            )
+           let selfiePath = getRelativePath(from: selfieImage),
+           livenessImages.count == numLivenessImages,
+           !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
+           )
         {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
@@ -571,5 +416,67 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString)
         else { return }
         UIApplication.shared.open(settingsURL)
+    }
+
+    override public func createSubmission() throws -> BaseJobSubmission<SmartSelfieResult> {
+        guard let selfieImage = selfieImage,
+              livenessImages.count == numLivenessImages
+        else {
+            throw SmileIDError.unknown("Selfie images missing")
+        }
+        return SelfieSubmission(
+            isEnroll: isEnroll,
+            userId: userId,
+            jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
+            selfieFile: selfieImage,
+            livenessFiles: livenessImages,
+            extraPartnerParams: extraPartnerParams,
+            metadata: localMetadata.metadata
+        )
+    }
+
+    override public func triggerProcessingState() {
+        DispatchQueue.main.async { self.processingState = .inProgress }
+    }
+
+    override public func handleSuccess(data: SmartSelfieResult) {
+        apiResponse = data.apiResponse
+        DispatchQueue.main.async { self.processingState = .success }
+    }
+
+    override public func handleError(error: Error) {
+        if let smileError = error as? SmileIDError {
+            print("Error submitting job: \(error)")
+            let (errorMessageRes, errorMessage) = toErrorMessage(error: smileError)
+            self.error = error
+            self.errorMessageRes = errorMessageRes
+            self.errorMessage = errorMessage
+            DispatchQueue.main.async { self.processingState = .error }
+        } else {
+            print("Error submitting job: \(error)")
+            self.error = error
+            DispatchQueue.main.async { self.processingState = .error }
+        }
+    }
+
+    override public func handleSubmissionFiles(jobId: String) throws {
+        selfieImage = try LocalStorage.getFileByType(
+            jobId: jobId,
+            fileType: FileType.selfie,
+            submitted: true
+        )
+        livenessImages = try LocalStorage.getFilesByType(
+            jobId: jobId,
+            fileType: FileType.liveness,
+            submitted: true
+        ) ?? []
+    }
+
+    override public func handleOfflineSuccess() {
+        DispatchQueue.main.async {
+            self.errorMessageRes = "Offline.Message"
+            self.processingState = .success
+        }
     }
 }

@@ -1,12 +1,12 @@
 import Combine
 import Foundation
 
-internal enum BiometricKycStep {
+enum BiometricKycStep {
     case selfie
     case processing(ProcessingState)
 }
 
-internal class OrchestratedBiometricKycViewModel: ObservableObject {
+class OrchestratedBiometricKycViewModel: BaseSubmissionViewModel<BiometricKycResult> {
     // MARK: - Input Properties
 
     private let userId: String
@@ -18,8 +18,8 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
     // MARK: - Other Properties
 
-    internal var selfieFile: URL?
-    internal var livenessFiles: [URL]?
+    var selfieFile: URL?
+    var livenessFiles: [URL]?
     private var error: Error?
     private var didSubmitBiometricJob: Bool = false
 
@@ -56,8 +56,9 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
     func onFinished(delegate: BiometricKycResultDelegate) {
         if let selfieFile = selfieFile,
-            let livenessFiles = livenessFiles,
-            let selfiePath = getRelativePath(from: selfieFile) {
+           let livenessFiles = livenessFiles,
+           let selfiePath = getRelativePath(from: selfieFile)
+        {
             delegate.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
@@ -75,7 +76,6 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         Task {
             do {
                 try await handleJobSubmission()
-                updateStep(.processing(.success))
             } catch let error as SmileIDError {
                 handleSubmissionFailure(error)
             } catch {
@@ -89,17 +89,13 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
     private func handleJobSubmission() async throws {
         try fetchRequiredFiles()
-
-        let zipData = try createZipData()
-
-        let authResponse = try await authenticate()
-
-        let preUploadResponse = try await prepareForUpload(authResponse: authResponse)
-
-        try await uploadFiles(zipData: zipData, uploadUrl: preUploadResponse.uploadUrl)
-        didSubmitBiometricJob = true
-
-        try moveJobToSubmittedDirectory()
+        let infoJson = try LocalStorage.createInfoJsonFile(
+            jobId: jobId,
+            idInfo: idInfo.copy(entered: true),
+            selfie: selfieFile,
+            livenessImages: livenessFiles
+        )
+        submitJob(jobId: jobId, skipApiSubmission: false, offlineMode: SmileID.allowOfflineMode)
     }
 
     private func fetchRequiredFiles() throws {
@@ -121,40 +117,6 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         }
     }
 
-    private func createZipData() throws -> Data {
-        var allFiles = [URL]()
-        let infoJson = try LocalStorage.createInfoJsonFile(
-            jobId: jobId,
-            idInfo: idInfo.copy(entered: true),
-            selfie: selfieFile,
-            livenessImages: livenessFiles
-        )
-        if let selfieFile {
-            allFiles.append(contentsOf: [selfieFile, infoJson])
-        }
-        if let livenessFiles {
-            allFiles.append(contentsOf: livenessFiles)
-        }
-        return try LocalStorage.zipFiles(at: allFiles)
-    }
-
-    private func authenticate() async throws -> AuthenticationResponse {
-        let authRequest = AuthenticationRequest(
-            jobType: .biometricKyc,
-            enrollment: false,
-            jobId: jobId,
-            userId: userId,
-            country: idInfo.country,
-            idType: idInfo.idType
-        )
-
-        if SmileID.allowOfflineMode {
-            try saveOfflineJobIfAllowed()
-        }
-
-        return try await SmileID.api.authenticate(request: authRequest)
-    }
-
     private func saveOfflineJobIfAllowed() throws {
         try LocalStorage.saveOfflineJob(
             jobId: jobId,
@@ -167,38 +129,8 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         )
     }
 
-    private func prepareForUpload(authResponse: AuthenticationResponse) async throws -> PrepUploadResponse {
-        let prepUploadRequest = PrepUploadRequest(
-            partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
-            allowNewEnroll: String(allowNewEnroll),  // TODO: - Fix when Michael changes this to boolean
-            metadata: localMetadata.metadata.items,
-            timestamp: authResponse.timestamp,
-            signature: authResponse.signature
-        )
-        do {
-            return try await SmileID.api.prepUpload(
-                request: prepUploadRequest
-            )
-        } catch let error as SmileIDError {
-            guard case let .api(errorCode, _) = error,
-                errorCode == "2215"
-            else {
-                throw error
-            }
-            return try await SmileID.api.prepUpload(
-                request: prepUploadRequest.copy(retry: "true"))
-        }
-    }
-
-    private func uploadFiles(zipData: Data, uploadUrl: String) async throws {
-        try await SmileID.api.upload(
-            zip: zipData,
-            to: uploadUrl
-        )
-    }
-
     private func moveJobToSubmittedDirectory() throws {
-        try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+        try LocalStorage.moveToSubmittedJobs(jobId: jobId)
     }
 
     private func updateStep(_ newStep: BiometricKycStep) {
@@ -220,7 +152,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     private func handleSubmissionFailure(_ smileIDError: SmileIDError) {
         do {
             _ = try LocalStorage.handleOfflineJobFailure(
-                jobId: self.jobId,
+                jobId: jobId,
                 error: smileIDError
             )
         } catch {
@@ -237,9 +169,70 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
             didSubmitBiometricJob = false
             print("Error submitting job: \(smileIDError)")
             let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
-            self.error = smileIDError
+            error = smileIDError
             updateErrorMessages(errorMessage: errorMessage, errorMessageRes: errorMessageRes)
             updateStep(.processing(.error))
+        }
+    }
+
+    override public func createSubmission() throws -> BaseJobSubmission<BiometricKycResult> {
+        guard let selfieImage = selfieFile,
+              livenessFiles != nil
+        else {
+            throw SmileIDError.unknown("Selfie images missing")
+        }
+        return BiometricKYCSubmission(
+            userId: userId,
+            jobId: jobId,
+            allowNewEnroll: allowNewEnroll,
+            livenessFiles: livenessFiles,
+            selfieFile: selfieImage,
+            idInfo: idInfo,
+            extraPartnerParams: extraPartnerParams,
+            metadata: localMetadata.metadata
+        )
+    }
+
+    override public func triggerProcessingState() {
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.inProgress) }
+    }
+
+    override public func handleSuccess(data _: BiometricKycResult) {
+        DispatchQueue.main.async { self.step = .processing(ProcessingState.success) }
+    }
+
+    override public func handleError(error: Error) {
+        if let smileError = error as? SmileIDError {
+            print("Error submitting job: \(error)")
+            let (errorMessageRes, errorMessage) = toErrorMessage(error: smileError)
+            self.error = error
+            self.errorMessageRes = errorMessageRes
+            self.errorMessage = errorMessage
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
+        } else {
+            print("Error submitting job: \(error)")
+            self.error = error
+            DispatchQueue.main.async { self.step = .processing(ProcessingState.error) }
+        }
+    }
+
+    override public func handleSubmissionFiles(jobId: String) throws {
+        selfieFile = try LocalStorage.getFileByType(
+            jobId: jobId,
+            fileType: FileType.selfie,
+            submitted: true
+        )
+        livenessFiles = try LocalStorage.getFilesByType(
+            jobId: jobId,
+            fileType: FileType.liveness,
+            submitted: true
+        ) ?? []
+    }
+
+    override public func handleOfflineSuccess() {
+        DispatchQueue.main.async {
+            self.errorMessageRes = "Offline.Message"
+            self.step = .processing(ProcessingState.success)
         }
     }
 }

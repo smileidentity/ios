@@ -138,7 +138,7 @@ public class LocalStorage {
         return contents.first(where: { $0.lastPathComponent == "info.json" })!
     }
 
-    private static func createPrepUploadFile(
+    static func createPrepUploadFile(
         jobId: String,
         prepUpload: PrepUploadRequest
     ) throws -> URL {
@@ -155,7 +155,7 @@ public class LocalStorage {
         return try jsonDecoder.decode(PrepUploadRequest.self, from: data)
     }
 
-    private static func createAuthenticationRequestFile(
+    static func createAuthenticationRequestFile(
         jobId: String,
         authentationRequest: AuthenticationRequest
     ) throws -> URL {
@@ -381,5 +381,23 @@ public class LocalStorage {
 public extension Date {
     var millisecondsSince1970: Int64 {
         Int64((timeIntervalSince1970 * 1000.0).rounded())
+    }
+}
+
+public extension URL {
+    func asDocumentFrontImage() -> UploadImageInfo {
+        return UploadImageInfo(imageTypeId: .idCardJpgFile, fileName: lastPathComponent)
+    }
+
+    func asDocumentBackImage() -> UploadImageInfo {
+        return UploadImageInfo(imageTypeId: .idCardRearJpgFile, fileName: lastPathComponent)
+    }
+
+    func asSelfieImage() -> UploadImageInfo {
+        return UploadImageInfo(imageTypeId: .selfieJpgFile, fileName: lastPathComponent)
+    }
+
+    func asLivenessImage() -> UploadImageInfo {
+        return UploadImageInfo(imageTypeId: .livenessJpgFile, fileName: lastPathComponent)
     }
 }
