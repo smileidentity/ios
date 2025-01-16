@@ -1,4 +1,4 @@
-import Sentry
+// import Sentry
 
 protocol ErrorReportingService {
     func captureError(_ error: any Error, userInfo: [String: Any]?)
@@ -7,14 +7,15 @@ protocol ErrorReportingService {
 class SentryErrorReporter {
     static let shared: SentryErrorReporter = SentryErrorReporter()
 
-    private var sentryHub: SentryHub?
+    // private var sentryHub: SentryHub?
 
     private init() {}
 
     deinit {
-        disable()
+        // disable()
     }
 
+    /*
     func enable() {
         guard let dsn = ProcessInfo.processInfo.environment["SENTRY_DSN"] else {
             return
@@ -45,10 +46,11 @@ class SentryErrorReporter {
         sentryHub?.close()
         sentryHub = nil
     }
+     */
 }
 
 extension SentryErrorReporter: ErrorReportingService {
     func captureError(_ error: any Error, userInfo: [String: Any]? = nil) {
-        sentryHub?.capture(error: error)
+        // sentryHub?.capture(error: error)
     }
 }
