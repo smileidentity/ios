@@ -1,6 +1,5 @@
 import FingerprintJS
 import Foundation
-import Sentry
 import SwiftUI
 import UIKit
 
@@ -103,7 +102,7 @@ public class SmileID {
 
         // Enable crash reporting as early as possible (the pre-req is that the config is loaded)
         if enableErrorReporting {
-            SentryErrorReporter.shared.enable()
+            // SentryErrorReporter.shared.enable()
         }
 
         SmileIDResourcesHelper.registerFonts()
