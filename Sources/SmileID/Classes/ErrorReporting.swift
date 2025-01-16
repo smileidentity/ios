@@ -1,4 +1,3 @@
-import ArkanaKeys
 import Sentry
 
 protocol ErrorReportingService {
@@ -17,9 +16,12 @@ class SentryErrorReporter {
     }
 
     func enable() {
+        guard let dsn = ProcessInfo.processInfo.environment["SENTRY_DSN"] else {
+            return
+        }
         // setup sentry options
         let options = Sentry.Options()
-        options.dsn = ArkanaKeys.Global().sENTRY_DSN
+        options.dsn = dsn
         options.releaseName = SmileID.version
         options.enableCrashHandler = true
         options.debug = true
