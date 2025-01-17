@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.dependency 'ZIPFoundation', '~> 0.9'
   s.dependency 'FingerprintJS'
   s.dependency 'lottie-ios', '~> 4.4.2'
-  s.dependency 'Sentry'
+  s.dependency 'Sentry', '~> 8.36.0'
   s.swift_version = '5.5'
   s.source_files = 'Sources/SmileID/Classes/**/*'
   s.resource_bundles = {
