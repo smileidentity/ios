@@ -1,4 +1,5 @@
 {
+  "originHash" : "e723f01b9212cfb7a0e4c57b7a01dc33a342294ec34ccc9f45a784b8e58ca36e",
   "pins" : [
     {
       "identity" : "fingerprintjs-ios",
@@ -19,6 +20,15 @@
       }
     },
     {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa.git",
+      "state" : {
+        "revision" : "f45e9c62d7a4d9258ac3cf35a3acf9dbab4481d1",
+        "version" : "8.43.0"
+      }
+    },
+    {
       "identity" : "zipfoundation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/weichsel/ZIPFoundation",
@@ -28,5 +38,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

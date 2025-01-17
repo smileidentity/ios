@@ -1,5 +1,4 @@
-// import Sentry
-import Alamofire
+import Sentry
 
 protocol ErrorReportingService {
     func captureError(_ error: any Error, userInfo: [String: Any]?)
@@ -8,13 +7,9 @@ protocol ErrorReportingService {
 class SentryErrorReporter {
     static let shared: SentryErrorReporter = SentryErrorReporter()
 
-    // private var sentryHub: SentryHub?
+    private var sentryHub: SentryHub?
 
-    private init() {
-        AF.request("https://httpbin.org/get").response { response in
-            debugPrint(response)
-        }
-    }
+    private init() {}
 
     deinit {
         // disable()

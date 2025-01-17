@@ -617,7 +617,6 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-SmileID_Example/Pods-SmileID_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/ArkanaKeys/ArkanaKeys.framework",
 				"${BUILT_PRODUCTS_DIR}/ArkanaKeysInterfaces/ArkanaKeysInterfaces.framework",
 				"${BUILT_PRODUCTS_DIR}/FingerprintJS/FingerprintJS.framework",
@@ -629,7 +628,6 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ArkanaKeys.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ArkanaKeysInterfaces.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FingerprintJS.framework",
