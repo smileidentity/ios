@@ -71,9 +71,6 @@
 		203504D82D3AAD0100AC8D26 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 203504D72D3AAD0100AC8D26 /* Sentry */; };
 		203504DA2D3AAD0100AC8D26 /* Sentry-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 203504D92D3AAD0100AC8D26 /* Sentry-Dynamic */; };
 		203504DC2D3AAD0100AC8D26 /* SentrySwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 203504DB2D3AAD0100AC8D26 /* SentrySwiftUI */; };
-		203504DE2D3AAD1300AC8D26 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 203504DD2D3AAD1300AC8D26 /* Sentry */; };
-		203504E02D3AAD1300AC8D26 /* Sentry-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 203504DF2D3AAD1300AC8D26 /* Sentry-Dynamic */; };
-		203504E22D3AAD1300AC8D26 /* SentrySwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 203504E12D3AAD1300AC8D26 /* SentrySwiftUI */; };
 		2133A0D1AB90A47D0DE3DAB9 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 412A8FB60E8E1500160D3435 /* APIError.swift */; };
 		22AF5242975841C017624815 /* OrchestratedSelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC0526C4D979CD6BACF70C5 /* OrchestratedSelfieCaptureScreen.swift */; };
 		238E49D0242B2F85C1BEB8E6 /* SmartSelfieInstructionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DDDCB21EB2803A9DE743C8 /* SmartSelfieInstructionsScreen.swift */; };
@@ -3701,11 +3698,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				203504DE2D3AAD1300AC8D26 /* Sentry in Frameworks */,
-				203504E22D3AAD1300AC8D26 /* SentrySwiftUI in Frameworks */,
 				1E4A02382BF4EB9D00167633 /* Lottie in Frameworks */,
 				6277E7512C65153700AC87FB /* ZIPFoundation in Frameworks */,
-				203504E02D3AAD1300AC8D26 /* Sentry-Dynamic in Frameworks */,
 				1E9825A32C9B4AF2009F2CA6 /* FingerprintJS in Frameworks */,
 				1E9825A52C9B4AF2009F2CA6 /* SystemControl in Frameworks */,
 			);
@@ -7456,9 +7450,6 @@
 				6277E7502C65153700AC87FB /* ZIPFoundation */,
 				1E9825A22C9B4AF2009F2CA6 /* FingerprintJS */,
 				1E9825A42C9B4AF2009F2CA6 /* SystemControl */,
-				203504DD2D3AAD1300AC8D26 /* Sentry */,
-				203504DF2D3AAD1300AC8D26 /* Sentry-Dynamic */,
-				203504E12D3AAD1300AC8D26 /* SentrySwiftUI */,
 			);
 			productName = SmileID;
 			productReference = 1EEFC2382B583F1A00B8A934 /* libSmileID.a */;
@@ -8208,21 +8199,6 @@
 			productName = "Sentry-Dynamic";
 		};
 		203504DB2D3AAD0100AC8D26 /* SentrySwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 203504D62D3AAD0100AC8D26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = SentrySwiftUI;
-		};
-		203504DD2D3AAD1300AC8D26 /* Sentry */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 203504D62D3AAD0100AC8D26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = Sentry;
-		};
-		203504DF2D3AAD1300AC8D26 /* Sentry-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 203504D62D3AAD0100AC8D26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = "Sentry-Dynamic";
-		};
-		203504E12D3AAD1300AC8D26 /* SentrySwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 203504D62D3AAD0100AC8D26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = SentrySwiftUI;
