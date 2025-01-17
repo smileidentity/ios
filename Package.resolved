@@ -19,6 +19,15 @@
       }
     },
     {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa",
+      "state" : {
+        "revision" : "5575af93efb776414f243e93d6af9f6258dc539a",
+        "version" : "8.36.0"
+      }
+    },
+    {
       "identity" : "zipfoundation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/weichsel/ZIPFoundation.git",
