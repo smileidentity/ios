@@ -1,21 +1,17 @@
 import Sentry
 
-protocol ErrorReportingService {
-    func captureError(_ error: any Error, userInfo: [String: Any]?)
-}
+class SmileIDCrashReporting {
+    static let shared: SmileIDCrashReporting = SmileIDCrashReporting()
 
-class SentryErrorReporter {
-    static let shared: SentryErrorReporter = SentryErrorReporter()
-
-    private var sentryHub: SentryHub?
+    private let smileIDPackagePrefix = "com.smileidentity"
+    private(set) var sentryHub: SentryHub?
 
     private init() {}
 
     deinit {
-        // disable()
+        disable()
     }
 
-    /*
     func enable() {
         guard let dsn = ProcessInfo.processInfo.environment["SENTRY_DSN"] else {
             return
@@ -46,11 +42,25 @@ class SentryErrorReporter {
         sentryHub?.close()
         sentryHub = nil
     }
-     */
-}
 
-extension SentryErrorReporter: ErrorReportingService {
-    func captureError(_ error: any Error, userInfo: [String: Any]? = nil) {
-        // sentryHub?.capture(error: error)
+
+    /// Checks whether the provided error involves Smile ID SDK. This is done by checking
+    /// the stack trace of the error and its causes.
+    /// - Parameter error: The error to check.
+    /// - Returns: True if the error was caused by a Smile SDK, false otherwise.
+    private func isCausedBySmileID(error: (any Error)?) -> Bool {
+        guard let error = error else { return false }
+
+        // Check if the error description contains the prefix
+        if error.localizedDescription.contains(smileIDPackagePrefix) {
+            return true
+        }
+
+        let nsError = error as NSError
+        if let underlyingError = nsError.userInfo[NSUnderlyingErrorKey] as? Error {
+            return isCausedBySmileID(error: underlyingError)
+        }
+
+        return false
     }
 }
