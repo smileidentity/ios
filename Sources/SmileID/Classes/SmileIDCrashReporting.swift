@@ -4,7 +4,7 @@ class SmileIDCrashReporting {
     static let shared: SmileIDCrashReporting = SmileIDCrashReporting()
 
     private let smileIDPackagePrefix = "com.smileidentity"
-    private(set) var sentryHub: SentryHub?
+    private(set) var hub: SentryHub?
 
     private init() {}
 
@@ -34,13 +34,13 @@ class SmileIDCrashReporting {
 
         // setup sentry hub
         let sentryClient = SentryClient(options: options)
-        self.sentryHub = SentryHub(client: sentryClient, andScope: scope)
+        self.hub = SentryHub(client: sentryClient, andScope: scope)
     }
 
     func disable() {
-        sentryHub?.getClient()?.options.enableCrashHandler = false
-        sentryHub?.close()
-        sentryHub = nil
+        hub?.getClient()?.options.enableCrashHandler = false
+        hub?.close()
+        hub = nil
     }
 
 
