@@ -44,6 +44,17 @@ public struct LivenessCaptureInstructionsView: View {
                     isActive: $showSelfieCaptureView
                 ) { EmptyView() }
 
+                if #available(iOS 15.0, *) {
+                    Button {
+                        SmileIDCrashReporting.shared.hub?.capture(error: SmileIDError.fileNotFound("-sample-error-no-file-found"))
+                    } label: {
+                        Text("Capture Error")
+                    }
+                    .buttonStyle(.borderedProminent)
+                } else {
+                    // Fallback on earlier versions
+                }
+
                 SmileButton(
                     title: "Action.GetStarted",
                     clicked: {

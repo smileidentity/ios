@@ -32,10 +32,12 @@ class SmileIDCrashReporting {
         // setup sentry hub
         let sentryClient = SentryClient(options: options)
         self.hub = SentryHub(client: sentryClient, andScope: scope)
+        self.hub?.startSession()
     }
 
     func disable() {
         hub?.getClient()?.options.enableCrashHandler = false
+        self.hub?.endSession()
         hub?.close()
         hub = nil
     }
