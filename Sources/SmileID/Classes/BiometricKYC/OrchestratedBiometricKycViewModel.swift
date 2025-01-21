@@ -77,11 +77,13 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
                 try await handleJobSubmission()
                 updateStep(.processing(.success))
             } catch let error as SmileIDError {
+                getExceptionHandler(error: error)
                 handleSubmissionFailure(error)
             } catch {
                 didSubmitBiometricJob = false
                 print("Error submitting job: \(error)")
                 self.error = error
+                getExceptionHandler(error: error)
                 updateStep(.processing(.error))
             }
         }

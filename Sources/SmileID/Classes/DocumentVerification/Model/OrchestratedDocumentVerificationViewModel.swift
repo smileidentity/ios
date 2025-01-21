@@ -250,6 +250,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 }
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch let error as SmileIDError {
+                getExceptionHandler(error: error)
                 do {
                     let didMove = try LocalStorage.handleOfflineJobFailure(
                         jobId: self.jobId,
@@ -291,6 +292,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
             } catch {
                 didSubmitJob = false
                 print("Error submitting job: \(error)")
+                getExceptionHandler(error: error)
                 self.onError(error: error)
             }
         }
