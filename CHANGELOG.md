@@ -1,4 +1,10 @@
 # Release Notes
+
+## [Unrealeased]
+
+### Added
+* SentryClient setup to capture errors in the SDK with SentryHub without interferring with host application.
+
 ## 10.3.4
 
 ### Fixed
