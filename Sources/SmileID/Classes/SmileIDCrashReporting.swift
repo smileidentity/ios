@@ -13,12 +13,9 @@ class SmileIDCrashReporting {
     }
 
     func enable() {
-        guard let dsn = ProcessInfo.processInfo.environment["SENTRY_DSN"] else {
-            return
-        }
         // setup sentry options
         let options = Sentry.Options()
-        options.dsn = dsn
+        options.dsn = ArkanaKeys.Global().sENTRY_DSN
         options.releaseName = SmileID.version
         options.enableCrashHandler = true
         options.debug = true
@@ -42,7 +39,6 @@ class SmileIDCrashReporting {
         hub?.close()
         hub = nil
     }
-
 
     /// Checks whether the provided error involves Smile ID SDK. This is done by checking
     /// the stack trace of the error and its causes.

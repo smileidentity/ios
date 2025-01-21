@@ -102,7 +102,7 @@ public class SmileID {
 
         // Enable crash reporting as early as possible (the pre-req is that the config is loaded)
         if enableErrorReporting {
-            // SentryErrorReporter.shared.enable()
+            SmileIDCrashReporting.shared.enable()
         }
 
         SmileIDResourcesHelper.registerFonts()
