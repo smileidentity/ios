@@ -72,6 +72,7 @@ final class SelfieSubmissionManager {
             // Send out api response after successful submission
             self.delegate?.submissionDidSucceed(response)
         } catch let error as SmileIDError {
+            getExceptionHandler(error: error)
             handleJobSubmissionFailure(error)
         }
     }

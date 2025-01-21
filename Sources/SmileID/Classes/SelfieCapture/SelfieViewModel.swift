@@ -497,6 +497,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
                 DispatchQueue.main.async { self.processingState = .success }
             } catch let error as SmileIDError {
+                getExceptionHandler(error: error)
                 do {
                     let didMove = try LocalStorage.handleOfflineJobFailure(
                         jobId: self.jobId,
@@ -521,8 +522,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     return
                 }
                 if SmileID.allowOfflineMode,
-                    SmileIDError.isNetworkFailure(error: error)
-                {
+                    SmileIDError.isNetworkFailure(error: error) {
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"
                         self.processingState = .success
@@ -539,6 +539,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             } catch {
                 print("Error submitting job: \(error)")
                 self.error = error
+                getExceptionHandler(error: error)
                 DispatchQueue.main.async { self.processingState = .error }
             }
         }
