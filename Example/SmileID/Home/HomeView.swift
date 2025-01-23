@@ -13,7 +13,12 @@ struct HomeView: View {
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        NavigationView {
+        if #available(iOS 17.1, *) {
+            Self._printChanges()
+        } else {
+            // Fallback on earlier versions
+        }
+        return NavigationView {
             VStack(spacing: 24) {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
@@ -226,74 +231,6 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
         } else {
             EnterUserIDView(initialUserId: initialUserId) { userId in
                 self.userId = userId
-            }
-        }
-    }
-}
-
-private struct DocumentVerificationWithSelector: View {
-    @State private var countryCode: String?
-    @State private var documentType: String?
-    @State private var captureBothSides: Bool?
-
-    let userId: String
-    let jobId: String
-    let delegate: DocumentVerificationResultDelegate
-
-    var body: some View {
-        if let countryCode,
-           let documentType,
-           let captureBothSides {
-            SmileID.documentVerificationScreen(
-                userId: userId,
-                jobId: jobId,
-                countryCode: countryCode,
-                documentType: documentType,
-                captureBothSides: captureBothSides,
-                allowGalleryUpload: true,
-                delegate: delegate
-            )
-        } else {
-            DocumentVerificationIdTypeSelector(
-                jobType: .documentVerification
-            ) { countryCode, documentType, captureBothSides in
-                self.countryCode = countryCode
-                self.documentType = documentType
-                self.captureBothSides = captureBothSides
-            }
-        }
-    }
-}
-
-private struct EnhancedDocumentVerificationWithSelector: View {
-    @State private var countryCode: String?
-    @State private var documentType: String?
-    @State private var captureBothSides: Bool?
-
-    let userId: String
-    let jobId: String
-    let delegate: EnhancedDocumentVerificationResultDelegate
-
-    var body: some View {
-        if let countryCode,
-           let documentType,
-           let captureBothSides {
-            SmileID.enhancedDocumentVerificationScreen(
-                userId: userId,
-                jobId: jobId,
-                countryCode: countryCode,
-                documentType: documentType,
-                captureBothSides: captureBothSides,
-                allowGalleryUpload: true,
-                delegate: delegate
-            )
-        } else {
-            DocumentVerificationIdTypeSelector(
-                jobType: .enhancedDocumentVerification
-            ) { countryCode, documentType, captureBothSides in
-                self.countryCode = countryCode
-                self.documentType = documentType
-                self.captureBothSides = captureBothSides
             }
         }
     }

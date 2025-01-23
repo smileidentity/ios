@@ -6,7 +6,7 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
     let itemDisplayName: (T) -> String
     let onItemSelected: (T?) -> Void
 
-    @State private var query: String
+    @Binding private var query: String
     private var filteredItems: [T] {
         items.filter { item in
             query.isEmpty || itemDisplayName(item).localizedCaseInsensitiveContains(query)
@@ -23,11 +23,16 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
         self.selectedItem = selectedItem
         self.itemDisplayName = itemDisplayName
         self.onItemSelected = onItemSelected
-        _query = State(initialValue: selectedItem.map(itemDisplayName) ?? "")
+        self._query = selectedItem.map(itemDisplayName) ?? "" // State(initialValue: selectedItem.map(itemDisplayName) ?? "")
     }
 
     public var body: some View {
-        VStack {
+        if #available(iOS 17.1, *) {
+            Self._printChanges()
+        } else {
+            // Fallback on earlier versions
+        }
+        return VStack {
             ZStack {
                 if let selectedItem = selectedItem {
                     HStack {
@@ -41,7 +46,9 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
                             .foregroundColor(SmileID.theme.accent)
                     }
                     .contentShape(.rect)
-                    .onTapGesture { onItemSelected(nil) }
+                    .onTapGesture {
+                        onItemSelected(nil)
+                    }
                 } else {
                     ZStack(alignment: .leading) {
                         Image(systemName: "magnifyingglass")
@@ -62,7 +69,9 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
             if selectedItem == nil {
                 List(filteredItems) { item in
                     Button(
-                        action: { onItemSelected(item) },
+                        action: {
+                            onItemSelected(item)
+                        },
                         label: {
                             Text(itemDisplayName(item))
                                 .multilineTextAlignment(.leading)

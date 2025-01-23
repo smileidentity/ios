@@ -30,7 +30,12 @@ struct DocumentVerificationIdTypeSelector: View {
     }
 
     var body: some View {
-        VStack {
+        if #available(iOS 17.1, *) {
+            Self._printChanges()
+        } else {
+            // Fallback on earlier versions
+        }
+        return VStack {
             if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage).foregroundColor(.red)
             } else if viewModel.idTypes.isEmpty {
@@ -43,7 +48,9 @@ struct DocumentVerificationIdTypeSelector: View {
                     items: viewModel.idTypes,
                     selectedItem: selectedCountry,
                     itemDisplayName: { $0.country.name },
-                    onItemSelected: { selectedCountry = $0 }
+                    onItemSelected: {
+                        selectedCountry = $0
+                    }
                 )
 
                 if let idTypesForCountry = idTypesForCountry {
