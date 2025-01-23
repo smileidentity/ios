@@ -39,24 +39,4 @@ class SmileIDCrashReporting {
         hub?.close()
         hub = nil
     }
-
-    /// Checks whether the provided error involves Smile ID SDK. This is done by checking
-    /// the stack trace of the error and its causes.
-    /// - Parameter error: The error to check.
-    /// - Returns: True if the error was caused by a Smile SDK, false otherwise.
-    private func isCausedBySmileID(error: (any Error)?) -> Bool {
-        guard let error = error else { return false }
-
-        // Check if the error description contains the prefix
-        if error.localizedDescription.contains(smileIDPackagePrefix) {
-            return true
-        }
-
-        let nsError = error as NSError
-        if let underlyingError = nsError.userInfo[NSUnderlyingErrorKey] as? Error {
-            return isCausedBySmileID(error: underlyingError)
-        }
-
-        return false
-    }
 }
