@@ -6,7 +6,7 @@ struct HomeView: View {
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @ObservedObject var viewModel: HomeViewModel
 
-    @State private var selectedProduct: SmileIDProduct? = nil
+    @State private var selectedProduct: SmileIDProduct?
 
     init(config: Config) {
         self.viewModel = HomeViewModel(config: config)
@@ -141,7 +141,7 @@ struct HomeView: View {
 struct ProductContainerView<Content: View>: View {
     let onCancel: () -> Void
     @ViewBuilder let content: () -> Content
-    
+
     var body: some View {
         NavigationView {
             content()
