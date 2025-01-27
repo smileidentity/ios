@@ -6,7 +6,7 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
     let itemDisplayName: (T) -> String
     let onItemSelected: (T?) -> Void
 
-    @Binding private var query: String
+    @State private var query: String
     private var filteredItems: [T] {
         items.filter { item in
             query.isEmpty || itemDisplayName(item).localizedCaseInsensitiveContains(query)
@@ -23,16 +23,11 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
         self.selectedItem = selectedItem
         self.itemDisplayName = itemDisplayName
         self.onItemSelected = onItemSelected
-        self._query = selectedItem.map(itemDisplayName) ?? "" // State(initialValue: selectedItem.map(itemDisplayName) ?? "")
+        _query = State(initialValue: selectedItem.map(itemDisplayName) ?? "")
     }
 
     public var body: some View {
-        if #available(iOS 17.1, *) {
-            Self._printChanges()
-        } else {
-            // Fallback on earlier versions
-        }
-        return VStack {
+        VStack {
             ZStack {
                 if let selectedItem = selectedItem {
                     HStack {
@@ -46,17 +41,17 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
                             .foregroundColor(SmileID.theme.accent)
                     }
                     .contentShape(.rect)
-                    .onTapGesture {
-                        onItemSelected(nil)
-                    }
+                    .onTapGesture { onItemSelected(nil) }
                 } else {
-                    ZStack(alignment: .leading) {
+                    HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(SmileID.theme.accent)
+                        Spacer()
                         TextField("Search", text: $query)
                             .autocapitalization(.words)
                             .disableAutocorrection(true)
                             .frame(maxWidth: .infinity)
+                        Spacer()
                     }
                 }
             }
@@ -69,9 +64,7 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
             if selectedItem == nil {
                 List(filteredItems) { item in
                     Button(
-                        action: {
-                            onItemSelected(item)
-                        },
+                        action: { onItemSelected(item) },
                         label: {
                             Text(itemDisplayName(item))
                                 .multilineTextAlignment(.leading)

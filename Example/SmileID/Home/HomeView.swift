@@ -6,6 +6,8 @@ struct HomeView: View {
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @ObservedObject var viewModel: HomeViewModel
 
+    @State private var selectedProduct: SmileIDProduct? = nil
+
     init(config: Config) {
         self.viewModel = HomeViewModel(config: config)
     }
@@ -13,140 +15,21 @@ struct HomeView: View {
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        if #available(iOS 17.1, *) {
-            Self._printChanges()
-        } else {
-            // Fallback on earlier versions
-        }
-        return NavigationView {
+        NavigationView {
             VStack(spacing: 24) {
                 Text("Test Our Products")
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
                 ScrollView(showsIndicators: false) {
-                    LazyVGrid(columns: columns) {
-                        ProductCell(
-                            image: "smart_selfie_enroll",
-                            name: "SmartSelfie™ Enrollment",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                SmileID.smartSelfieEnrollmentScreen(
-                                    userId: viewModel.newUserId,
-                                    jobId: viewModel.newJobId,
-                                    allowAgentMode: true,
-                                    delegate: SmartSelfieEnrollmentDelegate(
-                                        userId: viewModel.newUserId,
-                                        onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                                        onError: viewModel.didError
-                                    )
-                                )
+                    LazyVGrid(columns: columns, spacing: 10) {
+                        ForEach(SmileIDProduct.allCases, id: \.self) { product in
+                            Button {
+                                selectedProduct = product
+                            } label: {
+                                ProductCell(product: product)
                             }
-                        )
-                        ProductCell(
-                            image: "smart_selfie_authentication",
-                            name: "SmartSelfie™ Authentication",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                SmartSelfieAuthWithUserIdEntry(
-                                    initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                                    delegate: viewModel
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "smart_selfie_enroll",
-                            name: "SmartSelfie™ Enrollment (Enhanced)",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                SmileID.smartSelfieEnrollmentScreenEnhanced(
-                                    userId: viewModel.newUserId,
-                                    delegate: SmartSelfieEnrollmentDelegate(
-                                        userId: viewModel.newUserId,
-                                        onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                                        onError: viewModel.didError
-                                    )
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "smart_selfie_authentication",
-                            name: "SmartSelfie™ Authentication (Enhanced)",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                SmartSelfieAuthEnhancedWithUserIdEntry(
-                                    initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                                    delegate: viewModel
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "enhanced_kyc",
-                            name: "Enhanced KYC",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                EnhancedKycWithIdInputScreen(
-                                    delegate: viewModel,
-                                    viewModel: EnhancedKycWithIdInputScreenViewModel(
-                                        userId: viewModel.newUserId,
-                                        jobId: viewModel.newJobId
-                                    )
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "biometric",
-                            name: "Biometric KYC",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                BiometricKycWithIdInputScreen(
-                                    delegate: viewModel,
-                                    viewModel: BiometricKycWithIdInputScreenViewModel(
-                                        userId: viewModel.newUserId,
-                                        jobId: viewModel.newJobId
-                                    )
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "document",
-                            name: "\nDocument Verification",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                DocumentVerificationWithSelector(
-                                    userId: viewModel.newUserId,
-                                    jobId: viewModel.newJobId,
-                                    delegate: viewModel
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "enhanced_doc_v",
-                            name: "Enhanced Document Verification",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                EnhancedDocumentVerificationWithSelector(
-                                    userId: viewModel.newUserId,
-                                    jobId: viewModel.newJobId,
-                                    delegate: viewModel
-                                )
-                            }
-                        )
+                            .buttonStyle(.plain)
+                        }
                     }
                 }
 
@@ -164,6 +47,80 @@ struct HomeView: View {
             .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
             .navigationBarItems(trailing: SmileEnvironmentToggleButton())
             .background(SmileID.theme.backgroundLight.ignoresSafeArea())
+            .fullScreenCover(item: $selectedProduct) { product in
+                switch product {
+                case .smartSelfieEnrollment:
+                    SmileID.smartSelfieEnrollmentScreen(
+                        userId: viewModel.newUserId,
+                        jobId: viewModel.newJobId,
+                        allowAgentMode: true,
+                        delegate: SmartSelfieEnrollmentDelegate(
+                            userId: viewModel.newUserId,
+                            onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                            onError: viewModel.didError
+                        )
+                    )
+                case .smartSelfieAuthentication:
+                    SmartSelfieAuthWithUserIdEntry(
+                        initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                        delegate: viewModel
+                    )
+                case .enhancedSmartSelfieEnrollment:
+                    SmileID.smartSelfieEnrollmentScreenEnhanced(
+                        userId: viewModel.newUserId,
+                        delegate: SmartSelfieEnrollmentDelegate(
+                            userId: viewModel.newUserId,
+                            onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                            onError: viewModel.didError
+                        )
+                    )
+                case .enhancedSmartSelfieAuthentication:
+                    SmartSelfieAuthEnhancedWithUserIdEntry(
+                        initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                        delegate: viewModel
+                    )
+                case .enhancedKYC:
+                    EnhancedKycWithIdInputScreen(
+                        delegate: viewModel,
+                        viewModel: EnhancedKycWithIdInputScreenViewModel(
+                            userId: viewModel.newUserId,
+                            jobId: viewModel.newJobId
+                        )
+                    )
+                case .biometricKYC:
+                    BiometricKycWithIdInputScreen(
+                        delegate: viewModel,
+                        viewModel: BiometricKycWithIdInputScreenViewModel(
+                            userId: viewModel.newUserId,
+                            jobId: viewModel.newJobId
+                        )
+                    )
+                case .documentVerification:
+                    NavigationView {
+                        DocumentVerificationWithSelector(
+                            userId: viewModel.newUserId,
+                            jobId: viewModel.newJobId,
+                            delegate: viewModel
+                        )
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button {
+                                    selectedProduct = nil
+                                } label: {
+                                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                                        .foregroundColor(SmileID.theme.accent)
+                                }
+                            }
+                        }
+                    }
+                case .enhancedDocumentVerification:
+                    EnhancedDocumentVerificationWithSelector(
+                        userId: viewModel.newUserId,
+                        jobId: viewModel.newJobId,
+                        delegate: viewModel
+                    )
+                }
+            }
         }
     }
 }

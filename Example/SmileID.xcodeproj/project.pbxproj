@@ -38,6 +38,7 @@
 		208972102C26253E00D07D68 /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2089720F2C26253E00D07D68 /* JobsViewModel.swift */; };
 		20969FE52C3FEB530003E5E0 /* IndeterminateProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20969FE42C3FEB530003E5E0 /* IndeterminateProgressView.swift */; };
 		20A07F9E2C3D172B001659CD /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A07F9D2C3D172B001659CD /* String+Extensions.swift */; };
+		20A5312C2D47ACC100EE0E42 /* SmileIDProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A5312B2D47ACC100EE0E42 /* SmileIDProduct.swift */; };
 		20B6D5E32C21C3C90023D51C /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E12C21C3C90023D51C /* Job.swift */; };
 		20B6D5EA2C21CA9E0023D51C /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */; };
 		20B6D5EC2C21CE660023D51C /* DataStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5EB2C21CE660023D51C /* DataStoreError.swift */; };
@@ -121,6 +122,7 @@
 		2089720F2C26253E00D07D68 /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsViewModel.swift; sourceTree = "<group>"; };
 		20969FE42C3FEB530003E5E0 /* IndeterminateProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndeterminateProgressView.swift; sourceTree = "<group>"; };
 		20A07F9D2C3D172B001659CD /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		20A5312B2D47ACC100EE0E42 /* SmileIDProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileIDProduct.swift; sourceTree = "<group>"; };
 		20B6D5E12C21C3C90023D51C /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Job.swift; sourceTree = "<group>"; };
 		20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		20B6D5EB2C21CE660023D51C /* DataStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreError.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 				1ED53F602A2F28590020BEFB /* HomeViewModel.swift */,
 				1ED53F692A2F28590020BEFB /* HomeView.swift */,
 				1E60ED322A29C306002695FF /* HomeViewController.swift */,
+				20A5312B2D47ACC100EE0E42 /* SmileIDProduct.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -709,6 +712,7 @@
 				1ED53F6C2A2F28590020BEFB /* RootView.swift in Sources */,
 				20343AFA2C2086D3003536F5 /* EmptyStateView.swift in Sources */,
 				1EA026BC2B63F3390039B08D /* NetworkMonitor.swift in Sources */,
+				20A5312C2D47ACC100EE0E42 /* SmileIDProduct.swift in Sources */,
 				20B6D5EC2C21CE660023D51C /* DataStoreError.swift in Sources */,
 				1ED53F6E2A2F28590020BEFB /* ResourcesView.swift in Sources */,
 				620F1E982B69194900185CD2 /* AlertView.swift in Sources */,
