@@ -50,77 +50,111 @@ struct HomeView: View {
             .fullScreenCover(item: $selectedProduct) { product in
                 switch product {
                 case .smartSelfieEnrollment:
-                    SmileID.smartSelfieEnrollmentScreen(
-                        userId: viewModel.newUserId,
-                        jobId: viewModel.newJobId,
-                        allowAgentMode: true,
-                        delegate: SmartSelfieEnrollmentDelegate(
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        SmileID.smartSelfieEnrollmentScreen(
                             userId: viewModel.newUserId,
-                            onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                            onError: viewModel.didError
+                            jobId: viewModel.newJobId,
+                            allowAgentMode: true,
+                            delegate: SmartSelfieEnrollmentDelegate(
+                                userId: viewModel.newUserId,
+                                onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                                onError: viewModel.didError
+                            )
                         )
-                    )
+                    }
                 case .smartSelfieAuthentication:
-                    SmartSelfieAuthWithUserIdEntry(
-                        initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                        delegate: viewModel
-                    )
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        SmartSelfieAuthWithUserIdEntry(
+                            initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                            delegate: viewModel
+                        )
+                    }
                 case .enhancedSmartSelfieEnrollment:
-                    SmileID.smartSelfieEnrollmentScreenEnhanced(
-                        userId: viewModel.newUserId,
-                        delegate: SmartSelfieEnrollmentDelegate(
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        SmileID.smartSelfieEnrollmentScreenEnhanced(
                             userId: viewModel.newUserId,
-                            onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                            onError: viewModel.didError
+                            delegate: SmartSelfieEnrollmentDelegate(
+                                userId: viewModel.newUserId,
+                                onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                                onError: viewModel.didError
+                            )
                         )
-                    )
+                    }
                 case .enhancedSmartSelfieAuthentication:
-                    SmartSelfieAuthEnhancedWithUserIdEntry(
-                        initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                        delegate: viewModel
-                    )
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        SmartSelfieAuthEnhancedWithUserIdEntry(
+                            initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                            delegate: viewModel
+                        )
+                    }
                 case .enhancedKYC:
-                    EnhancedKycWithIdInputScreen(
-                        delegate: viewModel,
-                        viewModel: EnhancedKycWithIdInputScreenViewModel(
-                            userId: viewModel.newUserId,
-                            jobId: viewModel.newJobId
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        EnhancedKycWithIdInputScreen(
+                            delegate: viewModel,
+                            viewModel: EnhancedKycWithIdInputScreenViewModel(
+                                userId: viewModel.newUserId,
+                                jobId: viewModel.newJobId
+                            )
                         )
-                    )
+                    }
                 case .biometricKYC:
-                    BiometricKycWithIdInputScreen(
-                        delegate: viewModel,
-                        viewModel: BiometricKycWithIdInputScreenViewModel(
-                            userId: viewModel.newUserId,
-                            jobId: viewModel.newJobId
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        BiometricKycWithIdInputScreen(
+                            delegate: viewModel,
+                            viewModel: BiometricKycWithIdInputScreenViewModel(
+                                userId: viewModel.newUserId,
+                                jobId: viewModel.newJobId
+                            )
                         )
-                    )
+                    }
                 case .documentVerification:
-                    NavigationView {
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
                         DocumentVerificationWithSelector(
                             userId: viewModel.newUserId,
                             jobId: viewModel.newJobId,
                             delegate: viewModel
                         )
-                        .toolbar {
-                            ToolbarItem(placement: .cancellationAction) {
-                                Button {
-                                    selectedProduct = nil
-                                } label: {
-                                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                                        .foregroundColor(SmileID.theme.accent)
-                                }
-                            }
-                        }
                     }
                 case .enhancedDocumentVerification:
-                    EnhancedDocumentVerificationWithSelector(
-                        userId: viewModel.newUserId,
-                        jobId: viewModel.newJobId,
-                        delegate: viewModel
-                    )
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        EnhancedDocumentVerificationWithSelector(
+                            userId: viewModel.newUserId,
+                            jobId: viewModel.newJobId,
+                            delegate: viewModel
+                        )
+                    }
                 }
             }
+        }
+    }
+}
+
+// This will no longer be needed after in-flow navigation work is complete.
+struct ProductContainerView<Content: View>: View {
+    let onCancel: () -> Void
+    @ViewBuilder let content: () -> Content
+    
+    var body: some View {
+        NavigationView {
+            content()
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button {
+                            onCancel()
+                        } label: {
+                            Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                                .foregroundColor(SmileID.theme.accent)
+                        }
+                    }
+                }
         }
     }
 }
@@ -189,39 +223,6 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
             EnterUserIDView(initialUserId: initialUserId) { userId in
                 self.userId = userId
             }
-        }
-    }
-}
-
-/// A view that displays a grid of items in a vertical layout. It first fills up all items in the
-/// first row before moving on to the next row. If the number of items is not a multiple of the
-/// number of columns, the last row is filled from left to right with the remaining items.
-private struct MyVerticalGrid: View {
-    let maxColumns: Int
-    let items: [AnyView]
-
-    var body: some View {
-        GeometryReader { geo in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
-                    let numRows = (items.count + maxColumns - 1) / maxColumns
-                    ForEach(0 ..< numRows, id: \.self) { rowIndex in
-                        HStack(spacing: 16) {
-                            ForEach(0 ..< maxColumns, id: \.self) { columnIndex in
-                                let itemIndex = rowIndex * maxColumns + columnIndex
-                                let width = geo.size.width / CGFloat(maxColumns)
-                                if itemIndex < items.count {
-                                    // Use the item at the calculated index
-                                    items[itemIndex].frame(width: width)
-                                } else {
-                                    Spacer().frame(width: width)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 }
