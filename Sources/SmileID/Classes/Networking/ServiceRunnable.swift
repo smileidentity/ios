@@ -62,7 +62,12 @@ extension ServiceRunnable {
         let request = try await createRestRequest(
             path: path,
             method: .post,
-            headers: [.contentType(value: "application/json")],
+            headers: [
+                .contentType(value: "application/json"),
+                .partnerID(value: SmileID.config.partnerId),
+                .sourceSDK(value: "iOS"),
+                .sourceSDKVersion(value: SmileID.version)
+            ],
             body: body
         )
         return try await serviceClient.send(request: request)
@@ -71,7 +76,12 @@ extension ServiceRunnable {
     func get<U: Decodable>(to path: PathType) async throws -> U {
         let request = try createRestRequest(
             path: path,
-            method: .get
+            method: .get,
+            headers: [
+                .partnerID(value: SmileID.config.partnerId),
+                .sourceSDK(value: "iOS"),
+                .sourceSDKVersion(value: SmileID.version)
+            ]
         )
         return try await serviceClient.send(request: request)
     }
@@ -209,6 +219,7 @@ extension ServiceRunnable {
     private func createRestRequest(
         path: PathType,
         method: RestMethod,
+        headers: [HTTPHeader]? = nil,
         queryParameters: [HTTPQueryParameters]? = nil
     ) throws -> RestRequest {
         let path = String(describing: path)
@@ -219,6 +230,7 @@ extension ServiceRunnable {
         let request = RestRequest(
             url: url,
             method: method,
+            headers: headers,
             queryParameters: queryParameters
         )
         return request
