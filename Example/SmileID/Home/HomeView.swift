@@ -6,6 +6,8 @@ struct HomeView: View {
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @ObservedObject var viewModel: HomeViewModel
 
+    @State private var selectedProduct: SmileIDProduct?
+
     init(config: Config) {
         self.viewModel = HomeViewModel(config: config)
     }
@@ -19,129 +21,15 @@ struct HomeView: View {
                     .font(SmileID.theme.header2)
                     .foregroundColor(.black)
                 ScrollView(showsIndicators: false) {
-                    LazyVGrid(columns: columns) {
-                        ProductCell(
-                            image: "smart_selfie_enroll",
-                            name: "SmartSelfie™ Enrollment",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                SmileID.smartSelfieEnrollmentScreen(
-                                    userId: viewModel.newUserId,
-                                    jobId: viewModel.newJobId,
-                                    allowAgentMode: true,
-                                    delegate: SmartSelfieEnrollmentDelegate(
-                                        userId: viewModel.newUserId,
-                                        onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                                        onError: viewModel.didError
-                                    )
-                                )
+                    LazyVGrid(columns: columns, spacing: 10) {
+                        ForEach(SmileIDProduct.allCases, id: \.self) { product in
+                            Button {
+                                selectedProduct = product
+                            } label: {
+                                ProductCell(product: product)
                             }
-                        )
-                        ProductCell(
-                            image: "smart_selfie_authentication",
-                            name: "SmartSelfie™ Authentication",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                SmartSelfieAuthWithUserIdEntry(
-                                    initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                                    delegate: viewModel
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "smart_selfie_enroll",
-                            name: "SmartSelfie™ Enrollment (Enhanced)",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                SmileID.smartSelfieEnrollmentScreenEnhanced(
-                                    userId: viewModel.newUserId,
-                                    delegate: SmartSelfieEnrollmentDelegate(
-                                        userId: viewModel.newUserId,
-                                        onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                                        onError: viewModel.didError
-                                    )
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "smart_selfie_authentication",
-                            name: "SmartSelfie™ Authentication (Enhanced)",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                SmartSelfieAuthEnhancedWithUserIdEntry(
-                                    initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                                    delegate: viewModel
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "enhanced_kyc",
-                            name: "Enhanced KYC",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                EnhancedKycWithIdInputScreen(
-                                    delegate: viewModel,
-                                    viewModel: EnhancedKycWithIdInputScreenViewModel(
-                                        userId: viewModel.newUserId,
-                                        jobId: viewModel.newJobId
-                                    )
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "biometric",
-                            name: "Biometric KYC",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                BiometricKycWithIdInputScreen(
-                                    delegate: viewModel,
-                                    viewModel: BiometricKycWithIdInputScreenViewModel(
-                                        userId: viewModel.newUserId,
-                                        jobId: viewModel.newJobId
-                                    )
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "document",
-                            name: "\nDocument Verification",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                DocumentVerificationWithSelector(
-                                    userId: viewModel.newUserId,
-                                    jobId: viewModel.newJobId,
-                                    delegate: viewModel
-                                )
-                            }
-                        )
-                        ProductCell(
-                            image: "enhanced_doc_v",
-                            name: "Enhanced Document Verification",
-                            onClick: {
-                                viewModel.onProductClicked()
-                            },
-                            content: {
-                                EnhancedDocumentVerificationWithSelector(
-                                    userId: viewModel.newUserId,
-                                    jobId: viewModel.newJobId,
-                                    delegate: viewModel
-                                )
-                            }
-                        )
+                            .buttonStyle(.plain)
+                        }
                     }
                 }
 
@@ -159,6 +47,114 @@ struct HomeView: View {
             .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
             .navigationBarItems(trailing: SmileEnvironmentToggleButton())
             .background(SmileID.theme.backgroundLight.ignoresSafeArea())
+            .fullScreenCover(item: $selectedProduct) { product in
+                switch product {
+                case .smartSelfieEnrollment:
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        SmileID.smartSelfieEnrollmentScreen(
+                            userId: viewModel.newUserId,
+                            jobId: viewModel.newJobId,
+                            allowAgentMode: true,
+                            delegate: SmartSelfieEnrollmentDelegate(
+                                userId: viewModel.newUserId,
+                                onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                                onError: viewModel.didError
+                            )
+                        )
+                    }
+                case .smartSelfieAuthentication:
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        SmartSelfieAuthWithUserIdEntry(
+                            initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                            delegate: viewModel
+                        )
+                    }
+                case .enhancedSmartSelfieEnrollment:
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        SmileID.smartSelfieEnrollmentScreenEnhanced(
+                            userId: viewModel.newUserId,
+                            delegate: SmartSelfieEnrollmentDelegate(
+                                userId: viewModel.newUserId,
+                                onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                                onError: viewModel.didError
+                            )
+                        )
+                    }
+                case .enhancedSmartSelfieAuthentication:
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        SmartSelfieAuthEnhancedWithUserIdEntry(
+                            initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                            delegate: viewModel
+                        )
+                    }
+                case .enhancedKYC:
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        EnhancedKycWithIdInputScreen(
+                            delegate: viewModel,
+                            viewModel: EnhancedKycWithIdInputScreenViewModel(
+                                userId: viewModel.newUserId,
+                                jobId: viewModel.newJobId
+                            )
+                        )
+                    }
+                case .biometricKYC:
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        BiometricKycWithIdInputScreen(
+                            delegate: viewModel,
+                            viewModel: BiometricKycWithIdInputScreenViewModel(
+                                userId: viewModel.newUserId,
+                                jobId: viewModel.newJobId
+                            )
+                        )
+                    }
+                case .documentVerification:
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        DocumentVerificationWithSelector(
+                            userId: viewModel.newUserId,
+                            jobId: viewModel.newJobId,
+                            delegate: viewModel
+                        )
+                    }
+                case .enhancedDocumentVerification:
+                    ProductContainerView { selectedProduct = nil }
+                    content: {
+                        EnhancedDocumentVerificationWithSelector(
+                            userId: viewModel.newUserId,
+                            jobId: viewModel.newJobId,
+                            delegate: viewModel
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+// This will no longer be needed after in-flow navigation work is complete.
+struct ProductContainerView<Content: View>: View {
+    let onCancel: () -> Void
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        NavigationView {
+            content()
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button {
+                            onCancel()
+                        } label: {
+                            Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                                .foregroundColor(SmileID.theme.accent)
+                        }
+                    }
+                }
         }
     }
 }
@@ -227,107 +223,6 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
             EnterUserIDView(initialUserId: initialUserId) { userId in
                 self.userId = userId
             }
-        }
-    }
-}
-
-private struct DocumentVerificationWithSelector: View {
-    @State private var countryCode: String?
-    @State private var documentType: String?
-    @State private var captureBothSides: Bool?
-
-    let userId: String
-    let jobId: String
-    let delegate: DocumentVerificationResultDelegate
-
-    var body: some View {
-        if let countryCode,
-           let documentType,
-           let captureBothSides {
-            SmileID.documentVerificationScreen(
-                userId: userId,
-                jobId: jobId,
-                countryCode: countryCode,
-                documentType: documentType,
-                captureBothSides: captureBothSides,
-                allowGalleryUpload: true,
-                delegate: delegate
-            )
-        } else {
-            DocumentVerificationIdTypeSelector(
-                jobType: .documentVerification
-            ) { countryCode, documentType, captureBothSides in
-                self.countryCode = countryCode
-                self.documentType = documentType
-                self.captureBothSides = captureBothSides
-            }
-        }
-    }
-}
-
-private struct EnhancedDocumentVerificationWithSelector: View {
-    @State private var countryCode: String?
-    @State private var documentType: String?
-    @State private var captureBothSides: Bool?
-
-    let userId: String
-    let jobId: String
-    let delegate: EnhancedDocumentVerificationResultDelegate
-
-    var body: some View {
-        if let countryCode,
-           let documentType,
-           let captureBothSides {
-            SmileID.enhancedDocumentVerificationScreen(
-                userId: userId,
-                jobId: jobId,
-                countryCode: countryCode,
-                documentType: documentType,
-                captureBothSides: captureBothSides,
-                allowGalleryUpload: true,
-                delegate: delegate
-            )
-        } else {
-            DocumentVerificationIdTypeSelector(
-                jobType: .enhancedDocumentVerification
-            ) { countryCode, documentType, captureBothSides in
-                self.countryCode = countryCode
-                self.documentType = documentType
-                self.captureBothSides = captureBothSides
-            }
-        }
-    }
-}
-
-/// A view that displays a grid of items in a vertical layout. It first fills up all items in the
-/// first row before moving on to the next row. If the number of items is not a multiple of the
-/// number of columns, the last row is filled from left to right with the remaining items.
-private struct MyVerticalGrid: View {
-    let maxColumns: Int
-    let items: [AnyView]
-
-    var body: some View {
-        GeometryReader { geo in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
-                    let numRows = (items.count + maxColumns - 1) / maxColumns
-                    ForEach(0 ..< numRows, id: \.self) { rowIndex in
-                        HStack(spacing: 16) {
-                            ForEach(0 ..< maxColumns, id: \.self) { columnIndex in
-                                let itemIndex = rowIndex * maxColumns + columnIndex
-                                let width = geo.size.width / CGFloat(maxColumns)
-                                if itemIndex < items.count {
-                                    // Use the item at the calculated index
-                                    items[itemIndex].frame(width: width)
-                                } else {
-                                    Spacer().frame(width: width)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 }

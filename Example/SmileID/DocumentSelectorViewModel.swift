@@ -22,6 +22,7 @@ class DocumentSelectorViewModel: ObservableObject {
 
     @MainActor
     func getServices() async throws {
+        guard idTypes.isEmpty else { return }
         do {
             let authRequest = AuthenticationRequest(
                 jobType: jobType,
