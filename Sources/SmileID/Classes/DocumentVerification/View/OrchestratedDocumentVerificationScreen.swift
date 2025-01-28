@@ -174,7 +174,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult, S: Captu
                 instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Front.Callout"
                 ),
-                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
+                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureFront"),
                 knownIdAspectRatio: idAspectRatio,
                 onConfirm: viewModel.onFrontDocumentImageConfirmed,
                 onError: viewModel.onError
@@ -193,7 +193,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult, S: Captu
                 instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Back.Callout"
                 ),
-                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.TakePhoto"),
+                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureBack"),
                 knownIdAspectRatio: idAspectRatio,
                 onConfirm: viewModel.onBackDocumentImageConfirmed,
                 onError: viewModel.onError,
