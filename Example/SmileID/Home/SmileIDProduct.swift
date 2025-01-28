@@ -9,7 +9,7 @@ enum SmileIDProduct: CaseIterable {
     case biometricKYC
     case documentVerification
     case enhancedDocumentVerification
-    
+
     var image: String {
         switch self {
         case .smartSelfieEnrollment:
@@ -30,7 +30,7 @@ enum SmileIDProduct: CaseIterable {
             return "enhanced_doc_v"
         }
     }
-    
+
     var name: String {
         switch self {
         case .smartSelfieEnrollment:

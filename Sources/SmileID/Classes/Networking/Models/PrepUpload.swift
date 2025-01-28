@@ -7,7 +7,7 @@ public struct PrepUploadRequest: Codable {
     // TODO - Michael will change this to a boolean
     public var allowNewEnroll: String = "false"
     public var partnerId = SmileID.config.partnerId
-    public var metadata: [Metadatum]? = nil
+    public var metadata: [Metadatum]?
     public var sourceSdk = "ios"
     public var sourceSdkVersion = SmileID.version
     public var timestamp = String(Date().millisecondsSince1970)
@@ -78,7 +78,7 @@ public struct PrepUploadResponse: Codable {
     public var uploadUrl: String
     public var smileJobId: String
     public var cameraConfig: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case code
         case refId = "ref_id"
