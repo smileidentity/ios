@@ -1,4 +1,6 @@
 import Foundation
+import SmileIDSecurity
+
 
 protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
@@ -66,7 +68,8 @@ extension ServiceRunnable {
                 .contentType(value: "application/json"),
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
-                .sourceSDKVersion(value: SmileID.version)
+                .sourceSDKVersion(value: SmileID.version),
+                .requestTimestamp()
             ],
             body: body
         )
@@ -80,7 +83,8 @@ extension ServiceRunnable {
             headers: [
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
-                .sourceSDKVersion(value: SmileID.version)
+                .sourceSDKVersion(value: SmileID.version),
+                .requestTimestamp()
             ]
         )
         return try await serviceClient.send(request: request)
@@ -108,6 +112,7 @@ extension ServiceRunnable {
         headers.append(.timestamp(value: timestamp))
         headers.append(.sourceSDK(value: "iOS"))
         headers.append(.sourceSDKVersion(value: SmileID.version))
+        headers.append(.requestTimestamp())
         let request = try await createMultiPartRequest(
             url: path,
             method: .post,
