@@ -7,14 +7,14 @@ public struct PrepUploadRequest: Codable {
     // TODO - Michael will change this to a boolean
     public var allowNewEnroll: String = "false"
     public var partnerId = SmileID.config.partnerId
-    public var metadata: [Metadatum]? = nil
+    public var metadata: [Metadatum]?
     public var sourceSdk = "ios"
     public var sourceSdkVersion = SmileID.version
     public var timestamp = String(Date().millisecondsSince1970)
     public var signature = ""
     public var useEnrolledImage = false
     public var retry = "false" /// backend is broken needs these as strings
-    
+
     public init(
         partnerParams: PartnerParams,
         callbackUrl: String? = SmileID.callbackUrl,
@@ -40,7 +40,7 @@ public struct PrepUploadRequest: Codable {
         self.useEnrolledImage = useEnrolledImage
         self.retry = retry
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case partnerParams = "partner_params"
         case callbackUrl = "callback_url"
@@ -54,7 +54,7 @@ public struct PrepUploadRequest: Codable {
         case retry
         case metadata
     }
-    
+
     public func copy(retry: String? = nil) -> PrepUploadRequest {
         return PrepUploadRequest(
             partnerParams: partnerParams,
@@ -78,7 +78,7 @@ public struct PrepUploadResponse: Codable {
     public var uploadUrl: String
     public var smileJobId: String
     public var cameraConfig: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case code
         case refId = "ref_id"

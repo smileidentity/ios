@@ -43,13 +43,15 @@ public struct SearchableDropdownSelector<T: Identifiable>: View {
                     .contentShape(.rect)
                     .onTapGesture { onItemSelected(nil) }
                 } else {
-                    ZStack(alignment: .leading) {
+                    HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(SmileID.theme.accent)
+                        Spacer()
                         TextField("Search", text: $query)
                             .autocapitalization(.words)
                             .disableAutocorrection(true)
                             .frame(maxWidth: .infinity)
+                        Spacer()
                     }
                 }
             }

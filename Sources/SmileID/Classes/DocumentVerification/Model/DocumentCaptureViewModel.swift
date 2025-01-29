@@ -192,14 +192,18 @@ class DocumentCaptureViewModel: ObservableObject {
             localMetadata.addMetadata(
                 Metadatum.DocumentFrontCaptureDuration(duration: metadataTimerStart.elapsedTime()))
             localMetadata.addMetadata(Metadatum.DocumentFrontCaptureRetries(retries: retryCount))
-            localMetadata.addMetadata(
-                Metadatum.DocumentFrontImageOrigin(origin: documentImageOrigin!))
+            if let documentImageOrigin {
+                localMetadata.addMetadata(
+                    Metadatum.DocumentFrontImageOrigin(origin: documentImageOrigin))
+            }
         case .back:
             localMetadata.addMetadata(
                 Metadatum.DocumentBackCaptureDuration(duration: metadataTimerStart.elapsedTime()))
             localMetadata.addMetadata(Metadatum.DocumentBackCaptureRetries(retries: retryCount))
-            localMetadata.addMetadata(
-                Metadatum.DocumentBackImageOrigin(origin: documentImageOrigin!))
+            if let documentImageOrigin {
+                localMetadata.addMetadata(
+                    Metadatum.DocumentBackImageOrigin(origin: documentImageOrigin))
+            }
         }
         DispatchQueue.main.async { [self] in
             documentImageToConfirm = croppedImage

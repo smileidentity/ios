@@ -3,6 +3,7 @@
 ## [Unrealeased]
 
 ### Added
+* Default headers to all GET and POST requests: PartnerID, Source SDK and Source SDK Version.
 * SentryClient setup to capture errors in the SDK with SentryHub without interferring with host application.
 
 ## 10.3.4
