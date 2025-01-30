@@ -28,6 +28,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let extraPartnerParams: [String: String]
     private var localMetadata: LocalMetadata
     private let faceDetector = FaceDetector()
+    private var resultDelegate: SmartSelfieResultDelegate?
 
     var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
@@ -58,8 +59,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     /// `errorMessageRes` is not set by the partner
     @Published public var errorMessageRes: String?
     @Published public var errorMessage: String?
-    @Published public private(set) var processingState: ProcessingState?
-    @Published public private(set) var selfieToConfirm: Data?
+    @Published var processingState: ProcessingState?
+    @Published var selfieToConfirm: Data?
     @Published var captureProgress: Double = 0
     @Published var useBackCamera = false {
         // This is toggled by a Binding
@@ -114,6 +115,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 ? Metadatum.SelfieImageOrigin(cameraFacing: .backCamera)
                 : Metadatum.SelfieImageOrigin(cameraFacing: .frontCamera)
         )
+    }
+    
+    func configure(delegate: SmartSelfieResultDelegate) {
+        self.resultDelegate = delegate
     }
 
     let metadataTimerStart = MonotonicTime()
@@ -368,7 +373,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
     }
 
-    func onRetry() {
+    func handleRetry() {
         // If selfie file is present, all captures were completed, so we're retrying a network issue
         if selfieImage != nil, livenessImages.count == numLivenessImages {
             submitJob()
@@ -376,6 +381,14 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             shouldAnalyzeImages = true
             DispatchQueue.main.async { self.processingState = nil }
         }
+    }
+
+    func handleContinue() {
+        onFinished()
+    }
+
+    func handleDismiss() {
+        onFinished()
     }
 
     public func submitJob() {
@@ -547,26 +560,25 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
     }
 
-    public func onFinished(callback: SmartSelfieResultDelegate) {
+    func onFinished() {
         if let selfieImage = selfieImage,
             let selfiePath = getRelativePath(from: selfieImage),
             livenessImages.count == numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            )
-        {
+            ) {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }
 
-            callback.didSucceed(
+            self.resultDelegate?.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessImagesPaths,
                 apiResponse: apiResponse
             )
         } else if let error = error {
-            callback.didError(error: error)
+            self.resultDelegate?.didError(error: error)
         } else {
-            callback.didError(error: SmileIDError.unknown("Unknown error"))
+            self.resultDelegate?.didError(error: SmileIDError.unknown("Unknown error"))
         }
     }
 

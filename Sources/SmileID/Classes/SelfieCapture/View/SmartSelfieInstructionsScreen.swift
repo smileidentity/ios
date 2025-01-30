@@ -8,13 +8,19 @@ import SwiftUI
 ///    - viewModel: The view model for managing business logic for the selfie capture process.
 public struct SmartSelfieInstructionsScreen: View {
     @State private var showSelfieCaptureView: Bool = false
+    weak var delegate: SmartSelfieResultDelegate?
 
     private let showAttribution: Bool
     private let viewModel: SelfieViewModel
 
-    public init(showAttribution: Bool, viewModel: SelfieViewModel) {
+    public init(
+        showAttribution: Bool,
+        viewModel: SelfieViewModel,
+        delegate: SmartSelfieResultDelegate? = nil
+    ) {
         self.showAttribution = showAttribution
         self.viewModel = viewModel
+        self.delegate = delegate
     }
 
     public var body: some View {
@@ -100,10 +106,13 @@ public struct SmartSelfieInstructionsScreen: View {
 
             VStack(spacing: 8) {
                 NavigationLink(
-                    destination: SelfieCaptureScreen(viewModel: viewModel),
+                    destination: SelfieCaptureScreen(
+                        viewModel: viewModel,
+                        delegate: self.delegate
+                    ),
                     isActive: $showSelfieCaptureView
                 ) { EmptyView() }
-                
+
                 SmileButton(
                     title: "Action.TakePhoto",
                     clicked: {

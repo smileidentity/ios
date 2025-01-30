@@ -47,10 +47,11 @@ public struct OrchestratedSelfieCaptureScreen: View {
                 if showInstructions {
                     SmartSelfieInstructionsScreen(
                         showAttribution: showAttribution,
-                        viewModel: viewModel
+                        viewModel: viewModel,
+                        delegate: onResult
                     )
                 } else {
-                    SelfieCaptureScreen(viewModel: viewModel)
+                    SelfieCaptureScreen(viewModel: viewModel, delegate: onResult)
                 }
             }
             .navigationBarItems(

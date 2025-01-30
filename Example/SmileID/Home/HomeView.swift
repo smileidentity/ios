@@ -59,7 +59,9 @@ struct HomeView: View {
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                             onError: viewModel.didError
                         ),
-                        onDismiss: { selectedProduct = nil }
+                        onDismiss: {
+                            selectedProduct = nil
+                        }
                     )
                 case .smartSelfieAuthentication:
                     ProductContainerView { selectedProduct = nil }
@@ -162,7 +164,7 @@ struct ProductContainerView<Content: View>: View {
 // and Authentication. However, since the result is still processing, the result parameter is not
 // yet populated (which is what contains the jobType). On Enroll, we need to perform a different
 // action (namely, save userId to clipboard)
-struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
+class SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
     let userId: String
     let onEnrollmentSuccess: (
         _ userId: String,
@@ -171,6 +173,23 @@ struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
         _ apiResponse: SmartSelfieResponse?
     ) -> Void
     let onError: (Error) -> Void
+
+    init(
+        userId: String,
+        onEnrollmentSuccess: @escaping (
+            _: String,
+            _: URL,
+            _: [URL],
+            _: SmartSelfieResponse?
+        ) -> Void,
+        onError: @escaping (
+            Error
+        ) -> Void
+    ) {
+        self.userId = userId
+        self.onEnrollmentSuccess = onEnrollmentSuccess
+        self.onError = onError
+    }
 
     func didSucceed(
         selfieImage: URL,
