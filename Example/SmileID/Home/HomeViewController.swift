@@ -31,7 +31,8 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
         let smartSelfieRegistrationScreen = SmileID.smartSelfieEnrollmentScreen(
             userId: userID,
             allowAgentMode: true,
-            delegate: self
+            delegate: self,
+            onDismiss: {}
         )
         cameraVC = UIHostingController(rootView: smartSelfieRegistrationScreen)
         cameraVC?.modalPresentationStyle = .fullScreen
@@ -46,7 +47,8 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
         let smartSelfieAuthenticationScreen = SmileID.smartSelfieAuthenticationScreen(
             userId: userID,
             allowAgentMode: true,
-            delegate: self
+            delegate: self,
+            onDismiss: {}
         )
         cameraVC = UIHostingController(rootView: smartSelfieAuthenticationScreen)
         cameraVC?.modalPresentationStyle = .fullScreen

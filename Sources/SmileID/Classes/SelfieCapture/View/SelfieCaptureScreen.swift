@@ -51,7 +51,6 @@ public struct SelfieCaptureScreen: View {
             .padding(24)
         }
         .preferredColorScheme(.light)
-        .navigationBarHidden(true)
         .onAppear {
             UIScreen.main.brightness = 1
         }

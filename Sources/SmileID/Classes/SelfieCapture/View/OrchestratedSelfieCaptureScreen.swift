@@ -9,6 +9,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
     public let showInstructions: Bool
     public let onResult: SmartSelfieResultDelegate
     private let viewModel: SelfieViewModel
+    private let onDismiss: () -> Void
 
     public init(
         userId: String,
@@ -20,7 +21,8 @@ public struct OrchestratedSelfieCaptureScreen: View {
         showInstructions: Bool,
         extraPartnerParams: [String: String],
         skipApiSubmission: Bool,
-        onResult: SmartSelfieResultDelegate
+        onResult: SmartSelfieResultDelegate,
+        onDismiss: @escaping () -> Void
     ) {
         self.allowAgentMode = allowAgentMode
         self.showAttribution = showAttribution
@@ -36,16 +38,29 @@ public struct OrchestratedSelfieCaptureScreen: View {
             extraPartnerParams: extraPartnerParams,
             localMetadata: LocalMetadata()
         )
+        self.onDismiss = onDismiss
     }
 
     public var body: some View {
-        if showInstructions {
-            SmartSelfieInstructionsScreen(
-                showAttribution: showAttribution,
-                viewModel: viewModel
+        NavigationView {
+            ZStack {
+                if showInstructions {
+                    SmartSelfieInstructionsScreen(
+                        showAttribution: showAttribution,
+                        viewModel: viewModel
+                    )
+                } else {
+                    SelfieCaptureScreen(viewModel: viewModel)
+                }
+            }
+            .navigationBarItems(
+                leading: Button {
+                    onDismiss()
+                } label: {
+                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                        .foregroundColor(SmileID.theme.accent)
+                }
             )
-        } else {
-            SelfieCaptureScreen(viewModel: viewModel)
         }
     }
 }

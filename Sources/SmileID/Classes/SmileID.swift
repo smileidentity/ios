@@ -306,7 +306,8 @@ public class SmileID {
         useStrictMode: Bool = false,
         skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
-        delegate: SmartSelfieResultDelegate
+        delegate: SmartSelfieResultDelegate,
+        onDismiss: @escaping () -> Void
     ) -> some View {
             OrchestratedSelfieCaptureScreen(
                 userId: userId,
@@ -318,7 +319,8 @@ public class SmileID {
                 showInstructions: showInstructions,
                 extraPartnerParams: extraPartnerParams,
                 skipApiSubmission: skipApiSubmission,
-                onResult: delegate
+                onResult: delegate,
+                onDismiss: onDismiss
             )
     }
 
@@ -342,7 +344,8 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         extraPartnerParams: [String: String] = [:],
-        delegate: SmartSelfieResultDelegate
+        delegate: SmartSelfieResultDelegate,
+        onDismiss: @escaping () -> Void
     ) -> some View {
         OrchestratedEnhancedSelfieCaptureScreen(
             userId: userId,
@@ -351,7 +354,8 @@ public class SmileID {
             showAttribution: showAttribution,
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            onResult: delegate
+            onResult: delegate,
+            onDismiss: onDismiss
         )
     }
 
@@ -385,7 +389,8 @@ public class SmileID {
         showInstructions: Bool = true,
         useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
-        delegate: SmartSelfieResultDelegate
+        delegate: SmartSelfieResultDelegate,
+        onDismiss: @escaping () -> Void
     ) -> some View {
         OrchestratedSelfieCaptureScreen(
             userId: userId,
@@ -397,7 +402,8 @@ public class SmileID {
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
             skipApiSubmission: false,
-            onResult: delegate
+            onResult: delegate,
+            onDismiss: onDismiss
         )
     }
 
@@ -421,7 +427,8 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         extraPartnerParams: [String: String] = [:],
-        delegate: SmartSelfieResultDelegate
+        delegate: SmartSelfieResultDelegate,
+        onDismiss: @escaping () -> Void
     ) -> some View {
         OrchestratedEnhancedSelfieCaptureScreen(
             userId: userId,
@@ -430,7 +437,8 @@ public class SmileID {
             showAttribution: showAttribution,
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            onResult: delegate
+            onResult: delegate,
+            onDismiss: onDismiss
         )
     }
 

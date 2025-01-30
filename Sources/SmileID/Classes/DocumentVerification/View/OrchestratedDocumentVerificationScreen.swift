@@ -210,7 +210,8 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 showInstructions: showInstructions,
                 extraPartnerParams: extraPartnerParams,
                 skipApiSubmission: true,
-                onResult: viewModel
+                onResult: viewModel,
+                onDismiss: {}
             )
         case let .processing(state):
             ProcessingScreen(

@@ -50,19 +50,17 @@ struct HomeView: View {
             .fullScreenCover(item: $selectedProduct) { product in
                 switch product {
                 case .smartSelfieEnrollment:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
-                        SmileID.smartSelfieEnrollmentScreen(
+                    SmileID.smartSelfieEnrollmentScreen(
+                        userId: viewModel.newUserId,
+                        jobId: viewModel.newJobId,
+                        allowAgentMode: true,
+                        delegate: SmartSelfieEnrollmentDelegate(
                             userId: viewModel.newUserId,
-                            jobId: viewModel.newJobId,
-                            allowAgentMode: true,
-                            delegate: SmartSelfieEnrollmentDelegate(
-                                userId: viewModel.newUserId,
-                                onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                                onError: viewModel.didError
-                            )
-                        )
-                    }
+                            onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                            onError: viewModel.didError
+                        ),
+                        onDismiss: { selectedProduct = nil }
+                    )
                 case .smartSelfieAuthentication:
                     ProductContainerView { selectedProduct = nil }
                     content: {
@@ -80,7 +78,8 @@ struct HomeView: View {
                                 userId: viewModel.newUserId,
                                 onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                                 onError: viewModel.didError
-                            )
+                            ),
+                            onDismiss: { selectedProduct = nil }
                         )
                     }
                 case .enhancedSmartSelfieAuthentication:
@@ -197,7 +196,8 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
             SmileID.smartSelfieAuthenticationScreen(
                 userId: userId,
                 allowAgentMode: true,
-                delegate: delegate
+                delegate: delegate,
+                onDismiss: {}
             )
         } else {
             EnterUserIDView(initialUserId: initialUserId) { userId in
@@ -217,7 +217,8 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
         if let userId {
             SmileID.smartSelfieAuthenticationScreenEnhanced(
                 userId: userId,
-                delegate: delegate
+                delegate: delegate,
+                onDismiss: {}
             )
         } else {
             EnterUserIDView(initialUserId: initialUserId) { userId in
