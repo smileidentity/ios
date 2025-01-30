@@ -50,4 +50,8 @@ public extension HTTPHeader {
 
         return HTTPHeader(name: "SmileID-Request-Timestamp", value: value)
     }
+
+    static func requestMac(value: String) -> HTTPHeader {
+        HTTPHeader(name: "SmileID-Request-Mac", value: value)
+    }
 }

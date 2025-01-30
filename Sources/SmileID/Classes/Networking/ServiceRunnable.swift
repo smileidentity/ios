@@ -137,7 +137,7 @@ extension ServiceRunnable {
     private func createMultiPartRequest(
         url: PathType,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         uploadData: Data
     ) async throws -> RestRequest {
         let path = String(describing: url)
@@ -153,10 +153,13 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
+        let requestMac = try SmileIDCryptoManager.shared.sign(headers: headers.toDictionary(), payload: uploadData)
+        var signedHeaders = headers + [.requestMac(value: requestMac)]
+
         let request = RestRequest(
             url: url,
             method: method,
-            headers: headers,
+            headers: signedHeaders,
             body: uploadData
         )
         return request
@@ -179,17 +182,21 @@ extension ServiceRunnable {
     private func createUploadRequest(
         url: String,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         uploadData: Data,
         queryParameters _: [HTTPQueryParameters]? = nil
     ) async throws -> RestRequest {
         guard let url = URL(string: url) else {
             throw URLError(.badURL)
         }
+
+        let requestMac = try SmileIDCryptoManager.shared.sign(headers: headers.toDictionary(), payload: uploadData)
+        let signedHeaders = headers + [.requestMac(value: requestMac)]
+
         let request = RestRequest(
             url: url,
             method: method,
-            headers: headers,
+            headers: signedHeaders,
             body: uploadData
         )
         return request
@@ -198,7 +205,7 @@ extension ServiceRunnable {
     private func createRestRequest<T: Encodable>(
         path: PathType,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         queryParameters: [HTTPQueryParameters]? = nil,
         body: T
     ) async throws -> RestRequest {
@@ -207,11 +214,16 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
+        let encoder = JSONEncoder()
+        let payload = try encoder.encode(body)
+        let requestMac = try SmileIDCryptoManager.shared.sign(headers: headers.toDictionary(), payload: payload)
+        let signedHeaders = headers + [.requestMac(value: requestMac)]
+
         do {
             let request = try RestRequest(
                 url: url,
                 method: method,
-                headers: headers,
+                headers: signedHeaders,
                 queryParameters: queryParameters,
                 body: body
             )
@@ -224,7 +236,7 @@ extension ServiceRunnable {
     private func createRestRequest(
         path: PathType,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         queryParameters: [HTTPQueryParameters]? = nil
     ) throws -> RestRequest {
         let path = String(describing: path)
@@ -232,10 +244,13 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
+        let requestMac = try SmileIDCryptoManager.shared.sign(headers: headers.toDictionary())
+        let signedHeaders = headers + [.requestMac(value: requestMac)]
+
         let request = RestRequest(
             url: url,
             method: method,
-            headers: headers,
+            headers: signedHeaders,
             queryParameters: queryParameters
         )
         return request
