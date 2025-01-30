@@ -23,6 +23,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let userId: String
     private let jobId: String
     private let allowNewEnroll: Bool
+    let allowAgentMode: Bool
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
     private var localMetadata: LocalMetadata
@@ -70,6 +71,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         userId: String,
         jobId: String,
         allowNewEnroll: Bool,
+        allowAgentMode: Bool,
         skipApiSubmission: Bool,
         extraPartnerParams: [String: String],
         localMetadata: LocalMetadata
@@ -78,6 +80,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.userId = userId
         self.jobId = jobId
         self.allowNewEnroll = allowNewEnroll
+        self.allowAgentMode = allowAgentMode
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
         self.localMetadata = localMetadata

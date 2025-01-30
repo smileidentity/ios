@@ -5,11 +5,11 @@ import SwiftUI
 /// The actual selfie capture screen, which shows the camera preview and the progress indicator
 public struct SelfieCaptureScreen: View {
     @Backport.StateObject var viewModel: SelfieViewModel
-    let allowAgentMode: Bool
 
-    public init(viewModel: SelfieViewModel, allowAgentMode: Bool) {
+    private var originalBrightness = UIScreen.main.brightness
+
+    public init(viewModel: SelfieViewModel) {
         self._viewModel = Backport.StateObject(wrappedValue: viewModel)
-        self.allowAgentMode = allowAgentMode
     }
 
     public var body: some View {
@@ -32,7 +32,7 @@ public struct SelfieCaptureScreen: View {
                     .font(SmileID.theme.header4)
                     .transition(.slide)
 
-                if allowAgentMode {
+                if viewModel.allowAgentMode {
                     let textColor = agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent
                     let bgColor = agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain
                     Toggle(isOn: $viewModel.useBackCamera) {
@@ -40,17 +40,24 @@ public struct SelfieCaptureScreen: View {
                             .font(SmileID.theme.header4)
                             .foregroundColor(textColor)
                     }
-                        .padding(10)
-                        .background(bgColor)
-                        .cornerRadius(25)
-                        .shadow(radius: 25)
-                        .animation(.default)
-                        .frame(maxWidth: 200)
+                    .padding(10)
+                    .background(bgColor)
+                    .cornerRadius(25)
+                    .shadow(radius: 25)
+                    .animation(.default)
+                    .frame(maxWidth: 200)
                 }
             }
-                .padding(24)
+            .padding(24)
         }
         .preferredColorScheme(.light)
+        .navigationBarHidden(true)
+        .onAppear {
+            UIScreen.main.brightness = 1
+        }
+        .onDisappear {
+            UIScreen.main.brightness = originalBrightness
+        }
         .alert(item: $viewModel.unauthorizedAlert) { alert in
             Alert(
                 title: Text(alert.title),

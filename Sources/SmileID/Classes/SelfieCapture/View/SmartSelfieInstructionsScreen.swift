@@ -5,13 +5,16 @@ import SwiftUI
 ///
 /// - Parameters:
 ///    - showAttribution: Whether or not to show the SmileID attribution
-///    - onInstructionsAcknowledged: The callback to invoke when the user acknowledges the instructions
+///    - viewModel: The view model for managing business logic for the selfie capture process.
 public struct SmartSelfieInstructionsScreen: View {
-    public let showAttribution: Bool
-    public let onInstructionsAcknowledged: () -> Void
-    public init(showAttribution: Bool, onInstructionsAcknowledged: @escaping () -> Void) {
+    @State private var showSelfieCaptureView: Bool = false
+
+    private let showAttribution: Bool
+    private let viewModel: SelfieViewModel
+
+    public init(showAttribution: Bool, viewModel: SelfieViewModel) {
         self.showAttribution = showAttribution
-        self.onInstructionsAcknowledged = onInstructionsAcknowledged
+        self.viewModel = viewModel
     }
 
     public var body: some View {
@@ -96,9 +99,16 @@ public struct SmartSelfieInstructionsScreen: View {
             }
 
             VStack(spacing: 8) {
+                NavigationLink(
+                    destination: SelfieCaptureScreen(viewModel: viewModel),
+                    isActive: $showSelfieCaptureView
+                ) { EmptyView() }
+                
                 SmileButton(
                     title: "Action.TakePhoto",
-                    clicked: onInstructionsAcknowledged
+                    clicked: {
+                        showSelfieCaptureView = true
+                    }
                 )
 
                 if showAttribution {
