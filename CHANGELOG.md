@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased]
+## 10.3.5
 
 ### Added
 * Default headers to all GET and POST requests: PartnerID, Source SDK and Source SDK Version.
