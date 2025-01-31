@@ -1,10 +1,9 @@
 # Release Notes
 
-## 10.4.0
+## [Unreleased]
 
 ### Added
 * Default headers to all GET and POST requests: PartnerID, Source SDK and Source SDK Version.
-* SentryClient setup to capture errors in the SDK with SentryHub without interferring with host application.
 
 ### Fixed
 * Document back image required when `captureBothSides` is false.
