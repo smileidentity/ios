@@ -48,11 +48,13 @@ struct BiometricKycWithIdInputScreen: View {
                 productName: "ID",
                 partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
                 showAttribution: true,
-                onConsentGranted: {
+                onConsentGranted: { consentInformation in
                     viewModel.onConsentGranted(
                         country: country,
                         idType: idType,
-                        requiredFields: requiredFields)
+                        consentInformation: consentInformation,
+                        requiredFields: requiredFields
+                    )
                 },
                 onConsentDenied: { delegate.didError(error: SmileIDError.consentDenied) }
             )

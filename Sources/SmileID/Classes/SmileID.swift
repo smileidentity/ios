@@ -582,7 +582,7 @@ public class SmileID {
         productName: String,
         partnerPrivacyPolicy: URL,
         showAttribution: Bool = true,
-        onConsentGranted: @escaping () -> Void,
+        onConsentGranted: @escaping (ConsentInformation) -> Void,
         onConsentDenied: @escaping () -> Void
     ) -> some View {
         OrchestratedConsentScreen(

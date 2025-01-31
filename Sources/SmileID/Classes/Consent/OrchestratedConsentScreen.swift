@@ -1,10 +1,22 @@
 import SwiftUI
 
 public struct ConsentInformation {
-    let consent_granted_date: String
-    let personal_details_consent_granted: Bool
-    let contact_information_consent_granted: Bool
-    let document_information_consent_granted: Bool
+    public let consentGrantedDate: String
+    public let personalDetailsConsentGranted: Bool
+    public let contactInformationConsentGranted: Bool
+    public let documentInformationConsentGranted: Bool
+    
+    public init(
+        consentGrantedDate: String,
+        personalDetailsConsentGranted: Bool,
+        contactInformationConsentGranted: Bool,
+        documentInformationConsentGranted: Bool
+    ) {
+        self.consentGrantedDate = consentGrantedDate
+        self.personalDetailsConsentGranted = personalDetailsConsentGranted
+        self.contactInformationConsentGranted = contactInformationConsentGranted
+        self.documentInformationConsentGranted = documentInformationConsentGranted
+    }
 }
 
 /// Responsible for showing the consent screen and the consent denied (try again) screens.
@@ -128,10 +140,10 @@ public struct ConsentScreen: View {
             VStack(spacing: 8) {
                 Button(action: {
                     let consentInfo = ConsentInformation(
-                        consent_granted_date: ISO8601DateFormatter().string(from: Date()),
-                        personal_details_consent_granted: true,
-                        contact_information_consent_granted: true,
-                        document_information_consent_granted: true
+                        consentGrantedDate: ISO8601DateFormatter().string(from: Date()),
+                        personalDetailsConsentGranted: true,
+                        contactInformationConsentGranted: true,
+                        documentInformationConsentGranted: true
                     )
                     onConsentGranted(consentInfo)
                 }) {

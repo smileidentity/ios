@@ -88,10 +88,17 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
                         )
                     }
                 } else {
-                    // We don't need consent. Proceed forward as if consent has already been granted
+                    // We don't need consent. Mark it as false for this product since it's not needed, unless we want to change this
+                    let consentInfo = ConsentInformation(
+                        consentGrantedDate: ISO8601DateFormatter().string(from: Date()),
+                        personalDetailsConsentGranted: false,
+                        contactInformationConsentGranted: false,
+                        documentInformationConsentGranted: false
+                    )
                     onConsentGranted(
                         country: country,
                         idType: idType,
+                        consentInformation: consentInfo,
                         requiredFields: requiredFields
                     )
                 }
@@ -108,7 +115,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
         loadConsent(country: country, idType: idType, requiredFields: requiredFields)
     }
 
-    func onConsentGranted(country: String, idType: String, requiredFields: [RequiredField]) {
+    func onConsentGranted(country: String, idType: String, consentInformation: ConsentInformation, requiredFields: [RequiredField]) {
         DispatchQueue.main.async {
             self.step = .idInput(
                 country: country,
