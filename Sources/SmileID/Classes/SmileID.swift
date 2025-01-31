@@ -428,7 +428,7 @@ public class SmileID {
         showInstructions: Bool = true,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate,
-        onDismiss: @escaping () -> Void
+        onDismiss: (() -> Void)? = nil
     ) -> some View {
         OrchestratedEnhancedSelfieCaptureScreen(
             userId: userId,

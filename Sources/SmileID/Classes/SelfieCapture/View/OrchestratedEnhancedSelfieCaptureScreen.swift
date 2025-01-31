@@ -18,7 +18,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
         showInstructions: Bool,
         extraPartnerParams: [String: String],
         onResult: SmartSelfieResultDelegate,
-        onDismiss: (() -> Void)?
+        onDismiss: (() -> Void)? = nil
     ) {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
