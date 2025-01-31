@@ -57,10 +57,11 @@ struct EnhancedKycWithIdInputScreen: View {
                 },
                 onConsentDenied: { delegate.didError(error: SmileIDError.consentDenied) }
             )
-        case .idInput(let country, let idType, let requiredFields):
+        case .idInput(let country, let idType, let consentInformation, let requiredFields):
             IdInfoInputScreen(
                 selectedCountry: country,
                 selectedIdType: idType,
+                consentInformation: consentInformation,
                 header: "Enter ID Information",
                 requiredFields: requiredFields,
                 onResult: viewModel.onIdFieldsEntered

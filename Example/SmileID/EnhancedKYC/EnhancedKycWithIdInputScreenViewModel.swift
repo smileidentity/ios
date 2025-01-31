@@ -18,6 +18,13 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     @Published @MainActor var step = EnhancedKycWithIdInputScreenStep.loading("Loading ID Types…")
 
     @Published @MainActor var idInfo = IdInfo(country: "")
+    // default to false
+    @Published @MainActor var consentInformation = ConsentInformation(
+        consentGrantedDate: "",
+        personalDetailsConsentGranted: false,
+        contactInformationConsentGranted: false,
+        documentInformationConsentGranted: false
+    )
 
     init(userId: String, jobId: String) {
         self.userId = userId
@@ -129,6 +136,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation) {
         DispatchQueue.main.async {
             self.idInfo = idInfo
+            self.consentInformation = consentInformation
             self.step = .processing(ProcessingState.inProgress)
         }
         doEnhancedKyc(idInfo: idInfo, consentInformation: consentInformation)
@@ -169,7 +177,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     }
 
     @MainActor func onRetry() {
-        doEnhancedKyc(idInfo: self.idInfo)
+        doEnhancedKyc(idInfo: self.idInfo, consentInformation: self.consentInformation)
     }
 
     func onFinished(delegate: EnhancedKycResultDelegate) {
