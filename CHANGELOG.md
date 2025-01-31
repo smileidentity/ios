@@ -5,6 +5,9 @@
 ### Added
 * Default headers to all GET and POST requests: PartnerID, Source SDK and Source SDK Version.
 
+### Fixed
+* Document back image required when `captureBothSides` is false.
+
 ## 10.3.4
 
 ### Fixed

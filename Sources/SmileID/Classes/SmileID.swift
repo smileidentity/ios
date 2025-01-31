@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.3.3"
+    public static let version = "10.3.5"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -92,11 +92,13 @@ public class SmileID {
         self.useSandbox = useSandbox
         self.apiKey = apiKey
         self.requestTimeout = requestTimeout
+
         SmileIDResourcesHelper.registerFonts()
+
         let fingerprinter = FingerprinterFactory.getInstance()
         Task {
-            /// The fingerprint isn't currently as stable as the Device Identifier, because the v
-            /// alues might change between OS updates or when the user changes settings
+            /// The fingerprint isn't currently as stable as the Device Identifier, because the
+            /// values might change between OS updates or when the user changes settings
             /// used to compute the previous value.
             /// https://github.com/fingerprintjs/fingerprintjs-ios
             if let fingerprint = await fingerprinter.getDeviceId() {
