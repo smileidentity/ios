@@ -24,8 +24,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ZIPFoundation", package: "ZIPFoundation"),
                 .product(name: "FingerprintJS", package: "fingerprintjs-ios"),
-                .product(name: "Lottie", package: "lottie-spm"),
-                .product(name: "Sentry", package: "sentry-cocoa")
+                .product(name: "Lottie", package: "lottie-spm")
             ],
             path: "Sources/SmileID",
             resources: [.process("Resources")]

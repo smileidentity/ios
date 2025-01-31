@@ -1,4 +1,3 @@
-import Sentry
 import Foundation
 import SwiftUI
 
@@ -127,16 +126,5 @@ struct MonotonicTime {
         mach_timebase_info(&timebase)
         let elapsedNano = elapsed * UInt64(timebase.numer) / UInt64(timebase.denom)
         return TimeInterval(elapsedNano) / TimeInterval(NSEC_PER_SEC)
-    }
-}
-
-func getExceptionHandler(error: any Error) {
-    if let error = error as? SmileIDError {
-        SmileIDCrashReporting.shared.hub?.capture(error: error)
-    } else {
-        SmileIDCrashReporting.shared.hub?.capture(error: error)
-        let crumb = Breadcrumb()
-        crumb.message = "Unexpected error"
-        SmileIDCrashReporting.shared.hub?.add(crumb)
     }
 }

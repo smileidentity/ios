@@ -58,21 +58,17 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
-    ///   - enableErrorReporting: A boolean to enable error reporting for *ONLY* Smile ID related crashes.
-    ///   This is powered by Sentry.
     ///   - requestTimeout: The timeout interval for all requests.
     ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
         config: Config = getConfig(),
         useSandbox: Bool = false,
-        enableErrorReporting: Bool = true,
         requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         initialize(
             apiKey: nil,
             config: config,
             useSandbox: useSandbox,
-            enableErrorReporting: enableErrorReporting,
             requestTimeout: requestTimeout
         )
     }
@@ -84,26 +80,18 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
-    ///   - enableErrorReporting: A boolean to enable error reporting for *ONLY* Smile ID related crashes.
-    ///   This is powered by Sentry.
     ///   - requestTimeout: The timeout interval for all requests.
     ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
         apiKey: String? = nil,
         config: Config = getConfig(),
         useSandbox: Bool = false,
-        enableErrorReporting: Bool = true,
         requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         self.config = config
         self.useSandbox = useSandbox
         self.apiKey = apiKey
         self.requestTimeout = requestTimeout
-
-        // Enable crash reporting as early as possible (the pre-req is that the config is loaded)
-        if enableErrorReporting {
-            SmileIDCrashReporting.shared.enable()
-        }
 
         SmileIDResourcesHelper.registerFonts()
 
