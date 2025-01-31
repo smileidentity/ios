@@ -59,36 +59,30 @@ struct HomeView: View {
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                             onError: viewModel.didError
                         ),
-                        onDismiss: {
-                            selectedProduct = nil
-                        }
+                        onDismiss: { selectedProduct = nil }
                     )
                 case .smartSelfieAuthentication:
                     SmartSelfieAuthWithUserIdEntry(
                         initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                        delegate: viewModel
+                        delegate: viewModel,
+                        onDismiss: { selectedProduct = nil }
                     )
                 case .enhancedSmartSelfieEnrollment:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
-                        SmileID.smartSelfieEnrollmentScreenEnhanced(
+                    SmileID.smartSelfieEnrollmentScreenEnhanced(
+                        userId: viewModel.newUserId,
+                        delegate: SmartSelfieEnrollmentDelegate(
                             userId: viewModel.newUserId,
-                            delegate: SmartSelfieEnrollmentDelegate(
-                                userId: viewModel.newUserId,
-                                onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                                onError: viewModel.didError
-                            ),
-                            onDismiss: { selectedProduct = nil }
-                        )
-                    }
+                            onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
+                            onError: viewModel.didError
+                        ),
+                        onDismiss: { selectedProduct = nil }
+                    )
                 case .enhancedSmartSelfieAuthentication:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
-                        SmartSelfieAuthEnhancedWithUserIdEntry(
-                            initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                            delegate: viewModel
-                        )
-                    }
+                    SmartSelfieAuthEnhancedWithUserIdEntry(
+                        initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                        delegate: viewModel,
+                        onDismiss: { selectedProduct = nil }
+                    )
                 case .enhancedKYC:
                     ProductContainerView { selectedProduct = nil }
                     content: {
@@ -204,6 +198,7 @@ class SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
 private struct SmartSelfieAuthWithUserIdEntry: View {
     let initialUserId: String
     let delegate: SmartSelfieResultDelegate
+    let onDismiss: (() -> Void)
 
     @State private var userId: String?
 
@@ -212,7 +207,8 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
             SmileID.smartSelfieAuthenticationScreen(
                 userId: userId,
                 allowAgentMode: true,
-                delegate: delegate
+                delegate: delegate,
+                onDismiss: onDismiss
             )
         } else {
             EnterUserIDView(initialUserId: initialUserId) { userId in
@@ -225,6 +221,7 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
 private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
     let initialUserId: String
     let delegate: SmartSelfieResultDelegate
+    let onDismiss: (() -> Void)
 
     @State private var userId: String?
 
