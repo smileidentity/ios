@@ -5,7 +5,7 @@ enum EnhancedKycWithIdInputScreenStep {
     case loading(String)
     case idTypeSelection([CountryInfo])
     case consent(country: String, idType: String, requiredFields: [RequiredField])
-    case idInput(country: String, idType: String, requiredFields: [RequiredField])
+    case idInput(country: String, idType: String, consentInformation: ConsentInformation, requiredFields: [RequiredField])
     case processing(ProcessingState)
 }
 
@@ -120,19 +120,21 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
             self.step = .idInput(
                 country: country,
                 idType: idType,
+                consentInformation: consentInformation,
                 requiredFields: requiredFields
             )
         }
     }
 
-    func onIdFieldsEntered(idInfo: IdInfo) {
+    func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation) {
         DispatchQueue.main.async {
             self.idInfo = idInfo
-            self.step = .processing(ProcessingState.inProgress) }
-        doEnhancedKyc(idInfo: idInfo)
+            self.step = .processing(ProcessingState.inProgress)
+        }
+        doEnhancedKyc(idInfo: idInfo, consentInformation: consentInformation)
     }
 
-    func doEnhancedKyc(idInfo: IdInfo) {
+    func doEnhancedKyc(idInfo: IdInfo, consentInformation: ConsentInformation) {
         DispatchQueue.main.async { self.step = .loading("Loading...") }
         Task {
             do {

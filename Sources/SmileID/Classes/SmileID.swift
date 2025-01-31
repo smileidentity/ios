@@ -616,6 +616,7 @@ public class SmileID {
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
         idInfo: IdInfo,
+        consentInformation: ConsentInformation,
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
         allowNewEnroll: Bool = false,
@@ -627,6 +628,7 @@ public class SmileID {
     ) -> some View {
         OrchestratedBiometricKycScreen(
             idInfo: idInfo,
+            consentInformation: consentInformation,
             userId: userId,
             jobId: jobId,
             allowNewEnroll: allowNewEnroll,

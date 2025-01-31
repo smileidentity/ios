@@ -14,6 +14,7 @@ struct OrchestratedBiometricKycScreen: View {
 
     init(
         idInfo: IdInfo,
+        consentInformation: ConsentInformation,
         userId: String,
         jobId: String,
         allowNewEnroll: Bool,
@@ -35,6 +36,7 @@ struct OrchestratedBiometricKycScreen: View {
             jobId: jobId,
             allowNewEnroll: allowNewEnroll,
             idInfo: idInfo,
+            consentInformation: consentInformation,
             extraPartnerParams: extraPartnerParams
         )
     }

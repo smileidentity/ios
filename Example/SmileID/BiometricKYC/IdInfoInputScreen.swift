@@ -118,6 +118,12 @@ private struct IdInfoInputScreen_Previews: PreviewProvider {
         IdInfoInputScreen(
             selectedCountry: "US",
             selectedIdType: "Driver's License",
+            consentInformation: ConsentInformation(
+                consentGrantedDate: ISO8601DateFormatter().string(from: Date()),
+                personalDetailsConsentGranted: true,
+                contactInformationConsentGranted: true,
+                documentInformationConsentGranted: true
+            ),
             header: "Enter ID Info",
             requiredFields: [.idNumber, .firstName, .lastName, .dateOfBirth, .bankCode],
             onResult: { _ in }

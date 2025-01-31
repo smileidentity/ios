@@ -5,8 +5,8 @@ enum BiometricKycWithIdInputScreenStep {
     case loading(String)
     case idTypeSelection([CountryInfo])
     case consent(country: String, idType: String, requiredFields: [RequiredField])
-    case idInput(country: String, idType: String, requiredFields: [RequiredField])
-    case sdk(IdInfo)
+    case idInput(country: String, idType: String, consentInformation: ConsentInformation, requiredFields: [RequiredField])
+    case sdk(idInfo: IdInfo, consentInformation: ConsentInformation)
 }
 
 class BiometricKycWithIdInputScreenViewModel: ObservableObject {
@@ -118,12 +118,18 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
             self.step = .idInput(
                 country: country,
                 idType: idType,
+                consentInformation: consentInformation,
                 requiredFields: requiredFields
             )
         }
     }
 
-    func onIdFieldsEntered(idInfo: IdInfo) {
-        DispatchQueue.main.async { self.step = .sdk(idInfo) }
+    func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation) {
+        DispatchQueue.main.async {
+            self.step = .sdk(
+                idInfo: idInfo,
+                consentInformation: consentInformation
+            )
+        }
     }
 }

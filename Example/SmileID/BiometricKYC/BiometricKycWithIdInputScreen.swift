@@ -62,13 +62,15 @@ struct BiometricKycWithIdInputScreen: View {
             IdInfoInputScreen(
                 selectedCountry: country,
                 selectedIdType: idType,
+
                 header: "Enter ID Information",
                 requiredFields: requiredFields,
                 onResult: viewModel.onIdFieldsEntered
             ).frame(maxWidth: .infinity)
-        case .sdk(let idInfo):
+        case .sdk(let idInfo, let consentInformation):
             SmileID.biometricKycScreen(
                 idInfo: idInfo,
+                consentInformation: consentInformation,
                 userId: viewModel.userId,
                 jobId: viewModel.jobId,
                 allowAgentMode: true,
