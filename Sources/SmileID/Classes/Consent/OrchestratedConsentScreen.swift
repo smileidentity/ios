@@ -1,5 +1,12 @@
 import SwiftUI
 
+public struct ConsentInformation {
+    let consent_granted_date: String
+    let personal_details_consent_granted: Bool
+    let contact_information_consent_granted: Bool
+    let document_information_consent_granted: Bool
+}
+
 /// Responsible for showing the consent screen and the consent denied (try again) screens.
 public struct OrchestratedConsentScreen: View {
     let partnerIcon: UIImage
@@ -7,7 +14,7 @@ public struct OrchestratedConsentScreen: View {
     let productName: String
     let partnerPrivacyPolicy: URL
     let showAttribution: Bool
-    let onConsentGranted: () -> Void
+    let onConsentGranted: (ConsentInformation) -> Void
     let onConsentDenied: () -> Void
     @State private var showTryAgain = false
 
@@ -53,7 +60,7 @@ public struct ConsentScreen: View {
     let productName: String
     let partnerPrivacyPolicy: URL
     let showAttribution: Bool
-    let onConsentGranted: () -> Void
+    let onConsentGranted: (ConsentInformation) -> Void
     let onCancel: () -> Void
 
     public var body: some View {
@@ -119,7 +126,15 @@ public struct ConsentScreen: View {
                 .font(SmileID.theme.body)
                 .multilineTextAlignment(.center)
             VStack(spacing: 8) {
-                Button(action: onConsentGranted) {
+                Button(action: {
+                    let consentInfo = ConsentInformation(
+                        consent_granted_date: ISO8601DateFormatter().string(from: Date()),
+                        personal_details_consent_granted: true,
+                        contact_information_consent_granted: true,
+                        document_information_consent_granted: true
+                    )
+                    onConsentGranted(consentInfo)
+                }) {
                     Text(SmileIDResourcesHelper.localizedString(for: "Consent.Allow"))
                         .padding(14)
                         .font(SmileID.theme.button)
