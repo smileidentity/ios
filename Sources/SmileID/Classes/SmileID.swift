@@ -307,7 +307,7 @@ public class SmileID {
         skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate,
-        onDismiss: @escaping () -> Void
+        onDismiss: (() -> Void)? = nil
     ) -> some View {
             OrchestratedSelfieCaptureScreen(
                 userId: userId,
@@ -390,7 +390,7 @@ public class SmileID {
         useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate,
-        onDismiss: @escaping () -> Void
+        onDismiss: (() -> Void)? = nil
     ) -> some View {
         OrchestratedSelfieCaptureScreen(
             userId: userId,

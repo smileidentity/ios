@@ -52,8 +52,7 @@ struct OrchestratedBiometricKycScreen: View {
                 showInstructions: showInstructions,
                 extraPartnerParams: extraPartnerParams,
                 skipApiSubmission: true,
-                onResult: viewModel,
-                onDismiss: {}
+                onResult: viewModel
             )
         case let .processing(state):
             ProcessingScreen(

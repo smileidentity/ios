@@ -64,13 +64,10 @@ struct HomeView: View {
                         }
                     )
                 case .smartSelfieAuthentication:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
-                        SmartSelfieAuthWithUserIdEntry(
-                            initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
-                            delegate: viewModel
-                        )
-                    }
+                    SmartSelfieAuthWithUserIdEntry(
+                        initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                        delegate: viewModel
+                    )
                 case .enhancedSmartSelfieEnrollment:
                     ProductContainerView { selectedProduct = nil }
                     content: {
@@ -215,8 +212,7 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
             SmileID.smartSelfieAuthenticationScreen(
                 userId: userId,
                 allowAgentMode: true,
-                delegate: delegate,
-                onDismiss: {}
+                delegate: delegate
             )
         } else {
             EnterUserIDView(initialUserId: initialUserId) { userId in
@@ -236,8 +232,7 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
         if let userId {
             SmileID.smartSelfieAuthenticationScreenEnhanced(
                 userId: userId,
-                delegate: delegate,
-                onDismiss: {}
+                delegate: delegate
             )
         } else {
             EnterUserIDView(initialUserId: initialUserId) { userId in

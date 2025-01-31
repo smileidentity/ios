@@ -8,7 +8,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
     public let showInstructions: Bool
     public let onResult: SmartSelfieResultDelegate
     private let viewModel: EnhancedSmartSelfieViewModel
-    private var onDismiss: () -> Void
+    private var onDismiss: (() -> Void)?
 
     public init(
         userId: String,
@@ -18,7 +18,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
         showInstructions: Bool,
         extraPartnerParams: [String: String],
         onResult: SmartSelfieResultDelegate,
-        onDismiss: @escaping () -> Void
+        onDismiss: (() -> Void)?
     ) {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions

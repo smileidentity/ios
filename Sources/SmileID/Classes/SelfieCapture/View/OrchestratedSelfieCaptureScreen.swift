@@ -9,7 +9,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
     public let showInstructions: Bool
     public let onResult: SmartSelfieResultDelegate
     private let viewModel: SelfieViewModel
-    private let onDismiss: () -> Void
+    private let onDismiss: (() -> Void)?
 
     public init(
         userId: String,
@@ -22,7 +22,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
         extraPartnerParams: [String: String],
         skipApiSubmission: Bool,
         onResult: SmartSelfieResultDelegate,
-        onDismiss: @escaping () -> Void
+        onDismiss: (() -> Void)? = nil
     ) {
         self.allowAgentMode = allowAgentMode
         self.showAttribution = showAttribution
@@ -56,7 +56,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
             }
             .navigationBarItems(
                 leading: Button {
-                    onDismiss()
+                    onDismiss?()
                 } label: {
                     Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
                         .foregroundColor(SmileID.theme.accent)
