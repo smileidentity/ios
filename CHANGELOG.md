@@ -1,5 +1,10 @@
 # Release Notes
 
+## Unreleased
+
+### Added
+* Pass ConsentInformation in info.json file
+
 ## 10.4.0
 
 ### Added
