@@ -91,6 +91,7 @@ public class LocalStorage {
     static func createInfoJsonFile(
         jobId: String,
         idInfo: IdInfo? = nil,
+        consentInformation: ConsentInformation? = nil,
         documentFront: URL? = nil,
         documentBack: URL? = nil,
         selfie: URL? = nil,
@@ -126,7 +127,8 @@ public class LocalStorage {
         }
         let data = try jsonEncoder.encode(UploadRequest(
             images: imageInfoArray,
-            idInfo: idInfo
+            idInfo: idInfo,
+            consentInformation: consentInformation
         ))
         return try createSmileFile(to: jobId, name: "info.json", file: data)
     }

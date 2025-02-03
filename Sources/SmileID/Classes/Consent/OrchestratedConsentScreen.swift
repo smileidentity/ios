@@ -1,11 +1,11 @@
 import SwiftUI
 
-public struct ConsentInformation {
+public struct ConsentInformation: Codable {
     public let consentGrantedDate: String
     public let personalDetailsConsentGranted: Bool
     public let contactInformationConsentGranted: Bool
     public let documentInformationConsentGranted: Bool
-    
+
     public init(
         consentGrantedDate: String,
         personalDetailsConsentGranted: Bool,
@@ -16,6 +16,13 @@ public struct ConsentInformation {
         self.personalDetailsConsentGranted = personalDetailsConsentGranted
         self.contactInformationConsentGranted = contactInformationConsentGranted
         self.documentInformationConsentGranted = documentInformationConsentGranted
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case consentGrantedDate = "consent_granted_date"
+        case personalDetailsConsentGranted = "personal_details_consent_granted"
+        case contactInformationConsentGranted = "contact_information_consent_granted"
+        case documentInformationConsentGranted = "document_information_consent_granted"
     }
 }
 

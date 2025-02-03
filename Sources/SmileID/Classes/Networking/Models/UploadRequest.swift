@@ -3,18 +3,22 @@ import Foundation
 public struct UploadRequest: Codable {
     public var images: [UploadImageInfo]
     public var idInfo: IdInfo?
+    public var consentInformation: ConsentInformation?
 
     public init(
         images: [UploadImageInfo],
-        idInfo: IdInfo? = nil
+        idInfo: IdInfo? = nil,
+        consentInformation: ConsentInformation? = nil
     ) {
         self.images = images
         self.idInfo = idInfo
+        self.consentInformation = consentInformation
     }
 
     enum CodingKeys: String, CodingKey {
         case images
         case idInfo = "id_info"
+        case consentInformation = "consent_information"
     }
 }
 
