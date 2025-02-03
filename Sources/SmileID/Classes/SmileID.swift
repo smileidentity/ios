@@ -589,6 +589,7 @@ public class SmileID {
     /// user's photo in an ID authority database
     /// - Parameters:
     ///  - idInfo: The ID information to look up in the ID Authority
+    ///  - consentInformation: We need you to pass the consent from the user
     ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
     ///  to a unique User ID within your own system. If not provided, a random user ID is generated
     ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
