@@ -76,7 +76,7 @@ public struct ProductsConfigRequest: Encodable {
 
     public init() {
         partnerId = SmileID.config.partnerId
-        timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
+        timestamp =  Date().toISO8601WithMilliseconds()
         signature = try? calculateSignature(timestamp: timestamp)
     }
 
