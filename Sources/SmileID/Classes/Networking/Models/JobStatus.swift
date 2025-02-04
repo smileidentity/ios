@@ -15,7 +15,7 @@ public struct JobStatusRequest: Codable {
         includeImageLinks: Bool = false,
         includeHistory: Bool = false,
         partnerId: String = SmileID.config.partnerId,
-        timestamp: String = String(Date().millisecondsSince1970),
+        timestamp: String = Date().toISO8601WithMilliseconds(),
         signature: String = ""
     ) {
         self.userId = userId
