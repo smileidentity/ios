@@ -10,7 +10,7 @@ public struct PrepUploadRequest: Codable {
     public var metadata: [Metadatum]?
     public var sourceSdk = "ios"
     public var sourceSdkVersion = SmileID.version
-    public var timestamp = String(Date().millisecondsSince1970)
+    public var timestamp = Date().toISO8601WithMilliseconds()
     public var signature = ""
     public var useEnrolledImage = false
     public var retry = "false" /// backend is broken needs these as strings
@@ -23,7 +23,7 @@ public struct PrepUploadRequest: Codable {
         metadata: [Metadatum]? = nil,
         sourceSdk: String = "ios",
         sourceSdkVersion: String = SmileID.version,
-        timestamp: String = String(Date().millisecondsSince1970),
+        timestamp: String = Date().toISO8601WithMilliseconds(),
         signature: String = "",
         useEnrolledImage: Bool = false,
         retry: String = "false"

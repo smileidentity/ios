@@ -4,7 +4,7 @@ private let bvnIdType = "BVN_MFA"
 
 public struct BvnTotpRequest: Codable {
     public var idNumber: String
-    public var timestamp: String = String(Date().millisecondsSince1970)
+    public var timestamp: String = Date().toISO8601WithMilliseconds()
     public var signature: String
     public var country: String = nigeriaCountryCode
     public var idType: String = bvnIdType
@@ -44,7 +44,7 @@ public struct BvnTotpModeRequest: Codable {
     public var idNumber: String
     public var mode: String
     public var sessionId: String
-    public var timestamp: String = String(Date().millisecondsSince1970)
+    public var timestamp: String = Date().toISO8601WithMilliseconds()
     public var signature: String
     public var country: String = nigeriaCountryCode
     public var idType: String = bvnIdType
@@ -83,7 +83,7 @@ public struct SubmitBvnTotpRequest: Codable {
     public var country: String = nigeriaCountryCode
     public var idType: String = bvnIdType
     public var partnerId: String = SmileID.config.partnerId
-    public var timestamp: String = String(Date().millisecondsSince1970)
+    public var timestamp: String = Date().toISO8601WithMilliseconds()
     public var signature: String
 
     enum CodingKeys: String, CodingKey {
