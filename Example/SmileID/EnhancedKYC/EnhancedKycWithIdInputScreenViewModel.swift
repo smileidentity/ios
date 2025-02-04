@@ -157,6 +157,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
                     country: idInfo.country,
                     idType: idInfo.idType!,
                     idNumber: idInfo.idNumber!,
+                    consentInformation: consentInformation,
                     firstName: idInfo.firstName,
                     lastName: idInfo.lastName,
                     dob: idInfo.dob,

@@ -4,7 +4,7 @@
 ## Unreleased
 
 ### Added
-* Pass ConsentInformation in info.json file
+* Pass ConsentInformation in EnhancedKYC and BiometricKYC
 
 ## 10.3.5
 

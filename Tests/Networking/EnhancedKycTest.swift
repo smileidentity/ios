@@ -22,6 +22,12 @@ class EnhancedKycTest: BaseTestCase {
             country: "country",
             idType: "idType",
             idNumber: "idNumber",
+            consentInformation: ConsentInformation(
+                consentGrantedDate: "",
+                personalDetailsConsentGranted: true,
+                contactInformationConsentGranted: true,
+                documentInformationConsentGranted: true
+            ),
             callbackUrl: "callbackUrl",
             partnerParams: PartnerParams(
                 jobId: "", userId: "", jobType: .enhancedKyc, extras: ["key1": "value1"]
