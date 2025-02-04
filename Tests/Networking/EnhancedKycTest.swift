@@ -23,7 +23,7 @@ class EnhancedKycTest: BaseTestCase {
             idType: "idType",
             idNumber: "idNumber",
             consentInformation: ConsentInformation(
-                consentGrantedDate: "",
+                consentGrantedDate: Date().toISO8601WithMilliseconds(),
                 personalDetailsConsentGranted: true,
                 contactInformationConsentGranted: true,
                 documentInformationConsentGranted: true

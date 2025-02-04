@@ -121,7 +121,7 @@ public struct ConsentScreen: View {
             VStack(spacing: 8) {
                 Button(action: {
                     let consentInfo = ConsentInformation(
-                        consentGrantedDate: ISO8601DateFormatter().string(from: Date()),
+                        consentGrantedDate: Date().toISO8601WithMilliseconds(),
                         personalDetailsConsentGranted: true,
                         contactInformationConsentGranted: true,
                         documentInformationConsentGranted: true

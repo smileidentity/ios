@@ -121,7 +121,7 @@ private struct IdInfoInputScreen_Previews: PreviewProvider {
             selectedCountry: "US",
             selectedIdType: "Driver's License",
             consentInformation: ConsentInformation(
-                consentGrantedDate: ISO8601DateFormatter().string(from: Date()),
+                consentGrantedDate: Date().toISO8601WithMilliseconds(),
                 personalDetailsConsentGranted: true,
                 contactInformationConsentGranted: true,
                 documentInformationConsentGranted: true
