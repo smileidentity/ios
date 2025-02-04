@@ -2,11 +2,11 @@ import Foundation
 
 public struct ValidDocumentsResponse: Codable {
     public let validDocuments: [ValidDocument]
-    
+
     public init(validDocuments: [ValidDocument]) {
         self.validDocuments = validDocuments
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case validDocuments = "valid_documents"
     }
@@ -16,12 +16,12 @@ public struct ValidDocument: Codable, Identifiable {
     public let id = UUID()
     public let country: Country
     public let idTypes: [IdType]
-    
+
     public init(country: Country, idTypes: [IdType]) {
         self.country = country
         self.idTypes = idTypes
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case country
         case idTypes = "id_types"
@@ -29,11 +29,10 @@ public struct ValidDocument: Codable, Identifiable {
 }
 
 public struct Country: Codable {
-    
     public let code: String
     public let continent: String
     public let name: String
-    
+
     public init(code: String, continent: String, name: String) {
         self.code = code
         self.continent = continent
@@ -46,9 +45,9 @@ public struct IdType: Codable, Identifiable, Equatable {
     public let example: [String]
     public let hasBack: Bool
     public let name: String
-    
+
     public var id: String { code + name }
-    
+
     public init(
         code: String,
         example: [String],
@@ -60,7 +59,7 @@ public struct IdType: Codable, Identifiable, Equatable {
         self.hasBack = hasBack
         self.name = name
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case code
         case example
@@ -73,13 +72,13 @@ public struct ProductsConfigRequest: Encodable {
     public let partnerId: String
     public let timestamp: String
     public let signature: String?
-    
+
     public init() {
         partnerId = SmileID.config.partnerId
-        timestamp =  Date().toISO8601WithMilliseconds()
+        timestamp = Date().toISO8601WithMilliseconds()
         signature = try? calculateSignature(timestamp: timestamp)
     }
-    
+
     public init(
         timestamp: String,
         signature: String,
@@ -89,7 +88,7 @@ public struct ProductsConfigRequest: Encodable {
         self.timestamp = timestamp
         self.partnerId = partnerId
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case partnerId = "partner_id"
         case timestamp
@@ -102,10 +101,10 @@ public typealias IdTypes = [String: [String]]
 public struct ProductsConfigResponse: Codable {
     public let consentRequired: IdTypes
     public let idSelection: IdSelection
-    
+
     enum CodingKeys: String, CodingKey {
-        case consentRequired = "consentRequired"
-        case idSelection = "idSelection"
+        case consentRequired
+        case idSelection
     }
 }
 
@@ -114,7 +113,7 @@ public struct IdSelection: Codable {
     public let biometricKyc: IdTypes
     public let enhancedKyc: IdTypes
     public let documentVerification: IdTypes
-    
+
     enum CodingKeys: String, CodingKey {
         case basicKyc = "basic_kyc"
         case biometricKyc = "biometric_kyc"
