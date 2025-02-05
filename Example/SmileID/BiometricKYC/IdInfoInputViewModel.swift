@@ -7,6 +7,7 @@ class IdInfoInputViewModel: ObservableObject {
     // MARK: - Input Properties
     private let selectedCountry: String
     private let selectedIdType: String
+    let consentInformation: ConsentInformation
 
     // MARK: - UI Properties
     @Published var inputs: [RequiredField: String] = [:]
@@ -28,10 +29,12 @@ class IdInfoInputViewModel: ObservableObject {
     }
 
     init(
+        consentInformation: ConsentInformation,
         selectedCountry: String,
         selectedIdType: String,
         requiredFields: [RequiredField]
     ) {
+        self.consentInformation = consentInformation
         self.selectedCountry = selectedCountry
         self.selectedIdType = selectedIdType
 

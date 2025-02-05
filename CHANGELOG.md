@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+* Pass ConsentInformation in EnhancedKYC and BiometricKYC
+
 ### Changed
 * Timestamp consistency from date epoch to iso format 
 

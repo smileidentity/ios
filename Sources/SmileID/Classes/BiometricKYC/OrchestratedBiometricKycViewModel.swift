@@ -15,6 +15,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     private var extraPartnerParams: [String: String]
     private let localMetadata = LocalMetadata()
     private var idInfo: IdInfo
+    private var consentInformation: ConsentInformation
 
     // MARK: - Other Properties
 
@@ -37,12 +38,14 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         jobId: String,
         allowNewEnroll: Bool,
         idInfo: IdInfo,
+        consentInformation: ConsentInformation,
         extraPartnerParams: [String: String] = [:]
     ) {
         self.userId = userId
         self.jobId = jobId
         self.allowNewEnroll = allowNewEnroll
         self.idInfo = idInfo
+        self.consentInformation = consentInformation
         self.extraPartnerParams = extraPartnerParams
     }
 
@@ -126,6 +129,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         let infoJson = try LocalStorage.createInfoJsonFile(
             jobId: jobId,
             idInfo: idInfo.copy(entered: true),
+            consentInformation: consentInformation,
             selfie: selfieFile,
             livenessImages: livenessFiles
         )

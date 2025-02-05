@@ -7,7 +7,7 @@ public struct OrchestratedConsentScreen: View {
     let productName: String
     let partnerPrivacyPolicy: URL
     let showAttribution: Bool
-    let onConsentGranted: () -> Void
+    let onConsentGranted: (ConsentInformation) -> Void
     let onConsentDenied: () -> Void
     @State private var showTryAgain = false
 
@@ -53,105 +53,120 @@ public struct ConsentScreen: View {
     let productName: String
     let partnerPrivacyPolicy: URL
     let showAttribution: Bool
-    let onConsentGranted: () -> Void
+    let onConsentGranted: (ConsentInformation) -> Void
     let onCancel: () -> Void
 
     public var body: some View {
-        VStack(spacing: 16) {
-            Image(uiImage: partnerIcon)
-                .resizable()
-                .scaledToFit()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 64)
-                .padding()
-            Text("\(partnerName) wants to access your \(productName) information")
-                .font(SmileID.theme.header2)
-                .foregroundColor(SmileID.theme.accent)
-                .padding(.horizontal)
-            Text("This will allow \(partnerName) to:")
-                .font(SmileID.theme.body)
-                .foregroundColor(SmileID.theme.onLight)
-                .padding(16)
+        VStack {
+            ScrollView {
+                VStack(spacing: 16) {
+                    Image(uiImage: partnerIcon)
+                        .resizable()
+                        .scaledToFit()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 64)
+                        .padding()
+                    Text("\(partnerName) wants to access your \(productName) information")
+                        .font(SmileID.theme.header2)
+                        .foregroundColor(SmileID.theme.accent)
+                        .padding(.horizontal)
+                        .multilineTextAlignment(.center)
+                    Text("This will allow \(partnerName) to:")
+                        .font(SmileID.theme.body)
+                        .foregroundColor(SmileID.theme.onLight)
+                        .padding(16)
 
-            VStack(spacing: 16) {
-                ForEach(0..<consentInfos.count, id: \.self) { index in
-                    let consentInfo = consentInfos[index]
-                    HStack(alignment: .top, spacing: 16) {
-                        Image(uiImage: consentInfo.0)
-                            .resizable()
-                            .scaledToFit()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 36, height: 36)
-                            .padding(.horizontal, 12)
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(SmileIDResourcesHelper.localizedString(for: consentInfo.1))
-                                .font(SmileID.theme.body)
-                                .multilineTextAlignment(.leading)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .foregroundColor(SmileID.theme.accent)
-                            Text(SmileIDResourcesHelper.localizedString(for: consentInfo.2))
-                                .font(SmileID.theme.header5)
-                                .multilineTextAlignment(.leading)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .foregroundColor(SmileID.theme.onLight)
+                    VStack(spacing: 16) {
+                        ForEach(0..<consentInfos.count, id: \.self) { index in
+                            let consentInfo = consentInfos[index]
+                            HStack(alignment: .top, spacing: 16) {
+                                Image(uiImage: consentInfo.0)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 36, height: 36)
+                                    .padding(.horizontal, 12)
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(SmileIDResourcesHelper.localizedString(for: consentInfo.1))
+                                        .font(SmileID.theme.body)
+                                        .multilineTextAlignment(.leading)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .foregroundColor(SmileID.theme.accent)
+                                    Text(SmileIDResourcesHelper.localizedString(for: consentInfo.2))
+                                        .font(SmileID.theme.header5)
+                                        .multilineTextAlignment(.leading)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .foregroundColor(SmileID.theme.onLight)
+                                }
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity)
                         }
-                        Spacer()
                     }
-                        .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity)
+                    .padding(4)
+
+                    Spacer()
                 }
             }
-            .frame(maxWidth: .infinity)
-            .padding(4)
-
-            Spacer()
-            Divider()
-            Text(
-                SmileIDResourcesHelper.localizedString(
-                    for: "Consent.ViewPrivacyPolicy",
-                    partnerName
+            VStack {
+                Divider()
+                Text(
+                    SmileIDResourcesHelper.localizedString(
+                        for: "Consent.ViewPrivacyPolicy",
+                        partnerName
+                    )
                 )
-            )
                 .foregroundColor(SmileID.theme.accent)
                 .font(SmileID.theme.body)
                 .onTapGesture { UIApplication.shared.open(partnerPrivacyPolicy) }
-            Text(SmileIDResourcesHelper.localizedString(for: "Consent.Disclaimer", partnerName))
-                .foregroundColor(SmileID.theme.onLight)
-                .font(SmileID.theme.body)
-                .multilineTextAlignment(.center)
-            VStack(spacing: 8) {
-                Button(action: onConsentGranted) {
-                    Text(SmileIDResourcesHelper.localizedString(for: "Consent.Allow"))
-                        .padding(14)
-                        .font(SmileID.theme.button)
-                        .frame(maxWidth: .infinity)
-                }
-                .background(SmileID.theme.accent)
-                .foregroundColor(SmileID.theme.onDark)
-                .cornerRadius(60)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal)
+                Text(SmileIDResourcesHelper.localizedString(for: "Consent.Disclaimer", partnerName))
+                    .foregroundColor(SmileID.theme.onLight)
+                    .font(SmileID.theme.body)
+                    .multilineTextAlignment(.center)
+                VStack(spacing: 8) {
+                    Button {
+                        let consentInfo = ConsentInformation(
+                            consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                            personalDetailsConsentGranted: true,
+                            contactInformationConsentGranted: true,
+                            documentInformationConsentGranted: true
+                        )
+                        onConsentGranted(consentInfo)
+                    } label: {
+                        Text(SmileIDResourcesHelper.localizedString(for: "Consent.Allow"))
+                            .padding(14)
+                            .font(SmileID.theme.button)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .background(SmileID.theme.accent)
+                    .foregroundColor(SmileID.theme.onDark)
+                    .cornerRadius(60)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal)
 
-                Button(action: onCancel) {
-                    Text(SmileIDResourcesHelper.localizedString(for: "Consent.Cancel"))
-                        .padding(14)
-                        .font(SmileID.theme.button)
-                        .frame(maxWidth: .infinity)
+                    Button(action: onCancel) {
+                        Text(SmileIDResourcesHelper.localizedString(for: "Consent.Cancel"))
+                            .padding(14)
+                            .font(SmileID.theme.button)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .background(Color.clear)
+                    .foregroundColor(SmileID.theme.accent)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 60)
+                            .stroke(SmileID.theme.accent, lineWidth: 4)
+                    )
+                    .cornerRadius(60)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal)
+                    if showAttribution {
+                        Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                    }
                 }
-                .background(Color.clear)
-                .foregroundColor(SmileID.theme.accent)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 60)
-                        .stroke(SmileID.theme.accent, lineWidth: 4)
-                )
-                .cornerRadius(60)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal)
-                if showAttribution {
-                    Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
-                }
+                .padding(5)
             }
-        }
-        .preferredColorScheme(.light)
+        }.preferredColorScheme(.light)
     }
 }
 
