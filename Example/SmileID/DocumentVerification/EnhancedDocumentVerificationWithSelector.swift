@@ -17,6 +17,13 @@ struct EnhancedDocumentVerificationWithSelector: View {
             SmileID.enhancedDocumentVerificationScreen(
                 userId: userId,
                 jobId: jobId,
+                // we need to fetch consent from the services endpoint
+                consentInformation: ConsentInformation(
+                    consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                    personalDetailsConsentGranted: true,
+                    contactInformationConsentGranted: true,
+                    documentInformationConsentGranted: true
+                ),
                 countryCode: countryCode,
                 documentType: documentType,
                 captureBothSides: captureBothSides,
