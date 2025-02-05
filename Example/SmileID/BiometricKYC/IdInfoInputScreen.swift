@@ -14,21 +14,23 @@ import SwiftUI
 ///  delivered as an `IdInfo` object.
 struct IdInfoInputScreen: View {
     let header: String
-    let onResult: (IdInfo) -> Void
+    let onResult: (IdInfo, ConsentInformation) -> Void
     let dateFormatter = DateFormatter()
     @ObservedObject var viewModel: IdInfoInputViewModel
 
     init(
         selectedCountry: String,
         selectedIdType: String,
+        consentInformation: ConsentInformation,
         header: String,
         requiredFields: [RequiredField],
-        onResult: @escaping (IdInfo) -> Void
+        onResult: @escaping (IdInfo, ConsentInformation) -> Void
     ) {
         self.header = header
         self.onResult = onResult
         dateFormatter.dateFormat = "yyyy-MM-dd"
         viewModel = IdInfoInputViewModel(
+            consentInformation: consentInformation,
             selectedCountry: selectedCountry,
             selectedIdType: selectedIdType,
             requiredFields: requiredFields
@@ -95,7 +97,7 @@ struct IdInfoInputScreen: View {
                 .background(SmileID.theme.backgroundLight)
 
             Button(
-                action: { onResult(viewModel.currentIdInfo) },
+                action: { onResult(viewModel.currentIdInfo, viewModel.consentInformation) },
                 label: {
                     Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.Continue"))
                         .padding(16)
@@ -118,9 +120,15 @@ private struct IdInfoInputScreen_Previews: PreviewProvider {
         IdInfoInputScreen(
             selectedCountry: "US",
             selectedIdType: "Driver's License",
+            consentInformation: ConsentInformation(
+                consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                personalDetailsConsentGranted: true,
+                contactInformationConsentGranted: true,
+                documentInformationConsentGranted: true
+            ),
             header: "Enter ID Info",
             requiredFields: [.idNumber, .firstName, .lastName, .dateOfBirth, .bankCode],
-            onResult: { _ in }
+            onResult: { _, _ in }
         )
     }
 }

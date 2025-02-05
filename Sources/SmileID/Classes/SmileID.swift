@@ -578,7 +578,7 @@ public class SmileID {
         productName: String,
         partnerPrivacyPolicy: URL,
         showAttribution: Bool = true,
-        onConsentGranted: @escaping () -> Void,
+        onConsentGranted: @escaping (ConsentInformation) -> Void,
         onConsentDenied: @escaping () -> Void
     ) -> some View {
         OrchestratedConsentScreen(
@@ -597,6 +597,7 @@ public class SmileID {
     /// user's photo in an ID authority database
     /// - Parameters:
     ///  - idInfo: The ID information to look up in the ID Authority
+    ///  - consentInformation: We need you to pass the consent from the user
     ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
     ///  to a unique User ID within your own system. If not provided, a random user ID is generated
     ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
@@ -612,6 +613,7 @@ public class SmileID {
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
         idInfo: IdInfo,
+        consentInformation: ConsentInformation,
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
         allowNewEnroll: Bool = false,
@@ -623,6 +625,7 @@ public class SmileID {
     ) -> some View {
         OrchestratedBiometricKycScreen(
             idInfo: idInfo,
+            consentInformation: consentInformation,
             userId: userId,
             jobId: jobId,
             allowNewEnroll: allowNewEnroll,

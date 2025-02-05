@@ -1,6 +1,14 @@
 # Release Notes
 
-## [Unreleased]
+## Unreleased
+
+### Added
+* Pass ConsentInformation in EnhancedKYC and BiometricKYC
+
+### Changed
+* Timestamp consistency from date epoch to iso format 
+
+## 10.3.5
 
 ### Added
 * Default headers to all GET and POST requests: PartnerID, Source SDK and Source SDK Version.

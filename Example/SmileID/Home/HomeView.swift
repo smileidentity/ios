@@ -24,6 +24,7 @@ struct HomeView: View {
                     LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(SmileIDProduct.allCases, id: \.self) { product in
                             Button {
+                                viewModel.onProductClicked()
                                 selectedProduct = product
                             } label: {
                                 ProductCell(product: product)

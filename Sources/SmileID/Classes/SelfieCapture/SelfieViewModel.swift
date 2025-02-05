@@ -97,6 +97,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             .store(in: &subscribers)
 
         cameraManager.sampleBufferPublisher
+            .receive(on: DispatchQueue.main)
             .merge(with: arKitFramePublisher)
             .throttle(
                 for: 0.35, scheduler: DispatchQueue.global(qos: .userInitiated),
