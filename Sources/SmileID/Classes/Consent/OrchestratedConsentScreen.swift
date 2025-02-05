@@ -109,7 +109,6 @@ public struct ConsentScreen: View {
                     Spacer()
                 }
             }
-            .preferredColorScheme(.light)
             VStack {
                 Divider()
                 Text(
@@ -167,7 +166,7 @@ public struct ConsentScreen: View {
                 }
                 .padding(5)
             }
-        }
+        }.preferredColorScheme(.light)
     }
 }
 
