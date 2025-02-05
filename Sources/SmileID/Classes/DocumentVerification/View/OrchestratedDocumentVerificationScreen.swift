@@ -22,6 +22,7 @@ struct OrchestratedDocumentVerificationScreen: View {
         IOrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
+            consentInformation: nil,
             captureBothSides: captureBothSides,
             idAspectRatio: idAspectRatio,
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
@@ -38,6 +39,7 @@ struct OrchestratedDocumentVerificationScreen: View {
             viewModel: OrchestratedDocumentVerificationViewModel(
                 userId: userId,
                 jobId: jobId,
+                consentInformation: nil,
                 allowNewEnroll: allowNewEnroll,
                 countryCode: countryCode,
                 documentType: documentType,
@@ -56,6 +58,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     @State private var localMetadata = LocalMetadata()
     let countryCode: String
     let documentType: String?
+    let consentInformation: ConsentInformation
     let captureBothSides: Bool
     let idAspectRatio: Double?
     let bypassSelfieCaptureWithFile: URL?
@@ -74,6 +77,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
         IOrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
+            consentInformation: consentInformation,
             captureBothSides: captureBothSides,
             idAspectRatio: idAspectRatio,
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
@@ -90,6 +94,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
             viewModel: OrchestratedEnhancedDocumentVerificationViewModel(
                 userId: userId,
                 jobId: jobId,
+                consentInformation: consentInformation,
                 allowNewEnroll: allowNewEnroll,
                 countryCode: countryCode,
                 documentType: documentType,
@@ -107,6 +112,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
 private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let countryCode: String
     let documentType: String?
+    let consentInformation: ConsentInformation?
     let captureBothSides: Bool
     let idAspectRatio: Double?
     let bypassSelfieCaptureWithFile: URL?
@@ -125,6 +131,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     init(
         countryCode: String,
         documentType: String?,
+        consentInformation: ConsentInformation?,
         captureBothSides: Bool,
         idAspectRatio: Double?,
         bypassSelfieCaptureWithFile: URL?,
@@ -142,6 +149,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     ) {
         self.countryCode = countryCode
         self.documentType = documentType
+        self.consentInformation = consentInformation
         self.captureBothSides = captureBothSides
         self.idAspectRatio = idAspectRatio
         self.bypassSelfieCaptureWithFile = bypassSelfieCaptureWithFile

@@ -531,6 +531,7 @@ public class SmileID {
     public class func enhancedDocumentVerificationScreen(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
+        consentInformation: ConsentInformation,
         allowNewEnroll: Bool = false,
         countryCode: String,
         documentType: String? = nil,
@@ -548,6 +549,7 @@ public class SmileID {
         OrchestratedEnhancedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
+            consentInformation: consentInformation,
             captureBothSides: captureBothSides,
             idAspectRatio: idAspectRatio,
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
