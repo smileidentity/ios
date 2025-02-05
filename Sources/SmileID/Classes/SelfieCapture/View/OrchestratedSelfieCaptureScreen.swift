@@ -8,7 +8,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
     public let showAttribution: Bool
     public let showInstructions: Bool
     public let onResult: SmartSelfieResultDelegate
-    @ObservedObject var viewModel: SelfieViewModel
+    @Backport.StateObject var viewModel: SelfieViewModel
 
     @State private var localMetadata = LocalMetadata()
     @State private var acknowledgedInstructions = false
@@ -30,14 +30,16 @@ public struct OrchestratedSelfieCaptureScreen: View {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
         self.onResult = onResult
-        viewModel = SelfieViewModel(
-            isEnroll: isEnroll,
-            userId: userId,
-            jobId: jobId,
-            allowNewEnroll: allowNewEnroll,
-            skipApiSubmission: skipApiSubmission,
-            extraPartnerParams: extraPartnerParams,
-            localMetadata: LocalMetadata()
+        self._viewModel = Backport.StateObject(
+            wrappedValue: SelfieViewModel(
+                isEnroll: isEnroll,
+                userId: userId,
+                jobId: jobId,
+                allowNewEnroll: allowNewEnroll,
+                skipApiSubmission: skipApiSubmission,
+                extraPartnerParams: extraPartnerParams,
+                localMetadata: LocalMetadata()
+            )
         )
     }
 
