@@ -28,16 +28,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
         self.onResult = onResult
-        viewModel = SelfieViewModel(
-            isEnroll: isEnroll,
-            userId: userId,
-            jobId: jobId,
-            allowNewEnroll: allowNewEnroll,
-            allowAgentMode: allowAgentMode,
-            skipApiSubmission: skipApiSubmission,
-            extraPartnerParams: extraPartnerParams,
-            localMetadata: LocalMetadata()
-        )
+        viewModel = SelfieViewModel(allowAgentMode: allowAgentMode)
         self.onDismiss = onDismiss
     }
 
@@ -51,7 +42,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
                         delegate: onResult
                     )
                 } else {
-                    SelfieCaptureScreen(viewModel: viewModel, delegate: onResult)
+                    SelfieCaptureScreen(delegate: onResult)
                 }
             }
             .navigationBarItems(

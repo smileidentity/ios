@@ -4,16 +4,14 @@ import SwiftUI
 
 /// The actual selfie capture screen, which shows the camera preview and the progress indicator
 public struct SelfieCaptureScreen: View {
-    @Backport.StateObject var viewModel: SelfieViewModel
+    @Backport.StateObject var viewModel = SelfieViewModel()
     weak var delegate: SmartSelfieResultDelegate?
 
     private var originalBrightness = UIScreen.main.brightness
 
     public init(
-        viewModel: SelfieViewModel,
-        delegate: SmartSelfieResultDelegate? = nil
+        delegate: SelfieCaptureDelegate? = nil
     ) {
-        self._viewModel = Backport.StateObject(wrappedValue: viewModel)
         if let delegate {
             self.viewModel.configure(delegate: delegate)
         }
@@ -58,24 +56,6 @@ public struct SelfieCaptureScreen: View {
             .padding(24)
 
             NavigationLink(
-                unwrap: $viewModel.processingState,
-                onNavigate: { _ in },
-                destination: { $processingState in
-                    SelfieCaptureProcessingView(
-                        processingState: processingState,
-                        errorMessage: getErrorSubtitle(
-                            errorMessageRes: viewModel.errorMessageRes,
-                            errorMessage: viewModel.errorMessage
-                        ),
-                        onContinue: { viewModel.handleContinue() },
-                        onRetry: { viewModel.handleRetry() },
-                        onClose: { viewModel.handleDismiss() }
-                    )
-                },
-                label: { EmptyView() }
-            )
-
-            NavigationLink(
                 unwrap: $viewModel.selfieToConfirm,
                 onNavigate: { _ in },
                 destination: { $selfieToConfirm in
@@ -86,15 +66,15 @@ public struct SelfieCaptureScreen: View {
                         subtitle: SmileIDResourcesHelper.localizedString(
                             for: "Confirmation.FaceClear"
                         ),
-                        image: UIImage(data: selfieToConfirm)!,
+                        image: selfieToConfirm,
                         confirmationButtonText: SmileIDResourcesHelper.localizedString(
                             for: "Confirmation.YesUse"
                         ),
-                        onConfirm: viewModel.submitJob,
+                        onConfirm: { viewModel.handleConfirmation() },
                         retakeButtonText: SmileIDResourcesHelper.localizedString(
                             for: "Confirmation.Retake"
                         ),
-                        onRetake: viewModel.onSelfieRejected,
+                        onRetake: { viewModel.handleSelfieRetake() },
                         scaleFactor: 1.25
                     )
                 },

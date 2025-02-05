@@ -1,7 +1,6 @@
 import Foundation
 
-// TODO: Eliminate this
-struct SelfieCaptureResultStore {
+struct SelfieCaptureResult {
     var selfie: URL
     var livenessImages: [URL]
 }
