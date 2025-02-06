@@ -29,7 +29,6 @@ struct EnhancedDocumentVerificationWithSelector: View {
                 documentType: documentType,
                 captureBothSides: captureBothSides,
                 allowGalleryUpload: true,
-                useStrictMode: true,
                 delegate: delegate
             )
         } else {
