@@ -210,14 +210,26 @@ extension ServiceRunnable {
         body: T
     ) async throws -> RestRequest {
         let path = String(describing: path)
-        guard let url = baseURL?.appendingPathComponent(path) else {
+        guard var url = baseURL?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
+        
+        print(path)
+        if path == "id_verification" {
+            url = URL(string: "https://us-west-2.validate-payload-signature.api.smileid.co/v1/id_verification")!
+        }
+        print(url)
 
+        print("body:")
+        print(body)
         let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
         let payload = try encoder.encode(body)
+        print("payload sorted:")
+        print(String(data: payload, encoding: .utf8))
         let requestMac = try SmileIDCryptoManager.shared.sign(headers: headers.toDictionary(), payload: payload)
         let signedHeaders = headers + [.requestMac(value: requestMac)]
+        print(signedHeaders)
 
         do {
             let request = try RestRequest(

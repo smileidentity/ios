@@ -1,5 +1,5 @@
 {
-  "originHash" : "e723f01b9212cfb7a0e4c57b7a01dc33a342294ec34ccc9f45a784b8e58ca36e",
+  "originHash" : "d81dc8821ed88abccdb99ce9a9ed7cb1adccf00e14434995b9586adbb0ab6b12",
   "pins" : [
     {
       "identity" : "fingerprintjs-ios",
@@ -38,5 +38,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

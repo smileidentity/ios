@@ -133,6 +133,10 @@
 		6277E7512C65153700AC87FB /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6277E7502C65153700AC87FB /* ZIPFoundation */; };
 		62BE2B19D3C60B8F915EBF4F /* RectangleDectorFunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B428612D2FBA680B560E1885 /* RectangleDectorFunnel.swift */; };
 		64BE0DC90E1AEBCC99AABF17 /* ServiceRunnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8139C6FFBC1EBEBE48AB2B /* ServiceRunnable.swift */; };
+		667642192D54CC2F00C390CC /* SmileIDSecurity.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */; };
+		6676421A2D54CC2F00C390CC /* SmileIDSecurity.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6676421C2D54CC3700C390CC /* SmileIDSecurity.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */; };
+		6676421D2D54CC3700C390CC /* SmileIDSecurity.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6778E6445EC23C8F92C42E3E /* Injected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5511F1A4BC60C44727CEDAF6 /* Injected.swift */; };
 		69B532C51C917B39252CA192 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FAC3D9075164C75D04EAFD /* Util.swift */; };
 		6A1C0C2DF2B0C8344D96BD84 /* NetworkUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6B16B5E9B21097D23DE413 /* NetworkUtil.swift */; };
@@ -260,6 +264,28 @@
 			dstSubfolderSpec = 16;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6676421B2D54CC2F00C390CC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6676421A2D54CC2F00C390CC /* SmileIDSecurity.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6676421E2D54CC3700C390CC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6676421D2D54CC3700C390CC /* SmileIDSecurity.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1747,6 +1773,7 @@
 		662E78AA779170D8CA9EEECF /* OrchestratedConsentScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedConsentScreen.swift; path = Sources/SmileID/Classes/Consent/OrchestratedConsentScreen.swift; sourceTree = "<group>"; };
 		6643C65BB21AA48FF6541DB8 /* ImageExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageExtensions.swift; path = Sources/SmileID/Classes/Helpers/ImageExtensions.swift; sourceTree = "<group>"; };
 		66516E66D0F136772D53A024 /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
+		667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = SmileIDSecurity.xcframework; sourceTree = "<group>"; };
 		667BC8E1B7CB14690BE8B64B /* OrchestratedBiometricKycScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycScreen.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycScreen.swift; sourceTree = "<group>"; };
 		668D83F41C29B727D0007FC0 /* SelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		66B19CD0CE06E42824CD683E /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
@@ -3675,6 +3702,7 @@
 				6277E74F2C6511BD00AC87FB /* ZIPFoundation in Frameworks */,
 				1E98259F2C9B478C009F2CA6 /* FingerprintJS in Frameworks */,
 				1E9825A12C9B478C009F2CA6 /* SystemControl in Frameworks */,
+				6676421C2D54CC3700C390CC /* SmileIDSecurity.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3691,6 +3719,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2099D5EB2D3AC49A007C8CFA /* Sentry in Frameworks */,
+				667642192D54CC2F00C390CC /* SmileIDSecurity.xcframework in Frameworks */,
 				1E4A02382BF4EB9D00167633 /* Lottie in Frameworks */,
 				6277E7512C65153700AC87FB /* ZIPFoundation in Frameworks */,
 				1E9825A32C9B4AF2009F2CA6 /* FingerprintJS in Frameworks */,
@@ -3704,6 +3733,7 @@
 		1E6857CC2BF39D020019B515 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -7383,6 +7413,7 @@
 				1EEFC2162B583CFB00B8A934 /* Sources */,
 				1EEFC2172B583CFB00B8A934 /* Frameworks */,
 				1EEFC2182B583CFB00B8A934 /* Resources */,
+				6676421E2D54CC3700C390CC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -7424,6 +7455,7 @@
 				1EEFC2342B583F1A00B8A934 /* Sources */,
 				1EEFC2352B583F1A00B8A934 /* Frameworks */,
 				1EEFC2362B583F1A00B8A934 /* CopyFiles */,
+				6676421B2D54CC2F00C390CC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

@@ -65,14 +65,12 @@ public class SmileID {
     public class func initialize(
         config: Config = getConfig(),
         useSandbox: Bool = false,
-        enableErrorReporting: Bool = true,
         requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         initialize(
             apiKey: nil,
             config: config,
             useSandbox: useSandbox,
-            enableErrorReporting: enableErrorReporting,
             requestTimeout: requestTimeout
         )
     }
@@ -92,18 +90,12 @@ public class SmileID {
         apiKey: String? = nil,
         config: Config = getConfig(),
         useSandbox: Bool = false,
-        enableErrorReporting: Bool = true,
         requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         self.config = config
         self.useSandbox = useSandbox
         self.apiKey = apiKey
         self.requestTimeout = requestTimeout
-
-        // Enable crash reporting as early as possible (the pre-req is that the config is loaded)
-        if enableErrorReporting {
-            SmileIDCrashReporting.shared.enable()
-        }
 
         SmileIDResourcesHelper.registerFonts()
 
