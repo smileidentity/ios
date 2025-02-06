@@ -1,6 +1,6 @@
 import SmileID
-import UIKit
 import SwiftUI
+import UIKit
 
 @objcMembers
 class EnhancedSelfieCaptureViewModel: NSObject, @preconcurrency SmartSelfieResultDelegate {
