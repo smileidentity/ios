@@ -48,25 +48,29 @@ struct BiometricKycWithIdInputScreen: View {
                 productName: "ID",
                 partnerPrivacyPolicy: URL(string: "https://usesmileid.com")!,
                 showAttribution: true,
-                onConsentGranted: {
+                onConsentGranted: { consentInformation in
                     viewModel.onConsentGranted(
                         country: country,
                         idType: idType,
-                        requiredFields: requiredFields)
+                        consentInformation: consentInformation,
+                        requiredFields: requiredFields
+                    )
                 },
                 onConsentDenied: { delegate.didError(error: SmileIDError.consentDenied) }
             )
-        case .idInput(let country, let idType, let requiredFields):
+        case .idInput(let country, let idType, let consentInformation, let requiredFields):
             IdInfoInputScreen(
                 selectedCountry: country,
                 selectedIdType: idType,
+                consentInformation: consentInformation,
                 header: "Enter ID Information",
                 requiredFields: requiredFields,
                 onResult: viewModel.onIdFieldsEntered
             ).frame(maxWidth: .infinity)
-        case .sdk(let idInfo):
+        case .sdk(let idInfo, let consentInformation):
             SmileID.biometricKycScreen(
                 idInfo: idInfo,
+                consentInformation: consentInformation,
                 userId: viewModel.userId,
                 jobId: viewModel.jobId,
                 allowAgentMode: true,

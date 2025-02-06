@@ -12,6 +12,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     // Input properties
     let userId: String
     let jobId: String
+    let consentInformation: ConsentInformation?
     let allowNewEnroll: Bool
     let countryCode: String
     let documentType: String?
@@ -43,6 +44,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     init(
         userId: String,
         jobId: String,
+        consentInformation: ConsentInformation?,
         allowNewEnroll: Bool,
         countryCode: String,
         documentType: String?,
@@ -55,6 +57,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     ) {
         self.userId = userId
         self.jobId = jobId
+        self.consentInformation = consentInformation
         self.allowNewEnroll = allowNewEnroll
         self.countryCode = countryCode
         self.documentType = documentType
@@ -166,6 +169,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 let info = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,
                     idInfo: IdInfo(country: countryCode, idType: documentType),
+                    consentInformation: consentInformation,
                     documentFront: frontDocumentUrl,
                     documentBack: backDocumentUrl,
                     selfie: selfieFile,
@@ -334,9 +338,8 @@ class OrchestratedDocumentVerificationViewModel:
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
-           let documentBackPath = getRelativePath(from: savedFiles.documentBack)
-        {
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
+            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,
                 documentFrontImage: documentFrontPath,
@@ -362,9 +365,8 @@ class OrchestratedEnhancedDocumentVerificationViewModel:
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront),
-           let documentBackPath = getRelativePath(from: savedFiles.documentBack)
-        {
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
+            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,
                 documentFrontImage: documentFrontPath,

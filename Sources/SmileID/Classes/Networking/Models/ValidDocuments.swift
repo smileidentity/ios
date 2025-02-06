@@ -29,7 +29,6 @@ public struct ValidDocument: Codable, Identifiable {
 }
 
 public struct Country: Codable {
-
     public let code: String
     public let continent: String
     public let name: String
@@ -76,7 +75,7 @@ public struct ProductsConfigRequest: Encodable {
 
     public init() {
         partnerId = SmileID.config.partnerId
-        timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
+        timestamp = Date().toISO8601WithMilliseconds()
         signature = try? calculateSignature(timestamp: timestamp)
     }
 
@@ -104,8 +103,8 @@ public struct ProductsConfigResponse: Codable {
     public let idSelection: IdSelection
 
     enum CodingKeys: String, CodingKey {
-        case consentRequired = "consentRequired"
-        case idSelection = "idSelection"
+        case consentRequired
+        case idSelection
     }
 }
 

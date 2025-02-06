@@ -5,7 +5,7 @@ enum EnhancedKycWithIdInputScreenStep {
     case loading(String)
     case idTypeSelection([CountryInfo])
     case consent(country: String, idType: String, requiredFields: [RequiredField])
-    case idInput(country: String, idType: String, requiredFields: [RequiredField])
+    case idInput(country: String, idType: String, consentInformation: ConsentInformation, requiredFields: [RequiredField])
     case processing(ProcessingState)
 }
 
@@ -18,6 +18,13 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     @Published @MainActor var step = EnhancedKycWithIdInputScreenStep.loading("Loading ID Types…")
 
     @Published @MainActor var idInfo = IdInfo(country: "")
+    // default to false
+    @Published @MainActor var consentInformation = ConsentInformation(
+        consentGrantedDate: Date().toISO8601WithMilliseconds(),
+        personalDetailsConsentGranted: false,
+        contactInformationConsentGranted: false,
+        documentInformationConsentGranted: false
+    )
 
     init(userId: String, jobId: String) {
         self.userId = userId
@@ -88,10 +95,17 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
                         )
                     }
                 } else {
-                    // We don't need consent. Proceed forward as if consent has already been granted
+                    // We don't need consent. Mark it as false for this product since it's not needed, unless we want to change this
+                    let consentInfo = ConsentInformation(
+                        consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                        personalDetailsConsentGranted: false,
+                        contactInformationConsentGranted: false,
+                        documentInformationConsentGranted: false
+                    )
                     onConsentGranted(
                         country: country,
                         idType: idType,
+                        consentInformation: consentInfo,
                         requiredFields: requiredFields
                     )
                 }
@@ -108,24 +122,27 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
         loadConsent(country: country, idType: idType, requiredFields: requiredFields)
     }
 
-    func onConsentGranted(country: String, idType: String, requiredFields: [RequiredField]) {
+    func onConsentGranted(country: String, idType: String, consentInformation: ConsentInformation, requiredFields: [RequiredField]) {
         DispatchQueue.main.async {
             self.step = .idInput(
                 country: country,
                 idType: idType,
+                consentInformation: consentInformation,
                 requiredFields: requiredFields
             )
         }
     }
 
-    func onIdFieldsEntered(idInfo: IdInfo) {
+    func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation) {
         DispatchQueue.main.async {
             self.idInfo = idInfo
-            self.step = .processing(ProcessingState.inProgress) }
-        doEnhancedKyc(idInfo: idInfo)
+            self.consentInformation = consentInformation
+            self.step = .processing(ProcessingState.inProgress)
+        }
+        doEnhancedKyc(idInfo: idInfo, consentInformation: consentInformation)
     }
 
-    func doEnhancedKyc(idInfo: IdInfo) {
+    func doEnhancedKyc(idInfo: IdInfo, consentInformation: ConsentInformation) {
         DispatchQueue.main.async { self.step = .loading("Loading...") }
         Task {
             do {
@@ -140,6 +157,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
                     country: idInfo.country,
                     idType: idInfo.idType!,
                     idNumber: idInfo.idNumber!,
+                    consentInformation: consentInformation,
                     firstName: idInfo.firstName,
                     lastName: idInfo.lastName,
                     dob: idInfo.dob,
@@ -160,7 +178,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     }
 
     @MainActor func onRetry() {
-        doEnhancedKyc(idInfo: self.idInfo)
+        doEnhancedKyc(idInfo: self.idInfo, consentInformation: self.consentInformation)
     }
 
     func onFinished(delegate: EnhancedKycResultDelegate) {

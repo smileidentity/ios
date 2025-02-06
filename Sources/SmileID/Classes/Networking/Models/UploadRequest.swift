@@ -3,18 +3,22 @@ import Foundation
 public struct UploadRequest: Codable {
     public var images: [UploadImageInfo]
     public var idInfo: IdInfo?
+    public var consentInformation: ConsentInformation?
 
     public init(
         images: [UploadImageInfo],
-        idInfo: IdInfo? = nil
+        idInfo: IdInfo? = nil,
+        consentInformation: ConsentInformation? = nil
     ) {
         self.images = images
         self.idInfo = idInfo
+        self.consentInformation = consentInformation
     }
 
     enum CodingKeys: String, CodingKey {
         case images
         case idInfo = "id_info"
+        case consentInformation = "consent_information"
     }
 }
 
@@ -76,6 +80,32 @@ public struct IdInfo: Codable {
             bankCode: bankCode,
             entered: entered
         )
+    }
+}
+
+public struct ConsentInformation: Codable {
+    public let consentGrantedDate: String
+    public let personalDetailsConsentGranted: Bool
+    public let contactInformationConsentGranted: Bool
+    public let documentInformationConsentGranted: Bool
+
+    public init(
+        consentGrantedDate: String,
+        personalDetailsConsentGranted: Bool,
+        contactInformationConsentGranted: Bool,
+        documentInformationConsentGranted: Bool
+    ) {
+        self.consentGrantedDate = consentGrantedDate
+        self.personalDetailsConsentGranted = personalDetailsConsentGranted
+        self.contactInformationConsentGranted = contactInformationConsentGranted
+        self.documentInformationConsentGranted = documentInformationConsentGranted
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case consentGrantedDate = "consent_granted_date"
+        case personalDetailsConsentGranted = "personal_details_consent_granted"
+        case contactInformationConsentGranted = "contact_information_consent_granted"
+        case documentInformationConsentGranted = "document_information_consent_granted"
     }
 }
 

@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.3.3"
+    public static let version = "10.3.5"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -58,8 +58,6 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
-    ///   - enableErrorReporting: A boolean to enable error reporting for *ONLY* Smile ID related crashes.
-    ///   This is powered by Sentry.
     ///   - requestTimeout: The timeout interval for all requests.
     ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
@@ -82,8 +80,6 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
-    ///   - enableErrorReporting: A boolean to enable error reporting for *ONLY* Smile ID related crashes.
-    ///   This is powered by Sentry.
     ///   - requestTimeout: The timeout interval for all requests.
     ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
@@ -535,6 +531,7 @@ public class SmileID {
     public class func enhancedDocumentVerificationScreen(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
+        consentInformation: ConsentInformation,
         allowNewEnroll: Bool = false,
         countryCode: String,
         documentType: String? = nil,
@@ -552,6 +549,7 @@ public class SmileID {
         OrchestratedEnhancedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
+            consentInformation: consentInformation,
             captureBothSides: captureBothSides,
             idAspectRatio: idAspectRatio,
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
@@ -574,7 +572,7 @@ public class SmileID {
         productName: String,
         partnerPrivacyPolicy: URL,
         showAttribution: Bool = true,
-        onConsentGranted: @escaping () -> Void,
+        onConsentGranted: @escaping (ConsentInformation) -> Void,
         onConsentDenied: @escaping () -> Void
     ) -> some View {
         OrchestratedConsentScreen(
@@ -593,6 +591,7 @@ public class SmileID {
     /// user's photo in an ID authority database
     /// - Parameters:
     ///  - idInfo: The ID information to look up in the ID Authority
+    ///  - consentInformation: We need you to pass the consent from the user
     ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
     ///  to a unique User ID within your own system. If not provided, a random user ID is generated
     ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
@@ -608,6 +607,7 @@ public class SmileID {
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
         idInfo: IdInfo,
+        consentInformation: ConsentInformation,
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
         allowNewEnroll: Bool = false,
@@ -619,6 +619,7 @@ public class SmileID {
     ) -> some View {
         OrchestratedBiometricKycScreen(
             idInfo: idInfo,
+            consentInformation: consentInformation,
             userId: userId,
             jobId: jobId,
             allowNewEnroll: allowNewEnroll,

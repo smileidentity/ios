@@ -5,8 +5,8 @@ enum BiometricKycWithIdInputScreenStep {
     case loading(String)
     case idTypeSelection([CountryInfo])
     case consent(country: String, idType: String, requiredFields: [RequiredField])
-    case idInput(country: String, idType: String, requiredFields: [RequiredField])
-    case sdk(IdInfo)
+    case idInput(country: String, idType: String, consentInformation: ConsentInformation, requiredFields: [RequiredField])
+    case sdk(idInfo: IdInfo, consentInformation: ConsentInformation)
 }
 
 class BiometricKycWithIdInputScreenViewModel: ObservableObject {
@@ -86,10 +86,17 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
                         )
                     }
                 } else {
-                    // We don't need consent. Proceed forward as if consent has already been granted
+                    // We don't need consent. Mark it as false for this product since it's not needed, unless we want to change this
+                    let consentInfo = ConsentInformation(
+                        consentGrantedDate:Date().toISO8601WithMilliseconds(),
+                        personalDetailsConsentGranted: false,
+                        contactInformationConsentGranted: false,
+                        documentInformationConsentGranted: false
+                    )
                     onConsentGranted(
                         country: country,
                         idType: idType,
+                        consentInformation: consentInfo,
                         requiredFields: requiredFields
                     )
                 }
@@ -106,17 +113,23 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
         loadConsent(country: country, idType: idType, requiredFields: requiredFields)
     }
 
-    func onConsentGranted(country: String, idType: String, requiredFields: [RequiredField]) {
+    func onConsentGranted(country: String, idType: String, consentInformation: ConsentInformation, requiredFields: [RequiredField]) {
         DispatchQueue.main.async {
             self.step = .idInput(
                 country: country,
                 idType: idType,
+                consentInformation: consentInformation,
                 requiredFields: requiredFields
             )
         }
     }
 
-    func onIdFieldsEntered(idInfo: IdInfo) {
-        DispatchQueue.main.async { self.step = .sdk(idInfo) }
+    func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation) {
+        DispatchQueue.main.async {
+            self.step = .sdk(
+                idInfo: idInfo,
+                consentInformation: consentInformation
+            )
+        }
     }
 }

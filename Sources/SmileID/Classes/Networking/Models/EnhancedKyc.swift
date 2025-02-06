@@ -4,6 +4,7 @@ public struct EnhancedKycRequest: Codable {
     public let country: String
     public let idType: String
     public let idNumber: String
+    public let consentInformation: ConsentInformation
     public let firstName: String?
     public let middleName: String?
     public let lastName: String?
@@ -22,6 +23,7 @@ public struct EnhancedKycRequest: Codable {
         country: String,
         idType: String,
         idNumber: String,
+        consentInformation: ConsentInformation,
         firstName: String? = nil,
         middleName: String? = nil,
         lastName: String? = nil,
@@ -38,6 +40,7 @@ public struct EnhancedKycRequest: Codable {
         self.country = country
         self.idType = idType
         self.idNumber = idNumber
+        self.consentInformation = consentInformation
         self.firstName = firstName
         self.middleName = middleName
         self.lastName = lastName
@@ -56,6 +59,7 @@ public struct EnhancedKycRequest: Codable {
         case country
         case idType = "id_type"
         case idNumber = "id_number"
+        case consentInformation = "consent_information"
         case firstName = "first_name"
         case middleName = "middle_name"
         case lastName = "last_name"

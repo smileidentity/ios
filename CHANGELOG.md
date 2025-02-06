@@ -1,10 +1,20 @@
 # Release Notes
 
-## [Unrealeased]
+## ## 10.4.0 Unreleased
+
+### Added
+* Pass ConsentInformation in EnhancedDocV, EnhancedKYC and BiometricKYC
+
+### Changed
+* Timestamp consistency from date epoch to iso format 
+
+## 10.3.5
 
 ### Added
 * Default headers to all GET and POST requests: PartnerID, Source SDK and Source SDK Version.
-* SentryClient setup to capture errors in the SDK with SentryHub without interferring with host application.
+
+### Fixed
+* Document back image required when `captureBothSides` is false.
 
 ## 10.3.4
 
