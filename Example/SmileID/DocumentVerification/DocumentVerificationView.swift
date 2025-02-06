@@ -15,6 +15,7 @@ struct DocumentVerificationView: View {
             documentType: verificationDetails.documentType,
             captureBothSides: verificationDetails.captureBothSides,
             allowGalleryUpload: true,
+            useStrictMode: true,
             delegate: delegate
         )
     }
