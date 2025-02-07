@@ -8,6 +8,7 @@ struct OrchestratedBiometricKycScreen: View {
     let showInstructions: Bool
     let showAttribution: Bool
     let allowAgentMode: Bool
+    let useStrictMode: Bool
     let extraPartnerParams: [String: String] = [:]
     let delegate: BiometricKycResultDelegate
     @ObservedObject private var viewModel: OrchestratedBiometricKycViewModel
@@ -21,6 +22,7 @@ struct OrchestratedBiometricKycScreen: View {
         showInstructions: Bool,
         showAttribution: Bool,
         allowAgentMode: Bool,
+        useStrictMode: Bool,
         extraPartnerParams: [String: String] = [:],
         delegate: BiometricKycResultDelegate
     ) {
@@ -30,12 +32,14 @@ struct OrchestratedBiometricKycScreen: View {
         self.showInstructions = showInstructions
         self.showAttribution = showAttribution
         self.allowAgentMode = allowAgentMode
+        self.useStrictMode = useStrictMode
         self.delegate = delegate
         viewModel = OrchestratedBiometricKycViewModel(
             userId: userId,
             jobId: jobId,
             allowNewEnroll: allowNewEnroll,
             idInfo: idInfo,
+            useStrictMode: useStrictMode,
             consentInformation: consentInformation,
             extraPartnerParams: extraPartnerParams
         )
@@ -44,18 +48,7 @@ struct OrchestratedBiometricKycScreen: View {
     var body: some View {
         switch viewModel.step {
         case .selfie:
-            OrchestratedSelfieCaptureScreen(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: false,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: true,
-                onResult: viewModel
-            )
+            selfieCaptureScreen
         case let .processing(state):
             ProcessingScreen(
                 processingState: state,
@@ -88,6 +81,36 @@ struct OrchestratedBiometricKycScreen: View {
                 closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
                 onClose: { viewModel.onFinished(delegate: delegate) }
             )
+        }
+    }
+
+    private var selfieCaptureScreen: some View {
+        Group {
+            if useStrictMode {
+                OrchestratedEnhancedSelfieCaptureScreen(
+                    userId: userId,
+                    isEnroll: false,
+                    allowNewEnroll: allowNewEnroll,
+                    showAttribution: showAttribution,
+                    showInstructions: showInstructions,
+                    skipApiSubmission: true,
+                    extraPartnerParams: extraPartnerParams,
+                    onResult: viewModel
+                )
+            } else {
+                OrchestratedSelfieCaptureScreen(
+                    userId: userId,
+                    jobId: jobId,
+                    isEnroll: false,
+                    allowNewEnroll: allowNewEnroll,
+                    allowAgentMode: allowAgentMode,
+                    showAttribution: showAttribution,
+                    showInstructions: showInstructions,
+                    extraPartnerParams: extraPartnerParams,
+                    skipApiSubmission: true,
+                    onResult: viewModel
+                )
+            }
         }
     }
 }
