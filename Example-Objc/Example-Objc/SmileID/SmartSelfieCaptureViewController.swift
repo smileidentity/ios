@@ -41,7 +41,7 @@ class SelfieCaptureViewController: UIViewController {
             swiftUIView.topAnchor.constraint(equalTo: view.topAnchor),
             swiftUIView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             swiftUIView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            swiftUIView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            swiftUIView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
         viewController.didMove(toParent: self)
