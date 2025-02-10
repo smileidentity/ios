@@ -133,7 +133,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let useStrictMode: Bool
     var extraPartnerParams: [String: String]
     let onResult: T
-    @ObservedObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
+    @Backport.StateObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
 
     init(
         countryCode: String,
@@ -172,7 +172,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.useStrictMode = useStrictMode
         self.extraPartnerParams = extraPartnerParams
         self.onResult = onResult
-        self.viewModel = viewModel
+        self._viewModel = Backport.StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
