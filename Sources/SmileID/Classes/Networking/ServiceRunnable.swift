@@ -223,7 +223,8 @@ extension ServiceRunnable {
         print("body:")
         print(body)
         let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        encoder.keyEncodingStrategy = .useDefaultKeys
         let payload = try encoder.encode(body)
         print("payload sorted:")
         print(String(data: payload, encoding: .utf8))
