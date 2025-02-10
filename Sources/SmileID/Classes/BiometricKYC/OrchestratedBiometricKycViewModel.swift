@@ -1,17 +1,18 @@
 import Combine
 import Foundation
 
-internal enum BiometricKycStep {
+enum BiometricKycStep {
     case selfie
     case processing(ProcessingState)
 }
 
-internal class OrchestratedBiometricKycViewModel: ObservableObject {
+class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - Input Properties
 
     private let userId: String
     private let jobId: String
     private let allowNewEnroll: Bool
+    private let useStrictMode: Bool
     private var extraPartnerParams: [String: String]
     private let localMetadata = LocalMetadata()
     private var idInfo: IdInfo
@@ -19,8 +20,8 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
     // MARK: - Other Properties
 
-    internal var selfieFile: URL?
-    internal var livenessFiles: [URL]?
+    var selfieFile: URL?
+    var livenessFiles: [URL]?
     private var error: Error?
     private var didSubmitBiometricJob: Bool = false
 
@@ -38,12 +39,14 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
         jobId: String,
         allowNewEnroll: Bool,
         idInfo: IdInfo,
+        useStrictMode: Bool,
         consentInformation: ConsentInformation,
         extraPartnerParams: [String: String] = [:]
     ) {
         self.userId = userId
         self.jobId = jobId
         self.allowNewEnroll = allowNewEnroll
+        self.useStrictMode = useStrictMode
         self.idInfo = idInfo
         self.consentInformation = consentInformation
         self.extraPartnerParams = extraPartnerParams
@@ -59,8 +62,9 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
     func onFinished(delegate: BiometricKycResultDelegate) {
         if let selfieFile = selfieFile,
-            let livenessFiles = livenessFiles,
-            let selfiePath = getRelativePath(from: selfieFile) {
+           let livenessFiles = livenessFiles,
+           let selfiePath = getRelativePath(from: selfieFile)
+        {
             delegate.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
@@ -107,12 +111,12 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
 
     private func fetchRequiredFiles() throws {
         selfieFile = try LocalStorage.getFileByType(
-            jobId: jobId,
+            jobId: useStrictMode ? userId : jobId,
             fileType: FileType.selfie
         )
 
         livenessFiles = try LocalStorage.getFilesByType(
-            jobId: jobId,
+            jobId: useStrictMode ? userId : jobId,
             fileType: FileType.liveness
         )
 
@@ -174,7 +178,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     private func prepareForUpload(authResponse: AuthenticationResponse) async throws -> PrepUploadResponse {
         let prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
-            allowNewEnroll: String(allowNewEnroll),  // TODO: - Fix when Michael changes this to boolean
+            allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
             metadata: localMetadata.metadata.items,
             timestamp: authResponse.timestamp,
             signature: authResponse.signature
@@ -185,7 +189,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
             )
         } catch let error as SmileIDError {
             guard case let .api(errorCode, _) = error,
-                errorCode == "2215"
+                  errorCode == "2215"
             else {
                 throw error
             }
@@ -202,7 +206,10 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     private func moveJobToSubmittedDirectory() throws {
-        try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+        try LocalStorage.moveToSubmittedJobs(jobId: jobId)
+        if useStrictMode {
+            try LocalStorage.moveToSubmittedJobs(jobId: userId)
+        }
     }
 
     private func updateStep(_ newStep: BiometricKycStep) {
@@ -224,9 +231,15 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
     private func handleSubmissionFailure(_ smileIDError: SmileIDError) {
         do {
             _ = try LocalStorage.handleOfflineJobFailure(
-                jobId: self.jobId,
+                jobId: jobId,
                 error: smileIDError
             )
+            if useStrictMode {
+                _ = try LocalStorage.handleOfflineJobFailure(
+                    jobId: userId,
+                    error: smileIDError
+                )
+            }
         } catch {
             print("Error moving job to submitted directory: \(error)")
             self.error = smileIDError
@@ -241,7 +254,7 @@ internal class OrchestratedBiometricKycViewModel: ObservableObject {
             didSubmitBiometricJob = false
             print("Error submitting job: \(smileIDError)")
             let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
-            self.error = smileIDError
+            error = smileIDError
             updateErrorMessages(errorMessage: errorMessage, errorMessageRes: errorMessageRes)
             updateStep(.processing(.error))
         }
