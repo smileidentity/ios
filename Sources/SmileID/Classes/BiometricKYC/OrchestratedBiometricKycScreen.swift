@@ -11,7 +11,7 @@ struct OrchestratedBiometricKycScreen: View {
     let useStrictMode: Bool
     let extraPartnerParams: [String: String] = [:]
     let delegate: BiometricKycResultDelegate
-    @ObservedObject private var viewModel: OrchestratedBiometricKycViewModel
+    @Backport.StateObject private var viewModel: OrchestratedBiometricKycViewModel
 
     init(
         idInfo: IdInfo,
@@ -34,7 +34,7 @@ struct OrchestratedBiometricKycScreen: View {
         self.allowAgentMode = allowAgentMode
         self.useStrictMode = useStrictMode
         self.delegate = delegate
-        viewModel = OrchestratedBiometricKycViewModel(
+        self._viewModel = Backport.StateObject(wrappedValue: OrchestratedBiometricKycViewModel(
             userId: userId,
             jobId: jobId,
             allowNewEnroll: allowNewEnroll,
@@ -42,7 +42,7 @@ struct OrchestratedBiometricKycScreen: View {
             useStrictMode: useStrictMode,
             consentInformation: consentInformation,
             extraPartnerParams: extraPartnerParams
-        )
+        ))
     }
 
     var body: some View {
