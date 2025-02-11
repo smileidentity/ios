@@ -190,13 +190,10 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
-        let requestMac = try SmileIDCryptoManager.shared.sign(headers: headers.toDictionary(), payload: uploadData)
-        let signedHeaders = headers + [.requestMac(value: requestMac)]
-
         let request = RestRequest(
             url: url,
             method: method,
-            headers: signedHeaders,
+            headers: headers,
             body: uploadData
         )
         return request
