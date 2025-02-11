@@ -1,0 +1,88 @@
+name: SmileID
+options:
+  schemes:
+    shared: true
+  localizations:
+    - language: en
+      usesBaseInternationalization: true
+
+packages:
+  FingerprintJS:
+    url: "https://github.com/fingerprintjs/fingerprintjs-ios/"
+    majorVersion: 1.5.0
+  Lottie:
+    url: "https://github.com/airbnb/lottie-spm"
+    majorVersion: 4.4.3
+  ZIPFoundation:
+    url: "https://github.com/weichsel/ZIPFoundation.git"
+    majorVersion: 0.9.19
+
+targets:
+  SmileIDFramework:
+    type: framework
+    platform: iOS
+    deploymentTarget: 13.0
+    dependencies:
+      - package: FingerprintJS
+      - package: Lottie
+      - package: ZIPFoundation
+    sources:
+        - "Sources/SmileID/Classes"
+        - "Sources/SmileID/Resources"
+    settings:
+      base:
+        PRODUCT_NAME: SmileID.framework
+        PRODUCT_BUNDLE_IDENTIFIER: com.smileidentity.SmileID
+        DEVELOPMENT_TEAM: 99P7YGX9Q6
+        ENABLE_BITCODE: NO
+    scheme:
+      testTargets:
+        - SmileIDTests
+
+  SmileIDXCFramework:
+    type: xcframework
+    platform: iOS
+    deploymentTarget: 13.0
+    dependencies:
+      - package: FingerprintJS
+      - package: Lottie
+      - package: ZIPFoundation
+    sources:
+        - "Sources/SmileID/Classes"
+        - "Sources/SmileID/Resources"
+    settings:
+      base:
+        PRODUCT_NAME: SmileID.xcframework
+        PRODUCT_BUNDLE_IDENTIFIER: com.smileidentity.SmileID
+        DEVELOPMENT_TEAM: 99P7YGX9Q6
+        ENABLE_BITCODE: NO
+
+  SmileID:
+    type: library.static
+    platform: iOS
+    deploymentTarget: 13.0
+    dependencies:
+      - package: FingerprintJS
+      - package: Lottie
+      - package: ZIPFoundation
+    sources:
+        - "Sources/SmileID/Classes"
+        - "Sources/SmileID/Resources"
+    settings:
+      base:
+        PRODUCT_NAME: libSmileID.a
+        PRODUCT_BUNDLE_IDENTIFIER: com.smileidentity.SmileID
+        DEVELOPMENT_TEAM: 99P7YGX9Q6
+        ENABLE_BITCODE: NO
+
+  SmileIDTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: 13.0
+    dependencies:
+      - target: SmileIDFramework
+    sources:
+        - Tests
+    settings:
+      base:
+        DEVELOPMENT_TEAM: 99P7YGX9Q6
