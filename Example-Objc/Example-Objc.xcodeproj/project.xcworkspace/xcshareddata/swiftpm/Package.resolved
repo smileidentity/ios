@@ -1,0 +1,42 @@
+{
+  "originHash" : "19de982325dd2cdd1450f995f3e6f982bc072e68b8e752b840149c62dedb7588",
+  "pins" : [
+    {
+      "identity" : "fingerprintjs-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fingerprintjs/fingerprintjs-ios",
+      "state" : {
+        "revision" : "bd93291c149e328919a9a2881575494f6ea9245f",
+        "version" : "1.5.0"
+      }
+    },
+    {
+      "identity" : "ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/smileidentity/ios/",
+      "state" : {
+        "revision" : "c1b312c59a0e43d746e00c8a3594fd41c6df54c0",
+        "version" : "10.3.5"
+      }
+    },
+    {
+      "identity" : "lottie-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-spm",
+      "state" : {
+        "revision" : "8c6edf4f0fa84fe9c058600a4295eb0c01661c69",
+        "version" : "4.5.1"
+      }
+    },
+    {
+      "identity" : "zipfoundation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/weichsel/ZIPFoundation.git",
+      "state" : {
+        "revision" : "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0",
+        "version" : "0.9.19"
+      }
+    }
+  ],
+  "version" : 2
+}
