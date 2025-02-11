@@ -1,7 +1,6 @@
 import Foundation
 import SmileIDSecurity
 
-
 protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
     associatedtype PathType: CustomStringConvertible

@@ -132,7 +132,7 @@ public class LocalStorage {
         ))
         return try createSmileFile(to: jobId, name: "info.json", file: data)
     }
-    
+
     static func createSecurityInfoFile(
         jobId: String,
         securityInfo: SecurityInfo

@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import SmileIDSecurity
 
 enum DocumentCaptureFlow: Equatable {
     case frontDocumentCapture
@@ -179,6 +180,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     livenessImages: livenessFiles
                 )
                 allFiles.append(info)
+                allFiles = try addSecurityInfo(files: allFiles)
                 let zipData = try LocalStorage.zipFiles(at: allFiles)
                 self.savedFiles = DocumentCaptureResultStore(
                     allFiles: allFiles,
@@ -312,6 +314,30 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 self.onError(error: error)
             }
         }
+    }
+
+    private func addSecurityInfo(files: [URL]) throws -> [URL] {
+        var data = Data()
+        for file in files {
+            let fileData = try Data(contentsOf: file)
+            data.append(fileData)
+        }
+
+        let timestamp = Date().toISO8601WithMilliseconds()
+        let mac = try SmileIDCryptoManager.shared.sign(
+            timestamp: timestamp,
+            payload: data
+        )
+
+        let securityInfo = SecurityInfo(
+            timestamp: timestamp,
+            mac: mac
+        )
+        let securityInfoJson = try LocalStorage.createSecurityInfoFile(
+            jobId: jobId,
+            securityInfo: securityInfo
+        )
+        return files + [securityInfoJson]
     }
 
     /// If stepToRetry is ProcessingScreen, we're retrying a network issue, so we need to kick off
