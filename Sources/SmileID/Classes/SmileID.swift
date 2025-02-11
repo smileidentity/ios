@@ -213,7 +213,7 @@ public class SmileID {
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId)
+                        LocalStorage.getInfoJsonFile(jobId: jobId),
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {
@@ -305,25 +305,25 @@ public class SmileID {
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
-        useStrictMode: Bool = false,
+        useStrictMode _: Bool = false,
         skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-            OrchestratedSelfieCaptureScreen(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: true,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: skipApiSubmission,
-                onResult: delegate,
-                onDismiss: onDismiss
-            )
+        OrchestratedSelfieCaptureScreen(
+            userId: userId,
+            jobId: jobId,
+            isEnroll: true,
+            allowNewEnroll: allowNewEnroll,
+            allowAgentMode: allowAgentMode,
+            showAttribution: showAttribution,
+            showInstructions: showInstructions,
+            extraPartnerParams: extraPartnerParams,
+            skipApiSubmission: skipApiSubmission,
+            onResult: delegate,
+            onDismiss: onDismiss
+        )
     }
 
     /// Perform a SmartSelfie™ Enrollment
@@ -389,7 +389,7 @@ public class SmileID {
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
-        useStrictMode: Bool = false,
+        useStrictMode _: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate,
         onDismiss: (() -> Void)? = nil
@@ -486,6 +486,7 @@ public class SmileID {
         showInstructions: Bool = true,
         showAttribution: Bool = true,
         skipApiSubmission: Bool = false,
+        useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: DocumentVerificationResultDelegate
     ) -> some View {
@@ -503,6 +504,7 @@ public class SmileID {
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
             skipApiSubmission: skipApiSubmission,
+            useStrictMode: useStrictMode,
             extraPartnerParams: extraPartnerParams,
             onResult: delegate
         )
@@ -539,6 +541,7 @@ public class SmileID {
     public class func enhancedDocumentVerificationScreen(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
+        consentInformation: ConsentInformation,
         allowNewEnroll: Bool = false,
         countryCode: String,
         documentType: String? = nil,
@@ -550,12 +553,14 @@ public class SmileID {
         showInstructions: Bool = true,
         skipApiSubmission: Bool = false,
         showAttribution: Bool = true,
+        useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: EnhancedDocumentVerificationResultDelegate
     ) -> some View {
         OrchestratedEnhancedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
+            consentInformation: consentInformation,
             captureBothSides: captureBothSides,
             idAspectRatio: idAspectRatio,
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
@@ -567,6 +572,7 @@ public class SmileID {
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
             skipApiSubmission: skipApiSubmission,
+            useStrictMode: useStrictMode,
             extraPartnerParams: extraPartnerParams,
             onResult: delegate
         )
@@ -620,6 +626,7 @@ public class SmileID {
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
+        useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: BiometricKycResultDelegate
     ) -> some View {
@@ -632,6 +639,7 @@ public class SmileID {
             showInstructions: showInstructions,
             showAttribution: showAttribution,
             allowAgentMode: allowAgentMode,
+            useStrictMode: useStrictMode,
             extraPartnerParams: extraPartnerParams,
             delegate: delegate
         )

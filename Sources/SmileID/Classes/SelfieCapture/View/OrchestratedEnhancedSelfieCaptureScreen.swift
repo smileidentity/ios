@@ -16,6 +16,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
         allowNewEnroll: Bool,
         showAttribution: Bool,
         showInstructions: Bool,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String],
         onResult: SmartSelfieResultDelegate,
         onDismiss: (() -> Void)? = nil
@@ -23,10 +24,11 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
         self.onResult = onResult
-        self.viewModel = EnhancedSmartSelfieViewModel(
+        viewModel = EnhancedSmartSelfieViewModel(
             isEnroll: isEnroll,
             userId: userId,
             allowNewEnroll: allowNewEnroll,
+            skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
             onResult: onResult,
             localMetadata: LocalMetadata()

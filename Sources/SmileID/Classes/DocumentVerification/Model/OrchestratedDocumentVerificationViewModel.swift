@@ -12,11 +12,13 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     // Input properties
     let userId: String
     let jobId: String
+    let consentInformation: ConsentInformation?
     let allowNewEnroll: Bool
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
     let skipApiSubmission: Bool
+    let useStrictMode: Bool
     let jobType: JobType
     let extraPartnerParams: [String: String]
 
@@ -43,11 +45,13 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     init(
         userId: String,
         jobId: String,
+        consentInformation: ConsentInformation?,
         allowNewEnroll: Bool,
         countryCode: String,
         documentType: String?,
         captureBothSides: Bool,
         skipApiSubmission: Bool,
+        useStrictMode: Bool,
         selfieFile: URL?,
         jobType: JobType,
         extraPartnerParams: [String: String] = [:],
@@ -55,11 +59,13 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     ) {
         self.userId = userId
         self.jobId = jobId
+        self.consentInformation = consentInformation
         self.allowNewEnroll = allowNewEnroll
         self.countryCode = countryCode
         self.documentType = documentType
         self.captureBothSides = captureBothSides
         self.skipApiSubmission = skipApiSubmission
+        self.useStrictMode = useStrictMode
         self.selfieFile = selfieFile
         self.jobType = jobType
         self.extraPartnerParams = extraPartnerParams
@@ -123,12 +129,12 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 }
 
                 selfieFile = try LocalStorage.getFileByType(
-                    jobId: jobId,
+                    jobId: useStrictMode ? userId : jobId,
                     fileType: FileType.selfie
                 )
 
                 livenessFiles = try LocalStorage.getFilesByType(
-                    jobId: jobId,
+                    jobId: useStrictMode ? userId : jobId,
                     fileType: FileType.liveness
                 )
 
@@ -166,6 +172,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 let info = try LocalStorage.createInfoJsonFile(
                     jobId: jobId,
                     idInfo: IdInfo(country: countryCode, idType: documentType),
+                    consentInformation: consentInformation,
                     documentFront: frontDocumentUrl,
                     documentBack: backDocumentUrl,
                     selfie: selfieFile,
@@ -231,15 +238,18 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 didSubmitJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
+                    if useStrictMode {
+                        try LocalStorage.moveToSubmittedJobs(jobId: self.userId)
+                    }
                     self.selfieFile =
                         try LocalStorage.getFileByType(
-                            jobId: jobId,
+                            jobId: useStrictMode ? userId : jobId,
                             fileType: FileType.selfie,
                             submitted: true
                         ) ?? selfieFile
                     self.livenessFiles =
                         try LocalStorage.getFilesByType(
-                            jobId: jobId,
+                            jobId: useStrictMode ? userId : jobId,
                             fileType: FileType.liveness,
                             submitted: true
                         ) ?? []
@@ -251,20 +261,28 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch let error as SmileIDError {
                 do {
-                    let didMove = try LocalStorage.handleOfflineJobFailure(
+                    var didMove = try LocalStorage.handleOfflineJobFailure(
                         jobId: self.jobId,
                         error: error
                     )
+
+                    if useStrictMode {
+                        didMove = try LocalStorage.handleOfflineJobFailure(
+                            jobId: self.userId,
+                            error: error
+                        )
+                    }
+
                     if didMove {
                         self.selfieFile =
                             try LocalStorage.getFileByType(
-                                jobId: jobId,
+                                jobId: useStrictMode ? userId : jobId,
                                 fileType: FileType.selfie,
                                 submitted: true
                             ) ?? selfieFile
                         self.livenessFiles =
                             try LocalStorage.getFilesByType(
-                                jobId: jobId,
+                                jobId: useStrictMode ? userId : jobId,
                                 fileType: FileType.liveness,
                                 submitted: true
                             ) ?? []
@@ -334,7 +352,8 @@ class OrchestratedDocumentVerificationViewModel:
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
+        {
             let documentBackPath = getRelativePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,
@@ -361,7 +380,8 @@ class OrchestratedEnhancedDocumentVerificationViewModel:
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
+        {
             let documentBackPath = getRelativePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,

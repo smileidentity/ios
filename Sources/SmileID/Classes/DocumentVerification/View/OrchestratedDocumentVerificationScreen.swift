@@ -15,6 +15,7 @@ struct OrchestratedDocumentVerificationScreen: View {
     let allowAgentMode: Bool
     let showInstructions: Bool
     let skipApiSubmission: Bool
+    let useStrictMode: Bool
     let extraPartnerParams: [String: String]
     let onResult: DocumentVerificationResultDelegate
 
@@ -22,6 +23,7 @@ struct OrchestratedDocumentVerificationScreen: View {
         IOrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
+            consentInformation: nil,
             captureBothSides: captureBothSides,
             idAspectRatio: idAspectRatio,
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
@@ -33,16 +35,19 @@ struct OrchestratedDocumentVerificationScreen: View {
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
             skipApiSubmission: skipApiSubmission,
+            useStrictMode: useStrictMode,
             extraPartnerParams: extraPartnerParams,
             onResult: onResult,
             viewModel: OrchestratedDocumentVerificationViewModel(
                 userId: userId,
                 jobId: jobId,
+                consentInformation: nil,
                 allowNewEnroll: allowNewEnroll,
                 countryCode: countryCode,
                 documentType: documentType,
                 captureBothSides: captureBothSides,
                 skipApiSubmission: skipApiSubmission,
+                useStrictMode: useStrictMode,
                 selfieFile: bypassSelfieCaptureWithFile,
                 jobType: .documentVerification,
                 extraPartnerParams: extraPartnerParams,
@@ -56,6 +61,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     @State private var localMetadata = LocalMetadata()
     let countryCode: String
     let documentType: String?
+    let consentInformation: ConsentInformation
     let captureBothSides: Bool
     let idAspectRatio: Double?
     let bypassSelfieCaptureWithFile: URL?
@@ -67,6 +73,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     let allowAgentMode: Bool
     let showInstructions: Bool
     let skipApiSubmission: Bool
+    let useStrictMode: Bool
     let extraPartnerParams: [String: String]
     let onResult: EnhancedDocumentVerificationResultDelegate
 
@@ -74,6 +81,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
         IOrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
+            consentInformation: consentInformation,
             captureBothSides: captureBothSides,
             idAspectRatio: idAspectRatio,
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
@@ -85,16 +93,19 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
             allowAgentMode: allowAgentMode,
             showInstructions: showInstructions,
             skipApiSubmission: skipApiSubmission,
+            useStrictMode: useStrictMode,
             extraPartnerParams: extraPartnerParams,
             onResult: onResult,
             viewModel: OrchestratedEnhancedDocumentVerificationViewModel(
                 userId: userId,
                 jobId: jobId,
+                consentInformation: consentInformation,
                 allowNewEnroll: allowNewEnroll,
                 countryCode: countryCode,
                 documentType: documentType,
                 captureBothSides: captureBothSides,
                 skipApiSubmission: skipApiSubmission,
+                useStrictMode: useStrictMode,
                 selfieFile: bypassSelfieCaptureWithFile,
                 jobType: .enhancedDocumentVerification,
                 extraPartnerParams: extraPartnerParams,
@@ -107,6 +118,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
 private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let countryCode: String
     let documentType: String?
+    let consentInformation: ConsentInformation?
     let captureBothSides: Bool
     let idAspectRatio: Double?
     let bypassSelfieCaptureWithFile: URL?
@@ -118,13 +130,15 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let allowAgentMode: Bool
     let showInstructions: Bool
     let skipApiSubmission: Bool
+    let useStrictMode: Bool
     var extraPartnerParams: [String: String]
     let onResult: T
-    @ObservedObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
+    @Backport.StateObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
 
     init(
         countryCode: String,
         documentType: String?,
+        consentInformation: ConsentInformation?,
         captureBothSides: Bool,
         idAspectRatio: Double?,
         bypassSelfieCaptureWithFile: URL?,
@@ -136,12 +150,14 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         allowAgentMode: Bool,
         showInstructions: Bool,
         skipApiSubmission: Bool,
+        useStrictMode: Bool,
         extraPartnerParams: [String: String],
         onResult: T,
         viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
     ) {
         self.countryCode = countryCode
         self.documentType = documentType
+        self.consentInformation = consentInformation
         self.captureBothSides = captureBothSides
         self.idAspectRatio = idAspectRatio
         self.bypassSelfieCaptureWithFile = bypassSelfieCaptureWithFile
@@ -153,9 +169,10 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.allowAgentMode = allowAgentMode
         self.showInstructions = showInstructions
         self.skipApiSubmission = skipApiSubmission
+        self.useStrictMode = useStrictMode
         self.extraPartnerParams = extraPartnerParams
         self.onResult = onResult
-        self.viewModel = viewModel
+        self._viewModel = Backport.StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
@@ -200,18 +217,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 onSkip: viewModel.onDocumentBackSkip
             )
         case .selfieCapture:
-            OrchestratedSelfieCaptureScreen(
-                userId: userId,
-                jobId: jobId,
-                isEnroll: false,
-                allowNewEnroll: allowNewEnroll,
-                allowAgentMode: allowAgentMode,
-                showAttribution: showAttribution,
-                showInstructions: showInstructions,
-                extraPartnerParams: extraPartnerParams,
-                skipApiSubmission: true,
-                onResult: viewModel
-            )
+            selfieCaptureScreen
         case let .processing(state):
             ProcessingScreen(
                 processingState: state,
@@ -244,6 +250,36 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
                 onClose: { viewModel.onFinished(delegate: onResult) }
             )
+        }
+    }
+
+    private var selfieCaptureScreen: some View {
+        Group {
+            if useStrictMode {
+                OrchestratedEnhancedSelfieCaptureScreen(
+                    userId: userId,
+                    isEnroll: false,
+                    allowNewEnroll: allowNewEnroll,
+                    showAttribution: showAttribution,
+                    showInstructions: showInstructions,
+                    skipApiSubmission: true,
+                    extraPartnerParams: extraPartnerParams,
+                    onResult: viewModel
+                )
+            } else {
+                OrchestratedSelfieCaptureScreen(
+                    userId: userId,
+                    jobId: jobId,
+                    isEnroll: false,
+                    allowNewEnroll: allowNewEnroll,
+                    allowAgentMode: allowAgentMode,
+                    showAttribution: showAttribution,
+                    showInstructions: showInstructions,
+                    extraPartnerParams: extraPartnerParams,
+                    skipApiSubmission: true,
+                    onResult: viewModel
+                )
+            }
         }
     }
 }
