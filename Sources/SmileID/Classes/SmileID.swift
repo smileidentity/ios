@@ -299,28 +299,12 @@ public class SmileID {
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
     @ViewBuilder public class func smartSelfieEnrollmentScreen(
-        userId: String = generateUserId(),
-        jobId: String = generateJobId(),
-        allowNewEnroll: Bool = false,
-        allowAgentMode: Bool = false,
-        showAttribution: Bool = true,
-        showInstructions: Bool = true,
-        useStrictMode _: Bool = false,
-        skipApiSubmission: Bool = false,
-        extraPartnerParams: [String: String] = [:],
+        config: OrchestratedSelfieCaptureConfig,
         delegate: SmartSelfieResultDelegate,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         OrchestratedSelfieCaptureScreen(
-            userId: userId,
-            jobId: jobId,
-            isEnroll: true,
-            allowNewEnroll: allowNewEnroll,
-            allowAgentMode: allowAgentMode,
-            showAttribution: showAttribution,
-            showInstructions: showInstructions,
-            extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: skipApiSubmission,
+            config: config,
             onResult: delegate,
             onDismiss: onDismiss
         )
@@ -366,44 +350,15 @@ public class SmileID {
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
     ///
     /// - Parameters:
-    ///   - userId: The user ID to associate with the SmartSelfie™ Enrollment. Most often, this will
-    ///     correspond to a unique User ID within your own system. If not provided, a random user ID
-    ///     will be generated.
-    ///   - jobId: The job ID to associate with the SmartSelfie™ Enrollment. Most often, this will
-    ///     correspond to a unique Job ID within your own system. If not provided, a random job ID
-    ///     will be generated.
-    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
-    ///   - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
-    ///     displayed allowing toggling between the back camera and front camera. If not allowed,
-    ///     only the front camera will be used.
-    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
-    ///     screen
-    ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
-    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
-    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - config: configuration options for customising selfie capture experience.
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
     @ViewBuilder public class func smartSelfieAuthenticationScreen(
-        userId: String,
-        jobId: String = generateJobId(),
-        allowNewEnroll: Bool = false,
-        allowAgentMode: Bool = false,
-        showAttribution: Bool = true,
-        showInstructions: Bool = true,
-        useStrictMode _: Bool = false,
-        extraPartnerParams: [String: String] = [:],
+        config: OrchestratedSelfieCaptureConfig,
         delegate: SmartSelfieResultDelegate,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         OrchestratedSelfieCaptureScreen(
-            userId: userId,
-            jobId: jobId,
-            isEnroll: false,
-            allowNewEnroll: allowNewEnroll,
-            allowAgentMode: allowAgentMode,
-            showAttribution: showAttribution,
-            showInstructions: showInstructions,
-            extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: false,
+            config: config,
             onResult: delegate,
             onDismiss: onDismiss
         )

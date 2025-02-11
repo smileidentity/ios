@@ -52,9 +52,11 @@ struct HomeView: View {
                 switch product {
                 case .smartSelfieEnrollment:
                     SmileID.smartSelfieEnrollmentScreen(
-                        userId: viewModel.newUserId,
-                        jobId: viewModel.newJobId,
-                        allowAgentMode: true,
+                        config: OrchestratedSelfieCaptureConfig(
+                            userId: viewModel.newUserId,
+                            jobId: viewModel.newJobId,
+                            allowAgentMode: true
+                        ),
                         delegate: SmartSelfieEnrollmentDelegate(
                             userId: viewModel.newUserId,
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
@@ -206,8 +208,10 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
     var body: some View {
         if let userId {
             SmileID.smartSelfieAuthenticationScreen(
-                userId: userId,
-                allowAgentMode: true,
+                config: OrchestratedSelfieCaptureConfig(
+                    userId: userId,
+                    allowAgentMode: true
+                ),
                 delegate: delegate,
                 onDismiss: onDismiss
             )

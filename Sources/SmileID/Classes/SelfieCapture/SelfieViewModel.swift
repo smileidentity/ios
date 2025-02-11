@@ -6,24 +6,74 @@ public protocol SelfieCaptureDelegate {
     func didFinishWith(result: SelfieCaptureResult, error: Error?)
 }
 
+struct SelfieCaptureConfig {
+    let intraImageMinDelay: TimeInterval
+    let noFaceResetDelay: TimeInterval
+    let faceCaptureQualityThreshold: Float
+    let minFaceCenteredThreshold: Double
+    let maxFaceCenteredThreshold: Double
+    let minFaceAreaThreshold: Double
+    let maxFaceAreaThreshold: Double
+    let faceRotationThreshold: Double
+    let faceRollThreshold: Double
+    let numLivenessImages: Int
+    let numTotalSteps: Int
+    let livenessImageSize: Int
+    let selfieImageSize: Int
+    
+    init(
+        intraImageMinDelay: TimeInterval,
+        noFaceResetDelay: TimeInterval,
+        faceCaptureQualityThreshold: Float,
+        minFaceCenteredThreshold: Double,
+        maxFaceCenteredThreshold: Double,
+        minFaceAreaThreshold: Double,
+        maxFaceAreaThreshold: Double,
+        faceRotationThreshold: Double,
+        faceRollThreshold: Double,
+        numLivenessImages: Int,
+        numTotalSteps: Int,
+        livenessImageSize: Int,
+        selfieImageSize: Int
+    ) {
+        self.intraImageMinDelay = intraImageMinDelay
+        self.noFaceResetDelay = noFaceResetDelay
+        self.faceCaptureQualityThreshold = faceCaptureQualityThreshold
+        self.minFaceCenteredThreshold = minFaceCenteredThreshold
+        self.maxFaceCenteredThreshold = maxFaceCenteredThreshold
+        self.minFaceAreaThreshold = minFaceAreaThreshold
+        self.maxFaceAreaThreshold = maxFaceAreaThreshold
+        self.faceRotationThreshold = faceRotationThreshold
+        self.faceRollThreshold = faceRollThreshold
+        self.numLivenessImages = numLivenessImages
+        self.numTotalSteps = numTotalSteps
+        self.livenessImageSize = livenessImageSize
+        self.selfieImageSize = selfieImageSize
+    }
+    
+    static var defaultConfiguration = SelfieCaptureConfig(
+        intraImageMinDelay: 0.35,
+        noFaceResetDelay: 3,
+        faceCaptureQualityThreshold: 0.25,
+        minFaceCenteredThreshold: 0.1,
+        maxFaceCenteredThreshold: 0.9,
+        minFaceAreaThreshold: 0.125,
+        maxFaceAreaThreshold: 0.25,
+        faceRotationThreshold: 0.03,
+        faceRollThreshold: 0.025,  // roll has a smaller range than yaw
+        numLivenessImages: 7,
+        numTotalSteps: 8,  // numLivenessImages + 1 selfie image
+        livenessImageSize: 320,
+        selfieImageSize: 640
+    )
+}
+
 // swiftlint:disable opening_brace
 public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
-    // Constants
-    private let intraImageMinDelay: TimeInterval = 0.35
-    private let noFaceResetDelay: TimeInterval = 3
-    private let faceCaptureQualityThreshold: Float = 0.25
-    private let minFaceCenteredThreshold = 0.1
-    private let maxFaceCenteredThreshold = 0.9
-    private let minFaceAreaThreshold = 0.125
-    private let maxFaceAreaThreshold = 0.25
-    private let faceRotationThreshold = 0.03
-    private let faceRollThreshold = 0.025  // roll has a smaller range than yaw
-    private let numLivenessImages = 7
-    private let numTotalSteps = 8  // numLivenessImages + 1 selfie image
-    private let livenessImageSize = 320
-    private let selfieImageSize = 640
+    private let config = SelfieCaptureConfig.defaultConfiguration
 
-    
+    private let isEnroll: Bool
+    private let jobId: String
     let allowAgentMode: Bool
     private var localMetadata: LocalMetadata
     private let faceDetector = FaceDetector()
@@ -42,7 +92,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     var selfieImage: URL?
     var livenessImages: [URL] = []
-    var apiResponse: SmartSelfieResponse?
     var error: Error?
 
     private let arKitFramePublisher = PassthroughSubject<
@@ -67,9 +116,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     public init(
+        isEnroll: Bool,
+        jobId: String,
         allowAgentMode: Bool = false,
         localMetadata: LocalMetadata = LocalMetadata()
     ) {
+        self.isEnroll = isEnroll
+        self.jobId = jobId
         self.allowAgentMode = allowAgentMode
         self.localMetadata = localMetadata
 
@@ -119,7 +172,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     // swiftlint:disable cyclomatic_complexity
     func analyzeImage(image: CVPixelBuffer) {
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
-        if !shouldAnalyzeImages || elapsedtime < intraImageMinDelay {
+        if !shouldAnalyzeImages || elapsedtime < config.intraImageMinDelay {
             return
         }
 
@@ -134,19 +187,19 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     self.error = error
                     return
                 }
-                
+
                 guard let results = request.results as? [VNFaceObservation]
                 else {
                     print("Did not receive the expected [VNFaceObservation]")
                     return
                 }
-                
+
                 if results.count == 0 {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.UnableToDetectFace"
                     }
                     // If no faces are detected for a while, reset the state
-                    if elapsedtime > noFaceResetDelay {
+                    if elapsedtime > config.noFaceResetDelay {
                         DispatchQueue.main.async {
                             self.captureProgress = 0
                             self.selfieToConfirm = nil
@@ -158,7 +211,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     }
                     return
                 }
-                
+
                 // Ensure only 1 face is in frame
                 if results.count > 1 {
                     DispatchQueue.main.async {
@@ -166,71 +219,69 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     }
                     return
                 }
-                
+
                 guard let face = results.first else {
                     print("Unexpectedly got an empty face array")
                     return
                 }
-                
+
                 // The coordinate system of the bounding box in VNFaceObservation is such that
                 // the camera view spans [0-1]x[0-1] and the face is within that. Since we don't
                 // need to draw on the camera view, we don't need to convert this to the view's
                 // coordinate system. We can calculate out of bounds and face area directly on this
                 let boundingBox = face.boundingBox
-                
+
                 // Check that the corners of the face bounding box are within frame
-                if boundingBox.minX < minFaceCenteredThreshold
-                    || boundingBox.minY < minFaceCenteredThreshold
-                    || boundingBox.maxX > maxFaceCenteredThreshold
-                    || boundingBox.maxY > maxFaceCenteredThreshold
-                {
+                if boundingBox.minX < config.minFaceCenteredThreshold
+                    || boundingBox.minY < config.minFaceCenteredThreshold
+                    || boundingBox.maxX > config.maxFaceCenteredThreshold
+                    || boundingBox.maxY > config.maxFaceCenteredThreshold {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.PutFaceInOval"
                     }
                     return
                 }
-                
+
                 // image's area is equal to 1. so (bbox area / image area) == bbox area
                 let faceFillRatio = boundingBox.width * boundingBox.height
-                if faceFillRatio < minFaceAreaThreshold {
+                if faceFillRatio < config.minFaceAreaThreshold {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.MoveCloser"
                     }
                     return
                 }
-                
-                if faceFillRatio > maxFaceAreaThreshold {
+
+                if faceFillRatio > config.maxFaceAreaThreshold {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.MoveFarther"
                     }
                     return
                 }
-                
+
                 if let quality = face.faceCaptureQuality,
-                   quality < faceCaptureQualityThreshold
-                {
+                   quality < config.faceCaptureQualityThreshold {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.Quality"
                     }
                     return
                 }
-                
+
                 let userNeedsToSmile =
-                livenessImages.count > numLivenessImages / 2
-                
+                livenessImages.count > config.numLivenessImages / 2
+
                 DispatchQueue.main.async {
                     self.directive =
                     userNeedsToSmile
                     ? "Instructions.Smile" : "Instructions.Capturing"
                 }
-                
+
                 // TODO: Use mouth deformation as an alternate signal for non-ARKit capture
                 if userNeedsToSmile,
                    currentlyUsingArKit,
                    !isSmiling {
                     return
                 }
-                
+
                 // Perform the rotation checks *after* changing directive to Capturing -- we don't
                 // want to explicitly tell the user to move their head
                 if !hasFaceRotatedEnough(face: face) {
@@ -243,27 +294,27 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 currentlyUsingArKit ? CGImagePropertyOrientation.right : .up
                 lastAutoCaptureTime = Date()
                 do {
-                    if livenessImages.count < numLivenessImages {
+                    if livenessImages.count < config.numLivenessImages {
                         guard
                             let imageData =
                                 ImageUtils.resizePixelBufferToHeight(
                                     image,
-                                    height: livenessImageSize,
+                                    height: config.livenessImageSize,
                                     orientation: orientation
                                 )
                         else {
                             throw SmileIDError.unknown(
                                 "Error resizing liveness image")
                         }
-                        //                        let imageUrl = try LocalStorage.createLivenessFile(
-                        //                            jobId: jobId,
-                        //                            livenessFile: imageData
-                        //                        )
-                        // livenessImages.append(imageUrl)
+                        let imageUrl = try LocalStorage.createLivenessFile(
+                            jobId: jobId,
+                            livenessFile: imageData
+                        )
+                         livenessImages.append(imageUrl)
                         DispatchQueue.main.async {
                             self.captureProgress =
                             Double(self.livenessImages.count)
-                            / Double(self.numTotalSteps)
+                            / Double(self.config.numTotalSteps)
                         }
                     } else {
                         shouldAnalyzeImages = false
@@ -271,18 +322,18 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             let imageData =
                                 ImageUtils.resizePixelBufferToHeight(
                                     image,
-                                    height: selfieImageSize,
+                                    height: config.selfieImageSize,
                                     orientation: orientation
                                 )
                         else {
                             throw SmileIDError.unknown(
                                 "Error resizing selfie image")
                         }
-//                        let selfieImage = try LocalStorage.createSelfieFile(
-//                            jobId: jobId,
-//                            selfieFile: imageData
-//                        )
-                        // self.selfieImage = selfieImage
+                        let selfieImage = try LocalStorage.createSelfieFile(
+                            jobId: jobId,
+                            selfieFile: imageData
+                        )
+                        self.selfieImage = selfieImage
                         DispatchQueue.main.async {
                             self.captureProgress = 1
                             self.selfieToConfirm = UIImage(data: imageData)
@@ -311,7 +362,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         if #available(iOS 15, *) {
             if let pitch = face.pitch?.doubleValue {
                 didPitchChange =
-                    abs(pitch - previousHeadPitch) > faceRotationThreshold
+                abs(pitch - previousHeadPitch) > config.faceRotationThreshold
             }
         }
         let rollDelta = abs(roll - previousHeadRoll)
@@ -323,8 +374,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             self.previousHeadPitch = face.pitch?.doubleValue ?? Double.infinity
         }
 
-        return didPitchChange || rollDelta > faceRollThreshold
-            || yawDelta > faceRotationThreshold
+        return didPitchChange || rollDelta > config.faceRollThreshold
+        || yawDelta > config.faceRotationThreshold
     }
 
     func onSmiling(isSmiling: Bool) {
@@ -363,7 +414,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     func cleanUpSelfieCapture() {
         do {
-            // try LocalStorage.deleteLivenessAndSelfieFiles(at: [jobId])
+            try LocalStorage.deleteLivenessAndSelfieFiles(at: [jobId])
         } catch {
             debugPrint(error.localizedDescription)
         }
@@ -380,10 +431,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     func handleConfirmation() {
     }
 
-    func onFinished() {
+    private func onFinished() {
         if let selfieImage = selfieImage,
             let selfiePath = getRelativePath(from: selfieImage),
-            livenessImages.count == numLivenessImages,
+           livenessImages.count == config.numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
             ) {
             let livenessImagesPaths = livenessImages.compactMap {

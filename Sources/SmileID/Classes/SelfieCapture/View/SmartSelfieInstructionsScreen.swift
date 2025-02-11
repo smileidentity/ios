@@ -11,16 +11,16 @@ public struct SmartSelfieInstructionsScreen: View {
     weak var delegate: SmartSelfieResultDelegate?
 
     private let showAttribution: Bool
-    private let viewModel: SelfieViewModel
+    private var didTapTakePhoto: () -> Void
 
     public init(
         showAttribution: Bool,
-        viewModel: SelfieViewModel,
-        delegate: SmartSelfieResultDelegate? = nil
+        delegate: SmartSelfieResultDelegate? = nil,
+        didTapTakePhoto: @escaping () -> Void
     ) {
         self.showAttribution = showAttribution
-        self.viewModel = viewModel
         self.delegate = delegate
+        self.didTapTakePhoto = didTapTakePhoto
     }
 
     public var body: some View {
@@ -105,19 +105,9 @@ public struct SmartSelfieInstructionsScreen: View {
             }
 
             VStack(spacing: 8) {
-                NavigationLink(
-                    destination: SelfieCaptureScreen(
-                        viewModel: viewModel,
-                        delegate: self.delegate
-                    ),
-                    isActive: $showSelfieCaptureView
-                ) { EmptyView() }
-
                 SmileButton(
                     title: "Action.TakePhoto",
-                    clicked: {
-                        showSelfieCaptureView = true
-                    }
+                    clicked: didTapTakePhoto
                 )
 
                 if showAttribution {

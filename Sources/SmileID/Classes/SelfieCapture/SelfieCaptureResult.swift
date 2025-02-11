@@ -1,6 +1,6 @@
 import Foundation
 
-struct SelfieCaptureResult {
+public struct SelfieCaptureResult {
     var selfie: URL
     var livenessImages: [URL]
 }
