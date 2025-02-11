@@ -69,7 +69,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp()
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ],
             body: body
         )
@@ -84,7 +84,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp()
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ]
         )
         return try await serviceClient.send(request: request)
@@ -112,7 +112,7 @@ extension ServiceRunnable {
         headers.append(.timestamp(value: timestamp))
         headers.append(.sourceSDK(value: "iOS"))
         headers.append(.sourceSDKVersion(value: SmileID.version))
-        headers.append(.requestTimestamp())
+        headers.append(.requestTimestamp(value: Date().toISO8601WithMilliseconds()))
         let request = try await createMultiPartRequest(
             url: path,
             method: .post,
@@ -153,7 +153,14 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
-        let requestMac = try SmileIDCryptoManager.shared.sign(headers: headers.toDictionary(), payload: uploadData)
+        guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
+            throw SmileIDError.missingHeader("Header with name `SmileId-Request-Timestamp` not found.")
+        }
+        let requestMac = try SmileIDCryptoManager.shared.sign(
+            timestamp: header.value,
+            headers: headers.toDictionary(),
+            payload: uploadData
+        )
         var signedHeaders = headers + [.requestMac(value: requestMac)]
 
         let request = RestRequest(
@@ -225,7 +232,14 @@ extension ServiceRunnable {
         let payload = try encoder.encode(body)
         print("payload sorted:")
         print(String(data: payload, encoding: .utf8))
-        let requestMac = try SmileIDCryptoManager.shared.sign(headers: headers.toDictionary(), payload: payload)
+        guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
+            throw SmileIDError.missingHeader("Header with name `SmileId-Request-Timestamp` not found.")
+        }
+        let requestMac = try SmileIDCryptoManager.shared.sign(
+            timestamp: header.value,
+            headers: headers.toDictionary(),
+            payload: payload
+        )
         let signedHeaders = headers + [.requestMac(value: requestMac)]
         print(signedHeaders)
 
@@ -254,7 +268,13 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
-        let requestMac = try SmileIDCryptoManager.shared.sign(headers: headers.toDictionary())
+        guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
+            throw SmileIDError.missingHeader("Header with name `SmileId-Request-Timestamp` not found.")
+        }
+        let requestMac = try SmileIDCryptoManager.shared.sign(
+            timestamp: header.value,
+            headers: headers.toDictionary()
+        )
         let signedHeaders = headers + [.requestMac(value: requestMac)]
 
         let request = RestRequest(

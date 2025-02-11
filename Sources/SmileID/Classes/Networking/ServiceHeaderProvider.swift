@@ -42,12 +42,7 @@ public extension HTTPHeader {
         HTTPHeader(name: "SmileID-Source-SDK-Version", value: value)
     }
 
-    static func requestTimestamp() -> HTTPHeader {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        formatter.timeZone = TimeZone(identifier: "UTC")
-        let value = formatter.string(from: Date())
-
+    static func requestTimestamp(value: String) -> HTTPHeader {
         return HTTPHeader(name: "SmileID-Request-Timestamp", value: value)
     }
 

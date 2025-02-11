@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import SmileIDSecurity
 
 enum BiometricKycStep {
     case selfie
@@ -143,7 +144,32 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         if let livenessFiles {
             allFiles.append(contentsOf: livenessFiles)
         }
+        allFiles = try addSecurityInfo(files: allFiles)
         return try LocalStorage.zipFiles(at: allFiles)
+    }
+
+    private func addSecurityInfo(files: [URL]) throws -> [URL] {
+        var data = Data()
+        for file in files {
+            let fileData = try Data(contentsOf: file)
+            data.append(fileData)
+        }
+
+        let timestamp = Date().toISO8601WithMilliseconds()
+        let mac = try SmileIDCryptoManager.shared.sign(
+            timestamp: timestamp,
+            payload: data
+        )
+
+        let securityInfo = SecurityInfo(
+            timestamp: timestamp,
+            mac: mac
+        )
+        let securityInfoJson = try LocalStorage.createSecurityInfoFile(
+            jobId: jobId,
+            securityInfo: securityInfo
+        )
+        return files + [securityInfoJson]
     }
 
     private func authenticate() async throws -> AuthenticationResponse {
