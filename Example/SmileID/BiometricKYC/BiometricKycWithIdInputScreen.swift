@@ -10,15 +10,15 @@ struct BiometricKycWithIdInputScreen: View {
 
     var body: some View {
         switch viewModel.step {
-        case .loading(let messageKey):
+        case let .loading(messageKey):
             VStack {
                 ActivityIndicator(isAnimating: true).padding()
                 Text(SmileIDResourcesHelper.localizedString(for: messageKey))
                     .font(SmileID.theme.body)
                     .foregroundColor(SmileID.theme.onLight)
             }
-                .frame(maxWidth: .infinity)
-        case .idTypeSelection(let countryList):
+            .frame(maxWidth: .infinity)
+        case let .idTypeSelection(countryList):
             VStack {
                 SearchableDropdownSelector(
                     items: countryList,
@@ -41,7 +41,7 @@ struct BiometricKycWithIdInputScreen: View {
                     )
                 }
             }
-        case .consent(let country, let idType, let requiredFields):
+        case let .consent(country, idType, requiredFields):
             SmileID.consentScreen(
                 partnerIcon: UIImage(named: "SmileLogo")!,
                 partnerName: "Smile ID",
@@ -58,7 +58,7 @@ struct BiometricKycWithIdInputScreen: View {
                 },
                 onConsentDenied: { delegate.didError(error: SmileIDError.consentDenied) }
             )
-        case .idInput(let country, let idType, let consentInformation, let requiredFields):
+        case let .idInput(country, idType, consentInformation, requiredFields):
             IdInfoInputScreen(
                 selectedCountry: country,
                 selectedIdType: idType,
@@ -67,13 +67,14 @@ struct BiometricKycWithIdInputScreen: View {
                 requiredFields: requiredFields,
                 onResult: viewModel.onIdFieldsEntered
             ).frame(maxWidth: .infinity)
-        case .sdk(let idInfo, let consentInformation):
+        case let .sdk(idInfo, consentInformation):
             SmileID.biometricKycScreen(
                 idInfo: idInfo,
                 consentInformation: consentInformation,
                 userId: viewModel.userId,
                 jobId: viewModel.jobId,
                 allowAgentMode: true,
+                useStrictMode: true,
                 delegate: delegate
             )
         }
