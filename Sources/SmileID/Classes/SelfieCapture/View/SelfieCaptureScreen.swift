@@ -5,7 +5,6 @@ import SwiftUI
 /// The actual selfie capture screen, which shows the camera preview and the progress indicator
 public struct SelfieCaptureScreen: View {
     @Backport.StateObject var viewModel: SelfieViewModel
-    weak var delegate: SmartSelfieResultDelegate?
 
     private var originalBrightness = UIScreen.main.brightness
 
