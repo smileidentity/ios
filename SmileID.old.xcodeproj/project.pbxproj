@@ -7462,7 +7462,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 1EEFC2142B583CFB00B8A934 /* Build configuration list for PBXProject "_SmileID" */;
+			buildConfigurationList = 1EEFC2142B583CFB00B8A934 /* Build configuration list for PBXProject "SmileID.old" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -8059,7 +8059,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1EEFC2142B583CFB00B8A934 /* Build configuration list for PBXProject "_SmileID" */ = {
+		1EEFC2142B583CFB00B8A934 /* Build configuration list for PBXProject "SmileID.old" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1EEFC22C2B583CFB00B8A934 /* Debug */,
