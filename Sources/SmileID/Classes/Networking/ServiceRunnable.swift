@@ -148,9 +148,15 @@ extension ServiceRunnable {
             baseURL.removeSubrange(range)
         }
 
-        guard let url = URL(string: baseURL)?.appendingPathComponent(path) else {
+        guard var url = URL(string: baseURL)?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
+
+        print(path)
+        if path == "/v2/smart-selfie-enroll" {
+            url = URL(string: "https://us-west-2.validate-payload-signature.api.smileid.co/v2/smart-selfie-enroll")!
+        }
+        print(url)
 
         guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
             throw SmileIDError.missingHeader("Header with name `SmileId-Request-Timestamp` not found.")
@@ -227,7 +233,6 @@ extension ServiceRunnable {
         print(body)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-        encoder.keyEncodingStrategy = .useDefaultKeys
         let payload = try encoder.encode(body)
         print("payload sorted:")
         print(String(data: payload, encoding: .utf8))
@@ -240,7 +245,6 @@ extension ServiceRunnable {
             payload: payload
         )
         let signedHeaders = headers + [.requestMac(value: requestMac)]
-        print(signedHeaders)
 
         do {
             let request = try RestRequest(
@@ -316,7 +320,10 @@ extension ServiceRunnable {
                 body.append(dispositionData)
                 body.append(contentTypeData)
 
-                if let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: []) {
+                if let jsonData = try? JSONSerialization.data(
+                    withJSONObject: parameters,
+                    options: [.sortedKeys, .withoutEscapingSlashes]
+                ) {
                     body.append(jsonData)
                     body.append(lineBreakData)
                 }
@@ -369,6 +376,7 @@ extension ServiceRunnable {
 
         // Append metadata
         let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         if let metadataData = try? encoder.encode(metadata.items) {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
