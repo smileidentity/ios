@@ -12,6 +12,7 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
     private var livenessImages: [URL] = []
     private var apiResponse: SmartSelfieResponse?
     private var error: Error?
+    private var submissionTask: Task<Void, Error>?
 
     // MARK: UI Outputs
     @Published var processingState: ProcessingState?
@@ -29,7 +30,21 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
         self.localMetadata = localMetadata
     }
 
+    deinit {
+        invalidateSubmissionTask()
+    }
+
+    func invalidateSubmissionTask() {
+        submissionTask?.cancel()
+        submissionTask = nil
+    }
+
+    func configure(delegate: SmartSelfieResultDelegate) {
+        self.delegate = delegate
+    }
+
     private func submitJob() {
+        guard submissionTask == nil else { return }
         localMetadata.addMetadata(
             Metadatum.ActiveLivenessType(livenessType: LivenessType.smile))
         if config.skipApiSubmission {
@@ -37,7 +52,7 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
             return
         }
         DispatchQueue.main.async { self.processingState = .inProgress }
-        Task {
+        submissionTask = Task {
             do {
                 let jobType =
                 config.isEnroll
@@ -209,22 +224,17 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
             self.delegate?.didError(error: SmileIDError.unknown("Unknown error"))
         }
     }
-    
+
     func handleRetry() {
-        // If selfie file is present, all captures were completed, so we're retrying a network issue
-        if selfieImage != nil,
-            livenessImages.count == captureConfig.numLivenessImages {
-            submitJob()
-        } else {
-            DispatchQueue.main.async { self.processingState = nil }
-        }
+        submitJob()
     }
-    
+
     func handleContinue() {
         onFinished()
     }
-    
+
     func handleClose() {
+        invalidateSubmissionTask()
         onFinished()
     }
 }

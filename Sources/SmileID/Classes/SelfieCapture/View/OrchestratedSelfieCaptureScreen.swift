@@ -27,6 +27,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     config: config
                 )
             )
+        self.viewModel.configure(delegate: onResult)
     }
 
     public var body: some View {
@@ -35,7 +36,6 @@ public struct OrchestratedSelfieCaptureScreen: View {
                 if showInstructions {
                     SmartSelfieInstructionsScreen(
                         showAttribution: config.showAttribution,
-                        delegate: onResult,
                         didTapTakePhoto: {
                             withAnimation { showInstructions = false }
                         }
@@ -48,7 +48,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
                         delegate: viewModel
                     )
                     .transition(.move(edge: .trailing))
-                    
+
                     NavigationLink(
                         unwrap: $viewModel.processingState,
                         onNavigate: { _ in

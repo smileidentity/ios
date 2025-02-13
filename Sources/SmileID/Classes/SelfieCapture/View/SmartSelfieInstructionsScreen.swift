@@ -8,18 +8,15 @@ import SwiftUI
 ///    - viewModel: The view model for managing business logic for the selfie capture process.
 public struct SmartSelfieInstructionsScreen: View {
     @State private var showSelfieCaptureView: Bool = false
-    weak var delegate: SmartSelfieResultDelegate?
 
     private let showAttribution: Bool
     private var didTapTakePhoto: () -> Void
 
     public init(
         showAttribution: Bool,
-        delegate: SmartSelfieResultDelegate? = nil,
         didTapTakePhoto: @escaping () -> Void
     ) {
         self.showAttribution = showAttribution
-        self.delegate = delegate
         self.didTapTakePhoto = didTapTakePhoto
     }
 

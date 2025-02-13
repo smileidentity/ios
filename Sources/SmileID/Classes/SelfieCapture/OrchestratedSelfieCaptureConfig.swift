@@ -32,7 +32,7 @@ public struct OrchestratedSelfieCaptureConfig {
     public init(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
-        isEnroll: Bool = false,
+        isEnroll: Bool = true,
         allowNewEnroll: Bool = false,
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,

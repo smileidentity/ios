@@ -357,8 +357,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
     }
 
-    func handleDismiss() {}
-
     func handleConfirmation() {
         guard let selfieImage = selfieImage,
               livenessImages.count == config.numLivenessImages else {
