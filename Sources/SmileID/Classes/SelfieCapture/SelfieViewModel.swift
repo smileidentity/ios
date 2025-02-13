@@ -115,9 +115,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         }
 
         do {
-            try faceDetector.detect(imageBuffer: image) {
-                [weak self] request,
-                error in
+            try faceDetector.detect(imageBuffer: image) { [weak self] request, error in
                 guard let self else { return }
                 if let error {
                     print(

@@ -62,7 +62,7 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
                 }
                 let authResponse = try await SmileID.api.authenticate(
                     request: authRequest)
-                
+
                 var smartSelfieLivenessImages = [MultipartBody]()
                 var smartSelfieImage: MultipartBody?
                 if let selfieImage, let selfieData = try? Data(contentsOf: selfieImage),
@@ -87,13 +87,13 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
 
                 smartSelfieLivenessImages.append(
                     contentsOf: livenessImageInfos.compactMap { $0 })
-                
+
                 guard let smartSelfieImage = smartSelfieImage,
                       smartSelfieLivenessImages.count == captureConfig.numLivenessImages
                 else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
-                
+
                 let response =
                 if config.isEnroll {
                     try await SmileID.api.doSmartSelfieEnrollment(
@@ -215,8 +215,10 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
 extension OrchestratedSelfieCaptureViewModel: SelfieCaptureDelegate {
     func didFinishWith(result: SelfieCaptureResult, error: (any Error)?) {
         if let error = error {
-            // handle selfie capture error
+            self.error = error
         } else {
+            selfieImage = result.selfieImage
+            livenessImages = result.livenessImages
             submitJob()
         }
     }

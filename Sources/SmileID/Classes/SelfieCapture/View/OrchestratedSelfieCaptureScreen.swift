@@ -10,11 +10,14 @@ public struct OrchestratedSelfieCaptureScreen: View {
     private let onResult: SmartSelfieResultDelegate
     private let onDismiss: (() -> Void)?
 
+    @State private var showInstructions: Bool
+
     public init(
         config: OrchestratedSelfieCaptureConfig,
         onResult: SmartSelfieResultDelegate,
         onDismiss: (() -> Void)? = nil
     ) {
+        self._showInstructions = State(initialValue: config.showInstructions)
         self.config = config
         self.onResult = onResult
         self.onDismiss = onDismiss
@@ -29,20 +32,22 @@ public struct OrchestratedSelfieCaptureScreen: View {
     public var body: some View {
         NavigationView {
             ZStack {
-                if config.showInstructions {
+                if showInstructions {
                     SmartSelfieInstructionsScreen(
                         showAttribution: config.showAttribution,
                         delegate: onResult,
                         didTapTakePhoto: {
-                            // trigger show selfie capture.
+                            withAnimation { showInstructions = false }
                         }
                     )
+                    .transition(.move(edge: .leading))
                 } else {
                     SelfieCaptureScreen(
                         isEnroll: config.isEnroll,
                         jobId: config.jobId,
                         delegate: viewModel
                     )
+                    .transition(.move(edge: .trailing))
                 }
             }
             .navigationBarItems(
