@@ -48,6 +48,52 @@ public struct OrchestratedSelfieCaptureScreen: View {
                         delegate: viewModel
                     )
                     .transition(.move(edge: .trailing))
+                    
+                    NavigationLink(
+                        unwrap: $viewModel.processingState,
+                        onNavigate: { _ in
+                        },
+                        destination: { $processingState in
+                            ProcessingScreen(
+                                processingState: processingState,
+                                inProgressTitle: SmileIDResourcesHelper.localizedString(
+                                    for: "Confirmation.ProcessingSelfie"
+                                ),
+                                inProgressSubtitle: SmileIDResourcesHelper.localizedString(
+                                    for: "Confirmation.Time"
+                                ),
+                                inProgressIcon: SmileIDResourcesHelper.FaceOutline,
+                                successTitle: SmileIDResourcesHelper.localizedString(
+                                    for: "Confirmation.SelfieCaptureComplete"
+                                ),
+                                successSubtitle: SmileIDResourcesHelper.localizedString(
+                                    for: "Confirmation.SuccessBody"
+                                ),
+                                successIcon: SmileIDResourcesHelper.CheckBold,
+                                errorTitle: SmileIDResourcesHelper.localizedString(
+                                    for: "Confirmation.Failure"
+                                ),
+                                errorSubtitle: getErrorSubtitle(
+                                    errorMessageRes: viewModel.errorMessageRes,
+                                    errorMessage: viewModel.errorMessage
+                                ),
+                                errorIcon: SmileIDResourcesHelper.Scan,
+                                continueButtonText: SmileIDResourcesHelper.localizedString(
+                                    for: "Confirmation.Continue"
+                                ),
+                                onContinue: { viewModel.handleContinue() },
+                                retryButtonText: SmileIDResourcesHelper.localizedString(
+                                    for: "Confirmation.Retry"
+                                ),
+                                onRetry: { viewModel.handleRetry() },
+                                closeButtonText: SmileIDResourcesHelper.localizedString(
+                                    for: "Confirmation.Close"
+                                ),
+                                onClose: { viewModel.handleClose() }
+                            )
+                        },
+                        label: { EmptyView() }
+                    )
                 }
             }
             .navigationBarItems(

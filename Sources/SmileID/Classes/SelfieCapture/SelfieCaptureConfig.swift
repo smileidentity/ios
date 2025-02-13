@@ -15,36 +15,6 @@ struct SelfieCaptureConfig {
     let livenessImageSize: Int
     let selfieImageSize: Int
 
-    init(
-        intraImageMinDelay: TimeInterval,
-        noFaceResetDelay: TimeInterval,
-        faceCaptureQualityThreshold: Float,
-        minFaceCenteredThreshold: Double,
-        maxFaceCenteredThreshold: Double,
-        minFaceAreaThreshold: Double,
-        maxFaceAreaThreshold: Double,
-        faceRotationThreshold: Double,
-        faceRollThreshold: Double,
-        numLivenessImages: Int,
-        numTotalSteps: Int,
-        livenessImageSize: Int,
-        selfieImageSize: Int
-    ) {
-        self.intraImageMinDelay = intraImageMinDelay
-        self.noFaceResetDelay = noFaceResetDelay
-        self.faceCaptureQualityThreshold = faceCaptureQualityThreshold
-        self.minFaceCenteredThreshold = minFaceCenteredThreshold
-        self.maxFaceCenteredThreshold = maxFaceCenteredThreshold
-        self.minFaceAreaThreshold = minFaceAreaThreshold
-        self.maxFaceAreaThreshold = maxFaceAreaThreshold
-        self.faceRotationThreshold = faceRotationThreshold
-        self.faceRollThreshold = faceRollThreshold
-        self.numLivenessImages = numLivenessImages
-        self.numTotalSteps = numTotalSteps
-        self.livenessImageSize = livenessImageSize
-        self.selfieImageSize = selfieImageSize
-    }
-
     static var defaultConfiguration = SelfieCaptureConfig(
         intraImageMinDelay: 0.35,
         noFaceResetDelay: 3,

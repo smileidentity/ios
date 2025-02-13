@@ -89,6 +89,7 @@ public struct ImageCaptureConfirmationDialog: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .navigationBarHidden(true)
         .padding(16)
         .background(SmileID.theme.backgroundMain)
         .cornerRadius(24)

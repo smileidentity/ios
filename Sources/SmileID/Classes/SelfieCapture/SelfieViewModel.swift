@@ -3,7 +3,8 @@ import Combine
 import Foundation
 
 public protocol SelfieCaptureDelegate {
-    func didFinishWith(result: SelfieCaptureResult, error: Error?)
+    func didFinish(with result: SelfieCaptureResult)
+    func didFinish(with error: Error)
 }
 
 // swiftlint:disable opening_brace
@@ -360,16 +361,16 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     func handleConfirmation() {
         guard let selfieImage = selfieImage,
-        !livenessImages.isEmpty else {
+              livenessImages.count == config.numLivenessImages else {
+            self.resultDelegate?.didFinish(with: SmileIDError.selfieCaptureFailed)
             return
         }
         self.resultDelegate?
-            .didFinishWith(
-                result: SelfieCaptureResult(
+            .didFinish(
+                with: SelfieCaptureResult(
                     selfieImage: selfieImage,
                     livenessImages: livenessImages
-                ),
-                error: error
+                )
             )
     }
 

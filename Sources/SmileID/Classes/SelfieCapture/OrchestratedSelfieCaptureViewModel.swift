@@ -14,12 +14,12 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
     private var error: Error?
 
     // MARK: UI Outputs
-    @Published public private(set) var processingState: ProcessingState?
+    @Published var processingState: ProcessingState?
     /// we use `errorMessageRes` to map to the actual code to the stringRes to allow localization,
     /// and use `errorMessage` to show the actual platform error message that we show if
     /// `errorMessageRes` is not set by the partner
-    @Published public var errorMessageRes: String?
-    @Published public var errorMessage: String?
+    @Published var errorMessageRes: String?
+    @Published var errorMessage: String?
 
     init(
         config: OrchestratedSelfieCaptureConfig,
@@ -29,7 +29,7 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
         self.localMetadata = localMetadata
     }
 
-    public func submitJob() {
+    private func submitJob() {
         localMetadata.addMetadata(
             Metadatum.ActiveLivenessType(livenessType: LivenessType.smile))
         if config.skipApiSubmission {
@@ -189,8 +189,7 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    public func onFinished() {
-        guard let delegate = delegate else { return }
+    private func onFinished() {
         if let selfiePath = getRelativePath(from: selfieImage),
            livenessImages.count == captureConfig.numLivenessImages,
            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
@@ -199,27 +198,47 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
                 getRelativePath(from: $0)
             }
 
-            delegate.didSucceed(
+            self.delegate?.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessImagesPaths,
                 apiResponse: apiResponse
             )
         } else if let error = error {
-            delegate.didError(error: error)
+            self.delegate?.didError(error: error)
         } else {
-            delegate.didError(error: SmileIDError.unknown("Unknown error"))
+            self.delegate?.didError(error: SmileIDError.unknown("Unknown error"))
         }
+    }
+    
+    func handleRetry() {
+        // If selfie file is present, all captures were completed, so we're retrying a network issue
+        if selfieImage != nil,
+            livenessImages.count == captureConfig.numLivenessImages {
+            submitJob()
+        } else {
+            DispatchQueue.main.async { self.processingState = nil }
+        }
+    }
+    
+    func handleContinue() {
+        onFinished()
+    }
+    
+    func handleClose() {
+        onFinished()
     }
 }
 
+// MARK: SelfieCaptureDelegate
 extension OrchestratedSelfieCaptureViewModel: SelfieCaptureDelegate {
-    func didFinishWith(result: SelfieCaptureResult, error: (any Error)?) {
-        if let error = error {
-            self.error = error
-        } else {
-            selfieImage = result.selfieImage
-            livenessImages = result.livenessImages
-            submitJob()
-        }
+    func didFinish(with result: SelfieCaptureResult) {
+        selfieImage = result.selfieImage
+        livenessImages = result.livenessImages
+        submitJob()
+    }
+
+    func didFinish(with error: any Error) {
+        self.error = error
+        processingState = .error
     }
 }
