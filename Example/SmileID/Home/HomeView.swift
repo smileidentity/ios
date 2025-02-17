@@ -210,6 +210,7 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
             SmileID.smartSelfieAuthenticationScreen(
                 config: OrchestratedSelfieCaptureConfig(
                     userId: userId,
+                    isEnroll: false,
                     allowAgentMode: true
                 ),
                 delegate: delegate,

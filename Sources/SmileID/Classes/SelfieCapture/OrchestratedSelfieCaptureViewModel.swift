@@ -53,6 +53,7 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
         }
         DispatchQueue.main.async { self.processingState = .inProgress }
         submissionTask = Task {
+            defer { invalidateSubmissionTask() }
             do {
                 let jobType =
                 config.isEnroll
@@ -155,8 +156,13 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
                 } catch {
                     print("Error moving job to submitted directory: \(error)")
                     self.error = error
+                    DispatchQueue.main.async {
+                        self.processingState = .error
+                    }
                 }
-                DispatchQueue.main.async { self.processingState = .success }
+                DispatchQueue.main.async {
+                    self.processingState = .success
+                }
             } catch let error as SmileIDError {
                 do {
                     let didMove = try LocalStorage.handleOfflineJobFailure(
