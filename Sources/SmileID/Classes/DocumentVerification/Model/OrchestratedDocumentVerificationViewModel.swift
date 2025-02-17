@@ -317,9 +317,18 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     }
 
     private func addSecurityInfo(files: [URL]) throws -> [URL] {
+        // Sort the files by their last path component (filename) alphabetically
+        let sortedFiles = files.sorted { $0.lastPathComponent < $1.lastPathComponent }
+
         var data = Data()
-        for file in files {
-            let fileData = try Data(contentsOf: file)
+        for file in sortedFiles {
+            var fileData = try Data(contentsOf: file)
+            if file.lastPathComponent.contains(FileType.selfie.rawValue) ||
+                file.lastPathComponent.contains(FileType.liveness.rawValue) ||
+                file.lastPathComponent.contains(FileType.documentFront.rawValue) ||
+                file.lastPathComponent.contains(FileType.documentBack.rawValue) {
+                fileData = fileData.base64EncodedData()
+            }
             data.append(fileData)
         }
 
