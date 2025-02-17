@@ -111,7 +111,34 @@ extension ServiceRunnable {
         headers.append(.timestamp(value: timestamp))
         headers.append(.sourceSDK(value: "iOS"))
         headers.append(.sourceSDKVersion(value: SmileID.version))
-        headers.append(.requestTimestamp(value: Date().toISO8601WithMilliseconds()))
+        let timestamp = Date().toISO8601WithMilliseconds()
+        headers.append(.requestTimestamp(value: timestamp))
+
+        let selfieRequest = SelfieRequest(
+            selfieImage: selfieImage.data,
+            livenessImages: livenessImages.map{ $0.data },
+            userId: userId,
+            partnerParams: partnerParams,
+            callbackUrl: callbackUrl?.nilIfEmpty(),
+            sandboxResult: sandboxResult,
+            allowNewEnroll: allowNewEnroll,
+            failureReason: failureReason,
+            metadata: metadata.items
+        )
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        print(selfieRequest)
+        let payload = try encoder.encode(selfieRequest)
+        print("payload sorted:")
+        print(String(data: payload, encoding: .utf8))
+        let requestMac = try SmileIDCryptoManager.shared.sign(
+            timestamp: timestamp,
+            headers: headers.toDictionary(),
+            payload: payload
+        )
+        headers.append(.requestMac(value: requestMac))
+
         let request = try await createMultiPartRequest(
             url: path,
             method: .post,
@@ -151,27 +178,16 @@ extension ServiceRunnable {
         guard var url = URL(string: baseURL)?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
-
         print(path)
         if path == "/v2/smart-selfie-enroll" {
             url = URL(string: "https://us-west-2.validate-payload-signature.api.smileid.co/v2/smart-selfie-enroll")!
         }
         print(url)
 
-        guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
-            throw SmileIDError.missingHeader("Header with name `SmileId-Request-Timestamp` not found.")
-        }
-        let requestMac = try SmileIDCryptoManager.shared.sign(
-            timestamp: header.value,
-            headers: headers.toDictionary(),
-            payload: uploadData
-        )
-        var signedHeaders = headers + [.requestMac(value: requestMac)]
-
         let request = RestRequest(
             url: url,
             method: method,
-            headers: signedHeaders,
+            headers: headers,
             body: uploadData
         )
         return request
