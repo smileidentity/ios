@@ -7,7 +7,6 @@ public protocol SelfieCaptureDelegate {
     func didFinish(with error: Error)
 }
 
-// swiftlint:disable opening_brace
 public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let config = SelfieCaptureConfig.defaultConfiguration
 
