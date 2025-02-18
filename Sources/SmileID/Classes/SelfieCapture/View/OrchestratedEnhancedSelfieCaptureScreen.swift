@@ -8,6 +8,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
     public let showInstructions: Bool
     public let onResult: SmartSelfieResultDelegate
     private let viewModel: EnhancedSmartSelfieViewModel
+    private var onDismiss: (() -> Void)?
 
     public init(
         userId: String,
@@ -17,7 +18,8 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
         showInstructions: Bool,
         skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String],
-        onResult: SmartSelfieResultDelegate
+        onResult: SmartSelfieResultDelegate,
+        onDismiss: (() -> Void)? = nil
     ) {
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
@@ -31,19 +33,22 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
             onResult: onResult,
             localMetadata: LocalMetadata()
         )
+        self.onDismiss = onDismiss
     }
 
     public var body: some View {
-        if showInstructions {
-            LivenessCaptureInstructionsView(
-                showAttribution: showAttribution,
-                viewModel: viewModel
-            )
-        } else {
-            EnhancedSelfieCaptureScreen(
-                viewModel: viewModel,
-                showAttribution: showAttribution
-            )
+        NavigationView {
+            if showInstructions {
+                LivenessCaptureInstructionsView(
+                    showAttribution: showAttribution,
+                    viewModel: viewModel
+                )
+            } else {
+                EnhancedSelfieCaptureScreen(
+                    viewModel: viewModel,
+                    showAttribution: showAttribution
+                )
+            }
         }
     }
 }

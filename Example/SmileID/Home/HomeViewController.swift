@@ -29,8 +29,10 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
         userID = UUID().uuidString
         currentJob = .smartSelfieEnrollment
         let smartSelfieRegistrationScreen = SmileID.smartSelfieEnrollmentScreen(
-            userId: userID,
-            allowAgentMode: true,
+            config: OrchestratedSelfieCaptureConfig(
+                userId: userID,
+                allowAgentMode: true
+            ),
             delegate: self
         )
         cameraVC = UIHostingController(rootView: smartSelfieRegistrationScreen)
@@ -44,8 +46,10 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
 
     func smartSelfieAuthenticationScreen(userID: String) {
         let smartSelfieAuthenticationScreen = SmileID.smartSelfieAuthenticationScreen(
-            userId: userID,
-            allowAgentMode: true,
+            config: OrchestratedSelfieCaptureConfig(
+                userId: userID,
+                allowAgentMode: true
+            ),
             delegate: self
         )
         cameraVC = UIHostingController(rootView: smartSelfieAuthenticationScreen)

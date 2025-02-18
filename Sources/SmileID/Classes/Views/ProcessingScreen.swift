@@ -87,32 +87,35 @@ public struct ProcessingScreen: View {
     let closeButtonText: String
     let onClose: () -> Void
     public var body: some View {
-        switch processingState {
-        case .inProgress:
-            ProcessingInProgressScreen(
-                icon: inProgressIcon,
-                title: inProgressTitle,
-                subtitle: inProgressSubtitle
-            )
-        case .success:
-            ProcessingSuccessScreen(
-                icon: successIcon,
-                title: successTitle,
-                subtitle: successSubtitle,
-                continueButtonText: continueButtonText,
-                onContinue: onContinue
-            )
-        case .error:
-            ProcessingErrorScreen(
-                icon: errorIcon,
-                title: errorTitle,
-                subtitle: errorSubtitle,
-                retryButtonText: retryButtonText,
-                onRetry: onRetry,
-                closeButtonText: closeButtonText,
-                onClose: onClose
-            )
+        ZStack {
+            switch processingState {
+            case .inProgress:
+                ProcessingInProgressScreen(
+                    icon: inProgressIcon,
+                    title: inProgressTitle,
+                    subtitle: inProgressSubtitle
+                )
+            case .success:
+                ProcessingSuccessScreen(
+                    icon: successIcon,
+                    title: successTitle,
+                    subtitle: successSubtitle,
+                    continueButtonText: continueButtonText,
+                    onContinue: onContinue
+                )
+            case .error:
+                ProcessingErrorScreen(
+                    icon: errorIcon,
+                    title: errorTitle,
+                    subtitle: errorSubtitle,
+                    retryButtonText: retryButtonText,
+                    onRetry: onRetry,
+                    closeButtonText: closeButtonText,
+                    onClose: onClose
+                )
+            }
         }
+        .navigationBarHidden(true)
     }
 }
 

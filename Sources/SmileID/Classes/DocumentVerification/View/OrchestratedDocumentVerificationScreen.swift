@@ -268,15 +268,17 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 )
             } else {
                 OrchestratedSelfieCaptureScreen(
-                    userId: userId,
-                    jobId: jobId,
-                    isEnroll: false,
-                    allowNewEnroll: allowNewEnroll,
-                    allowAgentMode: allowAgentMode,
-                    showAttribution: showAttribution,
-                    showInstructions: showInstructions,
-                    extraPartnerParams: extraPartnerParams,
-                    skipApiSubmission: true,
+                    config: OrchestratedSelfieCaptureConfig(
+                        userId: userId,
+                        jobId: jobId,
+                        isEnroll: false,
+                        allowNewEnroll: allowNewEnroll,
+                        allowAgentMode: allowAgentMode,
+                        showAttribution: showAttribution,
+                        showInstructions: showInstructions,
+                        extraPartnerParams: extraPartnerParams,
+                        skipApiSubmission: true
+                    ),
                     onResult: viewModel
                 )
             }

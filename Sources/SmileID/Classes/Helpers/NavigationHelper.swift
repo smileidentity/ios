@@ -17,6 +17,25 @@ extension View {
     }
 }
 
+extension NavigationLink {
+    init<Value, WrappedDestination>(
+        unwrap optionalValue: Binding<Value?>,
+        onNavigate: @escaping (Bool) -> Void,
+        @ViewBuilder destination: @escaping (Binding<Value>) -> WrappedDestination,
+        @ViewBuilder label: @escaping () -> Label
+    ) where Destination == WrappedDestination? {
+        self.init(
+            isActive: optionalValue.isPresent().didSet(onNavigate),
+            destination: {
+                if let value = Binding(unwrap: optionalValue) {
+                    destination(value)
+                }
+            },
+            label: label
+        )
+    }
+}
+
 public struct ModalModeKey: EnvironmentKey {
     public static let defaultValue = Binding<Bool>.constant(false)
 }

@@ -5,11 +5,23 @@ import SwiftUI
 /// The actual selfie capture screen, which shows the camera preview and the progress indicator
 public struct SelfieCaptureScreen: View {
     @Backport.StateObject var viewModel: SelfieViewModel
-    let allowAgentMode: Bool
 
-    public init(viewModel: SelfieViewModel, allowAgentMode: Bool) {
-        self._viewModel = Backport.StateObject(wrappedValue: viewModel)
-        self.allowAgentMode = allowAgentMode
+    private var originalBrightness = UIScreen.main.brightness
+
+    public init(
+        isEnroll: Bool = false,
+        jobId: String,
+        delegate: SelfieCaptureDelegate? = nil
+    ) {
+        self._viewModel = Backport.StateObject(
+            wrappedValue: SelfieViewModel(
+                isEnroll: isEnroll,
+                jobId: jobId
+            )
+        )
+        if let delegate {
+            self.viewModel.configure(delegate: delegate)
+        }
     }
 
     public var body: some View {
@@ -32,7 +44,7 @@ public struct SelfieCaptureScreen: View {
                     .font(SmileID.theme.header4)
                     .transition(.slide)
 
-                if allowAgentMode {
+                if viewModel.allowAgentMode {
                     let textColor = agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent
                     let bgColor = agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain
                     Toggle(isOn: $viewModel.useBackCamera) {
@@ -40,17 +52,49 @@ public struct SelfieCaptureScreen: View {
                             .font(SmileID.theme.header4)
                             .foregroundColor(textColor)
                     }
-                        .padding(10)
-                        .background(bgColor)
-                        .cornerRadius(25)
-                        .shadow(radius: 25)
-                        .animation(.default)
-                        .frame(maxWidth: 200)
+                    .padding(10)
+                    .background(bgColor)
+                    .cornerRadius(25)
+                    .shadow(radius: 25)
+                    .animation(.default)
+                    .frame(maxWidth: 200)
                 }
             }
-                .padding(24)
+            .padding(24)
+
+            NavigationLink(
+                unwrap: $viewModel.selfieToConfirm,
+                onNavigate: { _ in },
+                destination: { $selfieToConfirm in
+                    ImageCaptureConfirmationDialog(
+                        title: SmileIDResourcesHelper.localizedString(
+                            for: "Confirmation.GoodSelfie"
+                        ),
+                        subtitle: SmileIDResourcesHelper.localizedString(
+                            for: "Confirmation.FaceClear"
+                        ),
+                        image: selfieToConfirm,
+                        confirmationButtonText: SmileIDResourcesHelper.localizedString(
+                            for: "Confirmation.YesUse"
+                        ),
+                        onConfirm: { viewModel.handleConfirmation() },
+                        retakeButtonText: SmileIDResourcesHelper.localizedString(
+                            for: "Confirmation.Retake"
+                        ),
+                        onRetake: { viewModel.handleSelfieRetake() },
+                        scaleFactor: 1.25
+                    )
+                },
+                label: { EmptyView() }
+            )
         }
         .preferredColorScheme(.light)
+        .onAppear {
+            UIScreen.main.brightness = 1
+        }
+        .onDisappear {
+            UIScreen.main.brightness = originalBrightness
+        }
         .alert(item: $viewModel.unauthorizedAlert) { alert in
             Alert(
                 title: Text(alert.title),
