@@ -49,7 +49,9 @@ public struct SelfieRequest: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(selfieImage.base64EncodedString(), forKey: .selfieImage)
         try container.encode(livenessImages.map { $0.base64EncodedString() }, forKey: .livenessImages)
-        try container.encode(userId, forKey: .userId)
+        if let userId = userId {
+            try container.encode(userId, forKey: .userId)
+        }
         try container.encode(partnerParams, forKey: .partnerParams)
         if let callbackUrl = callbackUrl {
             try container.encode(callbackUrl, forKey: .callbackUrl)
@@ -57,8 +59,12 @@ public struct SelfieRequest: Codable {
         if let sandboxResult = sandboxResult {
             try container.encode(sandboxResult, forKey: .sandboxResult)
         }
-        try container.encode(allowNewEnroll, forKey: .allowNewEnroll)
-        try container.encode(failureReason, forKey: .failureReason)
+        if let allowNewEnroll = allowNewEnroll {
+            try container.encode(allowNewEnroll, forKey: .allowNewEnroll)
+        }
+        if let failureReason = failureReason {
+            try container.encode(failureReason, forKey: .failureReason)
+        }
         try container.encode(metadata, forKey: .metadata)
     }
 }
