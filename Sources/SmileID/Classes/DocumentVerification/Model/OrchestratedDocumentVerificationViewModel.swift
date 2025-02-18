@@ -10,17 +10,8 @@ enum DocumentCaptureFlow: Equatable {
 
 class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject {
     // Input properties
-    let userId: String
-    let jobId: String
-    let consentInformation: ConsentInformation?
-    let allowNewEnroll: Bool
-    let countryCode: String
-    let documentType: String?
-    let captureBothSides: Bool
-    let skipApiSubmission: Bool
-    let useStrictMode: Bool
+    let config: DocumentVerificationConfig
     let jobType: JobType
-    let extraPartnerParams: [String: String]
 
     // Other properties
     var documentFrontFile: Data?
@@ -43,38 +34,18 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     @Published var step = DocumentCaptureFlow.frontDocumentCapture
 
     init(
-        userId: String,
-        jobId: String,
-        consentInformation: ConsentInformation?,
-        allowNewEnroll: Bool,
-        countryCode: String,
-        documentType: String?,
-        captureBothSides: Bool,
-        skipApiSubmission: Bool,
-        useStrictMode: Bool,
-        selfieFile: URL?,
+        config: DocumentVerificationConfig,
         jobType: JobType,
-        extraPartnerParams: [String: String] = [:],
         localMetadata: LocalMetadata
     ) {
-        self.userId = userId
-        self.jobId = jobId
-        self.consentInformation = consentInformation
-        self.allowNewEnroll = allowNewEnroll
-        self.countryCode = countryCode
-        self.documentType = documentType
-        self.captureBothSides = captureBothSides
-        self.skipApiSubmission = skipApiSubmission
-        self.useStrictMode = useStrictMode
-        self.selfieFile = selfieFile
+        self.config = config
         self.jobType = jobType
-        self.extraPartnerParams = extraPartnerParams
         self.localMetadata = localMetadata
     }
 
     func onFrontDocumentImageConfirmed(data: Data) {
         documentFrontFile = data
-        if captureBothSides {
+        if config.captureBothSides {
             DispatchQueue.main.async {
                 self.step = .backDocumentCapture
             }
@@ -129,12 +100,12 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 }
 
                 selfieFile = try LocalStorage.getFileByType(
-                    jobId: useStrictMode ? userId : jobId,
+                    jobId: config.useStrictMode ? config.userId : config.jobId,
                     fileType: FileType.selfie
                 )
 
                 livenessFiles = try LocalStorage.getFilesByType(
-                    jobId: useStrictMode ? userId : jobId,
+                    jobId: config.useStrictMode ? config.userId : config.jobId,
                     fileType: FileType.liveness
                 )
 
@@ -151,7 +122,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
 
                 var allFiles = [URL]()
                 let frontDocumentUrl = try LocalStorage.createDocumentFile(
-                    jobId: jobId,
+                    jobId: config.jobId,
                     fileType: FileType.documentFront,
                     document: documentFrontFile
                 )
@@ -159,7 +130,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 var backDocumentUrl: URL?
                 if let documentBackFile {
                     let url = try LocalStorage.createDocumentFile(
-                        jobId: jobId,
+                        jobId: config.jobId,
                         fileType: FileType.documentBack,
                         document: documentBackFile
                     )
@@ -170,9 +141,9 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     allFiles.append(contentsOf: livenessFiles)
                 }
                 let info = try LocalStorage.createInfoJsonFile(
-                    jobId: jobId,
-                    idInfo: IdInfo(country: countryCode, idType: documentType),
-                    consentInformation: consentInformation,
+                    jobId: config.jobId,
+                    idInfo: IdInfo(country: config.countryCode, idType: config.documentType),
+                    consentInformation: config.consentInformation,
                     documentFront: frontDocumentUrl,
                     documentBack: backDocumentUrl,
                     selfie: selfieFile,
@@ -187,31 +158,31 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     selfie: selfieFile,
                     livenessImages: livenessFiles ?? []
                 )
-                if skipApiSubmission {
+                if config.skipApiSubmission {
                     DispatchQueue.main.async { self.step = .processing(.success) }
                     return
                 }
                 let authRequest = AuthenticationRequest(
                     jobType: jobType,
                     enrollment: false,
-                    jobId: jobId,
-                    userId: userId
+                    jobId: config.jobId,
+                    userId: config.userId
                 )
                 if SmileID.allowOfflineMode {
                     try LocalStorage.saveOfflineJob(
-                        jobId: jobId,
-                        userId: userId,
+                        jobId: config.jobId,
+                        userId: config.userId,
                         jobType: jobType,
                         enrollment: false,
-                        allowNewEnroll: allowNewEnroll,
+                        allowNewEnroll: config.allowNewEnroll,
                         localMetadata: localMetadata,
-                        partnerParams: extraPartnerParams
+                        partnerParams: config.extraPartnerParams
                     )
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
-                    allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+                    partnerParams: authResponse.partnerParams.copy(extras: config.extraPartnerParams),
+                    allowNewEnroll: String(config.allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
                     metadata: localMetadata.metadata.items,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
@@ -237,19 +208,19 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 )
                 didSubmitJob = true
                 do {
-                    try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
-                    if useStrictMode {
-                        try LocalStorage.moveToSubmittedJobs(jobId: self.userId)
+                    try LocalStorage.moveToSubmittedJobs(jobId: self.config.jobId)
+                    if config.useStrictMode {
+                        try LocalStorage.moveToSubmittedJobs(jobId: self.config.userId)
                     }
                     self.selfieFile =
                         try LocalStorage.getFileByType(
-                            jobId: useStrictMode ? userId : jobId,
+                            jobId: config.useStrictMode ? config.userId : config.jobId,
                             fileType: FileType.selfie,
                             submitted: true
                         ) ?? selfieFile
                     self.livenessFiles =
                         try LocalStorage.getFilesByType(
-                            jobId: useStrictMode ? userId : jobId,
+                            jobId: config.useStrictMode ? config.userId : config.jobId,
                             fileType: FileType.liveness,
                             submitted: true
                         ) ?? []
@@ -262,13 +233,13 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
             } catch let error as SmileIDError {
                 do {
                     var didMove = try LocalStorage.handleOfflineJobFailure(
-                        jobId: self.jobId,
+                        jobId: self.config.jobId,
                         error: error
                     )
 
-                    if useStrictMode {
+                    if config.useStrictMode {
                         didMove = try LocalStorage.handleOfflineJobFailure(
-                            jobId: self.userId,
+                            jobId: self.config.userId,
                             error: error
                         )
                     }
@@ -276,13 +247,13 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     if didMove {
                         self.selfieFile =
                             try LocalStorage.getFileByType(
-                                jobId: useStrictMode ? userId : jobId,
+                                jobId: config.useStrictMode ? config.userId : config.jobId,
                                 fileType: FileType.selfie,
                                 submitted: true
                             ) ?? selfieFile
                         self.livenessFiles =
                             try LocalStorage.getFilesByType(
-                                jobId: useStrictMode ? userId : jobId,
+                                jobId: config.useStrictMode ? config.userId : config.jobId,
                                 fileType: FileType.liveness,
                                 submitted: true
                             ) ?? []

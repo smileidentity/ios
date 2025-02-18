@@ -2,55 +2,16 @@ import SwiftUI
 
 struct OrchestratedDocumentVerificationScreen: View {
     @State private var localMetadata = LocalMetadata()
-    let countryCode: String
-    let documentType: String?
-    let captureBothSides: Bool
-    let idAspectRatio: Double?
-    let bypassSelfieCaptureWithFile: URL?
-    let userId: String
-    let jobId: String
-    let allowNewEnroll: Bool
-    let showAttribution: Bool
-    let allowGalleryUpload: Bool
-    let allowAgentMode: Bool
-    let showInstructions: Bool
-    let skipApiSubmission: Bool
-    let useStrictMode: Bool
-    let extraPartnerParams: [String: String]
+    let config: DocumentVerificationConfig
     let onResult: DocumentVerificationResultDelegate
 
     var body: some View {
         IOrchestratedDocumentVerificationScreen(
-            countryCode: countryCode,
-            documentType: documentType,
-            consentInformation: nil,
-            captureBothSides: captureBothSides,
-            idAspectRatio: idAspectRatio,
-            bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
-            userId: userId,
-            jobId: jobId,
-            allowNewEnroll: allowNewEnroll,
-            showAttribution: showAttribution,
-            allowGalleryUpload: allowGalleryUpload,
-            allowAgentMode: allowAgentMode,
-            showInstructions: showInstructions,
-            skipApiSubmission: skipApiSubmission,
-            useStrictMode: useStrictMode,
-            extraPartnerParams: extraPartnerParams,
+            config: config,
             onResult: onResult,
             viewModel: OrchestratedDocumentVerificationViewModel(
-                userId: userId,
-                jobId: jobId,
-                consentInformation: nil,
-                allowNewEnroll: allowNewEnroll,
-                countryCode: countryCode,
-                documentType: documentType,
-                captureBothSides: captureBothSides,
-                skipApiSubmission: skipApiSubmission,
-                useStrictMode: useStrictMode,
-                selfieFile: bypassSelfieCaptureWithFile,
+                config: config,
                 jobType: .documentVerification,
-                extraPartnerParams: extraPartnerParams,
                 localMetadata: localMetadata
             )
         ).environmentObject(localMetadata)
@@ -59,56 +20,16 @@ struct OrchestratedDocumentVerificationScreen: View {
 
 struct OrchestratedEnhancedDocumentVerificationScreen: View {
     @State private var localMetadata = LocalMetadata()
-    let countryCode: String
-    let documentType: String?
-    let consentInformation: ConsentInformation
-    let captureBothSides: Bool
-    let idAspectRatio: Double?
-    let bypassSelfieCaptureWithFile: URL?
-    let userId: String
-    let jobId: String
-    let allowNewEnroll: Bool
-    let showAttribution: Bool
-    let allowGalleryUpload: Bool
-    let allowAgentMode: Bool
-    let showInstructions: Bool
-    let skipApiSubmission: Bool
-    let useStrictMode: Bool
-    let extraPartnerParams: [String: String]
+    let config: DocumentVerificationConfig
     let onResult: EnhancedDocumentVerificationResultDelegate
 
     var body: some View {
         IOrchestratedDocumentVerificationScreen(
-            countryCode: countryCode,
-            documentType: documentType,
-            consentInformation: consentInformation,
-            captureBothSides: captureBothSides,
-            idAspectRatio: idAspectRatio,
-            bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
-            userId: userId,
-            jobId: jobId,
-            allowNewEnroll: allowNewEnroll,
-            showAttribution: showAttribution,
-            allowGalleryUpload: allowGalleryUpload,
-            allowAgentMode: allowAgentMode,
-            showInstructions: showInstructions,
-            skipApiSubmission: skipApiSubmission,
-            useStrictMode: useStrictMode,
-            extraPartnerParams: extraPartnerParams,
+            config: config,
             onResult: onResult,
             viewModel: OrchestratedEnhancedDocumentVerificationViewModel(
-                userId: userId,
-                jobId: jobId,
-                consentInformation: consentInformation,
-                allowNewEnroll: allowNewEnroll,
-                countryCode: countryCode,
-                documentType: documentType,
-                captureBothSides: captureBothSides,
-                skipApiSubmission: skipApiSubmission,
-                useStrictMode: useStrictMode,
-                selfieFile: bypassSelfieCaptureWithFile,
+                config: config,
                 jobType: .enhancedDocumentVerification,
-                extraPartnerParams: extraPartnerParams,
                 localMetadata: localMetadata
             )
         ).environmentObject(localMetadata)
@@ -116,61 +37,16 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
 }
 
 private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
-    let countryCode: String
-    let documentType: String?
-    let consentInformation: ConsentInformation?
-    let captureBothSides: Bool
-    let idAspectRatio: Double?
-    let bypassSelfieCaptureWithFile: URL?
-    let userId: String
-    let jobId: String
-    let allowNewEnroll: Bool
-    let showAttribution: Bool
-    let allowGalleryUpload: Bool
-    let allowAgentMode: Bool
-    let showInstructions: Bool
-    let skipApiSubmission: Bool
-    let useStrictMode: Bool
-    var extraPartnerParams: [String: String]
+    let config: DocumentVerificationConfig
     let onResult: T
     @Backport.StateObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
 
     init(
-        countryCode: String,
-        documentType: String?,
-        consentInformation: ConsentInformation?,
-        captureBothSides: Bool,
-        idAspectRatio: Double?,
-        bypassSelfieCaptureWithFile: URL?,
-        userId: String,
-        jobId: String,
-        allowNewEnroll: Bool,
-        showAttribution: Bool,
-        allowGalleryUpload: Bool,
-        allowAgentMode: Bool,
-        showInstructions: Bool,
-        skipApiSubmission: Bool,
-        useStrictMode: Bool,
-        extraPartnerParams: [String: String],
+        config: DocumentVerificationConfig,
         onResult: T,
         viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
     ) {
-        self.countryCode = countryCode
-        self.documentType = documentType
-        self.consentInformation = consentInformation
-        self.captureBothSides = captureBothSides
-        self.idAspectRatio = idAspectRatio
-        self.bypassSelfieCaptureWithFile = bypassSelfieCaptureWithFile
-        self.userId = userId
-        self.jobId = jobId
-        self.allowNewEnroll = allowNewEnroll
-        self.showAttribution = showAttribution
-        self.allowGalleryUpload = allowGalleryUpload
-        self.allowAgentMode = allowAgentMode
-        self.showInstructions = showInstructions
-        self.skipApiSubmission = skipApiSubmission
-        self.useStrictMode = useStrictMode
-        self.extraPartnerParams = extraPartnerParams
+        self.config = config
         self.onResult = onResult
         self._viewModel = Backport.StateObject(wrappedValue: viewModel)
     }
@@ -180,9 +56,9 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         case .frontDocumentCapture:
             DocumentCaptureScreen(
                 side: .front,
-                showInstructions: showInstructions,
-                showAttribution: showAttribution,
-                allowGallerySelection: allowGalleryUpload,
+                showInstructions: config.showInstructions,
+                showAttribution: config.showAttribution,
+                allowGallerySelection: config.allowGalleryUpload,
                 showSkipButton: false,
                 instructionsHeroImage: SmileIDResourcesHelper.DocVFrontHero,
                 instructionsTitleText: SmileIDResourcesHelper.localizedString(
@@ -192,16 +68,16 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     for: "Instructions.Document.Front.Callout"
                 ),
                 captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureFront"),
-                knownIdAspectRatio: idAspectRatio,
+                knownIdAspectRatio: config.idAspectRatio,
                 onConfirm: viewModel.onFrontDocumentImageConfirmed,
                 onError: viewModel.onError
             )
         case .backDocumentCapture:
             DocumentCaptureScreen(
                 side: .back,
-                showInstructions: showInstructions,
-                showAttribution: showAttribution,
-                allowGallerySelection: allowGalleryUpload,
+                showInstructions: config.showInstructions,
+                showAttribution: config.showAttribution,
+                allowGallerySelection: config.allowGalleryUpload,
                 showSkipButton: false,
                 instructionsHeroImage: SmileIDResourcesHelper.DocVBackHero,
                 instructionsTitleText: SmileIDResourcesHelper.localizedString(
@@ -211,7 +87,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     for: "Instructions.Document.Back.Callout"
                 ),
                 captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureBack"),
-                knownIdAspectRatio: idAspectRatio,
+                knownIdAspectRatio: config.idAspectRatio,
                 onConfirm: viewModel.onBackDocumentImageConfirmed,
                 onError: viewModel.onError,
                 onSkip: viewModel.onDocumentBackSkip
@@ -255,28 +131,28 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
 
     private var selfieCaptureScreen: some View {
         Group {
-            if useStrictMode {
+            if config.useStrictMode {
                 OrchestratedEnhancedSelfieCaptureScreen(
-                    userId: userId,
+                    userId: config.userId,
                     isEnroll: false,
-                    allowNewEnroll: allowNewEnroll,
-                    showAttribution: showAttribution,
-                    showInstructions: showInstructions,
+                    allowNewEnroll: config.allowNewEnroll,
+                    showAttribution: config.showAttribution,
+                    showInstructions: config.showInstructions,
                     skipApiSubmission: true,
-                    extraPartnerParams: extraPartnerParams,
+                    extraPartnerParams: config.extraPartnerParams,
                     onResult: viewModel
                 )
             } else {
                 OrchestratedSelfieCaptureScreen(
                     config: OrchestratedSelfieCaptureConfig(
-                        userId: userId,
-                        jobId: jobId,
+                        userId: config.userId,
+                        jobId: config.jobId,
                         isEnroll: false,
-                        allowNewEnroll: allowNewEnroll,
-                        allowAgentMode: allowAgentMode,
-                        showAttribution: showAttribution,
-                        showInstructions: showInstructions,
-                        extraPartnerParams: extraPartnerParams,
+                        allowNewEnroll: config.allowNewEnroll,
+                        allowAgentMode: config.allowAgentMode,
+                        showAttribution: config.showAttribution,
+                        showInstructions: config.showInstructions,
+                        extraPartnerParams: config.extraPartnerParams,
                         skipApiSubmission: true
                     ),
                     onResult: viewModel

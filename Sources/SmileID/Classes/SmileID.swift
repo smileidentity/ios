@@ -401,134 +401,28 @@ public class SmileID {
 
     /// Perform a Document Verification
     /// - Parameters:
-    ///   - userId: The user ID to associate with the Document Verification. Most often, this will
-    ///   correspond to a unique User ID within your system. If not provided, a random user ID will
-    ///    be generated.
-    ///   - jobId: The job ID to associate with the Document Verification. Most often, this will
-    ///   correspond to unique Job ID within your system. If not provided, a random job ID will
-    ///   be generated.
-    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
-    ///   - countryCode: The ISO 3166-1 alpha-3 country code of the document
-    ///   - documentType: An optional string for the type of document to be captured
-    ///   - idAspectRatio: An optional value for the aspect ratio of the document. If no value is,
-    ///   supplied, image analysis is done to calculate the documents aspect ratio
-    ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
-    ///   image
-    ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
-    ///   front side will be captured. If this is true, an option to skip back side will still be
-    ///   shown
-    ///   - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
-    ///   displayed allowing toggling between the back camera and front camera. If not allowed, only
-    ///   the front camera will be used.
-    ///   - allowGalleryUpload: Whether to allow the user to upload images from their gallery or not
-    ///   - showInstructions: Whether to deactivate capture screen's instructions for Document
-    ///   Verification (NB! If instructions are disabled, gallery upload won't be possible)
-    ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
-    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
-    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - config: configuration options for customising document verification experience.
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func documentVerificationScreen(
-        userId: String = generateUserId(),
-        jobId: String = generateJobId(),
-        allowNewEnroll: Bool = false,
-        countryCode: String,
-        documentType: String? = nil,
-        idAspectRatio: Double? = nil,
-        bypassSelfieCaptureWithFile: URL? = nil,
-        captureBothSides: Bool = true,
-        allowAgentMode: Bool = false,
-        allowGalleryUpload: Bool = false,
-        showInstructions: Bool = true,
-        showAttribution: Bool = true,
-        skipApiSubmission: Bool = false,
-        useStrictMode: Bool = false,
-        extraPartnerParams: [String: String] = [:],
+        config: DocumentVerificationConfig,
         delegate: DocumentVerificationResultDelegate
     ) -> some View {
         OrchestratedDocumentVerificationScreen(
-            countryCode: countryCode,
-            documentType: documentType,
-            captureBothSides: captureBothSides,
-            idAspectRatio: idAspectRatio,
-            bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
-            userId: userId,
-            jobId: jobId,
-            allowNewEnroll: allowNewEnroll,
-            showAttribution: showAttribution,
-            allowGalleryUpload: allowGalleryUpload,
-            allowAgentMode: allowAgentMode,
-            showInstructions: showInstructions,
-            skipApiSubmission: skipApiSubmission,
-            useStrictMode: useStrictMode,
-            extraPartnerParams: extraPartnerParams,
+            config: config,
             onResult: delegate
         )
     }
 
     /// Perform an Enhanced Document Verification
     /// - Parameters:
-    ///   - userId: The user ID to associate with the Document Verification. Most often, this will
-    ///   correspond to a unique User ID within your system. If not provided, a random user ID will
-    ///    be generated.
-    ///   - jobId: The job ID to associate with the Document Verification. Most often, this will
-    ///   correspond to unique Job ID within your system. If not provided, a random job ID will
-    ///   be generated.
-    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
-    ///   - countryCode: The ISO 3166-1 alpha-3 country code of the document
-    ///   - documentType: An optional string for the type of document to be captured
-    ///   - idAspectRatio: An optional value for the aspect ratio of the document. If no value is,
-    ///   supplied, image analysis is done to calculate the documents aspect ratio
-    ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
-    ///   image
-    ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
-    ///   front side will be captured. If this is true, an option to skip back side will still be
-    ///   shown
-    ///  - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
-    ///   displayed allowing toggling between the back camera and front camera. If not allowed, only
-    ///   the front camera will be used.
-    ///   - allowGalleryUpload: Whether to allow the user to upload images from their gallery or not
-    ///   - showInstructions: Whether to deactivate capture screen's instructions for Document
-    ///   Verification (NB! If instructions are disabled, gallery upload won't be possible)
-    ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
-    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
-    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - config: configuration options for customising document verification experience.
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func enhancedDocumentVerificationScreen(
-        userId: String = generateUserId(),
-        jobId: String = generateJobId(),
-        consentInformation: ConsentInformation,
-        allowNewEnroll: Bool = false,
-        countryCode: String,
-        documentType: String? = nil,
-        idAspectRatio: Double? = nil,
-        bypassSelfieCaptureWithFile: URL? = nil,
-        captureBothSides: Bool = true,
-        allowAgentMode: Bool = false,
-        allowGalleryUpload: Bool = false,
-        showInstructions: Bool = true,
-        skipApiSubmission: Bool = false,
-        showAttribution: Bool = true,
-        useStrictMode: Bool = false,
-        extraPartnerParams: [String: String] = [:],
+        config: DocumentVerificationConfig,
         delegate: EnhancedDocumentVerificationResultDelegate
     ) -> some View {
         OrchestratedEnhancedDocumentVerificationScreen(
-            countryCode: countryCode,
-            documentType: documentType,
-            consentInformation: consentInformation,
-            captureBothSides: captureBothSides,
-            idAspectRatio: idAspectRatio,
-            bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
-            userId: userId,
-            jobId: jobId,
-            allowNewEnroll: allowNewEnroll,
-            showAttribution: showAttribution,
-            allowGalleryUpload: allowGalleryUpload,
-            allowAgentMode: allowAgentMode,
-            showInstructions: showInstructions,
-            skipApiSubmission: skipApiSubmission,
-            useStrictMode: useStrictMode,
-            extraPartnerParams: extraPartnerParams,
+            config: config,
             onResult: delegate
         )
     }
