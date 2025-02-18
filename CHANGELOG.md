@@ -1,6 +1,6 @@
 # Release Notes
 
-## ## 10.4.0 Unreleased
+## ## 10.4.0
 
 ### Added
 * Pass ConsentInformation in EnhancedDocV, EnhancedKYC and BiometricKYC
