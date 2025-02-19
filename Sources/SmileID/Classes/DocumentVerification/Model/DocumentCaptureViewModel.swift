@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import UIKit
 
 enum DocumentDirective: String {
     case defaultInstructions = "Document.Directive.Default"
