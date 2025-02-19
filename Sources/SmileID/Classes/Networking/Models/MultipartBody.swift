@@ -19,11 +19,4 @@ public struct MultipartBody: Codable {
         case filename = "name"
         case mimeType = "type"
     }
-    
-    /*public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(data.base64EncodedString(), forKey: .data)
-        try container.encode(filename, forKey: .filename)
-        try container.encode(mimeType, forKey: .mimeType)
-    }*/
 }
