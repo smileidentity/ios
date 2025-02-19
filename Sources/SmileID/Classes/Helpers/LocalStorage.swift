@@ -1,5 +1,6 @@
 import Foundation
 import ZIPFoundation
+import SmileIDSecurity
 
 public class LocalStorage {
     private static let defaultFolderName = "SmileID"
@@ -133,7 +134,32 @@ public class LocalStorage {
         return try createSmileFile(to: jobId, name: "info.json", file: data)
     }
 
-    static func createSecurityInfoFile(
+    static func addSecurityInfo(
+        jobId: String,
+        files: [URL]
+    ) throws -> URL? {
+        do{
+            let timestamp = Date().toISO8601WithMilliseconds()
+            let mac = try SmileIDCryptoManager.shared.sign(
+                timestamp: timestamp,
+                files: files
+            )
+            let securityInfo = SecurityInfo(
+                timestamp: timestamp,
+                mac: mac
+            )
+            let securityInfoJson = try createSecurityInfoFile(
+                jobId: jobId,
+                securityInfo: securityInfo
+            )
+            return securityInfoJson
+        } catch {
+            print("Couldn't create security info. Continuing without it.")
+            return nil
+        }
+    }
+
+    private static func createSecurityInfoFile(
         jobId: String,
         securityInfo: SecurityInfo
     ) throws -> URL {
