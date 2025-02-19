@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 enum DocumentCaptureFlow: Equatable {
     case frontDocumentCapture

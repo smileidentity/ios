@@ -1,5 +1,5 @@
 import Combine
-import SwiftUI
+import Foundation
 
 enum DocumentDirective: String {
     case defaultInstructions = "Document.Directive.Default"

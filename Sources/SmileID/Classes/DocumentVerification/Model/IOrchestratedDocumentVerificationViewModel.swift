@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 
 class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObject {
     // Input properties
@@ -155,27 +156,27 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     return
                 }
                 let authRequest = AuthenticationRequest(
-                    jobType: jobType,
+                    jobType: self.jobType,
                     enrollment: false,
-                    jobId: config.jobId,
-                    userId: config.userId
+                    jobId: self.config.jobId,
+                    userId: self.config.userId
                 )
                 if SmileID.allowOfflineMode {
                     try LocalStorage.saveOfflineJob(
-                        jobId: config.jobId,
-                        userId: config.userId,
-                        jobType: jobType,
+                        jobId: self.config.jobId,
+                        userId: self.config.userId,
+                        jobType: self.jobType,
                         enrollment: false,
-                        allowNewEnroll: config.allowNewEnroll,
+                        allowNewEnroll: self.config.allowNewEnroll,
                         localMetadata: localMetadata,
-                        partnerParams: config.extraPartnerParams
+                        partnerParams: self.config.extraPartnerParams
                     )
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: config.extraPartnerParams),
-                    allowNewEnroll: String(config.allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
-                    metadata: localMetadata.metadata.items,
+                    partnerParams: authResponse.partnerParams.copy(extras: self.config.extraPartnerParams),
+                    allowNewEnroll: String(self.config.allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+                    metadata: self.localMetadata.metadata.items,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
@@ -206,13 +207,13 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     }
                     self.selfieFile =
                         try LocalStorage.getFileByType(
-                            jobId: config.useStrictMode ? config.userId : config.jobId,
+                            jobId: self.config.useStrictMode ? self.config.userId : self.config.jobId,
                             fileType: FileType.selfie,
                             submitted: true
                         ) ?? selfieFile
                     self.livenessFiles =
                         try LocalStorage.getFilesByType(
-                            jobId: config.useStrictMode ? config.userId : config.jobId,
+                            jobId: self.config.useStrictMode ? self.config.userId : self.config.jobId,
                             fileType: FileType.liveness,
                             submitted: true
                         ) ?? []
@@ -239,13 +240,13 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     if didMove {
                         self.selfieFile =
                             try LocalStorage.getFileByType(
-                                jobId: config.useStrictMode ? config.userId : config.jobId,
+                                jobId: self.config.useStrictMode ? self.config.userId : self.config.jobId,
                                 fileType: FileType.selfie,
                                 submitted: true
                             ) ?? selfieFile
                         self.livenessFiles =
                             try LocalStorage.getFilesByType(
-                                jobId: config.useStrictMode ? config.userId : config.jobId,
+                                jobId: self.config.useStrictMode ? self.config.userId : self.config.jobId,
                                 fileType: FileType.liveness,
                                 submitted: true
                             ) ?? []
