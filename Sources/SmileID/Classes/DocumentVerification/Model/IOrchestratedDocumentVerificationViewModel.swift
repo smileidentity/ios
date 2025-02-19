@@ -175,7 +175,8 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.config.extraPartnerParams),
-                    allowNewEnroll: String(self.config.allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+                    // TODO: - Fix when Michael changes this to boolean
+                    allowNewEnroll: String(self.config.allowNewEnroll),
                     metadata: self.localMetadata.metadata.items,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature

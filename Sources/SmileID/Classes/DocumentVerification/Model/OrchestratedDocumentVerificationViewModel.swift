@@ -10,8 +10,7 @@ enum DocumentCaptureFlow: Equatable {
 
 // swiftlint:disable opening_brace
 class OrchestratedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
-{
+    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),

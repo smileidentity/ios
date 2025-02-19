@@ -13,8 +13,7 @@ struct EnhancedDocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides
-        {
+           let captureBothSides {
             SmileID.enhancedDocumentVerificationScreen(
                 config: DocumentVerificationConfig(
                     userId: userId,
