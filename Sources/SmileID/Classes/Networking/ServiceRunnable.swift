@@ -114,6 +114,8 @@ extension ServiceRunnable {
         let timestamp = Date().toISO8601WithMilliseconds()
         headers.append(.requestTimestamp(value: timestamp))
 
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         let selfieRequest = SelfieRequest(
             selfieImage: selfieImage.data,
             livenessImages: livenessImages.map{ $0.data },
@@ -125,13 +127,7 @@ extension ServiceRunnable {
             failureReason: failureReason,
             metadata: metadata.items
         )
-
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-        print(selfieRequest)
         let payload = try encoder.encode(selfieRequest)
-        print("payload sorted:")
-        print(String(data: payload, encoding: .utf8))
         let requestMac = try SmileIDCryptoManager.shared.sign(
             timestamp: timestamp,
             headers: headers.toDictionary(),
@@ -178,11 +174,6 @@ extension ServiceRunnable {
         guard var url = URL(string: baseURL)?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
-        print(path)
-        if path == "/v2/smart-selfie-enroll" {
-            url = URL(string: "https://us-west-2.validate-payload-signature.api.smileid.co/v2/smart-selfie-enroll")!
-        }
-        print(url)
 
         let request = RestRequest(
             url: url,
@@ -238,20 +229,10 @@ extension ServiceRunnable {
         guard var url = baseURL?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
-        
-        print(path)
-        if path == "id_verification" {
-            url = URL(string: "https://us-west-2.validate-payload-signature.api.smileid.co/v1/id_verification")!
-        }
-        print(url)
 
-        print("body:")
-        print(body)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         let payload = try encoder.encode(body)
-        print("payload sorted:")
-        print(String(data: payload, encoding: .utf8))
         guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
             throw SmileIDError.missingHeader("Header with name `SmileId-Request-Timestamp` not found.")
         }
