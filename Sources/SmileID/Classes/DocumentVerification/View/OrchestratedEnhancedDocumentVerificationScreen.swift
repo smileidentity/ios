@@ -1,17 +1,17 @@
 import SwiftUI
 
-struct OrchestratedDocumentVerificationScreen: View {
+struct OrchestratedEnhancedDocumentVerificationScreen: View {
     @State private var localMetadata = LocalMetadata()
     let config: DocumentVerificationConfig
-    let onResult: DocumentVerificationResultDelegate
+    let onResult: EnhancedDocumentVerificationResultDelegate
 
     var body: some View {
         IOrchestratedDocumentVerificationScreen(
             config: config,
             onResult: onResult,
-            viewModel: OrchestratedDocumentVerificationViewModel(
+            viewModel: OrchestratedEnhancedDocumentVerificationViewModel(
                 config: config,
-                jobType: .documentVerification,
+                jobType: .enhancedDocumentVerification,
                 localMetadata: localMetadata
             )
         ).environmentObject(localMetadata)

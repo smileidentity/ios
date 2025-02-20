@@ -1,17 +1,12 @@
-import SwiftUI
 import Foundation
 
-enum DocumentCaptureFlow: Equatable {
-    case frontDocumentCapture
-    case backDocumentCapture
-    case selfieCapture
-    case processing(ProcessingState)
-}
-
 // swiftlint:disable opening_brace
-class OrchestratedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
-    override func onFinished(delegate: DocumentVerificationResultDelegate) {
+class OrchestratedEnhancedDocumentVerificationViewModel:
+    IOrchestratedDocumentVerificationViewModel<
+        EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
+    >
+{
+    override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
@@ -21,7 +16,7 @@ class OrchestratedDocumentVerificationViewModel:
                 selfie: selfiePath,
                 documentFrontImage: documentFrontPath,
                 documentBackImage: documentBackPath,
-                didSubmitDocumentVerificationJob: didSubmitJob
+                didSubmitEnhancedDocVJob: didSubmitJob
             )
         } else if let error {
             // We check error as the 2nd case because as long as jobStatusResponse is not nil, it

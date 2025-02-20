@@ -9,12 +9,14 @@ struct DocumentVerificationView: View {
 
     var body: some View {
         SmileID.documentVerificationScreen(
-            userId: userId,
-            jobId: jobId,
-            countryCode: verificationDetails.countryCode,
-            documentType: verificationDetails.documentType,
-            captureBothSides: verificationDetails.captureBothSides,
-            allowGalleryUpload: true,
+            config: DocumentVerificationConfig(
+                userId: userId,
+                jobId: jobId,
+                countryCode: verificationDetails.countryCode,
+                documentType: verificationDetails.documentType,
+                captureBothSides: verificationDetails.captureBothSides,
+                allowGalleryUpload: true
+            ),
             delegate: delegate
         )
     }

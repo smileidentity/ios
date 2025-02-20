@@ -13,22 +13,23 @@ struct EnhancedDocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides
-        {
+           let captureBothSides {
             SmileID.enhancedDocumentVerificationScreen(
-                userId: userId,
-                jobId: jobId,
-                // we need to fetch consent from the services endpoint
-                consentInformation: ConsentInformation(
-                    consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                    personalDetailsConsentGranted: true,
-                    contactInformationConsentGranted: true,
-                    documentInformationConsentGranted: true
+                config: DocumentVerificationConfig(
+                    userId: userId,
+                    jobId: jobId,
+                    // we need to fetch consent from the services endpoint
+                    consentInformation: ConsentInformation(
+                        consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                        personalDetailsConsentGranted: true,
+                        contactInformationConsentGranted: true,
+                        documentInformationConsentGranted: true
+                    ),
+                    countryCode: countryCode,
+                    documentType: documentType,
+                    captureBothSides: captureBothSides,
+                    allowGalleryUpload: true
                 ),
-                countryCode: countryCode,
-                documentType: documentType,
-                captureBothSides: captureBothSides,
-                allowGalleryUpload: true,
                 delegate: delegate
             )
         } else {
