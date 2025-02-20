@@ -132,34 +132,6 @@
 		6277E7512C65153700AC87FB /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6277E7502C65153700AC87FB /* ZIPFoundation */; };
 		62BE2B19D3C60B8F915EBF4F /* RectangleDectorFunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B428612D2FBA680B560E1885 /* RectangleDectorFunnel.swift */; };
 		64BE0DC90E1AEBCC99AABF17 /* ServiceRunnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8139C6FFBC1EBEBE48AB2B /* ServiceRunnable.swift */; };
-		667642192D54CC2F00C390CC /* SmileIDSecurity.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */; };
-		6676421A2D54CC2F00C390CC /* SmileIDSecurity.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6676421C2D54CC3700C390CC /* SmileIDSecurity.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */; };
-		6676421D2D54CC3700C390CC /* SmileIDSecurity.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		667642462D5B9F5600C390CC /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667642452D5B9F5600C390CC /* DateUtils.swift */; };
-		667642472D5B9F5600C390CC /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667642452D5B9F5600C390CC /* DateUtils.swift */; };
-		667642492D5BB19E00C390CC /* SecurityInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667642482D5BAA4500C390CC /* SecurityInfo.swift */; };
-		6676424A2D5BB19E00C390CC /* SecurityInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667642482D5BAA4500C390CC /* SecurityInfo.swift */; };
-		668856802D5F8B6500A2F6F7 /* SmartSelfieResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567D2D5F8B6500A2F6F7 /* SmartSelfieResponse.swift */; };
-		668856812D5F8B6500A2F6F7 /* JobTypeV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567B2D5F8B6500A2F6F7 /* JobTypeV2.swift */; };
-		668856822D5F8B6500A2F6F7 /* SmartSelfieStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567E2D5F8B6500A2F6F7 /* SmartSelfieStatus.swift */; };
-		668856832D5F8B6500A2F6F7 /* Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567C2D5F8B6500A2F6F7 /* Metadata.swift */; };
-		668856842D5F8B6500A2F6F7 /* MultipartBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567A2D5F8B6500A2F6F7 /* MultipartBody.swift */; };
-		668856852D5F8B6500A2F6F7 /* FailureReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668856792D5F8B6500A2F6F7 /* FailureReason.swift */; };
-		668856862D5F8B6500A2F6F7 /* SmartSelfieResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567D2D5F8B6500A2F6F7 /* SmartSelfieResponse.swift */; };
-		668856872D5F8B6500A2F6F7 /* JobTypeV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567B2D5F8B6500A2F6F7 /* JobTypeV2.swift */; };
-		668856882D5F8B6500A2F6F7 /* SmartSelfieStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567E2D5F8B6500A2F6F7 /* SmartSelfieStatus.swift */; };
-		668856892D5F8B6500A2F6F7 /* Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567C2D5F8B6500A2F6F7 /* Metadata.swift */; };
-		6688568A2D5F8B6500A2F6F7 /* MultipartBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688567A2D5F8B6500A2F6F7 /* MultipartBody.swift */; };
-		6688568B2D5F8B6500A2F6F7 /* FailureReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668856792D5F8B6500A2F6F7 /* FailureReason.swift */; };
-		6688568E2D5F9F0700A2F6F7 /* SelfieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688568D2D5F9F0700A2F6F7 /* SelfieViewModel.swift */; };
-		6688568F2D5F9F0700A2F6F7 /* EnhancedSmartSelfieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688568C2D5F9F0700A2F6F7 /* EnhancedSmartSelfieViewModel.swift */; };
-		668856902D5F9F0700A2F6F7 /* SelfieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688568D2D5F9F0700A2F6F7 /* SelfieViewModel.swift */; };
-		668856912D5F9F0700A2F6F7 /* EnhancedSmartSelfieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6688568C2D5F9F0700A2F6F7 /* EnhancedSmartSelfieViewModel.swift */; };
-		668856942D5FB9D600A2F6F7 /* OrchestratedEnhancedSelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668856922D5FB9D600A2F6F7 /* OrchestratedEnhancedSelfieCaptureScreen.swift */; };
-		668856952D5FB9D600A2F6F7 /* OrchestratedSelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668856932D5FB9D600A2F6F7 /* OrchestratedSelfieCaptureScreen.swift */; };
-		668856962D5FB9D600A2F6F7 /* OrchestratedEnhancedSelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668856922D5FB9D600A2F6F7 /* OrchestratedEnhancedSelfieCaptureScreen.swift */; };
-		668856972D5FB9D600A2F6F7 /* OrchestratedSelfieCaptureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668856932D5FB9D600A2F6F7 /* OrchestratedSelfieCaptureScreen.swift */; };
 		6778E6445EC23C8F92C42E3E /* Injected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5511F1A4BC60C44727CEDAF6 /* Injected.swift */; };
 		69B532C51C917B39252CA192 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FAC3D9075164C75D04EAFD /* Util.swift */; };
 		6A1C0C2DF2B0C8344D96BD84 /* NetworkUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6B16B5E9B21097D23DE413 /* NetworkUtil.swift */; };
@@ -287,28 +259,6 @@
 			dstSubfolderSpec = 16;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6676421B2D54CC2F00C390CC /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				6676421A2D54CC2F00C390CC /* SmileIDSecurity.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6676421E2D54CC3700C390CC /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				6676421D2D54CC3700C390CC /* SmileIDSecurity.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1796,21 +1746,7 @@
 		662E78AA779170D8CA9EEECF /* OrchestratedConsentScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedConsentScreen.swift; path = Sources/SmileID/Classes/Consent/OrchestratedConsentScreen.swift; sourceTree = "<group>"; };
 		6643C65BB21AA48FF6541DB8 /* ImageExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageExtensions.swift; path = Sources/SmileID/Classes/Helpers/ImageExtensions.swift; sourceTree = "<group>"; };
 		66516E66D0F136772D53A024 /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
-		667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = SmileIDSecurity.xcframework; sourceTree = "<group>"; };
-		667642452D5B9F5600C390CC /* DateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
-		667642482D5BAA4500C390CC /* SecurityInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityInfo.swift; sourceTree = "<group>"; };
 		667BC8E1B7CB14690BE8B64B /* OrchestratedBiometricKycScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycScreen.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycScreen.swift; sourceTree = "<group>"; };
-		668856782D5E1CB800A2F6F7 /* Selfie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selfie.swift; sourceTree = "<group>"; };
-		668856792D5F8B6500A2F6F7 /* FailureReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailureReason.swift; sourceTree = "<group>"; };
-		6688567A2D5F8B6500A2F6F7 /* MultipartBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipartBody.swift; sourceTree = "<group>"; };
-		6688567B2D5F8B6500A2F6F7 /* JobTypeV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobTypeV2.swift; sourceTree = "<group>"; };
-		6688567C2D5F8B6500A2F6F7 /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadata.swift; sourceTree = "<group>"; };
-		6688567D2D5F8B6500A2F6F7 /* SmartSelfieResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartSelfieResponse.swift; sourceTree = "<group>"; };
-		6688567E2D5F8B6500A2F6F7 /* SmartSelfieStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartSelfieStatus.swift; sourceTree = "<group>"; };
-		6688568C2D5F9F0700A2F6F7 /* EnhancedSmartSelfieViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedSmartSelfieViewModel.swift; sourceTree = "<group>"; };
-		6688568D2D5F9F0700A2F6F7 /* SelfieViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfieViewModel.swift; sourceTree = "<group>"; };
-		668856922D5FB9D600A2F6F7 /* OrchestratedEnhancedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrchestratedEnhancedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
-		668856932D5FB9D600A2F6F7 /* OrchestratedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrchestratedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		668D83F41C29B727D0007FC0 /* SelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		66B19CD0CE06E42824CD683E /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
 		66C726184D50AC1CFA73B7FF /* SmileIDLocalizableStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDLocalizableStrings.swift; path = Sources/SmileID/Classes/Helpers/SmileIDLocalizableStrings.swift; sourceTree = "<group>"; };
@@ -3738,7 +3674,6 @@
 				6277E74F2C6511BD00AC87FB /* ZIPFoundation in Frameworks */,
 				1E98259F2C9B478C009F2CA6 /* FingerprintJS in Frameworks */,
 				1E9825A12C9B478C009F2CA6 /* SystemControl in Frameworks */,
-				6676421C2D54CC3700C390CC /* SmileIDSecurity.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3754,7 +3689,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				667642192D54CC2F00C390CC /* SmileIDSecurity.xcframework in Frameworks */,
 				1E4A02382BF4EB9D00167633 /* Lottie in Frameworks */,
 				6277E7512C65153700AC87FB /* ZIPFoundation in Frameworks */,
 				1E9825A32C9B4AF2009F2CA6 /* FingerprintJS in Frameworks */,
@@ -3768,7 +3702,6 @@
 		1E6857CC2BF39D020019B515 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				667642182D54CC2F00C390CC /* SmileIDSecurity.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -7154,11 +7087,6 @@
 		1EEFC2542B58412300B8A934 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				668856792D5F8B6500A2F6F7 /* FailureReason.swift */,
-				6688567A2D5F8B6500A2F6F7 /* MultipartBody.swift */,
-				6688567F2D5F8B6500A2F6F7 /* v2 */,
-				668856782D5E1CB800A2F6F7 /* Selfie.swift */,
-				667642482D5BAA4500C390CC /* SecurityInfo.swift */,
 				1EEFC2552B58412300B8A934 /* Services.swift */,
 				1EEFC2562B58412300B8A934 /* Authentication.swift */,
 				1EEFC2572B58412300B8A934 /* ValidDocuments.swift */,
@@ -7177,8 +7105,6 @@
 		1EEFC2662B58412300B8A934 /* SelfieCapture */ = {
 			isa = PBXGroup;
 			children = (
-				6688568C2D5F9F0700A2F6F7 /* EnhancedSmartSelfieViewModel.swift */,
-				6688568D2D5F9F0700A2F6F7 /* SelfieViewModel.swift */,
 				1EEFC2672B58412300B8A934 /* ViewModel */,
 				1EEFC26A2B58412300B8A934 /* SmartSelfieResultDelegate.swift */,
 				1EEFC26B2B58412300B8A934 /* View */,
@@ -7198,8 +7124,6 @@
 		1EEFC26B2B58412300B8A934 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				668856922D5FB9D600A2F6F7 /* OrchestratedEnhancedSelfieCaptureScreen.swift */,
-				668856932D5FB9D600A2F6F7 /* OrchestratedSelfieCaptureScreen.swift */,
 				1EEFC26C2B58412300B8A934 /* ARViewController.xib */,
 				1EEFC26D2B58412300B8A934 /* CameraFrameView.swift */,
 				1EEFC26E2B58412300B8A934 /* InfiniteProgressBar.swift */,
@@ -7325,7 +7249,6 @@
 		1EEFC2AB2B58412300B8A934 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				667642452D5B9F5600C390CC /* DateUtils.swift */,
 				1EEFC2AC2B58412300B8A934 /* SmileIDLocalizableStrings.swift */,
 				1EEFC2AD2B58412300B8A934 /* ImageExtensions.swift */,
 				1EEFC2AE2B58412300B8A934 /* StringConstants.swift */,
@@ -7437,17 +7360,6 @@
 			path = DependencyContainer;
 			sourceTree = "<group>";
 		};
-		6688567F2D5F8B6500A2F6F7 /* v2 */ = {
-			isa = PBXGroup;
-			children = (
-				6688567B2D5F8B6500A2F6F7 /* JobTypeV2.swift */,
-				6688567C2D5F8B6500A2F6F7 /* Metadata.swift */,
-				6688567D2D5F8B6500A2F6F7 /* SmartSelfieResponse.swift */,
-				6688567E2D5F8B6500A2F6F7 /* SmartSelfieStatus.swift */,
-			);
-			path = v2;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -7469,7 +7381,6 @@
 				1EEFC2162B583CFB00B8A934 /* Sources */,
 				1EEFC2172B583CFB00B8A934 /* Frameworks */,
 				1EEFC2182B583CFB00B8A934 /* Resources */,
-				6676421E2D54CC3700C390CC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -7511,7 +7422,6 @@
 				1EEFC2342B583F1A00B8A934 /* Sources */,
 				1EEFC2352B583F1A00B8A934 /* Frameworks */,
 				1EEFC2362B583F1A00B8A934 /* CopyFiles */,
-				6676421B2D54CC2F00C390CC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -7549,7 +7459,6 @@
 					};
 					1EEFC39D2B5847B200B8A934 = {
 						CreatedOnToolsVersion = 15.2;
-						LastSwiftMigration = 1600;
 					};
 				};
 			};
@@ -7634,7 +7543,6 @@
 			files = (
 				E0E6A20F24CD200305235527 /* BiometricKycResultDelegate.swift in Sources */,
 				7ABA22131B7EBA9CA6BBDFE7 /* OrchestratedBiometricKycScreen.swift in Sources */,
-				667642462D5B9F5600C390CC /* DateUtils.swift in Sources */,
 				8E0351CA99B87C4C18E35F6F /* OrchestratedBiometricKycViewModel.swift in Sources */,
 				A0FC3AAF575F1283B81D4F40 /* CameraError.swift in Sources */,
 				2DB3A68927F98FCC7941A3FA /* CameraManager.swift in Sources */,
@@ -7647,8 +7555,6 @@
 				2D11A1D6EC0F8756E0903EC4 /* Injected.swift in Sources */,
 				DF76F5C8A19FE5A1751C8D08 /* DocumentVerificationResultDelegate.swift in Sources */,
 				CC2721CCCA708893D0602928 /* EnhancedDocumentVerificationResultDelegate.swift in Sources */,
-				668856902D5F9F0700A2F6F7 /* SelfieViewModel.swift in Sources */,
-				668856912D5F9F0700A2F6F7 /* EnhancedSmartSelfieViewModel.swift in Sources */,
 				C721AAF116656CDA77E692B1 /* DocumentCaptureResultStore.swift in Sources */,
 				19D6DC18F20A726676DCCAB2 /* DocumentCaptureViewModel.swift in Sources */,
 				9A0B300E3DF098D1D3A68FF8 /* OrchestratedDocumentVerificationViewModel.swift in Sources */,
@@ -7683,15 +7589,12 @@
 				7F16199B30AF836AA2D58D63 /* BVN.swift in Sources */,
 				6FE73F2EE857B8A2B8170FA8 /* Config.swift in Sources */,
 				1D362B3D865C3FC97D299903 /* EnhancedKyc.swift in Sources */,
-				667642492D5BB19E00C390CC /* SecurityInfo.swift in Sources */,
 				01BBF8AD01B2FB92FA0044C3 /* JobStatus.swift in Sources */,
 				3CAC08438A38CC8BC97B9E15 /* JobType.swift in Sources */,
 				419A8DEA5635C5EC6CD3DCB0 /* MultipartBody.swift in Sources */,
 				29B5B0EAD4FD3E6607810FCA /* PartnerParams.swift in Sources */,
 				4A4518EB0C6D15BAFF7AB557 /* PrepUpload.swift in Sources */,
 				0260F7A92B93613932BBEE6A /* Services.swift in Sources */,
-				668856942D5FB9D600A2F6F7 /* OrchestratedEnhancedSelfieCaptureScreen.swift in Sources */,
-				668856952D5FB9D600A2F6F7 /* OrchestratedSelfieCaptureScreen.swift in Sources */,
 				8D4EFCDEC9E566D709B279E5 /* UploadRequest.swift in Sources */,
 				DFA575B433A324F6D5A209FC /* ValidDocuments.swift in Sources */,
 				F34FD9DFCE9C373AFAC55110 /* JobTypeV2.swift in Sources */,
@@ -7703,12 +7606,6 @@
 				962CCD3973B525E088B5AFD2 /* RestServiceClient.swift in Sources */,
 				B7BAFE8AAE3A4803164551D0 /* ServiceHeaderProvider.swift in Sources */,
 				64BE0DC90E1AEBCC99AABF17 /* ServiceRunnable.swift in Sources */,
-				668856862D5F8B6500A2F6F7 /* SmartSelfieResponse.swift in Sources */,
-				668856872D5F8B6500A2F6F7 /* JobTypeV2.swift in Sources */,
-				668856882D5F8B6500A2F6F7 /* SmartSelfieStatus.swift in Sources */,
-				668856892D5F8B6500A2F6F7 /* Metadata.swift in Sources */,
-				6688568A2D5F8B6500A2F6F7 /* MultipartBody.swift in Sources */,
-				6688568B2D5F8B6500A2F6F7 /* FailureReason.swift in Sources */,
 				18EC3AA76E28ECE694696088 /* SmileIDService.swift in Sources */,
 				857077473C7BFC1EBD4115F8 /* URLSessionPublisher.swift in Sources */,
 				C61A7BEE6D38DF98DF1D1E60 /* URLSessionRestServiceClient.swift in Sources */,
@@ -7787,15 +7684,12 @@
 				EEC95378F8E107D20C2A9F4C /* ImagePicker.swift in Sources */,
 				50458B176E93DDF429488A4D /* OrchestratedDocumentVerificationScreen.swift in Sources */,
 				425DAF2FD60FCAF3677C95E5 /* FaceDetectionState.swift in Sources */,
-				667642472D5B9F5600C390CC /* DateUtils.swift in Sources */,
 				D7ED3E58431D50EA2355EB90 /* FaceDetector.swift in Sources */,
 				311379322CB6042144E058A0 /* FaceGeometryModel.swift in Sources */,
 				36BD1087BDB26409BC975A13 /* AlertState.swift in Sources */,
 				08F0473485D4099AB8D53F34 /* Colors.swift in Sources */,
 				C22BB831256970BF274CE534 /* EnvironmentValues.swift in Sources */,
 				D9130EAA521A885312FCDB50 /* EpilogueFont.swift in Sources */,
-				668856962D5FB9D600A2F6F7 /* OrchestratedEnhancedSelfieCaptureScreen.swift in Sources */,
-				668856972D5FB9D600A2F6F7 /* OrchestratedSelfieCaptureScreen.swift in Sources */,
 				4402DBB4D9584B350C3501AF /* FontType.swift in Sources */,
 				AC3B3E295E681B5031F519D8 /* ImageExtensions.swift in Sources */,
 				EB24511DFDCDAD3C4C79D284 /* ImageUtils.swift in Sources */,
@@ -7824,14 +7718,7 @@
 				A0CC50C9E886733371333C0D /* ValidDocuments.swift in Sources */,
 				A0B5AA043E1A401FFC7B1EB1 /* JobTypeV2.swift in Sources */,
 				8C08C28AD07CEC5B4B022CD4 /* Metadata.swift in Sources */,
-				6676424A2D5BB19E00C390CC /* SecurityInfo.swift in Sources */,
 				1D1A43025D8E4FF6F0D166E8 /* SmartSelfieResponse.swift in Sources */,
-				668856802D5F8B6500A2F6F7 /* SmartSelfieResponse.swift in Sources */,
-				668856812D5F8B6500A2F6F7 /* JobTypeV2.swift in Sources */,
-				668856822D5F8B6500A2F6F7 /* SmartSelfieStatus.swift in Sources */,
-				668856832D5F8B6500A2F6F7 /* Metadata.swift in Sources */,
-				668856842D5F8B6500A2F6F7 /* MultipartBody.swift in Sources */,
-				668856852D5F8B6500A2F6F7 /* FailureReason.swift in Sources */,
 				56F6F80A6892BB9CE9F50CD5 /* SmartSelfieStatus.swift in Sources */,
 				1B3DCA1261CE3DA7CDB12063 /* NetworkUtil.swift in Sources */,
 				2F670BE4F07D000919D47496 /* RestRequest.swift in Sources */,
@@ -7862,8 +7749,6 @@
 				69B532C51C917B39252CA192 /* Util.swift in Sources */,
 				4F7D4FE42DF6806461E82536 /* ActivityIndicator.swift in Sources */,
 				49F46F43831055A6FCA86827 /* AspectRatioRoundedRectangle.swift in Sources */,
-				6688568E2D5F9F0700A2F6F7 /* SelfieViewModel.swift in Sources */,
-				6688568F2D5F9F0700A2F6F7 /* EnhancedSmartSelfieViewModel.swift in Sources */,
 				01751FFAA6774CDFCF6D4919 /* ImageCaptureConfirmationDialog.swift in Sources */,
 				0383B991F23AFFAA99249631 /* JobSubmittable.swift in Sources */,
 				6B28AC2876E0C0F8ED77F6FC /* ProcessingScreen.swift in Sources */,
@@ -8150,15 +8035,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = "";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -8166,13 +8048,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
