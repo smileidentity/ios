@@ -60,8 +60,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     @Published private(set) var faceInBounds: Bool = false
     @Published private(set) var selfieCaptured: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
-    @Published private(set) var selfieCaptureState: SelfieCaptureState =
-        .capturingSelfie
 
     // MARK: Injected Properties
 
@@ -259,7 +257,6 @@ extension EnhancedSmartSelfieViewModel {
     private func resetSelfieCaptureState() {
         selfieImage = nil
         livenessImages = []
-        selfieCaptureState = .capturingSelfie
         failureReason = nil
     }
 
@@ -283,12 +280,10 @@ extension EnhancedSmartSelfieViewModel {
                     pixelBuffer,
                     height: config.selfieImageSize,
                     orientation: .up
-                ),
-                let uiImage = UIImage(data: imageData)
+                )
             else {
                 throw SmileIDError.unknown("Error resizing selfie image")
             }
-            selfieImage = flipImageForPreview(uiImage)
             // we use a userId and not a jobId here
             selfieImageURL = try LocalStorage.createSelfieFile(
                 jobId: userId, selfieFile: imageData
@@ -296,41 +291,6 @@ extension EnhancedSmartSelfieViewModel {
         } catch {
             handleError(error)
         }
-    }
-
-    private func flipImageForPreview(_ image: UIImage) -> UIImage? {
-        guard let cgImage = image.cgImage else { return nil }
-
-        let contextSize = CGSize(
-            width: image.size.width, height: image.size.height
-        )
-        UIGraphicsBeginImageContextWithOptions(contextSize, false, 1.0)
-        defer {
-            UIGraphicsEndImageContext()
-        }
-        guard let context = UIGraphicsGetCurrentContext() else {
-            return nil
-        }
-
-        // Apply a 180° counterclockwise rotation
-        // Translate the context to the center before rotating
-        // to ensure the image rotates around its center
-        context.translateBy(x: contextSize.width / 2, y: contextSize.height / 2)
-        context.rotate(by: -.pi)
-
-        // Draw the image
-        context.draw(
-            cgImage,
-            in: CGRect(
-                x: -image.size.width / 2, y: -image.size.height / 2,
-                width: image.size.width, height: image.size.height
-            )
-        )
-
-        // Get the new UIImage from the context
-        let correctedImage = UIGraphicsGetImageFromCurrentImageContext()
-
-        return correctedImage
     }
 
     private func captureLivenessImage(_ pixelBuffer: CVPixelBuffer) {
@@ -477,7 +437,8 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
                 with: SelfieCaptureResult(
                     selfieImage: selfiePath,
                     livenessImages: livenessImagesPaths
-                )
+                ),
+                failureReason: self.failureReason
             )
     }
 }

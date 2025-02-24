@@ -43,7 +43,6 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     .transition(.move(edge: .leading))
                 } else {
                     SelfieCaptureScreen(
-                        isEnroll: config.isEnroll,
                         jobId: config.jobId,
                         delegate: viewModel
                     )

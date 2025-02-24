@@ -39,13 +39,28 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
                 )
                 .transition(.move(edge: .leading))
             } else {
-                EnhancedSelfieCaptureScreen(
-                    userId: config.userId,
-                    showAttribution: config.showAttribution,
-                    delegate: viewModel,
-                    didTapCancel: {},
-                    didTapRetry: {}
-                )
+                ZStack {
+                    if let processingState = viewModel.processingState {
+                        EnhancedSelfieCaptureStatusView(
+                            processingState: processingState,
+                            errorMessage: processingState == .error ? getErrorSubtitle(
+                                errorMessageRes: viewModel.errorMessageRes,
+                                errorMessage: viewModel.errorMessage
+                            ) : nil,
+                            selfieImage: viewModel.selfieImage,
+                            showAttribution: config.showAttribution,
+                            didTapCancel: { viewModel.handleCancelSelfieCapture() },
+                            didTapRetry: { viewModel.handleRetry() }
+                        )
+                    } else {
+                        EnhancedSelfieCaptureScreen(
+                            userId: config.userId,
+                            showAttribution: config.showAttribution,
+                            delegate: viewModel,
+                            didTapCancel: { viewModel.handleCancelSelfieCapture() }
+                        )
+                    }
+                }
                 .transition(.move(edge: .trailing))
             }
         }

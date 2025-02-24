@@ -364,7 +364,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 with: SelfieCaptureResult(
                     selfieImage: selfieImage,
                     livenessImages: livenessImages
-                )
+                ),
+                failureReason: nil
             )
     }
 

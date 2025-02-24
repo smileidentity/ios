@@ -8,7 +8,7 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
     weak var delegate: SmartSelfieResultDelegate?
 
     // MARK: Private Properties
-    private var selfieImage: URL?
+    private var selfieImageURL: URL?
     private var livenessImages: [URL] = []
     private var apiResponse: SmartSelfieResponse?
     private var error: Error?
@@ -16,7 +16,8 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
     private var failureReason: FailureReason?
 
     // MARK: UI Properties
-    @Published private(set) var processingState: ProcessingState
+    var selfieImage: UIImage?
+    @Published private(set) var processingState: ProcessingState?
     @Published public var errorMessageRes: String?
     @Published public var errorMessage: String?
 
@@ -31,22 +32,72 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
     deinit {
         invalidateSubmissionTask()
     }
+    
+    func invalidateSubmissionTask() {
+        submissionTask?.cancel()
+        submissionTask = nil
+    }
 
     func configure(delegate: SmartSelfieResultDelegate) {
         self.delegate = delegate
     }
+    
+    private func flipImageForPreview(_ image: UIImage) -> UIImage? {
+        guard let cgImage = image.cgImage else { return nil }
+
+        let contextSize = CGSize(
+            width: image.size.width, height: image.size.height
+        )
+        UIGraphicsBeginImageContextWithOptions(contextSize, false, 1.0)
+        defer {
+            UIGraphicsEndImageContext()
+        }
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+
+        // Apply a 180° counterclockwise rotation
+        // Translate the context to the center before rotating
+        // to ensure the image rotates around its center
+        context.translateBy(x: contextSize.width / 2, y: contextSize.height / 2)
+        context.rotate(by: -.pi)
+
+        // Draw the image
+        context.draw(
+            cgImage,
+            in: CGRect(
+                x: -image.size.width / 2, y: -image.size.height / 2,
+                width: image.size.width, height: image.size.height
+            )
+        )
+
+        // Get the new UIImage from the context
+        let correctedImage = UIGraphicsGetImageFromCurrentImageContext()
+
+        return correctedImage
+    }
 
     private func handleSubmission() {
+        guard let selfieImageURL, !livenessImages.isEmpty else {
+            delegate?.didError(error: SmileIDError.selfieCaptureFailed)
+            return
+        }
+        guard submissionTask == nil else { return }
+
         DispatchQueue.main.async {
             self.processingState = .inProgress
         }
-        guard submissionTask == nil else { return }
         submissionTask = Task {
-            try await submitJob()
+            try await submitJob(
+                with: SelfieCaptureResult(
+                    selfieImage: selfieImageURL,
+                    livenessImages: livenessImages
+                )
+            )
         }
     }
 
-    private func handleCancelSelfieCapture() {
+    func handleCancelSelfieCapture() {
         invalidateSubmissionTask()
         if let error {
             delegate?.didError(error: error)
@@ -54,35 +105,65 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
             delegate?.didError(error: SmileIDError.operationCanceled("User cancelled"))
         }
     }
+    
+    func handleRetry() {
+        handleSubmission()
+    }
+    
+    public func onFinished() {
+        if let selfieImageURL = selfieImageURL,
+           let selfiePath = getRelativePath(from: selfieImageURL),
+           livenessImages.count == captureConfig.numLivenessImages,
+           !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
+           ) {
+            let livenessImagesPaths = livenessImages.compactMap {
+                getRelativePath(from: $0)
+            }
+
+            self.delegate?.didSucceed(
+                selfieImage: selfiePath,
+                livenessImages: livenessImagesPaths,
+                apiResponse: apiResponse
+            )
+        } else if let error = error {
+            self.delegate?.didError(error: error)
+        }
+    }
 }
 
 extension OrchestratedEnhancedSelfieCaptureViewModel: SelfieCaptureDelegate {
     func didFinish(with result: SelfieCaptureResult, failureReason: FailureReason?) {
+        self.selfieImageURL = result.selfieImage
+        self.livenessImages = result.livenessImages
+        self.setPreviewSelfieImage(from: result.selfieImage)
         self.failureReason = failureReason
         handleSubmission()
     }
-    
+
     func didFinish(with error: any Error) {
+        self.error = error
         onFinished()
     }
     
-    
+    private func setPreviewSelfieImage(from imageURL: URL) {
+        if let fileURL = try? LocalStorage.defaultDirectory.appendingPathComponent(imageURL.relativePath),
+            let imageData = try? Data(contentsOf: fileURL),
+            let uiImage = UIImage(data: imageData) {
+            self.selfieImage = flipImageForPreview(uiImage)
+        }
+    }
 }
 
 // MARK: Selfie Job Submission
 
 extension OrchestratedEnhancedSelfieCaptureViewModel: SelfieSubmissionDelegate {
-    public func submitJob() async throws {
+    public func submitJob(with selfieCaptureResult: SelfieCaptureResult) async throws {
 
         // Create an instance of SelfieSubmissionManager to manage the submission process
         let submissionManager = SelfieSubmissionManager(
-            userId: userId,
-            isEnroll: isEnroll,
-            numLivenessImages: numLivenessImages,
-            allowNewEnroll: allowNewEnroll,
-            selfieImageUrl: selfieImageURL,
-            livenessImages: livenessImages,
-            extraPartnerParams: extraPartnerParams,
+            config: config,
+            captureConfig: captureConfig,
+            captureResult: selfieCaptureResult,
             localMetadata: localMetadata
         )
         submissionManager.delegate = self
@@ -96,26 +177,6 @@ extension OrchestratedEnhancedSelfieCaptureViewModel: SelfieSubmissionDelegate {
             Metadatum.ActiveLivenessType.self)
     }
 
-    public func onFinished() {
-        if let selfieImageURL = selfieImageURL,
-           let selfiePath = getRelativePath(from: selfieImageURL),
-           livenessImages.count == numLivenessImages,
-           !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-           ) {
-            let livenessImagesPaths = livenessImages.compactMap {
-                getRelativePath(from: $0)
-            }
-
-            callback.didSucceed(
-                selfieImage: selfiePath,
-                livenessImages: livenessImagesPaths,
-                apiResponse: apiResponse
-            )
-        } else if let error = error {
-            callback.didError(error: error)
-        }
-    }
-
     // MARK: SelfieJobSubmissionDelegate Methods
 
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
@@ -123,11 +184,11 @@ extension OrchestratedEnhancedSelfieCaptureViewModel: SelfieSubmissionDelegate {
         HapticManager.shared.notification(type: .success)
         DispatchQueue.main.async {
             self.apiResponse = apiResponse
-            self.selfieCaptureState = .processing(.success)
+            self.processingState = .success
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.onFinished(callback: self.onResult)
+            self.onFinished()
         }
     }
 
@@ -144,14 +205,9 @@ extension OrchestratedEnhancedSelfieCaptureViewModel: SelfieSubmissionDelegate {
             self.error = error
             self.errorMessage = errorMessage
             self.errorMessageRes = errorMessageRes
-            self.selfieCaptureState = .processing(.error)
+            self.processingState = .error
             self.selfieImageURL = updatedSelfieImageUrl
             self.livenessImages = updatedLivenessImages
         }
-    }
-
-    func invalidateSubmissionTask() {
-        submissionTask?.cancel()
-        submissionTask = nil
     }
 }

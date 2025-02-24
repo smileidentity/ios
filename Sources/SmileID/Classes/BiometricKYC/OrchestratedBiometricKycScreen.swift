@@ -88,13 +88,15 @@ struct OrchestratedBiometricKycScreen: View {
         Group {
             if useStrictMode {
                 OrchestratedEnhancedSelfieCaptureScreen(
-                    userId: userId,
-                    isEnroll: false,
-                    allowNewEnroll: allowNewEnroll,
-                    showAttribution: showAttribution,
-                    showInstructions: showInstructions,
-                    skipApiSubmission: true,
-                    extraPartnerParams: extraPartnerParams,
+                    config: OrchestratedSelfieCaptureConfig(
+                        userId: userId,
+                        isEnroll: false,
+                        allowNewEnroll: allowNewEnroll,
+                        showAttribution: showAttribution,
+                        showInstructions: showInstructions,
+                        extraPartnerParams: extraPartnerParams,
+                        skipApiSubmission: true
+                    ),
                     onResult: viewModel
                 )
             } else {

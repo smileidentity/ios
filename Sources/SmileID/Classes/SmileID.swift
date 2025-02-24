@@ -282,22 +282,9 @@ public class SmileID {
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
     ///
     /// - Parameters:
-    ///   - userId: The user ID to associate with the SmartSelfie™ Enrollment. Most often, this will
-    ///     correspond to a unique User ID within your own system. If not provided, a random user ID
-    ///     will be generated.
-    ///   - jobId: The job ID to associate with the SmartSelfie™ Enrollment. Most often, this will
-    ///     correspond to a unique Job ID within your own system. If not provided, a random job ID
-    ///     will be generated.
-    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
-    ///   - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
-    ///     displayed allowing toggling between the back camera and front camera. If not allowed,
-    ///     only the front camera will be used.
-    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
-    ///     screen
-    ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
-    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
-    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - config: configuration options for customising selfie capture experience.
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
+    ///   - onDismiss: Closure to provide custom implementation when enrollment screen is dismissed
     @ViewBuilder public class func smartSelfieEnrollmentScreen(
         config: OrchestratedSelfieCaptureConfig,
         delegate: SmartSelfieResultDelegate,
@@ -315,31 +302,16 @@ public class SmileID {
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
     ///
     /// - Parameters:
-    ///   - userId: The user ID to associate with the SmartSelfie™ Enrollment. Most often, this will
-    ///     correspond to a unique User ID within your own system. If not provided, a random user ID
-    ///     will be generated.
-    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
-    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
-    ///     screen
-    ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
-    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - config: configuration options for customising selfie capture experience.
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
+    ///   - onDismiss: Closure to provide custom implementation when enrollment screen is dismissed
     @ViewBuilder public class func smartSelfieEnrollmentScreenEnhanced(
-        userId: String = generateUserId(),
-        allowNewEnroll: Bool = false,
-        showAttribution: Bool = true,
-        showInstructions: Bool = true,
-        extraPartnerParams: [String: String] = [:],
+        config: OrchestratedSelfieCaptureConfig,
         delegate: SmartSelfieResultDelegate,
         onDismiss: @escaping () -> Void
     ) -> some View {
         OrchestratedEnhancedSelfieCaptureScreen(
-            userId: userId,
-            isEnroll: true,
-            allowNewEnroll: allowNewEnroll,
-            showAttribution: showAttribution,
-            showInstructions: showInstructions,
-            extraPartnerParams: extraPartnerParams,
+            config: config,
             onResult: delegate,
             onDismiss: onDismiss
         )
@@ -352,6 +324,7 @@ public class SmileID {
     /// - Parameters:
     ///   - config: configuration options for customising selfie capture experience.
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
+    ///   - onDismiss: Closure to provide custom implementation when authentication screen is dismissed
     @ViewBuilder public class func smartSelfieAuthenticationScreen(
         config: OrchestratedSelfieCaptureConfig,
         delegate: SmartSelfieResultDelegate,
@@ -369,31 +342,16 @@ public class SmileID {
     /// Docs: https://docs.usesmileid.com/products/for-individuals-kyc/biometric-authentication
     ///
     /// - Parameters:
-    ///   - userId: The user ID to associate with the SmartSelfie™ Enrollment. Most often, this will
-    ///     correspond to a unique User ID within your own system. If not provided, a random user ID
-    ///     will be generated.
-    ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
-    ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
-    ///     screen
-    ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
-    ///   - extraPartnerParams: Custom values specific to partners
+    ///   - config: configuration options for customising selfie capture experience.
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
+    ///   - onDismiss: Closure to provide custom implementation when authentication screen is dismissed
     @ViewBuilder public class func smartSelfieAuthenticationScreenEnhanced(
-        userId: String,
-        allowNewEnroll: Bool = false,
-        showAttribution: Bool = true,
-        showInstructions: Bool = true,
-        extraPartnerParams: [String: String] = [:],
+        config: OrchestratedSelfieCaptureConfig,
         delegate: SmartSelfieResultDelegate,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         OrchestratedEnhancedSelfieCaptureScreen(
-            userId: userId,
-            isEnroll: false,
-            allowNewEnroll: allowNewEnroll,
-            showAttribution: showAttribution,
-            showInstructions: showInstructions,
-            extraPartnerParams: extraPartnerParams,
+            config: config,
             onResult: delegate,
             onDismiss: onDismiss
         )

@@ -102,13 +102,15 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         ZStack {
             if config.useStrictMode {
                 OrchestratedEnhancedSelfieCaptureScreen(
-                    userId: config.userId,
-                    isEnroll: false,
-                    allowNewEnroll: config.allowNewEnroll,
-                    showAttribution: config.showAttribution,
-                    showInstructions: config.showInstructions,
-                    skipApiSubmission: true,
-                    extraPartnerParams: config.extraPartnerParams,
+                    config: OrchestratedSelfieCaptureConfig(
+                        userId: config.userId,
+                        isEnroll: false,
+                        allowNewEnroll: config.allowNewEnroll,
+                        showAttribution: config.showAttribution,
+                        showInstructions: config.showInstructions,
+                        extraPartnerParams: config.extraPartnerParams,
+                        skipApiSubmission: true
+                    ),
                     onResult: viewModel
                 )
             } else {
@@ -122,7 +124,6 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     .transition(.move(edge: .leading))
                 } else {
                     SelfieCaptureScreen(
-                        isEnroll: false,
                         jobId: config.jobId,
                         delegate: viewModel
                     )

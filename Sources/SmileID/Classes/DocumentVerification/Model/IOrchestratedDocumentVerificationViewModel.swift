@@ -311,7 +311,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 }
 
 extension IOrchestratedDocumentVerificationViewModel: SelfieCaptureDelegate {
-    func didFinish(with result: SelfieCaptureResult) {
+    func didFinish(with result: SelfieCaptureResult, failureReason: FailureReason?) {
         submitJob()
     }
 
