@@ -9,13 +9,11 @@ public struct SelfieCaptureScreen: View {
     private var originalBrightness = UIScreen.main.brightness
 
     public init(
-        isEnroll: Bool = false,
         jobId: String,
         delegate: SelfieCaptureDelegate? = nil
     ) {
         self._viewModel = Backport.StateObject(
             wrappedValue: SelfieViewModel(
-                isEnroll: isEnroll,
                 jobId: jobId
             )
         )

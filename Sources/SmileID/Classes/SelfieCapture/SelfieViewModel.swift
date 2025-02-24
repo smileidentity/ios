@@ -2,20 +2,19 @@ import ARKit
 import Combine
 import Foundation
 
-public protocol SelfieCaptureDelegate {
-    func didFinish(with result: SelfieCaptureResult)
+public protocol SelfieCaptureDelegate: AnyObject {
+    func didFinish(with result: SelfieCaptureResult, failureReason: FailureReason?)
     func didFinish(with error: Error)
 }
 
 public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let config = SelfieCaptureConfig.defaultConfiguration
 
-    private let isEnroll: Bool
     private let jobId: String
     let allowAgentMode: Bool
     private var localMetadata: LocalMetadata
     private let faceDetector = FaceDetector()
-    private var resultDelegate: SelfieCaptureDelegate?
+    private weak var resultDelegate: SelfieCaptureDelegate?
 
     var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
@@ -54,12 +53,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     public init(
-        isEnroll: Bool,
         jobId: String,
         allowAgentMode: Bool = false,
         localMetadata: LocalMetadata = LocalMetadata()
     ) {
-        self.isEnroll = isEnroll
         self.jobId = jobId
         self.allowAgentMode = allowAgentMode
         self.localMetadata = localMetadata

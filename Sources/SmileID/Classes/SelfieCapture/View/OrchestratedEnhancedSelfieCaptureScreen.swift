@@ -4,50 +4,49 @@ import SwiftUI
 /// Orchestrates the selfie capture flow - navigates between instructions, requesting permissions,
 /// showing camera view, and displaying processing screen
 public struct OrchestratedEnhancedSelfieCaptureScreen: View {
-    public let showAttribution: Bool
-    public let showInstructions: Bool
+    private let viewModel: OrchestratedEnhancedSelfieCaptureViewModel
+
+    private let config: OrchestratedSelfieCaptureConfig
     public let onResult: SmartSelfieResultDelegate
-    private let viewModel: EnhancedSmartSelfieViewModel
     private var onDismiss: (() -> Void)?
 
+    @State private var showInstructions: Bool
+
     public init(
-        userId: String,
-        isEnroll: Bool,
-        allowNewEnroll: Bool,
-        showAttribution: Bool,
-        showInstructions: Bool,
-        skipApiSubmission: Bool = false,
-        extraPartnerParams: [String: String],
+        config: OrchestratedSelfieCaptureConfig,
         onResult: SmartSelfieResultDelegate,
         onDismiss: (() -> Void)? = nil
     ) {
-        self.showAttribution = showAttribution
-        self.showInstructions = showInstructions
+        self.config = config
+        self._showInstructions = State(initialValue: config.showInstructions)
         self.onResult = onResult
-        viewModel = EnhancedSmartSelfieViewModel(
-            isEnroll: isEnroll,
-            userId: userId,
-            allowNewEnroll: allowNewEnroll,
-            skipApiSubmission: skipApiSubmission,
-            extraPartnerParams: extraPartnerParams,
-            onResult: onResult,
+        self.onDismiss = onDismiss
+        viewModel = OrchestratedEnhancedSelfieCaptureViewModel(
+            config: config,
             localMetadata: LocalMetadata()
         )
-        self.onDismiss = onDismiss
+        viewModel.configure(delegate: onResult)
     }
 
     public var body: some View {
         NavigationView {
             if showInstructions {
                 LivenessCaptureInstructionsView(
-                    showAttribution: showAttribution,
-                    viewModel: viewModel
+                    showAttribution: config.showAttribution,
+                    didTapGetStarted: {
+                        showInstructions = false
+                    }
                 )
+                .transition(.move(edge: .leading))
             } else {
                 EnhancedSelfieCaptureScreen(
-                    viewModel: viewModel,
-                    showAttribution: showAttribution
+                    userId: config.userId,
+                    showAttribution: config.showAttribution,
+                    delegate: viewModel,
+                    didTapCancel: {},
+                    didTapRetry: {}
                 )
+                .transition(.move(edge: .trailing))
             }
         }
     }

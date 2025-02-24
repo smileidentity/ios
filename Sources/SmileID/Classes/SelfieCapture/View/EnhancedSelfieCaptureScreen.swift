@@ -7,13 +7,24 @@ public struct EnhancedSelfieCaptureScreen: View {
     private let faceShape = FaceShape()
     private(set) var originalBrightness = UIScreen.main.brightness
     private let cameraContainerHeight: CGFloat = 480
+    private var didTapCancel: () -> Void
+    private var didTapRetry: () -> Void
 
     public init(
-        viewModel: EnhancedSmartSelfieViewModel,
-        showAttribution: Bool
+        userId: String,
+        showAttribution: Bool,
+        delegate: SelfieCaptureDelegate,
+        didTapCancel: @escaping () -> Void,
+        didTapRetry: @escaping () -> Void
     ) {
-        self._viewModel = Backport.StateObject(wrappedValue: viewModel)
+        self._viewModel = Backport.StateObject(
+            wrappedValue: EnhancedSmartSelfieViewModel(
+                userId: userId
+            )
+        )
         self.showAttribution = showAttribution
+        self.didTapCancel = didTapCancel
+        self.didTapRetry = didTapRetry
     }
 
     public var body: some View {
@@ -102,10 +113,8 @@ public struct EnhancedSelfieCaptureScreen: View {
                 Spacer()
                 SelfieActionsView(
                     captureState: viewModel.selfieCaptureState,
-                    retryAction: { viewModel.perform(action: .retryJobSubmission) },
-                    cancelAction: {
-                        viewModel.perform(action: .cancelSelfieCapture)
-                    }
+                    retryAction: { didTapRetry() },
+                    cancelAction: { didTapCancel() }
                 )
             }
             .padding(.vertical, 20)
