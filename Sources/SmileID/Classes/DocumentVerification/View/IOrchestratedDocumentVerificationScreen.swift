@@ -33,7 +33,8 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Front.Callout"
                 ),
-                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureFront"),
+                captureTitleText: SmileIDResourcesHelper.localizedString(
+                    for: "Action.CaptureFront"),
                 knownIdAspectRatio: config.idAspectRatio,
                 onConfirm: viewModel.onFrontDocumentImageConfirmed,
                 onError: viewModel.onError
