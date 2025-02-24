@@ -34,7 +34,7 @@ class HomeViewModel: ObservableObject,
     ) {
         self.dataStoreClient = dataStoreClient
         partnerId = config.partnerId
-        SmileID.initialize(config: config, useSandbox: true)
+        SmileID.initialize(config: config, useSandbox: false)
         SentrySDK.configureScope { scope in
             scope.setTag(value: "partner_id", key: self.partnerId)
             let user = User()
