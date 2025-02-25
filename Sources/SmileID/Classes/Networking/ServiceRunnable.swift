@@ -173,7 +173,7 @@ extension ServiceRunnable {
             baseURL.removeSubrange(range)
         }
 
-        guard var url = URL(string: baseURL)?.appendingPathComponent(path) else {
+        guard let url = URL(string: baseURL)?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
 
@@ -228,7 +228,7 @@ extension ServiceRunnable {
         body: T
     ) async throws -> RestRequest {
         let path = String(describing: path)
-        guard var url = baseURL?.appendingPathComponent(path) else {
+        guard let url = baseURL?.appendingPathComponent(path) else {
             throw URLError(.badURL)
         }
 
