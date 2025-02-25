@@ -31,11 +31,10 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     )
     private var elapsedGuideAnimationDelay: TimeInterval = 0
     private var currentFrameBuffer: CVPixelBuffer?
-    var selfieImage: UIImage?
     private var selfieImageURL: URL? {
         didSet {
             DispatchQueue.main.async {
-                self.selfieCaptured = self.selfieImage != nil
+                self.selfieCaptured = self.selfieImageURL != nil
             }
         }
     }
@@ -44,12 +43,12 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var hasDetectedValidFace: Bool = false
     private var isCapturingLivenessImages = false
     private var shouldBeginLivenessChallenge: Bool {
-        hasDetectedValidFace && selfieImage != nil
+        hasDetectedValidFace && selfieImageURL != nil
             && livenessCheckManager.currentTask != nil
     }
 
     private var shouldSubmitJob: Bool {
-        selfieImage != nil && livenessImages.count == config.numLivenessImages
+        selfieImageURL != nil && livenessImages.count == config.numLivenessImages
     }
     private var failureReason: FailureReason?
 
@@ -175,7 +174,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
         currentFrameBuffer = imageBuffer
         faceDetector.processImageBuffer(imageBuffer)
-        if hasDetectedValidFace && selfieImage == nil {
+        if hasDetectedValidFace && selfieImageURL == nil {
             captureSelfieImage(imageBuffer)
             HapticManager.shared.notification(type: .success)
             livenessCheckManager.initiateLivenessCheck()
@@ -255,7 +254,7 @@ extension EnhancedSmartSelfieViewModel {
     }
 
     private func resetSelfieCaptureState() {
-        selfieImage = nil
+        selfieImageURL = nil
         livenessImages = []
         failureReason = nil
     }
@@ -347,9 +346,10 @@ extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
     }
 
     func faceDetector(
-        _: EnhancedFaceDetector, didFailWithError _: Error
+        _: EnhancedFaceDetector, didFailWithError error: Error
     ) {
         DispatchQueue.main.async {
+            print("Enhanced Face Detector Error:", error.localizedDescription)
             self.publishUserInstruction(.headInFrame)
         }
     }
@@ -360,6 +360,10 @@ extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
 extension EnhancedSmartSelfieViewModel: FaceValidatorDelegate {
     func updateValidationResult(_ result: FaceValidationResult) {
         DispatchQueue.main.async {
+            print("FaceValidator result:")
+            print(result.userInstruction?.instruction)
+            print(result.faceInBounds)
+            print(result.hasDetectedValidFace)
             self.faceInBounds = result.faceInBounds
             self.hasDetectedValidFace = result.hasDetectedValidFace
             self.publishUserInstruction(result.userInstruction)
@@ -414,6 +418,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 
         failureReason = .mobileActiveLivenessTimeout
         cameraManager.pauseSession()
+        onFinish()
     }
 
     func onFinish() {

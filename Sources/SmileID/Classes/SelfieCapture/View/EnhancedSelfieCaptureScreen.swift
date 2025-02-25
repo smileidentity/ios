@@ -23,6 +23,7 @@ public struct EnhancedSelfieCaptureScreen: View {
         )
         self.showAttribution = showAttribution
         self.didTapCancel = didTapCancel
+        self.viewModel.configure(delegate: delegate)
     }
 
     public var body: some View {

@@ -43,20 +43,23 @@ struct EnhancedSelfieCaptureStatusView: View {
 
             Spacer()
 
-            switch processingState {
-            case .inProgress:
-                cancelButton
-            case .success:
-                EmptyView()
-            case .error:
-                SmileButton(title: "Confirmation.Retry") {
-                    didTapRetry()
+            VStack {
+                switch processingState {
+                case .inProgress:
+                    cancelButton
+                case .success:
+                    EmptyView()
+                case .error:
+                    SmileButton(title: "Confirmation.Retry") {
+                        didTapRetry()
+                    }
+                    cancelButton
                 }
-                cancelButton
             }
+            .padding(.horizontal, 65)
         }
     }
-    
+
     var cancelButton: some View {
         Button {
             didTapCancel()

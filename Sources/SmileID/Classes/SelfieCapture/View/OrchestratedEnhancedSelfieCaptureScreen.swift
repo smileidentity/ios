@@ -4,7 +4,7 @@ import SwiftUI
 /// Orchestrates the selfie capture flow - navigates between instructions, requesting permissions,
 /// showing camera view, and displaying processing screen
 public struct OrchestratedEnhancedSelfieCaptureScreen: View {
-    private let viewModel: OrchestratedEnhancedSelfieCaptureViewModel
+    @Backport.StateObject private var viewModel: OrchestratedEnhancedSelfieCaptureViewModel
 
     private let config: OrchestratedSelfieCaptureConfig
     public let onResult: SmartSelfieResultDelegate
@@ -21,11 +21,11 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
         self._showInstructions = State(initialValue: config.showInstructions)
         self.onResult = onResult
         self.onDismiss = onDismiss
-        viewModel = OrchestratedEnhancedSelfieCaptureViewModel(
+        self._viewModel = Backport.StateObject(wrappedValue: OrchestratedEnhancedSelfieCaptureViewModel(
             config: config,
             localMetadata: LocalMetadata()
-        )
-        viewModel.configure(delegate: onResult)
+        ))
+        self.viewModel.configure(delegate: onResult)
     }
 
     public var body: some View {

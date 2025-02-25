@@ -32,7 +32,7 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
     deinit {
         invalidateSubmissionTask()
     }
-    
+
     func invalidateSubmissionTask() {
         submissionTask?.cancel()
         submissionTask = nil
@@ -41,7 +41,7 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
     func configure(delegate: SmartSelfieResultDelegate) {
         self.delegate = delegate
     }
-    
+
     private func flipImageForPreview(_ image: UIImage) -> UIImage? {
         guard let cgImage = image.cgImage else { return nil }
 
@@ -131,6 +131,7 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
     }
 }
 
+// MARK: Selfie Capture Delegate
 extension OrchestratedEnhancedSelfieCaptureViewModel: SelfieCaptureDelegate {
     func didFinish(with result: SelfieCaptureResult, failureReason: FailureReason?) {
         self.selfieImageURL = result.selfieImage
