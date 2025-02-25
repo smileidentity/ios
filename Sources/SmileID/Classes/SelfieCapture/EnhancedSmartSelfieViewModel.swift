@@ -545,8 +545,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
            let selfiePath = getRelativePath(from: selfieImageURL),
            livenessImages.count == numLivenessImages,
            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-           )
-        {
+           ) {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }
