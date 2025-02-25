@@ -179,9 +179,11 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     livenessImages: livenessFiles
                 )
                 allFiles.append(info)
-                if let securityInfoJson = try LocalStorage.addSecurityInfo(jobId: jobId, files: allFiles) {
-                    allFiles.append(contentsOf: [securityInfoJson])
-                }
+                do {
+                    if let securityInfoJson = try LocalStorage.addSecurityInfo(jobId: jobId, files: allFiles) {
+                        allFiles.append(contentsOf: [securityInfoJson])
+                    }
+                } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
                 let zipData = try LocalStorage.zipFiles(at: allFiles)
                 self.savedFiles = DocumentCaptureResultStore(
                     allFiles: allFiles,

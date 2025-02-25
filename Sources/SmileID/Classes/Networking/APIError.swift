@@ -13,7 +13,6 @@ public enum SmileIDError: Error {
     case fileNotFound(String)
     case invalidRequestBody
     case operationCanceled(String)
-    case missingHeader(String)
 
     static func isNetworkFailure(
         error: SmileIDError
@@ -50,8 +49,6 @@ extension SmileIDError: LocalizedError {
             return "Invalid request body. The request data is missing or empty."
         case let .operationCanceled(message):
             return message
-        case .missingHeader(let message):
-            return String(describing: message)
         }
     }
 }

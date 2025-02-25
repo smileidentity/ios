@@ -127,13 +127,15 @@ extension ServiceRunnable {
             failureReason: failureReason,
             metadata: metadata.items
         )
-        let payload = try encoder.encode(selfieRequest)
-        let requestMac = try SmileIDCryptoManager.shared.sign(
-            timestamp: timestamp,
-            headers: headers.toDictionary(),
-            payload: payload
-        )
-        headers.append(.requestMac(value: requestMac))
+        do {
+            let payload = try encoder.encode(selfieRequest)
+            let requestMac = try SmileIDCryptoManager.shared.sign(
+                timestamp: timestamp,
+                headers: headers.toDictionary(),
+                payload: payload
+            )
+            headers.append(.requestMac(value: requestMac))
+        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
 
         let request = try await createMultiPartRequest(
             url: path,
@@ -232,16 +234,18 @@ extension ServiceRunnable {
 
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-        let payload = try encoder.encode(body)
-        guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
-            throw SmileIDError.missingHeader("Header with name `SmileId-Request-Timestamp` not found.")
-        }
-        let requestMac = try SmileIDCryptoManager.shared.sign(
-            timestamp: header.value,
-            headers: headers.toDictionary(),
-            payload: payload
-        )
-        let signedHeaders = headers + [.requestMac(value: requestMac)]
+        var signedHeaders = headers
+        do {
+            let payload = try encoder.encode(body)
+            if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
+                let requestMac = try SmileIDCryptoManager.shared.sign(
+                    timestamp: header.value,
+                    headers: headers.toDictionary(),
+                    payload: payload
+                )
+                signedHeaders += [.requestMac(value: requestMac)]
+            }
+        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
 
         do {
             let request = try RestRequest(
@@ -268,14 +272,16 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
-        guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
-            throw SmileIDError.missingHeader("Header with name `SmileId-Request-Timestamp` not found.")
-        }
-        let requestMac = try SmileIDCryptoManager.shared.sign(
-            timestamp: header.value,
-            headers: headers.toDictionary()
-        )
-        let signedHeaders = headers + [.requestMac(value: requestMac)]
+        var signedHeaders = headers
+        do {
+            if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
+                let requestMac = try SmileIDCryptoManager.shared.sign(
+                    timestamp: header.value,
+                    headers: headers.toDictionary()
+                )
+                signedHeaders += [.requestMac(value: requestMac)]
+            }
+        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
 
         let request = RestRequest(
             url: url,
