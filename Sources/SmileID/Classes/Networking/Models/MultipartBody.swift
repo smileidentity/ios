@@ -13,7 +13,7 @@ public struct MultipartBody: Codable {
         self.filename = name
         self.mimeType = "image/jpeg"
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case data
         case filename = "name"

@@ -351,9 +351,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
-{
+class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
@@ -377,11 +375,7 @@ class OrchestratedDocumentVerificationViewModel:
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedEnhancedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<
-        EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
-    >
-{
+class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),

@@ -138,7 +138,7 @@ public class LocalStorage {
         jobId: String,
         files: [URL]
     ) throws -> URL? {
-        do{
+        do {
             let timestamp = Date().toISO8601WithMilliseconds()
             let mac = try SmileIDCryptoManager.shared.sign(
                 timestamp: timestamp,

@@ -118,7 +118,7 @@ extension ServiceRunnable {
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         let selfieRequest = SelfieRequest(
             selfieImage: selfieImage.data,
-            livenessImages: livenessImages.map{ $0.data },
+            livenessImages: livenessImages.map { $0.data },
             userId: userId,
             partnerParams: partnerParams,
             callbackUrl: callbackUrl?.nilIfEmpty(),

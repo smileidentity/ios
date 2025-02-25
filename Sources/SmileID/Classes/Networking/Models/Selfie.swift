@@ -3,12 +3,12 @@ import Foundation
 public struct SelfieRequest: Codable {
     public var selfieImage: Data
     public var livenessImages: [Data]
-    public var userId: String? = nil
-    public var partnerParams: [String: String]? = nil
-    public var callbackUrl: String? = nil
-    public var sandboxResult: Int? = nil
-    public var allowNewEnroll: Bool? = nil
-    public var failureReason: FailureReason? = nil
+    public var userId: String?
+    public var partnerParams: [String: String]?
+    public var callbackUrl: String?
+    public var sandboxResult: Int?
+    public var allowNewEnroll: Bool?
+    public var failureReason: FailureReason?
     public var metadata: [Metadatum]
 
     public init(
