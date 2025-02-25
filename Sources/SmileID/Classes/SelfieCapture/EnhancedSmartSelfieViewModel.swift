@@ -5,7 +5,7 @@ import SwiftUI
 
 public class EnhancedSmartSelfieViewModel: ObservableObject {
     private let config = SelfieCaptureConfig.enhancedConfiguration
-    
+
     // MARK: Dependencies
 
     private let motionManager = CMMotionManager()
@@ -94,7 +94,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         stopGuideAnimationDelayTimer()
         motionManager.stopDeviceMotionUpdates()
     }
-    
+
     func configure(delegate: SelfieCaptureDelegate) {
         self.resultDelegate = delegate
     }
@@ -205,7 +205,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             resetGuideAnimationDelayTimer()
         }
     }
-    
+
     private func addSelfieCaptureMetaData() {
         localMetadata.addMetadata(
             Metadatum.SelfieCaptureDuration(
@@ -415,7 +415,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
         failureReason = .mobileActiveLivenessTimeout
         cameraManager.pauseSession()
     }
-    
+
     func onFinish() {
         guard let selfieImageURL = selfieImageURL,
                    let selfiePath = getRelativePath(from: selfieImageURL),
@@ -424,7 +424,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
             self.resultDelegate?.didFinish(with: SmileIDError.selfieCaptureFailed)
             return
         }
-        
+
         // Add metadata before submission
         addSelfieCaptureMetaData()
 

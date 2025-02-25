@@ -16,7 +16,7 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
     private var failureReason: FailureReason?
 
     // MARK: UI Properties
-    var selfieImage: UIImage?
+    private(set) var selfieImage: UIImage?
     @Published private(set) var processingState: ProcessingState?
     @Published public var errorMessageRes: String?
     @Published public var errorMessage: String?
@@ -105,11 +105,11 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
             delegate?.didError(error: SmileIDError.operationCanceled("User cancelled"))
         }
     }
-    
+
     func handleRetry() {
         handleSubmission()
     }
-    
+
     public func onFinished() {
         if let selfieImageURL = selfieImageURL,
            let selfiePath = getRelativePath(from: selfieImageURL),
@@ -144,7 +144,7 @@ extension OrchestratedEnhancedSelfieCaptureViewModel: SelfieCaptureDelegate {
         self.error = error
         onFinished()
     }
-    
+
     private func setPreviewSelfieImage(from imageURL: URL) {
         if let fileURL = try? LocalStorage.defaultDirectory.appendingPathComponent(imageURL.relativePath),
             let imageData = try? Data(contentsOf: fileURL),
