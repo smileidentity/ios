@@ -14,8 +14,7 @@ class OrchestratedDocumentVerificationViewModel:
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
-        {
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
             let documentBackPath = getRelativePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,

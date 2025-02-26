@@ -112,16 +112,13 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
 
     public func onFinished() {
         if let selfieImageURL = selfieImageURL,
-           let selfiePath = getRelativePath(from: selfieImageURL),
            livenessImages.count == captureConfig.numLivenessImages,
            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
            ) {
-            let livenessImagesPaths = livenessImages.compactMap {
-                getRelativePath(from: $0)
-            }
+            let livenessImagesPaths = livenessImages.compactMap { $0 }
 
             self.delegate?.didSucceed(
-                selfieImage: selfiePath,
+                selfieImage: selfieImageURL,
                 livenessImages: livenessImagesPaths,
                 apiResponse: apiResponse
             )
@@ -147,8 +144,7 @@ extension OrchestratedEnhancedSelfieCaptureViewModel: SelfieCaptureDelegate {
     }
 
     private func setPreviewSelfieImage(from imageURL: URL) {
-        if let fileURL = try? LocalStorage.defaultDirectory.appendingPathComponent(imageURL.relativePath),
-            let imageData = try? Data(contentsOf: fileURL),
+        if let imageData = try? Data(contentsOf: imageURL),
             let uiImage = UIImage(data: imageData) {
             self.selfieImage = flipImageForPreview(uiImage)
         }

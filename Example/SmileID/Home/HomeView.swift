@@ -237,7 +237,8 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
         if let userId {
             SmileID.smartSelfieAuthenticationScreenEnhanced(
                 config: OrchestratedSelfieCaptureConfig(
-                    userId: userId
+                    userId: userId,
+                    isEnroll: false
                 ),
                 delegate: delegate
             )

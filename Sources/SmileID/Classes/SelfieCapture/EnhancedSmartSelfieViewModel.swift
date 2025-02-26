@@ -360,10 +360,6 @@ extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
 extension EnhancedSmartSelfieViewModel: FaceValidatorDelegate {
     func updateValidationResult(_ result: FaceValidationResult) {
         DispatchQueue.main.async {
-            print("FaceValidator result:")
-            print(result.userInstruction?.instruction)
-            print(result.faceInBounds)
-            print(result.hasDetectedValidFace)
             self.faceInBounds = result.faceInBounds
             self.hasDetectedValidFace = result.hasDetectedValidFace
             self.publishUserInstruction(result.userInstruction)
@@ -423,7 +419,6 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 
     func onFinish() {
         guard let selfieImageURL = selfieImageURL,
-                   let selfiePath = getRelativePath(from: selfieImageURL),
               livenessImages.count == config.numLivenessImages,
               !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) else {
             self.resultDelegate?.didFinish(with: SmileIDError.selfieCaptureFailed)
@@ -433,14 +428,12 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
         // Add metadata before submission
         addSelfieCaptureMetaData()
 
-        let livenessImagesPaths = livenessImages.compactMap {
-            getRelativePath(from: $0)
-        }
+        let livenessImagesPaths = livenessImages.compactMap { $0 }
 
         self.resultDelegate?
             .didFinish(
                 with: SelfieCaptureResult(
-                    selfieImage: selfiePath,
+                    selfieImage: selfieImageURL,
                     livenessImages: livenessImagesPaths
                 ),
                 failureReason: self.failureReason
