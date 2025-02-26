@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
     let captureConfig = SelfieCaptureConfig.enhancedConfiguration
