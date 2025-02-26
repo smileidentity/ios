@@ -105,7 +105,7 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 OrchestratedEnhancedSelfieCaptureScreen(
                     config: OrchestratedSelfieCaptureConfig(
                         userId: config.userId,
-                        isEnroll: false,
+                        isEnroll: true,
                         allowNewEnroll: config.allowNewEnroll,
                         showAttribution: config.showAttribution,
                         showInstructions: config.showInstructions,
