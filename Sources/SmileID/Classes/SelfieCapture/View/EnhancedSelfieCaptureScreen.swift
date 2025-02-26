@@ -76,7 +76,7 @@ public struct EnhancedSelfieCaptureScreen: View {
                 if showAttribution {
                     Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                 }
-                
+
                 Spacer()
                 Button {
                     didTapCancel()

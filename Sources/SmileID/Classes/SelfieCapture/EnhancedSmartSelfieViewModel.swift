@@ -262,7 +262,7 @@ extension EnhancedSmartSelfieViewModel {
     private func handleWindowSizeChanged(
         to rect: CGSize, edgeInsets: EdgeInsets
     ) {
-        let topPadding: CGFloat = edgeInsets.top + 100
+        let topPadding: CGFloat = edgeInsets.top
         faceLayoutGuideFrame = CGRect(
             x: (rect.width / 2) - faceLayoutGuideFrame.width / 2,
             y: topPadding,

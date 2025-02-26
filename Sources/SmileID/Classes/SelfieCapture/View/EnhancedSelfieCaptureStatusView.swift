@@ -13,7 +13,7 @@ struct EnhancedSelfieCaptureStatusView: View {
     private let cameraContainerHeight: CGFloat = 480
 
     var body: some View {
-        VStack {
+        VStack(spacing: 10) {
             ZStack {
                 if let selfieImage = selfieImage {
                     SelfiePreviewView(image: selfieImage)
@@ -58,6 +58,7 @@ struct EnhancedSelfieCaptureStatusView: View {
             }
             .padding(.horizontal, 65)
         }
+        .navigationBarHidden(true)
     }
 
     var cancelButton: some View {
