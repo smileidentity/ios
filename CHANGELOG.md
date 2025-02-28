@@ -1,6 +1,6 @@
 # Release Notes
 
-## 10.4.2
+## 10.4.1
 
 * Make ConsentInformation optional in EnhancedDocV, EnhancedKYC and BiometricKYC
 
