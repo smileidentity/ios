@@ -2,46 +2,18 @@ import Combine
 import SwiftUI
 
 struct OrchestratedBiometricKycScreen: View {
-    let userId: String
-    let jobId: String
-    let allowNewEnroll: Bool
-    let showInstructions: Bool
-    let showAttribution: Bool
-    let allowAgentMode: Bool
-    let useStrictMode: Bool
-    let extraPartnerParams: [String: String] = [:]
+    let config: BiometricVerificationConfig
     let delegate: BiometricKycResultDelegate
     @Backport.StateObject private var viewModel: OrchestratedBiometricKycViewModel
 
     init(
-        idInfo: IdInfo,
-        consentInformation: ConsentInformation,
-        userId: String,
-        jobId: String,
-        allowNewEnroll: Bool,
-        showInstructions: Bool,
-        showAttribution: Bool,
-        allowAgentMode: Bool,
-        useStrictMode: Bool,
-        extraPartnerParams: [String: String] = [:],
+        config: BiometricVerificationConfig,
         delegate: BiometricKycResultDelegate
     ) {
-        self.userId = userId
-        self.jobId = jobId
-        self.allowNewEnroll = allowNewEnroll
-        self.showInstructions = showInstructions
-        self.showAttribution = showAttribution
-        self.allowAgentMode = allowAgentMode
-        self.useStrictMode = useStrictMode
+        self.config = config
         self.delegate = delegate
         self._viewModel = Backport.StateObject(wrappedValue: OrchestratedBiometricKycViewModel(
-            userId: userId,
-            jobId: jobId,
-            allowNewEnroll: allowNewEnroll,
-            idInfo: idInfo,
-            useStrictMode: useStrictMode,
-            consentInformation: consentInformation,
-            extraPartnerParams: extraPartnerParams
+            config: config
         ))
     }
 
@@ -86,15 +58,15 @@ struct OrchestratedBiometricKycScreen: View {
 
     private var selfieCaptureScreen: some View {
         Group {
-            if useStrictMode {
+            if config.useStrictMode {
                 OrchestratedEnhancedSelfieCaptureScreen(
                     config: OrchestratedSelfieCaptureConfig(
-                        userId: userId,
+                        userId: config.userId,
                         isEnroll: false,
-                        allowNewEnroll: allowNewEnroll,
-                        showAttribution: showAttribution,
-                        showInstructions: showInstructions,
-                        extraPartnerParams: extraPartnerParams,
+                        allowNewEnroll: config.allowNewEnroll,
+                        showAttribution: config.showAttribution,
+                        showInstructions: config.showInstructions,
+                        extraPartnerParams: config.extraPartnerParams,
                         skipApiSubmission: true
                     ),
                     onResult: viewModel
@@ -102,14 +74,14 @@ struct OrchestratedBiometricKycScreen: View {
             } else {
                 OrchestratedSelfieCaptureScreen(
                     config: OrchestratedSelfieCaptureConfig(
-                        userId: userId,
-                        jobId: jobId,
+                        userId: config.userId,
+                        jobId: config.jobId,
                         isEnroll: false,
-                        allowNewEnroll: allowNewEnroll,
-                        allowAgentMode: allowAgentMode,
-                        showAttribution: showAttribution,
-                        showInstructions: showInstructions,
-                        extraPartnerParams: extraPartnerParams,
+                        allowNewEnroll: config.allowNewEnroll,
+                        allowAgentMode: config.allowAgentMode,
+                        showAttribution: config.showAttribution,
+                        showInstructions: config.showInstructions,
+                        extraPartnerParams: config.extraPartnerParams,
                         skipApiSubmission: true
                     ),
                     onResult: viewModel

@@ -9,14 +9,8 @@ enum BiometricKycStep {
 class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - Input Properties
 
-    private let userId: String
-    private let jobId: String
-    private let allowNewEnroll: Bool
-    private let useStrictMode: Bool
-    private var extraPartnerParams: [String: String]
+    private let config: BiometricVerificationConfig
     private let localMetadata = LocalMetadata()
-    private var idInfo: IdInfo
-    private var consentInformation: ConsentInformation
 
     // MARK: - Other Properties
 
@@ -35,21 +29,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     @Published @MainActor private(set) var step: BiometricKycStep = .selfie
 
     init(
-        userId: String,
-        jobId: String,
-        allowNewEnroll: Bool,
-        idInfo: IdInfo,
-        useStrictMode: Bool,
-        consentInformation: ConsentInformation,
-        extraPartnerParams: [String: String] = [:]
+        config: BiometricVerificationConfig
     ) {
-        self.userId = userId
-        self.jobId = jobId
-        self.allowNewEnroll = allowNewEnroll
-        self.useStrictMode = useStrictMode
-        self.idInfo = idInfo
-        self.consentInformation = consentInformation
-        self.extraPartnerParams = extraPartnerParams
+        self.config = config
     }
 
     func onRetry() {
@@ -111,12 +93,12 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
 
     private func fetchRequiredFiles() throws {
         selfieFile = try LocalStorage.getFileByType(
-            jobId: useStrictMode ? userId : jobId,
+            jobId: config.useStrictMode ? config.userId : config.jobId,
             fileType: FileType.selfie
         )
 
         livenessFiles = try LocalStorage.getFilesByType(
-            jobId: useStrictMode ? userId : jobId,
+            jobId: config.useStrictMode ? config.userId : config.jobId,
             fileType: FileType.liveness
         )
 
@@ -131,9 +113,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     private func createZipData() throws -> Data {
         var allFiles = [URL]()
         let infoJson = try LocalStorage.createInfoJsonFile(
-            jobId: jobId,
-            idInfo: idInfo.copy(entered: true),
-            consentInformation: consentInformation,
+            jobId: config.jobId,
+            idInfo: config.idInfo.copy(entered: true),
+            consentInformation: config.consentInformation,
             selfie: selfieFile,
             livenessImages: livenessFiles
         )
@@ -150,10 +132,10 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         let authRequest = AuthenticationRequest(
             jobType: .biometricKyc,
             enrollment: false,
-            jobId: jobId,
-            userId: userId,
-            country: idInfo.country,
-            idType: idInfo.idType
+            jobId: config.jobId,
+            userId: config.userId,
+            country: config.idInfo.country,
+            idType: config.idInfo.idType
         )
 
         if SmileID.allowOfflineMode {
@@ -165,20 +147,20 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
 
     private func saveOfflineJobIfAllowed() throws {
         try LocalStorage.saveOfflineJob(
-            jobId: jobId,
-            userId: userId,
+            jobId: config.jobId,
+            userId: config.userId,
             jobType: .biometricKyc,
             enrollment: false,
-            allowNewEnroll: allowNewEnroll,
+            allowNewEnroll: config.allowNewEnroll,
             localMetadata: localMetadata,
-            partnerParams: extraPartnerParams
+            partnerParams: config.extraPartnerParams
         )
     }
 
     private func prepareForUpload(authResponse: AuthenticationResponse) async throws -> PrepUploadResponse {
         let prepUploadRequest = PrepUploadRequest(
-            partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
-            allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+            partnerParams: authResponse.partnerParams.copy(extras: config.extraPartnerParams),
+            allowNewEnroll: String(config.allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
             metadata: localMetadata.metadata.items,
             timestamp: authResponse.timestamp,
             signature: authResponse.signature
@@ -206,9 +188,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     private func moveJobToSubmittedDirectory() throws {
-        try LocalStorage.moveToSubmittedJobs(jobId: jobId)
-        if useStrictMode {
-            try LocalStorage.moveToSubmittedJobs(jobId: userId)
+        try LocalStorage.moveToSubmittedJobs(jobId: config.jobId)
+        if config.useStrictMode {
+            try LocalStorage.moveToSubmittedJobs(jobId: config.userId)
         }
     }
 
@@ -231,12 +213,12 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     private func handleSubmissionFailure(_ smileIDError: SmileIDError) {
         do {
             _ = try LocalStorage.handleOfflineJobFailure(
-                jobId: jobId,
+                jobId: config.jobId,
                 error: smileIDError
             )
-            if useStrictMode {
+            if config.useStrictMode {
                 _ = try LocalStorage.handleOfflineJobFailure(
-                    jobId: userId,
+                    jobId: config.userId,
                     error: smileIDError
                 )
             }

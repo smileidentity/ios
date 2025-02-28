@@ -409,45 +409,14 @@ public class SmileID {
     /// actually belongs to the user. This is achieved by comparing the user's SmartSelfie™ to the
     /// user's photo in an ID authority database
     /// - Parameters:
-    ///  - idInfo: The ID information to look up in the ID Authority
-    ///  - consentInformation: We need you to pass the consent from the user
-    ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
-    ///  to a unique User ID within your own system. If not provided, a random user ID is generated
-    ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
-    ///  - allowNewEnroll:  Allows a partner to enroll the same user id again
-    ///  to a unique Job ID within your own system. If not provided, a random job ID is generated
-    ///  - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
-    ///   displayed allowing toggling between the back camera and front camera. If not allowed, only
-    ///   the front camera will be used.
-    ///  - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
-    ///  - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
-    ///  - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
-    ///  - extraPartnerParams: Custom values specific to partners
+    ///  - config: configuration options for customising biometric verification experience
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
-        idInfo: IdInfo,
-        consentInformation: ConsentInformation,
-        userId: String = generateUserId(),
-        jobId: String = generateJobId(),
-        allowNewEnroll: Bool = false,
-        allowAgentMode: Bool = false,
-        showAttribution: Bool = true,
-        showInstructions: Bool = true,
-        useStrictMode: Bool = false,
-        extraPartnerParams: [String: String] = [:],
+        config: BiometricVerificationConfig,
         delegate: BiometricKycResultDelegate
     ) -> some View {
         OrchestratedBiometricKycScreen(
-            idInfo: idInfo,
-            consentInformation: consentInformation,
-            userId: userId,
-            jobId: jobId,
-            allowNewEnroll: allowNewEnroll,
-            showInstructions: showInstructions,
-            showAttribution: showAttribution,
-            allowAgentMode: allowAgentMode,
-            useStrictMode: useStrictMode,
-            extraPartnerParams: extraPartnerParams,
+            config: config,
             delegate: delegate
         )
     }
