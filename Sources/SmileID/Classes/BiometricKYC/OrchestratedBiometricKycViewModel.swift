@@ -248,7 +248,7 @@ extension OrchestratedBiometricKycViewModel: SelfieCaptureDelegate {
         self.livenessFiles = result.livenessImages
         submitJob()
     }
-    
+
     func didFinish(with error: any Error) {
         self.error = SmileIDError.selfieCaptureFailed
         updateStep(.processing(.error))
