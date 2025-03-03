@@ -8,7 +8,6 @@ enum DocumentCaptureFlow: Equatable {
     case processing(ProcessingState)
 }
 
-
 class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {

@@ -3,7 +3,7 @@ import Combine
 import CoreMotion
 import SwiftUI
 
-public class EnhancedSmartSelfieViewModel: ObservableObject {
+class EnhancedSmartSelfieViewModel: ObservableObject {
     private let config = SelfieCaptureConfig.enhancedConfiguration
 
     // MARK: Dependencies

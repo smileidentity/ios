@@ -7,7 +7,7 @@ public protocol SelfieCaptureDelegate: AnyObject {
     func didFinish(with error: Error)
 }
 
-public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
+class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let config = SelfieCaptureConfig.defaultConfiguration
 
     private let jobId: String

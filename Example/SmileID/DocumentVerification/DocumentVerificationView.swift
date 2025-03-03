@@ -12,10 +12,10 @@ struct DocumentVerificationView: View {
             config: DocumentVerificationConfig(
                 userId: userId,
                 jobId: jobId,
-                countryCode: verificationDetails.countryCode,
                 documentType: verificationDetails.documentType,
                 captureBothSides: verificationDetails.captureBothSides,
-                allowGalleryUpload: true
+                allowGalleryUpload: true,
+                countryCode: verificationDetails.countryCode
             ),
             delegate: delegate
         )

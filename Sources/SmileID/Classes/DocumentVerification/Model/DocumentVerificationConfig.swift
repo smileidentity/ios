@@ -5,7 +5,6 @@ public struct DocumentVerificationConfig {
     let jobId: String
     let consentInformation: ConsentInformation?
     let allowNewEnroll: Bool
-    let countryCode: String
     let documentType: String?
     let idAspectRatio: Double?
     let bypassSelfieCaptureWithFile: URL?
@@ -17,6 +16,7 @@ public struct DocumentVerificationConfig {
     let skipApiSubmission: Bool
     let useStrictMode: Bool
     let extraPartnerParams: [String: String]
+    let countryCode: String
 
     /// - Parameters:
     ///   - userId: The user ID to associate with the Document Verification. Most often, this will
