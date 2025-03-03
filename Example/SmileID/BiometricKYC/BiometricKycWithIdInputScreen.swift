@@ -70,12 +70,12 @@ struct BiometricKycWithIdInputScreen: View {
         case let .sdk(idInfo, consentInformation):
             SmileID.biometricKycScreen(
                 config: BiometricVerificationConfig(
-                    idInfo: idInfo,
-                    consentInformation: consentInformation,
                     userId: viewModel.userId,
                     jobId: viewModel.jobId,
+                    useStrictMode: true,
                     allowAgentMode: true,
-                    useStrictMode: true
+                    idInfo: idInfo,
+                    consentInformation: consentInformation
                 ),
                 delegate: delegate
             )

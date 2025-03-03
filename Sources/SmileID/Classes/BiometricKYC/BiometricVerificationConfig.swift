@@ -31,26 +31,26 @@ public struct BiometricVerificationConfig {
     public init(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
-        allowNewEnroll: Bool,
-        idInfo: IdInfo,
+        allowNewEnroll: Bool = false,
         useStrictMode: Bool,
-        allowAgentMode: Bool,
-        showAttribution: Bool,
-        showInstructions: Bool,
-        skipApiSubmission: Bool,
-        consentInformation: ConsentInformation,
-        extraPartnerParams: [String : String]
+        allowAgentMode: Bool = false,
+        showAttribution: Bool = true,
+        showInstructions: Bool = true,
+        skipApiSubmission: Bool = false,
+        extraPartnerParams: [String : String] = [:],
+        idInfo: IdInfo,
+        consentInformation: ConsentInformation
     ) {
         self.userId = userId
         self.jobId = jobId
         self.allowNewEnroll = allowNewEnroll
-        self.idInfo = idInfo
         self.useStrictMode = useStrictMode
         self.allowAgentMode = allowAgentMode
         self.showAttribution = showAttribution
         self.showInstructions = showInstructions
         self.skipApiSubmission = skipApiSubmission
-        self.consentInformation = consentInformation
         self.extraPartnerParams = extraPartnerParams
+        self.idInfo = idInfo
+        self.consentInformation = consentInformation
     }
 }

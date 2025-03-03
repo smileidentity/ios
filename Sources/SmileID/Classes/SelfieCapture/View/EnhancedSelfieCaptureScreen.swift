@@ -8,13 +8,13 @@ public struct EnhancedSelfieCaptureScreen: View {
     private(set) var originalBrightness = UIScreen.main.brightness
     private let cameraContainerHeight: CGFloat = 480
 
-    private var didTapCancel: () -> Void
+    private var didTapCancel: (() -> Void)?
 
     public init(
         userId: String,
         showAttribution: Bool,
         delegate: SelfieCaptureDelegate,
-        didTapCancel: @escaping () -> Void
+        didTapCancel: (() -> Void)? = nil
     ) {
         self._viewModel = Backport.StateObject(
             wrappedValue: EnhancedSmartSelfieViewModel(
@@ -79,7 +79,7 @@ public struct EnhancedSelfieCaptureScreen: View {
 
                 Spacer()
                 Button {
-                    didTapCancel()
+                    didTapCancel?()
                 } label: {
                     Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
                         .font(SmileID.theme.button)

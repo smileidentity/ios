@@ -51,7 +51,7 @@ extension SmileIDError: LocalizedError {
         case let .operationCanceled(message):
             return message
         case .selfieCaptureFailed:
-            return "Selfie capture failed"
+            return "Error capturing selfie"
         }
     }
 }

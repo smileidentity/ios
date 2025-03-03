@@ -243,17 +243,15 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 }
 
-extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
-    func didSucceed(
-        selfieImage _: URL,
-        livenessImages _: [URL],
-        apiResponse _: SmartSelfieResponse?
-    ) {
+extension OrchestratedBiometricKycViewModel: SelfieCaptureDelegate {
+    func didFinish(with result: SelfieCaptureResult, failureReason: FailureReason?) {
+        self.selfieFile = result.selfieImage
+        self.livenessFiles = result.livenessImages
         submitJob()
     }
-
-    func didError(error _: Error) {
-        error = SmileIDError.unknown("Error capturing selfie")
+    
+    func didFinish(with error: any Error) {
+        self.error = SmileIDError.selfieCaptureFailed
         updateStep(.processing(.error))
     }
 }
