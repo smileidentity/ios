@@ -17,7 +17,6 @@ public struct BiometricVerificationConfig {
     ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
     ///  to a unique User ID within your own system. If not provided, a random user ID is generated
     ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
-    ///  - idInfo: The ID information to look up in the ID Authority
     ///  - allowNewEnroll:  Allows a partner to enroll the same user id again
     ///  to a unique Job ID within your own system. If not provided, a random job ID is generated
     ///  - allowAgentMode: Whether to allow Agent Mode or not. If allowed, a switch will be
@@ -26,8 +25,9 @@ public struct BiometricVerificationConfig {
     ///  - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
     ///  - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
     ///  - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
-    ///  - consentInformation: We need you to pass the consent from the user
     ///  - extraPartnerParams: Custom values specific to partners
+    ///  - idInfo: The ID information to look up in the ID Authority
+    ///  - consentInformation: We need you to pass the consent from the user
     public init(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
@@ -37,7 +37,7 @@ public struct BiometricVerificationConfig {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         skipApiSubmission: Bool = false,
-        extraPartnerParams: [String : String] = [:],
+        extraPartnerParams: [String: String] = [:],
         idInfo: IdInfo,
         consentInformation: ConsentInformation
     ) {

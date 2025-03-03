@@ -76,6 +76,7 @@ struct OrchestratedBiometricKycScreen: View {
                         showAttribution: config.showAttribution,
                         delegate: viewModel
                     )
+                    .transition(.move(edge: .trailing))
                 }
             } else {
                 if showSelfieCaptureInstructions {

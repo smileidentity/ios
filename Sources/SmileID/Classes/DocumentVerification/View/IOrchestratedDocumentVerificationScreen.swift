@@ -4,7 +4,7 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let config: DocumentVerificationConfig
     let onResult: T
     @Backport.StateObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
-    @State private var showInstructions: Bool
+    @State private var showSelfieCaptureInstructions: Bool
 
     init(
         config: DocumentVerificationConfig,
@@ -14,7 +14,7 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.config = config
         self.onResult = onResult
         self._viewModel = Backport.StateObject(wrappedValue: viewModel)
-        self._showInstructions = State(initialValue: config.showInstructions)
+        self._showSelfieCaptureInstructions = State(initialValue: config.showInstructions)
     }
 
     var body: some View {
@@ -102,24 +102,28 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     private var selfieCaptureScreen: some View {
         ZStack {
             if config.useStrictMode {
-                OrchestratedEnhancedSelfieCaptureScreen(
-                    config: OrchestratedSelfieCaptureConfig(
-                        userId: config.userId,
-                        isEnroll: true,
-                        allowNewEnroll: config.allowNewEnroll,
+                if showSelfieCaptureInstructions {
+                    LivenessCaptureInstructionsView(
                         showAttribution: config.showAttribution,
-                        showInstructions: config.showInstructions,
-                        extraPartnerParams: config.extraPartnerParams,
-                        skipApiSubmission: true
-                    ),
-                    onResult: viewModel
-                )
+                        didTapGetStarted: {
+                            withAnimation { showSelfieCaptureInstructions = false }
+                        }
+                    )
+                    .transition(.move(edge: .leading))
+                } else {
+                    EnhancedSelfieCaptureScreen(
+                        userId: config.userId,
+                        showAttribution: config.showAttribution,
+                        delegate: viewModel
+                    )
+                    .transition(.move(edge: .trailing))
+                }
             } else {
-                if showInstructions {
+                if showSelfieCaptureInstructions {
                     SmartSelfieInstructionsScreen(
                         showAttribution: config.showAttribution,
                         didTapTakePhoto: {
-                            withAnimation { showInstructions = false }
+                            withAnimation { showSelfieCaptureInstructions = false }
                         }
                     )
                     .transition(.move(edge: .leading))
