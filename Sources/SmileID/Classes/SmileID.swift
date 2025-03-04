@@ -529,6 +529,8 @@ public class SmileID {
     ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
     ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
+    ///  - consentInformation: Consent information based on when the user has accepted consent, if they have not the default will be false
+    ///  and the timestamp will be at the point of screen being shown
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func enhancedDocumentVerificationScreen(
         userId: String = generateUserId(),
@@ -600,7 +602,6 @@ public class SmileID {
     /// user's photo in an ID authority database
     /// - Parameters:
     ///  - idInfo: The ID information to look up in the ID Authority
-    ///  - consentInformation: We need you to pass the consent from the user
     ///  - userId: The user ID to associate with the Biometric KYC. Most often, this will correspond
     ///  to a unique User ID within your own system. If not provided, a random user ID is generated
     ///  - jobId: The job ID to associate with the Biometric KYC. Most often, this will correspond
@@ -613,6 +614,8 @@ public class SmileID {
     ///  - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
     ///  - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///  - extraPartnerParams: Custom values specific to partners
+    ///  - consentInformation: Consent information based on when the user has accepted consent, if they have not the default will be false
+    ///  and the timestamp will be at the point of screen being shown
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
         idInfo: IdInfo,
