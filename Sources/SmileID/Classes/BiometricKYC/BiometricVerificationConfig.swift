@@ -32,7 +32,7 @@ public struct BiometricVerificationConfig {
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
         allowNewEnroll: Bool = false,
-        useStrictMode: Bool,
+        useStrictMode: Bool = false,
         allowAgentMode: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,

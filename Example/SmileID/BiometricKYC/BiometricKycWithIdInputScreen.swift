@@ -72,7 +72,7 @@ struct BiometricKycWithIdInputScreen: View {
                 config: BiometricVerificationConfig(
                     userId: viewModel.userId,
                     jobId: viewModel.jobId,
-                    useStrictMode: true,
+                    useStrictMode: false,
                     allowAgentMode: true,
                     idInfo: idInfo,
                     consentInformation: consentInformation
