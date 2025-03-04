@@ -14,6 +14,7 @@ struct SelfieCaptureConfig {
     let numTotalSteps: Int
     let livenessImageSize: Int
     let selfieImageSize: Int
+    let guideAnimationDelayTime: TimeInterval
 
     static var defaultConfiguration = SelfieCaptureConfig(
         intraImageMinDelay: 0.35,
@@ -28,6 +29,24 @@ struct SelfieCaptureConfig {
         numLivenessImages: 7,
         numTotalSteps: 8,  // numLivenessImages + 1 selfie image
         livenessImageSize: 320,
-        selfieImageSize: 640
+        selfieImageSize: 640,
+        guideAnimationDelayTime: 3
+    )
+
+    static var enhancedConfiguration = SelfieCaptureConfig(
+        intraImageMinDelay: 0.35,
+        noFaceResetDelay: 3,
+        faceCaptureQualityThreshold: 0.25,
+        minFaceCenteredThreshold: 0.1,
+        maxFaceCenteredThreshold: 0.9,
+        minFaceAreaThreshold: 0.125,
+        maxFaceAreaThreshold: 0.25,
+        faceRotationThreshold: 0.03,
+        faceRollThreshold: 0.025,
+        numLivenessImages: 6,
+        numTotalSteps: 8,
+        livenessImageSize: 320,
+        selfieImageSize: 640,
+        guideAnimationDelayTime: 3
     )
 }

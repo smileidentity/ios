@@ -72,7 +72,9 @@ struct HomeView: View {
                     )
                 case .enhancedSmartSelfieEnrollment:
                     SmileID.smartSelfieEnrollmentScreenEnhanced(
-                        userId: viewModel.newUserId,
+                        config: OrchestratedSelfieCaptureConfig(
+                            userId: viewModel.newUserId
+                        ),
                         delegate: SmartSelfieEnrollmentDelegate(
                             userId: viewModel.newUserId,
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
@@ -234,7 +236,10 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
     var body: some View {
         if let userId {
             SmileID.smartSelfieAuthenticationScreenEnhanced(
-                userId: userId,
+                config: OrchestratedSelfieCaptureConfig(
+                    userId: userId,
+                    isEnroll: false
+                ),
                 delegate: delegate
             )
         } else {

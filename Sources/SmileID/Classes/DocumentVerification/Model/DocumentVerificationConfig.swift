@@ -5,7 +5,6 @@ public struct DocumentVerificationConfig {
     let jobId: String
     let consentInformation: ConsentInformation?
     let allowNewEnroll: Bool
-    let countryCode: String
     let documentType: String?
     let idAspectRatio: Double?
     let bypassSelfieCaptureWithFile: URL?
@@ -17,6 +16,7 @@ public struct DocumentVerificationConfig {
     let skipApiSubmission: Bool
     let useStrictMode: Bool
     let extraPartnerParams: [String: String]
+    let countryCode: String
 
     /// - Parameters:
     ///   - userId: The user ID to associate with the Document Verification. Most often, this will
@@ -26,7 +26,6 @@ public struct DocumentVerificationConfig {
     ///   correspond to unique Job ID within your system. If not provided, a random job ID will
     ///   be generated.
     ///   - allowNewEnroll:  Allows a partner to enroll the same user id again
-    ///   - countryCode: The ISO 3166-1 alpha-3 country code of the document
     ///   - documentType: An optional string for the type of document to be captured
     ///   - idAspectRatio: An optional value for the aspect ratio of the document. If no value is,
     ///   supplied, image analysis is done to calculate the documents aspect ratio
@@ -44,12 +43,12 @@ public struct DocumentVerificationConfig {
     ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
     ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
+    ///   - countryCode: The ISO 3166-1 alpha-3 country code of the document
     public init(
         userId: String = generateUserId(),
         jobId: String = generateJobId(),
         consentInformation: ConsentInformation? = nil,
         allowNewEnroll: Bool = false,
-        countryCode: String,
         documentType: String? = nil,
         idAspectRatio: Double? = nil,
         bypassSelfieCaptureWithFile: URL? = nil,
@@ -60,13 +59,13 @@ public struct DocumentVerificationConfig {
         showAttribution: Bool = true,
         skipApiSubmission: Bool = false,
         useStrictMode: Bool = false,
-        extraPartnerParams: [String: String] = [:]
+        extraPartnerParams: [String: String] = [:],
+        countryCode: String
     ) {
         self.userId = userId
         self.jobId = jobId
         self.consentInformation = consentInformation
         self.allowNewEnroll = allowNewEnroll
-        self.countryCode = countryCode
         self.documentType = documentType
         self.idAspectRatio = idAspectRatio
         self.bypassSelfieCaptureWithFile = bypassSelfieCaptureWithFile
@@ -78,5 +77,6 @@ public struct DocumentVerificationConfig {
         self.skipApiSubmission = skipApiSubmission
         self.useStrictMode = useStrictMode
         self.extraPartnerParams = extraPartnerParams
+        self.countryCode = countryCode
     }
 }

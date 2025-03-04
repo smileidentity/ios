@@ -13,43 +13,28 @@ protocol SelfieSubmissionDelegate: AnyObject {
 
 final class SelfieSubmissionManager {
     // MARK: - Properties
-    private let userId: String
-    private let isEnroll: Bool
-    private let numLivenessImages: Int
-    private let allowNewEnroll: Bool
-    private var selfieImageUrl: URL?
-    private var livenessImages: [URL]
-    private var extraPartnerParams: [String: String]
+    private let config: OrchestratedSelfieCaptureConfig
+    private let captureConfig: SelfieCaptureConfig
+    private let captureResult: SelfieCaptureResult
     private let localMetadata: LocalMetadata
 
     weak var delegate: SelfieSubmissionDelegate?
 
     // MARK: - Initializer
     init(
-        userId: String,
-        isEnroll: Bool,
-        numLivenessImages: Int,
-        allowNewEnroll: Bool,
-        selfieImageUrl: URL?,
-        livenessImages: [URL],
-        extraPartnerParams: [String: String],
+        config: OrchestratedSelfieCaptureConfig,
+        captureConfig: SelfieCaptureConfig,
+        captureResult: SelfieCaptureResult,
         localMetadata: LocalMetadata
     ) {
-        self.userId = userId
-        self.isEnroll = isEnroll
-        self.numLivenessImages = numLivenessImages
-        self.allowNewEnroll = allowNewEnroll
-        self.selfieImageUrl = selfieImageUrl
-        self.livenessImages = livenessImages
-        self.extraPartnerParams = extraPartnerParams
+        self.config = config
+        self.captureConfig = captureConfig
+        self.captureResult = captureResult
         self.localMetadata = localMetadata
     }
 
     func submitJob(failureReason: FailureReason? = nil) async throws {
         do {
-            // Validate that the necessary selfie data is present
-            try validateImages()
-
             // Determine the type of job (enrollment or authentication)
             let jobType = determineJobType()
             // Create an authentication request based on the job type
@@ -76,34 +61,27 @@ final class SelfieSubmissionManager {
         }
     }
 
-    private func validateImages() throws {
-        guard selfieImageUrl != nil,
-                livenessImages.count == numLivenessImages else {
-            throw SmileIDError.unknown("Selfie capture failed")
-        }
-    }
-
     private func determineJobType() -> JobType {
-        return isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
+        return config.isEnroll ? JobType.smartSelfieEnrollment : JobType.smartSelfieAuthentication
     }
 
     private func createAuthRequest(jobType: JobType) -> AuthenticationRequest {
         return AuthenticationRequest(
             jobType: jobType,
-            enrollment: isEnroll,
-            userId: userId
+            enrollment: config.isEnroll,
+            userId: config.userId
         )
     }
 
     private func prepareImagesForSubmission() throws -> (MultipartBody, [MultipartBody]) {
-        guard let smartSelfieImage = createMultipartBody(from: selfieImageUrl) else {
+        guard let smartSelfieImage = createMultipartBody(from: captureResult.selfieImage) else {
             throw SmileIDError.fileNotFound("Could not create multipart body for file")
         }
 
-        let smartSelfieLivenessImages = livenessImages.compactMap {
+        let smartSelfieLivenessImages = captureResult.livenessImages.compactMap {
             createMultipartBody(from: $0)
         }
-        guard smartSelfieLivenessImages.count == numLivenessImages else {
+        guard smartSelfieLivenessImages.count == captureConfig.numLivenessImages else {
             throw SmileIDError.unknown("Liveness image count mismatch")
         }
 
@@ -129,18 +107,18 @@ final class SelfieSubmissionManager {
         smartSelfieLivenessImages: [MultipartBody],
         failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse {
-        if isEnroll {
+        if config.isEnroll {
             return try await SmileID.api
                 .doSmartSelfieEnrollment(
                     signature: authResponse.signature,
                     timestamp: authResponse.timestamp,
                     selfieImage: smartSelfieImage,
                     livenessImages: smartSelfieLivenessImages,
-                    userId: userId,
-                    partnerParams: extraPartnerParams,
+                    userId: config.userId,
+                    partnerParams: config.extraPartnerParams,
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
-                    allowNewEnroll: allowNewEnroll,
+                    allowNewEnroll: config.allowNewEnroll,
                     failureReason: failureReason,
                     metadata: localMetadata.metadata
                 )
@@ -149,10 +127,10 @@ final class SelfieSubmissionManager {
                 .doSmartSelfieAuthentication(
                     signature: authResponse.signature,
                     timestamp: authResponse.timestamp,
-                    userId: userId,
+                    userId: config.userId,
                     selfieImage: smartSelfieImage,
                     livenessImages: smartSelfieLivenessImages,
-                    partnerParams: extraPartnerParams,
+                    partnerParams: config.extraPartnerParams,
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
                     failureReason: failureReason,
@@ -168,8 +146,8 @@ final class SelfieSubmissionManager {
                 with: smileIDError,
                 errorMessage: errorMessage,
                 errorMessageRes: errorMessageRes,
-                updatedSelfieImageUrl: selfieImageUrl,
-                updatedLivenessImages: livenessImages
+                updatedSelfieImageUrl: captureResult.selfieImage,
+                updatedLivenessImages: captureResult.livenessImages
             )
     }
 }

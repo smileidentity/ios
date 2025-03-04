@@ -4,7 +4,7 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let config: DocumentVerificationConfig
     let onResult: T
     @Backport.StateObject var viewModel: IOrchestratedDocumentVerificationViewModel<T, U>
-    @State private var showInstructions: Bool
+    @State private var showSelfieCaptureInstructions: Bool
 
     init(
         config: DocumentVerificationConfig,
@@ -14,7 +14,7 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.config = config
         self.onResult = onResult
         self._viewModel = Backport.StateObject(wrappedValue: viewModel)
-        self._showInstructions = State(initialValue: config.showInstructions)
+        self._showSelfieCaptureInstructions = State(initialValue: config.showInstructions)
     }
 
     var body: some View {
@@ -33,7 +33,8 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                 instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
                     for: "Instructions.Document.Front.Callout"
                 ),
-                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureFront"),
+                captureTitleText: SmileIDResourcesHelper.localizedString(
+                    for: "Action.CaptureFront"),
                 knownIdAspectRatio: config.idAspectRatio,
                 onConfirm: viewModel.onFrontDocumentImageConfirmed,
                 onError: viewModel.onError
@@ -101,28 +102,33 @@ struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     private var selfieCaptureScreen: some View {
         ZStack {
             if config.useStrictMode {
-                OrchestratedEnhancedSelfieCaptureScreen(
-                    userId: config.userId,
-                    isEnroll: false,
-                    allowNewEnroll: config.allowNewEnroll,
-                    showAttribution: config.showAttribution,
-                    showInstructions: config.showInstructions,
-                    skipApiSubmission: true,
-                    extraPartnerParams: config.extraPartnerParams,
-                    onResult: viewModel
-                )
+                if showSelfieCaptureInstructions {
+                    LivenessCaptureInstructionsView(
+                        showAttribution: config.showAttribution,
+                        didTapGetStarted: {
+                            withAnimation { showSelfieCaptureInstructions = false }
+                        }
+                    )
+                    .transition(.move(edge: .leading))
+                } else {
+                    EnhancedSelfieCaptureScreen(
+                        userId: config.userId,
+                        showAttribution: config.showAttribution,
+                        delegate: viewModel
+                    )
+                    .transition(.move(edge: .trailing))
+                }
             } else {
-                if showInstructions {
+                if showSelfieCaptureInstructions {
                     SmartSelfieInstructionsScreen(
                         showAttribution: config.showAttribution,
                         didTapTakePhoto: {
-                            withAnimation { showInstructions = false }
+                            withAnimation { showSelfieCaptureInstructions = false }
                         }
                     )
                     .transition(.move(edge: .leading))
                 } else {
                     SelfieCaptureScreen(
-                        isEnroll: false,
                         jobId: config.jobId,
                         delegate: viewModel
                     )

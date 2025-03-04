@@ -3,7 +3,9 @@ import Combine
 import CoreMotion
 import SwiftUI
 
-public class EnhancedSmartSelfieViewModel: ObservableObject {
+class EnhancedSmartSelfieViewModel: ObservableObject {
+    private let config = SelfieCaptureConfig.enhancedConfiguration
+
     // MARK: Dependencies
 
     private let motionManager = CMMotionManager()
@@ -16,6 +18,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private let metadataTimerStart = MonotonicTime()
 
     // MARK: Private Properties
+    private weak var resultDelegate: SelfieCaptureDelegate?
 
     private var motionDeviceOrientation: UIDeviceOrientation = UIDevice.current
         .orientation
@@ -28,11 +31,10 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     )
     private var elapsedGuideAnimationDelay: TimeInterval = 0
     private var currentFrameBuffer: CVPixelBuffer?
-    var selfieImage: UIImage?
     private var selfieImageURL: URL? {
         didSet {
             DispatchQueue.main.async {
-                self.selfieCaptured = self.selfieImage != nil
+                self.selfieCaptured = self.selfieImageURL != nil
             }
         }
     }
@@ -41,27 +43,14 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var hasDetectedValidFace: Bool = false
     private var isCapturingLivenessImages = false
     private var shouldBeginLivenessChallenge: Bool {
-        hasDetectedValidFace && selfieImage != nil
+        hasDetectedValidFace && selfieImageURL != nil
             && livenessCheckManager.currentTask != nil
     }
 
     private var shouldSubmitJob: Bool {
-        selfieImage != nil && livenessImages.count == numLivenessImages
+        selfieImageURL != nil && livenessImages.count == config.numLivenessImages
     }
-
-    private var submissionTask: Task<Void, Error>?
     private var failureReason: FailureReason?
-    private var apiResponse: SmartSelfieResponse?
-    private var error: Error?
-    @Published public var errorMessageRes: String?
-    @Published public var errorMessage: String?
-
-    // MARK: Constants
-
-    private let livenessImageSize = 320
-    private let selfieImageSize = 640
-    private let numLivenessImages = 6
-    private let guideAnimationDelayTime: TimeInterval = 3
 
     // MARK: UI Properties
 
@@ -70,17 +59,10 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     @Published private(set) var faceInBounds: Bool = false
     @Published private(set) var selfieCaptured: Bool = false
     @Published private(set) var showGuideAnimation: Bool = false
-    @Published private(set) var selfieCaptureState: SelfieCaptureState =
-        .capturingSelfie
 
     // MARK: Injected Properties
 
-    private let isEnroll: Bool
     private let userId: String
-    private let allowNewEnroll: Bool
-    private let skipApiSubmission: Bool
-    private let extraPartnerParams: [String: String]
-    private let onResult: SmartSelfieResultDelegate
     private var localMetadata: LocalMetadata
 
     enum SelfieCaptureState: Equatable {
@@ -98,20 +80,10 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     }
 
     public init(
-        isEnroll: Bool,
         userId: String,
-        allowNewEnroll: Bool,
-        skipApiSubmission: Bool,
-        extraPartnerParams: [String: String],
-        onResult: SmartSelfieResultDelegate,
-        localMetadata: LocalMetadata
+        localMetadata: LocalMetadata = LocalMetadata()
     ) {
-        self.isEnroll = isEnroll
         self.userId = userId
-        self.allowNewEnroll = allowNewEnroll
-        self.skipApiSubmission = skipApiSubmission
-        self.extraPartnerParams = extraPartnerParams
-        self.onResult = onResult
         self.localMetadata = localMetadata
         initialSetup()
     }
@@ -119,8 +91,11 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     deinit {
         subscribers.removeAll()
         stopGuideAnimationDelayTimer()
-        invalidateSubmissionTask()
         motionManager.stopDeviceMotionUpdates()
+    }
+
+    func configure(delegate: SelfieCaptureDelegate) {
+        self.resultDelegate = delegate
     }
 
     private func initialSetup() {
@@ -199,7 +174,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
         currentFrameBuffer = imageBuffer
         faceDetector.processImageBuffer(imageBuffer)
-        if hasDetectedValidFace && selfieImage == nil {
+        if hasDetectedValidFace && selfieImageURL == nil {
             captureSelfieImage(imageBuffer)
             HapticManager.shared.notification(type: .success)
             livenessCheckManager.initiateLivenessCheck()
@@ -214,10 +189,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             handleWindowSizeChanged(to: windowRect, edgeInsets: safeAreaInsets)
         case .onViewAppear:
             handleViewAppeared()
-        case .cancelSelfieCapture:
-            handleCancelSelfieCapture()
-        case .retryJobSubmission:
-            handleSubmission()
         case .openApplicationSettings:
             openSettings()
         case let .handleError(error):
@@ -233,6 +204,22 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             resetGuideAnimationDelayTimer()
         }
     }
+
+    private func addSelfieCaptureMetaData() {
+        localMetadata.addMetadata(
+            Metadatum.SelfieCaptureDuration(
+                duration: metadataTimerStart.elapsedTime())
+        )
+        localMetadata.addMetadata(
+            Metadatum.ActiveLivenessType(livenessType: LivenessType.headPose)
+        )
+        localMetadata.addMetadata(
+            Metadatum(
+                name: "camera_name",
+                value: cameraManager.cameraName ?? "Unknown Camera Name"
+            )
+        )
+    }
 }
 
 // MARK: Action Handlers
@@ -247,7 +234,7 @@ extension EnhancedSmartSelfieViewModel {
             repeats: true
         ) { _ in
             self.elapsedGuideAnimationDelay += 1
-            if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
+            if self.elapsedGuideAnimationDelay == self.config.guideAnimationDelayTime {
                 self.showGuideAnimation = true
                 self.stopGuideAnimationDelayTimer()
             }
@@ -267,17 +254,15 @@ extension EnhancedSmartSelfieViewModel {
     }
 
     private func resetSelfieCaptureState() {
-        selfieImage = nil
+        selfieImageURL = nil
         livenessImages = []
-        selfieCaptureState = .capturingSelfie
         failureReason = nil
-        resetSelfieCaptureMetadata()
     }
 
     private func handleWindowSizeChanged(
         to rect: CGSize, edgeInsets: EdgeInsets
     ) {
-        let topPadding: CGFloat = edgeInsets.top + 100
+        let topPadding: CGFloat = edgeInsets.top
         faceLayoutGuideFrame = CGRect(
             x: (rect.width / 2) - faceLayoutGuideFrame.width / 2,
             y: topPadding,
@@ -292,14 +277,12 @@ extension EnhancedSmartSelfieViewModel {
             guard
                 let imageData = ImageUtils.resizePixelBufferToHeight(
                     pixelBuffer,
-                    height: selfieImageSize,
+                    height: config.selfieImageSize,
                     orientation: .up
-                ),
-                let uiImage = UIImage(data: imageData)
+                )
             else {
                 throw SmileIDError.unknown("Error resizing selfie image")
             }
-            selfieImage = flipImageForPreview(uiImage)
             // we use a userId and not a jobId here
             selfieImageURL = try LocalStorage.createSelfieFile(
                 jobId: userId, selfieFile: imageData
@@ -309,47 +292,12 @@ extension EnhancedSmartSelfieViewModel {
         }
     }
 
-    private func flipImageForPreview(_ image: UIImage) -> UIImage? {
-        guard let cgImage = image.cgImage else { return nil }
-
-        let contextSize = CGSize(
-            width: image.size.width, height: image.size.height
-        )
-        UIGraphicsBeginImageContextWithOptions(contextSize, false, 1.0)
-        defer {
-            UIGraphicsEndImageContext()
-        }
-        guard let context = UIGraphicsGetCurrentContext() else {
-            return nil
-        }
-
-        // Apply a 180° counterclockwise rotation
-        // Translate the context to the center before rotating
-        // to ensure the image rotates around its center
-        context.translateBy(x: contextSize.width / 2, y: contextSize.height / 2)
-        context.rotate(by: -.pi)
-
-        // Draw the image
-        context.draw(
-            cgImage,
-            in: CGRect(
-                x: -image.size.width / 2, y: -image.size.height / 2,
-                width: image.size.width, height: image.size.height
-            )
-        )
-
-        // Get the new UIImage from the context
-        let correctedImage = UIGraphicsGetImageFromCurrentImageContext()
-
-        return correctedImage
-    }
-
     private func captureLivenessImage(_ pixelBuffer: CVPixelBuffer) {
         do {
             guard
                 let imageData = ImageUtils.resizePixelBufferToHeight(
                     pixelBuffer,
-                    height: livenessImageSize,
+                    height: config.livenessImageSize,
                     orientation: .up
                 )
             else {
@@ -369,36 +317,10 @@ extension EnhancedSmartSelfieViewModel {
         debugPrint(error.localizedDescription)
     }
 
-    private func handleSubmission() {
-        DispatchQueue.main.async {
-            self.selfieCaptureState = .processing(.inProgress)
-        }
-        guard submissionTask == nil else { return }
-        if skipApiSubmission {
-            DispatchQueue.main.async {
-                self.selfieCaptureState = .processing(.success)
-                self.onFinished(callback: self.onResult)
-            }
-            return
-        }
-        submissionTask = Task {
-            try await submitJob()
-        }
-    }
-
     private func openSettings() {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString)
         else { return }
         UIApplication.shared.open(settingsURL)
-    }
-
-    private func handleCancelSelfieCapture() {
-        invalidateSubmissionTask()
-        if let error {
-            onResult.didError(error: error)
-        } else {
-            onResult.didError(error: SmileIDError.operationCanceled("User cancelled"))
-        }
     }
 }
 
@@ -424,9 +346,10 @@ extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
     }
 
     func faceDetector(
-        _: EnhancedFaceDetector, didFailWithError _: Error
+        _: EnhancedFaceDetector, didFailWithError error: Error
     ) {
         DispatchQueue.main.async {
+            print("Enhanced Face Detector Error:", error.localizedDescription)
             self.publishUserInstruction(.headInFrame)
         }
     }
@@ -474,14 +397,14 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
     }
 
     func didCompleteLivenessChallenge() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.cameraManager.pauseSession()
-            self.handleSubmission()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.cameraManager.pauseSession()
+            self?.onFinish()
         }
     }
 
     func livenessChallengeTimeout() {
-        let remainingImages = numLivenessImages - livenessImages.count
+        let remainingImages = config.numLivenessImages - livenessImages.count
         let count = remainingImages > 0 ? remainingImages : 0
         for _ in 0 ..< count {
             if let imageBuffer = currentFrameBuffer {
@@ -491,112 +414,29 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 
         failureReason = .mobileActiveLivenessTimeout
         cameraManager.pauseSession()
-        handleSubmission()
+        onFinish()
     }
-}
 
-// MARK: Selfie Job Submission
+    func onFinish() {
+        guard let selfieImageURL = selfieImageURL,
+              livenessImages.count == config.numLivenessImages,
+              !livenessImages.contains(where: { getRelativePath(from: $0) == nil }) else {
+            self.resultDelegate?.didFinish(with: SmileIDError.selfieCaptureFailed)
+            return
+        }
 
-extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
-    public func submitJob() async throws {
         // Add metadata before submission
         addSelfieCaptureMetaData()
 
-        // Create an instance of SelfieSubmissionManager to manage the submission process
-        let submissionManager = SelfieSubmissionManager(
-            userId: userId,
-            isEnroll: isEnroll,
-            numLivenessImages: numLivenessImages,
-            allowNewEnroll: allowNewEnroll,
-            selfieImageUrl: selfieImageURL,
-            livenessImages: livenessImages,
-            extraPartnerParams: extraPartnerParams,
-            localMetadata: localMetadata
-        )
-        submissionManager.delegate = self
-        try await submissionManager.submitJob(failureReason: failureReason)
-    }
+        let livenessImagesPaths = livenessImages.compactMap { $0 }
 
-    private func addSelfieCaptureMetaData() {
-        localMetadata.addMetadata(
-            Metadatum.SelfieCaptureDuration(
-                duration: metadataTimerStart.elapsedTime())
-        )
-        localMetadata.addMetadata(
-            Metadatum.ActiveLivenessType(livenessType: LivenessType.headPose)
-        )
-        localMetadata.addMetadata(
-            Metadatum(
-                name: "camera_name",
-                value: cameraManager.cameraName ?? "Unknown Camera Name"
+        self.resultDelegate?
+            .didFinish(
+                with: SelfieCaptureResult(
+                    selfieImage: selfieImageURL,
+                    livenessImages: livenessImagesPaths
+                ),
+                failureReason: self.failureReason
             )
-        )
-    }
-
-    private func resetSelfieCaptureMetadata() {
-        localMetadata.metadata.removeAllOfType(
-            Metadatum.SelfieCaptureDuration.self)
-        localMetadata.metadata.removeAllOfType(
-            Metadatum.ActiveLivenessType.self)
-    }
-
-    public func onFinished(callback: SmartSelfieResultDelegate) {
-        if let selfieImageURL = selfieImageURL,
-           let selfiePath = getRelativePath(from: selfieImageURL),
-           livenessImages.count == numLivenessImages,
-           !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-           )
-        {
-            let livenessImagesPaths = livenessImages.compactMap {
-                getRelativePath(from: $0)
-            }
-
-            callback.didSucceed(
-                selfieImage: selfiePath,
-                livenessImages: livenessImagesPaths,
-                apiResponse: apiResponse
-            )
-        } else if let error = error {
-            callback.didError(error: error)
-        }
-    }
-
-    // MARK: SelfieJobSubmissionDelegate Methods
-
-    func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
-        invalidateSubmissionTask()
-        HapticManager.shared.notification(type: .success)
-        DispatchQueue.main.async {
-            self.apiResponse = apiResponse
-            self.selfieCaptureState = .processing(.success)
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.onFinished(callback: self.onResult)
-        }
-    }
-
-    func submissionDidFail(
-        with error: Error,
-        errorMessage: String?,
-        errorMessageRes: String?,
-        updatedSelfieImageUrl: URL?,
-        updatedLivenessImages: [URL]
-    ) {
-        invalidateSubmissionTask()
-        HapticManager.shared.notification(type: .error)
-        DispatchQueue.main.async {
-            self.error = error
-            self.errorMessage = errorMessage
-            self.errorMessageRes = errorMessageRes
-            self.selfieCaptureState = .processing(.error)
-            self.selfieImageURL = updatedSelfieImageUrl
-            self.livenessImages = updatedLivenessImages
-        }
-    }
-
-    func invalidateSubmissionTask() {
-        submissionTask?.cancel()
-        submissionTask = nil
     }
 }

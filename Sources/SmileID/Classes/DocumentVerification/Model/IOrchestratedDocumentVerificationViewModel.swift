@@ -174,7 +174,8 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: self.config.extraPartnerParams),
+                    partnerParams: authResponse.partnerParams.copy(
+                        extras: self.config.extraPartnerParams),
                     // TODO: - Fix when Michael changes this to boolean
                     allowNewEnroll: String(self.config.allowNewEnroll),
                     metadata: self.localMetadata.metadata.items,
@@ -208,13 +209,15 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     }
                     self.selfieFile =
                         try LocalStorage.getFileByType(
-                            jobId: self.config.useStrictMode ? self.config.userId : self.config.jobId,
+                            jobId: self.config.useStrictMode
+                                ? self.config.userId : self.config.jobId,
                             fileType: FileType.selfie,
                             submitted: true
                         ) ?? selfieFile
                     self.livenessFiles =
                         try LocalStorage.getFilesByType(
-                            jobId: self.config.useStrictMode ? self.config.userId : self.config.jobId,
+                            jobId: self.config.useStrictMode
+                                ? self.config.userId : self.config.jobId,
                             fileType: FileType.liveness,
                             submitted: true
                         ) ?? []
@@ -241,13 +244,15 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     if didMove {
                         self.selfieFile =
                             try LocalStorage.getFileByType(
-                                jobId: self.config.useStrictMode ? self.config.userId : self.config.jobId,
+                                jobId: self.config.useStrictMode
+                                    ? self.config.userId : self.config.jobId,
                                 fileType: FileType.selfie,
                                 submitted: true
                             ) ?? selfieFile
                         self.livenessFiles =
                             try LocalStorage.getFilesByType(
-                                jobId: self.config.useStrictMode ? self.config.userId : self.config.jobId,
+                                jobId: self.config.useStrictMode
+                                    ? self.config.userId : self.config.jobId,
                                 fileType: FileType.liveness,
                                 submitted: true
                             ) ?? []
@@ -311,7 +316,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 }
 
 extension IOrchestratedDocumentVerificationViewModel: SelfieCaptureDelegate {
-    func didFinish(with result: SelfieCaptureResult) {
+    func didFinish(with result: SelfieCaptureResult, failureReason: FailureReason?) {
         submitJob()
     }
 

@@ -2,14 +2,15 @@ import Lottie
 import SwiftUI
 
 public struct LivenessCaptureInstructionsView: View {
-    @State private var showSelfieCaptureView: Bool = false
-
     private let showAttribution: Bool
-    private let viewModel: EnhancedSmartSelfieViewModel
+    private var didTapGetStarted: () -> Void
 
-    public init(showAttribution: Bool, viewModel: EnhancedSmartSelfieViewModel) {
+    public init(
+        showAttribution: Bool,
+        didTapGetStarted: @escaping () -> Void
+    ) {
         self.showAttribution = showAttribution
-        self.viewModel = viewModel
+        self.didTapGetStarted = didTapGetStarted
     }
 
     public var body: some View {
@@ -36,19 +37,9 @@ public struct LivenessCaptureInstructionsView: View {
             Spacer()
 
             VStack(spacing: 20) {
-                NavigationLink(
-                    destination: EnhancedSelfieCaptureScreen(
-                        viewModel: viewModel,
-                        showAttribution: showAttribution
-                    ),
-                    isActive: $showSelfieCaptureView
-                ) { EmptyView() }
-
                 SmileButton(
                     title: "Action.GetStarted",
-                    clicked: {
-                        self.showSelfieCaptureView = true
-                    }
+                    clicked: didTapGetStarted
                 )
 
                 if showAttribution {

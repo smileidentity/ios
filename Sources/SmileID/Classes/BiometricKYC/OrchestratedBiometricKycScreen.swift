@@ -2,47 +2,22 @@ import Combine
 import SwiftUI
 
 struct OrchestratedBiometricKycScreen: View {
-    let userId: String
-    let jobId: String
-    let allowNewEnroll: Bool
-    let showInstructions: Bool
-    let showAttribution: Bool
-    let allowAgentMode: Bool
-    let useStrictMode: Bool
-    let extraPartnerParams: [String: String] = [:]
+    let config: BiometricVerificationConfig
     let delegate: BiometricKycResultDelegate
     @Backport.StateObject private var viewModel: OrchestratedBiometricKycViewModel
 
+    @State private var showSelfieCaptureInstructions: Bool
+
     init(
-        idInfo: IdInfo,
-        consentInformation: ConsentInformation,
-        userId: String,
-        jobId: String,
-        allowNewEnroll: Bool,
-        showInstructions: Bool,
-        showAttribution: Bool,
-        allowAgentMode: Bool,
-        useStrictMode: Bool,
-        extraPartnerParams: [String: String] = [:],
+        config: BiometricVerificationConfig,
         delegate: BiometricKycResultDelegate
     ) {
-        self.userId = userId
-        self.jobId = jobId
-        self.allowNewEnroll = allowNewEnroll
-        self.showInstructions = showInstructions
-        self.showAttribution = showAttribution
-        self.allowAgentMode = allowAgentMode
-        self.useStrictMode = useStrictMode
+        self.config = config
         self.delegate = delegate
         self._viewModel = Backport.StateObject(wrappedValue: OrchestratedBiometricKycViewModel(
-            userId: userId,
-            jobId: jobId,
-            allowNewEnroll: allowNewEnroll,
-            idInfo: idInfo,
-            useStrictMode: useStrictMode,
-            consentInformation: consentInformation,
-            extraPartnerParams: extraPartnerParams
+            config: config
         ))
+        self._showSelfieCaptureInstructions = State(initialValue: config.showInstructions)
     }
 
     var body: some View {
@@ -85,33 +60,40 @@ struct OrchestratedBiometricKycScreen: View {
     }
 
     private var selfieCaptureScreen: some View {
-        Group {
-            if useStrictMode {
-                OrchestratedEnhancedSelfieCaptureScreen(
-                    userId: userId,
-                    isEnroll: false,
-                    allowNewEnroll: allowNewEnroll,
-                    showAttribution: showAttribution,
-                    showInstructions: showInstructions,
-                    skipApiSubmission: true,
-                    extraPartnerParams: extraPartnerParams,
-                    onResult: viewModel
-                )
+        ZStack {
+            if config.useStrictMode {
+                if showSelfieCaptureInstructions {
+                    LivenessCaptureInstructionsView(
+                        showAttribution: config.showAttribution,
+                        didTapGetStarted: {
+                            withAnimation { showSelfieCaptureInstructions = false }
+                        }
+                    )
+                    .transition(.move(edge: .leading))
+                } else {
+                    EnhancedSelfieCaptureScreen(
+                        userId: config.userId,
+                        showAttribution: config.showAttribution,
+                        delegate: viewModel
+                    )
+                    .transition(.move(edge: .trailing))
+                }
             } else {
-                OrchestratedSelfieCaptureScreen(
-                    config: OrchestratedSelfieCaptureConfig(
-                        userId: userId,
-                        jobId: jobId,
-                        isEnroll: false,
-                        allowNewEnroll: allowNewEnroll,
-                        allowAgentMode: allowAgentMode,
-                        showAttribution: showAttribution,
-                        showInstructions: showInstructions,
-                        extraPartnerParams: extraPartnerParams,
-                        skipApiSubmission: true
-                    ),
-                    onResult: viewModel
-                )
+                if showSelfieCaptureInstructions {
+                    SmartSelfieInstructionsScreen(
+                        showAttribution: config.showAttribution,
+                        didTapTakePhoto: {
+                            withAnimation { showSelfieCaptureInstructions = false }
+                        }
+                    )
+                    .transition(.move(edge: .leading))
+                } else {
+                    SelfieCaptureScreen(
+                        jobId: config.jobId,
+                        delegate: viewModel
+                    )
+                    .transition(.move(edge: .trailing))
+                }
             }
         }
     }

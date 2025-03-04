@@ -247,7 +247,7 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
 
 // MARK: SelfieCaptureDelegate
 extension OrchestratedSelfieCaptureViewModel: SelfieCaptureDelegate {
-    func didFinish(with result: SelfieCaptureResult) {
+    func didFinish(with result: SelfieCaptureResult, failureReason: FailureReason?) {
         selfieImage = result.selfieImage
         livenessImages = result.livenessImages
         submitJob()

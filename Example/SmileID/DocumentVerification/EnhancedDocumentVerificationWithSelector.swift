@@ -25,10 +25,10 @@ struct EnhancedDocumentVerificationWithSelector: View {
                         contactInformationConsentGranted: true,
                         documentInformationConsentGranted: true
                     ),
-                    countryCode: countryCode,
                     documentType: documentType,
                     captureBothSides: captureBothSides,
-                    allowGalleryUpload: true
+                    allowGalleryUpload: true,
+                    countryCode: countryCode
                 ),
                 delegate: delegate
             )

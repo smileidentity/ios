@@ -8,105 +8,83 @@ public struct EnhancedSelfieCaptureScreen: View {
     private(set) var originalBrightness = UIScreen.main.brightness
     private let cameraContainerHeight: CGFloat = 480
 
+    private var didTapCancel: (() -> Void)?
+
     public init(
-        viewModel: EnhancedSmartSelfieViewModel,
-        showAttribution: Bool
+        userId: String,
+        showAttribution: Bool,
+        delegate: SelfieCaptureDelegate,
+        didTapCancel: (() -> Void)? = nil
     ) {
-        self._viewModel = Backport.StateObject(wrappedValue: viewModel)
+        self._viewModel = Backport.StateObject(
+            wrappedValue: EnhancedSmartSelfieViewModel(
+                userId: userId
+            )
+        )
         self.showAttribution = showAttribution
+        self.didTapCancel = didTapCancel
+        self.viewModel.configure(delegate: delegate)
     }
 
     public var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 10) {
-                switch viewModel.selfieCaptureState {
-                case .capturingSelfie:
-                    ZStack {
-                        CameraView(
-                            cameraManager: viewModel.cameraManager,
-                            selfieViewModel: viewModel
-                        )
-                        .cornerRadius(40)
-                        .frame(height: cameraContainerHeight)
+                ZStack {
+                    CameraView(
+                        cameraManager: viewModel.cameraManager,
+                        selfieViewModel: viewModel
+                    )
+                    .cornerRadius(40)
+                    .frame(height: cameraContainerHeight)
 
-                        RoundedRectangle(cornerRadius: 40)
-                            .fill(SmileID.theme.tertiary.opacity(0.8))
-                            .reverseMask(alignment: .top) {
-                                faceShape
-                                    .frame(width: 250, height: 350)
-                                    .padding(.top, 50)
-                            }
-                            .frame(height: cameraContainerHeight)
-                        VStack {
-                            ZStack {
-                                FaceBoundingArea(
-                                    faceInBounds: viewModel.faceInBounds,
-                                    selfieCaptured: viewModel.selfieCaptured,
-                                    showGuideAnimation: viewModel.showGuideAnimation,
-                                    guideAnimation: viewModel.userInstruction?.guideAnimation
-                                )
-                                if let currentLivenessTask = viewModel.livenessCheckManager.currentTask,
-                                    viewModel.faceInBounds {
-                                    LivenessGuidesView(
-                                        currentLivenessTask: currentLivenessTask,
-                                        topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
-                                        rightArcProgress: $viewModel.livenessCheckManager.lookRightProgress,
-                                        leftArcProgress: $viewModel.livenessCheckManager.lookLeftProgress
-                                    )
-                                }
-                            }
-                            .padding(.top, 50)
-                            Spacer()
-                            if let userInstruction = viewModel.userInstruction {
-                                UserInstructionsView(
-                                    instruction: userInstruction.instruction
+                    RoundedRectangle(cornerRadius: 40)
+                        .fill(SmileID.theme.tertiary.opacity(0.8))
+                        .reverseMask(alignment: .top) {
+                            faceShape
+                                .frame(width: 250, height: 350)
+                                .padding(.top, 50)
+                        }
+                        .frame(height: cameraContainerHeight)
+                    VStack {
+                        ZStack {
+                            FaceBoundingArea(
+                                faceInBounds: viewModel.faceInBounds,
+                                selfieCaptured: viewModel.selfieCaptured,
+                                showGuideAnimation: viewModel.showGuideAnimation,
+                                guideAnimation: viewModel.userInstruction?.guideAnimation
+                            )
+                            if let currentLivenessTask = viewModel.livenessCheckManager.currentTask,
+                                viewModel.faceInBounds {
+                                LivenessGuidesView(
+                                    currentLivenessTask: currentLivenessTask,
+                                    topArcProgress: $viewModel.livenessCheckManager.lookUpProgress,
+                                    rightArcProgress: $viewModel.livenessCheckManager.lookRightProgress,
+                                    leftArcProgress: $viewModel.livenessCheckManager.lookLeftProgress
                                 )
                             }
                         }
-                    }
-                    .selfieCaptureFrameBackground(cameraContainerHeight)
-                    if showAttribution {
-                        Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
-                    }
-                case let .processing(processingState):
-                    ZStack {
-                        if let selfieImage = viewModel.selfieImage {
-                            SelfiePreviewView(image: selfieImage)
-                        }
-                        RoundedRectangle(cornerRadius: 40)
-                            .fill(SmileID.theme.tertiary.opacity(0.8))
-                            .reverseMask(alignment: .top) {
-                                faceShape
-                                    .frame(width: 250, height: 350)
-                                    .padding(.top, 50)
-                            }
-                            .frame(height: cameraContainerHeight)
-                        VStack {
-                            Spacer()
+                        .padding(.top, 50)
+                        Spacer()
+                        if let userInstruction = viewModel.userInstruction {
                             UserInstructionsView(
-                                instruction: processingState.title,
-                                message: processingState == .error ? getErrorSubtitle(
-                                    errorMessageRes: viewModel.errorMessageRes,
-                                    errorMessage: viewModel.errorMessage
-                                ) : nil
+                                instruction: userInstruction.instruction
                             )
                         }
-                        SubmissionStatusView(processState: processingState)
-                            .padding(.bottom, 40)
-                    }
-                    .selfieCaptureFrameBackground(cameraContainerHeight)
-                    if showAttribution {
-                        Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
                     }
                 }
+                .selfieCaptureFrameBackground(cameraContainerHeight)
+                if showAttribution {
+                    Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
+                }
+
                 Spacer()
-                SelfieActionsView(
-                    captureState: viewModel.selfieCaptureState,
-                    retryAction: { viewModel.perform(action: .retryJobSubmission) },
-                    cancelAction: {
-                        viewModel.perform(action: .cancelSelfieCapture)
-                    }
-                )
+                Button {
+                    didTapCancel?()
+                } label: {
+                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
+                        .font(SmileID.theme.button)
+                        .foregroundColor(SmileID.theme.error)
+                }
             }
             .padding(.vertical, 20)
             .navigationBarHidden(true)
