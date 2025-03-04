@@ -23,7 +23,12 @@ public struct EnhancedKycRequest: Codable {
         country: String,
         idType: String,
         idNumber: String,
-        consentInformation: ConsentInformation,
+        consentInformation: ConsentInformation = ConsentInformation(
+            consentGrantedDate: Date().toISO8601WithMilliseconds(),
+            personalDetailsConsentGranted: false,
+            contactInformationConsentGranted: false,
+            documentInformationConsentGranted: false
+        ),
         firstName: String? = nil,
         middleName: String? = nil,
         lastName: String? = nil,
