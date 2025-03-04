@@ -24,12 +24,6 @@ public struct Metadata: Codable {
     }
 }
 
-extension Array where Element == Metadatum {
-    func asNetworkRequest() -> Metadata {
-        return Metadata(items: self)
-    }
-}
-
 public class Metadatum: Codable {
     public let name: String
     public let value: String
