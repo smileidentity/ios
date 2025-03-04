@@ -4,7 +4,7 @@
 
 * Make ConsentInformation optional in EnhancedDocV, EnhancedKYC and BiometricKYC
 
-## ## 10.4.0
+## 10.4.0
 
 ### Added
 * Pass ConsentInformation in EnhancedDocV, EnhancedKYC and BiometricKYC
