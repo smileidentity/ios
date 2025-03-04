@@ -547,7 +547,10 @@ public class SmileID {
         useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         consentInformation: ConsentInformation = ConsentInformation(
-            consentGrantedDate: "", personalDetailsConsentGranted: false, contactInformationConsentGranted: false, documentInformationConsentGranted: false
+            consentGrantedDate: Date().toISO8601WithMilliseconds(),
+            personalDetailsConsentGranted: false,
+            contactInformationConsentGranted: false,
+            documentInformationConsentGranted: false
         ),
         delegate: EnhancedDocumentVerificationResultDelegate
     ) -> some View {
@@ -622,7 +625,10 @@ public class SmileID {
         useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         consentInformation: ConsentInformation = ConsentInformation(
-            consentGrantedDate: "", personalDetailsConsentGranted: false, contactInformationConsentGranted: false, documentInformationConsentGranted: false
+            consentGrantedDate: Date().toISO8601WithMilliseconds(),
+            personalDetailsConsentGranted: false,
+            contactInformationConsentGranted: false,
+            documentInformationConsentGranted: false
         ),
         delegate: BiometricKycResultDelegate
     ) -> some View {
