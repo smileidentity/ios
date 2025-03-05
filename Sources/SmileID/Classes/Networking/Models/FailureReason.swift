@@ -1,6 +1,6 @@
 import Foundation
 
-public enum FailureReason: Encodable {
+public enum FailureReason: Codable {
     case mobileActiveLivenessTimeout
 
     private enum CodingKeys: String, CodingKey {
