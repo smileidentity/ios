@@ -89,8 +89,7 @@ struct HomeView: View {
                         onDismiss: { selectedProduct = nil }
                     )
                 case .enhancedKYC:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
+                    CancellableNavigationView {
                         EnhancedKycWithIdInputScreen(
                             delegate: viewModel,
                             viewModel: EnhancedKycWithIdInputScreenViewModel(
@@ -98,10 +97,11 @@ struct HomeView: View {
                                 jobId: viewModel.newJobId
                             )
                         )
+                    } onCancel: {
+                        selectedProduct = nil
                     }
                 case .biometricKYC:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
+                    CancellableNavigationView {
                         BiometricKycWithIdInputScreen(
                             delegate: viewModel,
                             viewModel: BiometricKycWithIdInputScreenViewModel(
@@ -109,49 +109,31 @@ struct HomeView: View {
                                 jobId: viewModel.newJobId
                             )
                         )
+                    } onCancel: {
+                        selectedProduct = nil
                     }
                 case .documentVerification:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
+                    CancellableNavigationView {
                         DocumentVerificationWithSelector(
                             userId: viewModel.newUserId,
                             jobId: viewModel.newJobId,
                             delegate: viewModel
                         )
+                    } onCancel: {
+                        selectedProduct = nil
                     }
                 case .enhancedDocumentVerification:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
+                    CancellableNavigationView {
                         EnhancedDocumentVerificationWithSelector(
                             userId: viewModel.newUserId,
                             jobId: viewModel.newJobId,
                             delegate: viewModel
                         )
+                    } onCancel: {
+                        selectedProduct = nil
                     }
                 }
             }
-        }
-    }
-}
-
-// This will no longer be needed after in-flow navigation work is complete.
-struct ProductContainerView<Content: View>: View {
-    let onCancel: () -> Void
-    @ViewBuilder let content: () -> Content
-
-    var body: some View {
-        NavigationView {
-            content()
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button {
-                            onCancel()
-                        } label: {
-                            Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                                .foregroundColor(SmileID.theme.accent)
-                        }
-                    }
-                }
         }
     }
 }
@@ -219,8 +201,12 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
                 onDismiss: onDismiss
             )
         } else {
-            EnterUserIDView(initialUserId: initialUserId) { userId in
-                self.userId = userId
+            CancellableNavigationView {
+                EnterUserIDView(initialUserId: initialUserId) { userId in
+                    self.userId = userId
+                }
+            } onCancel: {
+                onDismiss()
             }
         }
     }
