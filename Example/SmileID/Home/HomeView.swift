@@ -83,8 +83,9 @@ struct HomeView: View {
                         onDismiss: { selectedProduct = nil }
                     )
                 case .enhancedSmartSelfieAuthentication:
-                    SmartSelfieAuthEnhancedWithUserIdEntry(
+                    SmartSelfieAuthWithUserIdEntry(
                         initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                        useStrictMode: true,
                         delegate: viewModel,
                         onDismiss: { selectedProduct = nil }
                     )
@@ -184,54 +185,59 @@ class SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
 
 private struct SmartSelfieAuthWithUserIdEntry: View {
     let initialUserId: String
+    let useStrictMode: Bool
     let delegate: SmartSelfieResultDelegate
     let onDismiss: (() -> Void)
 
     @State private var userId: String?
 
+    init(
+        initialUserId: String,
+        useStrictMode: Bool = false,
+        delegate: SmartSelfieResultDelegate,
+        onDismiss: @escaping () -> Void
+    ) {
+        self.initialUserId = initialUserId
+        self.delegate = delegate
+        self.useStrictMode = useStrictMode
+        self.onDismiss = onDismiss
+    }
+
     var body: some View {
         if let userId {
-            SmileID.smartSelfieAuthenticationScreen(
-                config: OrchestratedSelfieCaptureConfig(
-                    userId: userId,
-                    isEnroll: false,
-                    allowAgentMode: true
-                ),
-                delegate: delegate,
-                onDismiss: onDismiss
-            )
+            ZStack {
+                if useStrictMode {
+                    SmileID.smartSelfieAuthenticationScreenEnhanced(
+                        config: OrchestratedSelfieCaptureConfig(
+                            userId: userId,
+                            isEnroll: false
+                        ),
+                        delegate: delegate
+                    )
+                } else {
+                    SmileID.smartSelfieAuthenticationScreen(
+                        config: OrchestratedSelfieCaptureConfig(
+                            userId: userId,
+                            isEnroll: false,
+                            allowAgentMode: true
+                        ),
+                        delegate: delegate,
+                        onDismiss: onDismiss
+                    )
+                }
+            }
+            .transition(.move(edge: .trailing))
         } else {
             CancellableNavigationView {
                 EnterUserIDView(initialUserId: initialUserId) { userId in
-                    self.userId = userId
+                    withAnimation {
+                        self.userId = userId
+                    }
                 }
             } onCancel: {
                 onDismiss()
             }
-        }
-    }
-}
-
-private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
-    let initialUserId: String
-    let delegate: SmartSelfieResultDelegate
-    let onDismiss: (() -> Void)
-
-    @State private var userId: String?
-
-    var body: some View {
-        if let userId {
-            SmileID.smartSelfieAuthenticationScreenEnhanced(
-                config: OrchestratedSelfieCaptureConfig(
-                    userId: userId,
-                    isEnroll: false
-                ),
-                delegate: delegate
-            )
-        } else {
-            EnterUserIDView(initialUserId: initialUserId) { userId in
-                self.userId = userId
-            }
+            .transition(.move(edge: .leading))
         }
     }
 }
