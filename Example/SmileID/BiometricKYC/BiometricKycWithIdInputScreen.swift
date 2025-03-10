@@ -68,19 +68,23 @@ struct BiometricKycWithIdInputScreen: View {
                     requiredFields: requiredFields,
                     onResult: viewModel.onIdFieldsEntered
                 ).frame(maxWidth: .infinity)
-            case let .sdk(idInfo, consentInformation):
-                SmileID.biometricKycScreen(
-                    config: BiometricVerificationConfig(
-                        userId: viewModel.userId,
-                        jobId: viewModel.jobId,
-                        useStrictMode: false,
-                        allowAgentMode: true,
-                        idInfo: idInfo,
-                        consentInformation: consentInformation
-                    ),
-                    delegate: delegate
-                )
             }
+        }
+        .fullScreenCover(item: $viewModel.providedInfo) { data in
+            SmileID.biometricKycScreen(
+                config: BiometricVerificationConfig(
+                    userId: viewModel.userId,
+                    jobId: viewModel.jobId,
+                    useStrictMode: false,
+                    allowAgentMode: true,
+                    idInfo: data.idInfo,
+                    consentInformation: data.consentInformation
+                ),
+                delegate: delegate,
+                onDismiss: {
+                    viewModel.providedInfo = nil
+                }
+            )
         }
     }
 }

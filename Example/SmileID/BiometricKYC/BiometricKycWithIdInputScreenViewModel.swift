@@ -6,7 +6,12 @@ enum BiometricKycWithIdInputScreenStep {
     case idTypeSelection([CountryInfo])
     case consent(country: String, idType: String, requiredFields: [RequiredField])
     case idInput(country: String, idType: String, consentInformation: ConsentInformation, requiredFields: [RequiredField])
-    case sdk(idInfo: IdInfo, consentInformation: ConsentInformation)
+}
+
+struct ProvidedKYCInfo: Identifiable {
+    let id = UUID()
+    let idInfo: IdInfo
+    let consentInformation: ConsentInformation
 }
 
 class BiometricKycWithIdInputScreenViewModel: ObservableObject {
@@ -14,6 +19,7 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
     let jobId: String
 
     @Published @MainActor var step = BiometricKycWithIdInputScreenStep.loading("Loading ID Types…")
+    @Published var providedInfo: ProvidedKYCInfo?
 
     init(userId: String, jobId: String) {
         self.userId = userId
@@ -126,7 +132,7 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
 
     func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation) {
         DispatchQueue.main.async {
-            self.step = .sdk(
+            self.providedInfo = ProvidedKYCInfo(
                 idInfo: idInfo,
                 consentInformation: consentInformation
             )

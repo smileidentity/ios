@@ -411,13 +411,16 @@ public class SmileID {
     /// - Parameters:
     ///  - config: configuration options for customising biometric verification experience
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
+    ///  - onDismiss: Closure to provide custom implementation when biometric kyc screen is dismissed
     public class func biometricKycScreen(
         config: BiometricVerificationConfig,
-        delegate: BiometricKycResultDelegate
+        delegate: BiometricKycResultDelegate,
+        onDismiss: (() -> Void)? = nil
     ) -> some View {
         OrchestratedBiometricKycScreen(
             config: config,
-            delegate: delegate
+            delegate: delegate,
+            onDismiss: onDismiss
         )
     }
 }
