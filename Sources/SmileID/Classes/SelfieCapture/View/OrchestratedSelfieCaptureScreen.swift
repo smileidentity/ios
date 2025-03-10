@@ -31,7 +31,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
     }
 
     public var body: some View {
-        NavigationView {
+        CancellableNavigationView {
             ZStack {
                 if showInstructions {
                     SmartSelfieInstructionsScreen(
@@ -95,14 +95,8 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     )
                 }
             }
-            .navigationBarItems(
-                leading: Button {
-                    onDismiss?()
-                } label: {
-                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                        .foregroundColor(SmileID.theme.accent)
-                }
-            )
+        } onCancel: {
+            onDismiss?()
         }
     }
 }
