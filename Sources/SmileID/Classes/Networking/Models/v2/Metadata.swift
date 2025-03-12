@@ -17,7 +17,7 @@ public struct Metadata: Codable {
             .fingerprint,
             .deviceModel,
             .deviceOS,
-            .networkConnection
+            Metadatum.NetworkConnection() // Use dynamic class instead of static property
         ])
     }
 

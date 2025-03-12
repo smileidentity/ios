@@ -1,6 +1,11 @@
 import Foundation
 import Network
 
+/// Notification name for when the connection type changes
+public extension Notification.Name {
+    static let networkConnectionTypeDidChange = Notification.Name("networkConnectionTypeDidChange")
+}
+
 /// A class for determining the current network connection type (Wi-Fi, cellular, VPN, etc.)
 public class NetworkConnectionProvider {
     public enum ConnectionType: String {
@@ -19,7 +24,20 @@ public class NetworkConnectionProvider {
 
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkConnectionProvider")
-    private var currentConnectionType: ConnectionType = .unknown
+    private var currentConnectionType: ConnectionType = .unknown {
+        didSet {
+            if oldValue != currentConnectionType {
+                // Post notification on the main thread when connection type changes
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(
+                        name: .networkConnectionTypeDidChange,
+                        object: self,
+                        userInfo: ["connectionType": self.currentConnectionType.rawValue]
+                    )
+                }
+            }
+        }
+    }
 
     public static let shared = NetworkConnectionProvider()
 
@@ -36,6 +54,9 @@ public class NetworkConnectionProvider {
             self?.updateConnectionType(path: path)
         }
         monitor.start(queue: queue)
+
+        // Update connection type immediately with current path
+        updateConnectionType(path: monitor.currentPath)
     }
 
     private func stopMonitoring() {
@@ -62,7 +83,7 @@ public class NetworkConnectionProvider {
 
     private func isVPNActive() -> Bool? {
         let vpnProtocolsKeyIDs = [
-            "tap", "tun", "ppp", "ipsec", "utun",
+            "tap", "tun", "ppp", "ipsec", "utun"
         ]
 
         let networkInterfaces = NetworkConnectionProvider.getAllNetworkInterfaces()
