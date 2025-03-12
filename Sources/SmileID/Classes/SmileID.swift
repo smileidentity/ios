@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.4.1"
+    public static let version = "10.4.2"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -343,6 +343,7 @@ public class SmileID {
         allowNewEnroll: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
@@ -352,6 +353,7 @@ public class SmileID {
             allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             showInstructions: showInstructions,
+            skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
             onResult: delegate
         )
