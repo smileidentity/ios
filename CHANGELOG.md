@@ -1,7 +1,7 @@
 # Release Notes
 ## 10.4.2
 
-* Added SmartSelfie™ capture only option for for Enhanced SmartSelfie™ and SmartSelfie™ capture flows without submission 
+* Added SmartSelfie™ capture only option for Enhanced SmartSelfie™ and SmartSelfie™ capture flows without submission 
 
 ## 10.4.1
 
