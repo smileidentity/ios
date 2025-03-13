@@ -389,7 +389,7 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         useStrictMode _: Bool = false,
-        skipApiSubmission : Bool = false,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
@@ -536,7 +536,8 @@ public class SmileID {
     ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
     ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
-    ///  - consentInformation: Consent information based on when the user has accepted consent, if they have not the default will be false
+    ///  - consentInformation: Consent information based on when the user has
+    ///  accepted consent, if they have not the default will be false
     ///  and the timestamp will be at the point of screen being shown
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func enhancedDocumentVerificationScreen(
@@ -621,7 +622,8 @@ public class SmileID {
     ///  - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
     ///  - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///  - extraPartnerParams: Custom values specific to partners
-    ///  - consentInformation: Consent information based on when the user has accepted consent, if they have not the default will be false
+    ///  - consentInformation: Consent information based on when the user has accepted consent,
+    ///  if they have not the default will be false
     ///  and the timestamp will be at the point of screen being shown
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
