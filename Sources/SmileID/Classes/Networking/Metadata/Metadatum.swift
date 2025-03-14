@@ -136,14 +136,14 @@ public class Metadatum: Codable {
             try super.init(from: decoder)
         }
     }
-    
+
     public class NetworkConnection: Metadatum {
         public init() {
             super.init(
                 name: "network_connection",
                 value: NetworkConnectionProvider.shared.getCurrentConnectionType())
         }
-        
+
         public required init(from decoder: Decoder) throws {
             try super.init(from: decoder)
         }
