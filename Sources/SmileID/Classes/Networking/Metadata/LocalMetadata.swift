@@ -4,7 +4,7 @@ import Foundation
 public class LocalMetadata: ObservableObject {
     @Published var metadata: Metadata = .default()
     private var cancellables = Set<AnyCancellable>()
-    
+
     public init() {
         // Subscribe to network connection type changes
         NetworkConnectionProvider.shared.$connectionType
