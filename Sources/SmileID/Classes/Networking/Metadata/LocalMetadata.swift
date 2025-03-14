@@ -3,23 +3,17 @@ import Foundation
 
 public class LocalMetadata: ObservableObject {
     @Published var metadata: Metadata = .default()
-    private var notificationToken: NSObjectProtocol?
+    private var cancellables = Set<AnyCancellable>()
     
     public init() {
-        // Register for network connection type changes
-        notificationToken = NotificationCenter.default.addObserver(
-            forName: .networkConnectionTypeDidChange,
-            object: nil,
-            queue: .main
-        ) { [weak self] notification in
-            self?.updateNetworkConnectionMetadata()
-        }
-    }
-    
-    deinit {
-        if let token = notificationToken {
-            NotificationCenter.default.removeObserver(token)
-        }
+        // Subscribe to network connection type changes
+        NetworkConnectionProvider.shared.$connectionType
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                // Update metadata when connection type changes
+                self?.updateNetworkConnectionMetadata()
+            }
+            .store(in: &cancellables)
     }
 
     func addMetadata(_ newMetadata: Metadatum) {

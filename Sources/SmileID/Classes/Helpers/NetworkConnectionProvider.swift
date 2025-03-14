@@ -1,14 +1,10 @@
 import Foundation
 import Network
-
-/// Notification name for when the connection type changes
-public extension Notification.Name {
-    static let networkConnectionTypeDidChange = Notification.Name("networkConnectionTypeDidChange")
-}
+import Combine
 
 /// A class for determining the current network connection type (Wi-Fi, cellular, VPN, etc.)
-public class NetworkConnectionProvider {
-    public enum ConnectionType: String {
+class NetworkConnectionProvider {
+    enum ConnectionType: String, Equatable {
         case wifi
         case cellular
         case vpn
@@ -24,22 +20,23 @@ public class NetworkConnectionProvider {
 
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkConnectionProvider")
+    
+    // Publisher for connection type changes
+    @Published private(set) var connectionType: ConnectionType = .unknown
+    
     private var currentConnectionType: ConnectionType = .unknown {
         didSet {
             if oldValue != currentConnectionType {
-                // Post notification on the main thread when connection type changes
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(
-                        name: .networkConnectionTypeDidChange,
-                        object: self,
-                        userInfo: ["connectionType": self.currentConnectionType.rawValue]
-                    )
+                // Publish the new connection type on the main thread
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.connectionType = self.currentConnectionType
                 }
             }
         }
     }
 
-    public static let shared = NetworkConnectionProvider()
+    static let shared = NetworkConnectionProvider()
 
     private init() {
         startMonitoring()
@@ -126,12 +123,12 @@ public class NetworkConnectionProvider {
     }
 
     /// Returns the current connection type as a string
-    public func getCurrentConnectionType() -> String {
-        return currentConnectionType.description
+    func getCurrentConnectionType() -> String {
+        return connectionType.description
     }
 
     /// Returns whether the device is currently connected to a network
-    public var isConnected: Bool {
+    var isConnected: Bool {
         return monitor.currentPath.status == .satisfied
     }
 }
