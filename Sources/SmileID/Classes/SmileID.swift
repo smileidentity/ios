@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.4.1"
+    public static let version = "10.4.2"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -336,6 +336,7 @@ public class SmileID {
     ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
     ///     screen
     ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
+    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
     @ViewBuilder public class func smartSelfieEnrollmentScreenEnhanced(
@@ -343,6 +344,7 @@ public class SmileID {
         allowNewEnroll: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
@@ -352,6 +354,7 @@ public class SmileID {
             allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             showInstructions: showInstructions,
+            skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
             onResult: delegate
         )
@@ -386,6 +389,7 @@ public class SmileID {
         showAttribution: Bool = true,
         showInstructions: Bool = true,
         useStrictMode _: Bool = false,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
@@ -398,7 +402,7 @@ public class SmileID {
             showAttribution: showAttribution,
             showInstructions: showInstructions,
             extraPartnerParams: extraPartnerParams,
-            skipApiSubmission: false,
+            skipApiSubmission: skipApiSubmission,
             onResult: delegate
         )
     }
@@ -415,6 +419,7 @@ public class SmileID {
     ///   - showAttribution: Whether to show the Smile ID attribution or not on the Instructions
     ///     screen
     ///   - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
+    ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
     @ViewBuilder public class func smartSelfieAuthenticationScreenEnhanced(
@@ -422,6 +427,7 @@ public class SmileID {
         allowNewEnroll: Bool = false,
         showAttribution: Bool = true,
         showInstructions: Bool = true,
+        skipApiSubmission: Bool = false,
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
@@ -431,6 +437,7 @@ public class SmileID {
             allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             showInstructions: showInstructions,
+            skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
             onResult: delegate
         )
@@ -529,7 +536,8 @@ public class SmileID {
     ///   - showAttribution: Whether to show the Smile ID attribution on the Instructions screen
     ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///   - extraPartnerParams: Custom values specific to partners
-    ///  - consentInformation: Consent information based on when the user has accepted consent, if they have not the default will be false
+    ///  - consentInformation: Consent information based on when the user has
+    ///  accepted consent, if they have not the default will be false
     ///  and the timestamp will be at the point of screen being shown
     ///   - delegate: The delegate object that receives the result of the Document Verification
     public class func enhancedDocumentVerificationScreen(
@@ -614,7 +622,8 @@ public class SmileID {
     ///  - showInstructions: Whether to deactivate capture screen's instructions for SmartSelfie.
     ///  - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
     ///  - extraPartnerParams: Custom values specific to partners
-    ///  - consentInformation: Consent information based on when the user has accepted consent, if they have not the default will be false
+    ///  - consentInformation: Consent information based on when the user has accepted consent,
+    ///  if they have not the default will be false
     ///  and the timestamp will be at the point of screen being shown
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
     public class func biometricKycScreen(
