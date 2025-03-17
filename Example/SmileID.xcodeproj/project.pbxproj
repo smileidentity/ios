@@ -919,7 +919,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
@@ -929,7 +929,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.smileidentity.example-ios";
 				PRODUCT_NAME = "Smile ID";
@@ -952,7 +952,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99P7YGX9Q6;
@@ -962,7 +962,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.smileidentity.example-ios";
 				PRODUCT_NAME = "Smile ID";
