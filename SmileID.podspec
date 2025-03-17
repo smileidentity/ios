@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.dependency 'ZIPFoundation', '~> 0.9'
   s.dependency 'FingerprintJS'
   s.dependency 'lottie-ios', '~> 4.4.2'
-  s.dependency 'SmileIDSecurity'
+  s.dependency 'SmileIDSecurity', '~> 1.0.1'
   s.swift_version = '5.5'
   s.source_files = 'Sources/SmileID/Classes/**/*'
   s.resource_bundles = {
