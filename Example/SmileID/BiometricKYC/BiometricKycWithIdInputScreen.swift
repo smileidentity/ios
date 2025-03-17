@@ -73,7 +73,7 @@ struct BiometricKycWithIdInputScreen: View {
                 userId: viewModel.userId,
                 jobId: viewModel.jobId,
                 allowAgentMode: true,
-                useStrictMode: true,
+                useStrictMode: false,
                 consentInformation: consentInformation,
                 delegate: delegate
             )
