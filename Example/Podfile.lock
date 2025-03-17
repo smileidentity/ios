@@ -12,7 +12,7 @@ PODS:
   - Sentry (8.43.0):
     - Sentry/Core (= 8.43.0)
   - Sentry/Core (8.43.0)
-  - SmileID (10.4.0):
+  - SmileID (10.4.2):
     - FingerprintJS
     - lottie-ios (~> 4.4.2)
     - SmileIDSecurity (~> 1.0.1)

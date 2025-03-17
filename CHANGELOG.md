@@ -1,6 +1,13 @@
 # Release Notes
+## 10.4.2
 
-## ## 10.4.0
+* Added SmartSelfie™ capture only option for Enhanced SmartSelfie™ and SmartSelfie™ capture flows without submission accessible with `skipApiSubmission=true` on enroll and authentication products
+
+## 10.4.1
+
+* Make ConsentInformation optional in EnhancedDocV, EnhancedKYC and BiometricKYC
+
+## 10.4.0
 
 ### Added
 * Pass ConsentInformation in EnhancedDocV, EnhancedKYC and BiometricKYC
