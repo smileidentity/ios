@@ -1,13 +1,12 @@
 import Foundation
 
-/// A type-erased metadata value that can hold any Encodable type
 struct AnyCodable: Codable {
     let value: Any
-    
+
     init<T: Codable>(_ value: T) {
         self.value = value
     }
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         // Try decoding the most common types:
@@ -24,10 +23,13 @@ struct AnyCodable: Codable {
         } else if let dicVal = try? container.decode([String: AnyCodable].self) {
             self.value = dicVal.mapValues { $0.value }
         } else {
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "AnyCodable value cannot be decoded")
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "AnyCodable value cannot be decoded"
+            )
         }
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self.value {
@@ -46,9 +48,11 @@ struct AnyCodable: Codable {
             let codableDict = dictVal.mapValues { AnyCodable($0) }
             try container.encode(codableDict)
         default:
-            let context = EncodingError.Context(codingPath: container.codingPath, debugDescription: "AnyCodable value cannot be encoded")
+            let context = EncodingError.Context(
+                codingPath: container.codingPath,
+                debugDescription: "AnyCodable value cannot be encoded"
+            )
             throw EncodingError.invalidValue(self.value, context)
         }
     }
 }
-

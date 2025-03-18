@@ -3,14 +3,14 @@ import Network
 import UIKit
 
 protocol MetadataProvider {
-    func collectMetadata() -> [MetadataKey: Any]
+    func collectMetadata() -> [MetadataKey: AnyCodable]
 }
 
 public class MetadataManager {
     public static let shared = MetadataManager()
 
     private var providers: [MetadataProvider] = []
-    private var staticMetadata: [MetadataKey: Any] = [:]
+    private var staticMetadata: [MetadataKey: AnyCodable] = [:]
 
     private init() {
         setDefaultMetadata()
@@ -39,8 +39,8 @@ public class MetadataManager {
         providers.append(provider)
     }
 
-    func addMetadata(key: MetadataKey, value: Any) {
-        staticMetadata[key] = value
+    func addMetadata<T: Codable>(key: MetadataKey, value: T) {
+        staticMetadata[key] = AnyCodable(value)
     }
 
     func removeMetadata(key: MetadataKey) {
@@ -48,10 +48,23 @@ public class MetadataManager {
     }
 
     public func getDefaultMetadata() -> [Metadatum] {
-        []
+        return staticMetadata.map {
+            Metadatum(key: $0.key, value: $0.value)
+        }
     }
 
     func collectAllMetadata() -> [Metadatum] {
-        []
+        var allMetadata = staticMetadata
+
+        for provider in providers {
+            let providerMetadata = provider.collectMetadata()
+            for (key, value) in providerMetadata {
+                allMetadata[key] = value
+            }
+        }
+        
+        return allMetadata.map { key, value in
+            Metadatum(key: key, value: value)
+        }
     }
 }

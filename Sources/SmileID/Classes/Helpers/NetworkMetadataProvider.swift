@@ -24,18 +24,18 @@ class NetworkMetadataProvider {
                 self.connectionTypes.append(newConnection)
             }
         }
-        
+
         let queue = DispatchQueue(label: "NetworkMonitor")
         monitor.start(queue: queue)
     }
-    
+
     deinit {
         monitor.cancel()
     }
 }
 
 extension NetworkMetadataProvider: MetadataProvider {
-    func collectMetadata() -> [MetadataKey: Any] {
-        return [.networkConnection: connectionTypes]
+    func collectMetadata() -> [MetadataKey: AnyCodable] {
+        return [.networkConnection: AnyCodable(connectionTypes)]
     }
 }
