@@ -14,6 +14,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
     private let metadataTimerStart = MonotonicTime()
+    private let metadataManager: MetadataManager = .shared
 
     // MARK: Private Properties
 
@@ -81,7 +82,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
     private let onResult: SmartSelfieResultDelegate
-    private var localMetadata: LocalMetadata
 
     enum SelfieCaptureState: Equatable {
         case capturingSelfie
@@ -103,8 +103,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         allowNewEnroll: Bool,
         skipApiSubmission: Bool,
         extraPartnerParams: [String: String],
-        onResult: SmartSelfieResultDelegate,
-        localMetadata: LocalMetadata
+        onResult: SmartSelfieResultDelegate
     ) {
         self.isEnroll = isEnroll
         self.userId = userId
@@ -112,7 +111,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
         self.onResult = onResult
-        self.localMetadata = localMetadata
         initialSetup()
     }
 
@@ -511,33 +509,21 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             selfieImageUrl: selfieImageURL,
             livenessImages: livenessImages,
             extraPartnerParams: extraPartnerParams,
-            localMetadata: localMetadata
+            metadata: metadataManager.collectAllMetadata()
         )
         submissionManager.delegate = self
         try await submissionManager.submitJob(failureReason: failureReason)
     }
 
     private func addSelfieCaptureMetaData() {
-        localMetadata.addMetadata(
-            Metadatum.SelfieCaptureDuration(
-                duration: metadataTimerStart.elapsedTime())
-        )
-        localMetadata.addMetadata(
-            Metadatum.ActiveLivenessType(livenessType: LivenessType.headPose)
-        )
-        localMetadata.addMetadata(
-            Metadatum(
-                name: "camera_name",
-                value: cameraManager.cameraName ?? "Unknown Camera Name"
-            )
-        )
+        metadataManager.addMetadata(key: .selfieCaptureDuration, value: metadataTimerStart.elapsedTime())
+        metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
+        metadataManager.addMetadata(key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
     }
 
     private func resetSelfieCaptureMetadata() {
-        localMetadata.metadata.removeAllOfType(
-            Metadatum.SelfieCaptureDuration.self)
-        localMetadata.metadata.removeAllOfType(
-            Metadatum.ActiveLivenessType.self)
+        metadataManager.removeMetadata(key: .selfieCaptureDuration)
+        metadataManager.removeMetadata(key: .activeLivenessType)
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
@@ -545,8 +531,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
            let selfiePath = getRelativePath(from: selfieImageURL),
            livenessImages.count == numLivenessImages,
            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-           )
-        {
+           ) {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }

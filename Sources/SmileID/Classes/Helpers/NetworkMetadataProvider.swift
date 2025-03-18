@@ -35,9 +35,7 @@ class NetworkMetadataProvider {
 }
 
 extension NetworkMetadataProvider: MetadataProvider {
-    func collectMetadata() -> [Metadatum] {
-        return [
-            Metadatum(name: "network_connection", value: AnyEncodable(connectionTypes))
-        ]
+    func collectMetadata() -> [MetadataKey: Any] {
+        return [.networkConnection: connectionTypes]
     }
 }

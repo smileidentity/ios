@@ -14,7 +14,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     private let allowNewEnroll: Bool
     private let useStrictMode: Bool
     private var extraPartnerParams: [String: String]
-    private let localMetadata = LocalMetadata()
+    private let metadataManager = MetadataManager.shared
     private var idInfo: IdInfo
     private var consentInformation: ConsentInformation
 
@@ -170,7 +170,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             jobType: .biometricKyc,
             enrollment: false,
             allowNewEnroll: allowNewEnroll,
-            localMetadata: localMetadata,
+            metadata: metadataManager.collectAllMetadata(),
             partnerParams: extraPartnerParams
         )
     }
@@ -179,7 +179,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         let prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
             allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
-            metadata: localMetadata.metadata.items,
+            metadata: metadataManager.collectAllMetadata(),
             timestamp: authResponse.timestamp,
             signature: authResponse.signature
         )

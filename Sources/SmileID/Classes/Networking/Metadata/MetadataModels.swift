@@ -1,5 +1,6 @@
 import Foundation
 
+/*
 class ActiveLivenessType: Metadatum {
     init(livenessType: LivenessType) {
         super.init(
@@ -101,18 +102,7 @@ class DocumentBackCaptureDuration: Metadatum {
         try super.init(from: decoder)
     }
 }
-
-class NetworkConnection: Metadatum {
-    init() {
-        super.init(
-            name: "network_connection",
-            value: NetworkConnectionProvider.shared.getCurrentConnectionType())
-    }
-
-    required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-}
+*/
 
 enum LivenessType: String, Codable {
     case headPose = "head_pose"

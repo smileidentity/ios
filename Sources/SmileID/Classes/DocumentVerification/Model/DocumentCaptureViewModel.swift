@@ -14,7 +14,8 @@ private let analysisSampleInterval: TimeInterval = 0.350
 class DocumentCaptureViewModel: ObservableObject {
     // Initializer properties
     private let knownAspectRatio: Double?
-    private var localMetadata: LocalMetadata
+    private let metadataManager: MetadataManager = .shared
+    let metadataTimerStart = MonotonicTime()
 
     // Other properties
     private let defaultAspectRatio: Double
@@ -43,12 +44,10 @@ class DocumentCaptureViewModel: ObservableObject {
 
     init(
         knownAspectRatio: Double? = nil,
-        side: DocumentCaptureSide,
-        localMetadata: LocalMetadata
+        side: DocumentCaptureSide
     ) {
         self.knownAspectRatio = knownAspectRatio
         self.side = side
-        self.localMetadata = localMetadata
         defaultAspectRatio = knownAspectRatio ?? 1.0
         DispatchQueue.main.async { [self] in
             idAspectRatio = defaultAspectRatio
@@ -99,13 +98,6 @@ class DocumentCaptureViewModel: ObservableObject {
                 self.documentFirstDetectedAtTime = nil
             }
         })
-    }
-
-    let metadataTimerStart = MonotonicTime()
-
-    func updateLocalMetadata(_ newMetadata: LocalMetadata) {
-        self.localMetadata = newMetadata
-        objectWillChange.send()
     }
 
     @objc func showManualCapture() {
@@ -161,16 +153,7 @@ class DocumentCaptureViewModel: ObservableObject {
     /// Called if the user declines the image in the capture confirmation dialog.
     func onRetry() {
         documentImageOrigin = nil
-        switch side {
-        case .front:
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentFrontCaptureRetries.self)
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentFrontCaptureDuration.self)
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentFrontImageOrigin.self)
-        case .back:
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentBackCaptureRetries.self)
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentBackCaptureDuration.self)
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentBackImageOrigin.self)
-        }
+        resetDocumentCaptureMetadata()
         retryCount += 1
         DispatchQueue.main.async {
             self.isCapturing = false
@@ -187,27 +170,54 @@ class DocumentCaptureViewModel: ObservableObject {
             imageData: image,
             aspectRatio: 1 / idAspectRatio
         )
-        switch side {
-        case .front:
-            localMetadata.addMetadata(
-                Metadatum.DocumentFrontCaptureDuration(duration: metadataTimerStart.elapsedTime()))
-            localMetadata.addMetadata(Metadatum.DocumentFrontCaptureRetries(retries: retryCount))
-            if let documentImageOrigin {
-                localMetadata.addMetadata(
-                    Metadatum.DocumentFrontImageOrigin(origin: documentImageOrigin))
-            }
-        case .back:
-            localMetadata.addMetadata(
-                Metadatum.DocumentBackCaptureDuration(duration: metadataTimerStart.elapsedTime()))
-            localMetadata.addMetadata(Metadatum.DocumentBackCaptureRetries(retries: retryCount))
-            if let documentImageOrigin {
-                localMetadata.addMetadata(
-                    Metadatum.DocumentBackImageOrigin(origin: documentImageOrigin))
-            }
-        }
+        collectDocumentCaptureMetadata()
         DispatchQueue.main.async { [self] in
             documentImageToConfirm = croppedImage
             isCapturing = false
+        }
+    }
+    
+    private func resetDocumentCaptureMetadata() {
+        switch side {
+        case .front:
+            metadataManager.removeMetadata(key: .documentFrontCaptureRetries)
+            metadataManager.removeMetadata(key: .documentFrontCaptureDuration)
+            metadataManager.removeMetadata(key: .documentFrontImageOrigin)
+        case .back:
+            metadataManager.removeMetadata(key: .documentBackCaptureRetries)
+            metadataManager.removeMetadata(key: .documentBackCaptureDuration)
+            metadataManager.removeMetadata(key: .documentBackImageOrigin)
+        }
+    }
+    
+    private func collectDocumentCaptureMetadata() {
+        switch side {
+        case .front:
+            metadataManager.addMetadata(
+                key: .documentFrontCaptureDuration,
+                value: metadataTimerStart.elapsedTime()
+            )
+            metadataManager.addMetadata(
+                key: .documentFrontCaptureRetries,
+                value: retryCount
+            )
+            
+            if let documentImageOrigin {
+                metadataManager.addMetadata(key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
+            }
+        case .back:
+            metadataManager.addMetadata(
+                key: .documentBackCaptureDuration,
+                value: metadataTimerStart.elapsedTime()
+            )
+            metadataManager.addMetadata(
+                key: .documentBackCaptureRetries,
+                value: retryCount
+            )
+            
+            if let documentImageOrigin {
+                metadataManager.addMetadata(key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
+            }
         }
     }
 

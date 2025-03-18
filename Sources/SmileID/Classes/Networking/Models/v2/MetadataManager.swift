@@ -3,14 +3,14 @@ import Network
 import UIKit
 
 protocol MetadataProvider {
-    func collectMetadata() -> [Metadatum]
+    func collectMetadata() -> [MetadataKey: Any]
 }
 
-class MetadataManager {
-    static let shared = MetadataManager()
+public class MetadataManager {
+    public static let shared = MetadataManager()
 
     private var providers: [MetadataProvider] = []
-    private var staticMetadata: [Metadatum] = []
+    private var staticMetadata: [MetadataKey: Any] = [:]
 
     private init() {
         setDefaultMetadata()
@@ -18,20 +18,17 @@ class MetadataManager {
     }
 
     private func setDefaultMetadata() {
-        // Set default metadata
-        setStaticMetadata(item: Metadatum(name: "sdk", value: "iOS"))
-        setStaticMetadata(item: Metadatum(
-            name: "sdk_version", value: SmileID.version))
-        setStaticMetadata(item: Metadatum(
-            name: "active_liveness_version", value: "1.0.0"))
-        setStaticMetadata(item: Metadatum(
-            name: "client_ip", value: getIPAddress(useIPv4: true)))
-        setStaticMetadata(item: Metadatum(
-            name: "fingerprint", value: SmileID.deviceId))
-        setStaticMetadata(item: Metadatum(
-            name: "device_model", value: UIDevice.current.modelName))
-        setStaticMetadata(item: Metadatum(
-            name: "device_os", value: UIDevice.current.systemVersion))
+        addMetadata(key: .sdk, value: "iOS")
+        addMetadata(key: .sdkVersion, value: SmileID.version)
+        addMetadata(key: .activeLivenessVersion, value: "1.0.0")
+        addMetadata(
+            key: .clientIP, value: getIPAddress(useIPv4: true))
+        addMetadata(
+            key: .fingerprint, value: SmileID.deviceId)
+        addMetadata(
+            key: .deviceModel, value: UIDevice.current.modelName)
+        addMetadata(
+            key: .deviceOS, value: UIDevice.current.systemVersion)
     }
 
     private func registerDefaultProviders() {
@@ -42,11 +39,19 @@ class MetadataManager {
         providers.append(provider)
     }
 
-    func setStaticMetadata(item: Metadatum) {
-        staticMetadata.append(item)
+    func addMetadata(key: MetadataKey, value: Any) {
+        staticMetadata[key] = value
+    }
+    
+    func removeMetadata(key: MetadataKey) {
+        staticMetadata.removeValue(forKey: key)
     }
 
+    public func getDefaultMetadata() -> [Metadatum] {
+        []
+    }
+    
     func collectAllMetadata() -> [Metadatum] {
-        return staticMetadata + providers.flatMap { $0.collectMetadata() }
+        []
     }
 }

@@ -31,7 +31,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     var stepToRetry: DocumentCaptureFlow?
     var didSubmitJob: Bool = false
     var error: Error?
-    var localMetadata: LocalMetadata
+    let metadataManager: MetadataManager = .shared
 
     // UI properties
     @Published var acknowledgedInstructions = false
@@ -54,8 +54,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
         useStrictMode: Bool,
         selfieFile: URL?,
         jobType: JobType,
-        extraPartnerParams: [String: String] = [:],
-        localMetadata: LocalMetadata
+        extraPartnerParams: [String: String] = [:]
     ) {
         self.userId = userId
         self.jobId = jobId
@@ -69,7 +68,6 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
         self.selfieFile = selfieFile
         self.jobType = jobType
         self.extraPartnerParams = extraPartnerParams
-        self.localMetadata = localMetadata
     }
 
     func onFrontDocumentImageConfirmed(data: Data) {
@@ -204,7 +202,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                         jobType: jobType,
                         enrollment: false,
                         allowNewEnroll: allowNewEnroll,
-                        localMetadata: localMetadata,
+                        metadata: metadataManager.collectAllMetadata(),
                         partnerParams: extraPartnerParams
                     )
                 }
@@ -212,7 +210,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
                     allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
-                    metadata: localMetadata.metadata.items,
+                    metadata: metadataManager.collectAllMetadata(),
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
