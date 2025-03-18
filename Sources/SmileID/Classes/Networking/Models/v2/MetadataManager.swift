@@ -62,7 +62,7 @@ public class MetadataManager {
                 allMetadata[key] = value
             }
         }
-        
+
         return allMetadata.map { key, value in
             Metadatum(key: key, value: value)
         }
