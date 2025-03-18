@@ -42,7 +42,7 @@ public class MetadataManager {
     func addMetadata(key: MetadataKey, value: Any) {
         staticMetadata[key] = value
     }
-    
+
     func removeMetadata(key: MetadataKey) {
         staticMetadata.removeValue(forKey: key)
     }
@@ -50,7 +50,7 @@ public class MetadataManager {
     public func getDefaultMetadata() -> [Metadatum] {
         []
     }
-    
+
     func collectAllMetadata() -> [Metadatum] {
         []
     }

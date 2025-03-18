@@ -516,7 +516,10 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     }
 
     private func addSelfieCaptureMetaData() {
-        metadataManager.addMetadata(key: .selfieCaptureDuration, value: metadataTimerStart.elapsedTime())
+        metadataManager.addMetadata(
+            key: .selfieCaptureDuration,
+            value: metadataTimerStart.elapsedTime().milliseconds()
+        )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
         metadataManager.addMetadata(key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
     }

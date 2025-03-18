@@ -176,7 +176,7 @@ class DocumentCaptureViewModel: ObservableObject {
             isCapturing = false
         }
     }
-    
+
     private func resetDocumentCaptureMetadata() {
         switch side {
         case .front:
@@ -189,32 +189,32 @@ class DocumentCaptureViewModel: ObservableObject {
             metadataManager.removeMetadata(key: .documentBackImageOrigin)
         }
     }
-    
+
     private func collectDocumentCaptureMetadata() {
         switch side {
         case .front:
             metadataManager.addMetadata(
                 key: .documentFrontCaptureDuration,
-                value: metadataTimerStart.elapsedTime()
+                value: metadataTimerStart.elapsedTime().milliseconds()
             )
             metadataManager.addMetadata(
                 key: .documentFrontCaptureRetries,
-                value: retryCount
+                value: String(retryCount)
             )
-            
+
             if let documentImageOrigin {
                 metadataManager.addMetadata(key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
             }
         case .back:
             metadataManager.addMetadata(
                 key: .documentBackCaptureDuration,
-                value: metadataTimerStart.elapsedTime()
+                value: metadataTimerStart.elapsedTime().milliseconds()
             )
             metadataManager.addMetadata(
                 key: .documentBackCaptureRetries,
-                value: retryCount
+                value: String(retryCount)
             )
-            
+
             if let documentImageOrigin {
                 metadataManager.addMetadata(key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
             }

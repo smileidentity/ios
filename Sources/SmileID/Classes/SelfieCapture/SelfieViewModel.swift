@@ -368,7 +368,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     public func submitJob() {
         metadataManager.addMetadata(
             key: .selfieCaptureDuration,
-            value: metadataTimerStart.elapsedTime()
+            value: metadataTimerStart.elapsedTime().milliseconds()
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.smile.rawValue)
 
