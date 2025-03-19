@@ -14,7 +14,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     private let allowNewEnroll: Bool
     private let useStrictMode: Bool
     private var extraPartnerParams: [String: String]
-    private let metadataManager = MetadataManager.shared
+    private let metadataManager: MetadataManager = .shared
     private var idInfo: IdInfo
     private var consentInformation: ConsentInformation
 
