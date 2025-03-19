@@ -1,7 +1,5 @@
 // swiftlint:disable all
-#if canImport(Foundation)
 import Foundation
-#endif
 
 /**
  A type-erased `Decodable` value.
