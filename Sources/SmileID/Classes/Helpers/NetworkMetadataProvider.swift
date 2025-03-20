@@ -35,7 +35,11 @@ class NetworkMetadataProvider {
 }
 
 extension NetworkMetadataProvider: MetadataProvider {
-    func collectMetadata() -> [MetadataKey: AnyCodable] {
-        return [.networkConnection: AnyCodable(connectionTypes)]
+    func collectMetadata() -> [MetadataKey: String] {
+        if let jsonData = try? JSONSerialization.data(withJSONObject: connectionTypes, options: []),
+           let jsonString = String(data: jsonData, encoding: .utf8) {
+            return [.networkConnection: jsonString]
+        }
+        return [.networkConnection: "unknown"]
     }
 }
