@@ -180,7 +180,7 @@ public class LocalStorage {
         jobType: JobType,
         enrollment: Bool,
         allowNewEnroll: Bool,
-        localMetadata: LocalMetadata,
+        metadata: [Metadatum],
         partnerParams: [String: String]
     ) throws {
         do {
@@ -194,7 +194,7 @@ public class LocalStorage {
                         extras: partnerParams
                     ),
                     allowNewEnroll: String(allowNewEnroll),
-                    metadata: localMetadata.metadata.items,
+                    metadata: metadata,
                     timestamp: "", // remove this so it is not stored offline
                     signature: "" // remove this so it is not stored offline
                 )

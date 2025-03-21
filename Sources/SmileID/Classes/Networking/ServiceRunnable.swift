@@ -32,7 +32,7 @@ protocol ServiceRunnable {
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
         failureReason: FailureReason?,
-        metadata: Metadata
+        metadata: [Metadatum]
     ) async throws -> SmartSelfieResponse
 
     /// PUT service call to a particular path with a body.
@@ -98,7 +98,7 @@ extension ServiceRunnable {
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
         failureReason: FailureReason? = nil,
-        metadata: Metadata = Metadata.default()
+        metadata: [Metadatum]
     ) async throws -> SmartSelfieResponse {
         let boundary = generateBoundary()
         var headers: [HTTPHeader] = []
@@ -250,7 +250,7 @@ extension ServiceRunnable {
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
         failureReason: FailureReason?,
-        metadata: Metadata = Metadata.default(),
+        metadata: [Metadatum],
         boundary: String
     ) -> Data {
         let lineBreak = "\r\n"
@@ -320,7 +320,7 @@ extension ServiceRunnable {
 
         // Append metadata
         let encoder = JSONEncoder()
-        if let metadataData = try? encoder.encode(metadata.items) {
+        if let metadataData = try? encoder.encode(metadata) {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
             body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
