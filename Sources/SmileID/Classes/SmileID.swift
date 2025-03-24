@@ -184,9 +184,9 @@ public class SmileID {
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(
-                        extras: prepUploadFile.partnerParams.extras),
-                    // TODO: - Fix when Michael changes this to boolean
-                    allowNewEnroll: String(prepUploadFile.allowNewEnroll),
+                        extras: prepUploadFile.partnerParams.extras
+                    ),
+                    allowNewEnroll: prepUploadFile.allowNewEnroll,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
