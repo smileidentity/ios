@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/weichsel/ZIPFoundation.git", .upToNextMajor(from: "0.9.0")),
-        .package(url: "https://github.com/airbnb/lottie-spm", from: "4.4.2"),
+        .package(url: "https://github.com/airbnb/lottie-spm", from: "4.5.0"),
         .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", from: "1.5.0")
     ],
     targets: [
