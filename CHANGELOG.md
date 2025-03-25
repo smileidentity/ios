@@ -1,4 +1,8 @@
 # Release Notes
+## 10.4.3
+
+* Update lottie-ios to minimum `v4.5.0` 
+
 ## 10.4.2
 
 * Added SmartSelfie™ capture only option for Enhanced SmartSelfie™ and SmartSelfie™ capture flows without submission accessible with `skipApiSubmission=true` on enroll and authentication products
