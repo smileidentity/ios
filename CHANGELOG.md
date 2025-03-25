@@ -1,5 +1,5 @@
 # Release Notes
-## 10.4.2
+## 10.4.3
 
 * Update lottie-ios to minimum `v4.5.0` 
 
