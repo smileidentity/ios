@@ -178,7 +178,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     private func prepareForUpload(authResponse: AuthenticationResponse) async throws -> PrepUploadResponse {
         let prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
-            allowNewEnroll: String(allowNewEnroll), // TODO: - Fix when Michael changes this to boolean
+            allowNewEnroll: allowNewEnroll,
             metadata: localMetadata.metadata.items,
             timestamp: authResponse.timestamp,
             signature: authResponse.signature

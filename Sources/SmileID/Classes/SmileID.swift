@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.4.3"
+    public static let version = "10.5.0"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -184,9 +184,9 @@ public class SmileID {
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(
-                        extras: prepUploadFile.partnerParams.extras),
-                    // TODO: - Fix when Michael changes this to boolean
-                    allowNewEnroll: String(prepUploadFile.allowNewEnroll),
+                        extras: prepUploadFile.partnerParams.extras
+                    ),
+                    allowNewEnroll: prepUploadFile.allowNewEnroll,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )

@@ -4,8 +4,7 @@ public struct PrepUploadRequest: Codable {
     public var partnerParams: PartnerParams
     // Callback URL *must* be defined either within your Partner Portal or here
     public var callbackUrl: String? = SmileID.callbackUrl
-    // TODO: - Michael will change this to a boolean
-    public var allowNewEnroll: String = "false"
+    public var allowNewEnroll: Bool = false
     public var partnerId = SmileID.config.partnerId
     public var metadata: [Metadatum]?
     public var sourceSdk = "ios"
@@ -18,7 +17,7 @@ public struct PrepUploadRequest: Codable {
     public init(
         partnerParams: PartnerParams,
         callbackUrl: String? = SmileID.callbackUrl,
-        allowNewEnroll: String = "false",
+        allowNewEnroll: Bool = false,
         partnerId: String = SmileID.config.partnerId,
         metadata: [Metadatum]? = nil,
         sourceSdk: String = "ios",
