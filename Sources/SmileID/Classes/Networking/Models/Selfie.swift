@@ -60,8 +60,7 @@ public struct SelfieRequest: Codable {
             try container.encode(sandboxResult, forKey: .sandboxResult)
         }
         if let allowNewEnroll = allowNewEnroll {
-            // We encode this as a String since the backend expects a String for this value
-            try container.encode("\(allowNewEnroll)", forKey: .allowNewEnroll)
+            try container.encode(allowNewEnroll, forKey: .allowNewEnroll)
         }
         if let failureReason = failureReason {
             try container.encode(failureReason, forKey: .failureReason)
