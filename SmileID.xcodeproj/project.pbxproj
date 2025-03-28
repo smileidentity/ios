@@ -4000,6 +4000,7 @@
 				1E4A02382BF4EB9D00167633 /* Lottie in Frameworks */,
 				6277E7512C65153700AC87FB /* ZIPFoundation in Frameworks */,
 				1E9825A32C9B4AF2009F2CA6 /* FingerprintJS in Frameworks */,
+				6672CF0B2D88877E005DF7A6 /* SmileIDSecurity in Frameworks */,
 				1E9825A52C9B4AF2009F2CA6 /* SystemControl in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7990,6 +7991,7 @@
 				6277E7502C65153700AC87FB /* ZIPFoundation */,
 				1E9825A22C9B4AF2009F2CA6 /* FingerprintJS */,
 				1E9825A42C9B4AF2009F2CA6 /* SystemControl */,
+				6672CF0A2D88877E005DF7A6 /* SmileIDSecurity */,
 			);
 			productName = SmileID;
 			productReference = 1EEFC2382B583F1A00B8A934 /* libSmileID.a */;
@@ -8032,6 +8034,7 @@
 				1E6857C92BF39CDD0019B515 /* XCRemoteSwiftPackageReference "lottie-spm" */,
 				6277E74D2C65119600AC87FB /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				1E98259D2C9B478C009F2CA6 /* XCRemoteSwiftPackageReference "fingerprintjs-ios" */,
+				6672CF092D88877E005DF7A6 /* XCRemoteSwiftPackageReference "smile-id-security" */,
 			);
 			productRefGroup = 1EEFC21B2B583CFB00B8A934 /* Products */;
 			projectDirPath = "";
@@ -8747,6 +8750,14 @@
 				minimumVersion = 0.9.19;
 			};
 		};
+		6672CF092D88877E005DF7A6 /* XCRemoteSwiftPackageReference "smile-id-security" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/smileidentity/smile-id-security";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -8789,6 +8800,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6277E74D2C65119600AC87FB /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
+		};
+		6672CF0A2D88877E005DF7A6 /* SmileIDSecurity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6672CF092D88877E005DF7A6 /* XCRemoteSwiftPackageReference "smile-id-security" */;
+			productName = SmileIDSecurity;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
