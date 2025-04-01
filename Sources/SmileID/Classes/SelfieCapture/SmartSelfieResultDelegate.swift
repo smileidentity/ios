@@ -18,9 +18,6 @@ public protocol SmartSelfieResultDelegate: AnyObject {
     /// An error occurred during the selfie capture session
     /// - Parameter error: The error returned from a failed selfie capture
     func didError(error: Error)
-}
 
-extension SmartSelfieResultDelegate {
-    /// Override this default implementation to provide a custom implementation.
-    func didCancel() { }
+    func didCancel()
 }

@@ -53,7 +53,7 @@ class HomeViewModel: ObservableObject,
             showToast = true
         }
     }
-    
+
     func didCancel() {
         selectedProduct = nil
     }

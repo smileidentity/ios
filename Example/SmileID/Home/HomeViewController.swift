@@ -97,4 +97,6 @@ class HomeViewController: UIViewController, SmartSelfieResultDelegate {
     func didError(error: Error) {
         presentAlert(title: "An error occurred", message: error.localizedDescription)
     }
+    
+    func didCancel() {}
 }

@@ -58,7 +58,8 @@ struct HomeView: View {
                         delegate: SmartSelfieEnrollmentDelegate(
                             userId: viewModel.newUserId,
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                            onError: viewModel.didError
+                            onError: viewModel.didError,
+                            onCancel: viewModel.didCancel
                         )
                     )
                 case .smartSelfieAuthentication:
@@ -75,7 +76,8 @@ struct HomeView: View {
                         delegate: SmartSelfieEnrollmentDelegate(
                             userId: viewModel.newUserId,
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                            onError: viewModel.didError
+                            onError: viewModel.didError,
+                            onCancel: viewModel.didCancel
                         )
                     )
                 case .enhancedSmartSelfieAuthentication:

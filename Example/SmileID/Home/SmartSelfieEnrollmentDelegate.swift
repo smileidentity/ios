@@ -14,6 +14,7 @@ class SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
         _ apiResponse: SmartSelfieResponse?
     ) -> Void
     let onError: (Error) -> Void
+    let onCancel: () -> Void
 
     init(
         userId: String,
@@ -23,13 +24,13 @@ class SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
             _: [URL],
             _: SmartSelfieResponse?
         ) -> Void,
-        onError: @escaping (
-            Error
-        ) -> Void
+        onError: @escaping (Error) -> Void,
+        onCancel: @escaping () -> Void
     ) {
         self.userId = userId
         self.onEnrollmentSuccess = onEnrollmentSuccess
         self.onError = onError
+        self.onCancel = onCancel
     }
 
     func didSucceed(
@@ -42,5 +43,9 @@ class SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
 
     func didError(error: Error) {
         onError(error)
+    }
+    
+    func didCancel() {
+        onCancel()
     }
 }
