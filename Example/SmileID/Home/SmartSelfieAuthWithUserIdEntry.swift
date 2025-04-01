@@ -30,8 +30,7 @@ struct SmartSelfieAuthWithUserIdEntry: View {
                             userId: userId,
                             isEnroll: false
                         ),
-                        delegate: delegate,
-                        onDismiss: onDismiss
+                        delegate: delegate
                     )
                 } else {
                     SmileID.smartSelfieAuthenticationScreen(
@@ -40,8 +39,7 @@ struct SmartSelfieAuthWithUserIdEntry: View {
                             isEnroll: false,
                             allowAgentMode: true
                         ),
-                        delegate: delegate,
-                        onDismiss: onDismiss
+                        delegate: delegate
                     )
                 }
             }

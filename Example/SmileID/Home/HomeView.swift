@@ -6,8 +6,6 @@ struct HomeView: View {
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @ObservedObject var viewModel: HomeViewModel
 
-    @State private var selectedProduct: SmileIDProduct?
-
     init(config: Config) {
         self.viewModel = HomeViewModel(config: config)
     }
@@ -25,7 +23,7 @@ struct HomeView: View {
                         ForEach(SmileIDProduct.allCases, id: \.self) { product in
                             Button {
                                 viewModel.onProductClicked()
-                                selectedProduct = product
+                                viewModel.selectedProduct = product
                             } label: {
                                 ProductCell(product: product)
                             }
@@ -48,7 +46,7 @@ struct HomeView: View {
             .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
             .navigationBarItems(trailing: SmileEnvironmentToggleButton())
             .background(SmileID.theme.backgroundLight.ignoresSafeArea())
-            .fullScreenCover(item: $selectedProduct) { product in
+            .fullScreenCover(item: $viewModel.selectedProduct) { product in
                 switch product {
                 case .smartSelfieEnrollment:
                     SmileID.smartSelfieEnrollmentScreen(
@@ -61,14 +59,13 @@ struct HomeView: View {
                             userId: viewModel.newUserId,
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                             onError: viewModel.didError
-                        ),
-                        onDismiss: { selectedProduct = nil }
+                        )
                     )
                 case .smartSelfieAuthentication:
                     SmartSelfieAuthWithUserIdEntry(
                         initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
                         delegate: viewModel,
-                        onDismiss: { selectedProduct = nil }
+                        onDismiss: { viewModel.selectedProduct = nil }
                     )
                 case .enhancedSmartSelfieEnrollment:
                     SmileID.smartSelfieEnrollmentScreenEnhanced(
@@ -79,15 +76,14 @@ struct HomeView: View {
                             userId: viewModel.newUserId,
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
                             onError: viewModel.didError
-                        ),
-                        onDismiss: { selectedProduct = nil }
+                        )
                     )
                 case .enhancedSmartSelfieAuthentication:
                     SmartSelfieAuthWithUserIdEntry(
                         initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
                         useStrictMode: true,
                         delegate: viewModel,
-                        onDismiss: { selectedProduct = nil }
+                        onDismiss: { viewModel.selectedProduct = nil }
                     )
                 case .enhancedKYC:
                     CancellableNavigationView {
@@ -99,7 +95,7 @@ struct HomeView: View {
                             )
                         )
                     } onCancel: {
-                        selectedProduct = nil
+                        viewModel.selectedProduct = nil
                     }
                 case .biometricKYC:
                     CancellableNavigationView {
@@ -111,7 +107,7 @@ struct HomeView: View {
                             )
                         )
                     } onCancel: {
-                        selectedProduct = nil
+                        viewModel.selectedProduct = nil
                     }
                 case .documentVerification:
                     CancellableNavigationView {
@@ -121,7 +117,7 @@ struct HomeView: View {
                             delegate: viewModel
                         )
                     } onCancel: {
-                        selectedProduct = nil
+                        viewModel.selectedProduct = nil
                     }
                 case .enhancedDocumentVerification:
                     CancellableNavigationView {
@@ -131,7 +127,7 @@ struct HomeView: View {
                             delegate: viewModel
                         )
                     } onCancel: {
-                        selectedProduct = nil
+                        viewModel.selectedProduct = nil
                     }
                 }
             }

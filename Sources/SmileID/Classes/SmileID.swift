@@ -284,16 +284,13 @@ public class SmileID {
     /// - Parameters:
     ///   - config: configuration options for customising selfie capture experience.
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
-    ///   - onDismiss: Closure to provide custom implementation when enrollment screen is dismissed
     @ViewBuilder public class func smartSelfieEnrollmentScreen(
         config: OrchestratedSelfieCaptureConfig,
-        delegate: SmartSelfieResultDelegate,
-        onDismiss: (() -> Void)? = nil
+        delegate: SmartSelfieResultDelegate
     ) -> some View {
         OrchestratedSelfieCaptureScreen(
             config: config,
-            onResult: delegate,
-            onDismiss: onDismiss
+            onResult: delegate
         )
     }
 
@@ -307,13 +304,11 @@ public class SmileID {
     ///   - onDismiss: Closure to provide custom implementation when enrollment screen is dismissed
     @ViewBuilder public class func smartSelfieEnrollmentScreenEnhanced(
         config: OrchestratedSelfieCaptureConfig,
-        delegate: SmartSelfieResultDelegate,
-        onDismiss: @escaping () -> Void
+        delegate: SmartSelfieResultDelegate
     ) -> some View {
         OrchestratedEnhancedSelfieCaptureScreen(
             config: config,
-            onResult: delegate,
-            onDismiss: onDismiss
+            onResult: delegate
         )
     }
 
@@ -327,13 +322,11 @@ public class SmileID {
     ///   - onDismiss: Closure to provide custom implementation when authentication screen is dismissed
     @ViewBuilder public class func smartSelfieAuthenticationScreen(
         config: OrchestratedSelfieCaptureConfig,
-        delegate: SmartSelfieResultDelegate,
-        onDismiss: (() -> Void)? = nil
+        delegate: SmartSelfieResultDelegate
     ) -> some View {
         OrchestratedSelfieCaptureScreen(
             config: config,
-            onResult: delegate,
-            onDismiss: onDismiss
+            onResult: delegate
         )
     }
 
@@ -347,13 +340,11 @@ public class SmileID {
     ///   - onDismiss: Closure to provide custom implementation when authentication screen is dismissed
     @ViewBuilder public class func smartSelfieAuthenticationScreenEnhanced(
         config: OrchestratedSelfieCaptureConfig,
-        delegate: SmartSelfieResultDelegate,
-        onDismiss: (() -> Void)? = nil
+        delegate: SmartSelfieResultDelegate
     ) -> some View {
         OrchestratedEnhancedSelfieCaptureScreen(
             config: config,
-            onResult: delegate,
-            onDismiss: onDismiss
+            onResult: delegate
         )
     }
 

@@ -243,6 +243,10 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
         invalidateSubmissionTask()
         onFinished()
     }
+
+    func handleCancel() {
+        self.delegate?.didCancel()
+    }
 }
 
 // MARK: SelfieCaptureDelegate

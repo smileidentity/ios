@@ -12,6 +12,7 @@ class HomeViewModel: ObservableObject,
     EnhancedKycResultDelegate,
     BiometricKycResultDelegate {
     // MARK: - UI Properties
+    @Published var selectedProduct: SmileIDProduct?
 
     @Published var dismissed = false
     @Published var toastMessage = ""
@@ -51,6 +52,10 @@ class HomeViewModel: ObservableObject,
             toastMessage = "No internet connection"
             showToast = true
         }
+    }
+    
+    func didCancel() {
+        selectedProduct = nil
     }
 
     @objc func didError(error: Error) {

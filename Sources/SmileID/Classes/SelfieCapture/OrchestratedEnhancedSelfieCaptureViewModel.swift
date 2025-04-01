@@ -98,17 +98,13 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
         }
     }
 
-    func handleCancelSelfieCapture() {
-        invalidateSubmissionTask()
-        if let error {
-            delegate?.didError(error: error)
-        } else {
-            delegate?.didError(error: SmileIDError.operationCanceled("User cancelled"))
-        }
-    }
-
     func handleRetry() {
         handleSubmission()
+    }
+    
+    func handleCancel() {
+        invalidateSubmissionTask()
+        self.delegate?.didCancel()
     }
 
     public func onFinished() {

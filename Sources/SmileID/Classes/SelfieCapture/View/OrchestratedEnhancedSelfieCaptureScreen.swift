@@ -8,19 +8,16 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
 
     private let config: OrchestratedSelfieCaptureConfig
     public let onResult: SmartSelfieResultDelegate
-    private var onDismiss: (() -> Void)?
 
     @State private var showInstructions: Bool
 
     public init(
         config: OrchestratedSelfieCaptureConfig,
-        onResult: SmartSelfieResultDelegate,
-        onDismiss: (() -> Void)? = nil
+        onResult: SmartSelfieResultDelegate
     ) {
         self.config = config
         self._showInstructions = State(initialValue: config.showInstructions)
         self.onResult = onResult
-        self.onDismiss = onDismiss
         self._viewModel = Backport.StateObject(wrappedValue: OrchestratedEnhancedSelfieCaptureViewModel(
             config: config,
             localMetadata: LocalMetadata()
@@ -50,7 +47,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
                                 ) : nil,
                                 selfieImage: viewModel.selfieImage,
                                 showAttribution: config.showAttribution,
-                                didTapCancel: { viewModel.handleCancelSelfieCapture() },
+                                didTapCancel: { viewModel.handleCancel() },
                                 didTapRetry: { viewModel.handleRetry() }
                             )
                         } else {
@@ -58,7 +55,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
                                 userId: config.userId,
                                 showAttribution: config.showAttribution,
                                 delegate: viewModel,
-                                didTapCancel: { viewModel.handleCancelSelfieCapture() }
+                                didTapCancel: { viewModel.handleCancel() }
                             )
                         }
                     }
@@ -66,8 +63,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
                 }
             }
         } onCancel: {
-            onDismiss?()
+            viewModel.handleCancel()
         }
-
     }
 }
