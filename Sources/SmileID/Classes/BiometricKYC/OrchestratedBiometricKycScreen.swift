@@ -5,20 +5,18 @@ struct OrchestratedBiometricKycScreen: View {
     let config: BiometricVerificationConfig
     let delegate: BiometricKycResultDelegate
     @Backport.StateObject private var viewModel: OrchestratedBiometricKycViewModel
-    var onDismiss: (() -> Void)?
 
     @State private var showSelfieCaptureInstructions: Bool
 
     init(
         config: BiometricVerificationConfig,
-        delegate: BiometricKycResultDelegate,
-        onDismiss: (() -> Void)? = nil
+        delegate: BiometricKycResultDelegate
     ) {
         self.config = config
         self.delegate = delegate
-        self.onDismiss = onDismiss
         self._viewModel = Backport.StateObject(wrappedValue: OrchestratedBiometricKycViewModel(
-            config: config
+            config: config,
+            delegate: delegate
         ))
         self._showSelfieCaptureInstructions = State(initialValue: config.showInstructions)
     }
@@ -57,20 +55,19 @@ struct OrchestratedBiometricKycScreen: View {
                             continueButtonText: SmileIDResourcesHelper.localizedString(
                                 for: "Confirmation.Continue"
                             ),
-                            onContinue: { viewModel.onFinished(delegate: delegate) },
+                            onContinue: { viewModel.handleContinue() },
                             retryButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Retry"),
                             onRetry: viewModel.onRetry,
                             closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
-                            onClose: { viewModel.onFinished(delegate: delegate) }
+                            onClose: { viewModel.handleClose() }
                         )
                     },
                     label: { EmptyView() }
                 )
             }
         } onCancel: {
-            onDismiss?()
+            viewModel.handleCancel()
         }
-
     }
 
     private var selfieCaptureScreen: some View {

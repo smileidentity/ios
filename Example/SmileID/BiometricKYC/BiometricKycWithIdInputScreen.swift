@@ -3,8 +3,6 @@ import SmileID
 import SwiftUI
 
 struct BiometricKycWithIdInputScreen: View {
-    let delegate: BiometricKycResultDelegate
-
     @State private var selectedCountry: CountryInfo?
     @StateObject var viewModel: BiometricKycWithIdInputScreenViewModel
 
@@ -57,7 +55,7 @@ struct BiometricKycWithIdInputScreen: View {
                             requiredFields: requiredFields
                         )
                     },
-                    onConsentDenied: { delegate.didError(error: SmileIDError.consentDenied) }
+                    onConsentDenied: { viewModel.didError(error: SmileIDError.consentDenied) }
                 )
             case let .idInput(country, idType, consentInformation, requiredFields):
                 IdInfoInputScreen(
@@ -70,7 +68,9 @@ struct BiometricKycWithIdInputScreen: View {
                 ).frame(maxWidth: .infinity)
             }
         }
-        .fullScreenCover(item: $viewModel.providedInfo) { data in
+        .fullScreenCover(
+            item: $viewModel.providedInfo
+        ) { data in
             SmileID.biometricKycScreen(
                 config: BiometricVerificationConfig(
                     userId: viewModel.userId,
@@ -80,10 +80,7 @@ struct BiometricKycWithIdInputScreen: View {
                     idInfo: data.idInfo,
                     consentInformation: data.consentInformation
                 ),
-                delegate: delegate,
-                onDismiss: {
-                    viewModel.providedInfo = nil
-                }
+                delegate: viewModel
             )
         }
     }

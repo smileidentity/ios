@@ -102,10 +102,12 @@ struct HomeView: View {
                 case .biometricKYC:
                     CancellableNavigationView {
                         BiometricKycWithIdInputScreen(
-                            delegate: viewModel,
                             viewModel: BiometricKycWithIdInputScreenViewModel(
                                 userId: viewModel.newUserId,
-                                jobId: viewModel.newJobId
+                                jobId: viewModel.newJobId,
+                                didFinish: { didSubmit, error in
+                                    viewModel.handleBiometricKYCCompleted(didSubmit, error)
+                                }
                             )
                         )
                     } onCancel: {

@@ -7,6 +7,8 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     private let config: BiometricVerificationConfig
     private let localMetadata = LocalMetadata()
 
+    weak var delegate: BiometricKycResultDelegate?
+
     // MARK: - Other Properties
 
     var selfieFile: URL?
@@ -24,9 +26,11 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     @Published var processingState: ProcessingState?
 
     init(
-        config: BiometricVerificationConfig
+        config: BiometricVerificationConfig,
+        delegate: BiometricKycResultDelegate
     ) {
         self.config = config
+        self.delegate = delegate
     }
 
     func onRetry() {
@@ -37,19 +41,29 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         }
     }
 
-    func onFinished(delegate: BiometricKycResultDelegate) {
+    func handleContinue() {
+        onFinished()
+    }
+
+    func handleClose() {
+        onFinished()
+    }
+
+    func handleCancel() {
+        delegate?.didCancel()
+    }
+
+    private func onFinished() {
         if let selfieFile = selfieFile,
            let livenessFiles = livenessFiles,
            let selfiePath = getRelativePath(from: selfieFile) {
-            delegate.didSucceed(
+            delegate?.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
                 didSubmitBiometricJob: didSubmitBiometricJob
             )
         } else if let error {
-            delegate.didError(error: error)
-        } else {
-            delegate.didError(error: SmileIDError.unknown("onFinish with no result or error"))
+            delegate?.didError(error: error)
         }
     }
 
@@ -69,7 +83,10 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             }
         }
     }
+}
 
+// Job Submission Helpers
+extension OrchestratedBiometricKycViewModel {
     private func handleJobSubmission() async throws {
         try fetchRequiredFiles()
 

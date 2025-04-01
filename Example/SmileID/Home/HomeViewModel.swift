@@ -9,8 +9,7 @@ class HomeViewModel: ObservableObject,
     SmartSelfieResultDelegate,
     DocumentVerificationResultDelegate,
     EnhancedDocumentVerificationResultDelegate,
-    EnhancedKycResultDelegate,
-    BiometricKycResultDelegate {
+    EnhancedKycResultDelegate {
     // MARK: - UI Properties
     @Published var selectedProduct: SmileIDProduct?
 
@@ -152,32 +151,6 @@ class HomeViewModel: ObservableObject,
     }
 
     func didSucceed(
-        selfieImage _: URL,
-        livenessImages _: [URL],
-        didSubmitBiometricJob: Bool
-    ) {
-        dismissModal()
-        showToast = true
-        toastMessage = jobResultMessageBuilder(
-            jobName: "Biometric KYC",
-            didSubmitJob: didSubmitBiometricJob
-        )
-        do {
-            try dataStoreClient.saveJob(
-                data: JobData(
-                    jobType: .biometricKyc,
-                    timestamp: Date(),
-                    userId: newUserId,
-                    jobId: newJobId,
-                    partnerId: partnerId
-                )
-            )
-        } catch {
-            showToast(message: error.localizedDescription)
-        }
-    }
-
-    func didSucceed(
         enhancedKycResponse: EnhancedKycResponse
     ) {
         dismissModal()
@@ -257,6 +230,35 @@ class HomeViewModel: ObservableObject,
             )
         } catch {
             showToast(message: error.localizedDescription)
+        }
+    }
+    
+    func handleBiometricKYCCompleted(
+        _ didSubmit: Bool,
+        _ error: Error?
+    ) {
+        if let error {
+            didError(error: error)
+        } else {
+            dismissModal()
+            showToast = true
+            toastMessage = jobResultMessageBuilder(
+                jobName: "Biometric KYC",
+                didSubmitJob: didSubmit
+            )
+            do {
+                try dataStoreClient.saveJob(
+                    data: JobData(
+                        jobType: .biometricKyc,
+                        timestamp: Date(),
+                        userId: newUserId,
+                        jobId: newJobId,
+                        partnerId: partnerId
+                    )
+                )
+            } catch {
+                showToast(message: error.localizedDescription)
+            }
         }
     }
 

@@ -301,7 +301,6 @@ public class SmileID {
     /// - Parameters:
     ///   - config: configuration options for customising selfie capture experience.
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
-    ///   - onDismiss: Closure to provide custom implementation when enrollment screen is dismissed
     @ViewBuilder public class func smartSelfieEnrollmentScreenEnhanced(
         config: OrchestratedSelfieCaptureConfig,
         delegate: SmartSelfieResultDelegate
@@ -319,7 +318,6 @@ public class SmileID {
     /// - Parameters:
     ///   - config: configuration options for customising selfie capture experience.
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
-    ///   - onDismiss: Closure to provide custom implementation when authentication screen is dismissed
     @ViewBuilder public class func smartSelfieAuthenticationScreen(
         config: OrchestratedSelfieCaptureConfig,
         delegate: SmartSelfieResultDelegate
@@ -337,7 +335,6 @@ public class SmileID {
     /// - Parameters:
     ///   - config: configuration options for customising selfie capture experience.
     ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
-    ///   - onDismiss: Closure to provide custom implementation when authentication screen is dismissed
     @ViewBuilder public class func smartSelfieAuthenticationScreenEnhanced(
         config: OrchestratedSelfieCaptureConfig,
         delegate: SmartSelfieResultDelegate
@@ -402,16 +399,13 @@ public class SmileID {
     /// - Parameters:
     ///  - config: configuration options for customising biometric verification experience
     ///  - delegate: Callback to be invoked when the Biometric KYC is complete.
-    ///  - onDismiss: Closure to provide custom implementation when biometric kyc screen is dismissed
     public class func biometricKycScreen(
         config: BiometricVerificationConfig,
-        delegate: BiometricKycResultDelegate,
-        onDismiss: (() -> Void)? = nil
+        delegate: BiometricKycResultDelegate
     ) -> some View {
         OrchestratedBiometricKycScreen(
             config: config,
-            delegate: delegate,
-            onDismiss: onDismiss
+            delegate: delegate
         )
     }
 }

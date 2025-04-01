@@ -226,8 +226,6 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
             )
         } else if let error = error {
             self.delegate?.didError(error: error)
-        } else {
-            self.delegate?.didError(error: SmileIDError.unknown("Unknown error"))
         }
     }
 

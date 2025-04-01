@@ -29,10 +29,16 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
 
     @Published @MainActor var step = BiometricKycWithIdInputScreenStep.loading("Loading ID Types…")
     @Published var providedInfo: ProvidedKYCInfo?
+    var didFinish: (Bool, Error?) -> Void
 
-    init(userId: String, jobId: String) {
+    init(
+        userId: String,
+        jobId: String,
+        didFinish: @escaping (Bool, Error?) -> Void
+    ) {
         self.userId = userId
         self.jobId = jobId
+        self.didFinish = didFinish
         loadIdTypes()
     }
 
@@ -152,5 +158,23 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
                 consentInformation: consentInformation
             )
         }
+    }
+}
+
+extension BiometricKycWithIdInputScreenViewModel: BiometricKycResultDelegate {
+    func didSucceed(
+        selfieImage _: URL,
+        livenessImages _: [URL],
+        didSubmitBiometricJob: Bool
+    ) {
+        didFinish(didSubmitBiometricJob, nil)
+    }
+
+    func didError(error: any Error) {
+        didFinish(false, error)
+    }
+
+    func didCancel() {
+        providedInfo = nil
     }
 }
