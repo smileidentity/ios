@@ -25,7 +25,7 @@ public protocol SmileIDServiceable {
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
         failureReason: FailureReason?,
-        metadata: Metadata
+        metadata: [Metadatum]
     ) async throws -> SmartSelfieResponse
 
     /// Perform a synchronous SmartSelfie Authentication. The response will include the final result
@@ -40,7 +40,7 @@ public protocol SmileIDServiceable {
         callbackUrl: String?,
         sandboxResult: Int?,
         failureReason: FailureReason?,
-        metadata: Metadata
+        metadata: [Metadatum]
     ) async throws -> SmartSelfieResponse
 
     /// Query the Identity Information of an individual using their ID number from a supported ID
@@ -225,7 +225,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
         failureReason: FailureReason? = nil,
-        metadata: Metadata = Metadata.default()
+        metadata: [Metadatum] = MetadataManager.shared.getDefaultMetadata()
     ) async throws -> SmartSelfieResponse {
         try await multipart(
             to: "/v2/smart-selfie-enroll",
@@ -253,7 +253,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         callbackUrl: String? = SmileID.callbackUrl,
         sandboxResult: Int? = nil,
         failureReason: FailureReason? = nil,
-        metadata: Metadata = Metadata.default()
+        metadata: [Metadatum] = MetadataManager.shared.getDefaultMetadata()
     ) async throws -> SmartSelfieResponse {
         try await multipart(
             to: "/v2/smart-selfie-authentication",
