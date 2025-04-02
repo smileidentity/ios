@@ -33,7 +33,6 @@ public class MetadataManager {
 
     private func registerDefaultProviders() {
         register(provider: NetworkMetadataProvider())
-        register(provider: ProxyDetectionProvider())
     }
 
     func register(provider: MetadataProvider) {
