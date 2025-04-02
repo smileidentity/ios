@@ -77,6 +77,26 @@ class NetworkMetadataProvider {
         // If we haven't found any enabled proxy, return false.
         return false
     }
+
+    /// Checks if VPN connection is active by examining network interfaces
+    /// - Returns: Boolean indicating if VPN is detected.
+    private func isVPNActive() -> Bool {
+        guard let cfDict = CFNetworkCopySystemProxySettings() else { return false }
+        let nsDict = cfDict.takeRetainedValue() as NSDictionary
+        guard let keys = nsDict["__SCOPED__"] as? NSDictionary else { return false }
+
+        let vpnInterfacePrefixes = ["tap", "tun", "ppp", "ipsec", "utun", "en0"]
+
+        if let interfaces = keys.allKeys as? [String] {
+            return interfaces.contains { interface in
+                vpnInterfacePrefixes.contains { prefix in
+                    interface.contains(prefix)
+                }
+            }
+        }
+
+        return false
+    }
 }
 
 extension NetworkMetadataProvider: MetadataProvider {
@@ -84,8 +104,8 @@ extension NetworkMetadataProvider: MetadataProvider {
         var metadata: [MetadataKey: String] = [:]
 
         // Add network connection info
-        if let jsonData = try? JSONSerialization.data(withJSONObject: connectionTypes, options: []),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+        if let jsonData = try? JSONSerialization.data(withJSONObject: connectionTypes, options: []) {
+            let jsonString = String(data: jsonData, encoding: .utf8)
             metadata[.networkConnection] = jsonString
         } else {
             metadata[.networkConnection] = "unknown"
@@ -94,6 +114,9 @@ extension NetworkMetadataProvider: MetadataProvider {
         // Add proxy detection info
         let proxyDetected = isProxyDetected()
         metadata[.proxyDetected] = proxyDetected ? "true" : "false"
+
+        // Add VPN info
+        metadata[.vpnDetected] = isVPNActive() ? "true" : "false"
 
         return metadata
     }
