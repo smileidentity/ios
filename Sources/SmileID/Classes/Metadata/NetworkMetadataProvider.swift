@@ -85,7 +85,7 @@ class NetworkMetadataProvider {
         let nsDict = cfDict.takeRetainedValue() as NSDictionary
         guard let keys = nsDict["__SCOPED__"] as? NSDictionary else { return false }
 
-        let vpnInterfacePrefixes = ["tap", "tun", "ppp", "ipsec", "utun", "en0"]
+        let vpnInterfacePrefixes = ["tap", "tun", "ppp", "ipsec", "utun"]
 
         if let interfaces = keys.allKeys as? [String] {
             return interfaces.contains { interface in
