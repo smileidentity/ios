@@ -1,6 +1,7 @@
 import Foundation
 import SmileID
 import SwiftUI
+
 struct EnhancedKycWithIdInputScreen: View {
     let delegate: EnhancedKycResultDelegate
 
@@ -88,4 +89,5 @@ struct EnhancedKycWithIdInputScreen: View {
                 onClose: { viewModel.onFinished(delegate: delegate) }
             )
         }
-    }}
+    }
+}

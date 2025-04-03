@@ -15,47 +15,58 @@ struct OrchestratedBiometricKycScreen: View {
         self.config = config
         self.delegate = delegate
         self._viewModel = Backport.StateObject(wrappedValue: OrchestratedBiometricKycViewModel(
-            config: config
+            config: config,
+            delegate: delegate
         ))
         self._showSelfieCaptureInstructions = State(initialValue: config.showInstructions)
     }
 
     var body: some View {
-        switch viewModel.step {
-        case .selfie:
-            selfieCaptureScreen
-        case let .processing(state):
-            ProcessingScreen(
-                processingState: state,
-                inProgressTitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Processing.Title"
-                ),
-                inProgressSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Processing.Subtitle"
-                ),
-                inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
-                successTitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Success.Title"
-                ),
-                successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Success.Subtitle"
-                ),
-                successIcon: SmileIDResourcesHelper.CheckBold,
-                errorTitle: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.Error.Title"),
-                errorSubtitle: getErrorSubtitle(
-                    errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
-                    errorMessage: $viewModel.errorMessage.wrappedValue
-                ),
-                errorIcon: SmileIDResourcesHelper.Scan,
-                continueButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Continue"
-                ),
-                onContinue: { viewModel.onFinished(delegate: delegate) },
-                retryButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Retry"),
-                onRetry: viewModel.onRetry,
-                closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
-                onClose: { viewModel.onFinished(delegate: delegate) }
-            )
+        CancellableNavigationView {
+            ZStack {
+                selfieCaptureScreen
+
+                NavigationLink(
+                    unwrap: $viewModel.processingState,
+                    onNavigate: { _ in },
+                    destination: { $state in
+                        ProcessingScreen(
+                            processingState: state,
+                            inProgressTitle: SmileIDResourcesHelper.localizedString(
+                                for: "BiometricKYC.Processing.Title"
+                            ),
+                            inProgressSubtitle: SmileIDResourcesHelper.localizedString(
+                                for: "BiometricKYC.Processing.Subtitle"
+                            ),
+                            inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
+                            successTitle: SmileIDResourcesHelper.localizedString(
+                                for: "BiometricKYC.Success.Title"
+                            ),
+                            successSubtitle: SmileIDResourcesHelper.localizedString(
+                                for: "BiometricKYC.Success.Subtitle"
+                            ),
+                            successIcon: SmileIDResourcesHelper.CheckBold,
+                            errorTitle: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.Error.Title"),
+                            errorSubtitle: getErrorSubtitle(
+                                errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
+                                errorMessage: $viewModel.errorMessage.wrappedValue
+                            ),
+                            errorIcon: SmileIDResourcesHelper.Scan,
+                            continueButtonText: SmileIDResourcesHelper.localizedString(
+                                for: "Confirmation.Continue"
+                            ),
+                            onContinue: { viewModel.handleContinue() },
+                            retryButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Retry"),
+                            onRetry: viewModel.onRetry,
+                            closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
+                            onClose: { viewModel.handleClose() }
+                        )
+                    },
+                    label: { EmptyView() }
+                )
+            }
+        } onCancel: {
+            viewModel.handleCancel()
         }
     }
 

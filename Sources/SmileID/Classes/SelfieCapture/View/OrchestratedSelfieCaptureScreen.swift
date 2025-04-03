@@ -8,19 +8,16 @@ public struct OrchestratedSelfieCaptureScreen: View {
 
     private let config: OrchestratedSelfieCaptureConfig
     private let onResult: SmartSelfieResultDelegate
-    private let onDismiss: (() -> Void)?
 
     @State private var showInstructions: Bool
 
     public init(
         config: OrchestratedSelfieCaptureConfig,
-        onResult: SmartSelfieResultDelegate,
-        onDismiss: (() -> Void)? = nil
+        onResult: SmartSelfieResultDelegate
     ) {
         self._showInstructions = State(initialValue: config.showInstructions)
         self.config = config
         self.onResult = onResult
-        self.onDismiss = onDismiss
         self._viewModel = Backport
             .StateObject(
                 wrappedValue: OrchestratedSelfieCaptureViewModel(
@@ -31,7 +28,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
     }
 
     public var body: some View {
-        NavigationView {
+        CancellableNavigationView {
             ZStack {
                 if showInstructions {
                     SmartSelfieInstructionsScreen(
@@ -95,14 +92,8 @@ public struct OrchestratedSelfieCaptureScreen: View {
                     )
                 }
             }
-            .navigationBarItems(
-                leading: Button {
-                    onDismiss?()
-                } label: {
-                    Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                        .foregroundColor(SmileID.theme.accent)
-                }
-            )
+        } onCancel: {
+            viewModel.handleCancel()
         }
     }
 }

@@ -1,16 +1,13 @@
 import Combine
 import Foundation
 
-enum BiometricKycStep {
-    case selfie
-    case processing(ProcessingState)
-}
-
 class OrchestratedBiometricKycViewModel: ObservableObject {
     // MARK: - Input Properties
 
     private let config: BiometricVerificationConfig
     private let localMetadata = LocalMetadata()
+
+    weak var delegate: BiometricKycResultDelegate?
 
     // MARK: - Other Properties
 
@@ -26,55 +23,70 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     /// `errorMessageRes` is not set by the partner
     @Published var errorMessageRes: String?
     @Published var errorMessage: String?
-    @Published @MainActor private(set) var step: BiometricKycStep = .selfie
+    @Published var processingState: ProcessingState?
 
     init(
-        config: BiometricVerificationConfig
+        config: BiometricVerificationConfig,
+        delegate: BiometricKycResultDelegate
     ) {
         self.config = config
+        self.delegate = delegate
     }
 
     func onRetry() {
         if selfieFile != nil {
             submitJob()
         } else {
-            updateStep(.selfie)
+            updateProcessingState(nil)
         }
     }
 
-    func onFinished(delegate: BiometricKycResultDelegate) {
+    func handleContinue() {
+        onFinished()
+    }
+
+    func handleClose() {
+        onFinished()
+    }
+
+    func handleCancel() {
+        delegate?.didCancel()
+    }
+
+    private func onFinished() {
         if let selfieFile = selfieFile,
            let livenessFiles = livenessFiles,
            let selfiePath = getRelativePath(from: selfieFile) {
-            delegate.didSucceed(
+            delegate?.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
                 didSubmitBiometricJob: didSubmitBiometricJob
             )
         } else if let error {
-            delegate.didError(error: error)
-        } else {
-            delegate.didError(error: SmileIDError.unknown("onFinish with no result or error"))
+            delegate?.didError(error: error)
         }
     }
 
     func submitJob() {
-        updateStep(.processing(.inProgress))
+        updateProcessingState(.inProgress)
         Task {
             do {
                 try await handleJobSubmission()
-                updateStep(.processing(.success))
+                updateProcessingState(.success)
             } catch let error as SmileIDError {
                 handleSubmissionFailure(error)
             } catch {
                 didSubmitBiometricJob = false
                 print("Error submitting job: \(error)")
                 self.error = error
-                updateStep(.processing(.error))
+                updateProcessingState(.error)
             }
         }
     }
+}
 
+// Job Submission Helpers
+extension OrchestratedBiometricKycViewModel {
     private func handleJobSubmission() async throws {
         try fetchRequiredFiles()
 
@@ -103,7 +115,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
 
         guard selfieFile != nil else {
             // Set step to .selfieCapture so that the Retry button goes back to this step
-            updateStep(.selfie)
+            updateProcessingState(nil)
             error = SmileIDError.unknown("Error capturing selfie")
             return
         }
@@ -193,9 +205,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         }
     }
 
-    private func updateStep(_ newStep: BiometricKycStep) {
+    private func updateProcessingState(_ newState: ProcessingState?) {
         DispatchQueue.main.async {
-            self.step = newStep
+            self.processingState = newState
         }
     }
 
@@ -230,14 +242,14 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         if SmileID.allowOfflineMode, SmileIDError.isNetworkFailure(error: smileIDError) {
             didSubmitBiometricJob = true
             updateErrorMessages(errorMessageRes: "Offline.Message")
-            updateStep(.processing(.success))
+            updateProcessingState(.success)
         } else {
             didSubmitBiometricJob = false
             print("Error submitting job: \(smileIDError)")
             let (errorMessageRes, errorMessage) = toErrorMessage(error: smileIDError)
             error = smileIDError
             updateErrorMessages(errorMessage: errorMessage, errorMessageRes: errorMessageRes)
-            updateStep(.processing(.error))
+            updateProcessingState(.error)
         }
     }
 }
@@ -251,6 +263,6 @@ extension OrchestratedBiometricKycViewModel: SelfieCaptureDelegate {
 
     func didFinish(with error: any Error) {
         self.error = SmileIDError.selfieCaptureFailed
-        updateStep(.processing(.error))
+        updateProcessingState(.error)
     }
 }

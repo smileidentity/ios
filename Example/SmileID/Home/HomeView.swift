@@ -6,8 +6,6 @@ struct HomeView: View {
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @ObservedObject var viewModel: HomeViewModel
 
-    @State private var selectedProduct: SmileIDProduct?
-
     init(config: Config) {
         self.viewModel = HomeViewModel(config: config)
     }
@@ -25,7 +23,7 @@ struct HomeView: View {
                         ForEach(SmileIDProduct.allCases, id: \.self) { product in
                             Button {
                                 viewModel.onProductClicked()
-                                selectedProduct = product
+                                viewModel.selectedProduct = product
                             } label: {
                                 ProductCell(product: product)
                             }
@@ -48,7 +46,7 @@ struct HomeView: View {
             .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
             .navigationBarItems(trailing: SmileEnvironmentToggleButton())
             .background(SmileID.theme.backgroundLight.ignoresSafeArea())
-            .fullScreenCover(item: $selectedProduct) { product in
+            .fullScreenCover(item: $viewModel.selectedProduct) { product in
                 switch product {
                 case .smartSelfieEnrollment:
                     SmileID.smartSelfieEnrollmentScreen(
@@ -60,15 +58,15 @@ struct HomeView: View {
                         delegate: SmartSelfieEnrollmentDelegate(
                             userId: viewModel.newUserId,
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                            onError: viewModel.didError
-                        ),
-                        onDismiss: { selectedProduct = nil }
+                            onError: viewModel.didError,
+                            onCancel: viewModel.didCancel
+                        )
                     )
                 case .smartSelfieAuthentication:
                     SmartSelfieAuthWithUserIdEntry(
                         initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
                         delegate: viewModel,
-                        onDismiss: { selectedProduct = nil }
+                        onDismiss: { viewModel.selectedProduct = nil }
                     )
                 case .enhancedSmartSelfieEnrollment:
                     SmileID.smartSelfieEnrollmentScreenEnhanced(
@@ -78,19 +76,19 @@ struct HomeView: View {
                         delegate: SmartSelfieEnrollmentDelegate(
                             userId: viewModel.newUserId,
                             onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
-                            onError: viewModel.didError
-                        ),
-                        onDismiss: { selectedProduct = nil }
+                            onError: viewModel.didError,
+                            onCancel: viewModel.didCancel
+                        )
                     )
                 case .enhancedSmartSelfieAuthentication:
-                    SmartSelfieAuthEnhancedWithUserIdEntry(
+                    SmartSelfieAuthWithUserIdEntry(
                         initialUserId: viewModel.lastSelfieEnrollmentUserId ?? "",
+                        useStrictMode: true,
                         delegate: viewModel,
-                        onDismiss: { selectedProduct = nil }
+                        onDismiss: { viewModel.selectedProduct = nil }
                     )
                 case .enhancedKYC:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
+                    CancellableNavigationView {
                         EnhancedKycWithIdInputScreen(
                             delegate: viewModel,
                             viewModel: EnhancedKycWithIdInputScreenViewModel(
@@ -98,153 +96,44 @@ struct HomeView: View {
                                 jobId: viewModel.newJobId
                             )
                         )
+                    } onCancel: {
+                        viewModel.selectedProduct = nil
                     }
                 case .biometricKYC:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
+                    CancellableNavigationView {
                         BiometricKycWithIdInputScreen(
-                            delegate: viewModel,
                             viewModel: BiometricKycWithIdInputScreenViewModel(
                                 userId: viewModel.newUserId,
-                                jobId: viewModel.newJobId
+                                jobId: viewModel.newJobId,
+                                didFinish: { didSubmit, error in
+                                    viewModel.handleBiometricKYCCompleted(didSubmit, error)
+                                }
                             )
                         )
+                    } onCancel: {
+                        viewModel.selectedProduct = nil
                     }
                 case .documentVerification:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
+                    CancellableNavigationView {
                         DocumentVerificationWithSelector(
                             userId: viewModel.newUserId,
                             jobId: viewModel.newJobId,
                             delegate: viewModel
                         )
+                    } onCancel: {
+                        viewModel.selectedProduct = nil
                     }
                 case .enhancedDocumentVerification:
-                    ProductContainerView { selectedProduct = nil }
-                    content: {
+                    CancellableNavigationView {
                         EnhancedDocumentVerificationWithSelector(
                             userId: viewModel.newUserId,
                             jobId: viewModel.newJobId,
                             delegate: viewModel
                         )
+                    } onCancel: {
+                        viewModel.selectedProduct = nil
                     }
                 }
-            }
-        }
-    }
-}
-
-// This will no longer be needed after in-flow navigation work is complete.
-struct ProductContainerView<Content: View>: View {
-    let onCancel: () -> Void
-    @ViewBuilder let content: () -> Content
-
-    var body: some View {
-        NavigationView {
-            content()
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button {
-                            onCancel()
-                        } label: {
-                            Text(SmileIDResourcesHelper.localizedString(for: "Action.Cancel"))
-                                .foregroundColor(SmileID.theme.accent)
-                        }
-                    }
-                }
-        }
-    }
-}
-
-// We need to define a separate proxy delegate because it's the same protocol for both Enrollment
-// and Authentication. However, since the result is still processing, the result parameter is not
-// yet populated (which is what contains the jobType). On Enroll, we need to perform a different
-// action (namely, save userId to clipboard)
-class SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
-    let userId: String
-    let onEnrollmentSuccess: (
-        _ userId: String,
-        _ selfieFile: URL,
-        _ livenessImages: [URL],
-        _ apiResponse: SmartSelfieResponse?
-    ) -> Void
-    let onError: (Error) -> Void
-
-    init(
-        userId: String,
-        onEnrollmentSuccess: @escaping (
-            _: String,
-            _: URL,
-            _: [URL],
-            _: SmartSelfieResponse?
-        ) -> Void,
-        onError: @escaping (
-            Error
-        ) -> Void
-    ) {
-        self.userId = userId
-        self.onEnrollmentSuccess = onEnrollmentSuccess
-        self.onError = onError
-    }
-
-    func didSucceed(
-        selfieImage: URL,
-        livenessImages: [URL],
-        apiResponse: SmartSelfieResponse?
-    ) {
-        onEnrollmentSuccess(userId, selfieImage, livenessImages, apiResponse)
-    }
-
-    func didError(error: Error) {
-        onError(error)
-    }
-}
-
-private struct SmartSelfieAuthWithUserIdEntry: View {
-    let initialUserId: String
-    let delegate: SmartSelfieResultDelegate
-    let onDismiss: (() -> Void)
-
-    @State private var userId: String?
-
-    var body: some View {
-        if let userId {
-            SmileID.smartSelfieAuthenticationScreen(
-                config: OrchestratedSelfieCaptureConfig(
-                    userId: userId,
-                    isEnroll: false,
-                    allowAgentMode: true
-                ),
-                delegate: delegate,
-                onDismiss: onDismiss
-            )
-        } else {
-            EnterUserIDView(initialUserId: initialUserId) { userId in
-                self.userId = userId
-            }
-        }
-    }
-}
-
-private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
-    let initialUserId: String
-    let delegate: SmartSelfieResultDelegate
-    let onDismiss: (() -> Void)
-
-    @State private var userId: String?
-
-    var body: some View {
-        if let userId {
-            SmileID.smartSelfieAuthenticationScreenEnhanced(
-                config: OrchestratedSelfieCaptureConfig(
-                    userId: userId,
-                    isEnroll: false
-                ),
-                delegate: delegate
-            )
-        } else {
-            EnterUserIDView(initialUserId: initialUserId) { userId in
-                self.userId = userId
             }
         }
     }

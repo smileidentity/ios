@@ -226,8 +226,6 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
             )
         } else if let error = error {
             self.delegate?.didError(error: error)
-        } else {
-            self.delegate?.didError(error: SmileIDError.unknown("Unknown error"))
         }
     }
 
@@ -242,6 +240,10 @@ class OrchestratedSelfieCaptureViewModel: ObservableObject {
     func handleClose() {
         invalidateSubmissionTask()
         onFinished()
+    }
+
+    func handleCancel() {
+        self.delegate?.didCancel()
     }
 }
 

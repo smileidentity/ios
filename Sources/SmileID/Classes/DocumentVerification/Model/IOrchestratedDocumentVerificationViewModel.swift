@@ -313,6 +313,8 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
     func didError(error: Error) {
         onError(error: SmileIDError.unknown("Error capturing selfie"))
     }
+
+    func didCancel() {}
 }
 
 extension IOrchestratedDocumentVerificationViewModel: SelfieCaptureDelegate {
