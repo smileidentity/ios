@@ -304,7 +304,7 @@ class MockResultDelegate: SmartSelfieResultDelegate {
     func didError(error _: Error) {
         failureExpectation?.fulfill()
     }
-    
+
     func didCancel() {}
 }
 
