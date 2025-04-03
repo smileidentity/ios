@@ -44,7 +44,7 @@ class SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
     func didError(error: Error) {
         onError(error)
     }
-    
+
     func didCancel() {
         onCancel()
     }

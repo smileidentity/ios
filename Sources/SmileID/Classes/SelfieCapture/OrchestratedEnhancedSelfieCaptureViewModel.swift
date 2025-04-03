@@ -101,7 +101,7 @@ class OrchestratedEnhancedSelfieCaptureViewModel: ObservableObject {
     func handleRetry() {
         handleSubmission()
     }
-    
+
     func handleCancel() {
         invalidateSubmissionTask()
         self.delegate?.didCancel()

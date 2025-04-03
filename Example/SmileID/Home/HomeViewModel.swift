@@ -232,7 +232,7 @@ class HomeViewModel: ObservableObject,
             showToast(message: error.localizedDescription)
         }
     }
-    
+
     func handleBiometricKYCCompleted(
         _ didSubmit: Bool,
         _ error: Error?
