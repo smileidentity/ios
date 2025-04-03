@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct CancellableNavigationView<Content: View>: View {
+public struct CancellableNavigationView<Content: View>: View {
     @ViewBuilder let content: () -> Content
     let onCancel: () -> Void
 
-    init(
+    public init(
         content: @escaping () -> Content,
         onCancel: @escaping () -> Void
     ) {
@@ -12,7 +12,7 @@ struct CancellableNavigationView<Content: View>: View {
         self.onCancel = onCancel
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             content()
                 .navigationBarItems(
