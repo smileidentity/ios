@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name             = 'SmileID'
-  s.version          = '10.5.0'
+  s.version          = '10.5.1'
   s.summary          = 'The Official Smile Identity iOS SDK.'
   s.homepage         = 'https://docs.usesmileid.com/integration-options/mobile/ios-v10-beta'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Japhet' => 'japhet@usesmileid.com', 'Juma Allan' => 'juma@usesmileid.com', 'Vansh Gandhi' => 'vansh@usesmileid.com', 'Tobi Omotayo' => 'oluwatobi@usesmileid.com' }
-  s.source           = { :git => "https://github.com/smileidentity/ios.git", :tag => "v10.5.0" }
+  s.source           = { :git => "https://github.com/smileidentity/ios.git", :tag => "v10.5.1" }
   s.ios.deployment_target = '13.0'
   s.dependency 'ZIPFoundation', '~> 0.9'
   s.dependency 'FingerprintJS'

@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.5.0"
+    public static let version = "10.5.1"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -213,7 +213,7 @@ public class SmileID {
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId),
+                        LocalStorage.getInfoJsonFile(jobId: jobId)
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {
