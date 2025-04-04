@@ -182,7 +182,7 @@ public class SmileID {
                     userId: authRequestFile.userId
                 )
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
-                let prepUploadRequest = PrepUploadRequest(
+                var prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(
                         extras: prepUploadFile.partnerParams.extras
                     ),
@@ -198,8 +198,9 @@ public class SmileID {
                 } catch let error as SmileIDError {
                     switch error {
                     case .api("2215", _):
+                        prepUploadRequest.retry = true
                         prepUploadResponse = try await SmileID.api.prepUpload(
-                            request: prepUploadRequest.copy(retry: "true")
+                            request: prepUploadRequest
                         )
                     default:
                         throw error
