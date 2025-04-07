@@ -118,7 +118,6 @@ final class SelfieSubmissionManager {
         }
         return MultipartBody(
             withImage: imageData,
-            forKey: fileURL.lastPathComponent,
             forName: fileURL.lastPathComponent
         )
     }
