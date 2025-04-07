@@ -214,7 +214,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     )
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
-                let prepUploadRequest = PrepUploadRequest(
+                var prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
                     allowNewEnroll: allowNewEnroll,
                     metadata: localMetadata.metadata.items,
@@ -229,8 +229,9 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 } catch let error as SmileIDError {
                     switch error {
                     case .api("2215", _):
+                        prepUploadRequest.retry = true
                         prepUploadResponse = try await SmileID.api.prepUpload(
-                            request: prepUploadRequest.copy(retry: "true")
+                            request: prepUploadRequest
                         )
                     default:
                         throw error

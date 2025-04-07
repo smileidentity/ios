@@ -180,7 +180,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     private func prepareForUpload(authResponse: AuthenticationResponse) async throws -> PrepUploadResponse {
-        let prepUploadRequest = PrepUploadRequest(
+        var prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
             allowNewEnroll: allowNewEnroll,
             metadata: localMetadata.metadata.items,
@@ -197,8 +197,10 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             else {
                 throw error
             }
+            prepUploadRequest.retry = true
             return try await SmileID.api.prepUpload(
-                request: prepUploadRequest.copy(retry: "true"))
+                request: prepUploadRequest
+            )
         }
     }
 
