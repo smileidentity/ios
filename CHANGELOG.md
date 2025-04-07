@@ -1,5 +1,10 @@
 # Release Notes
 
+## 10.5.1
+
+### Fixed
+* Selfie submission error returned in success delegate callback.
+
 ## 10.5.0
 
 * Update lottie-ios to minimum `v4.5.0`

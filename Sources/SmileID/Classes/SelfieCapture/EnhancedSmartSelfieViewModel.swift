@@ -541,7 +541,9 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
-        if let selfieImageURL = selfieImageURL,
+        if let error = self.error {
+            callback.didError(error: error)
+        } else if let selfieImageURL = selfieImageURL,
            let selfiePath = getRelativePath(from: selfieImageURL),
            livenessImages.count == numLivenessImages,
            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
@@ -555,8 +557,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
                 livenessImages: livenessImagesPaths,
                 apiResponse: apiResponse
             )
-        } else if let error = error {
-            callback.didError(error: error)
         }
     }
 
