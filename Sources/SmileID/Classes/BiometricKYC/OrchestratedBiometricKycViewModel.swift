@@ -63,8 +63,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     func onFinished(delegate: BiometricKycResultDelegate) {
         if let selfieFile = selfieFile,
            let livenessFiles = livenessFiles,
-           let selfiePath = getRelativePath(from: selfieFile)
-        {
+           let selfiePath = getRelativePath(from: selfieFile) {
             delegate.didSucceed(
                 selfieImage: selfiePath,
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
@@ -143,6 +142,11 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         if let livenessFiles {
             allFiles.append(contentsOf: livenessFiles)
         }
+        do {
+            if let securityInfoJson = try LocalStorage.addSecurityInfo(jobId: jobId, files: allFiles) {
+                allFiles.append(contentsOf: [securityInfoJson])
+            }
+        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
         return try LocalStorage.zipFiles(at: allFiles)
     }
 
@@ -176,7 +180,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     private func prepareForUpload(authResponse: AuthenticationResponse) async throws -> PrepUploadResponse {
-        let prepUploadRequest = PrepUploadRequest(
+        var prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
             allowNewEnroll: allowNewEnroll,
             metadata: localMetadata.metadata.items,
@@ -193,8 +197,10 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             else {
                 throw error
             }
+            prepUploadRequest.retry = true
             return try await SmileID.api.prepUpload(
-                request: prepUploadRequest.copy(retry: "true"))
+                request: prepUploadRequest
+            )
         }
     }
 

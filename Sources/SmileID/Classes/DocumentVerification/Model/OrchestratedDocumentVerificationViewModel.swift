@@ -179,6 +179,11 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     livenessImages: livenessFiles
                 )
                 allFiles.append(info)
+                do {
+                    if let securityInfoJson = try LocalStorage.addSecurityInfo(jobId: jobId, files: allFiles) {
+                        allFiles.append(contentsOf: [securityInfoJson])
+                    }
+                } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
                 let zipData = try LocalStorage.zipFiles(at: allFiles)
                 self.savedFiles = DocumentCaptureResultStore(
                     allFiles: allFiles,
@@ -209,7 +214,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     )
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
-                let prepUploadRequest = PrepUploadRequest(
+                var prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
                     allowNewEnroll: allowNewEnroll,
                     metadata: localMetadata.metadata.items,
@@ -224,8 +229,9 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 } catch let error as SmileIDError {
                     switch error {
                     case .api("2215", _):
+                        prepUploadRequest.retry = true
                         prepUploadResponse = try await SmileID.api.prepUpload(
-                            request: prepUploadRequest.copy(retry: "true")
+                            request: prepUploadRequest
                         )
                     default:
                         throw error
@@ -346,9 +352,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
-{
+class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
@@ -372,11 +376,7 @@ class OrchestratedDocumentVerificationViewModel:
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedEnhancedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<
-        EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
-    >
-{
+class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),

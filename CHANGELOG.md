@@ -1,5 +1,9 @@
 # Release Notes
 
+## Unreleased
+
+* Changes the `retry` flag to be a boolean instead of a string for prepUpload requests. This is a breaking change for stored offline jobs, where the job is written using an older sdk version and then submission is attempted using this version
+
 ## 10.5.1
 
 ### Fixed

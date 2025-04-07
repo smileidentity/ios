@@ -1,4 +1,6 @@
 import Foundation
+import SmileIDSecurity
+import UIKit // todo remove after testing
 
 protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
@@ -66,7 +68,8 @@ extension ServiceRunnable {
                 .contentType(value: "application/json"),
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
-                .sourceSDKVersion(value: SmileID.version)
+                .sourceSDKVersion(value: SmileID.version),
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ],
             body: body
         )
@@ -80,7 +83,8 @@ extension ServiceRunnable {
             headers: [
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
-                .sourceSDKVersion(value: SmileID.version)
+                .sourceSDKVersion(value: SmileID.version),
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ]
         )
         return try await serviceClient.send(request: request)
@@ -108,6 +112,45 @@ extension ServiceRunnable {
         headers.append(.timestamp(value: timestamp))
         headers.append(.sourceSDK(value: "iOS"))
         headers.append(.sourceSDKVersion(value: SmileID.version))
+        let timestamp = Date().toISO8601WithMilliseconds()
+        headers.append(.requestTimestamp(value: timestamp))
+
+        let startDate = Date()
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        let selfieRequest = SelfieRequest(
+            selfieImage: selfieImage.data,
+            livenessImages: livenessImages.map { $0.data },
+            userId: userId,
+            partnerParams: partnerParams,
+            callbackUrl: callbackUrl?.nilIfEmpty(),
+            sandboxResult: sandboxResult,
+            allowNewEnroll: allowNewEnroll,
+            failureReason: failureReason,
+            metadata: metadata.items
+        )
+        do {
+            let payload = try encoder.encode(selfieRequest)
+            let requestMac = try SmileIDCryptoManager.shared.sign(
+                timestamp: timestamp,
+                headers: headers.toDictionary(),
+                payload: payload
+            )
+            headers.append(.requestMac(value: requestMac))
+        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
+        let endDate = Date()
+        let time = endDate.timeIntervalSince(startDate)
+        print("Time for payload signing: \(time)")
+
+        DispatchQueue.main.async {
+            let vc = UIApplication.getTopViewController()
+            let alert = UIAlertController(title: "Payload Signing Timing", message: String(time), preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            if let vc = vc {
+                vc.present(alert, animated: true, completion: nil)
+            }
+        }
+
         let request = try await createMultiPartRequest(
             url: path,
             method: .post,
@@ -132,7 +175,7 @@ extension ServiceRunnable {
     private func createMultiPartRequest(
         url: PathType,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         uploadData: Data
     ) async throws -> RestRequest {
         let path = String(describing: url)
@@ -174,13 +217,14 @@ extension ServiceRunnable {
     private func createUploadRequest(
         url: String,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         uploadData: Data,
         queryParameters _: [HTTPQueryParameters]? = nil
     ) async throws -> RestRequest {
         guard let url = URL(string: url) else {
             throw URLError(.badURL)
         }
+
         let request = RestRequest(
             url: url,
             method: method,
@@ -193,7 +237,7 @@ extension ServiceRunnable {
     private func createRestRequest<T: Encodable>(
         path: PathType,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         queryParameters: [HTTPQueryParameters]? = nil,
         body: T
     ) async throws -> RestRequest {
@@ -202,11 +246,26 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        var signedHeaders = headers
+        do {
+            let payload = try encoder.encode(body)
+            if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
+                let requestMac = try SmileIDCryptoManager.shared.sign(
+                    timestamp: header.value,
+                    headers: headers.toDictionary(),
+                    payload: payload
+                )
+                signedHeaders += [.requestMac(value: requestMac)]
+            }
+        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
+
         do {
             let request = try RestRequest(
                 url: url,
                 method: method,
-                headers: headers,
+                headers: signedHeaders,
                 queryParameters: queryParameters,
                 body: body
             )
@@ -219,7 +278,7 @@ extension ServiceRunnable {
     private func createRestRequest(
         path: PathType,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         queryParameters: [HTTPQueryParameters]? = nil
     ) throws -> RestRequest {
         let path = String(describing: path)
@@ -227,10 +286,21 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
+        var signedHeaders = headers
+        do {
+            if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
+                let requestMac = try SmileIDCryptoManager.shared.sign(
+                    timestamp: header.value,
+                    headers: headers.toDictionary()
+                )
+                signedHeaders += [.requestMac(value: requestMac)]
+            }
+        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
+
         let request = RestRequest(
             url: url,
             method: method,
-            headers: headers,
+            headers: signedHeaders,
             queryParameters: queryParameters
         )
         return request
@@ -267,7 +337,10 @@ extension ServiceRunnable {
                 body.append(dispositionData)
                 body.append(contentTypeData)
 
-                if let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: []) {
+                if let jsonData = try? JSONSerialization.data(
+                    withJSONObject: parameters,
+                    options: [.sortedKeys, .withoutEscapingSlashes]
+                ) {
                     body.append(jsonData)
                     body.append(lineBreakData)
                 }
@@ -319,6 +392,7 @@ extension ServiceRunnable {
 
         // Append metadata
         let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         if let metadataData = try? encoder.encode(metadata.items) {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
@@ -360,5 +434,34 @@ extension ServiceRunnable {
         // Append final boundary
         body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
         return body
+    }
+}
+
+extension UIApplication {
+    class func getTopViewController(
+        base: UIViewController? = UIWindow.current?.rootViewController
+    ) -> UIViewController? {
+        if let navController = base as? UINavigationController {
+            return getTopViewController(base: navController.visibleViewController)
+        } else if let tabController = base as? UITabBarController,
+            let selected = tabController.selectedViewController
+        {
+            return getTopViewController(base: selected)
+        } else if let presented = base?.presentedViewController {
+            return getTopViewController(base: presented)
+        }
+        return base
+    }
+}
+
+extension UIWindow {
+    static var current: UIWindow? {
+        for scene in UIApplication.shared.connectedScenes {
+            guard let windowScene = scene as? UIWindowScene else { continue }
+            for window in windowScene.windows {
+                if window.isKeyWindow { return window }
+            }
+        }
+        return nil
     }
 }
