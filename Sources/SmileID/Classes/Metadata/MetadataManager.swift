@@ -31,6 +31,8 @@ public class MetadataManager {
             key: .deviceOS, value: UIDevice.current.systemVersion)
         addMetadata(
             key: .timezone, value: TimeZone.current.identifier)
+        addMetadata(
+            key: .locale, value: Locale.current.identifier)
     }
 
     private func registerDefaultProviders() {
