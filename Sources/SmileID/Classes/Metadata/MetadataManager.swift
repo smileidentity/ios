@@ -35,6 +35,7 @@ public class MetadataManager {
             key: .locale, value: Locale.current.identifier)
         addMetadata(
             key: .screenResolution, value: UIScreen.main.formattedResolution)
+        addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
     }
 
     private func registerDefaultProviders() {
