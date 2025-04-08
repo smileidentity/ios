@@ -11,4 +11,17 @@ extension ProcessInfo {
 
         return "\(memoryInMB)"
     }
+
+    /// Returns the system architecture (e.g., "ARM64", "x86_64")
+    var systemArchitecture: String {
+        #if arch(arm64)
+            return "ARM64"
+        #elseif arch(x86_64)
+            return "x86_64"
+        #elseif arch(i386)
+            return "i386"
+        #else
+            return "Unknown"
+        #endif
+    }
 }

@@ -38,6 +38,7 @@ public class MetadataManager {
         addMetadata(
             key: .screenResolution, value: UIScreen.main.formattedResolution)
         addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
+        addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
     }
 
     private func registerDefaultProviders() {
