@@ -20,5 +20,6 @@ enum MetadataKey: String {
     case selfieImageOrigin = "selfie_image_origin"
     case sdk
     case sdkVersion = "sdk_version"
+    case timezone = "timezone"
     case vpnDetected = "vpn"
 }

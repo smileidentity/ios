@@ -29,6 +29,8 @@ public class MetadataManager {
             key: .deviceModel, value: UIDevice.current.modelName)
         addMetadata(
             key: .deviceOS, value: UIDevice.current.systemVersion)
+        addMetadata(
+            key: .timezone, value: TimeZone.current.identifier)
     }
 
     private func registerDefaultProviders() {
