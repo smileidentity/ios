@@ -33,6 +33,8 @@ public class MetadataManager {
             key: .timezone, value: TimeZone.current.identifier)
         addMetadata(
             key: .locale, value: Locale.current.identifier)
+        addMetadata(
+            key: .screenResolution, value: UIScreen.main.formattedResolution)
     }
 
     private func registerDefaultProviders() {
