@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.4.2"
+    public static let version = "10.5.1"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -184,9 +184,9 @@ public class SmileID {
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(
-                        extras: prepUploadFile.partnerParams.extras),
-                    // TODO: - Fix when Michael changes this to boolean
-                    allowNewEnroll: String(prepUploadFile.allowNewEnroll),
+                        extras: prepUploadFile.partnerParams.extras
+                    ),
+                    allowNewEnroll: prepUploadFile.allowNewEnroll,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
@@ -213,7 +213,7 @@ public class SmileID {
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId),
+                        LocalStorage.getInfoJsonFile(jobId: jobId)
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {

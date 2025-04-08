@@ -308,8 +308,7 @@ extension ServiceRunnable {
 
         // Append allowNewEnroll if available
         if let allowNewEnroll = allowNewEnroll {
-            let allowNewEnrollString = "\(allowNewEnroll)"
-            if let valueData = "\(allowNewEnrollString)\(lineBreak)".data(using: .utf8) {
+            if let valueData = "\(allowNewEnroll)\(lineBreak)".data(using: .utf8) {
                 body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                 body.append(
                     "Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)".data(

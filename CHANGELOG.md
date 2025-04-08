@@ -1,4 +1,15 @@
 # Release Notes
+
+## 10.5.1
+
+### Fixed
+* Selfie submission error returned in success delegate callback.
+
+## 10.5.0
+
+* Update lottie-ios to minimum `v4.5.0`
+* Changes the `allow_new_enroll` flag to be a boolean instead of a string for prepUpload requests and multi-part requests. This is a breaking change for stored offline jobs, where the job is written using an older sdk version and then submission is attempted using this version
+
 ## 10.4.2
 
 * Added SmartSelfie™ capture only option for Enhanced SmartSelfie™ and SmartSelfie™ capture flows without submission accessible with `skipApiSubmission=true` on enroll and authentication products

@@ -536,12 +536,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
-        if let selfieImage = selfieImage,
+        if let error = self.error {
+            callback.didError(error: error)
+        } else if let selfieImage = selfieImage,
             let selfiePath = getRelativePath(from: selfieImage),
             livenessImages.count == numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            )
-        {
+            ) {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }
@@ -551,8 +552,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 livenessImages: livenessImagesPaths,
                 apiResponse: apiResponse
             )
-        } else if let error = error {
-            callback.didError(error: error)
         } else {
             callback.didError(error: SmileIDError.unknown("Unknown error"))
         }
