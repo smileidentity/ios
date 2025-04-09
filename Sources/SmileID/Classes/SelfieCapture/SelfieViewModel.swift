@@ -28,6 +28,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let metadataManager: MetadataManager = .shared
     private let metadataTimerStart = MonotonicTime()
     private let faceDetector = FaceDetector()
+    private var selfieCaptureRetries: Int = 0
 
     var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
@@ -342,6 +343,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         livenessImages = []
         shouldAnalyzeImages = true
         cleanUpSelfieCapture()
+        selfieCaptureRetries += 1
         metadataManager.removeMetadata(key: .selfieImageOrigin)
         metadataManager.removeMetadata(key: .activeLivenessType)
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
@@ -371,6 +373,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             value: metadataTimerStart.elapsedTime().milliseconds()
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.smile.rawValue)
+        metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
 
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }

@@ -15,6 +15,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var guideAnimationDelayTimer: Timer?
     private let metadataTimerStart = MonotonicTime()
     private let metadataManager: MetadataManager = .shared
+    private var selfieCaptureRetries: Int = 0
 
     // MARK: Private Properties
 
@@ -215,6 +216,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         case .cancelSelfieCapture:
             handleCancelSelfieCapture()
         case .retryJobSubmission:
+            selfieCaptureRetries += 1
             handleSubmission()
         case .openApplicationSettings:
             openSettings()
@@ -522,6 +524,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
         metadataManager.addMetadata(key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
+        metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
     }
 
     private func resetSelfieCaptureMetadata() {

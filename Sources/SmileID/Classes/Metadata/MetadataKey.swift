@@ -24,6 +24,7 @@ enum MetadataKey: String {
     case screenResolution = "screen_resolution"
     case selfieCaptureDuration = "selfie_capture_duration_ms"
     case selfieImageOrigin = "selfie_image_origin"
+    case selfieCaptureRetries = "selfie_capture_retries"
     case sdk
     case sdkVersion = "sdk_version"
     case systemArchitecture = "system_architecture"
