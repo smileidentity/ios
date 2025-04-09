@@ -42,6 +42,7 @@ public class MetadataManager {
         addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
         addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCamerasString)
         addMetadata(key: .localTimeOfEnrolment, value: Date().toISO8601Local())
+        addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
     }
 
     private func registerDefaultProviders() {
