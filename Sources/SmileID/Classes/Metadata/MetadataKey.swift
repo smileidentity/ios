@@ -27,6 +27,7 @@ enum MetadataKey: String {
     case selfieCaptureRetries = "selfie_capture_retries"
     case sdk
     case sdkVersion = "sdk_version"
+    case sdkLaunchCount = "sdk_launch_count"
     case systemArchitecture = "system_architecture"
     case timezone = "timezone"
     case vpnDetected = "vpn"
