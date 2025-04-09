@@ -193,7 +193,7 @@ public class LocalStorage {
                         jobType: jobType,
                         extras: partnerParams
                     ),
-                    allowNewEnroll: String(allowNewEnroll),
+                    allowNewEnroll: allowNewEnroll,
                     metadata: metadata,
                     timestamp: "", // remove this so it is not stored offline
                     signature: "" // remove this so it is not stored offline
