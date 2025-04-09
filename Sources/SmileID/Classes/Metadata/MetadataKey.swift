@@ -18,6 +18,7 @@ enum MetadataKey: String {
     case locale = "locale"
     case memoryInfo = "memory_info"
     case networkConnection = "network_connection"
+    case numberOfCameras = "number_of_cameras"
     case proxyDetected = "proxy"
     case screenResolution = "screen_resolution"
     case selfieCaptureDuration = "selfie_capture_duration_ms"

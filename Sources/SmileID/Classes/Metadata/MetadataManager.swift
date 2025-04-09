@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import Network
 import UIKit
@@ -39,6 +40,7 @@ public class MetadataManager {
             key: .screenResolution, value: UIScreen.main.formattedResolution)
         addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
         addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
+        addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCamerasString)
     }
 
     private func registerDefaultProviders() {
