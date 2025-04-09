@@ -43,6 +43,7 @@ public class MetadataManager {
         addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCamerasString)
         addMetadata(key: .localTimeOfEnrolment, value: Date().toISO8601Local())
         addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
+        addMetadata(key: .proximitySensor, value: UIDevice.current.proximitySensorString)
     }
 
     private func registerDefaultProviders() {

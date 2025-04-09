@@ -21,6 +21,7 @@ enum MetadataKey: String {
     case memoryInfo = "memory_info"
     case networkConnection = "network_connection"
     case numberOfCameras = "number_of_cameras"
+    case proximitySensor = "proximity_sensor"
     case proxyDetected = "proxy"
     case screenResolution = "screen_resolution"
     case selfieCaptureDuration = "selfie_capture_duration_ms"
