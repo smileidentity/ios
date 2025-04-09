@@ -16,6 +16,7 @@ enum MetadataKey: String {
     case documentFrontImageOrigin = "document_front_image_origin"
     case fingerprint
     case locale = "locale"
+    case localTimeOfEnrolment = "local_time_of_enrolment"
     case memoryInfo = "memory_info"
     case networkConnection = "network_connection"
     case numberOfCameras = "number_of_cameras"

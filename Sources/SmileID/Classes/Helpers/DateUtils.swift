@@ -10,4 +10,12 @@ extension Date {
        formatter.locale = Locale(identifier: "en_US_POSIX")
        return formatter.string(from: self)
    }
+
+   /// Converts Date to ISO8601 string in local timezone
+   /// Format: yyyy-MM-dd'T'HH:mm:ss (e.g. 2024-02-11T10:30:00)
+   public func toISO8601Local() -> String {
+       let dateFormatter = ISO8601DateFormatter()
+       dateFormatter.formatOptions = [.withInternetDateTime]
+       return dateFormatter.string(from: self)
+   }
 }
