@@ -1,5 +1,10 @@
 # Release Notes
 
+## [Unreleased]
+
+### Changed
+* Require selfie recapture when retrying failed submission for Enhanced Smart Selfie Capture.
+
 ## 10.5.1
 
 ### Fixed
