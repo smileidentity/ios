@@ -133,6 +133,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
                 with: livenessCheckManager.$lookRightProgress,
                 livenessCheckManager.$lookUpProgress
             )
+            .filter { $0 != 0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 DispatchQueue.main.async {
@@ -215,7 +216,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         case .cancelSelfieCapture:
             handleCancelSelfieCapture()
         case .retryJobSubmission:
-            handleSubmission()
+            handleViewAppeared()
         case .openApplicationSettings:
             openSettings()
         case let .handleError(error):
