@@ -94,6 +94,9 @@ public class SmileID {
         self.requestTimeout = requestTimeout
 
         SmileIDResourcesHelper.registerFonts()
+        
+        // Increment and track SDK launch count
+        trackSdkLaunchCount()
 
         let fingerprinter = FingerprinterFactory.getInstance()
         Task {
@@ -105,6 +108,18 @@ public class SmileID {
                 deviceId = fingerprint
             }
         }
+    }
+    
+    /// Tracks the SDK launch count by incrementing a counter stored in UserDefaults
+    private class func trackSdkLaunchCount() {
+        let defaults = UserDefaults.standard
+        let key = "SmileID.SDKLaunchCount"
+        let currentCount = defaults.integer(forKey: key)
+        let newCount = currentCount + 1
+        defaults.set(newCount, forKey: key)
+
+        // Add the launch count to metadata for tracking
+        MetadataManager.shared.addMetadata(key: .sdkLaunchCount, value: String(newCount))
     }
 
     /// Sets the state of offline mode for the SDK.
