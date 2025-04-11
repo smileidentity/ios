@@ -104,12 +104,8 @@ extension NetworkMetadataProvider: MetadataProvider {
         var metadata: [MetadataKey: String] = [:]
 
         // Add network connection info
-        if let jsonData = try? JSONSerialization.data(withJSONObject: connectionTypes, options: []) {
-            let jsonString = String(data: jsonData, encoding: .utf8)
-            metadata[.networkConnection] = jsonString
-        } else {
-            metadata[.networkConnection] = "unknown"
-        }
+        let jsonString = jsonString(from: connectionTypes)
+        metadata[.networkConnection] = jsonString ?? "unknown"
 
         // Add proxy detection info
         let proxyDetected = isProxyDetected()
