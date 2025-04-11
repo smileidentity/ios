@@ -10,12 +10,6 @@ class NetworkMetadataProvider {
 
     init() {
         monitor = NWPathMonitor()
-
-        // Initialize with current connection state
-        let initialPath = monitor.currentPath
-        let initialConnection = determineConnectionType(from: initialPath)
-        connectionTypes = [initialConnection]
-
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self else { return }
             let newConnection = determineConnectionType(from: path)
@@ -34,10 +28,8 @@ class NetworkMetadataProvider {
             return "wifi"
         } else if path.usesInterfaceType(.cellular) {
             return "cellular"
-        } else if path.status == .satisfied {
-            return "other"
         } else {
-            return "unavailable"
+            return "other"
         }
     }
 
