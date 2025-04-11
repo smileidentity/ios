@@ -104,7 +104,11 @@ extension NetworkMetadataProvider: MetadataProvider {
         var metadata: [MetadataKey: String] = [:]
 
         // Add network connection info
-        if let jsonData = try? JSONSerialization.data(withJSONObject: connectionTypes, options: []) {
+        if !connectionTypes.isEmpty,
+            let jsonData = try? JSONSerialization.data(
+                withJSONObject: connectionTypes,
+                options: []
+            ) {
             let jsonString = String(data: jsonData, encoding: .utf8)
             metadata[.networkConnection] = jsonString
         } else {
