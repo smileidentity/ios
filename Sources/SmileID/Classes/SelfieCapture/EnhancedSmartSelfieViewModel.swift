@@ -23,6 +23,10 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var unlockedDeviceOrientation: UIDeviceOrientation {
         UIDevice.current.orientation
     }
+    private var currentOrientation: UIDeviceOrientation {
+        return motionManager.isDeviceMotionAvailable
+            ? motionDeviceOrientation : unlockedDeviceOrientation
+    }
 
     // Store orientations for metadata
     private var deviceOrientationCaptures: [String] = []
@@ -185,14 +189,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     }
 
     private func handleCameraImageBuffer(_ imageBuffer: CVPixelBuffer) {
-        let currentOrientation: UIDeviceOrientation =
-            motionManager.isDeviceMotionAvailable
-                ? motionDeviceOrientation : unlockedDeviceOrientation
         if currentOrientation == .portrait {
-            analyzeFrame(
-                imageBuffer: imageBuffer,
-                currentOrientation: currentOrientation
-            )
+            analyzeFrame(imageBuffer: imageBuffer)
         } else {
             DispatchQueue.main.async {
                 self.faceInBounds = false
@@ -201,15 +199,10 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         }
     }
 
-    private func analyzeFrame(
-        imageBuffer: CVPixelBuffer,
-        currentOrientation: UIDeviceOrientation
-    ) {
+    private func analyzeFrame(imageBuffer: CVPixelBuffer) {
         currentFrameBuffer = imageBuffer
         faceDetector.processImageBuffer(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
-            // Capture device orientation before taking selfie
-            deviceOrientationCaptures = [currentOrientation.rawValue.description]
             captureSelfieImage(imageBuffer)
             HapticManager.shared.notification(type: .success)
             livenessCheckManager.initiateLivenessCheck()
@@ -274,6 +267,8 @@ extension EnhancedSmartSelfieViewModel {
         cameraManager.switchCamera(to: .front)
         resetGuideAnimationDelayTimer()
         resetSelfieCaptureState()
+        // Capture device orientation before taking selfie
+        deviceOrientationCaptures.append(currentOrientation.category)
     }
 
     private func resetSelfieCaptureState() {
@@ -485,7 +480,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 
     func didCompleteLivenessChallenge() {
         // Store orientation after capture
-        deviceOrientationCaptures.append(String(motionDeviceOrientation.rawValue))
+        deviceOrientationCaptures.append(currentOrientation.category)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.cameraManager.pauseSession()
             self.handleSubmission()
@@ -541,7 +536,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         if let jsonString = jsonString(from: deviceOrientationCaptures) {
             metadataManager
                 .addMetadata(
-                    key: .deviceOrientationCapture,
+                    key: .deviceOrientation,
                     value: jsonString
                 )
         }
@@ -550,7 +545,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     private func resetSelfieCaptureMetadata() {
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
         metadataManager.removeMetadata(key: .activeLivenessType)
-        metadataManager.removeMetadata(key: .deviceOrientationCapture)
+        metadataManager.removeMetadata(key: .deviceOrientation)
         deviceOrientationCaptures = []
     }
 

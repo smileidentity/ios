@@ -45,6 +45,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     var apiResponse: SmartSelfieResponse?
     var error: Error?
 
+    // Store orientations for metadata
+    private var deviceOrientationCaptures: [String] = []
+
     private let arKitFramePublisher = PassthroughSubject<
         CVPixelBuffer?, Never
     >()
@@ -80,6 +83,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.allowNewEnroll = allowNewEnroll
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
+
+        // Capture device orientation before selfie capture
+        deviceOrientationCaptures.append(UIDevice.current.orientation.category)
 
         if cameraManager.session.canSetSessionPreset(.vga640x480) {
             cameraManager.session.sessionPreset = .vga640x480
@@ -273,6 +279,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         let selfieImage = try LocalStorage.createSelfieFile(
                             jobId: jobId, selfieFile: imageData)
                         self.selfieImage = selfieImage
+
+                        // Capture device orientation after selfie capture
+                        deviceOrientationCaptures.append(UIDevice.current.orientation.category)
+
                         DispatchQueue.main.async {
                             self.captureProgress = 1
                             self.selfieToConfirm = imageData
@@ -345,6 +355,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         metadataManager.removeMetadata(key: .selfieImageOrigin)
         metadataManager.removeMetadata(key: .activeLivenessType)
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
+        metadataManager.removeMetadata(key: .deviceOrientation)
+        deviceOrientationCaptures = []
     }
 
     func cleanUpSelfieCapture() {
@@ -371,6 +383,12 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             value: metadataTimerStart.elapsedTime().milliseconds()
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.smile.rawValue)
+        // Add device orientation data
+        if !deviceOrientationCaptures.isEmpty {
+            if let jsonString = jsonString(from: deviceOrientationCaptures) {
+                metadataManager.addMetadata(key: .deviceOrientation, value: jsonString)
+            }
+        }
 
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }
