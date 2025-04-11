@@ -10,15 +10,15 @@ class NetworkMetadataProvider {
 
     init() {
         monitor = NWPathMonitor()
+
+        // Initialize with current connection state
+        let initialPath = monitor.currentPath
+        let initialConnection = determineConnectionType(from: initialPath)
+        connectionTypes = [initialConnection]
+
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self else { return }
-            let newConnection = if path.usesInterfaceType(.wifi) {
-                "wifi"
-            } else if path.usesInterfaceType(.cellular) {
-                "cellular"
-            } else {
-                "other"
-            }
+            let newConnection = determineConnectionType(from: path)
 
             if self.connectionTypes.last != newConnection {
                 self.connectionTypes.append(newConnection)
@@ -27,6 +27,18 @@ class NetworkMetadataProvider {
 
         let queue = DispatchQueue(label: "NetworkMonitor")
         monitor.start(queue: queue)
+    }
+
+    private func determineConnectionType(from path: NWPath) -> String {
+        if path.usesInterfaceType(.wifi) {
+            return "wifi"
+        } else if path.usesInterfaceType(.cellular) {
+            return "cellular"
+        } else if path.status == .satisfied {
+            return "other"
+        } else {
+            return "unavailable"
+        }
     }
 
     deinit {
