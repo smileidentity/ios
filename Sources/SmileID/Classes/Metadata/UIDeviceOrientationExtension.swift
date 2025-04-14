@@ -12,9 +12,9 @@ extension UIDeviceOrientation {
         case .faceDown:
             return "FaceDown"
         case .unknown:
-            return "Unknown"
+            return "unknown"
         @unknown default:
-            return "Unknown"
+            return "unknown"
         }
     }
 }

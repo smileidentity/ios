@@ -21,7 +21,7 @@ extension ProcessInfo {
         #elseif arch(i386)
             return "i386"
         #else
-            return "Unknown"
+            return "unknown"
         #endif
     }
 }
