@@ -51,9 +51,6 @@ public class SmileID {
     private(set) static var localizableStrings: SmileIDLocalizableStrings?
     /// The timeout interval for requests. This value is initialized to the `defaultRequestTimeout`.
     private(set) static var requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
-    
-    // Metadata for wrapper SDKs (Flutter, React Native, etc.)
-    private(set) static var wrapperSdkInfo: (name: String, version: String)?
 
     /// This method initializes SmileID. Invoke this method once in your application lifecycle
     /// before calling any other SmileID methods.
@@ -63,37 +60,18 @@ public class SmileID {
     ///   - useSandbox: A boolean to enable the sandbox environment or not
     ///   - requestTimeout: The timeout interval for all requests.
     ///   An interval greater than `defaultRequestTimeout` is recommended.
+    ///   - wrapperSdkName: The name of the wrapper SDK (Flutter, React Native, etc.)
+    ///   - wrapperSdkVersion: The version of the wrapper SDK
     public class func initialize(
         config: Config = getConfig(),
         useSandbox: Bool = false,
-        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
+        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout,
+        wrapperSdkName: String? = nil,
+        wrapperSdkVersion: String? = nil
     ) {
         initialize(
             apiKey: nil,
             config: config,
-            useSandbox: useSandbox,
-            requestTimeout: requestTimeout
-        )
-    }
-    
-    /// Initialize with wrapper SDK information
-    /// Convenience method for wrapper SDKs to initialize SmileID with their information
-    /// - Parameters:
-    ///   - config: The smile config
-    ///   - useSandbox: Whether to use sandbox mode
-    ///   - requestTimeout: Request timeout
-    ///   - wrapperSdkName: The name of the wrapper SDK (e.g., "Flutter", "React Native")
-    ///   - wrapperSdkVersion: The version of the wrapper SDK
-    public class func initializeWithWrapper(
-        config: Config = getConfig(),
-        useSandbox: Bool = false,
-        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout,
-        wrapperSdkName: String,
-        wrapperSdkVersion: String
-    ) {
-        initialize(
-            apiKey: nil,
-            config: config, 
             useSandbox: useSandbox,
             requestTimeout: requestTimeout,
             wrapperSdkName: wrapperSdkName,
@@ -304,18 +282,16 @@ public class SmileID {
     }
     
     /// Set wrapper SDK information
-    /// This method should be called by wrapper SDKs (Flutter, React Native) to identify themselves
+    /// This method should be called by wrapper SDKs to identify themselves
     /// in the metadata collection.
     /// - Parameters:
     ///   - name: The name of the wrapper SDK (e.g., "Flutter" or "React Native")
     ///   - version: The version of the wrapper SDK
-    public class func setWrapperInfo(name: String, version: String) {
-        wrapperSdkInfo = (name: name, version: version)
-        
+    class func setWrapperInfo(name: String, version: String) {
         // Update metadata immediately
         let metadataManager = MetadataManager.shared
-        metadataManager.addMetadata(key: .wrapperSdk, value: name)
-        metadataManager.addMetadata(key: .wrapperSdkVersion, value: version)
+        metadataManager.addMetadata(key: .wrapperName, value: name)
+        metadataManager.addMetadata(key: .wrapperVersion, value: version)
     }
 
     /// Load the Config object from a json file
