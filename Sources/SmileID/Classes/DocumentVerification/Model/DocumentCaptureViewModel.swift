@@ -35,7 +35,7 @@ class DocumentCaptureViewModel: ObservableObject {
     private let side: DocumentCaptureSide
     private var retryCount: Int = 0
     private(set) var documentImageOrigin: DocumentImageOriginValue?
-    
+
     // Device orientation tracking
     private let motionManager = CMMotionManager()
     private var motionDeviceOrientation: UIDeviceOrientation = UIDevice.current.orientation
@@ -46,9 +46,12 @@ class DocumentCaptureViewModel: ObservableObject {
         return motionManager.isDeviceMotionAvailable
             ? motionDeviceOrientation : unlockedDeviceOrientation
     }
-    
-    // Store orientations for metadata
-    private var deviceOrientationCaptures: [String] = []
+
+    // Device orientation provider
+    private let orientationProvider = DeviceOrientationMetadataProvider.shared
+
+    // Store orientations for this capture session
+    private var deviceOrientationCaptures: [UIDeviceOrientation] = []
 
     // UI properties
     @Published var unauthorizedAlert: AlertState?
@@ -94,9 +97,9 @@ class DocumentCaptureViewModel: ObservableObject {
                 }
             }
         }
-        
+
         // Capture device orientation at initialization (beginning of capture screen)
-        deviceOrientationCaptures.append(currentOrientation.category)
+        deviceOrientationCaptures.append(currentOrientation)
 
         cameraManager.capturedImagePublisher
             .receive(on: DispatchQueue.global())
@@ -205,7 +208,7 @@ class DocumentCaptureViewModel: ObservableObject {
 
     private func onCaptureComplete(image: Data) {
         // Capture device orientation after successful capture
-        deviceOrientationCaptures.append(currentOrientation.category)
+        deviceOrientationCaptures.append(currentOrientation)
         
         let croppedImage = ImageUtils.cropImageToAspectRatio(
             imageData: image,
@@ -229,7 +232,7 @@ class DocumentCaptureViewModel: ObservableObject {
             metadataManager.removeMetadata(key: .documentBackCaptureDuration)
             metadataManager.removeMetadata(key: .documentBackImageOrigin)
         }
-        metadataManager.removeMetadata(key: .deviceOrientation)
+        // Clear local orientations but don't touch the metadata manager
         deviceOrientationCaptures = []
     }
 
@@ -248,14 +251,6 @@ class DocumentCaptureViewModel: ObservableObject {
             if let documentImageOrigin {
                 metadataManager.addMetadata(key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
             }
-            
-            // Add device orientation data
-            if let jsonString = jsonString(from: deviceOrientationCaptures) {
-                metadataManager.addMetadata(
-                    key: .deviceOrientation,
-                    value: jsonString
-                )
-            }
         case .back:
             metadataManager.addMetadata(
                 key: .documentBackCaptureDuration,
@@ -269,15 +264,10 @@ class DocumentCaptureViewModel: ObservableObject {
             if let documentImageOrigin {
                 metadataManager.addMetadata(key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
             }
-            
-            // Add device orientation data
-            if let jsonString = jsonString(from: deviceOrientationCaptures) {
-                metadataManager.addMetadata(
-                    key: .deviceOrientation,
-                    value: jsonString
-                )
-            }
         }
+        
+        // Add all collected device orientations to the provider
+        orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
     }
 
     /// Analyzes a single frame from the camera. No other frame will be processed until this one

@@ -15,6 +15,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var guideAnimationDelayTimer: Timer?
     private let metadataTimerStart = MonotonicTime()
     private let metadataManager: MetadataManager = .shared
+    private let orientationProvider = DeviceOrientationMetadataProvider.shared
 
     // MARK: Private Properties
 
@@ -28,8 +29,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             ? motionDeviceOrientation : unlockedDeviceOrientation
     }
 
-    // Store orientations for metadata
-    private var deviceOrientationCaptures: [String] = []
+    // Store orientations for this capture session
+    private var deviceOrientationCaptures: [UIDeviceOrientation] = []
 
     private var faceLayoutGuideFrame = CGRect(
         x: 0, y: 0, width: 250, height: 350
@@ -268,7 +269,7 @@ extension EnhancedSmartSelfieViewModel {
         resetGuideAnimationDelayTimer()
         resetSelfieCaptureState()
         // Capture device orientation before taking selfie
-        deviceOrientationCaptures.append(currentOrientation.category)
+        deviceOrientationCaptures.append(currentOrientation)
     }
 
     private func resetSelfieCaptureState() {
@@ -480,7 +481,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 
     func didCompleteLivenessChallenge() {
         // Store orientation after capture
-        deviceOrientationCaptures.append(currentOrientation.category)
+        deviceOrientationCaptures.append(currentOrientation)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.cameraManager.pauseSession()
             self.handleSubmission()
@@ -532,20 +533,14 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
         metadataManager.addMetadata(key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
 
-        // Add device orientation data
-        if let jsonString = jsonString(from: deviceOrientationCaptures) {
-            metadataManager
-                .addMetadata(
-                    key: .deviceOrientation,
-                    value: jsonString
-                )
-        }
+        // Add device orientation data to the provider
+        orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
     }
 
     private func resetSelfieCaptureMetadata() {
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
         metadataManager.removeMetadata(key: .activeLivenessType)
-        metadataManager.removeMetadata(key: .deviceOrientation)
+        // Don't clear the deviceOrientation in metadata manager as it's now managed by the provider
         deviceOrientationCaptures = []
     }
 
