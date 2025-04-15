@@ -1,5 +1,7 @@
 import Combine
+import CoreMotion
 import SwiftUI
+import Foundation
 
 enum DocumentDirective: String {
     case defaultInstructions = "Document.Directive.Default"
@@ -12,6 +14,11 @@ private let documentAutoCaptureWaitTime: TimeInterval = 1.0
 private let analysisSampleInterval: TimeInterval = 0.350
 
 class DocumentCaptureViewModel: ObservableObject {
+    
+    deinit {
+        subscribers.removeAll()
+        motionManager.stopDeviceMotionUpdates()
+    }
     // Initializer properties
     private let knownAspectRatio: Double?
     private let metadataManager: MetadataManager = .shared
@@ -28,6 +35,20 @@ class DocumentCaptureViewModel: ObservableObject {
     private let side: DocumentCaptureSide
     private var retryCount: Int = 0
     private(set) var documentImageOrigin: DocumentImageOriginValue?
+    
+    // Device orientation tracking
+    private let motionManager = CMMotionManager()
+    private var motionDeviceOrientation: UIDeviceOrientation = UIDevice.current.orientation
+    private var unlockedDeviceOrientation: UIDeviceOrientation {
+        UIDevice.current.orientation
+    }
+    private var currentOrientation: UIDeviceOrientation {
+        return motionManager.isDeviceMotionAvailable
+            ? motionDeviceOrientation : unlockedDeviceOrientation
+    }
+    
+    // Store orientations for metadata
+    private var deviceOrientationCaptures: [String] = []
 
     // UI properties
     @Published var unauthorizedAlert: AlertState?
@@ -59,6 +80,23 @@ class DocumentCaptureViewModel: ObservableObject {
             .map { _ in AlertState.cameraUnauthorized }
             .sink { alert in self.unauthorizedAlert = alert }
             .store(in: &subscribers)
+            
+        // Initialize motion tracking for device orientation
+        if motionManager.isDeviceMotionAvailable {
+            motionManager.startDeviceMotionUpdates(to: OperationQueue()) { [weak self] deviceMotion, _ in
+                guard let gravity = deviceMotion?.gravity else { return }
+                if abs(gravity.y) < abs(gravity.x) {
+                    self?.motionDeviceOrientation =
+                        gravity.x > 0 ? .landscapeRight : .landscapeLeft
+                } else {
+                    self?.motionDeviceOrientation =
+                        gravity.y > 0 ? .portraitUpsideDown : .portrait
+                }
+            }
+        }
+        
+        // Capture device orientation at initialization (beginning of capture screen)
+        deviceOrientationCaptures.append(currentOrientation.category)
 
         cameraManager.capturedImagePublisher
             .receive(on: DispatchQueue.global())
@@ -166,6 +204,9 @@ class DocumentCaptureViewModel: ObservableObject {
     }
 
     private func onCaptureComplete(image: Data) {
+        // Capture device orientation after successful capture
+        deviceOrientationCaptures.append(currentOrientation.category)
+        
         let croppedImage = ImageUtils.cropImageToAspectRatio(
             imageData: image,
             aspectRatio: 1 / idAspectRatio
@@ -188,6 +229,8 @@ class DocumentCaptureViewModel: ObservableObject {
             metadataManager.removeMetadata(key: .documentBackCaptureDuration)
             metadataManager.removeMetadata(key: .documentBackImageOrigin)
         }
+        metadataManager.removeMetadata(key: .deviceOrientation)
+        deviceOrientationCaptures = []
     }
 
     private func collectDocumentCaptureMetadata() {
@@ -205,6 +248,14 @@ class DocumentCaptureViewModel: ObservableObject {
             if let documentImageOrigin {
                 metadataManager.addMetadata(key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
             }
+            
+            // Add device orientation data
+            if let jsonString = jsonString(from: deviceOrientationCaptures) {
+                metadataManager.addMetadata(
+                    key: .deviceOrientation,
+                    value: jsonString
+                )
+            }
         case .back:
             metadataManager.addMetadata(
                 key: .documentBackCaptureDuration,
@@ -217,6 +268,14 @@ class DocumentCaptureViewModel: ObservableObject {
 
             if let documentImageOrigin {
                 metadataManager.addMetadata(key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
+            }
+            
+            // Add device orientation data
+            if let jsonString = jsonString(from: deviceOrientationCaptures) {
+                metadataManager.addMetadata(
+                    key: .deviceOrientation,
+                    value: jsonString
+                )
             }
         }
     }
