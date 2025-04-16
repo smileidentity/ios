@@ -95,7 +95,7 @@ public class SmileID {
 
         SmileIDResourcesHelper.registerFonts()
 
-        registerMetadataProviders()
+        MetadataManager.shared.registerDefaultProviders()
 
         let fingerprinter = FingerprinterFactory.getInstance()
         Task {
@@ -107,10 +107,6 @@ public class SmileID {
                 deviceId = fingerprint
             }
         }
-    }
-    
-    private class func registerMetadataProviders() {
-        MetadataManager.shared.register(provider: NetworkMetadataProvider())
     }
 
     /// Sets the state of offline mode for the SDK.
