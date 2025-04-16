@@ -29,10 +29,19 @@ public class MetadataManager {
             key: .deviceModel, value: UIDevice.current.modelName)
         addMetadata(
             key: .deviceOS, value: UIDevice.current.systemVersion)
+        addMetadata(
+            key: .timezone, value: TimeZone.current.identifier)
+        addMetadata(
+            key: .locale, value: Locale.current.identifier)
+        addMetadata(
+            key: .screenResolution, value: UIScreen.main.formattedResolution)
+        addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
+        addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
     }
 
-    private func registerDefaultProviders() {
+    func registerDefaultProviders() {
         register(provider: NetworkMetadataProvider())
+        register(provider: DeviceOrientationMetadataProvider.shared)
     }
 
     func register(provider: MetadataProvider) {
