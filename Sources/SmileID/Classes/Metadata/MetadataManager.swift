@@ -25,8 +25,6 @@ public class MetadataManager {
         addMetadata(
             key: .clientIP, value: getIPAddress(useIPv4: true))
         addMetadata(
-            key: .fingerprint, value: SmileID.deviceId)
-        addMetadata(
             key: .deviceModel, value: UIDevice.current.modelName)
         addMetadata(
             key: .deviceOS, value: UIDevice.current.systemVersion)

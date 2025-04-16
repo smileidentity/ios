@@ -94,7 +94,7 @@ public class SmileID {
         self.requestTimeout = requestTimeout
 
         SmileIDResourcesHelper.registerFonts()
-        
+
         // Increment and track SDK launch count
         trackSdkLaunchCount()
 
@@ -108,10 +108,12 @@ public class SmileID {
             /// https://github.com/fingerprintjs/fingerprintjs-ios
             if let fingerprint = await fingerprinter.getDeviceId() {
                 deviceId = fingerprint
+                MetadataManager.shared.addMetadata(
+                    key: .fingerprint, value: fingerprint)
             }
         }
     }
-    
+
     /// Tracks the SDK launch count by incrementing a counter stored in UserDefaults
     private class func trackSdkLaunchCount() {
         let defaults = UserDefaults.standard
