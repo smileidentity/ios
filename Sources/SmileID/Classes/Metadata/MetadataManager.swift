@@ -33,7 +33,6 @@ public class MetadataManager {
 
     func registerDefaultProviders() {
         register(provider: NetworkMetadataProvider())
-        register(provider: DeviceOrientationMetadataProvider.shared)
     }
 
     func register(provider: MetadataProvider) {
