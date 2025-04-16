@@ -31,7 +31,7 @@ public class MetadataManager {
             key: .deviceOS, value: UIDevice.current.systemVersion)
     }
 
-    private func registerDefaultProviders() {
+    func registerDefaultProviders() {
         register(provider: NetworkMetadataProvider())
     }
 
