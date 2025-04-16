@@ -7,10 +7,7 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
     // Store all device orientations captured during the flow
     private var deviceOrientations: [UIDeviceOrientation] = []
 
-    private init() {
-        // Register this provider with the metadata manager
-        MetadataManager.shared.register(provider: self)
-    }
+    private init() {}
 
     /// Adds a device orientation to the collection
     /// - Parameter orientation: The UIDeviceOrientation to add

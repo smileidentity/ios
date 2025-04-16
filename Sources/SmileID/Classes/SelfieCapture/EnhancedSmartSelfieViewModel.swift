@@ -532,8 +532,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
         metadataManager.addMetadata(key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
-
-        // Add device orientation data to the provider
         orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
     }
 

@@ -39,8 +39,9 @@ public class MetadataManager {
         addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
     }
 
-    private func registerDefaultProviders() {
+    func registerDefaultProviders() {
         register(provider: NetworkMetadataProvider())
+        register(provider: DeviceOrientationMetadataProvider.shared)
     }
 
     func register(provider: MetadataProvider) {

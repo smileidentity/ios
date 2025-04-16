@@ -356,7 +356,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         metadataManager.removeMetadata(key: .selfieImageOrigin)
         metadataManager.removeMetadata(key: .activeLivenessType)
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
-        // Don't clear the deviceOrientation in metadata manager as it's now managed by the provider
         deviceOrientationCaptures = []
     }
 
@@ -384,11 +383,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             value: metadataTimerStart.elapsedTime().milliseconds()
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.smile.rawValue)
-        
+
         // Add device orientation data to the provider
-        if !deviceOrientationCaptures.isEmpty {
-            orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
-        }
+        orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
 
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }
