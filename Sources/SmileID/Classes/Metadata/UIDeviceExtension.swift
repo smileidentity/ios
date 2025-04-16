@@ -21,34 +21,6 @@ extension UIDevice {
             ?? identifier
     }
 
-    var orientationString: String {
-        switch UIDevice.current.orientation {
-        case .portrait, .portraitUpsideDown:
-            return "Portrait"
-        case .landscapeLeft, .landscapeRight:
-            return "Landscape"
-        case .faceUp:
-            return "FaceUp"
-        case .faceDown:
-            return "FaceDown"
-        case .unknown:
-            // Default to UI orientation if device orientation is unknown
-            let interfaceOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
-            switch interfaceOrientation {
-            case .portrait, .portraitUpsideDown:
-                return "Portrait"
-            case .landscapeLeft, .landscapeRight:
-                return "Landscape"
-            case .unknown, .none:
-                return "Unknown"
-            @unknown default:
-                return "Unknown"
-            }
-        @unknown default:
-            return "Unknown"
-        }
-    }
-
     /// Checks if the device has a proximity sensor available
     var hasProximitySensor: Bool {
         // When proximity monitoring is enabled, device will receive proximity state change notifications

@@ -26,6 +26,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
     private let metadataManager: MetadataManager = .shared
+    private let orientationProvider = DeviceOrientationMetadataProvider.shared
     private let metadataTimerStart = MonotonicTime()
     private let faceDetector = FaceDetector()
     private var selfieCaptureRetries: Int = 0
@@ -45,6 +46,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     var livenessImages: [URL] = []
     var apiResponse: SmartSelfieResponse?
     var error: Error?
+
+    // Store orientations for this capture session
+    private var deviceOrientationCaptures: [UIDeviceOrientation] = []
 
     private let arKitFramePublisher = PassthroughSubject<
         CVPixelBuffer?, Never
@@ -81,6 +85,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.allowNewEnroll = allowNewEnroll
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
+
+        // Capture device orientation before selfie capture
+        deviceOrientationCaptures.append(UIDevice.current.orientation)
 
         if cameraManager.session.canSetSessionPreset(.vga640x480) {
             cameraManager.session.sessionPreset = .vga640x480
@@ -274,6 +281,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         let selfieImage = try LocalStorage.createSelfieFile(
                             jobId: jobId, selfieFile: imageData)
                         self.selfieImage = selfieImage
+
+                        // Capture device orientation after selfie capture
+                        deviceOrientationCaptures.append(UIDevice.current.orientation)
+
                         DispatchQueue.main.async {
                             self.captureProgress = 1
                             self.selfieToConfirm = imageData
@@ -347,6 +358,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         metadataManager.removeMetadata(key: .selfieImageOrigin)
         metadataManager.removeMetadata(key: .activeLivenessType)
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
+        deviceOrientationCaptures = []
     }
 
     func cleanUpSelfieCapture() {
@@ -375,6 +387,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.smile.rawValue)
         metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
+
+        // Add device orientation data to the provider
+        orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
 
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }

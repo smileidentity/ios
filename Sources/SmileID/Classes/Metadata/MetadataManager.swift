@@ -31,8 +31,6 @@ public class MetadataManager {
         addMetadata(
             key: .deviceOS, value: UIDevice.current.systemVersion)
         addMetadata(
-            key: .deviceOrientation, value: UIDevice.current.orientationString)
-        addMetadata(
             key: .timezone, value: TimeZone.current.identifier)
         addMetadata(
             key: .locale, value: Locale.current.identifier)
@@ -46,8 +44,9 @@ public class MetadataManager {
         addMetadata(key: .proximitySensor, value: UIDevice.current.proximitySensorString)
     }
 
-    private func registerDefaultProviders() {
+    func registerDefaultProviders() {
         register(provider: NetworkMetadataProvider())
+        register(provider: DeviceOrientationMetadataProvider.shared)
     }
 
     func register(provider: MetadataProvider) {
