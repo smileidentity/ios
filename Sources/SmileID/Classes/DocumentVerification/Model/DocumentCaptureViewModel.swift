@@ -182,7 +182,7 @@ class DocumentCaptureViewModel: ObservableObject {
     private func onCaptureComplete(image: Data) {
         // Capture device orientation after successful capture
         deviceOrientationCaptures.append(UIDevice.current.orientation)
-        
+
         let croppedImage = ImageUtils.cropImageToAspectRatio(
             imageData: image,
             aspectRatio: 1 / idAspectRatio
@@ -238,7 +238,7 @@ class DocumentCaptureViewModel: ObservableObject {
                 metadataManager.addMetadata(key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
             }
         }
-        
+
         // Add all collected device orientations to the provider
         orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
     }
