@@ -15,6 +15,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var guideAnimationDelayTimer: Timer?
     private let metadataTimerStart = MonotonicTime()
     private let metadataManager: MetadataManager = .shared
+    private var selfieCaptureRetries: Int = 0
     private let orientationProvider = DeviceOrientationMetadataProvider.shared
 
     // MARK: Private Properties
@@ -176,7 +177,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             .store(in: &subscribers)
 
         if motionManager.isDeviceMotionAvailable {
-            motionManager.startDeviceMotionUpdates(to: OperationQueue()) { [weak self] deviceMotion, _ in
+            motionManager.startDeviceMotionUpdates(to: OperationQueue()) {
+                [weak self] deviceMotion, _ in
                 guard let gravity = deviceMotion?.gravity else { return }
                 if abs(gravity.y) < abs(gravity.x) {
                     self?.motionDeviceOrientation =
@@ -221,6 +223,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         case .cancelSelfieCapture:
             handleCancelSelfieCapture()
         case .retryJobSubmission:
+            selfieCaptureRetries += 1
             handleViewAppeared()
         case .openApplicationSettings:
             openSettings()
@@ -462,7 +465,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
     private func captureNextFrame(capturedFrames: Int) {
         let maxFrames = LivenessTask.numberOfFramesToCapture
         guard capturedFrames < maxFrames,
-              let currentFrame = currentFrameBuffer
+            let currentFrame = currentFrameBuffer
         else {
             return
         }
@@ -491,7 +494,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
     func livenessChallengeTimeout() {
         let remainingImages = numLivenessImages - livenessImages.count
         let count = remainingImages > 0 ? remainingImages : 0
-        for _ in 0 ..< count {
+        for _ in 0..<count {
             if let imageBuffer = currentFrameBuffer {
                 captureLivenessImage(imageBuffer)
             }
@@ -531,14 +534,15 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             value: metadataTimerStart.elapsedTime().milliseconds()
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
-        metadataManager.addMetadata(key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
+        metadataManager.addMetadata(
+            key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
+        metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
         orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
     }
 
     private func resetSelfieCaptureMetadata() {
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
         metadataManager.removeMetadata(key: .activeLivenessType)
-        // Don't clear the deviceOrientation in metadata manager as it's now managed by the provider
         deviceOrientationCaptures = []
     }
 
@@ -546,10 +550,11 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         if let error = self.error {
             callback.didError(error: error)
         } else if let selfieImageURL = selfieImageURL,
-           let selfiePath = getRelativePath(from: selfieImageURL),
-           livenessImages.count == numLivenessImages,
-           !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-           ) {
+            let selfiePath = getRelativePath(from: selfieImageURL),
+            livenessImages.count == numLivenessImages,
+            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
+            )
+        {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }

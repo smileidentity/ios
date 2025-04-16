@@ -21,6 +21,23 @@ extension UIDevice {
             ?? identifier
     }
 
+    /// Checks if the device has a proximity sensor available
+    var hasProximitySensor: Bool {
+        // When proximity monitoring is enabled, device will receive proximity state change notifications
+        UIDevice.current.isProximityMonitoringEnabled = true
+        let hasProximitySensor = UIDevice.current.isProximityMonitoringEnabled
+
+        // Reset to false to avoid unnecessary battery drain
+        UIDevice.current.isProximityMonitoringEnabled = false
+
+        return hasProximitySensor
+    }
+
+    /// String representation of proximity sensor availability (true/false)
+    var proximitySensorString: String {
+        return String(hasProximitySensor)
+    }
+
     struct DeviceModel: Decodable {
         let identifier: String
         let model: String
