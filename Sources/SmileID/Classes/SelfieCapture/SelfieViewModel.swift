@@ -362,6 +362,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         if selfieImage != nil, livenessImages.count == numLivenessImages {
             submitJob()
         } else {
+            selfieCaptureRetries += 1
             shouldAnalyzeImages = true
             DispatchQueue.main.async { self.processingState = nil }
         }
