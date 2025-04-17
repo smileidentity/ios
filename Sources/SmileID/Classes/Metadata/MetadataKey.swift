@@ -23,5 +23,4 @@ enum MetadataKey: String {
     case vpnDetected = "vpn"
     case wrapperName = "wrapper_name"
     case wrapperVersion = "wrapper_version"
-    case deviceOrientationCapture = "device_orientation_capture"
 }
