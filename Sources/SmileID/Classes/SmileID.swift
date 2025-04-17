@@ -103,11 +103,6 @@ public class SmileID {
         self.apiKey = apiKey
         self.requestTimeout = requestTimeout
 
-        // Set wrapper SDK info if provided
-        if let name = wrapperSdkName, let version = wrapperSdkVersion {
-            setWrapperInfo(name: name, version: version)
-        }
-        
         SmileIDResourcesHelper.registerFonts()
 
         let fingerprinter = FingerprinterFactory.getInstance()
@@ -280,18 +275,15 @@ public class SmileID {
     public class func apply(_ localizableStrings: SmileIDLocalizableStrings) {
         self.localizableStrings = localizableStrings
     }
-    
-    /// Set wrapper SDK information
-    /// This method should be called by wrapper SDKs to identify themselves
-    /// in the metadata collection.
+
+    /// Sets the name and version of a x-platform sdk that wraps the native sdk.
+    /// This is an internal function and should not be used by partner developers.
     /// - Parameters:
-    ///   - name: The name of the wrapper SDK (e.g., "Flutter" or "React Native")
-    ///   - version: The version of the wrapper SDK
-    class func setWrapperInfo(name: String, version: String) {
-        // Update metadata immediately
-        let metadataManager = MetadataManager.shared
-        metadataManager.addMetadata(key: .wrapperName, value: name)
-        metadataManager.addMetadata(key: .wrapperVersion, value: version)
+    ///   - name: The name of the x-platform sdk that wraps the native sdk.
+    ///   - version: The version of the x-platform sdk that wraps the native sdk.
+    public class func setWrapperInfo(name: String, version: String) {
+        MetadataManager.shared.addMetadata(key: .wrapperName, value: name)
+        MetadataManager.shared.addMetadata(key: .wrapperVersion, value: version)
     }
 
     /// Load the Config object from a json file
