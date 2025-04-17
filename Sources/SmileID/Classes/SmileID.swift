@@ -3,6 +3,11 @@ import Foundation
 import SwiftUI
 import UIKit
 
+public enum WrapperSdkName: String {
+    case flutter = "flutter"
+    case reactNative = "react_native"
+}
+
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
@@ -266,6 +271,16 @@ public class SmileID {
     /// used within the SDK. if no value is set, the default copy will be used.
     public class func apply(_ localizableStrings: SmileIDLocalizableStrings) {
         self.localizableStrings = localizableStrings
+    }
+
+    /// Sets the name and version of a x-platform sdk that wraps the native sdk.
+    /// This is an internal function and should not be used by partner developers.
+    /// - Parameters:
+    ///   - name: The name of the x-platform sdk that wraps the native sdk.
+    ///   - version: The version of the x-platform sdk that wraps the native sdk.
+    public class func setWrapperInfo(name: WrapperSdkName, version: String) {
+        MetadataManager.shared.addMetadata(key: .wrapperName, value: name.rawValue)
+        MetadataManager.shared.addMetadata(key: .wrapperVersion, value: version)
     }
 
     /// Load the Config object from a json file
