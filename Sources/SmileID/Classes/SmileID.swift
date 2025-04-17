@@ -60,22 +60,16 @@ public class SmileID {
     ///   - useSandbox: A boolean to enable the sandbox environment or not
     ///   - requestTimeout: The timeout interval for all requests.
     ///   An interval greater than `defaultRequestTimeout` is recommended.
-    ///   - wrapperSdkName: The name of the wrapper SDK (Flutter, React Native, etc.)
-    ///   - wrapperSdkVersion: The version of the wrapper SDK
     public class func initialize(
         config: Config = getConfig(),
         useSandbox: Bool = false,
-        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout,
-        wrapperSdkName: String? = nil,
-        wrapperSdkVersion: String? = nil
+        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         initialize(
             apiKey: nil,
             config: config,
             useSandbox: useSandbox,
-            requestTimeout: requestTimeout,
-            wrapperSdkName: wrapperSdkName,
-            wrapperSdkVersion: wrapperSdkVersion
+            requestTimeout: requestTimeout
         )
     }
 
@@ -94,9 +88,7 @@ public class SmileID {
         apiKey: String? = nil,
         config: Config = getConfig(),
         useSandbox: Bool = false,
-        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout,
-        wrapperSdkName: String? = nil,
-        wrapperSdkVersion: String? = nil
+        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         self.config = config
         self.useSandbox = useSandbox
