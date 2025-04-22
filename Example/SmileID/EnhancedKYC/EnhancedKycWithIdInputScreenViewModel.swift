@@ -182,10 +182,10 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     }
 
     func onFinished(delegate: EnhancedKycResultDelegate) {
-        if let enhancedKycResponse = enhancedKycResponse {
-            delegate.didSucceed(enhancedKycResponse: enhancedKycResponse)
-        } else if let error = error {
+        if let error = error {
             delegate.didError(error: error)
+        } else if let enhancedKycResponse = enhancedKycResponse {
+            delegate.didSucceed(enhancedKycResponse: enhancedKycResponse)
         }
     }
 }
