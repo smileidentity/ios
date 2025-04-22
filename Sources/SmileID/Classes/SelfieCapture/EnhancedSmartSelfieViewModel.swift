@@ -15,7 +15,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var guideAnimationDelayTimer: Timer?
     private let metadataTimerStart = MonotonicTime()
     private let metadataManager: MetadataManager = .shared
-    private let orientationProvider = DeviceOrientationMetadataProvider.shared
 
     // MARK: Private Properties
 
@@ -28,9 +27,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         return motionManager.isDeviceMotionAvailable
             ? motionDeviceOrientation : unlockedDeviceOrientation
     }
-
-    // Store orientations for this capture session
-    private var deviceOrientationCaptures: [UIDeviceOrientation] = []
 
     private var faceLayoutGuideFrame = CGRect(
         x: 0, y: 0, width: 250, height: 350
@@ -64,6 +60,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var error: Error?
     @Published public var errorMessageRes: String?
     @Published public var errorMessage: String?
+    private var hasRecordedOrientationAtCaptureStart = false
 
     // MARK: Constants
 
@@ -201,6 +198,12 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     }
 
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
+        // Capture device orientation before taking selfie
+        if !hasRecordedOrientationAtCaptureStart {
+            DeviceOrientationMetadataProvider.shared.addDeviceOrientation(UIDevice.current.orientation)
+            hasRecordedOrientationAtCaptureStart = true
+        }
+
         currentFrameBuffer = imageBuffer
         faceDetector.processImageBuffer(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
@@ -268,8 +271,6 @@ extension EnhancedSmartSelfieViewModel {
         cameraManager.switchCamera(to: .front)
         resetGuideAnimationDelayTimer()
         resetSelfieCaptureState()
-        // Capture device orientation before taking selfie
-        deviceOrientationCaptures.append(currentOrientation)
     }
 
     private func resetSelfieCaptureState() {
@@ -481,7 +482,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 
     func didCompleteLivenessChallenge() {
         // Store orientation after capture
-        deviceOrientationCaptures.append(currentOrientation)
+        DeviceOrientationMetadataProvider.shared.addDeviceOrientation(UIDevice.current.orientation)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.cameraManager.pauseSession()
             self.handleSubmission()
@@ -532,14 +533,13 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
         metadataManager.addMetadata(key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
-        orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
     }
 
     private func resetSelfieCaptureMetadata() {
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
         metadataManager.removeMetadata(key: .activeLivenessType)
-        // Don't clear the deviceOrientation in metadata manager as it's now managed by the provider
-        deviceOrientationCaptures = []
+        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+        hasRecordedOrientationAtCaptureStart = false
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
