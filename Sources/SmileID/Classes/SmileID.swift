@@ -3,11 +3,6 @@ import Foundation
 import SwiftUI
 import UIKit
 
-public enum WrapperSdkName: String {
-    case flutter = "flutter"
-    case reactNative = "react_native"
-}
-
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
