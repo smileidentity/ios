@@ -24,6 +24,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     var livenessFiles: [URL]?
     private var error: Error?
     private var didSubmitBiometricJob: Bool = false
+    private var networkRetries: Int = 0
 
     // MARK: - UI Properties
 
@@ -193,6 +194,8 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             else {
                 throw error
             }
+            networkRetries += 1
+            MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
             return try await SmileID.api.prepUpload(
                 request: prepUploadRequest.copy(retry: "true"))
         }

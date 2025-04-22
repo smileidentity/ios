@@ -32,6 +32,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     var didSubmitJob: Bool = false
     var error: Error?
     let metadataManager: MetadataManager = .shared
+    private var networkRetries: Int = 0
 
     // UI properties
     @Published var acknowledgedInstructions = false
@@ -323,6 +324,8 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 self.step = stepToRetry
             }
             if case .processing = stepToRetry {
+                networkRetries += 1
+                MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
                 submitJob()
             }
         }

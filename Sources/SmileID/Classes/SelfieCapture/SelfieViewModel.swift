@@ -28,6 +28,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let metadataManager: MetadataManager = .shared
     private let metadataTimerStart = MonotonicTime()
     private let faceDetector = FaceDetector()
+    private var networkRetries: Int = 0
 
     var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
@@ -358,6 +359,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     func onRetry() {
         // If selfie file is present, all captures were completed, so we're retrying a network issue
         if selfieImage != nil, livenessImages.count == numLivenessImages {
+            networkRetries += 1
+            MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
             submitJob()
         } else {
             shouldAnalyzeImages = true

@@ -15,6 +15,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var guideAnimationDelayTimer: Timer?
     private let metadataTimerStart = MonotonicTime()
     private let metadataManager: MetadataManager = .shared
+    private var networkRetries: Int = 0
 
     // MARK: Private Properties
 
@@ -263,6 +264,8 @@ extension EnhancedSmartSelfieViewModel {
         cameraManager.switchCamera(to: .front)
         resetGuideAnimationDelayTimer()
         resetSelfieCaptureState()
+        networkRetries += 1
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
     }
 
     private func resetSelfieCaptureState() {

@@ -15,6 +15,7 @@ enum MetadataKey: String {
     case documentFrontImageOrigin = "document_front_image_origin"
     case fingerprint
     case networkConnection = "network_connection"
+    case networkRetries = "network_retries"
     case proxyDetected = "proxy"
     case securityPolicyVersion = "security_policy_version"
     case selfieCaptureDuration = "selfie_capture_duration_ms"
