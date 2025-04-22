@@ -1,9 +1,12 @@
 # Release Notes
 
-## [Unreleased]
+## 10.5.2
 
 ### Changed
 * Require selfie recapture when retrying failed submission for Enhanced Smart Selfie Capture.
+
+### Fixed
+* Delegate callback order after submission for Biometric KYC and Document Verification jobs.
 
 ## 10.5.1
 
