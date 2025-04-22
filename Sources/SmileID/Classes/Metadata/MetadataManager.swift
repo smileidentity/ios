@@ -29,6 +29,7 @@ public class MetadataManager {
             key: .deviceModel, value: UIDevice.current.modelName)
         addMetadata(
             key: .deviceOS, value: UIDevice.current.systemVersion)
+        addMetadata(key: .securityPolicyVersion, value: "0.3.0")
     }
 
     private func registerDefaultProviders() {
