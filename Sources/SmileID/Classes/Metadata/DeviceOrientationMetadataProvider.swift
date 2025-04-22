@@ -22,7 +22,7 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
     }
 
     /// Clears all stored orientation data
-    func clear() {
+    func clearDeviceOrientations() {
         deviceOrientations.removeAll()
     }
 
