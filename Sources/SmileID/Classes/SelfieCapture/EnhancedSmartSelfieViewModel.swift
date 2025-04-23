@@ -518,20 +518,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         try await submissionManager.submitJob(failureReason: failureReason)
     }
 
-    private func addSelfieCaptureMetaData() {
-        metadataManager.addMetadata(
-            key: .selfieCaptureDuration,
-            value: metadataTimerStart.elapsedTime().milliseconds()
-        )
-        metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
-        metadataManager.addMetadata(key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
-    }
-
-    private func resetSelfieCaptureMetadata() {
-        metadataManager.removeMetadata(key: .selfieCaptureDuration)
-        metadataManager.removeMetadata(key: .activeLivenessType)
-    }
-
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let error = self.error {
             callback.didError(error: error)
@@ -592,13 +578,27 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     }
 }
 
-// MARK: - Network Retries Metadata
+// MARK: - Metadata Helpers
 extension EnhancedSmartSelfieViewModel {
+    private func addSelfieCaptureMetaData() {
+        metadataManager.addMetadata(
+            key: .selfieCaptureDuration,
+            value: metadataTimerStart.elapsedTime().milliseconds()
+        )
+        metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
+        metadataManager.addMetadata(key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
+    }
+
+    private func resetSelfieCaptureMetadata() {
+        metadataManager.removeMetadata(key: .selfieCaptureDuration)
+        metadataManager.removeMetadata(key: .activeLivenessType)
+    }
+
     private func incrementNetworkRetries() {
         networkRetries += 1
         MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
     }
-    
+
     private func resetNetworkRetries() {
         networkRetries = 0
         MetadataManager.shared.removeMetadata(key: .networkRetries)

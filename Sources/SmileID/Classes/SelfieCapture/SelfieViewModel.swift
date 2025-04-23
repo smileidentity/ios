@@ -566,13 +566,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 }
 
-// MARK: - Network Retries Metadata
+// MARK: - Metadata Helpers
 extension SelfieViewModel {
     private func incrementNetworkRetries() {
         networkRetries += 1
         MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
     }
-    
+
     private func resetNetworkRetries() {
         networkRetries = 0
         MetadataManager.shared.removeMetadata(key: .networkRetries)
