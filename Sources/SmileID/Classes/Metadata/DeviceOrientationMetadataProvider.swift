@@ -37,6 +37,9 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
         // Convert the orientations to their string categories
         let orientationCategories = deviceOrientations.map { $0.category }
 
+        // We clear the device orientations after we collected them
+        deviceOrientations.removeAll()
+
         // Convert the orientation data to a JSON string
         if let jsonString = jsonString(from: orientationCategories) {
             return [.deviceOrientation: jsonString]
