@@ -21,4 +21,6 @@ enum MetadataKey: String {
     case sdk
     case sdkVersion = "sdk_version"
     case vpnDetected = "vpn"
+    case wrapperName = "wrapper_name"
+    case wrapperVersion = "wrapper_version"
 }
