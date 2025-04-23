@@ -359,8 +359,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     func onRetry() {
         // If selfie file is present, all captures were completed, so we're retrying a network issue
         if selfieImage != nil, livenessImages.count == numLivenessImages {
-            networkRetries += 1
-            MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+            incrementNetworkRetries()
             submitJob()
         } else {
             shouldAnalyzeImages = true
@@ -564,5 +563,18 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString)
         else { return }
         UIApplication.shared.open(settingsURL)
+    }
+}
+
+// MARK: - Network Retries Metadata
+extension SelfieViewModel {
+    private func incrementNetworkRetries() {
+        networkRetries += 1
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+    }
+    
+    private func resetNetworkRetries() {
+        networkRetries = 0
+        MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }

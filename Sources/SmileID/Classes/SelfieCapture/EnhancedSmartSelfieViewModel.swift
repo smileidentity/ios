@@ -264,8 +264,7 @@ extension EnhancedSmartSelfieViewModel {
         cameraManager.switchCamera(to: .front)
         resetGuideAnimationDelayTimer()
         resetSelfieCaptureState()
-        networkRetries += 1
-        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+        incrementNetworkRetries()
     }
 
     private func resetSelfieCaptureState() {
@@ -590,5 +589,18 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     func invalidateSubmissionTask() {
         submissionTask?.cancel()
         submissionTask = nil
+    }
+}
+
+// MARK: - Network Retries Metadata
+extension EnhancedSmartSelfieViewModel {
+    private func incrementNetworkRetries() {
+        networkRetries += 1
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+    }
+    
+    private func resetNetworkRetries() {
+        networkRetries = 0
+        MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }
