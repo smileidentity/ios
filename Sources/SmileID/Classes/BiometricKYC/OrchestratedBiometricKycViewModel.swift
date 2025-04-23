@@ -55,6 +55,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
 
     func onRetry() {
         if selfieFile != nil {
+            incrementNetworkRetries()
             submitJob()
         } else {
             updateStep(.selfie)

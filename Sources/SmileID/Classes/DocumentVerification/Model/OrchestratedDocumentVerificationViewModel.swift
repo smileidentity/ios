@@ -223,6 +223,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 } catch let error as SmileIDError {
                     switch error {
                     case .api("2215", _):
+                        incrementNetworkRetries()
                         prepUploadResponse = try await SmileID.api.prepUpload(
                             request: prepUploadRequest.copy(retry: "true")
                         )
