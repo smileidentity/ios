@@ -18,6 +18,7 @@ public struct EnhancedKycRequest: Codable {
     public let partnerId: String = SmileID.config.partnerId
     public let sourceSdk: String
     public let sourceSdkVersion: String
+    private var metadata: [Metadatum]?
 
     public init(
         country: String,
@@ -58,6 +59,7 @@ public struct EnhancedKycRequest: Codable {
         self.sourceSdkVersion = sourceSdkVersion
         self.timestamp = timestamp
         self.signature = signature
+        self.metadata = MetadataManager.shared.collectAllMetadata()
     }
 
     enum CodingKeys: String, CodingKey {
@@ -78,6 +80,7 @@ public struct EnhancedKycRequest: Codable {
         case sourceSdkVersion = "source_sdk_version"
         case timestamp
         case signature
+        case metadata
     }
 }
 

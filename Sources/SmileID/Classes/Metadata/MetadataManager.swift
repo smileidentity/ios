@@ -32,7 +32,7 @@ public class MetadataManager {
         addMetadata(key: .securityPolicyVersion, value: "0.3.0")
     }
 
-    private func registerDefaultProviders() {
+    func registerDefaultProviders() {
         register(provider: NetworkMetadataProvider())
     }
 

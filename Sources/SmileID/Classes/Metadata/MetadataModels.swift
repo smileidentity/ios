@@ -18,3 +18,8 @@ enum CameraFacingValue: String, Codable {
     case frontCamera = "front_camera"
     case backCamera = "back_camera"
 }
+
+public enum WrapperSdkName: String {
+    case flutter = "flutter"
+    case reactNative = "react_native"
+}
