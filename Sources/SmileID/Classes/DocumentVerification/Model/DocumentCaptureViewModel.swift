@@ -105,6 +105,8 @@ class DocumentCaptureViewModel: ObservableObject {
                 self.documentFirstDetectedAtTime = nil
             }
         })
+
+        DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
     }
 
     @objc func showManualCapture() {
@@ -174,7 +176,7 @@ class DocumentCaptureViewModel: ObservableObject {
 
     private func onCaptureComplete(image: Data) {
         // Capture device orientation after successful capture
-        DeviceOrientationMetadataProvider.shared.addDeviceOrientation(UIDevice.current.orientation)
+        DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
 
         let croppedImage = ImageUtils.cropImageToAspectRatio(
             imageData: image,
@@ -245,7 +247,7 @@ class DocumentCaptureViewModel: ObservableObject {
         let elapsedTime = now - lastAnalysisTime
 
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadataProvider.shared.addDeviceOrientation(UIDevice.current.orientation)
+            DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
             hasRecordedOrientationAtCaptureStart = true
         }
 

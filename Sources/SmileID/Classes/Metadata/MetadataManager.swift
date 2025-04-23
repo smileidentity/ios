@@ -14,7 +14,6 @@ public class MetadataManager {
 
     private init() {
         setDefaultMetadata()
-        registerDefaultProviders()
     }
 
     private func setDefaultMetadata() {

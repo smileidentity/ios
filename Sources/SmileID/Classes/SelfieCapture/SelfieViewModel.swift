@@ -113,13 +113,15 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             key: .selfieImageOrigin,
             value: cameraFacing.rawValue
         )
+
+        DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
     }
 
     // swiftlint:disable cyclomatic_complexity
     func analyzeImage(image: CVPixelBuffer) {
         // Capture device orientation before selfie capture
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadataProvider.shared.addDeviceOrientation(UIDevice.current.orientation)
+            DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
             hasRecordedOrientationAtCaptureStart = true
         }
 
@@ -282,7 +284,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         self.selfieImage = selfieImage
 
                         // Capture device orientation after selfie capture
-                        DeviceOrientationMetadataProvider.shared.addDeviceOrientation(UIDevice.current.orientation)
+                        DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
 
                         DispatchQueue.main.async {
                             self.captureProgress = 1

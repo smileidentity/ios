@@ -184,6 +184,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
                 }
             }
         }
+
+        DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
     }
 
     private func handleCameraImageBuffer(_ imageBuffer: CVPixelBuffer) {
@@ -200,7 +202,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
         // Capture device orientation before taking selfie
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadataProvider.shared.addDeviceOrientation(UIDevice.current.orientation)
+            DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
             hasRecordedOrientationAtCaptureStart = true
         }
 
@@ -482,7 +484,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 
     func didCompleteLivenessChallenge() {
         // Store orientation after capture
-        DeviceOrientationMetadataProvider.shared.addDeviceOrientation(UIDevice.current.orientation)
+        DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.cameraManager.pauseSession()
             self.handleSubmission()

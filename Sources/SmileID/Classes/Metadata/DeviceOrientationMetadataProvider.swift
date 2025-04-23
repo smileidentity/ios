@@ -1,27 +1,53 @@
 import Foundation
 import UIKit
+import CoreMotion
 
 class DeviceOrientationMetadataProvider: MetadataProvider {
     static let shared = DeviceOrientationMetadataProvider()
 
-    // Store all device orientations captured during the flow
-    private var deviceOrientations: [UIDeviceOrientation] = []
+    private let motionManager = CMMotionManager()
+
+    private(set) var currentOrientation: String = "unknown"
+    private var deviceOrientations: [String] = []
 
     private init() {}
 
-    /// Adds a device orientation to the collection
-    /// - Parameter orientation: The UIDeviceOrientation to add
-    func addDeviceOrientation(_ orientation: UIDeviceOrientation) {
-        deviceOrientations.append(orientation)
+    func startRecordingDeviceOrientations() {
+        guard motionManager.isAccelerometerAvailable else {
+            return
+        }
+
+        motionManager.accelerometerUpdateInterval = 0.5
+        motionManager.startAccelerometerUpdates(to: OperationQueue.main) { [weak self] data, _ in
+            guard let self = self, let data = data else { return }
+            self.currentOrientation = self.determineOrientation(from: data)
+        }
     }
 
-    /// Adds multiple device orientations to the collection
-    /// - Parameter orientations: Array of UIDeviceOrientation to add
-    func addDeviceOrientations(_ orientations: [UIDeviceOrientation]) {
-        deviceOrientations.append(contentsOf: orientations)
+    private func stopRecordingDeviceOrientations() {
+        if motionManager.isAccelerometerActive {
+            motionManager.stopAccelerometerUpdates()
+        }
     }
 
-    /// Clears all stored orientation data
+    private func determineOrientation(from data: CMAccelerometerData) -> String {
+        let accelerationX = data.acceleration.x
+        let accelerationY = data.acceleration.y
+        let accelerationZ = data.acceleration.z
+
+        if abs(accelerationZ) > 0.85 {
+            return "Flat"
+        } else if abs(accelerationY) > abs(accelerationX) {
+            return "Portrait"
+        } else {
+            return "Landscape"
+        }
+    }
+
+    func addDeviceOrientation() {
+        deviceOrientations.append(currentOrientation)
+    }
+
     func clearDeviceOrientations() {
         deviceOrientations.removeAll()
     }
@@ -29,22 +55,15 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
     // MARK: - MetadataProvider Protocol
 
     func collectMetadata() -> [MetadataKey: String] {
-        // Only add orientation data if we have captured values
-        guard !deviceOrientations.isEmpty else {
+        stopRecordingDeviceOrientations()
+
+        // Ensure we clean up the device orientations always at the end, regardless of early returns
+        defer { deviceOrientations.removeAll() }
+
+        guard let jsonString = jsonString(from: deviceOrientations), !jsonString.isEmpty else {
             return [:]
         }
 
-        // Convert the orientations to their string categories
-        let orientationCategories = deviceOrientations.map { $0.category }
-
-        // We clear the device orientations after we collected them
-        deviceOrientations.removeAll()
-
-        // Convert the orientation data to a JSON string
-        if let jsonString = jsonString(from: orientationCategories) {
-            return [.deviceOrientation: jsonString]
-        }
-
-        return [:]
+        return [.deviceOrientation: jsonString]
     }
 }
