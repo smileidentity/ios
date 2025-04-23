@@ -257,6 +257,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     self.onError(error: error)
                     return
                 }
+                resetNetworkRetries()
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch let error as SmileIDError {
                 do {
@@ -338,8 +339,7 @@ extension IOrchestratedDocumentVerificationViewModel {
         MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
     }
 
-    private func resetNetworkRetries() {
-        networkRetries = 0
+    func resetNetworkRetries() {
         MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }
@@ -363,6 +363,7 @@ class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
+        resetNetworkRetries()
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
@@ -391,6 +392,7 @@ class OrchestratedEnhancedDocumentVerificationViewModel:
     >
 {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
+        resetNetworkRetries()
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)

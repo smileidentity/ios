@@ -217,6 +217,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         case .cancelSelfieCapture:
             handleCancelSelfieCapture()
         case .retryJobSubmission:
+            incrementNetworkRetries()
             handleViewAppeared()
         case .openApplicationSettings:
             openSettings()
@@ -264,7 +265,6 @@ extension EnhancedSmartSelfieViewModel {
         cameraManager.switchCamera(to: .front)
         resetGuideAnimationDelayTimer()
         resetSelfieCaptureState()
-        incrementNetworkRetries()
     }
 
     private func resetSelfieCaptureState() {
@@ -519,6 +519,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
+        resetNetworkRetries()
         if let error = self.error {
             callback.didError(error: error)
         } else if let selfieImageURL = selfieImageURL,
@@ -541,6 +542,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     // MARK: SelfieJobSubmissionDelegate Methods
 
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
+        resetNetworkRetries()
         invalidateSubmissionTask()
         HapticManager.shared.notification(type: .success)
         DispatchQueue.main.async {
@@ -600,7 +602,6 @@ extension EnhancedSmartSelfieViewModel {
     }
 
     private func resetNetworkRetries() {
-        networkRetries = 0
         MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }
