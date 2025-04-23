@@ -95,6 +95,8 @@ public class SmileID {
 
         SmileIDResourcesHelper.registerFonts()
 
+        MetadataManager.shared.registerDefaultProviders()
+
         let fingerprinter = FingerprinterFactory.getInstance()
         Task {
             /// The fingerprint isn't currently as stable as the Device Identifier, because the
