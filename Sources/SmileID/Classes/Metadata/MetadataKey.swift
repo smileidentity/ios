@@ -27,4 +27,6 @@ enum MetadataKey: String {
     case systemArchitecture = "system_architecture"
     case timezone = "timezone"
     case vpnDetected = "vpn"
+    case wrapperName = "wrapper_name"
+    case wrapperVersion = "wrapper_version"
 }
