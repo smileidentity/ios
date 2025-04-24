@@ -539,7 +539,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
-        resetNetworkRetries()
         if let error = self.error {
             callback.didError(error: error)
         } else if let selfieImage = selfieImage,
@@ -576,6 +575,7 @@ extension SelfieViewModel {
     }
 
     private func resetNetworkRetries() {
+        networkRetries = 0
         MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }

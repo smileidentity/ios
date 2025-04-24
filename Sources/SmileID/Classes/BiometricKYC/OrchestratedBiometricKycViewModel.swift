@@ -63,7 +63,6 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     func onFinished(delegate: BiometricKycResultDelegate) {
-        resetNetworkRetries()
         if let selfieFile = selfieFile,
            let livenessFiles = livenessFiles,
            let selfiePath = getRelativePath(from: selfieFile)
@@ -289,6 +288,7 @@ extension OrchestratedBiometricKycViewModel {
     }
 
     private func resetNetworkRetries() {
+        networkRetries = 0
         MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }

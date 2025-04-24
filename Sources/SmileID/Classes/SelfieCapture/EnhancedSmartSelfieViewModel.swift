@@ -519,7 +519,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
-        resetNetworkRetries()
         if let error = self.error {
             callback.didError(error: error)
         } else if let selfieImageURL = selfieImageURL,
@@ -602,6 +601,7 @@ extension EnhancedSmartSelfieViewModel {
     }
 
     private func resetNetworkRetries() {
+        networkRetries = 0
         MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }

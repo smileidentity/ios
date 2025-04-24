@@ -341,6 +341,7 @@ extension IOrchestratedDocumentVerificationViewModel {
     }
 
     func resetNetworkRetries() {
+        networkRetries = 0
         MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }
@@ -364,7 +365,6 @@ class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
-        resetNetworkRetries()
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
@@ -393,7 +393,6 @@ class OrchestratedEnhancedDocumentVerificationViewModel:
     >
 {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
-        resetNetworkRetries()
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
