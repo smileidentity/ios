@@ -348,6 +348,8 @@ class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
+        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
@@ -376,6 +378,8 @@ class OrchestratedEnhancedDocumentVerificationViewModel:
     >
 {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
+        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+
         if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)

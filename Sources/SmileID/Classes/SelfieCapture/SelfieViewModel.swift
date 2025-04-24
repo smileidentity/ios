@@ -551,6 +551,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
+        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+
         if let error = self.error {
             callback.didError(error: error)
         } else if let selfieImage = selfieImage,

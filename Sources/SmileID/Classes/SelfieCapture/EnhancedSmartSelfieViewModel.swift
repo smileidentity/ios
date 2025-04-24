@@ -402,6 +402,8 @@ extension EnhancedSmartSelfieViewModel {
     }
 
     private func handleCancelSelfieCapture() {
+        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+
         invalidateSubmissionTask()
         if let error {
             onResult.didError(error: error)
@@ -542,6 +544,9 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         metadataManager.removeMetadata(key: .activeLivenessType)
         DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
         hasRecordedOrientationAtCaptureStart = false
+        if !DeviceOrientationMetadataProvider.shared.isRecordingDeviceOrientations {
+            DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
+        }
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {

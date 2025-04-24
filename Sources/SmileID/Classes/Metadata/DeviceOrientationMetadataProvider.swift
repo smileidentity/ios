@@ -9,6 +9,7 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
 
     private(set) var currentOrientation: String = "unknown"
     private var deviceOrientations: [String] = []
+    var isRecordingDeviceOrientations = false
 
     private init() {}
 
@@ -16,6 +17,12 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
         guard motionManager.isAccelerometerAvailable else {
             return
         }
+
+        if isRecordingDeviceOrientations {
+            // Early return if we are already recording the device orientations
+            return
+        }
+        isRecordingDeviceOrientations = true
 
         motionManager.accelerometerUpdateInterval = 0.5
         motionManager.startAccelerometerUpdates(to: OperationQueue.main) { [weak self] data, _ in
@@ -25,6 +32,7 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
     }
 
     private func stopRecordingDeviceOrientations() {
+        isRecordingDeviceOrientations = false
         if motionManager.isAccelerometerActive {
             motionManager.stopAccelerometerUpdates()
         }
