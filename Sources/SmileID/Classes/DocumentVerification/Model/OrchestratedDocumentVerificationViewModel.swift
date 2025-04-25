@@ -32,6 +32,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     var didSubmitJob: Bool = false
     var error: Error?
     let metadataManager: MetadataManager = .shared
+    private var networkRetries: Int = 0
 
     // UI properties
     @Published var acknowledgedInstructions = false
@@ -223,6 +224,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 } catch let error as SmileIDError {
                     switch error {
                     case .api("2215", _):
+                        incrementNetworkRetries()
                         prepUploadResponse = try await SmileID.api.prepUpload(
                             request: prepUploadRequest.copy(retry: "true")
                         )
@@ -257,6 +259,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     self.onError(error: error)
                     return
                 }
+                resetNetworkRetries()
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch let error as SmileIDError {
                 do {
@@ -324,9 +327,23 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 self.step = stepToRetry
             }
             if case .processing = stepToRetry {
+                incrementNetworkRetries()
                 submitJob()
             }
         }
+    }
+}
+
+// MARK: - Metadata Helpers
+extension IOrchestratedDocumentVerificationViewModel {
+    private func incrementNetworkRetries() {
+        networkRetries += 1
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+    }
+
+    func resetNetworkRetries() {
+        networkRetries = 0
+        MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }
 

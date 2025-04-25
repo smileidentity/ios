@@ -28,6 +28,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let metadataManager: MetadataManager = .shared
     private let metadataTimerStart = MonotonicTime()
     private let faceDetector = FaceDetector()
+    private var networkRetries: Int = 0
     private var selfieCaptureRetries: Int = 0
     private var hasRecordedOrientationAtCaptureStart = false
 
@@ -382,6 +383,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     func onRetry() {
         // If selfie file is present, all captures were completed, so we're retrying a network issue
         if selfieImage != nil, livenessImages.count == numLivenessImages {
+            incrementNetworkRetries()
             submitJob()
         } else {
             selfieCaptureRetries += 1
@@ -515,6 +517,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     print("Error moving job to submitted directory: \(error)")
                     self.error = error
                 }
+                resetNetworkRetries()
                 DispatchQueue.main.async { self.processingState = .success }
             } catch let error as SmileIDError {
                 do {
@@ -591,5 +594,18 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString)
         else { return }
         UIApplication.shared.open(settingsURL)
+    }
+}
+
+// MARK: - Metadata Helpers
+extension SelfieViewModel {
+    private func incrementNetworkRetries() {
+        networkRetries += 1
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+    }
+
+    private func resetNetworkRetries() {
+        networkRetries = 0
+        MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }

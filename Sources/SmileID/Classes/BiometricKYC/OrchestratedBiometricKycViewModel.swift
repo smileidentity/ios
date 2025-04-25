@@ -24,6 +24,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     var livenessFiles: [URL]?
     private var error: Error?
     private var didSubmitBiometricJob: Bool = false
+    private var networkRetries: Int = 0
 
     // MARK: - UI Properties
 
@@ -54,6 +55,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
 
     func onRetry() {
         if selfieFile != nil {
+            incrementNetworkRetries()
             submitJob()
         } else {
             updateStep(.selfie)
@@ -82,6 +84,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         Task {
             do {
                 try await handleJobSubmission()
+                resetNetworkRetries()
                 updateStep(.processing(.success))
             } catch let error as SmileIDError {
                 handleSubmissionFailure(error)
@@ -193,6 +196,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             else {
                 throw error
             }
+            incrementNetworkRetries()
             return try await SmileID.api.prepUpload(
                 request: prepUploadRequest.copy(retry: "true"))
         }
@@ -273,5 +277,18 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
     func didError(error _: Error) {
         error = SmileIDError.unknown("Error capturing selfie")
         updateStep(.processing(.error))
+    }
+}
+
+// MARK: - Metadata Helpers
+extension OrchestratedBiometricKycViewModel {
+    private func incrementNetworkRetries() {
+        networkRetries += 1
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+    }
+
+    private func resetNetworkRetries() {
+        networkRetries = 0
+        MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }

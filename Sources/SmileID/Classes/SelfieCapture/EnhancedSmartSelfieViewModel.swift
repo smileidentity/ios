@@ -15,6 +15,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var guideAnimationDelayTimer: Timer?
     private let metadataTimerStart = MonotonicTime()
     private let metadataManager: MetadataManager = .shared
+    private var networkRetries: Int = 0
     private var selfieCaptureRetries: Int = 0
 
     // MARK: Private Properties
@@ -228,6 +229,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         case .cancelSelfieCapture:
             handleCancelSelfieCapture()
         case .retryJobSubmission:
+            incrementNetworkRetries()
             selfieCaptureRetries += 1
             handleViewAppeared()
         case .openApplicationSettings:
@@ -531,27 +533,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         try await submissionManager.submitJob(failureReason: failureReason)
     }
 
-    private func addSelfieCaptureMetaData() {
-        metadataManager.addMetadata(
-            key: .selfieCaptureDuration,
-            value: metadataTimerStart.elapsedTime().milliseconds()
-        )
-        metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
-        metadataManager.addMetadata(
-            key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
-        metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
-    }
-
-    private func resetSelfieCaptureMetadata() {
-        metadataManager.removeMetadata(key: .selfieCaptureDuration)
-        metadataManager.removeMetadata(key: .activeLivenessType)
-        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
-        hasRecordedOrientationAtCaptureStart = false
-        if !DeviceOrientationMetadataProvider.shared.isRecordingDeviceOrientations {
-            DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
-        }
-    }
-
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let error = self.error {
             callback.didError(error: error)
@@ -576,6 +557,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     // MARK: SelfieJobSubmissionDelegate Methods
 
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
+        resetNetworkRetries()
         invalidateSubmissionTask()
         HapticManager.shared.notification(type: .success)
         DispatchQueue.main.async {
@@ -610,5 +592,39 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     func invalidateSubmissionTask() {
         submissionTask?.cancel()
         submissionTask = nil
+    }
+}
+
+// MARK: - Metadata Helpers
+extension EnhancedSmartSelfieViewModel {
+    private func addSelfieCaptureMetaData() {
+        metadataManager.addMetadata(
+            key: .selfieCaptureDuration,
+            value: metadataTimerStart.elapsedTime().milliseconds()
+        )
+        metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
+        metadataManager.addMetadata(
+            key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
+        metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
+    }
+
+    private func resetSelfieCaptureMetadata() {
+        metadataManager.removeMetadata(key: .selfieCaptureDuration)
+        metadataManager.removeMetadata(key: .activeLivenessType)
+        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+        hasRecordedOrientationAtCaptureStart = false
+        if !DeviceOrientationMetadataProvider.shared.isRecordingDeviceOrientations {
+            DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
+        }
+    }
+
+    private func incrementNetworkRetries() {
+        networkRetries += 1
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+    }
+
+    private func resetNetworkRetries() {
+        networkRetries = 0
+        MetadataManager.shared.removeMetadata(key: .networkRetries)
     }
 }
