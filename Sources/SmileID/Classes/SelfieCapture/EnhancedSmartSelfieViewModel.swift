@@ -512,8 +512,8 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     public func submitJob() async throws {
         // Add metadata before submission
         addSelfieCaptureMetaData()
+        let metadata = metadataManager.collectAllMetadata()
 
-        // Create an instance of SelfieSubmissionManager to manage the submission process
         let submissionManager = SelfieSubmissionManager(
             userId: userId,
             isEnroll: isEnroll,
@@ -522,7 +522,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             selfieImageUrl: selfieImageURL,
             livenessImages: livenessImages,
             extraPartnerParams: extraPartnerParams,
-            metadata: metadataManager.collectAllMetadata()
+            metadata: metadata
         )
         submissionManager.delegate = self
         try await submissionManager.submitJob(failureReason: failureReason)

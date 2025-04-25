@@ -408,6 +408,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     jobId: jobId,
                     userId: userId
                 )
+                let metadata = metadataManager.collectAllMetadata()
                 if SmileID.allowOfflineMode {
                     try LocalStorage.saveOfflineJob(
                         jobId: jobId,
@@ -415,12 +416,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         jobType: jobType,
                         enrollment: isEnroll,
                         allowNewEnroll: allowNewEnroll,
-                        metadata: metadataManager.collectAllMetadata(),
+                        metadata: metadata,
                         partnerParams: extraPartnerParams
                     )
                 }
                 let authResponse = try await SmileID.api.authenticate(
-                    request: authRequest)
+                    request: authRequest
+                )
 
                 var smartSelfieLivenessImages = [MultipartBody]()
                 var smartSelfieImage: MultipartBody?
@@ -429,8 +431,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         withImage: selfie,
                         forKey: selfieImage.lastPathComponent,
                         forName: selfieImage.lastPathComponent
-                    )
-                {
+                    ) {
                     smartSelfieImage = media
                 }
                 if !livenessImages.isEmpty {
@@ -467,7 +468,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             sandboxResult: nil,
                             allowNewEnroll: allowNewEnroll,
                             failureReason: nil,
-                            metadata: metadataManager.collectAllMetadata()
+                            metadata: metadata
                         )
                     } else {
                         try await SmileID.api.doSmartSelfieAuthentication(
@@ -480,7 +481,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             callbackUrl: SmileID.callbackUrl,
                             sandboxResult: nil,
                             failureReason: nil,
-                            metadata: metadataManager.collectAllMetadata()
+                            metadata: metadata
                         )
                     }
                 apiResponse = response
@@ -527,8 +528,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     return
                 }
                 if SmileID.allowOfflineMode,
-                    SmileIDError.isNetworkFailure(error: error)
-                {
+                    SmileIDError.isNetworkFailure(error: error) {
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"
                         self.processingState = .success
