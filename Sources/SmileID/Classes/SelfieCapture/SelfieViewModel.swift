@@ -28,6 +28,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let metadataManager: MetadataManager = .shared
     private let metadataTimerStart = MonotonicTime()
     private let faceDetector = FaceDetector()
+    private var hasRecordedOrientationAtCaptureStart = false
 
     var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
@@ -112,10 +113,18 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             key: .selfieImageOrigin,
             value: cameraFacing.rawValue
         )
+
+        DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
     }
 
     // swiftlint:disable cyclomatic_complexity
     func analyzeImage(image: CVPixelBuffer) {
+        // Capture device orientation before selfie capture
+        if !hasRecordedOrientationAtCaptureStart {
+            DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
+            hasRecordedOrientationAtCaptureStart = true
+        }
+
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
         if !shouldAnalyzeImages || elapsedtime < intraImageMinDelay {
             return
@@ -273,6 +282,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         let selfieImage = try LocalStorage.createSelfieFile(
                             jobId: jobId, selfieFile: imageData)
                         self.selfieImage = selfieImage
+
+                        // Capture device orientation after selfie capture
+                        DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
+
                         DispatchQueue.main.async {
                             self.captureProgress = 1
                             self.selfieToConfirm = imageData
@@ -345,6 +358,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         metadataManager.removeMetadata(key: .selfieImageOrigin)
         metadataManager.removeMetadata(key: .activeLivenessType)
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
+        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+        hasRecordedOrientationAtCaptureStart = false
     }
 
     func cleanUpSelfieCapture() {
@@ -393,6 +408,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     jobId: jobId,
                     userId: userId
                 )
+                let metadata = metadataManager.collectAllMetadata()
                 if SmileID.allowOfflineMode {
                     try LocalStorage.saveOfflineJob(
                         jobId: jobId,
@@ -400,12 +416,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         jobType: jobType,
                         enrollment: isEnroll,
                         allowNewEnroll: allowNewEnroll,
-                        metadata: metadataManager.collectAllMetadata(),
+                        metadata: metadata,
                         partnerParams: extraPartnerParams
                     )
                 }
                 let authResponse = try await SmileID.api.authenticate(
-                    request: authRequest)
+                    request: authRequest
+                )
 
                 var smartSelfieLivenessImages = [MultipartBody]()
                 var smartSelfieImage: MultipartBody?
@@ -414,8 +431,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         withImage: selfie,
                         forKey: selfieImage.lastPathComponent,
                         forName: selfieImage.lastPathComponent
-                    )
-                {
+                    ) {
                     smartSelfieImage = media
                 }
                 if !livenessImages.isEmpty {
@@ -452,7 +468,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             sandboxResult: nil,
                             allowNewEnroll: allowNewEnroll,
                             failureReason: nil,
-                            metadata: metadataManager.collectAllMetadata()
+                            metadata: metadata
                         )
                     } else {
                         try await SmileID.api.doSmartSelfieAuthentication(
@@ -465,7 +481,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             callbackUrl: SmileID.callbackUrl,
                             sandboxResult: nil,
                             failureReason: nil,
-                            metadata: metadataManager.collectAllMetadata()
+                            metadata: metadata
                         )
                     }
                 apiResponse = response
@@ -512,8 +528,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     return
                 }
                 if SmileID.allowOfflineMode,
-                    SmileIDError.isNetworkFailure(error: error)
-                {
+                    SmileIDError.isNetworkFailure(error: error) {
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"
                         self.processingState = .success

@@ -1,5 +1,7 @@
 import Combine
+import CoreMotion
 import SwiftUI
+import Foundation
 
 enum DocumentDirective: String {
     case defaultInstructions = "Document.Directive.Default"
@@ -12,6 +14,10 @@ private let documentAutoCaptureWaitTime: TimeInterval = 1.0
 private let analysisSampleInterval: TimeInterval = 0.350
 
 class DocumentCaptureViewModel: ObservableObject {
+
+    deinit {
+        subscribers.removeAll()
+    }
     // Initializer properties
     private let knownAspectRatio: Double?
     private let metadataManager: MetadataManager = .shared
@@ -28,6 +34,7 @@ class DocumentCaptureViewModel: ObservableObject {
     private let side: DocumentCaptureSide
     private var retryCount: Int = 0
     private(set) var documentImageOrigin: DocumentImageOriginValue?
+    private var hasRecordedOrientationAtCaptureStart = false
 
     // UI properties
     @Published var unauthorizedAlert: AlertState?
@@ -98,6 +105,8 @@ class DocumentCaptureViewModel: ObservableObject {
                 self.documentFirstDetectedAtTime = nil
             }
         })
+
+        DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
     }
 
     @objc func showManualCapture() {
@@ -166,6 +175,9 @@ class DocumentCaptureViewModel: ObservableObject {
     }
 
     private func onCaptureComplete(image: Data) {
+        // Capture device orientation after successful capture
+        DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
+
         let croppedImage = ImageUtils.cropImageToAspectRatio(
             imageData: image,
             aspectRatio: 1 / idAspectRatio
@@ -188,6 +200,8 @@ class DocumentCaptureViewModel: ObservableObject {
             metadataManager.removeMetadata(key: .documentBackCaptureDuration)
             metadataManager.removeMetadata(key: .documentBackImageOrigin)
         }
+        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+        hasRecordedOrientationAtCaptureStart = false
     }
 
     private func collectDocumentCaptureMetadata() {
@@ -231,6 +245,12 @@ class DocumentCaptureViewModel: ObservableObject {
     private func analyzeImage(buffer: CVPixelBuffer) {
         let now = Date().timeIntervalSince1970
         let elapsedTime = now - lastAnalysisTime
+
+        if !hasRecordedOrientationAtCaptureStart {
+            DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
+            hasRecordedOrientationAtCaptureStart = true
+        }
+
         let enoughTimeHasPassed = elapsedTime > analysisSampleInterval
         if processingImage || isCapturing || !enoughTimeHasPassed {
             return
