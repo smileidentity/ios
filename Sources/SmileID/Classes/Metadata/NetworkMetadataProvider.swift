@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import Network
-import Combine
 
 /// A class for determining the current network connection type (Wi-Fi, cellular, VPN, etc.)
 class NetworkMetadataProvider {
@@ -10,15 +10,15 @@ class NetworkMetadataProvider {
 
     init() {
         monitor = NWPathMonitor()
+
+        // Initialize with current connection state
+        let initialPath = monitor.currentPath
+        let initialConnection = determineConnectionType(from: initialPath)
+        connectionTypes = [initialConnection]
+
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self else { return }
-            let newConnection = if path.usesInterfaceType(.wifi) {
-                "wifi"
-            } else if path.usesInterfaceType(.cellular) {
-                "cellular"
-            } else {
-                "other"
-            }
+            let newConnection = determineConnectionType(from: path)
 
             if self.connectionTypes.last != newConnection {
                 self.connectionTypes.append(newConnection)
@@ -29,6 +29,16 @@ class NetworkMetadataProvider {
         monitor.start(queue: queue)
     }
 
+    private func determineConnectionType(from path: NWPath) -> String {
+        if path.usesInterfaceType(.wifi) {
+            return "wifi"
+        } else if path.usesInterfaceType(.cellular) {
+            return "cellular"
+        } else {
+            return "other"
+        }
+    }
+
     deinit {
         monitor.cancel()
     }
@@ -36,41 +46,50 @@ class NetworkMetadataProvider {
     /// Checks if the system has an HTTP, HTTPS, or SOCKS proxy configured
     private func isProxyDetected() -> Bool {
         // Attempt to copy the proxy settings dictionary
-        guard let proxySettings = CFNetworkCopySystemProxySettings()?.takeRetainedValue() as? [String: Any] else {
+        guard
+            let proxySettings = CFNetworkCopySystemProxySettings()?.takeRetainedValue()
+                as? [String: Any]
+        else {
             return false
         }
 
         // Check if there is an HTTP proxy set
         if let httpProxy = proxySettings["HTTPProxy"] as? String,
-            !httpProxy.isEmpty {
+            !httpProxy.isEmpty
+        {
             return true
         }
 
         // Check if there is an HTTPS proxy set
         if let httpsProxy = proxySettings["HTTPSProxy"] as? String,
-            !httpsProxy.isEmpty {
+            !httpsProxy.isEmpty
+        {
             return true
         }
 
         // Check if there is a SOCKS proxy set.
         if let socksProxy = proxySettings["SOCKSProxy"] as? String,
-            !socksProxy.isEmpty {
+            !socksProxy.isEmpty
+        {
             return true
         }
 
         // Check for proxy enabled status.
         if let httpEnabled = proxySettings["HTTPEnable"] as? Int,
-            httpEnabled == 1 {
+            httpEnabled == 1
+        {
             return true
         }
 
         if let httpsEnabled = proxySettings["HTTPSEnable"] as? Int,
-            httpsEnabled == 1 {
+            httpsEnabled == 1
+        {
             return true
         }
 
         if let socksEnabled = proxySettings["SOCKSEnabled"] as? Int,
-            socksEnabled == 1 {
+            socksEnabled == 1
+        {
             return true
         }
 

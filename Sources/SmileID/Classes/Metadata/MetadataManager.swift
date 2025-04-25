@@ -15,7 +15,6 @@ public class MetadataManager {
 
     private init() {
         setDefaultMetadata()
-        registerDefaultProviders()
     }
 
     private func setDefaultMetadata() {
@@ -37,7 +36,8 @@ public class MetadataManager {
         addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
         addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
         addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCamerasString)
-        addMetadata(key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current))
+        addMetadata(
+            key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current))
         addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
         addMetadata(key: .proximitySensor, value: UIDevice.current.proximitySensorString)
     }

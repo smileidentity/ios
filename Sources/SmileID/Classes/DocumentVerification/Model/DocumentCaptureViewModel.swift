@@ -1,7 +1,7 @@
 import Combine
 import CoreMotion
-import SwiftUI
 import Foundation
+import SwiftUI
 
 enum DocumentDirective: String {
     case defaultInstructions = "Document.Directive.Default"
@@ -34,6 +34,7 @@ class DocumentCaptureViewModel: ObservableObject {
     private let side: DocumentCaptureSide
     private var retryCount: Int = 0
     private(set) var documentImageOrigin: DocumentImageOriginValue?
+    private var hasRecordedOrientationAtCaptureStart = false
 
     // Device orientation provider
     private let orientationProvider = DeviceOrientationMetadataProvider.shared
@@ -112,6 +113,8 @@ class DocumentCaptureViewModel: ObservableObject {
                 self.documentFirstDetectedAtTime = nil
             }
         })
+
+        DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
     }
 
     @objc func showManualCapture() {
@@ -181,7 +184,7 @@ class DocumentCaptureViewModel: ObservableObject {
 
     private func onCaptureComplete(image: Data) {
         // Capture device orientation after successful capture
-        deviceOrientationCaptures.append(UIDevice.current.orientation)
+        DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
 
         let croppedImage = ImageUtils.cropImageToAspectRatio(
             imageData: image,
@@ -205,8 +208,8 @@ class DocumentCaptureViewModel: ObservableObject {
             metadataManager.removeMetadata(key: .documentBackCaptureDuration)
             metadataManager.removeMetadata(key: .documentBackImageOrigin)
         }
-        // Clear local orientations but don't touch the metadata manager
-        deviceOrientationCaptures = []
+        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+        hasRecordedOrientationAtCaptureStart = false
     }
 
     private func collectDocumentCaptureMetadata() {
@@ -222,7 +225,8 @@ class DocumentCaptureViewModel: ObservableObject {
             )
 
             if let documentImageOrigin {
-                metadataManager.addMetadata(key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
+                metadataManager.addMetadata(
+                    key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
             }
         case .back:
             metadataManager.addMetadata(
@@ -235,7 +239,8 @@ class DocumentCaptureViewModel: ObservableObject {
             )
 
             if let documentImageOrigin {
-                metadataManager.addMetadata(key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
+                metadataManager.addMetadata(
+                    key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
             }
         }
 
@@ -253,6 +258,12 @@ class DocumentCaptureViewModel: ObservableObject {
     private func analyzeImage(buffer: CVPixelBuffer) {
         let now = Date().timeIntervalSince1970
         let elapsedTime = now - lastAnalysisTime
+
+        if !hasRecordedOrientationAtCaptureStart {
+            DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
+            hasRecordedOrientationAtCaptureStart = true
+        }
+
         let enoughTimeHasPassed = elapsedTime > analysisSampleInterval
         if processingImage || isCapturing || !enoughTimeHasPassed {
             return
