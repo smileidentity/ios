@@ -1,9 +1,11 @@
 import Foundation
 
 class StringUtils {
-    // Note: For native methods to match android implementation we can have this in objective C for benchmarking but
-    // starting to feel this is overkill given it's a spike and the benchmarks for swift aren't as bad so if needed
-    // can port android c++ code to objective C actually easier on ios
+    /** Note: For native methods to match android implementation we
+     can have this in objective C for benchmarking but  starting to feel this
+     is overkill given it's a spike and the benchmarks for swift aren't as bad so if needed
+     can port android c++ code to objective C actually easier on ios
+     */
 
     /**
      * Converts a string to its binary representation.

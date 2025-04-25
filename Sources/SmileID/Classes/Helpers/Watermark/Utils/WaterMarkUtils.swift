@@ -25,7 +25,7 @@ class WaterMarkUtils {
             let useNativeProcessor = false
             let applyProcessors = true
             let session = BenchMarkUtils.createSession(
-                operationName: "Liveness Comparison useNativeProcessor \(useNativeProcessor) applyProcessors \(applyProcessors) run id = \(runId)"
+                operationName: "createInvisibleTextMark  run id = \(runId)"
             )
 
             session.lap(lapName: "Watermark Start")
@@ -74,9 +74,7 @@ class WaterMarkUtils {
             }
 
             session.lap(lapName: "Watermark indy complete result")
-            session.stop(
-                finalMessage: "Liveness Comparison useNativeProcessor \(useNativeProcessor) applyProcessors \(applyProcessors) run id = \(runId)"
-            )
+            session.stop(finalMessage: "createInvisibleTextMark  run id = \(runId)")
         } catch {
             os_log("Error creating invisible watermark: %@", log: .default, type: .error, error.localizedDescription)
         }
@@ -112,7 +110,8 @@ class WaterMarkUtils {
                 width: regionWidth,
                 height: regionHeight
             ) else {
-                throw NSError(domain: "WatermarkError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to get region pixels"])
+                throw NSError(domain: "WatermarkError", code: 1,
+                              userInfo: [NSLocalizedDescriptionKey: "Failed to get region pixels"])
             }
 
             // Convert the region pixels to ARGB array
@@ -134,12 +133,15 @@ class WaterMarkUtils {
             }
 
             guard let watermarkArray = watermarkColorArray else {
-                throw NSError(domain: "WatermarkError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to create watermark array"])
+                throw NSError(domain: "WatermarkError", code: 2,
+                              userInfo: [NSLocalizedDescriptionKey:
+                                  "Failed to create watermark array"])
             }
 
             if watermarkArray.count > regionColorArray.count {
                 os_log("Watermark return 1 - region too small for watermark", log: .default, type: .info)
-                throw NSError(domain: "WatermarkError", code: 3, userInfo: [NSLocalizedDescriptionKey: errorPixelsNotEnough])
+                throw NSError(domain: "WatermarkError", code: 3,
+                              userInfo: [NSLocalizedDescriptionKey: errorPixelsNotEnough])
             }
 
             // Apply the watermark by replacing LSBs only in the region
@@ -183,7 +185,8 @@ class WaterMarkUtils {
 
             // Get the resulting image
             guard let outputImage = UIGraphicsGetImageFromCurrentImageContext() else {
-                throw NSError(domain: "WatermarkError", code: 4, userInfo: [NSLocalizedDescriptionKey: "Failed to create output image"])
+                throw NSError(domain: "WatermarkError", code: 4,
+                              userInfo: [NSLocalizedDescriptionKey: "Failed to create output image"])
             }
 
             return outputImage
@@ -212,7 +215,9 @@ class WaterMarkUtils {
                 width: regionWidth,
                 height: regionHeight
             ) else {
-                throw NSError(domain: "WatermarkError", code: 5, userInfo: [NSLocalizedDescriptionKey: "Failed to get region pixels for detection"])
+                throw NSError(domain: "WatermarkError", code: 5,
+                              userInfo: [NSLocalizedDescriptionKey:
+                                  "Failed to get region pixels for detection"])
             }
 
             // Extract the LSB values from the region
@@ -229,7 +234,8 @@ class WaterMarkUtils {
             }
 
             let searchStartIndex = extractedBinary.index(textStartIndex, offsetBy: lsbPrefixFlag.count)
-            guard let textEndIndex = extractedBinary.range(of: lsbSuffixFlag, range: searchStartIndex ..< extractedBinary.endIndex)?.lowerBound else {
+            guard let textEndIndex = extractedBinary.range(of: lsbSuffixFlag,
+                                                           range: searchStartIndex ..< extractedBinary.endIndex)?.lowerBound else {
                 return DetectionResults(watermarkString: nil)
             }
 
@@ -253,7 +259,9 @@ class WaterMarkUtils {
     /**
      * Helper function to get pixels from a specific region of a UIImage
      */
-    private static func getRegionPixels(from image: UIImage, xPos: Int, yPos: Int, width: Int, height: Int) -> [UInt32]? {
+    private static func getRegionPixels(from image: UIImage, xPos: Int,
+                                        yPos: Int, width: Int, height: Int) -> [UInt32]?
+    {
         guard let cgImage = image.cgImage else { return nil }
 
         let bytesPerPixel = 4
@@ -300,9 +308,12 @@ extension WaterMarkUtils {
      * @param useNativeProcessor Whether to use native processing methods
      * @return Detection results containing the watermark string if found
      */
-    static func detectWatermark(imageData: Data, useNativeProcessor: Bool = true) throws -> DetectionResults {
+    static func detectWatermark(imageData: Data, useNativeProcessor:
+        Bool = true) throws -> DetectionResults
+    {
         guard let image = UIImage(data: imageData) else {
-            throw NSError(domain: "WatermarkError", code: 6, userInfo: [NSLocalizedDescriptionKey: "Failed to create image from data"])
+            throw NSError(domain: "WatermarkError", code: 6, userInfo:
+                [NSLocalizedDescriptionKey: "Failed to create image from data"])
         }
 
         return try detectWatermark(uiImage: image, useNativeProcessor: useNativeProcessor)
@@ -316,11 +327,15 @@ extension WaterMarkUtils {
      * @return Detection results containing the watermark string if found
      */
     @available(iOS 13.0, *)
-    static func detectWatermarkAsync(imageData: Data, useNativeProcessor: Bool = true) async throws -> DetectionResults {
+    static func detectWatermarkAsync(imageData: Data,
+                                     useNativeProcessor: Bool = true)
+        async throws -> DetectionResults
+    {
         return try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
-                    let result = try detectWatermark(imageData: imageData, useNativeProcessor: useNativeProcessor)
+                    let result = try detectWatermark(imageData: imageData,
+                                                     useNativeProcessor: useNativeProcessor)
                     continuation.resume(returning: result)
                 } catch {
                     continuation.resume(throwing: error)
@@ -340,7 +355,8 @@ extension WaterMarkUtils {
             let results = try detectWatermark(imageData: imageData)
             return results.watermarkString
         } catch {
-            os_log("Failed to extract watermark: %@", log: .default, type: .error, error.localizedDescription)
+            os_log("Failed to extract watermark: %@",
+                   log: .default, type: .error, error.localizedDescription)
             return nil
         }
     }

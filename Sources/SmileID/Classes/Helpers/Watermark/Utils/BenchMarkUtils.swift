@@ -2,7 +2,8 @@ import Foundation
 import os.log
 
 /**
- * Utility class for benchmarking execution time and measuring file sizes. currently heavily borrows from android can be refined to feel more iosy :joy
+ * Utility class for benchmarking execution time and measuring file sizes.
+ * currently heavily borrows from android can be refined to feel more iosy :joy
  */
 class BenchMarkUtils {
     /**
@@ -21,11 +22,13 @@ class BenchMarkUtils {
         do {
             let attributes = try fileManager.attributesOfItem(atPath: filePath)
             if let size = attributes[FileAttributeKey.size] as? Int64 {
-                os_log("File size (%@): %@", log: .default, type: .debug, filePath, formatSize(bytes: size))
+                os_log("File size (%@): %@", log: .default,
+                       type: .debug, filePath, formatSize(bytes: size))
                 return size
             }
         } catch {
-            os_log("Error getting file size: %@", log: .default, type: .error, error.localizedDescription)
+            os_log("Error getting file size: %@", log: .default,
+                   type: .error, error.localizedDescription)
         }
 
         return -1
@@ -90,7 +93,8 @@ class BenchMarkUtils {
             let lapTime = currentTime - lastLapTime
             let totalTime = currentTime - startTime
 
-            os_log("%@ - %@: %.0f ms (Total: %.0f ms)", log: .default, type: .debug, operationName, name, lapTime, totalTime)
+            os_log("%@ - %@: %.0f ms (Total: %.0f ms)", log: .default,
+                   type: .debug, operationName, name, lapTime, totalTime)
             metrics["\(name) Time"] = "\(Int(lapTime)) ms"
             lastLapTime = currentTime
             return self
@@ -122,7 +126,8 @@ class BenchMarkUtils {
             let totalTime = Date().timeIntervalSince1970 * 1000 - startTime
             metrics["Total Time"] = "\(Int(totalTime)) ms"
 
-            os_log("=== %@ %@ in %.0f ms ===", log: .default, type: .debug, operationName, finalMessage, totalTime)
+            os_log("=== %@ %@ in %.0f ms ===", log: .default, type: .debug,
+                   operationName, finalMessage, totalTime)
             os_log("=== Benchmark Summary ===", log: .default, type: .debug)
 
             for (key, value) in metrics {
