@@ -196,6 +196,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     jobId: jobId,
                     userId: userId
                 )
+                let metadata = metadataManager.collectAllMetadata()
                 if SmileID.allowOfflineMode {
                     try LocalStorage.saveOfflineJob(
                         jobId: jobId,
@@ -203,7 +204,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                         jobType: jobType,
                         enrollment: false,
                         allowNewEnroll: allowNewEnroll,
-                        metadata: metadataManager.collectAllMetadata(),
+                        metadata: metadata,
                         partnerParams: extraPartnerParams
                     )
                 }
@@ -211,7 +212,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 let prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
                     allowNewEnroll: allowNewEnroll,
-                    metadata: metadataManager.collectAllMetadata(),
+                    metadata: metadata,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
