@@ -36,9 +36,6 @@ class DocumentCaptureViewModel: ObservableObject {
     private(set) var documentImageOrigin: DocumentImageOriginValue?
     private var hasRecordedOrientationAtCaptureStart = false
 
-    // Device orientation provider
-    private let orientationProvider = DeviceOrientationMetadataProvider.shared
-
     // Store orientations for this capture session
     private var deviceOrientationCaptures: [UIDeviceOrientation] = []
 
@@ -243,9 +240,6 @@ class DocumentCaptureViewModel: ObservableObject {
                     key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
             }
         }
-
-        // Add all collected device orientations to the provider
-        orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
     }
 
     /// Analyzes a single frame from the camera. No other frame will be processed until this one

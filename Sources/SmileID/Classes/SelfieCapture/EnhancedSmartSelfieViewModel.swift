@@ -16,7 +16,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private let metadataTimerStart = MonotonicTime()
     private let metadataManager: MetadataManager = .shared
     private var selfieCaptureRetries: Int = 0
-    private let orientationProvider = DeviceOrientationMetadataProvider.shared
 
     // MARK: Private Properties
 
@@ -277,8 +276,6 @@ extension EnhancedSmartSelfieViewModel {
         cameraManager.switchCamera(to: .front)
         resetGuideAnimationDelayTimer()
         resetSelfieCaptureState()
-        // Capture device orientation before taking selfie
-        deviceOrientationCaptures.append(currentOrientation)
     }
 
     private func resetSelfieCaptureState() {
@@ -543,7 +540,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         metadataManager.addMetadata(
             key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
         metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
-        orientationProvider.addDeviceOrientations(deviceOrientationCaptures)
     }
 
     private func resetSelfieCaptureMetadata() {
