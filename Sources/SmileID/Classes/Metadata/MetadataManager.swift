@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import Network
 import UIKit
@@ -23,8 +24,6 @@ public class MetadataManager {
         addMetadata(
             key: .clientIP, value: getIPAddress(useIPv4: true))
         addMetadata(
-            key: .fingerprint, value: SmileID.deviceId)
-        addMetadata(
             key: .deviceModel, value: UIDevice.current.modelName)
         addMetadata(
             key: .deviceOS, value: UIDevice.current.systemVersion)
@@ -36,6 +35,11 @@ public class MetadataManager {
             key: .screenResolution, value: UIScreen.main.formattedResolution)
         addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
         addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
+        addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCamerasString)
+        addMetadata(
+            key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current))
+        addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
+        addMetadata(key: .proximitySensor, value: UIDevice.current.proximitySensorString)
     }
 
     func registerDefaultProviders() {

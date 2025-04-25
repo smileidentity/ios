@@ -95,6 +95,9 @@ public class SmileID {
 
         SmileIDResourcesHelper.registerFonts()
 
+        // Increment and track SDK launch count
+        trackSdkLaunchCount()
+
         MetadataManager.shared.registerDefaultProviders()
 
         let fingerprinter = FingerprinterFactory.getInstance()
@@ -105,8 +108,22 @@ public class SmileID {
             /// https://github.com/fingerprintjs/fingerprintjs-ios
             if let fingerprint = await fingerprinter.getDeviceId() {
                 deviceId = fingerprint
+                MetadataManager.shared.addMetadata(
+                    key: .fingerprint, value: fingerprint)
             }
         }
+    }
+
+    /// Tracks the SDK launch count by incrementing a counter stored in UserDefaults
+    private class func trackSdkLaunchCount() {
+        let defaults = UserDefaults.standard
+        let key = "SmileID.SDKLaunchCount"
+        let currentCount = defaults.integer(forKey: key)
+        let newCount = currentCount + 1
+        defaults.set(newCount, forKey: key)
+
+        // Add the launch count to metadata for tracking
+        MetadataManager.shared.addMetadata(key: .sdkLaunchCount, value: String(newCount))
     }
 
     /// Sets the state of offline mode for the SDK.
@@ -215,7 +232,7 @@ public class SmileID {
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId)
+                        LocalStorage.getInfoJsonFile(jobId: jobId),
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {

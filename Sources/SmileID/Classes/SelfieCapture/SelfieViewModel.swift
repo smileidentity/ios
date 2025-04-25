@@ -28,6 +28,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let metadataManager: MetadataManager = .shared
     private let metadataTimerStart = MonotonicTime()
     private let faceDetector = FaceDetector()
+    private var selfieCaptureRetries: Int = 0
     private var hasRecordedOrientationAtCaptureStart = false
 
     var cameraManager = CameraManager(orientation: .portrait)
@@ -45,6 +46,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     var livenessImages: [URL] = []
     var apiResponse: SmartSelfieResponse?
     var error: Error?
+
+    // Store orientations for this capture session
+    private var deviceOrientationCaptures: [UIDeviceOrientation] = []
 
     private let arKitFramePublisher = PassthroughSubject<
         CVPixelBuffer?, Never
@@ -82,6 +86,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
 
+        // Capture device orientation before selfie capture
+        deviceOrientationCaptures.append(UIDevice.current.orientation)
+
         if cameraManager.session.canSetSessionPreset(.vga640x480) {
             cameraManager.session.sessionPreset = .vga640x480
         }
@@ -107,7 +114,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             }
             .store(in: &subscribers)
 
-        let cameraFacing: CameraFacingValue = useBackCamera
+        let cameraFacing: CameraFacingValue =
+            useBackCamera
             ? .backCamera : .frontCamera
         metadataManager.addMetadata(
             key: .selfieImageOrigin,
@@ -355,6 +363,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         livenessImages = []
         shouldAnalyzeImages = true
         cleanUpSelfieCapture()
+        selfieCaptureRetries += 1
         metadataManager.removeMetadata(key: .selfieImageOrigin)
         metadataManager.removeMetadata(key: .activeLivenessType)
         metadataManager.removeMetadata(key: .selfieCaptureDuration)
@@ -375,6 +384,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         if selfieImage != nil, livenessImages.count == numLivenessImages {
             submitJob()
         } else {
+            selfieCaptureRetries += 1
             shouldAnalyzeImages = true
             DispatchQueue.main.async { self.processingState = nil }
         }
@@ -386,6 +396,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             value: metadataTimerStart.elapsedTime().milliseconds()
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.smile.rawValue)
+        metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
 
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }
@@ -431,11 +442,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         withImage: selfie,
                         forKey: selfieImage.lastPathComponent,
                         forName: selfieImage.lastPathComponent
-                    ) {
+                    )
+                {
                     smartSelfieImage = media
                 }
                 if !livenessImages.isEmpty {
-                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultipartBody? in
+                    let livenessImageInfos = livenessImages.compactMap {
+                        liveness -> MultipartBody? in
                         if let data = try? Data(contentsOf: liveness) {
                             return MultipartBody(
                                 withImage: data,
@@ -528,7 +541,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     return
                 }
                 if SmileID.allowOfflineMode,
-                    SmileIDError.isNetworkFailure(error: error) {
+                    SmileIDError.isNetworkFailure(error: error)
+                {
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"
                         self.processingState = .success
@@ -557,7 +571,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             let selfiePath = getRelativePath(from: selfieImage),
             livenessImages.count == numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            ) {
+            )
+        {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }

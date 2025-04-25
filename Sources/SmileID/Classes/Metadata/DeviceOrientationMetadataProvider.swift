@@ -1,6 +1,6 @@
+import CoreMotion
 import Foundation
 import UIKit
-import CoreMotion
 
 class DeviceOrientationMetadataProvider: MetadataProvider {
     static let shared = DeviceOrientationMetadataProvider()

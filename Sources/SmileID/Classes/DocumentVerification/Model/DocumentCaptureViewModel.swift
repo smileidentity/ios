@@ -1,7 +1,7 @@
 import Combine
 import CoreMotion
-import SwiftUI
 import Foundation
+import SwiftUI
 
 enum DocumentDirective: String {
     case defaultInstructions = "Document.Directive.Default"
@@ -36,6 +36,9 @@ class DocumentCaptureViewModel: ObservableObject {
     private(set) var documentImageOrigin: DocumentImageOriginValue?
     private var hasRecordedOrientationAtCaptureStart = false
 
+    // Store orientations for this capture session
+    private var deviceOrientationCaptures: [UIDeviceOrientation] = []
+
     // UI properties
     @Published var unauthorizedAlert: AlertState?
     @Published var acknowledgedInstructions = false
@@ -66,6 +69,8 @@ class DocumentCaptureViewModel: ObservableObject {
             .map { _ in AlertState.cameraUnauthorized }
             .sink { alert in self.unauthorizedAlert = alert }
             .store(in: &subscribers)
+
+        deviceOrientationCaptures.append(UIDevice.current.orientation)
 
         cameraManager.capturedImagePublisher
             .receive(on: DispatchQueue.global())
@@ -217,7 +222,8 @@ class DocumentCaptureViewModel: ObservableObject {
             )
 
             if let documentImageOrigin {
-                metadataManager.addMetadata(key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
+                metadataManager.addMetadata(
+                    key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
             }
         case .back:
             metadataManager.addMetadata(
@@ -230,7 +236,8 @@ class DocumentCaptureViewModel: ObservableObject {
             )
 
             if let documentImageOrigin {
-                metadataManager.addMetadata(key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
+                metadataManager.addMetadata(
+                    key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
             }
         }
     }
