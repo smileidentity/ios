@@ -218,7 +218,7 @@ class DocumentCaptureViewModel: ObservableObject {
             )
             metadataManager.addMetadata(
                 key: .documentFrontCaptureRetries,
-                value: String(retryCount)
+                value: retryCount
             )
 
             if let documentImageOrigin {
@@ -232,7 +232,7 @@ class DocumentCaptureViewModel: ObservableObject {
             )
             metadataManager.addMetadata(
                 key: .documentBackCaptureRetries,
-                value: String(retryCount)
+                value: retryCount
             )
 
             if let documentImageOrigin {

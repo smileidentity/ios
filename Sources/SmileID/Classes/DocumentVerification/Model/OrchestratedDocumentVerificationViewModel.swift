@@ -338,7 +338,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
 extension IOrchestratedDocumentVerificationViewModel {
     private func incrementNetworkRetries() {
         networkRetries += 1
-        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: networkRetries)
     }
 
     func resetNetworkRetries() {

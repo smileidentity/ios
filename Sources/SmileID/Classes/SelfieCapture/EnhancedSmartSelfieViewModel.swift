@@ -620,7 +620,7 @@ extension EnhancedSmartSelfieViewModel {
 
     private func incrementNetworkRetries() {
         networkRetries += 1
-        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: networkRetries)
     }
 
     private func resetNetworkRetries() {
