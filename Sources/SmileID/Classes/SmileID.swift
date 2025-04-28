@@ -232,7 +232,7 @@ public class SmileID {
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId),
+                        LocalStorage.getInfoJsonFile(jobId: jobId)
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {

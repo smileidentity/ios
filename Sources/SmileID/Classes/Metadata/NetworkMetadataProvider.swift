@@ -117,7 +117,6 @@ extension NetworkMetadataProvider: MetadataProvider {
         var metadata: [MetadataKey: CodableValue] = [:]
 
         // Add network connection info
-        // let jsonString = jsonString(from: connectionTypes)
         metadata[.networkConnection] = .array(connectionTypes.map { .string($0) })
 
         // Add proxy detection info
