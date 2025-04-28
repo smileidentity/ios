@@ -113,19 +113,19 @@ class NetworkMetadataProvider {
 }
 
 extension NetworkMetadataProvider: MetadataProvider {
-    func collectMetadata() -> [MetadataKey: String] {
-        var metadata: [MetadataKey: String] = [:]
+    func collectMetadata() -> [MetadataKey: CodableValue] {
+        var metadata: [MetadataKey: CodableValue] = [:]
 
         // Add network connection info
-        let jsonString = jsonString(from: connectionTypes)
-        metadata[.networkConnection] = jsonString ?? "unknown"
+        // let jsonString = jsonString(from: connectionTypes)
+        metadata[.networkConnection] = .array(connectionTypes.map { .string($0) })
 
         // Add proxy detection info
         let proxyDetected = isProxyDetected()
-        metadata[.proxyDetected] = proxyDetected ? "true" : "false"
+        metadata[.proxyDetected] = .bool(proxyDetected)
 
         // Add VPN info
-        metadata[.vpnDetected] = isVPNActive() ? "true" : "false"
+        metadata[.vpnDetected] = .bool(isVPNActive())
 
         return metadata
     }

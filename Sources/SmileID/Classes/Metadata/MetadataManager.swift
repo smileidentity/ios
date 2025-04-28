@@ -4,14 +4,14 @@ import Network
 import UIKit
 
 protocol MetadataProvider {
-    func collectMetadata() -> [MetadataKey: String]
+    func collectMetadata() -> [MetadataKey: CodableValue]
 }
 
 public class MetadataManager {
     public static let shared = MetadataManager()
 
     private var providers: [MetadataProvider] = []
-    private var staticMetadata: [MetadataKey: String] = [:]
+    private var staticMetadata: [MetadataKey: CodableValue] = [:]
 
     private init() {
         setDefaultMetadata()
@@ -52,10 +52,6 @@ public class MetadataManager {
         providers.append(provider)
     }
 
-    func addMetadata(key: MetadataKey, value: String) {
-        staticMetadata[key] = value
-    }
-
     func removeMetadata(key: MetadataKey) {
         staticMetadata.removeValue(forKey: key)
     }
@@ -79,5 +75,36 @@ public class MetadataManager {
         return allMetadata.map { key, value in
             Metadatum(name: key.rawValue, value: value)
         }
+    }
+}
+
+// Strongly-typed overloads for adding metadatata
+extension MetadataManager {
+    func addMetadata(key: MetadataKey, value: String) {
+        staticMetadata[key] = .string(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Int) {
+        staticMetadata[key] = .int(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Double) {
+        staticMetadata[key] = .double(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Bool) {
+        staticMetadata[key] = .bool(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Date) {
+        staticMetadata[key] = .date(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: [CodableValue]) {
+        staticMetadata[key] = .array(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: [String: CodableValue]) {
+        staticMetadata[key] = .object(value)
     }
 }
