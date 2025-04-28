@@ -55,41 +55,35 @@ class NetworkMetadataProvider {
 
         // Check if there is an HTTP proxy set
         if let httpProxy = proxySettings["HTTPProxy"] as? String,
-            !httpProxy.isEmpty
-        {
+            !httpProxy.isEmpty {
             return true
         }
 
         // Check if there is an HTTPS proxy set
         if let httpsProxy = proxySettings["HTTPSProxy"] as? String,
-            !httpsProxy.isEmpty
-        {
+            !httpsProxy.isEmpty {
             return true
         }
 
         // Check if there is a SOCKS proxy set.
         if let socksProxy = proxySettings["SOCKSProxy"] as? String,
-            !socksProxy.isEmpty
-        {
+            !socksProxy.isEmpty {
             return true
         }
 
         // Check for proxy enabled status.
         if let httpEnabled = proxySettings["HTTPEnable"] as? Int,
-            httpEnabled == 1
-        {
+            httpEnabled == 1 {
             return true
         }
 
         if let httpsEnabled = proxySettings["HTTPSEnable"] as? Int,
-            httpsEnabled == 1
-        {
+            httpsEnabled == 1 {
             return true
         }
 
         if let socksEnabled = proxySettings["SOCKSEnabled"] as? Int,
-            socksEnabled == 1
-        {
+            socksEnabled == 1 {
             return true
         }
 
