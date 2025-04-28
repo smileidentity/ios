@@ -123,7 +123,7 @@ public class SmileID {
         defaults.set(newCount, forKey: key)
 
         // Add the launch count to metadata for tracking
-        MetadataManager.shared.addMetadata(key: .sdkLaunchCount, value: String(newCount))
+        MetadataManager.shared.addMetadata(key: .sdkLaunchCount, value: newCount)
     }
 
     /// Sets the state of offline mode for the SDK.

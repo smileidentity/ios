@@ -2,7 +2,7 @@ import AVFoundation
 
 extension AVCaptureDevice {
     // Returns the total number of available camera devices.
-    static var numberOfCamerasString: String {
+    static var numberOfCameras: Int {
         let discoverySession = AVCaptureDevice.DiscoverySession(
             deviceTypes: [
                 .builtInWideAngleCamera,
@@ -15,6 +15,6 @@ extension AVCaptureDevice {
             mediaType: .video,
             position: .unspecified
         )
-        return "\(discoverySession.devices.count)"
+        return discoverySession.devices.count
     }
 }

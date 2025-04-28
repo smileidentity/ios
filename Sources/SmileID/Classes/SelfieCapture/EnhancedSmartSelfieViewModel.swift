@@ -605,7 +605,7 @@ extension EnhancedSmartSelfieViewModel {
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
         metadataManager.addMetadata(
             key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
-        metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
+        metadataManager.addMetadata(key: .selfieCaptureRetries, value: selfieCaptureRetries)
     }
 
     private func resetSelfieCaptureMetadata() {
