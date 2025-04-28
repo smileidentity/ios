@@ -96,10 +96,6 @@ extension MetadataManager {
         staticMetadata[key] = .bool(value)
     }
 
-    func addMetadata(key: MetadataKey, value: Date) {
-        staticMetadata[key] = .date(value)
-    }
-
     func addMetadata(key: MetadataKey, value: [CodableValue]) {
         staticMetadata[key] = .array(value)
     }
