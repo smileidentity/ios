@@ -4,24 +4,34 @@ import Network
 
 /// A class for determining the current network connection type (Wi-Fi, cellular, VPN, etc.)
 class NetworkMetadataProvider {
+    private struct ConnectionEvent {
+        let type: String
+        let date: Date
+    }
+
     private let monitor: NWPathMonitor
     /// Array tracking connection types over time.
-    private var connectionTypes: [String] = []
+    private var connectionEvents: [ConnectionEvent] = []
 
     init() {
         monitor = NWPathMonitor()
 
         // Initialize with current connection state
-        let initialPath = monitor.currentPath
-        let initialConnection = determineConnectionType(from: initialPath)
-        connectionTypes = [initialConnection]
+        connectionEvents.append(
+            ConnectionEvent(
+                type: connectionType(for: monitor.currentPath),
+                date: Date()
+            )
+        )
 
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self else { return }
-            let newConnection = determineConnectionType(from: path)
 
-            if self.connectionTypes.last != newConnection {
-                self.connectionTypes.append(newConnection)
+            let newConnection = connectionType(for: path)
+            if self.connectionEvents.last?.type != newConnection {
+                self.connectionEvents.append(
+                    ConnectionEvent(type: newConnection, date: Date())
+                )
             }
         }
 
@@ -29,7 +39,7 @@ class NetworkMetadataProvider {
         monitor.start(queue: queue)
     }
 
-    private func determineConnectionType(from path: NWPath) -> String {
+    private func connectionType(for path: NWPath) -> String {
         if path.usesInterfaceType(.wifi) {
             return "wifi"
         } else if path.usesInterfaceType(.cellular) {
@@ -113,18 +123,33 @@ class NetworkMetadataProvider {
 }
 
 extension NetworkMetadataProvider: MetadataProvider {
-    func collectMetadata() -> [MetadataKey: CodableValue] {
-        var metadata: [MetadataKey: CodableValue] = [:]
-
+    func collectMetadata() -> [Metadatum] {
         // Add network connection info
-        metadata[.networkConnection] = .array(connectionTypes.map { .string($0) })
+        var metadata = connectionEvents.map {
+            Metadatum(
+                key: .networkConnection,
+                value: .string($0.type),
+                date: $0.date
+            )
+        }
+        connectionEvents.removeAll()
 
         // Add proxy detection info
-        let proxyDetected = isProxyDetected()
-        metadata[.proxyDetected] = .bool(proxyDetected)
-
+        metadata.append(
+            Metadatum(
+                key: .proxyDetected,
+                value: .bool(isProxyDetected()),
+                date: Date()
+            )
+        )
         // Add VPN info
-        metadata[.vpnDetected] = .bool(isVPNActive())
+        metadata.append(
+            Metadatum(
+                key: .vpnDetected,
+                value: .bool(isVPNActive()),
+                date: Date()
+            )
+        )
 
         return metadata
     }

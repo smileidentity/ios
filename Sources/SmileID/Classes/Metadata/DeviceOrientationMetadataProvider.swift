@@ -7,8 +7,12 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
 
     private let motionManager = CMMotionManager()
 
+    private struct OrientationEvent {
+        let value: String
+        let date: Date
+    }
     private(set) var currentOrientation: String = "unknown"
-    private var deviceOrientations: [String] = []
+    private var deviceOrientations: [OrientationEvent] = []
     var isRecordingDeviceOrientations = false
 
     private init() {}
@@ -53,7 +57,9 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
     }
 
     func addDeviceOrientation() {
-        deviceOrientations.append(currentOrientation)
+        deviceOrientations.append(
+            OrientationEvent(value: currentOrientation, date: Date())
+        )
     }
 
     func clearDeviceOrientations() {
@@ -62,12 +68,18 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
 
     // MARK: - MetadataProvider Protocol
 
-    func collectMetadata() -> [MetadataKey: CodableValue] {
+    func collectMetadata() -> [Metadatum] {
         stopRecordingDeviceOrientations()
 
         // Ensure we clean up the device orientations always at the end, regardless of early returns
         defer { deviceOrientations.removeAll() }
-
-        return [.deviceOrientation: .array(deviceOrientations.map { .string($0) })]
+        
+        return deviceOrientations.map {
+            Metadatum(
+                key: .deviceOrientation,
+                value: .string($0.value),
+                date: $0.date
+            )
+        }
     }
 }
