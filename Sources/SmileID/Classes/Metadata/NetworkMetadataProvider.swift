@@ -16,6 +16,9 @@ class NetworkMetadataProvider {
     init() {
         monitor = NWPathMonitor()
 
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        monitor.start(queue: queue)
+
         // Initialize with current connection state
         connectionEvents.append(
             ConnectionEvent(
@@ -34,9 +37,6 @@ class NetworkMetadataProvider {
                 )
             }
         }
-
-        let queue = DispatchQueue(label: "NetworkMonitor")
-        monitor.start(queue: queue)
     }
 
     private func connectionType(for path: NWPath) -> String {
