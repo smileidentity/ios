@@ -10,12 +10,12 @@ protocol MetadataProvider {
 public class MetadataManager {
     public static let shared = MetadataManager()
 
-    private struct MetadataEntry {
+    private struct StaticEntry {
         var value: CodableValue
         var date: Date
     }
     private var providers: [MetadataProvider] = []
-    private var staticMetadata: [MetadataKey: MetadataEntry] = [:]
+    private var staticMetadata: [MetadataKey: StaticEntry] = [:]
 
     private init() {
         setDefaultMetadata()
@@ -82,7 +82,7 @@ public class MetadataManager {
 // Strongly-typed overloads for adding metadatata
 extension MetadataManager {
     private func store(_ key: MetadataKey, _ value: CodableValue) {
-        staticMetadata[key] = MetadataEntry(value: value, date: Date())
+        staticMetadata[key] = StaticEntry(value: value, date: Date())
     }
 
     func addMetadata(key: MetadataKey, value: String) {
@@ -107,32 +107,5 @@ extension MetadataManager {
 
     func addMetadata(key: MetadataKey, value: [String: CodableValue]) {
         store(key, .object(value))
-    }
-}
-
-// Strongly-typed overloads for adding metadatata
-extension MetadataManager {
-    func addMetadata(key: MetadataKey, value: String) {
-        staticMetadata[key] = .string(value)
-    }
-
-    func addMetadata(key: MetadataKey, value: Int) {
-        staticMetadata[key] = .int(value)
-    }
-
-    func addMetadata(key: MetadataKey, value: Double) {
-        staticMetadata[key] = .double(value)
-    }
-
-    func addMetadata(key: MetadataKey, value: Bool) {
-        staticMetadata[key] = .bool(value)
-    }
-
-    func addMetadata(key: MetadataKey, value: [CodableValue]) {
-        staticMetadata[key] = .array(value)
-    }
-
-    func addMetadata(key: MetadataKey, value: [String: CodableValue]) {
-        staticMetadata[key] = .object(value)
     }
 }
