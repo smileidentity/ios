@@ -1,7 +1,7 @@
 import Foundation
 
 extension TimeInterval {
-    func milliseconds() -> String {
-        return String(Int(self * 1000))
+    func milliseconds() -> Int {
+        return Int(self * 1000)
     }
 }

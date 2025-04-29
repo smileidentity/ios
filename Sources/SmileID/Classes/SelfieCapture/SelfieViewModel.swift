@@ -398,7 +398,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             value: metadataTimerStart.elapsedTime().milliseconds()
         )
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.smile.rawValue)
-        metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
+        metadataManager.addMetadata(key: .selfieCaptureRetries, value: selfieCaptureRetries)
 
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }
@@ -449,8 +449,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     smartSelfieImage = media
                 }
                 if !livenessImages.isEmpty {
-                    let livenessImageInfos = livenessImages.compactMap {
-                        liveness -> MultipartBody? in
+                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultipartBody? in
                         if let data = try? Data(contentsOf: liveness) {
                             return MultipartBody(
                                 withImage: data,
@@ -601,7 +600,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 extension SelfieViewModel {
     private func incrementNetworkRetries() {
         networkRetries += 1
-        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: networkRetries)
     }
 
     private func resetNetworkRetries() {

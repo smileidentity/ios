@@ -123,7 +123,7 @@ public class SmileID {
         defaults.set(newCount, forKey: key)
 
         // Add the launch count to metadata for tracking
-        MetadataManager.shared.addMetadata(key: .sdkLaunchCount, value: String(newCount))
+        MetadataManager.shared.addMetadata(key: .sdkLaunchCount, value: newCount)
     }
 
     /// Sets the state of offline mode for the SDK.
@@ -232,7 +232,7 @@ public class SmileID {
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId),
+                        LocalStorage.getInfoJsonFile(jobId: jobId)
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {

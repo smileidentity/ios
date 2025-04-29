@@ -33,11 +33,6 @@ extension UIDevice {
         return hasProximitySensor
     }
 
-    /// String representation of proximity sensor availability (true/false)
-    var proximitySensorString: String {
-        return String(hasProximitySensor)
-    }
-
     struct DeviceModel: Decodable {
         let identifier: String
         let model: String

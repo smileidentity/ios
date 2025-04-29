@@ -175,8 +175,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             .store(in: &subscribers)
 
         if motionManager.isDeviceMotionAvailable {
-            motionManager.startDeviceMotionUpdates(to: OperationQueue()) {
-                [weak self] deviceMotion, _ in
+            motionManager.startDeviceMotionUpdates(to: OperationQueue()) { [weak self] deviceMotion, _ in
                 guard let gravity = deviceMotion?.gravity else { return }
                 if abs(gravity.y) < abs(gravity.x) {
                     self?.motionDeviceOrientation =
@@ -540,8 +539,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             let selfiePath = getRelativePath(from: selfieImageURL),
             livenessImages.count == numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            )
-        {
+            ) {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }
@@ -605,7 +603,7 @@ extension EnhancedSmartSelfieViewModel {
         metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
         metadataManager.addMetadata(
             key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
-        metadataManager.addMetadata(key: .selfieCaptureRetries, value: String(selfieCaptureRetries))
+        metadataManager.addMetadata(key: .selfieCaptureRetries, value: selfieCaptureRetries)
     }
 
     private func resetSelfieCaptureMetadata() {
@@ -620,7 +618,7 @@ extension EnhancedSmartSelfieViewModel {
 
     private func incrementNetworkRetries() {
         networkRetries += 1
-        MetadataManager.shared.addMetadata(key: .networkRetries, value: String(networkRetries))
+        MetadataManager.shared.addMetadata(key: .networkRetries, value: networkRetries)
     }
 
     private func resetNetworkRetries() {

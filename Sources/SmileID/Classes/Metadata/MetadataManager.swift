@@ -4,14 +4,14 @@ import Network
 import UIKit
 
 protocol MetadataProvider {
-    func collectMetadata() -> [MetadataKey: String]
+    func collectMetadata() -> [MetadataKey: CodableValue]
 }
 
 public class MetadataManager {
     public static let shared = MetadataManager()
 
     private var providers: [MetadataProvider] = []
-    private var staticMetadata: [MetadataKey: String] = [:]
+    private var staticMetadata: [MetadataKey: CodableValue] = [:]
 
     private init() {
         setDefaultMetadata()
@@ -36,11 +36,11 @@ public class MetadataManager {
             key: .screenResolution, value: UIScreen.main.formattedResolution)
         addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
         addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
-        addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCamerasString)
+        addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCameras)
         addMetadata(
             key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current))
         addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
-        addMetadata(key: .proximitySensor, value: UIDevice.current.proximitySensorString)
+        addMetadata(key: .proximitySensor, value: UIDevice.current.hasProximitySensor)
     }
 
     func registerDefaultProviders() {
@@ -50,10 +50,6 @@ public class MetadataManager {
 
     func register(provider: MetadataProvider) {
         providers.append(provider)
-    }
-
-    func addMetadata(key: MetadataKey, value: String) {
-        staticMetadata[key] = value
     }
 
     func removeMetadata(key: MetadataKey) {
@@ -79,5 +75,32 @@ public class MetadataManager {
         return allMetadata.map { key, value in
             Metadatum(name: key.rawValue, value: value)
         }
+    }
+}
+
+// Strongly-typed overloads for adding metadatata
+extension MetadataManager {
+    func addMetadata(key: MetadataKey, value: String) {
+        staticMetadata[key] = .string(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Int) {
+        staticMetadata[key] = .int(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Double) {
+        staticMetadata[key] = .double(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Bool) {
+        staticMetadata[key] = .bool(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: [CodableValue]) {
+        staticMetadata[key] = .array(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: [String: CodableValue]) {
+        staticMetadata[key] = .object(value)
     }
 }

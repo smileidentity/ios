@@ -55,41 +55,35 @@ class NetworkMetadataProvider {
 
         // Check if there is an HTTP proxy set
         if let httpProxy = proxySettings["HTTPProxy"] as? String,
-            !httpProxy.isEmpty
-        {
+            !httpProxy.isEmpty {
             return true
         }
 
         // Check if there is an HTTPS proxy set
         if let httpsProxy = proxySettings["HTTPSProxy"] as? String,
-            !httpsProxy.isEmpty
-        {
+            !httpsProxy.isEmpty {
             return true
         }
 
         // Check if there is a SOCKS proxy set.
         if let socksProxy = proxySettings["SOCKSProxy"] as? String,
-            !socksProxy.isEmpty
-        {
+            !socksProxy.isEmpty {
             return true
         }
 
         // Check for proxy enabled status.
         if let httpEnabled = proxySettings["HTTPEnable"] as? Int,
-            httpEnabled == 1
-        {
+            httpEnabled == 1 {
             return true
         }
 
         if let httpsEnabled = proxySettings["HTTPSEnable"] as? Int,
-            httpsEnabled == 1
-        {
+            httpsEnabled == 1 {
             return true
         }
 
         if let socksEnabled = proxySettings["SOCKSEnabled"] as? Int,
-            socksEnabled == 1
-        {
+            socksEnabled == 1 {
             return true
         }
 
@@ -119,19 +113,18 @@ class NetworkMetadataProvider {
 }
 
 extension NetworkMetadataProvider: MetadataProvider {
-    func collectMetadata() -> [MetadataKey: String] {
-        var metadata: [MetadataKey: String] = [:]
+    func collectMetadata() -> [MetadataKey: CodableValue] {
+        var metadata: [MetadataKey: CodableValue] = [:]
 
         // Add network connection info
-        let jsonString = jsonString(from: connectionTypes)
-        metadata[.networkConnection] = jsonString ?? "unknown"
+        metadata[.networkConnection] = .array(connectionTypes.map { .string($0) })
 
         // Add proxy detection info
         let proxyDetected = isProxyDetected()
-        metadata[.proxyDetected] = proxyDetected ? "true" : "false"
+        metadata[.proxyDetected] = .bool(proxyDetected)
 
         // Add VPN info
-        metadata[.vpnDetected] = isVPNActive() ? "true" : "false"
+        metadata[.vpnDetected] = .bool(isVPNActive())
 
         return metadata
     }

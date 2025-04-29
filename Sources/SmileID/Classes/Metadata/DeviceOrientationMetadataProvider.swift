@@ -62,16 +62,12 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
 
     // MARK: - MetadataProvider Protocol
 
-    func collectMetadata() -> [MetadataKey: String] {
+    func collectMetadata() -> [MetadataKey: CodableValue] {
         stopRecordingDeviceOrientations()
 
         // Ensure we clean up the device orientations always at the end, regardless of early returns
         defer { deviceOrientations.removeAll() }
 
-        guard let jsonString = jsonString(from: deviceOrientations), !jsonString.isEmpty else {
-            return [:]
-        }
-
-        return [.deviceOrientation: jsonString]
+        return [.deviceOrientation: .array(deviceOrientations.map { .string($0) })]
     }
 }
