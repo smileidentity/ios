@@ -73,7 +73,7 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
 
         // Ensure we clean up the device orientations always at the end, regardless of early returns
         defer { deviceOrientations.removeAll() }
-        
+
         return deviceOrientations.map {
             Metadatum(
                 key: .deviceOrientation,

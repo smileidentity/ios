@@ -109,3 +109,30 @@ extension MetadataManager {
         store(key, .object(value))
     }
 }
+
+// Strongly-typed overloads for adding metadatata
+extension MetadataManager {
+    func addMetadata(key: MetadataKey, value: String) {
+        staticMetadata[key] = .string(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Int) {
+        staticMetadata[key] = .int(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Double) {
+        staticMetadata[key] = .double(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: Bool) {
+        staticMetadata[key] = .bool(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: [CodableValue]) {
+        staticMetadata[key] = .array(value)
+    }
+
+    func addMetadata(key: MetadataKey, value: [String: CodableValue]) {
+        staticMetadata[key] = .object(value)
+    }
+}
