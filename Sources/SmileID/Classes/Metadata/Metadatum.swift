@@ -12,6 +12,6 @@ public struct Metadatum: Codable {
     ) {
         self.name = key.rawValue
         self.value = value
-        self.timestamp = date.toISO8601WithMilliseconds(timezone: .current)
+        self.timestamp = date.toISO8601WithMilliseconds()
     }
 }
