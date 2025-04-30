@@ -11,8 +11,8 @@ public class MetadataManager {
     public static let shared = MetadataManager()
 
     private struct StaticEntry {
-        var value: CodableValue
-        var date: Date
+        let value: CodableValue
+        let date: Date = Date()
     }
     private var providers: [MetadataProvider] = []
     private var staticMetadata: [MetadataKey: StaticEntry] = [:]
@@ -82,7 +82,7 @@ public class MetadataManager {
 // Strongly-typed overloads for adding metadatata
 extension MetadataManager {
     private func store(_ key: MetadataKey, _ value: CodableValue) {
-        staticMetadata[key] = StaticEntry(value: value, date: Date())
+        staticMetadata[key] = StaticEntry(value: value)
     }
 
     func addMetadata(key: MetadataKey, value: String) {

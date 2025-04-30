@@ -9,7 +9,7 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
 
     private struct OrientationEvent {
         let value: String
-        let date: Date
+        let date: Date = Date()
     }
     private(set) var currentOrientation: String = "unknown"
     private var deviceOrientations: [OrientationEvent] = []
@@ -58,7 +58,7 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
 
     func addDeviceOrientation() {
         deviceOrientations.append(
-            OrientationEvent(value: currentOrientation, date: Date())
+            OrientationEvent(value: currentOrientation)
         )
     }
 

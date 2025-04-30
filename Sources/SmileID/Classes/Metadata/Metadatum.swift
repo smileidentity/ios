@@ -8,7 +8,7 @@ public struct Metadatum: Codable {
     init(
         key: MetadataKey,
         value: CodableValue,
-        date: Date
+        date: Date = Date()
     ) {
         self.name = key.rawValue
         self.value = value

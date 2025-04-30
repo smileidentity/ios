@@ -6,7 +6,7 @@ import Network
 class NetworkMetadataProvider {
     private struct ConnectionEvent {
         let type: String
-        let date: Date
+        let date: Date = Date()
     }
 
     private let monitor: NWPathMonitor
@@ -22,8 +22,7 @@ class NetworkMetadataProvider {
         // Initialize with current connection state
         connectionEvents.append(
             ConnectionEvent(
-                type: connectionType(for: monitor.currentPath),
-                date: Date()
+                type: connectionType(for: monitor.currentPath)
             )
         )
 
@@ -33,7 +32,7 @@ class NetworkMetadataProvider {
             let newConnection = connectionType(for: path)
             if self.connectionEvents.last?.type != newConnection {
                 self.connectionEvents.append(
-                    ConnectionEvent(type: newConnection, date: Date())
+                    ConnectionEvent(type: newConnection)
                 )
             }
         }
@@ -138,16 +137,14 @@ extension NetworkMetadataProvider: MetadataProvider {
         metadata.append(
             Metadatum(
                 key: .proxyDetected,
-                value: .bool(isProxyDetected()),
-                date: Date()
+                value: .bool(isProxyDetected())
             )
         )
         // Add VPN info
         metadata.append(
             Metadatum(
                 key: .vpnDetected,
-                value: .bool(isVPNActive()),
-                date: Date()
+                value: .bool(isVPNActive())
             )
         )
 
