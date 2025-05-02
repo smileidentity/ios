@@ -7,8 +7,8 @@ protocol MetadataProvider {
     func collectMetadata() -> [Metadatum]
 }
 
-public class MetadataManager {
-    public static let shared = MetadataManager()
+class MetadataManager {
+    static let shared = MetadataManager()
 
     private struct StaticEntry {
         let value: CodableValue
