@@ -4,14 +4,18 @@ import Network
 import UIKit
 
 protocol MetadataProvider {
-    func collectMetadata() -> [MetadataKey: CodableValue]
+    func collectMetadata() -> [Metadatum]
 }
 
 public class MetadataManager {
     public static let shared = MetadataManager()
 
+    private struct StaticEntry {
+        let value: CodableValue
+        let date: Date = Date()
+    }
     private var providers: [MetadataProvider] = []
-    private var staticMetadata: [MetadataKey: CodableValue] = [:]
+    private var staticMetadata: [MetadataKey: StaticEntry] = [:]
 
     private init() {
         setDefaultMetadata()
@@ -57,50 +61,51 @@ public class MetadataManager {
     }
 
     public func getDefaultMetadata() -> [Metadatum] {
-        return staticMetadata.map {
-            Metadatum(name: $0.key.rawValue, value: $0.value)
+        return staticMetadata.map { key, entry in
+            Metadatum(
+                key: key,
+                value: entry.value,
+                date: entry.date
+            )
         }
     }
 
     func collectAllMetadata() -> [Metadatum] {
-        var allMetadata = staticMetadata
-
+        var allMetadata = getDefaultMetadata()
         for provider in providers {
-            let providerMetadata = provider.collectMetadata()
-            for (key, value) in providerMetadata {
-                allMetadata[key] = value
-            }
+            allMetadata.append(contentsOf: provider.collectMetadata())
         }
-
-        return allMetadata.map { key, value in
-            Metadatum(name: key.rawValue, value: value)
-        }
+        return allMetadata
     }
 }
 
 // Strongly-typed overloads for adding metadatata
 extension MetadataManager {
+    private func store(_ key: MetadataKey, _ value: CodableValue) {
+        staticMetadata[key] = StaticEntry(value: value)
+    }
+
     func addMetadata(key: MetadataKey, value: String) {
-        staticMetadata[key] = .string(value)
+        store(key, .string(value))
     }
 
     func addMetadata(key: MetadataKey, value: Int) {
-        staticMetadata[key] = .int(value)
+        store(key, .int(value))
     }
 
     func addMetadata(key: MetadataKey, value: Double) {
-        staticMetadata[key] = .double(value)
+        store(key, .double(value))
     }
 
     func addMetadata(key: MetadataKey, value: Bool) {
-        staticMetadata[key] = .bool(value)
+        store(key, .bool(value))
     }
 
     func addMetadata(key: MetadataKey, value: [CodableValue]) {
-        staticMetadata[key] = .array(value)
+        store(key, .array(value))
     }
 
     func addMetadata(key: MetadataKey, value: [String: CodableValue]) {
-        staticMetadata[key] = .object(value)
+        store(key, .object(value))
     }
 }
