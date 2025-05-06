@@ -141,8 +141,7 @@ final class SelfieSubmissionManager {
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
                     allowNewEnroll: allowNewEnroll,
-                    failureReason: failureReason,
-                    metadata: metadata
+                    failureReason: failureReason
                 )
         } else {
             return try await SmileID.api
@@ -155,8 +154,7 @@ final class SelfieSubmissionManager {
                     partnerParams: extraPartnerParams,
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
-                    failureReason: failureReason,
-                    metadata: metadata
+                    failureReason: failureReason
                 )
         }
     }

@@ -2,6 +2,7 @@ import Foundation
 
 protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
+    var metadataManager: MetadataManager { get }
     associatedtype PathType: CustomStringConvertible
     var baseURL: URL? { get }
 
@@ -31,8 +32,7 @@ protocol ServiceRunnable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
-        failureReason: FailureReason?,
-        metadata: [Metadatum]
+        failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse
 
     /// PUT service call to a particular path with a body.
@@ -97,8 +97,7 @@ extension ServiceRunnable {
         callbackUrl: String? = nil,
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
-        failureReason: FailureReason? = nil,
-        metadata: [Metadatum]
+        failureReason: FailureReason? = nil
     ) async throws -> SmartSelfieResponse {
         let boundary = generateBoundary()
         var headers: [HTTPHeader] = []
@@ -121,7 +120,7 @@ extension ServiceRunnable {
                 sandboxResult: sandboxResult,
                 allowNewEnroll: allowNewEnroll,
                 failureReason: failureReason,
-                metadata: metadata,
+                metadata: metadataManager.collectAllMetadata(),
                 boundary: boundary
             )
         )
