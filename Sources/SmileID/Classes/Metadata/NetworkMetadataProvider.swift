@@ -131,7 +131,6 @@ extension NetworkMetadataProvider: MetadataProvider {
                 date: $0.date
             )
         }
-        connectionEvents.removeAll()
 
         // Add proxy detection info
         metadata.append(
