@@ -60,7 +60,7 @@ class MetadataManager {
         staticMetadata.removeValue(forKey: key)
     }
 
-    public func getDefaultMetadata() -> [Metadatum] {
+    func getDefaultMetadata() -> [Metadatum] {
         return staticMetadata.map { key, entry in
             Metadatum(
                 key: key,
