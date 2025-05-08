@@ -84,28 +84,50 @@ public struct IdInfo: Codable {
 }
 
 public struct ConsentInformation: Codable {
-    public let consentGrantedDate: String
-    public let personalDetailsConsentGranted: Bool
-    public let contactInformationConsentGranted: Bool
-    public let documentInformationConsentGranted: Bool
-
+    public let consented: ConsentedInformation
+    
     public init(
         consentGrantedDate: String,
-        personalDetailsConsentGranted: Bool,
-        contactInformationConsentGranted: Bool,
-        documentInformationConsentGranted: Bool
+        personalDetails: Bool,
+        contactInformation: Bool,
+        documentInformation: Bool
+    ) {
+        self.consented = ConsentedInformation(
+            consentGrantedDate: consentGrantedDate,
+            personalDetails: personalDetails,
+            contactInformation: contactInformation,
+            documentInformation: documentInformation
+        )
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case consented
+    }
+}
+
+public struct ConsentedInformation: Codable {
+    public let consentGrantedDate: String
+    public let personalDetails: Bool
+    public let contactInformation: Bool
+    public let documentInformation: Bool
+    
+    public init(
+        consentGrantedDate: String,
+        personalDetails: Bool,
+        contactInformation: Bool,
+        documentInformation: Bool
     ) {
         self.consentGrantedDate = consentGrantedDate
-        self.personalDetailsConsentGranted = personalDetailsConsentGranted
-        self.contactInformationConsentGranted = contactInformationConsentGranted
-        self.documentInformationConsentGranted = documentInformationConsentGranted
+        self.personalDetails = personalDetails
+        self.contactInformation = contactInformation
+        self.documentInformation = documentInformation
     }
-
+    
     enum CodingKeys: String, CodingKey {
         case consentGrantedDate = "consent_granted_date"
-        case personalDetailsConsentGranted = "personal_details_consent_granted"
-        case contactInformationConsentGranted = "contact_information_consent_granted"
-        case documentInformationConsentGranted = "document_information_consent_granted"
+        case personalDetails = "personal_details"
+        case contactInformation = "contact_information"
+        case documentInformation = "document_information"
     }
 }
 

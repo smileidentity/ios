@@ -558,9 +558,9 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         consentInformation: ConsentInformation = ConsentInformation(
             consentGrantedDate: Date().toISO8601WithMilliseconds(),
-            personalDetailsConsentGranted: false,
-            contactInformationConsentGranted: false,
-            documentInformationConsentGranted: false
+            personalDetails: false,
+            contactInformation: false,
+            documentInformation: false
         ),
         delegate: EnhancedDocumentVerificationResultDelegate
     ) -> some View {
@@ -638,9 +638,9 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         consentInformation: ConsentInformation = ConsentInformation(
             consentGrantedDate: Date().toISO8601WithMilliseconds(),
-            personalDetailsConsentGranted: false,
-            contactInformationConsentGranted: false,
-            documentInformationConsentGranted: false
+            personalDetails: false,
+            contactInformation: false,
+            documentInformation: false
         ),
         delegate: BiometricKycResultDelegate
     ) -> some View {

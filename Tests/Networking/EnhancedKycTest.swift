@@ -24,9 +24,9 @@ class EnhancedKycTest: BaseTestCase {
             idNumber: "idNumber",
             consentInformation: ConsentInformation(
                 consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                personalDetailsConsentGranted: true,
-                contactInformationConsentGranted: true,
-                documentInformationConsentGranted: true
+                personalDetails: true,
+                contactInformation: true,
+                documentInformation: true
             ),
             callbackUrl: "callbackUrl",
             partnerParams: PartnerParams(

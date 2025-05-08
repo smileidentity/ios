@@ -128,9 +128,9 @@ public struct ConsentScreen: View {
                     Button {
                         let consentInfo = ConsentInformation(
                             consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                            personalDetailsConsentGranted: true,
-                            contactInformationConsentGranted: true,
-                            documentInformationConsentGranted: true
+                            personalDetails: true,
+                            contactInformation: true,
+                            documentInformation: true
                         )
                         onConsentGranted(consentInfo)
                     } label: {

@@ -21,9 +21,9 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     // default to false
     @Published @MainActor var consentInformation = ConsentInformation(
         consentGrantedDate: Date().toISO8601WithMilliseconds(),
-        personalDetailsConsentGranted: false,
-        contactInformationConsentGranted: false,
-        documentInformationConsentGranted: false
+        personalDetails: false,
+        contactInformation: false,
+        documentInformation: false
     )
 
     init(userId: String, jobId: String) {
@@ -98,9 +98,9 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
                     // We don't need consent. Mark it as false for this product since it's not needed, unless we want to change this
                     let consentInfo = ConsentInformation(
                         consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                        personalDetailsConsentGranted: false,
-                        contactInformationConsentGranted: false,
-                        documentInformationConsentGranted: false
+                        personalDetails: false,
+                        contactInformation: false,
+                        documentInformation: false
                     )
                     onConsentGranted(
                         country: country,

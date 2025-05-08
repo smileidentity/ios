@@ -25,9 +25,9 @@ struct EnhancedDocumentVerificationWithSelector: View {
                 // we need to fetch consent from the services endpoint
                 consentInformation: ConsentInformation(
                     consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                    personalDetailsConsentGranted: true,
-                    contactInformationConsentGranted: true,
-                    documentInformationConsentGranted: true
+                    personalDetails: true,
+                    contactInformation: true,
+                    documentInformation: true
                 ),
                 delegate: delegate
             )
