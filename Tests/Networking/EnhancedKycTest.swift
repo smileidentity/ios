@@ -1,13 +1,13 @@
 import Foundation
-import XCTest
 @testable import SmileID
+import XCTest
 
 class EnhancedKycTest: BaseTestCase {
     func testShouldDecodeEnhancedKycAsyncResponseJson() throws {
         // given
         let json = """
-                   {"success": true}
-                   """.data(using: .ascii)!
+        {"success": true}
+        """.data(using: .ascii)!
 
         // when
         let response = try JSONDecoder().decode(EnhancedKycAsyncResponse.self, from: json)
@@ -39,7 +39,7 @@ class EnhancedKycTest: BaseTestCase {
         )
 
         // when
-        let json = String(decoding: try JSONEncoder().encode(request), as: UTF8.self)
+        let json = try String(decoding: JSONEncoder().encode(request), as: UTF8.self)
 
         // then
         assert(json.contains("callback_url"))

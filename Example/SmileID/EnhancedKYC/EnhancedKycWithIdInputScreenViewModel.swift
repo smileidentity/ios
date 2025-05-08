@@ -178,7 +178,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     }
 
     @MainActor func onRetry() {
-        doEnhancedKyc(idInfo: self.idInfo, consentInformation: self.consentInformation)
+        doEnhancedKyc(idInfo: idInfo, consentInformation: consentInformation)
     }
 
     func onFinished(delegate: EnhancedKycResultDelegate) {

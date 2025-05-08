@@ -56,15 +56,15 @@ public struct IdInfo: Codable {
     }
 
     enum CodingKeys: String, CodingKey {
-        case country = "country"
+        case country
         case idType = "id_type"
         case idNumber = "id_number"
         case firstName = "first_name"
         case middleName = "middle_name"
         case lastName = "last_name"
-        case dob = "dob"
+        case dob
         case bankCode = "bank_code"
-        case entered = "entered"
+        case entered
     }
 
     // Method for copying with modified properties
@@ -85,21 +85,21 @@ public struct IdInfo: Codable {
 
 public struct ConsentInformation: Codable {
     public let consented: ConsentedInformation
-    
+
     public init(
         consentGrantedDate: String,
         personalDetails: Bool,
         contactInformation: Bool,
         documentInformation: Bool
     ) {
-        self.consented = ConsentedInformation(
+        consented = ConsentedInformation(
             consentGrantedDate: consentGrantedDate,
             personalDetails: personalDetails,
             contactInformation: contactInformation,
             documentInformation: documentInformation
         )
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case consented
     }
@@ -110,7 +110,7 @@ public struct ConsentedInformation: Codable {
     public let personalDetails: Bool
     public let contactInformation: Bool
     public let documentInformation: Bool
-    
+
     public init(
         consentGrantedDate: String,
         personalDetails: Bool,
@@ -122,7 +122,7 @@ public struct ConsentedInformation: Codable {
         self.contactInformation = contactInformation
         self.documentInformation = documentInformation
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case consentGrantedDate = "consent_granted_date"
         case personalDetails = "personal_details"
