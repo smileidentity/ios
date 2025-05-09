@@ -121,10 +121,12 @@ private struct IdInfoInputScreen_Previews: PreviewProvider {
             selectedCountry: "US",
             selectedIdType: "Driver's License",
             consentInformation: ConsentInformation(
-                consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                personalDetails: true,
-                contactInformation: true,
-                documentInformation: true
+                consented: ConsentedInformation(
+                    consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                    personalDetails: true,
+                    contactInformation: true,
+                    documentInformation: true
+                )
             ),
             header: "Enter ID Info",
             requiredFields: [.idNumber, .firstName, .lastName, .dateOfBirth, .bankCode],

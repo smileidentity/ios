@@ -6,10 +6,12 @@ class ConsentInformationTests: XCTestCase {
     func testConsentInformationEncoding() throws {
         // given
         let consentInformation = ConsentInformation(
-            consentGrantedDate: "2025-04-01T15:16:03.246Z",
-            personalDetails: true,
-            contactInformation: true,
-            documentInformation: true
+            consented: ConsentedInformation(
+                consentGrantedDate: "2025-04-01T15:16:03.246Z",
+                personalDetails: true,
+                contactInformation: true,
+                documentInformation: true
+            )
         )
 
         // when
@@ -43,10 +45,10 @@ class ConsentInformationTests: XCTestCase {
         // given - using legacy constructor
         #pragma("Temporarily suppress deprecation warning for test")
         let consentInformation = ConsentInformation(
+            consentGrantedDate: "2025-04-01T15:16:03.246Z",
             personalDetailsConsentGranted: true,
-            contactInformationConsentGranted: true,
-            documentInformationConsentGranted: true,
-            consentDate: "2025-04-01T15:16:03.246Z"
+            contactInfoConsentGranted: true,
+            documentInfoConsentGranted: true
         )
 
         // when
@@ -104,18 +106,20 @@ class ConsentInformationTests: XCTestCase {
     func testConsentInformationEquivalence() throws {
         // Compare instances created with both old and new constructors
         let newStyleConsent = ConsentInformation(
-            consentGrantedDate: "2025-04-01T15:16:03.246Z",
-            personalDetails: true,
-            contactInformation: true,
-            documentInformation: true
+            consented: ConsentedInformation(
+                consentGrantedDate: "2025-04-01T15:16:03.246Z",
+                personalDetails: true,
+                contactInformation: true,
+                documentInformation: true
+            )
         )
 
         #pragma("Temporarily suppress deprecation warning for test")
         let legacyStyleConsent = ConsentInformation(
+            consentGrantedDate: "2025-04-01T15:16:03.246Z",
             personalDetailsConsentGranted: true,
-            contactInformationConsentGranted: true,
-            documentInformationConsentGranted: true,
-            consentDate: "2025-04-01T15:16:03.246Z"
+            contactInfoConsentGranted: true,
+            documentInfoConsentGranted: true
         )
 
         // When encoded, they should produce identical JSON

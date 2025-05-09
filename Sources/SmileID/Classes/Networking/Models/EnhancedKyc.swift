@@ -24,10 +24,10 @@ public struct EnhancedKycRequest: Codable {
         idType: String,
         idNumber: String,
         consentInformation: ConsentInformation = ConsentInformation(
-            consentGrantedDate: Date().toISO8601WithMilliseconds(),
-            personalDetails: false,
-            contactInformation: false,
-            documentInformation: false
+            consented: ConsentedInformation(consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                                            personalDetails: false,
+                                            contactInformation: false,
+                                            documentInformation: false)
         ),
         firstName: String? = nil,
         middleName: String? = nil,

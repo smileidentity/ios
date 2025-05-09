@@ -83,61 +83,163 @@ public struct IdInfo: Codable {
     }
 }
 
+/**
+ * Class representing user consent information submitted with verification jobs.
+ * As of version 10.6.2, the structure was updated to match API requirements by nesting
+ * consent fields under a "consented" object. This class provides backward compatibility
+ * with previous SDK versions while maintaining the new API-compatible JSON structure.
+ *
+ * Preferred usage (current API format):
+ * ```
+ * let consentInfo = ConsentInformation(
+ *     consented: ConsentedInformation(
+ *         consentGrantedDate: getCurrentIsoTimestamp(),
+ *         personalDetails: true,
+ *         contactInformation: true,
+ *         documentInformation: true
+ *     )
+ * )
+ * ```
+ *
+ * For backward compatibility, you can also use the secondary convenience initializer with the old property names:
+ * ```
+ * // Direct construction with legacy property names (will be converted to the new structure internally)
+ * let consentInfo = ConsentInformation(
+ *     consentGrantedDate: getCurrentIsoTimestamp(),
+ *     personalDetailsConsentGranted: true,
+ *     contactInfoConsentGranted: true,
+ *     documentInfoConsentGranted: true
+ * )
+ * ```
+ *
+ * Or the legacy factory method:
+ * ```
+ * // Legacy factory method (will be converted to the new structure internally)
+ * let consentInfo = ConsentInformation.createLegacy(
+ *     consentGrantedDate: getCurrentIsoTimestamp(),
+ *     personalDetailsConsentGranted: true,
+ *     contactInfoConsentGranted: true,
+ *     documentInfoConsentGranted: true
+ * )
+ * ```
+ *
+ * All three approaches will produce identical API-compatible JSON output with the nested structure.
+ *
+ * @property consented The nested consent information object containing all consent fields
+ */
 public struct ConsentInformation: Codable {
     public let consented: ConsentedInformation
-    // Legacy properties for backward compatibility
-    private var personalDetailsConsentGranted: Bool?
-    private var contactInformationConsentGranted: Bool?
-    private var documentInformationConsentGranted: Bool?
-    private var consentDate: String?
 
-    // Current initializer marked with @available to indicate it's the preferred method
-    @available(*, message: "Preferred initializer for ConsentInformation")
+    /**
+     * Primary initializer that uses the new nested structure required by the API.
+     *
+     * @param consented The nested consent information object
+     */
+    public init(consented: ConsentedInformation) {
+        self.consented = consented
+    }
+    
+    /**
+     * Convenience initializer to support direct creation with legacy properties.
+     * This initializer creates the object with the new nested structure
+     * but accepts parameters in the old format for backward compatibility.
+     *
+     * @param consentGrantedDate The timestamp of when consent was granted
+     * @param personalDetailsConsentGranted Whether consent for personal details was granted
+     * @param contactInfoConsentGranted Whether consent for contact information was granted
+     * @param documentInfoConsentGranted Whether consent for document information was granted
+     */
+    @available(*, deprecated, message: "Use primary initializer with ConsentedInformation instead")
     public init(
-        consentGrantedDate: String,
-        personalDetails: Bool,
-        contactInformation: Bool,
-        documentInformation: Bool
+        consentGrantedDate: String = Date().toISO8601WithMilliseconds(),
+        personalDetailsConsentGranted: Bool = false,
+        contactInfoConsentGranted: Bool = false,
+        documentInfoConsentGranted: Bool = false
     ) {
         self.consented = ConsentedInformation(
             consentGrantedDate: consentGrantedDate,
-            personalDetails: personalDetails,
-            contactInformation: contactInformation,
-            documentInformation: documentInformation
-        )
-    }
-
-    // Legacy initializer marked as deprecated
-    @available(
-        *,
-        deprecated,
-        message: "Use init(consentGrantedDate:personalDetails:contactInformation:documentInformation:) instead"
-    )
-    public init(
-        personalDetailsConsentGranted: Bool,
-        contactInformationConsentGranted: Bool,
-        documentInformationConsentGranted: Bool,
-        consentDate: String
-    ) {
-        self.consented = ConsentedInformation(
-            consentGrantedDate: consentDate,
             personalDetails: personalDetailsConsentGranted,
-            contactInformation: contactInformationConsentGranted,
-            documentInformation: documentInformationConsentGranted
+            contactInformation: contactInfoConsentGranted,
+            documentInformation: documentInfoConsentGranted
         )
-
-        // Store in legacy properties for potential future use
-        self.personalDetailsConsentGranted = personalDetailsConsentGranted
-        self.contactInformationConsentGranted = contactInformationConsentGranted
-        self.documentInformationConsentGranted = documentInformationConsentGranted
-        self.consentDate = consentDate
     }
 
     enum CodingKeys: String, CodingKey {
         case consented
     }
+    
+    // Backward compatibility with previous versions - computed properties that
+    // map to the nested structure
+    
+    /**
+     * Access the consent granted date from the nested structure.
+     *
+     * @return The consent granted date
+     */
+    @available(*, deprecated, message: "Use consented.consentGrantedDate instead")
+    public var consentGrantedDate: String {
+        return consented.consentGrantedDate
+    }
+    
+    /**
+     * Access whether consent for personal details was granted from the nested structure.
+     *
+     * @return Whether consent for personal details was granted
+     */
+    @available(*, deprecated, message: "Use consented.personalDetails instead")
+    public var personalDetailsConsentGranted: Bool {
+        return consented.personalDetails
+    }
+    
+    /**
+     * Access whether consent for contact information was granted from the nested structure.
+     *
+     * @return Whether consent for contact information was granted
+     */
+    @available(*, deprecated, message: "Use consented.contactInformation instead")
+    public var contactInfoConsentGranted: Bool {
+        return consented.contactInformation
+    }
+    
+    /**
+     * Access whether consent for document information was granted from the nested structure.
+     *
+     * @return Whether consent for document information was granted
+     */
+    @available(*, deprecated, message: "Use consented.documentInformation instead")
+    public var documentInfoConsentGranted: Bool {
+        return consented.documentInformation
+    }
+    
+    /**
+     * Contains factory methods for backward compatibility with older SDK versions.
+     */
+    public static func createLegacy(
+        consentGrantedDate: String = Date().toISO8601WithMilliseconds(),
+        personalDetailsConsentGranted: Bool = false,
+        contactInfoConsentGranted: Bool = false,
+        documentInfoConsentGranted: Bool = false
+    ) -> ConsentInformation {
+        return ConsentInformation(
+            consented: ConsentedInformation(
+                consentGrantedDate: consentGrantedDate,
+                personalDetails: personalDetailsConsentGranted,
+                contactInformation: contactInfoConsentGranted,
+                documentInformation: documentInfoConsentGranted
+            )
+        )
+    }
 }
 
+/**
+ * Represents the detailed consent information nested within [ConsentInformation].
+ * This class follows the API's expected structure for consent data.
+ *
+ * @property consentGrantedDate The ISO timestamp of when consent was granted
+ * @property personalDetails Whether consent for personal details was granted
+ * @property contactInformation Whether consent for contact information was granted
+ * @property documentInformation Whether consent for document information was granted
+ */
 public struct ConsentedInformation: Codable {
     public let consentGrantedDate: String
     public let personalDetails: Bool
@@ -145,7 +247,7 @@ public struct ConsentedInformation: Codable {
     public let documentInformation: Bool
 
     public init(
-        consentGrantedDate: String,
+        consentGrantedDate: String = Date().toISO8601WithMilliseconds(),
         personalDetails: Bool,
         contactInformation: Bool,
         documentInformation: Bool

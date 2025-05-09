@@ -23,10 +23,12 @@ struct EnhancedDocumentVerificationWithSelector: View {
                 allowGalleryUpload: true,
                 // we need to fetch consent from the services endpoint
                 consentInformation: ConsentInformation(
+                   consented: ConsentedInformation(
                     consentGrantedDate: Date().toISO8601WithMilliseconds(),
                     personalDetails: true,
                     contactInformation: true,
                     documentInformation: true
+                   )
                 ),
                 delegate: delegate
             )
