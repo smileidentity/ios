@@ -1,4 +1,11 @@
 # Release Notes
+## 10.5.3
+
+### Changed
+*  Restructured JSON output properties to match API
+  * personalDetailsConsentGranted → personalDetails
+  * contactInformationConsentGranted → contactInformation
+  * documentInformationConsentGranted → documentInformation
 
 ## 10.5.2
 
