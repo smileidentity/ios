@@ -10,7 +10,7 @@ public struct OrchestratedConsentScreen: View {
     let onConsentGranted: (ConsentInformation) -> Void
     let onConsentDenied: () -> Void
     @State private var showTryAgain = false
-
+    
     public var body: some View {
         if showTryAgain {
             ConsentDeniedScreen(
@@ -55,7 +55,7 @@ public struct ConsentScreen: View {
     let showAttribution: Bool
     let onConsentGranted: (ConsentInformation) -> Void
     let onCancel: () -> Void
-
+    
     public var body: some View {
         VStack {
             ScrollView {
@@ -75,9 +75,9 @@ public struct ConsentScreen: View {
                         .font(SmileID.theme.body)
                         .foregroundColor(SmileID.theme.onLight)
                         .padding(16)
-
+                    
                     VStack(spacing: 16) {
-                        ForEach(0..<consentInfos.count, id: \.self) { index in
+                        ForEach(0 ..< consentInfos.count, id: \.self) { index in
                             let consentInfo = consentInfos[index]
                             HStack(alignment: .top, spacing: 16) {
                                 Image(uiImage: consentInfo.0)
@@ -105,7 +105,7 @@ public struct ConsentScreen: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(4)
-
+                    
                     Spacer()
                 }
             }
@@ -127,10 +127,12 @@ public struct ConsentScreen: View {
                 VStack(spacing: 8) {
                     Button {
                         let consentInfo = ConsentInformation(
-                            consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                            personalDetailsConsentGranted: true,
-                            contactInformationConsentGranted: true,
-                            documentInformationConsentGranted: true
+                            consented: ConsentedInformation(
+                                consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                                personalDetails: true,
+                                contactInformation: true,
+                                documentInformation: true
+                            )
                         )
                         onConsentGranted(consentInfo)
                     } label: {
@@ -144,7 +146,7 @@ public struct ConsentScreen: View {
                     .cornerRadius(60)
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal)
-
+                    
                     Button(action: onCancel) {
                         Text(SmileIDResourcesHelper.localizedString(for: "Consent.Cancel"))
                             .padding(14)
@@ -175,7 +177,7 @@ public struct ConsentDeniedScreen: View {
     let showAttribution: Bool
     let onGoBack: () -> Void
     let onCancel: () -> Void
-
+    
     public var body: some View {
         VStack(spacing: 8) {
             Image(uiImage: SmileIDResourcesHelper.ConsentDenied)
@@ -201,11 +203,11 @@ public struct ConsentDeniedScreen: View {
                     .font(SmileID.theme.button)
                     .frame(maxWidth: .infinity)
             }
-                .background(SmileID.theme.accent)
-                .foregroundColor(SmileID.theme.onDark)
-                .cornerRadius(60)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal)
+            .background(SmileID.theme.accent)
+            .foregroundColor(SmileID.theme.onDark)
+            .cornerRadius(60)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal)
             Button(action: onCancel) {
                 Text(SmileIDResourcesHelper.localizedString(for: "Consent.CancelVerification"))
                     .padding(14)
@@ -213,15 +215,15 @@ public struct ConsentDeniedScreen: View {
                     .foregroundColor(SmileID.theme.error)
                     .frame(maxWidth: .infinity)
             }
-                .background(Color.clear)
-                .foregroundColor(SmileID.theme.accent)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 60)
-                        .stroke(SmileID.theme.accent, lineWidth: 4)
-                )
-                .cornerRadius(60)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal)
+            .background(Color.clear)
+            .foregroundColor(SmileID.theme.accent)
+            .overlay(
+                RoundedRectangle(cornerRadius: 60)
+                    .stroke(SmileID.theme.accent, lineWidth: 4)
+            )
+            .cornerRadius(60)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal)
             if showAttribution {
                 Image(uiImage: SmileIDResourcesHelper.SmileEmblem)
             }

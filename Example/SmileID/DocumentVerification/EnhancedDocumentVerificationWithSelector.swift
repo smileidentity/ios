@@ -13,8 +13,7 @@ struct EnhancedDocumentVerificationWithSelector: View {
     var body: some View {
         if let countryCode,
            let documentType,
-           let captureBothSides
-        {
+           let captureBothSides {
             SmileID.enhancedDocumentVerificationScreen(
                 userId: userId,
                 jobId: jobId,
@@ -24,10 +23,12 @@ struct EnhancedDocumentVerificationWithSelector: View {
                 allowGalleryUpload: true,
                 // we need to fetch consent from the services endpoint
                 consentInformation: ConsentInformation(
+                   consented: ConsentedInformation(
                     consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                    personalDetailsConsentGranted: true,
-                    contactInformationConsentGranted: true,
-                    documentInformationConsentGranted: true
+                    personalDetails: true,
+                    contactInformation: true,
+                    documentInformation: true
+                   )
                 ),
                 delegate: delegate
             )
