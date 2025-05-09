@@ -26,7 +26,8 @@ class ConsentInformationTests: XCTestCase {
 
         // Verify the exact structure
         let expectedJsonPattern = """
-        {"consented":{"consent_granted_date":"2025-04-01T15:16:03.246Z","personal_details":true,"contact_information":true,"document_information":true}}
+        {"consented":{"consent_granted_date":"2025-04-01T15:16:03.246Z","personal_details":true,
+        "contact_information":true,"document_information":true}}
         """
 
         // Remove whitespace for comparison

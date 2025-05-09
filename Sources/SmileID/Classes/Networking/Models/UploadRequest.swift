@@ -92,7 +92,7 @@ public struct ConsentInformation: Codable {
         contactInformation: Bool,
         documentInformation: Bool
     ) {
-        consented = ConsentedInformation(
+        self.consented = ConsentedInformation(
             consentGrantedDate: consentGrantedDate,
             personalDetails: personalDetails,
             contactInformation: contactInformation,
