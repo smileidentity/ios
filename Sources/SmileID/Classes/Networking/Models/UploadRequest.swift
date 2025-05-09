@@ -85,7 +85,14 @@ public struct IdInfo: Codable {
 
 public struct ConsentInformation: Codable {
     public let consented: ConsentedInformation
+    // Legacy properties for backward compatibility
+    private var personalDetailsConsentGranted: Bool?
+    private var contactInformationConsentGranted: Bool?
+    private var documentInformationConsentGranted: Bool?
+    private var consentDate: String?
 
+    // Current initializer marked with @available to indicate it's the preferred method
+    @available(*, message: "Preferred initializer for ConsentInformation")
     public init(
         consentGrantedDate: String,
         personalDetails: Bool,
@@ -98,6 +105,32 @@ public struct ConsentInformation: Codable {
             contactInformation: contactInformation,
             documentInformation: documentInformation
         )
+    }
+
+    // Legacy initializer marked as deprecated
+    @available(
+        *,
+        deprecated,
+        message: "Use init(consentGrantedDate:personalDetails:contactInformation:documentInformation:) instead"
+    )
+    public init(
+        personalDetailsConsentGranted: Bool,
+        contactInformationConsentGranted: Bool,
+        documentInformationConsentGranted: Bool,
+        consentDate: String
+    ) {
+        self.consented = ConsentedInformation(
+            consentGrantedDate: consentDate,
+            personalDetails: personalDetailsConsentGranted,
+            contactInformation: contactInformationConsentGranted,
+            documentInformation: documentInformationConsentGranted
+        )
+
+        // Store in legacy properties for potential future use
+        self.personalDetailsConsentGranted = personalDetailsConsentGranted
+        self.contactInformationConsentGranted = contactInformationConsentGranted
+        self.documentInformationConsentGranted = documentInformationConsentGranted
+        self.consentDate = consentDate
     }
 
     enum CodingKeys: String, CodingKey {
