@@ -2,10 +2,7 @@
 ## 10.5.3
 
 ### Changed
-*  Restructured JSON output properties to match API
-  * personalDetailsConsentGranted → personalDetails
-  * contactInformationConsentGranted → contactInformation
-  * documentInformationConsentGranted → documentInformation
+*  Restructured consent object that is being sent to the backend API for biometric kyc, enhanced kyc and enhanced document verification
 
 ## 10.5.2
 
