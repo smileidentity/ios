@@ -138,7 +138,7 @@ public struct ConsentInformation: Codable {
     public init(consented: ConsentedInformation) {
         self.consented = consented
     }
-    
+
     /**
      * Convenience initializer to support direct creation with legacy properties.
      * This initializer creates the object with the new nested structure
@@ -167,10 +167,10 @@ public struct ConsentInformation: Codable {
     enum CodingKeys: String, CodingKey {
         case consented
     }
-    
+
     // Backward compatibility with previous versions - computed properties that
     // map to the nested structure
-    
+
     /**
      * Access the consent granted date from the nested structure.
      *
@@ -180,7 +180,7 @@ public struct ConsentInformation: Codable {
     public var consentGrantedDate: String {
         return consented.consentGrantedDate
     }
-    
+
     /**
      * Access whether consent for personal details was granted from the nested structure.
      *
@@ -190,7 +190,7 @@ public struct ConsentInformation: Codable {
     public var personalDetailsConsentGranted: Bool {
         return consented.personalDetails
     }
-    
+
     /**
      * Access whether consent for contact information was granted from the nested structure.
      *
@@ -200,7 +200,7 @@ public struct ConsentInformation: Codable {
     public var contactInfoConsentGranted: Bool {
         return consented.contactInformation
     }
-    
+
     /**
      * Access whether consent for document information was granted from the nested structure.
      *
@@ -210,7 +210,7 @@ public struct ConsentInformation: Codable {
     public var documentInfoConsentGranted: Bool {
         return consented.documentInformation
     }
-    
+
     /**
      * Contains factory methods for backward compatibility with older SDK versions.
      */

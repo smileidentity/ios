@@ -10,7 +10,7 @@ public struct OrchestratedConsentScreen: View {
     let onConsentGranted: (ConsentInformation) -> Void
     let onConsentDenied: () -> Void
     @State private var showTryAgain = false
-    
+
     public var body: some View {
         if showTryAgain {
             ConsentDeniedScreen(
@@ -55,7 +55,7 @@ public struct ConsentScreen: View {
     let showAttribution: Bool
     let onConsentGranted: (ConsentInformation) -> Void
     let onCancel: () -> Void
-    
+
     public var body: some View {
         VStack {
             ScrollView {
@@ -75,7 +75,7 @@ public struct ConsentScreen: View {
                         .font(SmileID.theme.body)
                         .foregroundColor(SmileID.theme.onLight)
                         .padding(16)
-                    
+
                     VStack(spacing: 16) {
                         ForEach(0 ..< consentInfos.count, id: \.self) { index in
                             let consentInfo = consentInfos[index]
@@ -105,7 +105,7 @@ public struct ConsentScreen: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(4)
-                    
+
                     Spacer()
                 }
             }
@@ -146,7 +146,7 @@ public struct ConsentScreen: View {
                     .cornerRadius(60)
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal)
-                    
+
                     Button(action: onCancel) {
                         Text(SmileIDResourcesHelper.localizedString(for: "Consent.Cancel"))
                             .padding(14)
@@ -177,7 +177,7 @@ public struct ConsentDeniedScreen: View {
     let showAttribution: Bool
     let onGoBack: () -> Void
     let onCancel: () -> Void
-    
+
     public var body: some View {
         VStack(spacing: 8) {
             Image(uiImage: SmileIDResourcesHelper.ConsentDenied)
