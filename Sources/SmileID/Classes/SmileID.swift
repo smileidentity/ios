@@ -22,6 +22,7 @@ public class SmileID {
             )
         }
         container.register(ServiceHeaderProvider.self) { DefaultServiceHeaderProvider() }
+        container.register(MetadataManager.self) { MetadataManager.shared }
         let instance = SmileID()
         return instance
     }()

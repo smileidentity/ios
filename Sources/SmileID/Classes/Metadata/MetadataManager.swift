@@ -7,8 +7,8 @@ protocol MetadataProvider {
     func collectMetadata() -> [Metadatum]
 }
 
-public class MetadataManager {
-    public static let shared = MetadataManager()
+class MetadataManager {
+    static let shared = MetadataManager()
 
     private struct StaticEntry {
         let value: CodableValue
@@ -60,7 +60,7 @@ public class MetadataManager {
         staticMetadata.removeValue(forKey: key)
     }
 
-    public func getDefaultMetadata() -> [Metadatum] {
+    func getDefaultMetadata() -> [Metadatum] {
         return staticMetadata.map { key, entry in
             Metadatum(
                 key: key,
