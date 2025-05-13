@@ -7931,18 +7931,42 @@
 		66923CA12DBA87ED00623B7D /* Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				66923C972DBA87ED00623B7D /* DeviceOrientationMetadataProvider.swift */,
-				66923C982DBA87ED00623B7D /* IPAddressProvider.swift */,
-				66923C992DBA87ED00623B7D /* MetadataKey.swift */,
+				66F5991E2DD39F84000CE985 /* Device */,
+				66F5991F2DD39F84000CE985 /* Models */,
+				66F599202DD39F84000CE985 /* Providers */,
 				66923C9A2DBA87ED00623B7D /* MetadataManager.swift */,
-				66923C9B2DBA87ED00623B7D /* MetadataModels.swift */,
-				66923C9C2DBA87ED00623B7D /* Metadatum.swift */,
-				66923C9D2DBA87ED00623B7D /* NetworkMetadataProvider.swift */,
-				66923C9E2DBA87ED00623B7D /* ProcessInfoExtension.swift */,
-				66923C9F2DBA87ED00623B7D /* UIDeviceExtension.swift */,
-				66923CA02DBA87ED00623B7D /* UIScreenExtension.swift */,
 			);
 			path = Metadata;
+			sourceTree = "<group>";
+		};
+		66F5991E2DD39F84000CE985 /* Device */ = {
+			isa = PBXGroup;
+			children = (
+				66923C982DBA87ED00623B7D /* IPAddressProvider.swift */,
+				66923C9E2DBA87ED00623B7D /* ProcessInfoExtension.swift */,
+				66923CA02DBA87ED00623B7D /* UIScreenExtension.swift */,
+				66923C9F2DBA87ED00623B7D /* UIDeviceExtension.swift */,
+			);
+			path = Device;
+			sourceTree = "<group>";
+		};
+		66F5991F2DD39F84000CE985 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				66923C992DBA87ED00623B7D /* MetadataKey.swift */,
+				66923C9C2DBA87ED00623B7D /* Metadatum.swift */,
+				66923C9B2DBA87ED00623B7D /* MetadataModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		66F599202DD39F84000CE985 /* Providers */ = {
+			isa = PBXGroup;
+			children = (
+				66923C972DBA87ED00623B7D /* DeviceOrientationMetadataProvider.swift */,
+				66923C9D2DBA87ED00623B7D /* NetworkMetadataProvider.swift */,
+			);
+			path = Providers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
