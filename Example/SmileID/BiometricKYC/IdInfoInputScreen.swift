@@ -68,9 +68,9 @@ struct IdInfoInputScreen: View {
                                     in: ...Date(),
                                     displayedComponents: [.date]
                                 )
-                                    .font(SmileID.theme.button)
-                                    .foregroundColor(SmileID.theme.onLight)
-                                    .padding(4)
+                                .font(SmileID.theme.button)
+                                .foregroundColor(SmileID.theme.onLight)
+                                .padding(4)
                             } else {
                                 let valueBinding = Binding<String>(
                                     get: { viewModel.inputs[key] ?? "Error" },
@@ -94,7 +94,7 @@ struct IdInfoInputScreen: View {
                     }
                 }
             }
-                .background(SmileID.theme.backgroundLight)
+            .background(SmileID.theme.backgroundLight)
 
             Button(
                 action: { onResult(viewModel.currentIdInfo, viewModel.consentInformation) },
@@ -105,12 +105,12 @@ struct IdInfoInputScreen: View {
                         .frame(maxWidth: .infinity)
                 }
             )
-                .disabled(!viewModel.isContinueEnabled)
-                .background(!viewModel.isContinueEnabled ? Color.gray : SmileID.theme.accent)
-                .foregroundColor(SmileID.theme.onDark)
-                .cornerRadius(60)
-                .frame(maxWidth: .infinity)
-                .padding()
+            .disabled(!viewModel.isContinueEnabled)
+            .background(!viewModel.isContinueEnabled ? Color.gray : SmileID.theme.accent)
+            .foregroundColor(SmileID.theme.onDark)
+            .cornerRadius(60)
+            .frame(maxWidth: .infinity)
+            .padding()
         }.frame(maxWidth: .infinity)
     }
 }
@@ -121,10 +121,12 @@ private struct IdInfoInputScreen_Previews: PreviewProvider {
             selectedCountry: "US",
             selectedIdType: "Driver's License",
             consentInformation: ConsentInformation(
-                consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                personalDetailsConsentGranted: true,
-                contactInformationConsentGranted: true,
-                documentInformationConsentGranted: true
+                consented: ConsentedInformation(
+                    consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                    personalDetails: true,
+                    contactInformation: true,
+                    documentInformation: true
+                )
             ),
             header: "Enter ID Info",
             requiredFields: [.idNumber, .firstName, .lastName, .dateOfBirth, .bankCode],
