@@ -143,11 +143,15 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             allFiles.append(contentsOf: livenessFiles)
         }
         do {
-            if let securityInfoJson = try LocalStorage.addSecurityInfo(jobId: jobId, files: allFiles) {
-                allFiles.append(contentsOf: [securityInfoJson])
-            }
-        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
-        return try LocalStorage.zipFiles(at: allFiles)
+            let securityInfo = try createSecurityInfo(files: allFiles)
+            return try LocalStorage.zipFiles(
+                urls: allFiles,
+                data: ["security_info.json": securityInfo]
+            )
+        } catch {
+            /* in case we can't add the security info the backend will deal with the enrollment */
+            return try LocalStorage.zipFiles(urls: allFiles)
+        }
     }
 
     private func authenticate() async throws -> AuthenticationResponse {

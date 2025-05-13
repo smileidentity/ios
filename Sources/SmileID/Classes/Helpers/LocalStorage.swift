@@ -1,6 +1,5 @@
 import Foundation
 import ZIPFoundation
-import SmileIDSecurity
 
 public class LocalStorage {
     private static let defaultFolderName = "SmileID"
@@ -132,39 +131,6 @@ public class LocalStorage {
             consentInformation: consentInformation
         ))
         return try createSmileFile(to: jobId, name: "info.json", file: data)
-    }
-
-    static func addSecurityInfo(
-        jobId: String,
-        files: [URL]
-    ) throws -> URL? {
-        do {
-            let timestamp = Date().toISO8601WithMilliseconds()
-            let mac = try SmileIDCryptoManager.shared.sign(
-                timestamp: timestamp,
-                files: files
-            )
-            let securityInfo = SecurityInfo(
-                timestamp: timestamp,
-                mac: mac
-            )
-            let securityInfoJson = try createSecurityInfoFile(
-                jobId: jobId,
-                securityInfo: securityInfo
-            )
-            return securityInfoJson
-        } catch {
-            print("Couldn't create security info. Continuing without it.")
-            return nil
-        }
-    }
-
-    private static func createSecurityInfoFile(
-        jobId: String,
-        securityInfo: SecurityInfo
-    ) throws -> URL {
-        let data = try jsonEncoder.encode(securityInfo)
-        return try createSmileFile(to: jobId, name: "security_info.json", file: data)
     }
 
     static func getInfoJsonFile(
@@ -354,14 +320,28 @@ public class LocalStorage {
         }
 
         // Zip all files
-        return try zipFiles(at: allUrls)
+        return try zipFiles(urls: allUrls)
     }
 
-    public static func zipFiles(at urls: [URL]) throws -> Data {
+    public static func zipFiles(urls: [URL] = [], data: [String: Data] = [:]) throws -> Data {
         let archive = try Archive(accessMode: .create)
+
+        // Add files from disk
         for url in urls {
             try archive.addEntry(with: url.lastPathComponent, fileURL: url)
         }
+
+        // Add in-memory files
+        for (filename, content) in data {
+            try archive.addEntry(
+                with: filename,
+                type: .file,
+                uncompressedSize: Int64(content.count)
+            ) { position, size in
+                return content.subdata(in: Int(position)..<Int(position) + size)
+            }
+        }
+
         return archive.data!
     }
 

@@ -1,4 +1,5 @@
 import Foundation
+import SmileIDSecurity
 
 public struct SecurityInfo: Codable {
     public var timestamp: String
@@ -16,4 +17,19 @@ public struct SecurityInfo: Codable {
         case timestamp
         case mac
     }
+}
+
+func createSecurityInfo(files: [URL]) throws -> Data {
+    let timestamp = Date().toISO8601WithMilliseconds()
+    let mac = try SmileIDCryptoManager.shared.sign(
+        timestamp: timestamp,
+        files: files
+    )
+    let securityInfo = SecurityInfo(
+        timestamp: timestamp,
+        mac: mac
+    )
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+    return try encoder.encode(securityInfo)
 }

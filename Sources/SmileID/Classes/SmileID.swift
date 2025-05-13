@@ -220,7 +220,7 @@ public class SmileID {
                 } catch {
                     throw error
                 }
-                let zipData = try LocalStorage.zipFiles(at: allFiles)
+                let zipData = try LocalStorage.zipFiles(urls: allFiles)
                 _ = try await SmileID.api.upload(
                     zip: zipData,
                     to: prepUploadResponse.uploadUrl
