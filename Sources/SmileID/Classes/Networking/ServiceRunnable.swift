@@ -1,6 +1,5 @@
 import Foundation
 import SmileIDSecurity
-import UIKit // todo remove after testing
 
 protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
@@ -115,7 +114,6 @@ extension ServiceRunnable {
         let timestamp = Date().toISO8601WithMilliseconds()
         headers.append(.requestTimestamp(value: timestamp))
 
-        let startDate = Date()
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         let selfieRequest = SelfieRequest(
@@ -138,18 +136,6 @@ extension ServiceRunnable {
             )
             headers.append(.requestMac(value: requestMac))
         } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
-        let endDate = Date()
-        let time = endDate.timeIntervalSince(startDate)
-        print("Time for payload signing: \(time)")
-
-        DispatchQueue.main.async {
-            let vc = UIApplication.getTopViewController()
-            let alert = UIAlertController(title: "Payload Signing Timing", message: String(time), preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            if let vc = vc {
-                vc.present(alert, animated: true, completion: nil)
-            }
-        }
 
         let request = try await createMultiPartRequest(
             url: path,
