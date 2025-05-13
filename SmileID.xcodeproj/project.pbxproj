@@ -136,6 +136,8 @@
 		6353C020EB544806132DC62A /* SearchableDropdownSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B693B265C5A509223E85E87F /* SearchableDropdownSelector.swift */; };
 		63BFB59978915909558269C0 /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B5A461925F884800DD17E /* ImageUtils.swift */; };
 		63F1352D61C0FEF5A02BDFE5 /* InfiniteProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA5EBC2765A583FB54EA8AF /* InfiniteProgressBar.swift */; };
+		66F599242DD3A1B5000CE985 /* AVCaptureDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F599212DD3A1B5000CE985 /* AVCaptureDeviceExtension.swift */; };
+		66F599262DD3A1B5000CE985 /* BundleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F599222DD3A1B5000CE985 /* BundleExtension.swift */; };
 		66FF5A1EFB1EA138F5463520 /* NetworkUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD885EF203B29B662435D41 /* NetworkUtil.swift */; };
 		6861EE159815066AD9B7BC8F /* DeviceRotationViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46728CBD64A8474DF19926AF /* DeviceRotationViewModifier.swift */; };
 		68780CB9A7FBEDD164C02373 /* Injected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597F4982A8DF4237BBEFEF4F /* Injected.swift */; };
@@ -1902,6 +1904,8 @@
 		66D91CB619BBBE895E277E46 /* Services.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Services.swift; path = Sources/SmileID/Classes/Networking/Models/Services.swift; sourceTree = "<group>"; };
 		66E0B72C261164EF55DE0CB6 /* Util.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Util.swift; path = Sources/SmileID/Classes/Util.swift; sourceTree = "<group>"; };
 		66EF0CDFE8A3542551AF1AAB /* SmileIDService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDService.swift; path = Sources/SmileID/Classes/Networking/SmileIDService.swift; sourceTree = "<group>"; };
+		66F599212DD3A1B5000CE985 /* AVCaptureDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureDeviceExtension.swift; sourceTree = "<group>"; };
+		66F599222DD3A1B5000CE985 /* BundleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleExtension.swift; sourceTree = "<group>"; };
 		66FD53421E7327C547BAB28B /* OrchestratedDocumentVerificationScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/OrchestratedDocumentVerificationScreen.swift; sourceTree = "<group>"; };
 		67062D7679EB5CD55BD53E0D /* DocumentCaptureInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureInstructionsScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureInstructionsScreen.swift; sourceTree = "<group>"; };
 		6717A96C9A3699042320ADCC /* SearchableDropdownSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchableDropdownSelector.swift; path = Sources/SmileID/Classes/Views/SearchableDropdownSelector.swift; sourceTree = "<group>"; };
@@ -7942,6 +7946,8 @@
 		66F5991E2DD39F84000CE985 /* Device */ = {
 			isa = PBXGroup;
 			children = (
+				66F599212DD3A1B5000CE985 /* AVCaptureDeviceExtension.swift */,
+				66F599222DD3A1B5000CE985 /* BundleExtension.swift */,
 				66923C982DBA87ED00623B7D /* IPAddressProvider.swift */,
 				66923C9E2DBA87ED00623B7D /* ProcessInfoExtension.swift */,
 				66923CA02DBA87ED00623B7D /* UIScreenExtension.swift */,
@@ -8413,6 +8419,8 @@
 				A85DBF7E2501B66DF88479D5 /* SubmissionStatusView.swift in Sources */,
 				EE65C12A09B7331961DD7749 /* UserInstructionsView.swift in Sources */,
 				FD3806A9A8BF4D47DF3FFCCB /* SelfieCaptureResultStore.swift in Sources */,
+				66F599242DD3A1B5000CE985 /* AVCaptureDeviceExtension.swift in Sources */,
+				66F599262DD3A1B5000CE985 /* BundleExtension.swift in Sources */,
 				B8E322C79B6195009B677F60 /* SmileID.swift in Sources */,
 				D1574A565450A5C5A377F59E /* Util.swift in Sources */,
 				FE5E90424C1BF803AF1DB862 /* ActivityIndicator.swift in Sources */,
