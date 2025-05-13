@@ -12,11 +12,11 @@ PODS:
   - Sentry (8.48.0):
     - Sentry/Core (= 8.48.0)
   - Sentry/Core (8.48.0)
-  - SmileID (10.5.1):
+  - SmileID (10.5.2):
     - FingerprintJS
     - lottie-ios (~> 4.5.0)
     - ZIPFoundation (~> 0.9)
-  - SwiftLint (0.59.1)
+  - SwiftLint (0.58.2)
   - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
@@ -51,8 +51,8 @@ SPEC CHECKSUMS:
   lottie-ios: 248b380fa1b97d18e792c37d90da7ab2aa0d6562
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
   Sentry: 1ca8405451040482877dcd344dfa3ef80b646631
-  SmileID: 7f9c9db916d4c3997fcafb8b811afec30e88c751
-  SwiftLint: 3d48e2fb2a3468fdaccf049e5e755df22fb40c2c
+  SmileID: 15bf2e69c158b9bcdd3a2e1531dd75e0fc9601e5
+  SwiftLint: 365bcd9ffc83d0deb874e833556d82549919d6cd
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
 PODFILE CHECKSUM: 0aff99f038f933ca54faf251acd82e30dc5acf1b

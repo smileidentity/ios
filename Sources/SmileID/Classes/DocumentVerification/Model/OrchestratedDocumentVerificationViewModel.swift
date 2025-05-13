@@ -366,10 +366,11 @@ class OrchestratedDocumentVerificationViewModel:
     IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
 {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
-        if let savedFiles,
+        if let error {
+            delegate.didError(error: error)
+        } else if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
-        {
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
             let documentBackPath = getRelativePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,
@@ -377,10 +378,6 @@ class OrchestratedDocumentVerificationViewModel:
                 documentBackImage: documentBackPath,
                 didSubmitDocumentVerificationJob: didSubmitJob
             )
-        } else if let error {
-            // We check error as the 2nd case because as long as jobStatusResponse is not nil, it
-            // was a success
-            delegate.didError(error: error)
         } else {
             delegate.didError(error: SmileIDError.unknown("Unknown error"))
         }
@@ -394,10 +391,11 @@ class OrchestratedEnhancedDocumentVerificationViewModel:
     >
 {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
-        if let savedFiles,
+        if let error {
+            delegate.didError(error: error)
+        } else if let savedFiles,
            let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
-        {
+           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
             let documentBackPath = getRelativePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,
@@ -405,10 +403,6 @@ class OrchestratedEnhancedDocumentVerificationViewModel:
                 documentBackImage: documentBackPath,
                 didSubmitEnhancedDocVJob: didSubmitJob
             )
-        } else if let error {
-            // We check error as the 2nd case because as long as jobStatusResponse is not nil, it
-            // was a success
-            delegate.didError(error: error)
         } else {
             delegate.didError(error: SmileIDError.unknown("Unknown error"))
         }

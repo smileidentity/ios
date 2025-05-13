@@ -63,7 +63,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     func onFinished(delegate: BiometricKycResultDelegate) {
-        if let selfieFile = selfieFile,
+        if let error {
+            delegate.didError(error: error)
+        } else if let selfieFile = selfieFile,
            let livenessFiles = livenessFiles,
            let selfiePath = getRelativePath(from: selfieFile) {
             delegate.didSucceed(
@@ -71,8 +73,6 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
                 livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
                 didSubmitBiometricJob: didSubmitBiometricJob
             )
-        } else if let error {
-            delegate.didError(error: error)
         } else {
             delegate.didError(error: SmileIDError.unknown("onFinish with no result or error"))
         }
