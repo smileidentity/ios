@@ -1,12 +1,16 @@
 # Release Notes
+## Unreleased
+
+### Added 
+ * Added a security feature to protect the payload between sdk and backend from unauthorized tampering.
+  
+### Changed
+* Changes the `retry` flag to be a boolean instead of a string for prepUpload requests. This is a breaking change for stored offline jobs, where the job is written using an older sdk version and then submission is attempted using this version
+
 ## 10.5.3
 
 ### Changed
 * Restructured consent object that is being sent to the backend API for biometric kyc, enhanced kyc and enhanced document verification
-
-## Unreleased
-
-* Changes the `retry` flag to be a boolean instead of a string for prepUpload requests. This is a breaking change for stored offline jobs, where the job is written using an older sdk version and then submission is attempted using this version
 
 ## 10.5.2
 
