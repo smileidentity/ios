@@ -18,7 +18,7 @@ PODS:
     - SmileIDSecurity (~> 1.0.1)
     - ZIPFoundation (~> 0.9)
   - SmileIDSecurity (1.0.1)
-  - SwiftLint (0.58.2)
+  - SwiftLint (0.59.1)
   - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
@@ -54,9 +54,9 @@ SPEC CHECKSUMS:
   lottie-ios: 248b380fa1b97d18e792c37d90da7ab2aa0d6562
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
   Sentry: 1ca8405451040482877dcd344dfa3ef80b646631
-  SmileID: 8c9228f3dcdad070af6cd3e6eae6a5aae1e8ccb2
+  SmileID: 775ec005872a7e173ba084d7c41b2b7d3027ae3b
   SmileIDSecurity: b847101f7d7b86c1c453fb1b045146dfcbc5183d
-  SwiftLint: 365bcd9ffc83d0deb874e833556d82549919d6cd
+  SwiftLint: 3d48e2fb2a3468fdaccf049e5e755df22fb40c2c
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
 PODFILE CHECKSUM: 0aff99f038f933ca54faf251acd82e30dc5acf1b
