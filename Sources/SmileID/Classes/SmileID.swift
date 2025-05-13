@@ -209,7 +209,7 @@ public class SmileID {
                 let allFiles: [URL]
                 do {
                     let livenessFiles =
-                        try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness) ?? []
+                    try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness) ?? []
                     let additionalFiles = try [
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
@@ -558,10 +558,10 @@ public class SmileID {
         useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         consentInformation: ConsentInformation = ConsentInformation(
-            consentGrantedDate: Date().toISO8601WithMilliseconds(),
-            personalDetailsConsentGranted: false,
-            contactInformationConsentGranted: false,
-            documentInformationConsentGranted: false
+            consented: ConsentedInformation(consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                                            personalDetails: false,
+                                            contactInformation: false,
+                                            documentInformation: false)
         ),
         delegate: EnhancedDocumentVerificationResultDelegate
     ) -> some View {
@@ -638,10 +638,10 @@ public class SmileID {
         useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         consentInformation: ConsentInformation = ConsentInformation(
-            consentGrantedDate: Date().toISO8601WithMilliseconds(),
-            personalDetailsConsentGranted: false,
-            contactInformationConsentGranted: false,
-            documentInformationConsentGranted: false
+            consented: ConsentedInformation(consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                                            personalDetails: false,
+                                            contactInformation: false,
+                                            documentInformation: false)
         ),
         delegate: BiometricKycResultDelegate
     ) -> some View {
