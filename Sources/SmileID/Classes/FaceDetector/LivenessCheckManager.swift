@@ -106,6 +106,7 @@ class LivenessCheckManager: ObservableObject {
     private func handleTaskTimeout() {
         stopTaskTimer()
         delegate?.livenessChallengeTimeout()
+        resetLivenessChallenge()
     }
 
     /// Advances to the next task in the sequence
@@ -122,6 +123,14 @@ class LivenessCheckManager: ObservableObject {
     /// Sets the initial task for the liveness check.
     func initiateLivenessCheck() {
         currentTask = livenessTaskSequence[currentTaskIndex]
+    }
+
+    private func resetLivenessChallenge() {
+        currentTask = nil
+        currentTaskIndex = 0
+        lookLeftProgress = 0
+        lookRightProgress = 0
+        lookUpProgress = 0
     }
 
     /// Processes face geometry data and checks for task completion
@@ -182,7 +191,7 @@ class LivenessCheckManager: ObservableObject {
         if !advanceToNextTask() {
             // Liveness challenge complete
             delegate?.didCompleteLivenessChallenge()
-            self.currentTask = nil
+            resetLivenessChallenge()
         }
     }
 }

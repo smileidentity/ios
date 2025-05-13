@@ -4,6 +4,14 @@
 
 * Changes the `retry` flag to be a boolean instead of a string for prepUpload requests. This is a breaking change for stored offline jobs, where the job is written using an older sdk version and then submission is attempted using this version
 
+## 10.5.2
+
+### Changed
+* Require selfie recapture when retrying failed submission for Enhanced Smart Selfie Capture.
+
+### Fixed
+* Delegate callback order after submission for Biometric KYC and Document Verification jobs.
+
 ## 10.5.1
 
 ### Fixed
