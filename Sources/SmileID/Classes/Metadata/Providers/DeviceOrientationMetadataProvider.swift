@@ -11,7 +11,15 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
         let value: String
         let date: Date = Date()
     }
-    private(set) var currentOrientation: String = "unknown"
+
+    private enum OrientationType: String {
+        case portrait = "portrait"
+        case landscape = "landscape"
+        case flat = "flat"
+        case unknown = "unknown"
+    }
+
+    private(set) var currentOrientation: OrientationType = OrientationType.unknown
     private var deviceOrientations: [OrientationEvent] = []
     var isRecordingDeviceOrientations = false
 
@@ -42,23 +50,23 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
         }
     }
 
-    private func determineOrientation(from data: CMAccelerometerData) -> String {
+    private func determineOrientation(from data: CMAccelerometerData) -> OrientationType {
         let accelerationX = data.acceleration.x
         let accelerationY = data.acceleration.y
         let accelerationZ = data.acceleration.z
 
         if abs(accelerationZ) > 0.85 {
-            return "Flat"
+            return OrientationType.flat
         } else if abs(accelerationY) > abs(accelerationX) {
-            return "Portrait"
+            return OrientationType.portrait
         } else {
-            return "Landscape"
+            return OrientationType.landscape
         }
     }
 
     func addDeviceOrientation() {
         deviceOrientations.append(
-            OrientationEvent(value: currentOrientation)
+            OrientationEvent(value: currentOrientation.rawValue)
         )
     }
 
@@ -80,25 +88,6 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
                 value: .string($0.value),
                 date: $0.date
             )
-        }
-    }
-}
-
-extension UIDeviceOrientation {
-    var category: String {
-        switch self {
-        case .portrait, .portraitUpsideDown:
-            return "Portrait"
-        case .landscapeLeft, .landscapeRight:
-            return "Landscape"
-        case .faceUp:
-            return "FaceUp"
-        case .faceDown:
-            return "FaceDown"
-        case .unknown:
-            return "unknown"
-        @unknown default:
-            return "unknown"
         }
     }
 }
