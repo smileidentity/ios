@@ -13,7 +13,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     var livenessCheckManager = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
-    private let metadataTimerStart = MonotonicTime()
+    private var captureDuration = MonotonicTime()
     private let metadata: Metadata = .shared
     private var networkRetries: Int = 0
     private var selfieCaptureRetries: Int = 0
@@ -202,10 +202,14 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     }
 
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
-        // Capture device orientation before taking selfie
+        /*
+         At the start of the capture, we record the device orientation and start the capture
+         duration timer.
+         */
         if !hasRecordedOrientationAtCaptureStart {
             DeviceOrientationMetadata.shared.addDeviceOrientation()
             hasRecordedOrientationAtCaptureStart = true
+            captureDuration.startTime()
         }
 
         currentFrameBuffer = imageBuffer
@@ -487,8 +491,16 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
     }
 
     func didCompleteLivenessChallenge() {
-        // Store orientation after capture
+        /*
+        At the end of the capture, we record the device orientation and
+        the capture duration
+        */
         DeviceOrientationMetadata.shared.addDeviceOrientation()
+        metadata.addMetadata(
+            key: .selfieCaptureDuration,
+            value: captureDuration.elapsedTime().milliseconds()
+        )
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.cameraManager.pauseSession()
             self.handleSubmission()
@@ -596,10 +608,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
 // MARK: - Metadata Helpers
 extension EnhancedSmartSelfieViewModel {
     private func addSelfieCaptureMetaData() {
-        metadata.addMetadata(
-            key: .selfieCaptureDuration,
-            value: metadataTimerStart.elapsedTime().milliseconds()
-        )
         metadata.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
         metadata.addMetadata(
             key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")

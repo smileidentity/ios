@@ -21,7 +21,7 @@ class DocumentCaptureViewModel: ObservableObject {
     // Initializer properties
     private let knownAspectRatio: Double?
     private let metadata: Metadata = .shared
-    let metadataTimerStart = MonotonicTime()
+    private var captureDuration = MonotonicTime()
 
     // Other properties
     private let defaultAspectRatio: Double
@@ -35,9 +35,6 @@ class DocumentCaptureViewModel: ObservableObject {
     private var retryCount: Int = 0
     private(set) var documentImageOrigin: DocumentImageOriginValue?
     private var hasRecordedOrientationAtCaptureStart = false
-
-    // Store orientations for this capture session
-    private var deviceOrientationCaptures: [UIDeviceOrientation] = []
 
     // UI properties
     @Published var unauthorizedAlert: AlertState?
@@ -69,8 +66,6 @@ class DocumentCaptureViewModel: ObservableObject {
             .map { _ in AlertState.cameraUnauthorized }
             .sink { alert in self.unauthorizedAlert = alert }
             .store(in: &subscribers)
-
-        deviceOrientationCaptures.append(UIDevice.current.orientation)
 
         cameraManager.capturedImagePublisher
             .receive(on: DispatchQueue.global())
@@ -180,9 +175,6 @@ class DocumentCaptureViewModel: ObservableObject {
     }
 
     private func onCaptureComplete(image: Data) {
-        // Capture device orientation after successful capture
-        DeviceOrientationMetadata.shared.addDeviceOrientation()
-
         let croppedImage = ImageUtils.cropImageToAspectRatio(
             imageData: image,
             aspectRatio: 1 / idAspectRatio
@@ -210,16 +202,18 @@ class DocumentCaptureViewModel: ObservableObject {
     }
 
     private func collectDocumentCaptureMetadata() {
+        /*
+         At the end of the capture, we record the device orientation and
+         the capture duration
+         */
+        DeviceOrientationMetadata.shared.addDeviceOrientation()
         switch side {
         case .front:
             metadata.addMetadata(
                 key: .documentFrontCaptureDuration,
-                value: metadataTimerStart.elapsedTime().milliseconds()
+                value: captureDuration.elapsedTime().milliseconds()
             )
-            metadata.addMetadata(
-                key: .documentFrontCaptureRetries,
-                value: retryCount
-            )
+            metadata.addMetadata(key: .documentFrontCaptureRetries, value: retryCount)
 
             if let documentImageOrigin {
                 metadata.addMetadata(
@@ -228,12 +222,9 @@ class DocumentCaptureViewModel: ObservableObject {
         case .back:
             metadata.addMetadata(
                 key: .documentBackCaptureDuration,
-                value: metadataTimerStart.elapsedTime().milliseconds()
+                value: captureDuration.elapsedTime().milliseconds()
             )
-            metadata.addMetadata(
-                key: .documentBackCaptureRetries,
-                value: retryCount
-            )
+            metadata.addMetadata(key: .documentBackCaptureRetries, value: retryCount)
 
             if let documentImageOrigin {
                 metadata.addMetadata(
@@ -253,9 +244,14 @@ class DocumentCaptureViewModel: ObservableObject {
         let now = Date().timeIntervalSince1970
         let elapsedTime = now - lastAnalysisTime
 
+        /*
+         At the start of the capture, we record the device orientation and start the capture
+         duration timer.
+         */
         if !hasRecordedOrientationAtCaptureStart {
             DeviceOrientationMetadata.shared.addDeviceOrientation()
             hasRecordedOrientationAtCaptureStart = true
+            captureDuration.startTime()
         }
 
         let enoughTimeHasPassed = elapsedTime > analysisSampleInterval
