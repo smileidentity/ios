@@ -124,8 +124,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         callbackUrl _: String?,
         sandboxResult _: Int?,
         allowNewEnroll _: Bool?,
-        failureReason: FailureReason?,
-        metadata _: Metadata
+        failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))
@@ -155,8 +154,7 @@ class MockSmileIdentityService: SmileIDServiceable {
         partnerParams _: [String: String]?,
         callbackUrl _: String?,
         sandboxResult _: Int?,
-        failureReason: FailureReason?,
-        metadata _: Metadata
+        failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse {
         if MockHelper.shouldFail {
             let error = SmileIDError.request(URLError(.resourceUnavailable))

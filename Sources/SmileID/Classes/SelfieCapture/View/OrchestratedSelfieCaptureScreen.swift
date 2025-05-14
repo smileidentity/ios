@@ -10,7 +10,6 @@ public struct OrchestratedSelfieCaptureScreen: View {
     public let onResult: SmartSelfieResultDelegate
     @Backport.StateObject var viewModel: SelfieViewModel
 
-    @State private var localMetadata = LocalMetadata()
     @State private var acknowledgedInstructions = false
     private var originalBrightness = UIScreen.main.brightness
 
@@ -37,8 +36,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
                 jobId: jobId,
                 allowNewEnroll: allowNewEnroll,
                 skipApiSubmission: skipApiSubmission,
-                extraPartnerParams: extraPartnerParams,
-                localMetadata: LocalMetadata()
+                extraPartnerParams: extraPartnerParams
             )
         )
     }
@@ -111,7 +109,6 @@ public struct OrchestratedSelfieCaptureScreen: View {
                 allowAgentMode: allowAgentMode
             )
             .onAppear {
-                viewModel.updateLocalMetadata(localMetadata)
                 UIScreen.main.brightness = 1
             }
             .onDisappear { UIScreen.main.brightness = originalBrightness }

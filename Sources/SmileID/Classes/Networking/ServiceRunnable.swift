@@ -2,6 +2,7 @@ import Foundation
 
 protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
+    var metadata: Metadata { get }
     associatedtype PathType: CustomStringConvertible
     var baseURL: URL? { get }
 
@@ -31,8 +32,7 @@ protocol ServiceRunnable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
-        failureReason: FailureReason?,
-        metadata: Metadata
+        failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse
 
     /// PUT service call to a particular path with a body.
@@ -97,8 +97,7 @@ extension ServiceRunnable {
         callbackUrl: String? = nil,
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
-        failureReason: FailureReason? = nil,
-        metadata: Metadata = Metadata.default()
+        failureReason: FailureReason? = nil
     ) async throws -> SmartSelfieResponse {
         let boundary = generateBoundary()
         var headers: [HTTPHeader] = []
@@ -121,7 +120,7 @@ extension ServiceRunnable {
                 sandboxResult: sandboxResult,
                 allowNewEnroll: allowNewEnroll,
                 failureReason: failureReason,
-                metadata: metadata,
+                metadata: metadata.collectAllMetadata(),
                 boundary: boundary
             )
         )
@@ -250,7 +249,7 @@ extension ServiceRunnable {
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
         failureReason: FailureReason?,
-        metadata: Metadata = Metadata.default(),
+        metadata: [Metadatum],
         boundary: String
     ) -> Data {
         let lineBreak = "\r\n"
@@ -319,7 +318,7 @@ extension ServiceRunnable {
 
         // Append metadata
         let encoder = JSONEncoder()
-        if let metadataData = try? encoder.encode(metadata.items) {
+        if let metadataData = try? encoder.encode(metadata) {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
             body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)

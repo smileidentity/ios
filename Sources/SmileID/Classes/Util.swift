@@ -113,15 +113,15 @@ func getRelativePath(from absoluteURL: URL?) -> URL? {
 }
 
 struct MonotonicTime {
-    private let startTime: UInt64
+    private var time: UInt64 = 0
 
-    init() {
-        startTime = mach_absolute_time()
+    mutating func startTime() {
+        time = mach_absolute_time()
     }
 
     func elapsedTime() -> TimeInterval {
         let endTime = mach_absolute_time()
-        let elapsed = endTime - startTime
+        let elapsed = endTime - time
         var timebase = mach_timebase_info_data_t()
         mach_timebase_info(&timebase)
         let elapsedNano = elapsed * UInt64(timebase.numer) / UInt64(timebase.denom)

@@ -1,0 +1,93 @@
+import CoreMotion
+import Foundation
+import UIKit
+
+class DeviceOrientationMetadata: MetadataProtocol {
+    static let shared = DeviceOrientationMetadata()
+
+    private let motionManager = CMMotionManager()
+
+    private struct OrientationEvent {
+        let value: String
+        let date: Date = Date()
+    }
+
+    private enum OrientationType: String {
+        case portrait = "portrait"
+        case landscape = "landscape"
+        case flat = "flat"
+        case unknown = "unknown"
+    }
+
+    private var currentOrientation: OrientationType = OrientationType.unknown
+    private var deviceOrientations: [OrientationEvent] = []
+    var isRecordingDeviceOrientations = false
+
+    private init() {}
+
+    func startRecordingDeviceOrientations() {
+        guard motionManager.isAccelerometerAvailable else {
+            return
+        }
+
+        if isRecordingDeviceOrientations {
+            // Early return if we are already recording the device orientations
+            return
+        }
+        isRecordingDeviceOrientations = true
+
+        motionManager.accelerometerUpdateInterval = 0.5
+        motionManager.startAccelerometerUpdates(to: OperationQueue.main) { [weak self] data, _ in
+            guard let self = self, let data = data else { return }
+            self.currentOrientation = self.determineOrientation(from: data)
+        }
+    }
+
+    private func stopRecordingDeviceOrientations() {
+        isRecordingDeviceOrientations = false
+        if motionManager.isAccelerometerActive {
+            motionManager.stopAccelerometerUpdates()
+        }
+    }
+
+    private func determineOrientation(from data: CMAccelerometerData) -> OrientationType {
+        let accelerationX = data.acceleration.x
+        let accelerationY = data.acceleration.y
+        let accelerationZ = data.acceleration.z
+
+        if abs(accelerationZ) > 0.85 {
+            return OrientationType.flat
+        } else if abs(accelerationY) > abs(accelerationX) {
+            return OrientationType.portrait
+        } else {
+            return OrientationType.landscape
+        }
+    }
+
+    func addDeviceOrientation() {
+        deviceOrientations.append(
+            OrientationEvent(value: currentOrientation.rawValue)
+        )
+    }
+
+    func clearDeviceOrientations() {
+        deviceOrientations.removeAll()
+    }
+
+    // MARK: - MetadataProtocol
+
+    func collectMetadata() -> [Metadatum] {
+        stopRecordingDeviceOrientations()
+
+        // Ensure we clean up the device orientations always at the end, regardless of early returns
+        defer { deviceOrientations.removeAll() }
+
+        return deviceOrientations.map {
+            Metadatum(
+                key: .deviceOrientation,
+                value: .string($0.value),
+                date: $0.date
+            )
+        }
+    }
+}
