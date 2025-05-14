@@ -1889,7 +1889,7 @@
 		667BC8E1B7CB14690BE8B64B /* OrchestratedBiometricKycScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedBiometricKycScreen.swift; path = Sources/SmileID/Classes/BiometricKYC/OrchestratedBiometricKycScreen.swift; sourceTree = "<group>"; };
 		668D7E1E3C91BE1DBD67B70A /* OrchestratedEnhancedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedEnhancedSelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/OrchestratedEnhancedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		668D83F41C29B727D0007FC0 /* SelfieCaptureScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelfieCaptureScreen.swift; path = Sources/SmileID/Classes/SelfieCapture/View/SelfieCaptureScreen.swift; sourceTree = "<group>"; };
-		66923C972DBA87ED00623B7D /* DeviceOrientationMetadataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOrientationMetadataProvider.swift; sourceTree = "<group>"; };
+		66923C972DBA87ED00623B7D /* DeviceOrientationMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOrientationMetadata.swift; sourceTree = "<group>"; };
 		66923C982DBA87ED00623B7D /* IPAddressProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPAddressProvider.swift; sourceTree = "<group>"; };
 		66923C992DBA87ED00623B7D /* MetadataKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataKey.swift; sourceTree = "<group>"; };
 		66923C9A2DBA87ED00623B7D /* MetadataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataManager.swift; sourceTree = "<group>"; };
@@ -1906,6 +1906,9 @@
 		66EF0CDFE8A3542551AF1AAB /* SmileIDService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDService.swift; path = Sources/SmileID/Classes/Networking/SmileIDService.swift; sourceTree = "<group>"; };
 		66F599212DD3A1B5000CE985 /* AVCaptureDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureDeviceExtension.swift; sourceTree = "<group>"; };
 		66F599222DD3A1B5000CE985 /* BundleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleExtension.swift; sourceTree = "<group>"; };
+		66F599272DD3A77F000CE985 /* MetadataProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataProtocol.swift; sourceTree = "<group>"; };
+		66F599282DD3A927000CE985 /* ProxyMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyMetadata.swift; sourceTree = "<group>"; };
+		66F599292DD3B167000CE985 /* VpnMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VpnMetadata.swift; sourceTree = "<group>"; };
 		66FD53421E7327C547BAB28B /* OrchestratedDocumentVerificationScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedDocumentVerificationScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/OrchestratedDocumentVerificationScreen.swift; sourceTree = "<group>"; };
 		67062D7679EB5CD55BD53E0D /* DocumentCaptureInstructionsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DocumentCaptureInstructionsScreen.swift; path = Sources/SmileID/Classes/DocumentVerification/View/DocumentCaptureInstructionsScreen.swift; sourceTree = "<group>"; };
 		6717A96C9A3699042320ADCC /* SearchableDropdownSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchableDropdownSelector.swift; path = Sources/SmileID/Classes/Views/SearchableDropdownSelector.swift; sourceTree = "<group>"; };
@@ -7946,6 +7949,8 @@
 		66F5991E2DD39F84000CE985 /* Device */ = {
 			isa = PBXGroup;
 			children = (
+				66F599292DD3B167000CE985 /* VpnMetadata.swift */,
+				66F599282DD3A927000CE985 /* ProxyMetadata.swift */,
 				66F599212DD3A1B5000CE985 /* AVCaptureDeviceExtension.swift */,
 				66F599222DD3A1B5000CE985 /* BundleExtension.swift */,
 				66923C982DBA87ED00623B7D /* IPAddressProvider.swift */,
@@ -7969,7 +7974,8 @@
 		66F599202DD39F84000CE985 /* Providers */ = {
 			isa = PBXGroup;
 			children = (
-				66923C972DBA87ED00623B7D /* DeviceOrientationMetadataProvider.swift */,
+				66F599272DD3A77F000CE985 /* MetadataProtocol.swift */,
+				66923C972DBA87ED00623B7D /* DeviceOrientationMetadata.swift */,
 				66923C9D2DBA87ED00623B7D /* NetworkMetadataProvider.swift */,
 			);
 			path = Providers;

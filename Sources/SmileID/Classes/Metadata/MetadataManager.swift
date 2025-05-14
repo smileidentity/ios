@@ -3,10 +3,6 @@ import Foundation
 import Network
 import UIKit
 
-protocol MetadataProvider {
-    func collectMetadata() -> [Metadatum]
-}
-
 class MetadataManager {
     static let shared = MetadataManager()
 
@@ -14,45 +10,49 @@ class MetadataManager {
         let value: CodableValue
         let date: Date = Date()
     }
-    private var providers: [MetadataProvider] = []
+    private var providers: [MetadataProtocol] = []
     private var staticMetadata: [MetadataKey: StaticEntry] = [:]
 
-    private init() {
+    private init() {}
+
+    func initialise() {
         setDefaultMetadata()
+        registerDefaultProviders()
     }
 
     private func setDefaultMetadata() {
-        addMetadata(key: .sdk, value: "iOS")
-        addMetadata(key: .sdkVersion, value: SmileID.version)
         addMetadata(key: .activeLivenessVersion, value: "1.0.0")
-        addMetadata(
-            key: .clientIP, value: getIPAddress(useIPv4: true))
-        addMetadata(
-            key: .deviceModel, value: UIDevice.current.modelName)
-        addMetadata(
-            key: .deviceOS, value: UIDevice.current.systemVersion)
-        addMetadata(key: .securityPolicyVersion, value: "0.3.0")
-        addMetadata(
-            key: .timezone, value: TimeZone.current.identifier)
-        addMetadata(
-            key: .locale, value: Locale.current.identifier)
-        addMetadata(
-            key: .screenResolution, value: UIScreen.main.formattedResolution)
-        addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
-        addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
-        addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCameras)
+        addMetadata(key: .clientIP, value: getIPAddress(useIPv4: true))
+        addMetadata(key: .deviceModel, value: UIDevice.current.modelName)
+        addMetadata(key: .deviceOS, value: UIDevice.current.systemVersion)
+        addMetadata(key: .fingerprint, value: SmileID.fingerprint)
+        addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
+        addMetadata(key: .locale, value: Locale.current.identifier)
         addMetadata(
             key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current))
-        addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
+        addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
+        addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCameras)
         addMetadata(key: .proximitySensor, value: UIDevice.current.hasProximitySensor)
+        addMetadata(key: .proxyDetected, value: isProxyDetected())
+        addMetadata(key: .screenResolution, value: UIScreen.main.formattedResolution)
+        addMetadata(key: .securityPolicyVersion, value: "0.3.0")
+        addMetadata(key: .sdk, value: "iOS")
+        addMetadata(key: .fingerprint, value: SmileID.deviceId)
+        addMetadata(key: .sdkLaunchCount, value: SmileID.sdkLaunchCount)
+        addMetadata(key: .sdkVersion, value: SmileID.version)
+        addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
+        addMetadata(key: .timezone, value: TimeZone.current.identifier)
+        addMetadata(key: .vpnDetected, value: isVPNActive())
+        addMetadata(key: .wrapperName, value: SmileID.wrapperSdkName.rawValue)  //todo check for null
+        addMetadata(key: .wrapperVersion, value: SmileID.wrapperSdkVersion.rawValue)  //todo check for null
     }
 
-    func registerDefaultProviders() {
-        register(provider: NetworkMetadataProvider())
-        register(provider: DeviceOrientationMetadataProvider.shared)
+    private func registerDefaultProviders() {
+        register(provider: NetworkMetadata())
+        register(provider: DeviceOrientationMetadata.shared)
     }
 
-    func register(provider: MetadataProvider) {
+    private func register(provider: MetadataProtocol) {
         providers.append(provider)
     }
 

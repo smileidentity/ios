@@ -2,8 +2,8 @@ import CoreMotion
 import Foundation
 import UIKit
 
-class DeviceOrientationMetadataProvider: MetadataProvider {
-    static let shared = DeviceOrientationMetadataProvider()
+class DeviceOrientationMetadata: MetadataProtocol {
+    static let shared = DeviceOrientationMetadata()
 
     private let motionManager = CMMotionManager()
 
@@ -74,7 +74,7 @@ class DeviceOrientationMetadataProvider: MetadataProvider {
         deviceOrientations.removeAll()
     }
 
-    // MARK: - MetadataProvider Protocol
+    // MARK: - MetadataProtocol
 
     func collectMetadata() -> [Metadatum] {
         stopRecordingDeviceOrientations()
