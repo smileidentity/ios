@@ -19,7 +19,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
         case unknown = "unknown"
     }
 
-    private(set) var currentOrientation: OrientationType = OrientationType.unknown
+    private var currentOrientation: OrientationType = OrientationType.unknown
     private var deviceOrientations: [OrientationEvent] = []
     var isRecordingDeviceOrientations = false
 
