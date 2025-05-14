@@ -14,7 +14,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
     private let metadataTimerStart = MonotonicTime()
-    private let metadataManager: MetadataManager = .shared
+    private let metadata: Metadata = .shared
     private var networkRetries: Int = 0
     private var selfieCaptureRetries: Int = 0
 
@@ -187,7 +187,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             }
         }
 
-        DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
+        DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
     }
 
     private func handleCameraImageBuffer(_ imageBuffer: CVPixelBuffer) {
@@ -204,7 +204,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
         // Capture device orientation before taking selfie
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
+            DeviceOrientationMetadata.shared.addDeviceOrientation()
             hasRecordedOrientationAtCaptureStart = true
         }
 
@@ -488,7 +488,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
 
     func didCompleteLivenessChallenge() {
         // Store orientation after capture
-        DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
+        DeviceOrientationMetadata.shared.addDeviceOrientation()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.cameraManager.pauseSession()
             self.handleSubmission()
@@ -516,7 +516,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     public func submitJob() async throws {
         // Add metadata before submission
         addSelfieCaptureMetaData()
-        let metadata = metadataManager.collectAllMetadata()
+        let metadata = metadata.collectAllMetadata()
 
         let submissionManager = SelfieSubmissionManager(
             userId: userId,
@@ -596,33 +596,33 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
 // MARK: - Metadata Helpers
 extension EnhancedSmartSelfieViewModel {
     private func addSelfieCaptureMetaData() {
-        metadataManager.addMetadata(
+        metadata.addMetadata(
             key: .selfieCaptureDuration,
             value: metadataTimerStart.elapsedTime().milliseconds()
         )
-        metadataManager.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
-        metadataManager.addMetadata(
+        metadata.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
+        metadata.addMetadata(
             key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
-        metadataManager.addMetadata(key: .selfieCaptureRetries, value: selfieCaptureRetries)
+        metadata.addMetadata(key: .selfieCaptureRetries, value: selfieCaptureRetries)
     }
 
     private func resetSelfieCaptureMetadata() {
-        metadataManager.removeMetadata(key: .selfieCaptureDuration)
-        metadataManager.removeMetadata(key: .activeLivenessType)
-        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+        metadata.removeMetadata(key: .selfieCaptureDuration)
+        metadata.removeMetadata(key: .activeLivenessType)
+        DeviceOrientationMetadata.shared.clearDeviceOrientations()
         hasRecordedOrientationAtCaptureStart = false
-        if !DeviceOrientationMetadataProvider.shared.isRecordingDeviceOrientations {
-            DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
+        if !DeviceOrientationMetadata.shared.isRecordingDeviceOrientations {
+            DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
         }
     }
 
     private func incrementNetworkRetries() {
         networkRetries += 1
-        MetadataManager.shared.addMetadata(key: .networkRetries, value: networkRetries)
+        Metadata.shared.addMetadata(key: .networkRetries, value: networkRetries)
     }
 
     private func resetNetworkRetries() {
         networkRetries = 0
-        MetadataManager.shared.removeMetadata(key: .networkRetries)
+        Metadata.shared.removeMetadata(key: .networkRetries)
     }
 }

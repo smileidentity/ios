@@ -20,7 +20,7 @@ class DocumentCaptureViewModel: ObservableObject {
     }
     // Initializer properties
     private let knownAspectRatio: Double?
-    private let metadataManager: MetadataManager = .shared
+    private let metadata: Metadata = .shared
     let metadataTimerStart = MonotonicTime()
 
     // Other properties
@@ -111,7 +111,7 @@ class DocumentCaptureViewModel: ObservableObject {
             }
         })
 
-        DeviceOrientationMetadataProvider.shared.startRecordingDeviceOrientations()
+        DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
     }
 
     @objc func showManualCapture() {
@@ -181,7 +181,7 @@ class DocumentCaptureViewModel: ObservableObject {
 
     private func onCaptureComplete(image: Data) {
         // Capture device orientation after successful capture
-        DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
+        DeviceOrientationMetadata.shared.addDeviceOrientation()
 
         let croppedImage = ImageUtils.cropImageToAspectRatio(
             imageData: image,
@@ -197,46 +197,46 @@ class DocumentCaptureViewModel: ObservableObject {
     private func resetDocumentCaptureMetadata() {
         switch side {
         case .front:
-            metadataManager.removeMetadata(key: .documentFrontCaptureRetries)
-            metadataManager.removeMetadata(key: .documentFrontCaptureDuration)
-            metadataManager.removeMetadata(key: .documentFrontImageOrigin)
+            metadata.removeMetadata(key: .documentFrontCaptureRetries)
+            metadata.removeMetadata(key: .documentFrontCaptureDuration)
+            metadata.removeMetadata(key: .documentFrontImageOrigin)
         case .back:
-            metadataManager.removeMetadata(key: .documentBackCaptureRetries)
-            metadataManager.removeMetadata(key: .documentBackCaptureDuration)
-            metadataManager.removeMetadata(key: .documentBackImageOrigin)
+            metadata.removeMetadata(key: .documentBackCaptureRetries)
+            metadata.removeMetadata(key: .documentBackCaptureDuration)
+            metadata.removeMetadata(key: .documentBackImageOrigin)
         }
-        DeviceOrientationMetadataProvider.shared.clearDeviceOrientations()
+        DeviceOrientationMetadata.shared.clearDeviceOrientations()
         hasRecordedOrientationAtCaptureStart = false
     }
 
     private func collectDocumentCaptureMetadata() {
         switch side {
         case .front:
-            metadataManager.addMetadata(
+            metadata.addMetadata(
                 key: .documentFrontCaptureDuration,
                 value: metadataTimerStart.elapsedTime().milliseconds()
             )
-            metadataManager.addMetadata(
+            metadata.addMetadata(
                 key: .documentFrontCaptureRetries,
                 value: retryCount
             )
 
             if let documentImageOrigin {
-                metadataManager.addMetadata(
+                metadata.addMetadata(
                     key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
             }
         case .back:
-            metadataManager.addMetadata(
+            metadata.addMetadata(
                 key: .documentBackCaptureDuration,
                 value: metadataTimerStart.elapsedTime().milliseconds()
             )
-            metadataManager.addMetadata(
+            metadata.addMetadata(
                 key: .documentBackCaptureRetries,
                 value: retryCount
             )
 
             if let documentImageOrigin {
-                metadataManager.addMetadata(
+                metadata.addMetadata(
                     key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
             }
         }
@@ -254,7 +254,7 @@ class DocumentCaptureViewModel: ObservableObject {
         let elapsedTime = now - lastAnalysisTime
 
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadataProvider.shared.addDeviceOrientation()
+            DeviceOrientationMetadata.shared.addDeviceOrientation()
             hasRecordedOrientationAtCaptureStart = true
         }
 

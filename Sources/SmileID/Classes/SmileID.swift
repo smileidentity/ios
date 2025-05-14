@@ -22,7 +22,7 @@ public class SmileID {
             )
         }
         container.register(ServiceHeaderProvider.self) { DefaultServiceHeaderProvider() }
-        container.register(MetadataManager.self) { MetadataManager.shared }
+        container.register(Metadata.self) { Metadata.shared }
         let instance = SmileID()
         return instance
     }()
@@ -111,7 +111,7 @@ public class SmileID {
             /// https://github.com/fingerprintjs/fingerprintjs-ios
             if let fingerprint = await fingerprinter.getDeviceId() {
                 deviceId = fingerprint
-                MetadataManager.shared.initialize()
+                Metadata.shared.initialize()
             }
         }
     }

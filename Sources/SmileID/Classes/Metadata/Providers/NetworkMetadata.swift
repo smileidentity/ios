@@ -9,6 +9,13 @@ class NetworkMetadata {
         let date: Date = Date()
     }
 
+    private enum NetworkConnection: String {
+        case wifi = "wifi"
+        case cellular = "cellular"
+        case other = "other"
+        case unknown = "unknown"
+    }
+
     private let monitor: NWPathMonitor
     /// Array tracking connection types over time.
     private var connectionEvents: [ConnectionEvent] = []
@@ -22,29 +29,29 @@ class NetworkMetadata {
         // Initialize with current connection state
         connectionEvents.append(
             ConnectionEvent(
-                type: connectionType(for: monitor.currentPath)
+                type: connectionType(for: monitor.currentPath).rawValue
             )
         )
 
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self else { return }
 
-            let newConnection = connectionType(for: path)
-            if self.connectionEvents.last?.type != newConnection {
+            let newConnectionType = connectionType(for: path).rawValue
+            if self.connectionEvents.last?.type != newConnectionType {
                 self.connectionEvents.append(
-                    ConnectionEvent(type: newConnection)
+                    ConnectionEvent(type: newConnectionType)
                 )
             }
         }
     }
 
-    private func connectionType(for path: NWPath) -> String {
+    private func connectionType(for path: NWPath) -> NetworkConnection {
         if path.usesInterfaceType(.wifi) {
-            return "wifi"
+            return NetworkConnection.wifi
         } else if path.usesInterfaceType(.cellular) {
-            return "cellular"
+            return NetworkConnection.cellular
         } else {
-            return "other"
+            return NetworkConnection.other
         }
     }
 

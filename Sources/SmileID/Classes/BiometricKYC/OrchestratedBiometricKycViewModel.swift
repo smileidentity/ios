@@ -14,7 +14,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     private let allowNewEnroll: Bool
     private let useStrictMode: Bool
     private var extraPartnerParams: [String: String]
-    private let metadataManager: MetadataManager = .shared
+    private let metadata: Metadata = .shared
     private var idInfo: IdInfo
     private var consentInformation: ConsentInformation
 
@@ -172,7 +172,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             jobType: .biometricKyc,
             enrollment: false,
             allowNewEnroll: allowNewEnroll,
-            metadata: metadataManager.collectAllMetadata(),
+            metadata: metadata.collectAllMetadata(),
             partnerParams: extraPartnerParams
         )
     }
@@ -181,7 +181,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         let prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
             allowNewEnroll: allowNewEnroll,
-            metadata: metadataManager.collectAllMetadata(),
+            metadata: metadata.collectAllMetadata(),
             timestamp: authResponse.timestamp,
             signature: authResponse.signature
         )
@@ -283,11 +283,11 @@ extension OrchestratedBiometricKycViewModel: SmartSelfieResultDelegate {
 extension OrchestratedBiometricKycViewModel {
     private func incrementNetworkRetries() {
         networkRetries += 1
-        MetadataManager.shared.addMetadata(key: .networkRetries, value: networkRetries)
+        Metadata.shared.addMetadata(key: .networkRetries, value: networkRetries)
     }
 
     private func resetNetworkRetries() {
         networkRetries = 0
-        MetadataManager.shared.removeMetadata(key: .networkRetries)
+        Metadata.shared.removeMetadata(key: .networkRetries)
     }
 }

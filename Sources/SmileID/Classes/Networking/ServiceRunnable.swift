@@ -2,7 +2,7 @@ import Foundation
 
 protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
-    var metadataManager: MetadataManager { get }
+    var metadata: Metadata { get }
     associatedtype PathType: CustomStringConvertible
     var baseURL: URL? { get }
 
@@ -120,7 +120,7 @@ extension ServiceRunnable {
                 sandboxResult: sandboxResult,
                 allowNewEnroll: allowNewEnroll,
                 failureReason: failureReason,
-                metadata: metadataManager.collectAllMetadata(),
+                metadata: metadata.collectAllMetadata(),
                 boundary: boundary
             )
         )

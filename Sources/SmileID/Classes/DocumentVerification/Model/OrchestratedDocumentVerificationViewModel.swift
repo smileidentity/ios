@@ -31,7 +31,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     var stepToRetry: DocumentCaptureFlow?
     var didSubmitJob: Bool = false
     var error: Error?
-    let metadataManager: MetadataManager = .shared
+    let metadata: Metadata = .shared
     private var networkRetries: Int = 0
 
     // UI properties
@@ -196,7 +196,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     jobId: jobId,
                     userId: userId
                 )
-                let metadata = metadataManager.collectAllMetadata()
+                let metadata = metadata.collectAllMetadata()
                 if SmileID.allowOfflineMode {
                     try LocalStorage.saveOfflineJob(
                         jobId: jobId,
@@ -338,12 +338,12 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
 extension IOrchestratedDocumentVerificationViewModel {
     private func incrementNetworkRetries() {
         networkRetries += 1
-        MetadataManager.shared.addMetadata(key: .networkRetries, value: networkRetries)
+        Metadata.shared.addMetadata(key: .networkRetries, value: networkRetries)
     }
 
     func resetNetworkRetries() {
         networkRetries = 0
-        MetadataManager.shared.removeMetadata(key: .networkRetries)
+        Metadata.shared.removeMetadata(key: .networkRetries)
     }
 }
 

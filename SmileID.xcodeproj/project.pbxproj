@@ -1895,7 +1895,7 @@
 		66923C9A2DBA87ED00623B7D /* MetadataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataManager.swift; sourceTree = "<group>"; };
 		66923C9B2DBA87ED00623B7D /* MetadataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataModels.swift; sourceTree = "<group>"; };
 		66923C9C2DBA87ED00623B7D /* Metadatum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadatum.swift; sourceTree = "<group>"; };
-		66923C9D2DBA87ED00623B7D /* NetworkMetadataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMetadataProvider.swift; sourceTree = "<group>"; };
+		66923C9D2DBA87ED00623B7D /* NetworkMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMetadata.swift; sourceTree = "<group>"; };
 		66923C9E2DBA87ED00623B7D /* ProcessInfoExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessInfoExtension.swift; sourceTree = "<group>"; };
 		66923C9F2DBA87ED00623B7D /* UIDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeviceExtension.swift; sourceTree = "<group>"; };
 		66923CA02DBA87ED00623B7D /* UIScreenExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScreenExtension.swift; sourceTree = "<group>"; };
@@ -7976,7 +7976,7 @@
 			children = (
 				66F599272DD3A77F000CE985 /* MetadataProtocol.swift */,
 				66923C972DBA87ED00623B7D /* DeviceOrientationMetadata.swift */,
-				66923C9D2DBA87ED00623B7D /* NetworkMetadataProvider.swift */,
+				66923C9D2DBA87ED00623B7D /* NetworkMetadata.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";

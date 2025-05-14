@@ -3,8 +3,8 @@ import Foundation
 import Network
 import UIKit
 
-class MetadataManager {
-    static let shared = MetadataManager()
+class Metadata {
+    static let shared = Metadata()
 
     private struct StaticEntry {
         let value: CodableValue
@@ -15,7 +15,7 @@ class MetadataManager {
 
     private init() {}
 
-    func initialise() {
+    func initialize() {
         setDefaultMetadata()
         registerDefaultProviders()
     }
@@ -25,7 +25,7 @@ class MetadataManager {
         addMetadata(key: .clientIP, value: getIPAddress(useIPv4: true))
         addMetadata(key: .deviceModel, value: UIDevice.current.modelName)
         addMetadata(key: .deviceOS, value: UIDevice.current.systemVersion)
-        addMetadata(key: .fingerprint, value: SmileID.fingerprint)
+        addMetadata(key: .fingerprint, value: SmileID.deviceId)
         addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
         addMetadata(key: .locale, value: Locale.current.identifier)
         addMetadata(
@@ -43,8 +43,12 @@ class MetadataManager {
         addMetadata(key: .systemArchitecture, value: ProcessInfo.processInfo.systemArchitecture)
         addMetadata(key: .timezone, value: TimeZone.current.identifier)
         addMetadata(key: .vpnDetected, value: isVPNActive())
-        addMetadata(key: .wrapperName, value: SmileID.wrapperSdkName.rawValue)  //todo check for null
-        addMetadata(key: .wrapperVersion, value: SmileID.wrapperSdkVersion.rawValue)  //todo check for null
+        if let wrapperSdkName = SmileID.wrapperSdkName {
+            addMetadata(key: .wrapperName, value: wrapperSdkName.rawValue)
+        }
+        if let wrapperSdkVersion = SmileID.wrapperSdkVersion {
+            addMetadata(key: .wrapperVersion, value: wrapperSdkVersion)
+        }
     }
 
     private func registerDefaultProviders() {
@@ -80,7 +84,7 @@ class MetadataManager {
 }
 
 // Strongly-typed overloads for adding metadatata
-extension MetadataManager {
+extension Metadata {
     private func store(_ key: MetadataKey, _ value: CodableValue) {
         staticMetadata[key] = StaticEntry(value: value)
     }

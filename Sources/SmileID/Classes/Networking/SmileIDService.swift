@@ -200,7 +200,7 @@ public extension SmileIDServiceable {
 
 public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     @Injected var serviceClient: RestServiceClient
-    @Injected var metadataManager: MetadataManager
+    @Injected var metadata: Metadata
     typealias PathType = String
 
     public func authenticate(
