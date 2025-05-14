@@ -1892,7 +1892,7 @@
 		66923C972DBA87ED00623B7D /* DeviceOrientationMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOrientationMetadata.swift; sourceTree = "<group>"; };
 		66923C982DBA87ED00623B7D /* IPAddressProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPAddressProvider.swift; sourceTree = "<group>"; };
 		66923C992DBA87ED00623B7D /* MetadataKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataKey.swift; sourceTree = "<group>"; };
-		66923C9A2DBA87ED00623B7D /* MetadataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataManager.swift; sourceTree = "<group>"; };
+		66923C9A2DBA87ED00623B7D /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadata.swift; sourceTree = "<group>"; };
 		66923C9B2DBA87ED00623B7D /* MetadataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataModels.swift; sourceTree = "<group>"; };
 		66923C9C2DBA87ED00623B7D /* Metadatum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadatum.swift; sourceTree = "<group>"; };
 		66923C9D2DBA87ED00623B7D /* NetworkMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMetadata.swift; sourceTree = "<group>"; };
@@ -7941,7 +7941,7 @@
 				66F5991E2DD39F84000CE985 /* Device */,
 				66F5991F2DD39F84000CE985 /* Models */,
 				66F599202DD39F84000CE985 /* Providers */,
-				66923C9A2DBA87ED00623B7D /* MetadataManager.swift */,
+				66923C9A2DBA87ED00623B7D /* Metadata.swift */,
 			);
 			path = Metadata;
 			sourceTree = "<group>";
