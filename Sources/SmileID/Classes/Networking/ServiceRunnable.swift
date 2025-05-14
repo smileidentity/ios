@@ -127,15 +127,21 @@ extension ServiceRunnable {
             failureReason: failureReason,
             metadata: metadata.items
         )
-        do {
-            let payload = try encoder.encode(selfieRequest)
-            let requestMac = try SmileIDCryptoManager.shared.sign(
-                timestamp: timestamp,
-                headers: headers.toDictionary(),
-                payload: payload
-            )
+
+        let payload = try encoder.encode(selfieRequest)
+        let requestMac = try? SmileIDCryptoManager.shared.sign(
+            timestamp: timestamp,
+            headers: headers.toDictionary(),
+            payload: payload
+        )
+        if let requestMac = requestMac {
             headers.append(.requestMac(value: requestMac))
-        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
+        } else {
+            /*
+             In case we can't add the security info the backend will throw an unauthorized error.
+             In the future, we will handle this more gracefully once sentry integration has been implemented.
+             */
+        }
 
         let request = try await createMultiPartRequest(
             url: path,
@@ -234,18 +240,24 @@ extension ServiceRunnable {
 
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        let payload = try encoder.encode(body)
+
         var signedHeaders = headers
-        do {
-            let payload = try encoder.encode(body)
-            if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
-                let requestMac = try SmileIDCryptoManager.shared.sign(
-                    timestamp: header.value,
-                    headers: headers.toDictionary(),
-                    payload: payload
-                )
-                signedHeaders += [.requestMac(value: requestMac)]
+        if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
+            let requestMac = try? SmileIDCryptoManager.shared.sign(
+                timestamp: header.value,
+                headers: headers.toDictionary(),
+                payload: payload
+            )
+            if let requestMac = requestMac {
+                signedHeaders.append(.requestMac(value: requestMac))
+            } else {
+                /*
+                 In case we can't add the security info the backend will throw an unauthorized error.
+                 In the future, we will handle this more gracefully once sentry integration has been implemented.
+                 */
             }
-        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
+        }
 
         do {
             let request = try RestRequest(
@@ -273,16 +285,20 @@ extension ServiceRunnable {
         }
 
         var signedHeaders = headers
-        do {
-            if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
-                let requestMac = try SmileIDCryptoManager.shared.sign(
-                    timestamp: header.value,
-                    headers: headers.toDictionary()
-                )
-                signedHeaders += [.requestMac(value: requestMac)]
+        if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
+            let requestMac = try? SmileIDCryptoManager.shared.sign(
+                timestamp: header.value,
+                headers: headers.toDictionary()
+            )
+            if let requestMac = requestMac {
+                signedHeaders.append(.requestMac(value: requestMac))
+            } else {
+                /*
+                 In case we can't add the security info the backend will throw an unauthorized error.
+                 In the future, we will handle this more gracefully once sentry integration has been implemented.
+                 */
             }
-        } catch { /* in case we can't add the security info the backend will deal with the enrollment */ }
-
+        }
         let request = RestRequest(
             url: url,
             method: method,

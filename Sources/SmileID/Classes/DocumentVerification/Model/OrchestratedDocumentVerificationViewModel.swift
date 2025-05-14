@@ -180,14 +180,17 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 )
                 allFiles.append(info)
                 let zipData: Data
-                do {
-                    let securityInfo = try createSecurityInfo(files: allFiles)
+                let securityInfo = try? createSecurityInfo(files: allFiles)
+                if let securityInfo = securityInfo {
                     zipData = try LocalStorage.zipFiles(
                         urls: allFiles,
                         data: ["security_info.json": securityInfo]
                     )
-                } catch {
-                    /* in case we can't add the security info the backend will deal with the enrollment */
+                } else {
+                    /*
+                     In case we can't add the security info the backend will throw an unauthorized error.
+                     In the future, we will handle this more gracefully once sentry integration has been implemented.
+                     */
                     zipData = try LocalStorage.zipFiles(urls: allFiles)
                 }
                 self.savedFiles = DocumentCaptureResultStore(

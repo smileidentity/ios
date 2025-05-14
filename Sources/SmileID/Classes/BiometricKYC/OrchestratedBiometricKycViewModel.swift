@@ -142,14 +142,17 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         if let livenessFiles {
             allFiles.append(contentsOf: livenessFiles)
         }
-        do {
-            let securityInfo = try createSecurityInfo(files: allFiles)
+        let securityInfo = try? createSecurityInfo(files: allFiles)
+        if let securityInfo = securityInfo {
             return try LocalStorage.zipFiles(
                 urls: allFiles,
                 data: ["security_info.json": securityInfo]
             )
-        } catch {
-            /* in case we can't add the security info the backend will deal with the enrollment */
+        } else {
+            /*
+             In case we can't add the security info the backend will throw an unauthorized error.
+             In the future, we will handle this more gracefully once sentry integration has been implemented.
+             */
             return try LocalStorage.zipFiles(urls: allFiles)
         }
     }
