@@ -1,3 +1,6 @@
+import CFNetwork
+import Foundation
+
 /// Checks if VPN connection is active by examining network interfaces
 /// - Returns: Boolean indicating if VPN is detected.
 func isVPNActive() -> Bool {

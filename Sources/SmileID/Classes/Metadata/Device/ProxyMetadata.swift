@@ -1,3 +1,5 @@
+import CFNetwork
+
 /// Checks if the system has an HTTP, HTTPS, or SOCKS proxy configured
 func isProxyDetected() -> Bool {
     // Attempt to copy the proxy settings dictionary
