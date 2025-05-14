@@ -63,7 +63,7 @@ class NetworkMetadata {
 extension NetworkMetadata: MetadataProtocol {
     func collectMetadata() -> [Metadatum] {
         // Add network connection info
-        var metadata = connectionEvents.map {
+        let metadata = connectionEvents.map {
             Metadatum(
                 key: .networkConnection,
                 value: .string($0.type),
