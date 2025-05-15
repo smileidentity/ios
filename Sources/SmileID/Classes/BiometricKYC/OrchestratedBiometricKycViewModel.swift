@@ -142,7 +142,19 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         if let livenessFiles {
             allFiles.append(contentsOf: livenessFiles)
         }
-        return try LocalStorage.zipFiles(at: allFiles)
+        let securityInfo = try? createSecurityInfo(files: allFiles)
+        if let securityInfo = securityInfo {
+            return try LocalStorage.zipFiles(
+                urls: allFiles,
+                data: ["security_info.json": securityInfo]
+            )
+        } else {
+            /*
+             In case we can't add the security info the backend will throw an unauthorized error.
+             In the future, we will handle this more gracefully once sentry integration has been implemented.
+             */
+            return try LocalStorage.zipFiles(urls: allFiles)
+        }
     }
 
     private func authenticate() async throws -> AuthenticationResponse {
@@ -175,7 +187,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     private func prepareForUpload(authResponse: AuthenticationResponse) async throws -> PrepUploadResponse {
-        let prepUploadRequest = PrepUploadRequest(
+        var prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
             allowNewEnroll: allowNewEnroll,
             metadata: localMetadata.metadata.items,
@@ -192,8 +204,10 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             else {
                 throw error
             }
+            prepUploadRequest.retry = true
             return try await SmileID.api.prepUpload(
-                request: prepUploadRequest.copy(retry: "true"))
+                request: prepUploadRequest
+            )
         }
     }
 

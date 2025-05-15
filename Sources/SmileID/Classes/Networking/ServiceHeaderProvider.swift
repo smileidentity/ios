@@ -41,4 +41,12 @@ public extension HTTPHeader {
     static func sourceSDKVersion(value: String) -> HTTPHeader {
         HTTPHeader(name: "SmileID-Source-SDK-Version", value: value)
     }
+
+    static func requestTimestamp(value: String) -> HTTPHeader {
+        return HTTPHeader(name: "SmileID-Request-Timestamp", value: value)
+    }
+
+    static func requestMac(value: String) -> HTTPHeader {
+        HTTPHeader(name: "SmileID-Request-Mac", value: value)
+    }
 }
