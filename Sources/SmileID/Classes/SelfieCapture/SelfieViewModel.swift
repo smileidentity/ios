@@ -13,9 +13,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let minFaceAreaThreshold = 0.125
     private let maxFaceAreaThreshold = 0.25
     private let faceRotationThreshold = 0.03
-    private let faceRollThreshold = 0.025  // roll has a smaller range than yaw
+    private let faceRollThreshold = 0.025 // roll has a smaller range than yaw
     private let numLivenessImages = 7
-    private let numTotalSteps = 8  // numLivenessImages + 1 selfie image
+    private let numTotalSteps = 8 // numLivenessImages + 1 selfie image
     private let livenessImageSize = 320
     private let selfieImageSize = 640
 
@@ -210,7 +210,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
 
                 if let quality = face.faceCaptureQuality,
-                    quality < faceCaptureQualityThreshold
+                   quality < faceCaptureQualityThreshold
                 {
                     DispatchQueue.main.async {
                         self.directive = "Instructions.Quality"
@@ -224,7 +224,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 DispatchQueue.main.async {
                     self.directive =
                         userNeedsToSmile
-                        ? "Instructions.Smile" : "Instructions.Capturing"
+                            ? "Instructions.Smile" : "Instructions.Capturing"
                 }
 
                 // TODO: Use mouth deformation as an alternate signal for non-ARKit capture
@@ -247,40 +247,44 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     if livenessImages.count < numLivenessImages {
                         guard
                             let imageData =
-                                ImageUtils.resizePixelBufferToHeight(
-                                    image,
-                                    height: livenessImageSize,
-                                    orientation: orientation
-                                )
+                            ImageUtils.resizePixelBufferToHeight(
+                                image,
+                                height: livenessImageSize,
+                                orientation: orientation
+                            )
                         else {
                             throw SmileIDError.unknown(
                                 "Error resizing liveness image")
                         }
                         let imageUrl = try LocalStorage.createLivenessFile(
-                            jobId: jobId, livenessFile: imageData)
+                            jobId: jobId, livenessFile: imageData
+                        )
                         livenessImages.append(imageUrl)
                         DispatchQueue.main.async {
                             self.captureProgress =
                                 Double(self.livenessImages.count)
-                                / Double(self.numTotalSteps)
+                                    / Double(self.numTotalSteps)
+                            WaterMarkUtils.createInvisibleTextMark(imageData: imageData, file: imageUrl)
                         }
                     } else {
                         shouldAnalyzeImages = false
                         guard
                             let imageData =
-                                ImageUtils.resizePixelBufferToHeight(
-                                    image,
-                                    height: selfieImageSize,
-                                    orientation: orientation
-                                )
+                            ImageUtils.resizePixelBufferToHeight(
+                                image,
+                                height: selfieImageSize,
+                                orientation: orientation
+                            )
                         else {
                             throw SmileIDError.unknown(
                                 "Error resizing selfie image")
                         }
                         let selfieImage = try LocalStorage.createSelfieFile(
-                            jobId: jobId, selfieFile: imageData)
+                            jobId: jobId, selfieFile: imageData
+                        )
                         self.selfieImage = selfieImage
                         DispatchQueue.main.async {
+                            WaterMarkUtils.createInvisibleTextMark(imageData: imageData, file: selfieImage)
                             self.captureProgress = 1
                             self.selfieToConfirm = imageData
                         }
@@ -395,8 +399,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 }
                 let jobType =
                     isEnroll
-                    ? JobType.smartSelfieEnrollment
-                    : JobType.smartSelfieAuthentication
+                        ? JobType.smartSelfieEnrollment
+                        : JobType.smartSelfieAuthentication
                 let authRequest = AuthenticationRequest(
                     jobType: jobType,
                     enrollment: isEnroll,
@@ -420,11 +424,11 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 var smartSelfieLivenessImages = [MultipartBody]()
                 var smartSelfieImage: MultipartBody?
                 if let selfie = try? Data(contentsOf: selfieImage),
-                    let media = MultipartBody(
-                        withImage: selfie,
-                        forKey: selfieImage.lastPathComponent,
-                        forName: selfieImage.lastPathComponent
-                    )
+                   let media = MultipartBody(
+                       withImage: selfie,
+                       forKey: selfieImage.lastPathComponent,
+                       forName: selfieImage.lastPathComponent
+                   )
                 {
                     smartSelfieImage = media
                 }
@@ -444,7 +448,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         contentsOf: livenessImageInfos.compactMap { $0 })
                 }
                 guard let smartSelfieImage = smartSelfieImage,
-                    smartSelfieLivenessImages.count == numLivenessImages
+                      smartSelfieLivenessImages.count == numLivenessImages
                 else {
                     throw SmileIDError.unknown("Selfie capture failed")
                 }
@@ -522,7 +526,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     return
                 }
                 if SmileID.allowOfflineMode,
-                    SmileIDError.isNetworkFailure(error: error)
+                   SmileIDError.isNetworkFailure(error: error)
                 {
                     DispatchQueue.main.async {
                         self.errorMessageRes = "Offline.Message"
@@ -546,13 +550,14 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
-        if let error = self.error {
+        if let error = error {
             callback.didError(error: error)
         } else if let selfieImage = selfieImage,
-            let selfiePath = getRelativePath(from: selfieImage),
-            livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            ) {
+                  let selfiePath = getRelativePath(from: selfieImage),
+                  livenessImages.count == numLivenessImages,
+                  !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
+                  )
+        {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }
