@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "10.5.3"
+    public static let version = "10.99.99"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -203,7 +203,7 @@ public class SmileID {
                     userId: authRequestFile.userId
                 )
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
-                let prepUploadRequest = PrepUploadRequest(
+                var prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(
                         extras: prepUploadFile.partnerParams.extras
                     ),
@@ -219,8 +219,9 @@ public class SmileID {
                 } catch let error as SmileIDError {
                     switch error {
                     case .api("2215", _):
+                        prepUploadRequest.retry = true
                         prepUploadResponse = try await SmileID.api.prepUpload(
-                            request: prepUploadRequest.copy(retry: "true")
+                            request: prepUploadRequest
                         )
                     default:
                         throw error
@@ -240,7 +241,7 @@ public class SmileID {
                 } catch {
                     throw error
                 }
-                let zipData = try LocalStorage.zipFiles(at: allFiles)
+                let zipData = try LocalStorage.zipFiles(urls: allFiles)
                 _ = try await SmileID.api.upload(
                     zip: zipData,
                     to: prepUploadResponse.uploadUrl
