@@ -1,4 +1,9 @@
 # Release Notes
+## Unreleased
+
+### Added
+* Enhanced fraud signals collection to improve fraud prevention
+
 ## 10.5.3
 
 ### Changed
