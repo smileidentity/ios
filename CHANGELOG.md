@@ -1,4 +1,9 @@
 # Release Notes
+## Unreleased
+
+### Fixed
+* Fixed a typographical error on the SmartSelfie instructions screen
+
 ## 10.5.3
 
 ### Changed
