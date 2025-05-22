@@ -7,7 +7,11 @@ extension Date {
         timezone: TimeZone? = TimeZone(abbreviation: "UTC")
     ) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        /*
+        For UTC timezone the pattern adds 'Z' at the end of the string. For any other timezone the
+        pattern adds the timezone offset in format +hh:mm or -hh:mm.
+         */
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
         formatter.timeZone = timezone
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter.string(from: self)
