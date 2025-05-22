@@ -22,7 +22,6 @@ public struct DocumentCaptureScreen: View {
     let onError: (Error) -> Void
     let onSkip: () -> Void
 
-    @EnvironmentObject private var localMetadata: LocalMetadata
     @ObservedObject private var viewModel: DocumentCaptureViewModel
 
     public init(
@@ -58,8 +57,7 @@ public struct DocumentCaptureScreen: View {
 
         viewModel = DocumentCaptureViewModel(
             knownAspectRatio: knownIdAspectRatio,
-            side: side,
-            localMetadata: LocalMetadata()
+            side: side
         )
     }
 
@@ -74,8 +72,6 @@ public struct DocumentCaptureScreen: View {
             } else {
                 captureView
             }
-        }.onAppear {
-            viewModel.updateLocalMetadata(localMetadata)
         }
     }
 

@@ -28,8 +28,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
             allowNewEnroll: allowNewEnroll,
             skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
-            onResult: onResult,
-            localMetadata: LocalMetadata()
+            onResult: onResult
         )
     }
 

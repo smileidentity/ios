@@ -22,6 +22,7 @@ public class SmileID {
             )
         }
         container.register(ServiceHeaderProvider.self) { DefaultServiceHeaderProvider() }
+        container.register(Metadata.self) { Metadata.shared }
         let instance = SmileID()
         return instance
     }()
@@ -45,7 +46,12 @@ public class SmileID {
     public private(set) static var useSandbox = false
     public private(set) static var allowOfflineMode = false
     public private(set) static var callbackUrl: String = ""
-    public private(set) static var deviceId: String = ""
+
+    private(set) static var deviceId: String = ""
+    private(set) static var sdkLaunchCount: Int = 0
+    private(set) static var wrapperSdkName: WrapperSdkName? = nil
+    private(set) static var wrapperSdkVersion: String? = nil
+
     static var apiKey: String?
     public private(set) static var theme: SmileIdTheme = DefaultTheme()
     private(set) static var localizableStrings: SmileIDLocalizableStrings?
@@ -95,6 +101,9 @@ public class SmileID {
 
         SmileIDResourcesHelper.registerFonts()
 
+        // Increment and track SDK launch count
+        trackSdkLaunchCount()
+        
         let fingerprinter = FingerprinterFactory.getInstance()
         Task {
             /// The fingerprint isn't currently as stable as the Device Identifier, because the
@@ -103,8 +112,20 @@ public class SmileID {
             /// https://github.com/fingerprintjs/fingerprintjs-ios
             if let fingerprint = await fingerprinter.getDeviceId() {
                 deviceId = fingerprint
+                Metadata.shared.initialize()
             }
         }
+    }
+
+    /// Tracks the SDK launch count by incrementing a counter stored in UserDefaults
+    private class func trackSdkLaunchCount() {
+        let defaults = UserDefaults.standard
+        let key = "SmileID.SDKLaunchCount"
+        let currentCount = defaults.integer(forKey: key)
+        let newCount = currentCount + 1
+        defaults.set(newCount, forKey: key)
+
+        sdkLaunchCount = newCount
     }
 
     /// Sets the state of offline mode for the SDK.
@@ -264,6 +285,16 @@ public class SmileID {
     /// used within the SDK. if no value is set, the default copy will be used.
     public class func apply(_ localizableStrings: SmileIDLocalizableStrings) {
         self.localizableStrings = localizableStrings
+    }
+
+    /// Sets the name and version of a x-platform sdk that wraps the native sdk.
+    /// This is an internal function and should not be used by partner developers.
+    /// - Parameters:
+    ///   - name: The name of the x-platform sdk that wraps the native sdk.
+    ///   - version: The version of the x-platform sdk that wraps the native sdk.
+    public class func setWrapperInfo(name: WrapperSdkName, version: String) {
+        wrapperSdkName = name
+        wrapperSdkVersion = version
     }
 
     /// Load the Config object from a json file

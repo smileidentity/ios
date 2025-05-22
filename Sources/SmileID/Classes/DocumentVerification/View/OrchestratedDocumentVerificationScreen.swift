@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct OrchestratedDocumentVerificationScreen: View {
-    @State private var localMetadata = LocalMetadata()
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
@@ -50,15 +49,13 @@ struct OrchestratedDocumentVerificationScreen: View {
                 useStrictMode: useStrictMode,
                 selfieFile: bypassSelfieCaptureWithFile,
                 jobType: .documentVerification,
-                extraPartnerParams: extraPartnerParams,
-                localMetadata: localMetadata
+                extraPartnerParams: extraPartnerParams
             )
-        ).environmentObject(localMetadata)
+        )
     }
 }
 
 struct OrchestratedEnhancedDocumentVerificationScreen: View {
-    @State private var localMetadata = LocalMetadata()
     let countryCode: String
     let documentType: String?
     let consentInformation: ConsentInformation
@@ -108,10 +105,9 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
                 useStrictMode: useStrictMode,
                 selfieFile: bypassSelfieCaptureWithFile,
                 jobType: .enhancedDocumentVerification,
-                extraPartnerParams: extraPartnerParams,
-                localMetadata: localMetadata
+                extraPartnerParams: extraPartnerParams
             )
-        ).environmentObject(localMetadata)
+        )
     }
 }
 
