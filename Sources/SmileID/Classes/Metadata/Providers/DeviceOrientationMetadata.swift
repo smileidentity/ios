@@ -35,6 +35,8 @@ class DeviceOrientationMetadata: MetadataProtocol {
             return
         }
         isRecordingDeviceOrientations = true
+        // Clear previous orientation history to start fresh recording session
+        deviceOrientations.removeAll()
 
         motionManager.accelerometerUpdateInterval = 0.5
         motionManager.startAccelerometerUpdates(to: OperationQueue.main) { [weak self] data, _ in
@@ -78,9 +80,6 @@ class DeviceOrientationMetadata: MetadataProtocol {
 
     func collectMetadata() -> [Metadatum] {
         stopRecordingDeviceOrientations()
-
-        // Ensure we clean up the device orientations always at the end, regardless of early returns
-        defer { deviceOrientations.removeAll() }
 
         return deviceOrientations.map {
             Metadatum(
