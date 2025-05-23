@@ -6,14 +6,9 @@ extension Date {
     public func toISO8601WithMilliseconds(
         timezone: TimeZone? = TimeZone(abbreviation: "UTC")
     ) -> String {
-        let formatter = DateFormatter()
-        /*
-        For UTC timezone the pattern adds 'Z' at the end of the string. For any other timezone the
-        pattern adds the timezone offset in format +hh:mm or -hh:mm.
-         */
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+        let formatter = ISO8601DateFormatter()
         formatter.timeZone = timezone
-        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return formatter.string(from: self)
     }
 }
