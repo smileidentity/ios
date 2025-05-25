@@ -54,6 +54,7 @@ class Metadata {
     private func registerDefaultProviders() {
         register(provider: NetworkMetadata())
         register(provider: DeviceOrientationMetadata.shared)
+        register(provider: LocationMetadata.shared)
     }
 
     private func register(provider: MetadataProtocol) {

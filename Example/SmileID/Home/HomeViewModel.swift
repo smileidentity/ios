@@ -4,6 +4,7 @@ import Sentry
 import SmileID
 import SwiftUI
 import UIKit
+import CoreLocation
 
 class HomeViewModel: ObservableObject,
     SmartSelfieResultDelegate,
@@ -34,6 +35,11 @@ class HomeViewModel: ObservableObject,
     ) {
         self.dataStoreClient = dataStoreClient
         partnerId = config.partnerId
+
+        print("request permissions")
+        let locationManager = CLLocationManager()
+        locationManager.requestWhenInUseAuthorization()
+
         SmileID.initialize(config: config, useSandbox: false)
         SentrySDK.configureScope { scope in
             scope.setTag(value: "partner_id", key: self.partnerId)
