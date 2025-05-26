@@ -8,7 +8,7 @@
 "Instructions.ClearImageBody" = "Hold your phone steady so the image is clear and sharp. Don’t take blurry photos.";
 "Instructions.GoodLight" = "Good Light";
 "Instructions.RemoveObstructions" = "Remove Obstructions";
-"Instructions.RemoveObstructionsBody" = "Remove anything that covers your face, such glasses, masks, hats and scarves";
+"Instructions.RemoveObstructionsBody" = "Remove anything that covers your face, such as glasses, masks, hats and scarves.";
 "Instructions.Header" = "Next, we’ll take a quick selfie";
 "Instructions.Callout" = "We'll use it to verify your Identity. Please follow the instructions below.";
 "Instructions.Action" = "I'm Ready";

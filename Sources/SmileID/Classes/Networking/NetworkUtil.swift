@@ -2,7 +2,7 @@ import Combine
 import CommonCrypto
 import Foundation
 
-func calculateSignature(timestamp: String) throws -> String {
+public func calculateSignature(timestamp: String) throws -> String {
     guard let apiKey = SmileID.apiKey else {
         throw NSError(
             domain: "",
