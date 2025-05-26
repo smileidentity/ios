@@ -4,6 +4,9 @@
 ### Fixed
 * Fixed a typographical error on the SmartSelfie instructions screen
 
+### Changed
+* Made calculateSignature func public 
+
 ## 10.5.3
 
 ### Changed
