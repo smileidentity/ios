@@ -1,4 +1,5 @@
 import Combine
+import CoreLocation
 import Foundation
 import Sentry
 import SmileID
@@ -17,7 +18,11 @@ class HomeViewModel: ObservableObject,
     @Published var toastMessage = ""
     @Published var showToast = false
     @Published var partnerId: String
+    @Published var showLocationPermissionAlert = false
+    @Published var locationAuthorizationStatus: CLAuthorizationStatus
+
     var networkMonitor = NetworkMonitor.shared
+    private let locationPermissionManager = LocationPermissionManager()
 
     var lastSelfieEnrollmentUserId: String? {
         guard let value = UIPasteboard.general.string else { return nil }
@@ -27,6 +32,8 @@ class HomeViewModel: ObservableObject,
     @Published private(set) var newJobId: String = generateJobId()
 
     let dataStoreClient: DataStoreClient
+    
+    private var cancellables = Set<AnyCancellable>()
 
     init(
         config: Config,
@@ -34,6 +41,8 @@ class HomeViewModel: ObservableObject,
     ) {
         self.dataStoreClient = dataStoreClient
         partnerId = config.partnerId
+        locationAuthorizationStatus = locationPermissionManager.authorizationStatus
+        
         SmileID.initialize(config: config, useSandbox: false)
         SentrySDK.configureScope { scope in
             scope.setTag(value: "partner_id", key: self.partnerId)
@@ -41,6 +50,10 @@ class HomeViewModel: ObservableObject,
             user.email = self.partnerId
             scope.setUser(user)
         }
+        
+        // Observe location authorization status changes
+        locationPermissionManager.$authorizationStatus
+            .assign(to: &$locationAuthorizationStatus)
     }
 
     func onProductClicked() {
@@ -269,5 +282,40 @@ class HomeViewModel: ObservableObject,
 
     private func dismissModal() {
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+    }
+    
+    // MARK: - Location Permission Handling
+    
+    var locationPermissionIcon: String {
+        switch locationAuthorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            return "location.fill"
+        case .denied, .restricted:
+            return "location.slash.fill"
+        case .notDetermined:
+            return "location"
+        @unknown default:
+            return "location"
+        }
+    }
+
+    func handleLocationPermissionButtonTap() {
+        switch locationAuthorizationStatus {
+        case .notDetermined:
+            showLocationPermissionAlert = true
+        case .denied, .restricted:
+            // Open app settings if permission was previously denied
+            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSettings)
+            }
+        case .authorizedAlways, .authorizedWhenInUse:
+            showToast(message: "Location permission already granted")
+        @unknown default:
+            break
+        }
+    }
+    
+    func requestLocationPermission() {
+        locationPermissionManager.requestLocationPermission()
     }
 }

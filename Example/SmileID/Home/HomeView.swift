@@ -1,4 +1,3 @@
-import CoreLocation
 import SmileID
 import SwiftUI
 
@@ -6,10 +5,8 @@ struct HomeView: View {
     let version = SmileID.version
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @ObservedObject var viewModel: HomeViewModel
-    @StateObject private var locationPermissionManager = LocationPermissionManager()
 
     @State private var selectedProduct: SmileIDProduct?
-    @State private var showLocationPermissionAlert = false
 
     init(config: Config) {
         self.viewModel = HomeViewModel(config: config)
@@ -54,12 +51,12 @@ struct HomeView: View {
                 trailing: SmileEnvironmentToggleButton()
             )
             .background(SmileID.theme.backgroundLight.ignoresSafeArea())
-            .alert(isPresented: $showLocationPermissionAlert) {
+            .alert(isPresented: $viewModel.showLocationPermissionAlert) {
                 Alert(
                     title: Text("Location Permission"),
                     message: Text("Would you like to grant location permission? This helps prevent fraud by verifying your location."),
                     primaryButton: .default(Text("Grant Permission")) {
-                        requestLocationPermission()
+                        viewModel.requestLocationPermission()
                     },
                     secondaryButton: .cancel()
                 )
@@ -248,39 +245,11 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
 extension HomeView {
     private var locationPermissionButton: some View {
         Button(action: {
-            let status = locationPermissionManager.authorizationStatus
-            if status == .notDetermined {
-                showLocationPermissionAlert = true
-            } else if status == .denied || status == .restricted {
-                // Open app settings if permission was previously denied
-                if let appSettings = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(appSettings)
-                }
-            } else {
-                viewModel.toastMessage = "Location permission already granted"
-                viewModel.showToast = true
-            }
+            viewModel.handleLocationPermissionButtonTap()
         }) {
-            Image(systemName: locationPermissionIcon)
+            Image(systemName: viewModel.locationPermissionIcon)
                 .foregroundColor(SmileID.theme.accent)
         }
-    }
-    
-    private var locationPermissionIcon: String {
-        switch locationPermissionManager.authorizationStatus {
-        case .authorizedAlways, .authorizedWhenInUse:
-            return "location.fill"
-        case .denied, .restricted:
-            return "location.slash.fill"
-        case .notDetermined:
-            return "location"
-        @unknown default:
-            return "location"
-        }
-    }
-
-    private func requestLocationPermission() {
-        locationPermissionManager.requestLocationPermission()
     }
 }
 
