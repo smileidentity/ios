@@ -1,6 +1,6 @@
 import CoreLocation
 
-class LocationMetadata: NSObject, CLLocationManagerDelegate, MetadataProtocol {
+class LocationMetadata: NSObject, MetadataProtocol {
     static let shared = LocationMetadata()
 
     private let locationManager = CLLocationManager()
@@ -40,7 +40,7 @@ class LocationMetadata: NSObject, CLLocationManagerDelegate, MetadataProtocol {
 
     private override init() {
         super.init()
-        locationManager.delegate = self
+        //locationManager.delegate = self CLLocationManagerDelegate
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
 
         onStart()
@@ -50,9 +50,8 @@ class LocationMetadata: NSObject, CLLocationManagerDelegate, MetadataProtocol {
         onStop()
     }
 
-    func onStart() {
+    private func onStart() {
         let status = CLLocationManager.authorizationStatus()
-        print(status.rawValue)
         guard status == .authorizedWhenInUse || status == .authorizedAlways else {
             locationInfos.append(
                 LocationEvent(
@@ -61,31 +60,27 @@ class LocationMetadata: NSObject, CLLocationManagerDelegate, MetadataProtocol {
             )
             return
         }
-        print("requesting location information")
 
         locationInfos = []
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.locationManager.requestLocation()
-            print("request sent")
-        }
+        updateLocation()
     }
 
-    func onStop() {
-        print("stop")
+    private func onStop() {
         locationManager.stopUpdatingLocation()
-        locationManager.delegate = nil
+        //locationManager.delegate = nil
     }
 
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("here")
-        guard let location = locations.last else {
+    func updateLocation() {
+        guard let location = self.locationManager.location else {
+            locationInfos.append(
+                LocationEvent(
+                    value: LocationInfo.unknown
+                )
+            )
             return
         }
 
-        /*
-         We infer the location source from the location accuracy.
-         */
+        // We infer the location source from the location accuracy.
         let (accuracy, source): (LocationAccuracy, LocationSource) = {
             switch location.horizontalAccuracy {
             case 0..<20: return (.precise, .gps)
@@ -107,10 +102,14 @@ class LocationMetadata: NSObject, CLLocationManagerDelegate, MetadataProtocol {
         )
     }
 
+    /*func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+    }
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("error")
         print(error)
-    }
+    }*/
 
     func collectMetadata() -> [Metadatum] {
         let metadata = locationInfos.map {

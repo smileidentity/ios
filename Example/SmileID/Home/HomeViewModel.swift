@@ -36,7 +36,6 @@ class HomeViewModel: ObservableObject,
         self.dataStoreClient = dataStoreClient
         partnerId = config.partnerId
 
-        print("request permissions")
         let locationManager = CLLocationManager()
         locationManager.requestWhenInUseAuthorization()
 
