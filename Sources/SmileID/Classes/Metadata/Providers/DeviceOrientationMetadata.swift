@@ -19,9 +19,16 @@ class DeviceOrientationMetadata: MetadataProtocol {
         case unknown = "unknown"
     }
 
+    private struct MovementEvent {
+        let value: Double
+        let date: Date = Date()
+    }
+
     private var currentOrientation: OrientationType = OrientationType.unknown
     private var deviceOrientations: [OrientationEvent] = []
     var isRecordingDeviceOrientations = false
+    private var deviceMovements: [MovementEvent] = []
+    private var movementChange: Double = 0.0
 
     private init() {}
 
@@ -41,7 +48,8 @@ class DeviceOrientationMetadata: MetadataProtocol {
         motionManager.accelerometerUpdateInterval = 0.5
         motionManager.startAccelerometerUpdates(to: OperationQueue.main) { [weak self] data, _ in
             guard let self = self, let data = data else { return }
-            self.currentOrientation = self.determineOrientation(from: data)
+            self.currentOrientation = self.detectOrientationChange(from: data)
+            self.movementChange = self.detectMovementChange(from: data)
         }
     }
 
@@ -52,7 +60,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
         }
     }
 
-    private func determineOrientation(from data: CMAccelerometerData) -> OrientationType {
+    private func detectOrientationChange(from data: CMAccelerometerData) -> OrientationType {
         let accelerationX = data.acceleration.x
         let accelerationY = data.acceleration.y
         let accelerationZ = data.acceleration.z
@@ -66,6 +74,23 @@ class DeviceOrientationMetadata: MetadataProtocol {
         }
     }
 
+    private func detectMovementChange(from data: CMAccelerometerData) -> Double {
+        let accelerationX = data.acceleration.x
+        let accelerationY = data.acceleration.y
+        let accelerationZ = data.acceleration.z
+
+        // Calculate acceleration magnitude
+        let magnitude = sqrt(
+            accelerationX * accelerationX +
+            accelerationY * accelerationY +
+            accelerationZ * accelerationZ
+        )
+
+        let gravity = 0.981
+        let movementChange = abs(magnitude - gravity)
+        return movementChange
+    }
+
     func addDeviceOrientation() {
         deviceOrientations.append(
             OrientationEvent(value: currentOrientation.rawValue)
@@ -75,18 +100,32 @@ class DeviceOrientationMetadata: MetadataProtocol {
     func clearDeviceOrientations() {
         deviceOrientations.removeAll()
     }
+    
+    func addDeviceMovement() {
+        deviceMovements.append(
+            MovementEvent(value: movementChange)
+        )
+    }
 
     // MARK: - MetadataProtocol
 
     func collectMetadata() -> [Metadatum] {
         stopRecordingDeviceOrientations()
 
-        return deviceOrientations.map {
+        let orientations = deviceOrientations.map {
             Metadatum(
                 key: .deviceOrientation,
                 value: .string($0.value),
                 date: $0.date
             )
         }
+        let movement = deviceMovements.map {
+            Metadatum(
+                key: .deviceMovementDetected,
+                value: .double($0.value),
+                date: $0.date
+            )
+        }
+        return orientations + movement
     }
 }
