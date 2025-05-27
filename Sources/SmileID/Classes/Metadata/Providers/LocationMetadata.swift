@@ -1,12 +1,7 @@
 import CoreLocation
 import Foundation
 
-class LocationMetadata: NSObject, MetadataProtocol, CLLocationManagerDelegate {
-    private struct LocationEvent {
-        let location: CLLocation
-        let date: Date = Date()
-    }
-
+class LocationMetadata: NSObject, MetadataProtocol {
     private struct GeolocationData {
         let latitude: Double
         let longitude: Double
@@ -18,32 +13,14 @@ class LocationMetadata: NSObject, MetadataProtocol, CLLocationManagerDelegate {
                 "latitude": .double(latitude),
                 "longitude": .double(longitude),
                 "accuracy": .double(accuracy),
-                "source": .string(source),
+                "source": .string(source)
             ]
         }
     }
 
-    private let locationManager = CLLocationManager()
-    private var lastKnownLocation: CLLocation?
-
     private var hasLocationPermission: Bool {
         let status = CLLocationManager.authorizationStatus()
         return status == .authorizedWhenInUse || status == .authorizedAlways
-    }
-
-    override init() {
-        super.init()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-
-        // Only start updating location if permission is already granted
-        if hasLocationPermission {
-            locationManager.startUpdatingLocation()
-        }
-    }
-
-    deinit {
-        locationManager.stopUpdatingLocation()
     }
 
     func collectMetadata() -> [Metadatum] {
@@ -59,23 +36,26 @@ class LocationMetadata: NSObject, MetadataProtocol, CLLocationManagerDelegate {
         )
 
         // Only collect location data if permission was granted by the host app
-        if hasLocationPermission,
-            let location = lastKnownLocation
-        {
-            let geolocationData = GeolocationData(
-                latitude: location.coordinate.latitude,
-                longitude: location.coordinate.longitude,
-                accuracy: location.horizontalAccuracy,
-                source: getLocationSource(from: location.horizontalAccuracy)
-            )
+        if hasLocationPermission {
+            let locationManager = CLLocationManager()
 
-            metadata.append(
-                Metadatum(
-                    key: MetadataKey.geolocation,
-                    value: .object(geolocationData.asCodableObject),
-                    date: Date()
+            // Use the last known location if available
+            if let location = locationManager.location {
+                let geolocationData = GeolocationData(
+                    latitude: location.coordinate.latitude,
+                    longitude: location.coordinate.longitude,
+                    accuracy: location.horizontalAccuracy,
+                    source: getLocationSource(from: location.horizontalAccuracy)
                 )
-            )
+
+                metadata.append(
+                    Metadatum(
+                        key: MetadataKey.geolocation,
+                        value: .object(geolocationData.asCodableObject),
+                        date: Date()
+                    )
+                )
+            }
         }
 
         return metadata
@@ -95,26 +75,6 @@ class LocationMetadata: NSObject, MetadataProtocol, CLLocationManagerDelegate {
             return "low_power"
         default:
             return "coarse"
-        }
-    }
-
-    // MARK: - CLLocationManagerDelegate
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        lastKnownLocation = locations.last
-    }
-
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        // Silently fail - location is optional metadata
-    }
-
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        // Start/stop location updates based on current authorization
-        if hasLocationPermission {
-            locationManager.startUpdatingLocation()
-        } else {
-            locationManager.stopUpdatingLocation()
-            lastKnownLocation = nil
         }
     }
 }

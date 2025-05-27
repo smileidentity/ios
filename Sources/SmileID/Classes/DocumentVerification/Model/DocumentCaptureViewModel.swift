@@ -106,7 +106,7 @@ class DocumentCaptureViewModel: ObservableObject {
             }
         })
 
-        DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
+        metadata.startRecordingDeviceOrientations()
     }
 
     @objc func showManualCapture() {
@@ -197,7 +197,7 @@ class DocumentCaptureViewModel: ObservableObject {
             metadata.removeMetadata(key: .documentBackCaptureDuration)
             metadata.removeMetadata(key: .documentBackImageOrigin)
         }
-        DeviceOrientationMetadata.shared.clearDeviceOrientations()
+        metadata.clearDeviceOrientations()
         hasRecordedOrientationAtCaptureStart = false
     }
 
@@ -206,7 +206,7 @@ class DocumentCaptureViewModel: ObservableObject {
          At the end of the capture, we record the device orientation and
          the capture duration
          */
-        DeviceOrientationMetadata.shared.addDeviceOrientation()
+        metadata.addDeviceOrientation()
         switch side {
         case .front:
             metadata.addMetadata(
@@ -249,7 +249,7 @@ class DocumentCaptureViewModel: ObservableObject {
          duration timer.
          */
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadata.shared.addDeviceOrientation()
+            metadata.addDeviceOrientation()
             hasRecordedOrientationAtCaptureStart = true
             captureDuration.startTime()
         }

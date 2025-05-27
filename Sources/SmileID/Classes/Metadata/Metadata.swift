@@ -10,8 +10,10 @@ class Metadata {
         let value: CodableValue
         let date: Date = Date()
     }
-    private var providers: [MetadataProtocol] = []
+
+    private var providerFactories: [() -> MetadataProtocol] = []
     private var staticMetadata: [MetadataKey: StaticEntry] = [:]
+    private var deviceOrientationMetadata: DeviceOrientationMetadata?
 
     private init() {}
 
@@ -29,7 +31,9 @@ class Metadata {
         addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
         addMetadata(key: .locale, value: Locale.current.identifier)
         addMetadata(
-            key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current))
+            key: .localTimeOfEnrolment,
+            value: Date().toISO8601WithMilliseconds(timezone: .current)
+        )
         addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
         addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCameras)
         addMetadata(key: .proximitySensor, value: UIDevice.current.hasProximitySensor)
@@ -52,13 +56,16 @@ class Metadata {
     }
 
     private func registerDefaultProviders() {
-        register(provider: NetworkMetadata())
-        register(provider: DeviceOrientationMetadata.shared)
-        register(provider: LocationMetadata())
-    }
-
-    private func register(provider: MetadataProtocol) {
-        providers.append(provider)
+        // Register factories instead of instances
+        providerFactories.append({ NetworkMetadata() })
+        providerFactories.append({ [weak self] in
+            // DeviceOrientationMetadata needs special handling for recording across captures
+            if self?.deviceOrientationMetadata == nil {
+                self?.deviceOrientationMetadata = DeviceOrientationMetadata()
+            }
+            return self?.deviceOrientationMetadata ?? DeviceOrientationMetadata()
+        })
+        providerFactories.append({ LocationMetadata() })
     }
 
     func removeMetadata(key: MetadataKey) {
@@ -76,10 +83,16 @@ class Metadata {
     }
 
     func collectAllMetadata() -> [Metadatum] {
+        // Collect fresh metadata
         var allMetadata = getDefaultMetadata()
-        for provider in providers {
+
+        // Create providers on-demand and collect metadata
+        for factory in providerFactories {
+            let provider = factory()
             allMetadata.append(contentsOf: provider.collectMetadata())
+            // Provider is automatically released after collection (except DeviceOrientationMetadata)
         }
+
         return allMetadata
     }
 }
@@ -112,5 +125,28 @@ extension Metadata {
 
     func addMetadata(key: MetadataKey, value: [String: CodableValue]) {
         store(key, .object(value))
+    }
+}
+
+// MARK: - Device Orientation Management
+extension Metadata {
+    func startRecordingDeviceOrientations() {
+        if deviceOrientationMetadata == nil {
+            deviceOrientationMetadata = DeviceOrientationMetadata()
+        }
+        deviceOrientationMetadata?.startRecordingDeviceOrientations()
+    }
+
+    func addDeviceOrientation() {
+        deviceOrientationMetadata?.addDeviceOrientation()
+    }
+
+    func clearDeviceOrientations() {
+        deviceOrientationMetadata?.clearDeviceOrientations()
+        deviceOrientationMetadata = nil
+    }
+
+    func isRecordingDeviceOrientations() -> Bool {
+        return deviceOrientationMetadata?.isRecordingDeviceOrientations ?? false
     }
 }

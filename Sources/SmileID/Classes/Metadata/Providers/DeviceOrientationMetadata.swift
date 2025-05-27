@@ -3,8 +3,6 @@ import Foundation
 import UIKit
 
 class DeviceOrientationMetadata: MetadataProtocol {
-    static let shared = DeviceOrientationMetadata()
-
     private let motionManager = CMMotionManager()
 
     private struct OrientationEvent {
@@ -23,7 +21,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
     private var deviceOrientations: [OrientationEvent] = []
     var isRecordingDeviceOrientations = false
 
-    private init() {}
+    init() {}
 
     func startRecordingDeviceOrientations() {
         guard motionManager.isAccelerometerAvailable else {

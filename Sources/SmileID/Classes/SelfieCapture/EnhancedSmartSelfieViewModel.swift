@@ -187,7 +187,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
             }
         }
 
-        DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
+        metadata.startRecordingDeviceOrientations()
     }
 
     private func handleCameraImageBuffer(_ imageBuffer: CVPixelBuffer) {
@@ -207,7 +207,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
          duration timer.
          */
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadata.shared.addDeviceOrientation()
+            metadata.addDeviceOrientation()
             hasRecordedOrientationAtCaptureStart = true
             captureDuration.startTime()
         }
@@ -495,7 +495,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
         At the end of the capture, we record the device orientation and
         the capture duration
         */
-        DeviceOrientationMetadata.shared.addDeviceOrientation()
+        metadata.addDeviceOrientation()
         metadata.addMetadata(
             key: .selfieCaptureDuration,
             value: captureDuration.elapsedTime().milliseconds()
@@ -617,11 +617,10 @@ extension EnhancedSmartSelfieViewModel {
     private func resetSelfieCaptureMetadata() {
         metadata.removeMetadata(key: .selfieCaptureDuration)
         metadata.removeMetadata(key: .activeLivenessType)
-        DeviceOrientationMetadata.shared.clearDeviceOrientations()
+        metadata.clearDeviceOrientations()
         hasRecordedOrientationAtCaptureStart = false
-        if !DeviceOrientationMetadata.shared.isRecordingDeviceOrientations {
-            DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
-        }
+        // Always start recording after clearing (handled internally by Metadata)
+        metadata.startRecordingDeviceOrientations()
     }
 
     private func incrementNetworkRetries() {
