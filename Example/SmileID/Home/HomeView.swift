@@ -1,3 +1,4 @@
+import CoreLocation
 import SmileID
 import SwiftUI
 
@@ -5,8 +6,10 @@ struct HomeView: View {
     let version = SmileID.version
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
     @ObservedObject var viewModel: HomeViewModel
+    @StateObject private var locationPermissionManager = LocationPermissionManager()
 
     @State private var selectedProduct: SmileIDProduct?
+    @State private var showLocationPermissionAlert = false
 
     init(config: Config) {
         self.viewModel = HomeViewModel(config: config)
@@ -46,8 +49,21 @@ struct HomeView: View {
             }
             .padding()
             .navigationBarTitle(Text("Smile ID"), displayMode: .inline)
-            .navigationBarItems(trailing: SmileEnvironmentToggleButton())
+            .navigationBarItems(
+                leading: locationPermissionButton,
+                trailing: SmileEnvironmentToggleButton()
+            )
             .background(SmileID.theme.backgroundLight.ignoresSafeArea())
+            .alert(isPresented: $showLocationPermissionAlert) {
+                Alert(
+                    title: Text("Location Permission"),
+                    message: Text("Would you like to grant location permission? This helps prevent fraud by verifying your location."),
+                    primaryButton: .default(Text("Grant Permission")) {
+                        requestLocationPermission()
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
             .fullScreenCover(item: $selectedProduct) { product in
                 switch product {
                 case .smartSelfieEnrollment:
@@ -225,6 +241,46 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
                 self.userId = userId
             }
         }
+    }
+}
+
+// MARK: - HomeView Extensions
+extension HomeView {
+    private var locationPermissionButton: some View {
+        Button(action: {
+            let status = locationPermissionManager.authorizationStatus
+            if status == .notDetermined {
+                showLocationPermissionAlert = true
+            } else if status == .denied || status == .restricted {
+                // Open app settings if permission was previously denied
+                if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(appSettings)
+                }
+            } else {
+                viewModel.toastMessage = "Location permission already granted"
+                viewModel.showToast = true
+            }
+        }) {
+            Image(systemName: locationPermissionIcon)
+                .foregroundColor(SmileID.theme.accent)
+        }
+    }
+    
+    private var locationPermissionIcon: String {
+        switch locationPermissionManager.authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            return "location.fill"
+        case .denied, .restricted:
+            return "location.slash.fill"
+        case .notDetermined:
+            return "location"
+        @unknown default:
+            return "location"
+        }
+    }
+
+    private func requestLocationPermission() {
+        locationPermissionManager.requestLocationPermission()
     }
 }
 

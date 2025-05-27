@@ -26,15 +26,6 @@ class LocationMetadata: NSObject, MetadataProtocol {
     func collectMetadata() -> [Metadatum] {
         var metadata: [Metadatum] = []
 
-        // Always include permission status
-        metadata.append(
-            Metadatum(
-                key: MetadataKey.locationPermissionStatus,
-                value: .string(CLLocationManager.authorizationStatus().stringValue),
-                date: Date()
-            )
-        )
-
         // Only collect location data if permission was granted by the host app
         if hasLocationPermission {
             let locationManager = CLLocationManager()

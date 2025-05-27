@@ -38,5 +38,4 @@ enum MetadataKey: String {
     case wrapperName = "wrapper_name"
     case wrapperVersion = "wrapper_version"
     case geolocation
-    case locationPermissionStatus = "location_permission_status"
 }
