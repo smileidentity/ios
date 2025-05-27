@@ -40,7 +40,6 @@ class LocationMetadata: NSObject, MetadataProtocol {
 
     private override init() {
         super.init()
-        //locationManager.delegate = self CLLocationManagerDelegate
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
 
         onStart()
@@ -67,7 +66,6 @@ class LocationMetadata: NSObject, MetadataProtocol {
 
     private func onStop() {
         locationManager.stopUpdatingLocation()
-        //locationManager.delegate = nil
     }
 
     func updateLocation() {
@@ -101,15 +99,6 @@ class LocationMetadata: NSObject, MetadataProtocol {
             )
         )
     }
-
-    /*func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-    }
-
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("error")
-        print(error)
-    }*/
 
     func collectMetadata() -> [Metadatum] {
         let metadata = locationInfos.map {
