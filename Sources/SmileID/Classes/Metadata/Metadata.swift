@@ -29,7 +29,9 @@ class Metadata {
         addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
         addMetadata(key: .locale, value: Locale.current.identifier)
         addMetadata(
-            key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current))
+            key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current)
+        )
+        addMetadata(key: .geolocation, value: currentLocation().toCodableObject())
         addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
         addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCameras)
         addMetadata(key: .proximitySensor, value: UIDevice.current.hasProximitySensor)
@@ -54,7 +56,6 @@ class Metadata {
     private func registerDefaultProviders() {
         register(provider: NetworkMetadata())
         register(provider: DeviceOrientationMetadata.shared)
-        register(provider: LocationMetadata.shared)
     }
 
     private func register(provider: MetadataProtocol) {
