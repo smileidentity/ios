@@ -186,8 +186,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
                 }
             }
         }
-
-        DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
     }
 
     private func handleCameraImageBuffer(_ imageBuffer: CVPixelBuffer) {
@@ -619,9 +617,9 @@ extension EnhancedSmartSelfieViewModel {
         metadata.removeMetadata(key: .activeLivenessType)
         DeviceOrientationMetadata.shared.clearDeviceOrientations()
         hasRecordedOrientationAtCaptureStart = false
-        if !DeviceOrientationMetadata.shared.isRecordingDeviceOrientations {
-            DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
-        }
+        /*if !DeviceOrientationMetadata.shared.isRecordingDeviceOrientations {
+            DeviceOrientationMetadata.shared.onStart()
+        }*/
     }
 
     private func incrementNetworkRetries() {

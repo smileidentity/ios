@@ -3,7 +3,7 @@ import Foundation
 import Network
 
 /// A class for determining the current network connection type (Wi-Fi, cellular, VPN, etc.)
-class NetworkMetadata {
+class NetworkMetadata: MetadataProtocol {
     private struct ConnectionEvent {
         let type: String
         let date: Date = Date()
@@ -17,22 +17,15 @@ class NetworkMetadata {
     }
 
     private let monitor: NWPathMonitor
-    /// Array tracking connection types over time.
     private var connectionEvents: [ConnectionEvent] = []
 
     init() {
         monitor = NWPathMonitor()
+    }
 
+    func onStart() {
         let queue = DispatchQueue(label: "NetworkMonitor")
         monitor.start(queue: queue)
-
-        // Initialize with current connection state
-        connectionEvents.append(
-            ConnectionEvent(
-                type: connectionType(for: monitor.currentPath).rawValue
-            )
-        )
-
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self else { return }
 
@@ -45,6 +38,10 @@ class NetworkMetadata {
         }
     }
 
+    func onStop() {
+        monitor.cancel()
+    }
+
     private func connectionType(for path: NWPath) -> NetworkConnection {
         if path.usesInterfaceType(.wifi) {
             return NetworkConnection.wifi
@@ -55,14 +52,7 @@ class NetworkMetadata {
         }
     }
 
-    deinit {
-        monitor.cancel()
-    }
-}
-
-extension NetworkMetadata: MetadataProtocol {
     func collectMetadata() -> [Metadatum] {
-        // Add network connection info
         let metadata = connectionEvents.map {
             Metadatum(
                 key: .networkConnection,

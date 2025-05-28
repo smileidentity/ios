@@ -105,8 +105,6 @@ class DocumentCaptureViewModel: ObservableObject {
                 self.documentFirstDetectedAtTime = nil
             }
         })
-
-        DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
     }
 
     @objc func showManualCapture() {

@@ -116,8 +116,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             key: .selfieImageOrigin,
             value: cameraFacing.rawValue
         )
-
-        DeviceOrientationMetadata.shared.startRecordingDeviceOrientations()
     }
 
     // swiftlint:disable cyclomatic_complexity

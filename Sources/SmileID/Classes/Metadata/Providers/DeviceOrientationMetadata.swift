@@ -32,7 +32,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
 
     private init() {}
 
-    func startRecordingDeviceOrientations() {
+    func onStart() {
         guard motionManager.isAccelerometerAvailable else {
             return
         }
@@ -53,7 +53,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
         }
     }
 
-    private func stopRecordingDeviceOrientations() {
+    func onStop() {
         isRecordingDeviceOrientations = false
         if motionManager.isAccelerometerActive {
             motionManager.stopAccelerometerUpdates()
@@ -110,7 +110,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
     // MARK: - MetadataProtocol
 
     func collectMetadata() -> [Metadatum] {
-        stopRecordingDeviceOrientations()
+        onStop()
 
         let orientations = deviceOrientations.map {
             Metadatum(
