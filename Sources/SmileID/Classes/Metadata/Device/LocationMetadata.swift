@@ -12,7 +12,7 @@ struct LocationInfo {
         accuracy: LocationAccuracy.unknown,
         source: LocationSource.unknown
     )
-    
+
     func toCodableObject() -> [String: CodableValue] {
         return [
             "latitude": .double(self.latitude),
@@ -41,10 +41,10 @@ func currentLocation() -> LocationInfo {
     guard status == .authorizedWhenInUse || status == .authorizedAlways else {
         return LocationInfo.unknown
     }
-    
+
     let locationManager = CLLocationManager()
     locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    
+
     guard let location = locationManager.location else {
         return LocationInfo.unknown
     }
@@ -66,4 +66,3 @@ func currentLocation() -> LocationInfo {
     )
     return locationInfo
 }
-

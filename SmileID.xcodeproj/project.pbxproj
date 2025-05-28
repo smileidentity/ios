@@ -1852,6 +1852,7 @@
 		6625C5D4B7D829BCBECCA376 /* FaceGeometryModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceGeometryModel.swift; path = Sources/SmileID/Classes/FaceDetector/FaceGeometryModel.swift; sourceTree = "<group>"; };
 		662988982DE721F000B74BEC /* OrchestratedEnhancedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrchestratedEnhancedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		662988992DE721F000B74BEC /* OrchestratedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrchestratedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
+		6629889A2DE75BD000B74BEC /* LocationMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMetadata.swift; sourceTree = "<group>"; };
 		662BB28CC5E203F106672B10 /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
 		662C36669474079120EEF8E9 /* DependencyAutoResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyAutoResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyAutoResolver.swift; sourceTree = "<group>"; };
 		662E78AA779170D8CA9EEECF /* OrchestratedConsentScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedConsentScreen.swift; path = Sources/SmileID/Classes/Consent/OrchestratedConsentScreen.swift; sourceTree = "<group>"; };
@@ -8336,6 +8337,7 @@
 		66F5991E2DD39F84000CE985 /* Device */ = {
 			isa = PBXGroup;
 			children = (
+				6629889A2DE75BD000B74BEC /* LocationMetadata.swift */,
 				66F599292DD3B167000CE985 /* VpnMetadata.swift */,
 				66F599282DD3A927000CE985 /* ProxyMetadata.swift */,
 				66F599212DD3A1B5000CE985 /* AVCaptureDeviceExtension.swift */,
