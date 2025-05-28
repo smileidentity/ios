@@ -83,14 +83,12 @@ class Metadata {
     }
 
     func onStart() {
-        print("metadata on start")
         for provider in providers {
             provider.onStart()
         }
     }
 
     func onStop() {
-        print("metadata on stop")
         for provider in providers {
             provider.onStop()
         }
