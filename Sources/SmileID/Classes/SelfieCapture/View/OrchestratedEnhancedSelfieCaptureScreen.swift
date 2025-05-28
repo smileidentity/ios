@@ -33,16 +33,22 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
     }
 
     public var body: some View {
-        if showInstructions {
-            LivenessCaptureInstructionsView(
-                showAttribution: showAttribution,
-                viewModel: viewModel
-            )
-        } else {
-            EnhancedSelfieCaptureScreen(
-                viewModel: viewModel,
-                showAttribution: showAttribution
-            )
+        Group {
+            if showInstructions {
+                LivenessCaptureInstructionsView(
+                    showAttribution: showAttribution,
+                    viewModel: viewModel
+                )
+            } else {
+                EnhancedSelfieCaptureScreen(
+                    viewModel: viewModel,
+                    showAttribution: showAttribution
+                )
+            }
+        }.onAppear {
+            Metadata.shared.onStart()
+        }.onDisappear {
+           Metadata.shared.onStop()
         }
     }
 }

@@ -205,7 +205,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
          duration timer.
          */
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadata.shared.addDeviceOrientation()
+            metadata.addMetadata(key: .deviceOrientation)
             hasRecordedOrientationAtCaptureStart = true
             captureDuration.startTime()
         }
@@ -493,7 +493,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
         At the end of the capture, we record the device orientation and
         the capture duration
         */
-        DeviceOrientationMetadata.shared.addDeviceOrientation()
+        metadata.addMetadata(key: .deviceOrientation)
         metadata.addMetadata(
             key: .selfieCaptureDuration,
             value: captureDuration.elapsedTime().milliseconds()
@@ -527,7 +527,6 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         // Add metadata before submission
         addSelfieCaptureMetaData()
         let metadata = metadata.collectAllMetadata()
-
         let submissionManager = SelfieSubmissionManager(
             userId: userId,
             isEnroll: isEnroll,
@@ -615,11 +614,9 @@ extension EnhancedSmartSelfieViewModel {
     private func resetSelfieCaptureMetadata() {
         metadata.removeMetadata(key: .selfieCaptureDuration)
         metadata.removeMetadata(key: .activeLivenessType)
-        DeviceOrientationMetadata.shared.clearDeviceOrientations()
+        metadata.removeMetadata(key: .deviceOrientation)
+        metadata.removeMetadata(key: .deviceMovementDetected)
         hasRecordedOrientationAtCaptureStart = false
-        /*if !DeviceOrientationMetadata.shared.isRecordingDeviceOrientations {
-            DeviceOrientationMetadata.shared.onStart()
-        }*/
     }
 
     private func incrementNetworkRetries() {

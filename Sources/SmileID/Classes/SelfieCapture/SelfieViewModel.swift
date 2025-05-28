@@ -125,7 +125,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
          duration timer.
          */
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadata.shared.addDeviceOrientation()
+            metadata.addMetadata(key: .deviceOrientation)
             hasRecordedOrientationAtCaptureStart = true
             captureDuration.startTime()
         }
@@ -292,7 +292,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                          At the end of the capture, we record the device orientation and
                          the capture duration
                          */
-                        DeviceOrientationMetadata.shared.addDeviceOrientation()
+                        metadata.addMetadata(key: .deviceOrientation)
                         metadata.addMetadata(
                             key: .selfieCaptureDuration,
                             value: captureDuration.elapsedTime().milliseconds()
@@ -371,7 +371,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         metadata.removeMetadata(key: .selfieImageOrigin)
         metadata.removeMetadata(key: .activeLivenessType)
         metadata.removeMetadata(key: .selfieCaptureDuration)
-        DeviceOrientationMetadata.shared.clearDeviceOrientations()
+        metadata.removeMetadata(key: .deviceOrientation)
+        metadata.removeMetadata(key: .deviceMovementDetected)
         hasRecordedOrientationAtCaptureStart = false
     }
 

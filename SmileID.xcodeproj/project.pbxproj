@@ -1850,7 +1850,8 @@
 		66106095FD7679D745F39BD1 /* CameraView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CameraView.swift; path = Sources/SmileID/Classes/SelfieCapture/View/CameraView.swift; sourceTree = "<group>"; };
 		661EE241C809EA00FDE14B0E /* SmileIDService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SmileIDService.swift; path = Sources/SmileID/Classes/Networking/SmileIDService.swift; sourceTree = "<group>"; };
 		6625C5D4B7D829BCBECCA376 /* FaceGeometryModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaceGeometryModel.swift; path = Sources/SmileID/Classes/FaceDetector/FaceGeometryModel.swift; sourceTree = "<group>"; };
-		662988942DE5F42E00B74BEC /* LocationMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMetadata.swift; sourceTree = "<group>"; };
+		662988982DE721F000B74BEC /* OrchestratedEnhancedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrchestratedEnhancedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
+		662988992DE721F000B74BEC /* OrchestratedSelfieCaptureScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrchestratedSelfieCaptureScreen.swift; sourceTree = "<group>"; };
 		662BB28CC5E203F106672B10 /* NavigationBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Sources/SmileID/Classes/Navigation/NavigationBar.swift; sourceTree = "<group>"; };
 		662C36669474079120EEF8E9 /* DependencyAutoResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DependencyAutoResolver.swift; path = Sources/SmileID/Classes/DependencyContainer/DependencyAutoResolver.swift; sourceTree = "<group>"; };
 		662E78AA779170D8CA9EEECF /* OrchestratedConsentScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OrchestratedConsentScreen.swift; path = Sources/SmileID/Classes/Consent/OrchestratedConsentScreen.swift; sourceTree = "<group>"; };
@@ -8083,6 +8084,8 @@
 		1EEFC26B2B58412300B8A934 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				662988982DE721F000B74BEC /* OrchestratedEnhancedSelfieCaptureScreen.swift */,
+				662988992DE721F000B74BEC /* OrchestratedSelfieCaptureScreen.swift */,
 				1EEFC26C2B58412300B8A934 /* ARViewController.xib */,
 				1EEFC26D2B58412300B8A934 /* CameraFrameView.swift */,
 				1EEFC26E2B58412300B8A934 /* InfiniteProgressBar.swift */,
@@ -8358,7 +8361,6 @@
 		66F599202DD39F84000CE985 /* Providers */ = {
 			isa = PBXGroup;
 			children = (
-				662988942DE5F42E00B74BEC /* LocationMetadata.swift */,
 				66F599272DD3A77F000CE985 /* MetadataProtocol.swift */,
 				66923C972DBA87ED00623B7D /* DeviceOrientationMetadata.swift */,
 				66923C9D2DBA87ED00623B7D /* NetworkMetadata.swift */,

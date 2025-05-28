@@ -4,6 +4,11 @@ import Network
 
 /// A class for determining the current network connection type (Wi-Fi, cellular, VPN, etc.)
 class NetworkMetadata: MetadataProtocol {
+    var provides: [MetadataKey] = [.networkConnection]
+
+    private var monitor: NWPathMonitor?
+    private var isRecording = false
+
     private struct ConnectionEvent {
         let type: String
         let date: Date = Date()
@@ -16,17 +21,22 @@ class NetworkMetadata: MetadataProtocol {
         case unknown = "unknown"
     }
 
-    private let monitor: NWPathMonitor
     private var connectionEvents: [ConnectionEvent] = []
 
-    init() {
-        monitor = NWPathMonitor()
-    }
-
     func onStart() {
+        // If we're already recording, then we don't start again
+        if isRecording {
+            return
+        }
+        isRecording = true
+
+        // Clear previous history to start fresh recording session
+        connectionEvents.removeAll()
+
         let queue = DispatchQueue(label: "NetworkMonitor")
-        monitor.start(queue: queue)
-        monitor.pathUpdateHandler = { [weak self] path in
+        monitor = NWPathMonitor()
+        monitor?.start(queue: queue)
+        monitor?.pathUpdateHandler = { [weak self] path in
             guard let self else { return }
 
             let newConnectionType = connectionType(for: path).rawValue
@@ -39,7 +49,8 @@ class NetworkMetadata: MetadataProtocol {
     }
 
     func onStop() {
-        monitor.cancel()
+        isRecording = false
+        monitor?.cancel()
     }
 
     private func connectionType(for path: NWPath) -> NetworkConnection {
@@ -61,5 +72,19 @@ class NetworkMetadata: MetadataProtocol {
             )
         }
         return metadata
+    }
+
+    func addMetadata(forKey: MetadataKey) {
+        // no-op
+    }
+
+    func removeMetadata(forKey: MetadataKey) {
+        switch forKey {
+        case .networkConnection:
+            connectionEvents.removeAll()
+        default:
+            // ignore the other cases
+            break
+        }
     }
 }

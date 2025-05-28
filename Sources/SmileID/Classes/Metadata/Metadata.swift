@@ -55,7 +55,7 @@ class Metadata {
 
     private func registerDefaultProviders() {
         register(provider: NetworkMetadata())
-        register(provider: DeviceOrientationMetadata.shared)
+        register(provider: DeviceOrientationMetadata())
     }
 
     private func register(provider: MetadataProtocol) {
@@ -64,6 +64,12 @@ class Metadata {
 
     func removeMetadata(key: MetadataKey) {
         staticMetadata.removeValue(forKey: key)
+
+        for provider in providers {
+            if provider.provides.contains(key) {
+                provider.removeMetadata(forKey: key)
+            }
+        }
     }
 
     func getDefaultMetadata() -> [Metadatum] {
@@ -127,5 +133,13 @@ extension Metadata {
 
     func addMetadata(key: MetadataKey, value: [String: CodableValue]) {
         store(key, .object(value))
+    }
+
+    func addMetadata(key: MetadataKey) {
+        for provider in providers {
+            if provider.provides.contains(key) {
+                provider.addMetadata(forKey: key)
+            }
+        }
     }
 }

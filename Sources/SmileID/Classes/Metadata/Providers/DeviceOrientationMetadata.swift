@@ -3,9 +3,10 @@ import Foundation
 import UIKit
 
 class DeviceOrientationMetadata: MetadataProtocol {
-    static let shared = DeviceOrientationMetadata()
+    var provides: [MetadataKey] = [.deviceOrientation, .deviceMovementDetected]
 
     private let motionManager = CMMotionManager()
+    var isRecording = false
 
     private struct OrientationEvent {
         let value: String
@@ -26,35 +27,33 @@ class DeviceOrientationMetadata: MetadataProtocol {
 
     private var currentOrientation: OrientationType = OrientationType.unknown
     private var deviceOrientations: [OrientationEvent] = []
-    var isRecordingDeviceOrientations = false
     private var deviceMovements: [MovementEvent] = []
-    private var movementChange: Double = 0.0
-
-    private init() {}
 
     func onStart() {
         guard motionManager.isAccelerometerAvailable else {
             return
         }
 
-        if isRecordingDeviceOrientations {
-            // Early return if we are already recording the device orientations
+        // If we're already recording, then we don't start again
+        if isRecording {
             return
         }
-        isRecordingDeviceOrientations = true
-        // Clear previous orientation history to start fresh recording session
+        isRecording = true
+
+        // Clear previous history to start fresh recording session
         deviceOrientations.removeAll()
+        deviceMovements.removeAll()
 
         motionManager.accelerometerUpdateInterval = 0.5
         motionManager.startAccelerometerUpdates(to: OperationQueue.main) { [weak self] data, _ in
             guard let self = self, let data = data else { return }
             self.currentOrientation = self.detectOrientationChange(from: data)
-            self.movementChange = self.detectMovementChange(from: data)
+            self.detectMovementChange(from: data)
         }
     }
 
     func onStop() {
-        isRecordingDeviceOrientations = false
+        isRecording = false
         if motionManager.isAccelerometerActive {
             motionManager.stopAccelerometerUpdates()
         }
@@ -74,7 +73,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
         }
     }
 
-    private func detectMovementChange(from data: CMAccelerometerData) -> Double {
+    private func detectMovementChange(from data: CMAccelerometerData) {
         let accelerationX = data.acceleration.x
         let accelerationY = data.acceleration.y
         let accelerationZ = data.acceleration.z
@@ -88,30 +87,12 @@ class DeviceOrientationMetadata: MetadataProtocol {
 
         let gravity = 0.981
         let movementChange = abs(magnitude - gravity)
-        return movementChange
-    }
-
-    func addDeviceOrientation() {
-        deviceOrientations.append(
-            OrientationEvent(value: currentOrientation.rawValue)
-        )
-    }
-
-    func clearDeviceOrientations() {
-        deviceOrientations.removeAll()
-    }
-    
-    func addDeviceMovement() {
         deviceMovements.append(
             MovementEvent(value: movementChange)
         )
     }
 
-    // MARK: - MetadataProtocol
-
     func collectMetadata() -> [Metadatum] {
-        onStop()
-
         let orientations = deviceOrientations.map {
             Metadatum(
                 key: .deviceOrientation,
@@ -127,5 +108,29 @@ class DeviceOrientationMetadata: MetadataProtocol {
             )
         }
         return orientations + movement
+    }
+
+    func addMetadata(forKey: MetadataKey) {
+        switch forKey {
+        case .deviceOrientation:
+            deviceOrientations.append(
+                OrientationEvent(value: currentOrientation.rawValue)
+            )
+        default:
+            // ignore the other cases
+            break
+        }
+    }
+
+    func removeMetadata(forKey: MetadataKey) {
+        switch forKey {
+        case .deviceOrientation:
+            deviceOrientations.removeAll()
+        case .deviceMovementDetected:
+            deviceMovements.removeAll()
+        default:
+            // ignore the other cases
+            break
+        }
     }
 }

@@ -195,7 +195,8 @@ class DocumentCaptureViewModel: ObservableObject {
             metadata.removeMetadata(key: .documentBackCaptureDuration)
             metadata.removeMetadata(key: .documentBackImageOrigin)
         }
-        DeviceOrientationMetadata.shared.clearDeviceOrientations()
+        metadata.removeMetadata(key: .deviceOrientation)
+        metadata.removeMetadata(key: .deviceMovementDetected)
         hasRecordedOrientationAtCaptureStart = false
     }
 
@@ -204,7 +205,7 @@ class DocumentCaptureViewModel: ObservableObject {
          At the end of the capture, we record the device orientation and
          the capture duration
          */
-        DeviceOrientationMetadata.shared.addDeviceOrientation()
+        metadata.addMetadata(key: .deviceOrientation)
         switch side {
         case .front:
             metadata.addMetadata(
@@ -247,7 +248,7 @@ class DocumentCaptureViewModel: ObservableObject {
          duration timer.
          */
         if !hasRecordedOrientationAtCaptureStart {
-            DeviceOrientationMetadata.shared.addDeviceOrientation()
+            metadata.addMetadata(key: .deviceOrientation)
             hasRecordedOrientationAtCaptureStart = true
             captureDuration.startTime()
         }
