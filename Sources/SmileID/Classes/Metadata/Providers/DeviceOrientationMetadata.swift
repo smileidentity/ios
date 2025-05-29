@@ -20,14 +20,9 @@ class DeviceOrientationMetadata: MetadataProtocol {
         case unknown = "unknown"
     }
 
-    private struct MovementEvent {
-        let value: Double
-        let date: Date = Date()
-    }
-
     private var currentOrientation: OrientationType = OrientationType.unknown
     private var deviceOrientations: [OrientationEvent] = []
-    private var deviceMovements: [MovementEvent] = []
+    private var deviceMovements: [Double] = []
 
     func onStart() {
         guard motionManager.isAccelerometerAvailable else {
@@ -87,9 +82,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
 
         let gravity = 0.981
         let movementChange = abs(magnitude - gravity)
-        deviceMovements.append(
-            MovementEvent(value: movementChange)
-        )
+        deviceMovements.append(movementChange)
     }
 
     func collectMetadata() -> [Metadatum] {
@@ -100,14 +93,24 @@ class DeviceOrientationMetadata: MetadataProtocol {
                 date: $0.date
             )
         }
-        let movement = deviceMovements.map {
-            Metadatum(
-                key: .deviceMovementDetected,
-                value: .double($0.value),
-                date: $0.date
-            )
-        }
-        return orientations + movement
+
+        /*
+         The movement change is the difference between the minimum movement change and the
+         maximum movement change.
+        */
+        let movementChange: Double = {
+            if let minMovementChange = deviceMovements.min(),
+               let maxMovementChange = deviceMovements.max() {
+                return maxMovementChange - minMovementChange
+            } else {
+                return -1.0
+            }
+        }()
+        let movement = Metadatum(
+            key: .deviceMovementDetected,
+            value: .double(movementChange)
+        )
+        return orientations + [movement]
     }
 
     func addMetadata(forKey: MetadataKey) {
