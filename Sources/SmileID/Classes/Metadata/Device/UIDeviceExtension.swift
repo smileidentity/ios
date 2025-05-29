@@ -24,7 +24,7 @@ extension UIDevice {
     /// Checks if the device has a proximity sensor available
     var hasProximitySensor: Bool {
         var result = false
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             UIDevice.current.isProximityMonitoringEnabled = true
             result = UIDevice.current.isProximityMonitoringEnabled
             UIDevice.current.isProximityMonitoringEnabled = false

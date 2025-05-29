@@ -16,8 +16,14 @@ class Metadata {
     private init() {}
 
     func initialize() {
+        reset()
         setDefaultMetadata()
         registerDefaultProviders()
+    }
+
+    private func reset() {
+        staticMetadata.removeAll()
+        providers.removeAll()
     }
 
     private func setDefaultMetadata() {
