@@ -42,7 +42,7 @@ public struct OrchestratedSelfieCaptureScreen: View {
     }
 
     public var body: some View {
-        Group {
+        ZStack {
             if showInstructions, !acknowledgedInstructions {
                 SmartSelfieInstructionsScreen(showAttribution: showAttribution) {
                     acknowledgedInstructions = true

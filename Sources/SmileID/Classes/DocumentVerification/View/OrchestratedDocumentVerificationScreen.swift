@@ -172,7 +172,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     }
 
     var body: some View {
-        Group {
+        ZStack {
             switch viewModel.step {
             case .frontDocumentCapture:
                 DocumentCaptureScreen(

@@ -33,7 +33,7 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
     }
 
     public var body: some View {
-        Group {
+        ZStack {
             if showInstructions {
                 LivenessCaptureInstructionsView(
                     showAttribution: showAttribution,

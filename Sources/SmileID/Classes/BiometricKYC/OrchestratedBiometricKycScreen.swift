@@ -46,7 +46,7 @@ struct OrchestratedBiometricKycScreen: View {
     }
 
     var body: some View {
-        Group {
+        ZStack {
             switch viewModel.step {
             case .selfie:
                 selfieCaptureScreen
