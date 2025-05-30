@@ -4,6 +4,7 @@ import Sentry
 import SmileID
 import SwiftUI
 import UIKit
+import CoreLocation
 
 class HomeViewModel: ObservableObject,
     SmartSelfieResultDelegate,
@@ -34,6 +35,16 @@ class HomeViewModel: ObservableObject,
     ) {
         self.dataStoreClient = dataStoreClient
         partnerId = config.partnerId
+
+        /*
+        Using location permissions is optional for the Smile SDK. If no permissions are given or the
+        user denies the request, the SDK will not include location metadata in the request. This
+        implementation in the sample app is to demonstrate how to check and request location
+        permissions.
+         */
+        let locationManager = CLLocationManager()
+        locationManager.requestWhenInUseAuthorization()
+
         SmileID.initialize(config: config, useSandbox: false)
         SentrySDK.configureScope { scope in
             scope.setTag(value: "partner_id", key: self.partnerId)

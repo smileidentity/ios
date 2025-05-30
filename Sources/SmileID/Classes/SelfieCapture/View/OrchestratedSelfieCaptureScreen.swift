@@ -10,7 +10,6 @@ public struct OrchestratedSelfieCaptureScreen: View {
     public let onResult: SmartSelfieResultDelegate
     @Backport.StateObject var viewModel: SelfieViewModel
 
-    @State private var localMetadata = LocalMetadata()
     @State private var acknowledgedInstructions = false
     private var originalBrightness = UIScreen.main.brightness
 
@@ -37,84 +36,89 @@ public struct OrchestratedSelfieCaptureScreen: View {
                 jobId: jobId,
                 allowNewEnroll: allowNewEnroll,
                 skipApiSubmission: skipApiSubmission,
-                extraPartnerParams: extraPartnerParams,
-                localMetadata: LocalMetadata()
+                extraPartnerParams: extraPartnerParams
             )
         )
     }
 
     public var body: some View {
-        if showInstructions, !acknowledgedInstructions {
-            SmartSelfieInstructionsScreen(showAttribution: showAttribution) {
-                acknowledgedInstructions = true
+        ZStack {
+            if showInstructions, !acknowledgedInstructions {
+                SmartSelfieInstructionsScreen(showAttribution: showAttribution) {
+                    acknowledgedInstructions = true
+                }
+            } else if let processingState = viewModel.processingState {
+                ProcessingScreen(
+                    processingState: processingState,
+                    inProgressTitle: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.ProcessingSelfie"
+                    ),
+                    inProgressSubtitle: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.Time"
+                    ),
+                    inProgressIcon: SmileIDResourcesHelper.FaceOutline,
+                    successTitle: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.SelfieCaptureComplete"
+                    ),
+                    successSubtitle: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.SuccessBody"
+                    ),
+                    successIcon: SmileIDResourcesHelper.CheckBold,
+                    errorTitle: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.Failure"
+                    ),
+                    errorSubtitle: getErrorSubtitle(
+                        errorMessageRes: viewModel.errorMessageRes,
+                        errorMessage: viewModel.errorMessage
+                    ),
+                    errorIcon: SmileIDResourcesHelper.Scan,
+                    continueButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.Continue"
+                    ),
+                    onContinue: { viewModel.onFinished(callback: onResult) },
+                    retryButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.Retry"
+                    ),
+                    onRetry: viewModel.onRetry,
+                    closeButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.Close"
+                    ),
+                    onClose: { viewModel.onFinished(callback: onResult) }
+                )
+            } else if let selfieToConfirm = viewModel.selfieToConfirm {
+                ImageCaptureConfirmationDialog(
+                    title: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.GoodSelfie"
+                    ),
+                    subtitle: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.FaceClear"
+                    ),
+                    image: UIImage(data: selfieToConfirm)!,
+                    confirmationButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.YesUse"
+                    ),
+                    onConfirm: viewModel.submitJob,
+                    retakeButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.Retake"
+                    ),
+                    onRetake: viewModel.onSelfieRejected,
+                    scaleFactor: 1.25
+                )
+            } else {
+                SelfieCaptureScreen(
+                    viewModel: viewModel,
+                    allowAgentMode: allowAgentMode
+                )
+                .onAppear {
+                    UIScreen.main.brightness = 1
+                }
+                .onDisappear { UIScreen.main.brightness = originalBrightness }
             }
-        } else if let processingState = viewModel.processingState {
-            ProcessingScreen(
-                processingState: processingState,
-                inProgressTitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.ProcessingSelfie"
-                ),
-                inProgressSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Time"
-                ),
-                inProgressIcon: SmileIDResourcesHelper.FaceOutline,
-                successTitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.SelfieCaptureComplete"
-                ),
-                successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.SuccessBody"
-                ),
-                successIcon: SmileIDResourcesHelper.CheckBold,
-                errorTitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Failure"
-                ),
-                errorSubtitle: getErrorSubtitle(
-                    errorMessageRes: viewModel.errorMessageRes,
-                    errorMessage: viewModel.errorMessage
-                ),
-                errorIcon: SmileIDResourcesHelper.Scan,
-                continueButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Continue"
-                ),
-                onContinue: { viewModel.onFinished(callback: onResult) },
-                retryButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Retry"
-                ),
-                onRetry: viewModel.onRetry,
-                closeButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Close"
-                ),
-                onClose: { viewModel.onFinished(callback: onResult) }
-            )
-        } else if let selfieToConfirm = viewModel.selfieToConfirm {
-            ImageCaptureConfirmationDialog(
-                title: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.GoodSelfie"
-                ),
-                subtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.FaceClear"
-                ),
-                image: UIImage(data: selfieToConfirm)!,
-                confirmationButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.YesUse"
-                ),
-                onConfirm: viewModel.submitJob,
-                retakeButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Retake"
-                ),
-                onRetake: viewModel.onSelfieRejected,
-                scaleFactor: 1.25
-            )
-        } else {
-            SelfieCaptureScreen(
-                viewModel: viewModel,
-                allowAgentMode: allowAgentMode
-            )
-            .onAppear {
-                viewModel.updateLocalMetadata(localMetadata)
-                UIScreen.main.brightness = 1
-            }
-            .onDisappear { UIScreen.main.brightness = originalBrightness }
+        }
+        .onAppear {
+            Metadata.shared.onStart()
+        }.onDisappear {
+           Metadata.shared.onStop()
         }
     }
 }

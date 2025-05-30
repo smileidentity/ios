@@ -20,7 +20,7 @@ final class SelfieSubmissionManager {
     private var selfieImageUrl: URL?
     private var livenessImages: [URL]
     private var extraPartnerParams: [String: String]
-    private let localMetadata: LocalMetadata
+    private var metadata: [Metadatum]
 
     weak var delegate: SelfieSubmissionDelegate?
 
@@ -33,7 +33,7 @@ final class SelfieSubmissionManager {
         selfieImageUrl: URL?,
         livenessImages: [URL],
         extraPartnerParams: [String: String],
-        localMetadata: LocalMetadata
+        metadata: [Metadatum]
     ) {
         self.userId = userId
         self.isEnroll = isEnroll
@@ -42,7 +42,7 @@ final class SelfieSubmissionManager {
         self.selfieImageUrl = selfieImageUrl
         self.livenessImages = livenessImages
         self.extraPartnerParams = extraPartnerParams
-        self.localMetadata = localMetadata
+        self.metadata = metadata
     }
 
     func submitJob(failureReason: FailureReason? = nil) async throws {
@@ -140,8 +140,7 @@ final class SelfieSubmissionManager {
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
                     allowNewEnroll: allowNewEnroll,
-                    failureReason: failureReason,
-                    metadata: localMetadata.metadata
+                    failureReason: failureReason
                 )
         } else {
             return try await SmileID.api
@@ -154,8 +153,7 @@ final class SelfieSubmissionManager {
                     partnerParams: extraPartnerParams,
                     callbackUrl: SmileID.callbackUrl,
                     sandboxResult: nil,
-                    failureReason: failureReason,
-                    metadata: localMetadata.metadata
+                    failureReason: failureReason
                 )
         }
     }
