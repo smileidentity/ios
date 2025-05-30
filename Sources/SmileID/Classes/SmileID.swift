@@ -112,7 +112,6 @@ public class SmileID {
             /// https://github.com/fingerprintjs/fingerprintjs-ios
             if let fingerprint = await fingerprinter.getDeviceId() {
                 deviceId = fingerprint
-                Metadata.shared.initialize()
             }
         }
     }
@@ -341,7 +340,8 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        OrchestratedSelfieCaptureScreen(
+        Metadata.shared.initialize()
+        return OrchestratedSelfieCaptureScreen(
             userId: userId,
             jobId: jobId,
             isEnroll: true,
@@ -379,7 +379,8 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        OrchestratedEnhancedSelfieCaptureScreen(
+        Metadata.shared.initialize()
+        return OrchestratedEnhancedSelfieCaptureScreen(
             userId: userId,
             isEnroll: true,
             allowNewEnroll: allowNewEnroll,
@@ -424,7 +425,8 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        OrchestratedSelfieCaptureScreen(
+        Metadata.shared.initialize()
+        return OrchestratedSelfieCaptureScreen(
             userId: userId,
             jobId: jobId,
             isEnroll: false,
@@ -462,7 +464,8 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: SmartSelfieResultDelegate
     ) -> some View {
-        OrchestratedEnhancedSelfieCaptureScreen(
+        Metadata.shared.initialize()
+        return OrchestratedEnhancedSelfieCaptureScreen(
             userId: userId,
             isEnroll: false,
             allowNewEnroll: allowNewEnroll,
@@ -520,7 +523,8 @@ public class SmileID {
         extraPartnerParams: [String: String] = [:],
         delegate: DocumentVerificationResultDelegate
     ) -> some View {
-        OrchestratedDocumentVerificationScreen(
+        Metadata.shared.initialize()
+        return OrchestratedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
             captureBothSides: captureBothSides,
@@ -595,7 +599,8 @@ public class SmileID {
         ),
         delegate: EnhancedDocumentVerificationResultDelegate
     ) -> some View {
-        OrchestratedEnhancedDocumentVerificationScreen(
+        Metadata.shared.initialize()
+        return OrchestratedEnhancedDocumentVerificationScreen(
             countryCode: countryCode,
             documentType: documentType,
             consentInformation: consentInformation,
@@ -675,7 +680,8 @@ public class SmileID {
         ),
         delegate: BiometricKycResultDelegate
     ) -> some View {
-        OrchestratedBiometricKycScreen(
+        Metadata.shared.initialize()
+        return OrchestratedBiometricKycScreen(
             idInfo: idInfo,
             consentInformation: consentInformation,
             userId: userId,

@@ -16,8 +16,14 @@ class Metadata {
     private init() {}
 
     func initialize() {
+        reset()
         setDefaultMetadata()
         registerDefaultProviders()
+    }
+
+    private func reset() {
+        staticMetadata.removeAll()
+        providers.removeAll()
     }
 
     private func setDefaultMetadata() {
@@ -29,7 +35,9 @@ class Metadata {
         addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
         addMetadata(key: .locale, value: Locale.current.identifier)
         addMetadata(
-            key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current))
+            key: .localTimeOfEnrolment, value: Date().toISO8601WithMilliseconds(timezone: .current)
+        )
+        addMetadata(key: .geolocation, value: currentLocation().toCodableObject())
         addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
         addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCameras)
         addMetadata(key: .proximitySensor, value: UIDevice.current.hasProximitySensor)
@@ -53,7 +61,7 @@ class Metadata {
 
     private func registerDefaultProviders() {
         register(provider: NetworkMetadata())
-        register(provider: DeviceOrientationMetadata.shared)
+        register(provider: DeviceOrientationMetadata())
     }
 
     private func register(provider: MetadataProtocol) {
@@ -62,6 +70,12 @@ class Metadata {
 
     func removeMetadata(key: MetadataKey) {
         staticMetadata.removeValue(forKey: key)
+
+        for provider in providers {
+            if provider.provides.contains(key) {
+                provider.removeMetadata(forKey: key)
+            }
+        }
     }
 
     func getDefaultMetadata() -> [Metadatum] {
@@ -71,6 +85,18 @@ class Metadata {
                 value: entry.value,
                 date: entry.date
             )
+        }
+    }
+
+    func onStart() {
+        for provider in providers {
+            provider.onStart()
+        }
+    }
+
+    func onStop() {
+        for provider in providers {
+            provider.onStop()
         }
     }
 
@@ -111,5 +137,13 @@ extension Metadata {
 
     func addMetadata(key: MetadataKey, value: [String: CodableValue]) {
         store(key, .object(value))
+    }
+
+    func addMetadata(key: MetadataKey) {
+        for provider in providers {
+            if provider.provides.contains(key) {
+                provider.addMetadata(forKey: key)
+            }
+        }
     }
 }

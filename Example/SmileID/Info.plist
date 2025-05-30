@@ -28,6 +28,8 @@
 	<string>We need access to your camera to verify your identity </string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library to save images</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need access to your location for fraud prevention</string>
 	<key>EnableSentry</key>
 	<string>$(ENABLE_SENTRY)</string>
 	<key>UILaunchStoryboardName</key>

@@ -8,6 +8,7 @@ enum MetadataKey: String {
     case deviceModel = "device_model"
     case deviceOrientation = "device_orientation"
     case deviceOS = "device_os"
+    case deviceMovementDetected = "device_movement_detected"
     case documentBackCaptureRetries = "document_back_capture_retries"
     case documentBackCaptureDuration = "document_back_capture_duration_ms"
     case documentBackImageOrigin = "document_back_image_origin"
@@ -15,6 +16,7 @@ enum MetadataKey: String {
     case documentFrontCaptureDuration = "document_front_capture_duration_ms"
     case documentFrontImageOrigin = "document_front_image_origin"
     case fingerprint
+    case geolocation
     case hostApplication = "host_application"
     case locale = "locale"
     case localTimeOfEnrolment = "local_time_of_enrolment"

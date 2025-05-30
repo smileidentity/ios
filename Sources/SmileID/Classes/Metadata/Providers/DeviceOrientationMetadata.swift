@@ -3,9 +3,10 @@ import Foundation
 import UIKit
 
 class DeviceOrientationMetadata: MetadataProtocol {
-    static let shared = DeviceOrientationMetadata()
+    var provides: [MetadataKey] = [.deviceOrientation, .deviceMovementDetected]
 
     private let motionManager = CMMotionManager()
+    var isRecording = false
 
     private struct OrientationEvent {
         let value: String
@@ -21,38 +22,39 @@ class DeviceOrientationMetadata: MetadataProtocol {
 
     private var currentOrientation: OrientationType = OrientationType.unknown
     private var deviceOrientations: [OrientationEvent] = []
-    var isRecordingDeviceOrientations = false
+    private var deviceMovements: [Double] = []
 
-    private init() {}
-
-    func startRecordingDeviceOrientations() {
+    func onStart() {
         guard motionManager.isAccelerometerAvailable else {
             return
         }
 
-        if isRecordingDeviceOrientations {
-            // Early return if we are already recording the device orientations
+        // If we're already recording, then we don't start again
+        if isRecording {
             return
         }
-        isRecordingDeviceOrientations = true
-        // Clear previous orientation history to start fresh recording session
+        isRecording = true
+
+        // Clear previous history to start fresh recording session
         deviceOrientations.removeAll()
+        deviceMovements.removeAll()
 
         motionManager.accelerometerUpdateInterval = 0.5
         motionManager.startAccelerometerUpdates(to: OperationQueue.main) { [weak self] data, _ in
             guard let self = self, let data = data else { return }
-            self.currentOrientation = self.determineOrientation(from: data)
+            self.currentOrientation = self.detectOrientationChange(from: data)
+            self.detectMovementChange(from: data)
         }
     }
 
-    private func stopRecordingDeviceOrientations() {
-        isRecordingDeviceOrientations = false
+    func onStop() {
+        isRecording = false
         if motionManager.isAccelerometerActive {
             motionManager.stopAccelerometerUpdates()
         }
     }
 
-    private func determineOrientation(from data: CMAccelerometerData) -> OrientationType {
+    private func detectOrientationChange(from data: CMAccelerometerData) -> OrientationType {
         let accelerationX = data.acceleration.x
         let accelerationY = data.acceleration.y
         let accelerationZ = data.acceleration.z
@@ -66,27 +68,72 @@ class DeviceOrientationMetadata: MetadataProtocol {
         }
     }
 
-    func addDeviceOrientation() {
-        deviceOrientations.append(
-            OrientationEvent(value: currentOrientation.rawValue)
+    private func detectMovementChange(from data: CMAccelerometerData) {
+        let accelerationX = data.acceleration.x
+        let accelerationY = data.acceleration.y
+        let accelerationZ = data.acceleration.z
+
+        // Calculate acceleration magnitude
+        let magnitude = sqrt(
+            accelerationX * accelerationX +
+            accelerationY * accelerationY +
+            accelerationZ * accelerationZ
         )
-    }
 
-    func clearDeviceOrientations() {
-        deviceOrientations.removeAll()
+        let gravity = 0.981
+        let movementChange = abs(magnitude - gravity)
+        deviceMovements.append(movementChange)
     }
-
-    // MARK: - MetadataProtocol
 
     func collectMetadata() -> [Metadatum] {
-        stopRecordingDeviceOrientations()
-
-        return deviceOrientations.map {
+        let orientations = deviceOrientations.map {
             Metadatum(
                 key: .deviceOrientation,
                 value: .string($0.value),
                 date: $0.date
             )
+        }
+
+        /*
+         The movement change is the difference between the minimum movement change and the
+         maximum movement change.
+        */
+        let movementChange: Double = {
+            if let minMovementChange = deviceMovements.min(),
+               let maxMovementChange = deviceMovements.max() {
+                return maxMovementChange - minMovementChange
+            } else {
+                return -1.0
+            }
+        }()
+        let movement = Metadatum(
+            key: .deviceMovementDetected,
+            value: .double(movementChange)
+        )
+        return orientations + [movement]
+    }
+
+    func addMetadata(forKey: MetadataKey) {
+        switch forKey {
+        case .deviceOrientation:
+            deviceOrientations.append(
+                OrientationEvent(value: currentOrientation.rawValue)
+            )
+        default:
+            // ignore the other cases
+            break
+        }
+    }
+
+    func removeMetadata(forKey: MetadataKey) {
+        switch forKey {
+        case .deviceOrientation:
+            deviceOrientations.removeAll()
+        case .deviceMovementDetected:
+            deviceMovements.removeAll()
+        default:
+            // ignore the other cases
+            break
         }
     }
 }

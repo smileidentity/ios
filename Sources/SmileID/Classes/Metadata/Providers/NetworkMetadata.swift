@@ -3,7 +3,12 @@ import Foundation
 import Network
 
 /// A class for determining the current network connection type (Wi-Fi, cellular, VPN, etc.)
-class NetworkMetadata {
+class NetworkMetadata: MetadataProtocol {
+    var provides: [MetadataKey] = [.networkConnection]
+
+    private var monitor: NWPathMonitor?
+    private var isRecording = false
+
     private struct ConnectionEvent {
         let type: String
         let date: Date = Date()
@@ -16,24 +21,22 @@ class NetworkMetadata {
         case unknown = "unknown"
     }
 
-    private let monitor: NWPathMonitor
-    /// Array tracking connection types over time.
     private var connectionEvents: [ConnectionEvent] = []
 
-    init() {
-        monitor = NWPathMonitor()
+    func onStart() {
+        // If we're already recording, then we don't start again
+        if isRecording {
+            return
+        }
+        isRecording = true
+
+        // Clear previous history to start fresh recording session
+        connectionEvents.removeAll()
 
         let queue = DispatchQueue(label: "NetworkMonitor")
-        monitor.start(queue: queue)
-
-        // Initialize with current connection state
-        connectionEvents.append(
-            ConnectionEvent(
-                type: connectionType(for: monitor.currentPath).rawValue
-            )
-        )
-
-        monitor.pathUpdateHandler = { [weak self] path in
+        monitor = NWPathMonitor()
+        monitor?.start(queue: queue)
+        monitor?.pathUpdateHandler = { [weak self] path in
             guard let self else { return }
 
             let newConnectionType = connectionType(for: path).rawValue
@@ -43,6 +46,11 @@ class NetworkMetadata {
                 )
             }
         }
+    }
+
+    func onStop() {
+        isRecording = false
+        monitor?.cancel()
     }
 
     private func connectionType(for path: NWPath) -> NetworkConnection {
@@ -55,14 +63,7 @@ class NetworkMetadata {
         }
     }
 
-    deinit {
-        monitor.cancel()
-    }
-}
-
-extension NetworkMetadata: MetadataProtocol {
     func collectMetadata() -> [Metadatum] {
-        // Add network connection info
         let metadata = connectionEvents.map {
             Metadatum(
                 key: .networkConnection,
@@ -71,5 +72,19 @@ extension NetworkMetadata: MetadataProtocol {
             )
         }
         return metadata
+    }
+
+    func addMetadata(forKey: MetadataKey) {
+        // no-op
+    }
+
+    func removeMetadata(forKey: MetadataKey) {
+        switch forKey {
+        case .networkConnection:
+            connectionEvents.removeAll()
+        default:
+            // ignore the other cases
+            break
+        }
     }
 }
