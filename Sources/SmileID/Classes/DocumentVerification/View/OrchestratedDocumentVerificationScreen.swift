@@ -248,10 +248,9 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
                     onClose: { viewModel.onFinished(delegate: onResult) }
                 )
             }
-        }.onAppear {
+        }
+        .onAppear {
             Metadata.shared.onStart()
-        }.onDisappear {
-            Metadata.shared.onStop()
         }
     }
 

@@ -542,6 +542,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     }
 
     public func onFinished(callback: SmartSelfieResultDelegate) {
+        Metadata.shared.onStop()
         if let error = self.error {
             callback.didError(error: error)
         } else if let selfieImageURL = selfieImageURL,

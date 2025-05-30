@@ -83,10 +83,9 @@ struct OrchestratedBiometricKycScreen: View {
                     onClose: { viewModel.onFinished(delegate: delegate) }
                 )
             }
-        }.onAppear {
+        }
+        .onAppear {
             Metadata.shared.onStart()
-        }.onDisappear {
-            Metadata.shared.onStop()
         }
     }
 

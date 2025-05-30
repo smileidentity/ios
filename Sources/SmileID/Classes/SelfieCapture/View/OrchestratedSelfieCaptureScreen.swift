@@ -114,7 +114,8 @@ public struct OrchestratedSelfieCaptureScreen: View {
                 }
                 .onDisappear { UIScreen.main.brightness = originalBrightness }
             }
-        }.onAppear {
+        }
+        .onAppear {
             Metadata.shared.onStart()
         }.onDisappear {
            Metadata.shared.onStop()

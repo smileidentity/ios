@@ -45,10 +45,9 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
                     showAttribution: showAttribution
                 )
             }
-        }.onAppear {
+        }
+        .onAppear {
             Metadata.shared.onStart()
-        }.onDisappear {
-           Metadata.shared.onStop()
         }
     }
 }
