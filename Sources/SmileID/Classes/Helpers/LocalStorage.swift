@@ -320,14 +320,28 @@ public class LocalStorage {
         }
 
         // Zip all files
-        return try zipFiles(at: allUrls)
+        return try zipFiles(urls: allUrls)
     }
 
-    public static func zipFiles(at urls: [URL]) throws -> Data {
+    public static func zipFiles(urls: [URL] = [], data: [String: Data] = [:]) throws -> Data {
         let archive = try Archive(accessMode: .create)
+
+        // Add files from disk
         for url in urls {
             try archive.addEntry(with: url.lastPathComponent, fileURL: url)
         }
+
+        // Add in-memory files
+        for (filename, content) in data {
+            try archive.addEntry(
+                with: filename,
+                type: .file,
+                uncompressedSize: Int64(content.count)
+            ) { position, size in
+                return content.subdata(in: Int(position)..<Int(position) + size)
+            }
+        }
+
         return archive.data!
     }
 

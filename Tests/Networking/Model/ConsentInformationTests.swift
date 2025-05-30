@@ -43,7 +43,6 @@ class ConsentInformationTests: XCTestCase {
 
     func testLegacyConsentInformationEncoding() throws {
         // given - using legacy constructor
-        #pragma("Temporarily suppress deprecation warning for test")
         let consentInformation = ConsentInformation(
             consentGrantedDate: "2025-04-01T15:16:03.246Z",
             personalDetailsConsentGranted: true,
@@ -114,7 +113,6 @@ class ConsentInformationTests: XCTestCase {
             )
         )
 
-        #pragma("Temporarily suppress deprecation warning for test")
         let legacyStyleConsent = ConsentInformation(
             consentGrantedDate: "2025-04-01T15:16:03.246Z",
             personalDetailsConsentGranted: true,

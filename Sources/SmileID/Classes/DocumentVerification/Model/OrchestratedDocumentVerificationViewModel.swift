@@ -178,7 +178,20 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     livenessImages: livenessFiles
                 )
                 allFiles.append(info)
-                let zipData = try LocalStorage.zipFiles(at: allFiles)
+                let zipData: Data
+                let securityInfo = try? createSecurityInfo(files: allFiles)
+                if let securityInfo = securityInfo {
+                    zipData = try LocalStorage.zipFiles(
+                        urls: allFiles,
+                        data: ["security_info.json": securityInfo]
+                    )
+                } else {
+                    /*
+                     In case we can't add the security info the backend will throw an unauthorized error.
+                     In the future, we will handle this more gracefully once sentry integration has been implemented.
+                     */
+                    zipData = try LocalStorage.zipFiles(urls: allFiles)
+                }
                 self.savedFiles = DocumentCaptureResultStore(
                     allFiles: allFiles,
                     documentFront: frontDocumentUrl,
@@ -209,7 +222,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     )
                 }
                 let authResponse = try await SmileID.api.authenticate(request: authRequest)
-                let prepUploadRequest = PrepUploadRequest(
+                var prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
                     allowNewEnroll: allowNewEnroll,
                     metadata: metadata,
@@ -225,8 +238,9 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     switch error {
                     case .api("2215", _):
                         incrementNetworkRetries()
+                        prepUploadRequest.retry = true
                         prepUploadResponse = try await SmileID.api.prepUpload(
-                            request: prepUploadRequest.copy(retry: "true")
+                            request: prepUploadRequest
                         )
                     default:
                         throw error
@@ -362,9 +376,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult>
-{
+class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let error {
             delegate.didError(error: error)
@@ -385,11 +397,7 @@ class OrchestratedDocumentVerificationViewModel:
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedEnhancedDocumentVerificationViewModel:
-    IOrchestratedDocumentVerificationViewModel<
-        EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
-    >
-{
+class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let error {
             delegate.didError(error: error)

@@ -1,4 +1,5 @@
 import Foundation
+import SmileIDSecurity
 
 protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
@@ -66,7 +67,8 @@ extension ServiceRunnable {
                 .contentType(value: "application/json"),
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
-                .sourceSDKVersion(value: SmileID.version)
+                .sourceSDKVersion(value: SmileID.version),
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ],
             body: body
         )
@@ -80,7 +82,8 @@ extension ServiceRunnable {
             headers: [
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
-                .sourceSDKVersion(value: SmileID.version)
+                .sourceSDKVersion(value: SmileID.version),
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ]
         )
         return try await serviceClient.send(request: request)
@@ -107,6 +110,40 @@ extension ServiceRunnable {
         headers.append(.timestamp(value: timestamp))
         headers.append(.sourceSDK(value: "iOS"))
         headers.append(.sourceSDKVersion(value: SmileID.version))
+        let timestamp = Date().toISO8601WithMilliseconds()
+        headers.append(.requestTimestamp(value: timestamp))
+
+        let metadata = metadata.collectAllMetadata()
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        let selfieRequest = SelfieRequest(
+            selfieImage: selfieImage.data,
+            livenessImages: livenessImages.map { $0.data },
+            userId: userId,
+            partnerParams: partnerParams,
+            callbackUrl: callbackUrl?.nilIfEmpty(),
+            sandboxResult: sandboxResult,
+            allowNewEnroll: allowNewEnroll,
+            failureReason: failureReason,
+            metadata: metadata
+        )
+
+        let payload = try encoder.encode(selfieRequest)
+        let requestMac = try? SmileIDCryptoManager.shared.sign(
+            timestamp: timestamp,
+            headers: headers.toDictionary(),
+            payload: payload
+        )
+        if let requestMac = requestMac {
+            headers.append(.requestMac(value: requestMac))
+        } else {
+            /*
+             In case we can't add the security info the backend will throw an unauthorized error.
+             In the future, we will handle this more gracefully once sentry integration has been implemented.
+             */
+        }
+
         let request = try await createMultiPartRequest(
             url: path,
             method: .post,
@@ -120,7 +157,7 @@ extension ServiceRunnable {
                 sandboxResult: sandboxResult,
                 allowNewEnroll: allowNewEnroll,
                 failureReason: failureReason,
-                metadata: metadata.collectAllMetadata(),
+                metadata: metadata,
                 boundary: boundary
             )
         )
@@ -131,7 +168,7 @@ extension ServiceRunnable {
     private func createMultiPartRequest(
         url: PathType,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         uploadData: Data
     ) async throws -> RestRequest {
         let path = String(describing: url)
@@ -173,13 +210,14 @@ extension ServiceRunnable {
     private func createUploadRequest(
         url: String,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         uploadData: Data,
         queryParameters _: [HTTPQueryParameters]? = nil
     ) async throws -> RestRequest {
         guard let url = URL(string: url) else {
             throw URLError(.badURL)
         }
+
         let request = RestRequest(
             url: url,
             method: method,
@@ -192,7 +230,7 @@ extension ServiceRunnable {
     private func createRestRequest<T: Encodable>(
         path: PathType,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         queryParameters: [HTTPQueryParameters]? = nil,
         body: T
     ) async throws -> RestRequest {
@@ -201,11 +239,32 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        let payload = try encoder.encode(body)
+
+        var signedHeaders = headers
+        if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
+            let requestMac = try? SmileIDCryptoManager.shared.sign(
+                timestamp: header.value,
+                headers: headers.toDictionary(),
+                payload: payload
+            )
+            if let requestMac = requestMac {
+                signedHeaders.append(.requestMac(value: requestMac))
+            } else {
+                /*
+                 In case we can't add the security info the backend will throw an unauthorized error.
+                 In the future, we will handle this more gracefully once sentry integration has been implemented.
+                 */
+            }
+        }
+
         do {
             let request = try RestRequest(
                 url: url,
                 method: method,
-                headers: headers,
+                headers: signedHeaders,
                 queryParameters: queryParameters,
                 body: body
             )
@@ -218,7 +277,7 @@ extension ServiceRunnable {
     private func createRestRequest(
         path: PathType,
         method: RestMethod,
-        headers: [HTTPHeader]? = nil,
+        headers: [HTTPHeader],
         queryParameters: [HTTPQueryParameters]? = nil
     ) throws -> RestRequest {
         let path = String(describing: path)
@@ -226,10 +285,25 @@ extension ServiceRunnable {
             throw URLError(.badURL)
         }
 
+        var signedHeaders = headers
+        if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
+            let requestMac = try? SmileIDCryptoManager.shared.sign(
+                timestamp: header.value,
+                headers: headers.toDictionary()
+            )
+            if let requestMac = requestMac {
+                signedHeaders.append(.requestMac(value: requestMac))
+            } else {
+                /*
+                 In case we can't add the security info the backend will throw an unauthorized error.
+                 In the future, we will handle this more gracefully once sentry integration has been implemented.
+                 */
+            }
+        }
         let request = RestRequest(
             url: url,
             method: method,
-            headers: headers,
+            headers: signedHeaders,
             queryParameters: queryParameters
         )
         return request
@@ -266,7 +340,10 @@ extension ServiceRunnable {
                 body.append(dispositionData)
                 body.append(contentTypeData)
 
-                if let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: []) {
+                if let jsonData = try? JSONSerialization.data(
+                    withJSONObject: parameters,
+                    options: [.sortedKeys, .withoutEscapingSlashes]
+                ) {
                     body.append(jsonData)
                     body.append(lineBreakData)
                 }
@@ -318,6 +395,7 @@ extension ServiceRunnable {
 
         // Append metadata
         let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         if let metadataData = try? encoder.encode(metadata) {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)

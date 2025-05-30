@@ -442,7 +442,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                 if let selfie = try? Data(contentsOf: selfieImage),
                     let media = MultipartBody(
                         withImage: selfie,
-                        forKey: selfieImage.lastPathComponent,
                         forName: selfieImage.lastPathComponent
                     )
                 {
@@ -454,7 +453,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         if let data = try? Data(contentsOf: liveness) {
                             return MultipartBody(
                                 withImage: data,
-                                forKey: liveness.lastPathComponent,
                                 forName: liveness.lastPathComponent
                             )
                         }

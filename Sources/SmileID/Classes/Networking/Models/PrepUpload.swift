@@ -12,7 +12,7 @@ public struct PrepUploadRequest: Codable {
     public var timestamp = Date().toISO8601WithMilliseconds()
     public var signature = ""
     public var useEnrolledImage = false
-    public var retry = "false" /// backend is broken needs these as strings
+    public var retry: Bool = false
 
     public init(
         partnerParams: PartnerParams,
@@ -25,7 +25,7 @@ public struct PrepUploadRequest: Codable {
         timestamp: String = Date().toISO8601WithMilliseconds(),
         signature: String = "",
         useEnrolledImage: Bool = false,
-        retry: String = "false"
+        retry: Bool = false
     ) {
         self.partnerParams = partnerParams
         self.callbackUrl = callbackUrl
@@ -52,22 +52,6 @@ public struct PrepUploadRequest: Codable {
         case signature
         case retry
         case metadata
-    }
-
-    public func copy(retry: String? = nil) -> PrepUploadRequest {
-        return PrepUploadRequest(
-            partnerParams: partnerParams,
-            callbackUrl: callbackUrl,
-            allowNewEnroll: allowNewEnroll,
-            partnerId: partnerId,
-            metadata: metadata,
-            sourceSdk: sourceSdk,
-            sourceSdkVersion: sourceSdkVersion,
-            timestamp: timestamp,
-            signature: signature,
-            useEnrolledImage: useEnrolledImage,
-            retry: retry ?? self.retry
-        )
     }
 }
 

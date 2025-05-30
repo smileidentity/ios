@@ -1,5 +1,5 @@
 {
-  "originHash" : "b4a832f8609e6d8fe26567f801eacf41b54111a27551c5d2a949decba83d8b82",
+  "originHash" : "60ccf1f3bdb356f89e96f70a8531c34eebffe2363a31000c069923d65f56f54d",
   "pins" : [
     {
       "identity" : "fingerprintjs-ios",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "1d29eccc24cc8b75bff9f6804155112c0ffc9605",
         "version" : "4.4.3"
+      }
+    },
+    {
+      "identity" : "smile-id-security",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/smileidentity/smile-id-security",
+      "state" : {
+        "branch" : "main",
+        "revision" : "77c8d918c2e21e88a6f87504785429d8015aa0fc"
       }
     },
     {
