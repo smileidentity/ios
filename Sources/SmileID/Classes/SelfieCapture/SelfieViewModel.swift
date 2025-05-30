@@ -25,8 +25,12 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     private let allowNewEnroll: Bool
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
-    private var localMetadata: LocalMetadata
+    private let metadata: Metadata = .shared
+    private var captureDuration = MonotonicTime()
     private let faceDetector = FaceDetector()
+    private var networkRetries: Int = 0
+    private var selfieCaptureRetries: Int = 0
+    private var hasRecordedOrientationAtCaptureStart = false
 
     var cameraManager = CameraManager(orientation: .portrait)
     var shouldAnalyzeImages = true
@@ -71,8 +75,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         jobId: String,
         allowNewEnroll: Bool,
         skipApiSubmission: Bool,
-        extraPartnerParams: [String: String],
-        localMetadata: LocalMetadata
+        extraPartnerParams: [String: String]
     ) {
         self.isEnroll = isEnroll
         self.userId = userId
@@ -80,7 +83,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         self.allowNewEnroll = allowNewEnroll
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
-        self.localMetadata = localMetadata
 
         if cameraManager.session.canSetSessionPreset(.vga640x480) {
             cameraManager.session.sessionPreset = .vga640x480
@@ -107,22 +109,27 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             }
             .store(in: &subscribers)
 
-        localMetadata.addMetadata(
+        let cameraFacing: CameraFacingValue =
             useBackCamera
-                ? Metadatum.SelfieImageOrigin(cameraFacing: .backCamera)
-                : Metadatum.SelfieImageOrigin(cameraFacing: .frontCamera)
+            ? .backCamera : .frontCamera
+        metadata.addMetadata(
+            key: .selfieImageOrigin,
+            value: cameraFacing.rawValue
         )
-    }
-
-    let metadataTimerStart = MonotonicTime()
-
-    func updateLocalMetadata(_ newMetadata: LocalMetadata) {
-        localMetadata = newMetadata
-        objectWillChange.send()
     }
 
     // swiftlint:disable cyclomatic_complexity
     func analyzeImage(image: CVPixelBuffer) {
+        /*
+         At the start of the capture, we record the device orientation and start the capture
+         duration timer.
+         */
+        if !hasRecordedOrientationAtCaptureStart {
+            metadata.addMetadata(key: .deviceOrientation)
+            hasRecordedOrientationAtCaptureStart = true
+            captureDuration.startTime()
+        }
+
         let elapsedtime = Date().timeIntervalSince(lastAutoCaptureTime)
         if !shouldAnalyzeImages || elapsedtime < intraImageMinDelay {
             return
@@ -280,6 +287,17 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         let selfieImage = try LocalStorage.createSelfieFile(
                             jobId: jobId, selfieFile: imageData)
                         self.selfieImage = selfieImage
+
+                        /*
+                         At the end of the capture, we record the device orientation and
+                         the capture duration
+                         */
+                        metadata.addMetadata(key: .deviceOrientation)
+                        metadata.addMetadata(
+                            key: .selfieCaptureDuration,
+                            value: captureDuration.elapsedTime().milliseconds()
+                        )
+
                         DispatchQueue.main.async {
                             self.captureProgress = 1
                             self.selfieToConfirm = imageData
@@ -334,11 +352,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     func switchCamera() {
         cameraManager.switchCamera(to: useBackCamera ? .back : .front)
-        localMetadata.metadata.removeAllOfType(Metadatum.SelfieImageOrigin.self)
-        localMetadata.addMetadata(
-            useBackCamera
-                ? Metadatum.SelfieImageOrigin(cameraFacing: .backCamera)
-                : Metadatum.SelfieImageOrigin(cameraFacing: .frontCamera))
+        metadata.removeMetadata(key: .selfieImageOrigin)
+        let cameraFacing: CameraFacingValue = useBackCamera ? .backCamera : .frontCamera
+        metadata.addMetadata(key: .selfieImageOrigin, value: cameraFacing.rawValue)
     }
 
     public func onSelfieRejected() {
@@ -351,11 +367,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         livenessImages = []
         shouldAnalyzeImages = true
         cleanUpSelfieCapture()
-        localMetadata.metadata.removeAllOfType(Metadatum.SelfieImageOrigin.self)
-        localMetadata.metadata.removeAllOfType(
-            Metadatum.ActiveLivenessType.self)
-        localMetadata.metadata.removeAllOfType(
-            Metadatum.SelfieCaptureDuration.self)
+        selfieCaptureRetries += 1
+        metadata.removeMetadata(key: .selfieImageOrigin)
+        metadata.removeMetadata(key: .activeLivenessType)
+        metadata.removeMetadata(key: .selfieCaptureDuration)
+        metadata.removeMetadata(key: .deviceOrientation)
+        metadata.removeMetadata(key: .deviceMovementDetected)
+        hasRecordedOrientationAtCaptureStart = false
     }
 
     func cleanUpSelfieCapture() {
@@ -369,19 +387,19 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     func onRetry() {
         // If selfie file is present, all captures were completed, so we're retrying a network issue
         if selfieImage != nil, livenessImages.count == numLivenessImages {
+            incrementNetworkRetries()
             submitJob()
         } else {
+            selfieCaptureRetries += 1
             shouldAnalyzeImages = true
             DispatchQueue.main.async { self.processingState = nil }
         }
     }
 
     public func submitJob() {
-        localMetadata.addMetadata(
-            Metadatum.SelfieCaptureDuration(
-                duration: metadataTimerStart.elapsedTime()))
-        localMetadata.addMetadata(
-            Metadatum.ActiveLivenessType(livenessType: LivenessType.smile))
+        metadata.addMetadata(key: .activeLivenessType, value: LivenessType.smile.rawValue)
+        metadata.addMetadata(key: .selfieCaptureRetries, value: selfieCaptureRetries)
+
         if skipApiSubmission {
             DispatchQueue.main.async { self.processingState = .success }
             return
@@ -403,6 +421,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     jobId: jobId,
                     userId: userId
                 )
+                let metadata = metadata.collectAllMetadata()
                 if SmileID.allowOfflineMode {
                     try LocalStorage.saveOfflineJob(
                         jobId: jobId,
@@ -410,12 +429,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         jobType: jobType,
                         enrollment: isEnroll,
                         allowNewEnroll: allowNewEnroll,
-                        localMetadata: localMetadata,
+                        metadata: metadata,
                         partnerParams: extraPartnerParams
                     )
                 }
                 let authResponse = try await SmileID.api.authenticate(
-                    request: authRequest)
+                    request: authRequest
+                )
 
                 var smartSelfieLivenessImages = [MultipartBody]()
                 var smartSelfieImage: MultipartBody?
@@ -429,7 +449,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     smartSelfieImage = media
                 }
                 if !livenessImages.isEmpty {
-                    let livenessImageInfos = livenessImages.compactMap { liveness -> MultipartBody? in
+                    let livenessImageInfos = livenessImages.compactMap {
+                        liveness -> MultipartBody? in
                         if let data = try? Data(contentsOf: liveness) {
                             return MultipartBody(
                                 withImage: data,
@@ -461,8 +482,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             callbackUrl: SmileID.callbackUrl,
                             sandboxResult: nil,
                             allowNewEnroll: allowNewEnroll,
-                            failureReason: nil,
-                            metadata: localMetadata.metadata
+                            failureReason: nil
                         )
                     } else {
                         try await SmileID.api.doSmartSelfieAuthentication(
@@ -474,8 +494,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             partnerParams: extraPartnerParams,
                             callbackUrl: SmileID.callbackUrl,
                             sandboxResult: nil,
-                            failureReason: nil,
-                            metadata: localMetadata.metadata
+                            failureReason: nil
                         )
                     }
                 apiResponse = response
@@ -496,6 +515,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                     print("Error moving job to submitted directory: \(error)")
                     self.error = error
                 }
+                resetNetworkRetries()
                 DispatchQueue.main.async { self.processingState = .success }
             } catch let error as SmileIDError {
                 do {
@@ -552,7 +572,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
             let selfiePath = getRelativePath(from: selfieImage),
             livenessImages.count == numLivenessImages,
             !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            ) {
+            )
+        {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }
@@ -571,5 +592,18 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString)
         else { return }
         UIApplication.shared.open(settingsURL)
+    }
+}
+
+// MARK: - Metadata Helpers
+extension SelfieViewModel {
+    private func incrementNetworkRetries() {
+        networkRetries += 1
+        Metadata.shared.addMetadata(key: .networkRetries, value: networkRetries)
+    }
+
+    private func resetNetworkRetries() {
+        networkRetries = 0
+        Metadata.shared.removeMetadata(key: .networkRetries)
     }
 }

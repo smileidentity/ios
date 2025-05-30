@@ -24,8 +24,7 @@ public protocol SmileIDServiceable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
-        failureReason: FailureReason?,
-        metadata: Metadata
+        failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse
 
     /// Perform a synchronous SmartSelfie Authentication. The response will include the final result
@@ -39,8 +38,7 @@ public protocol SmileIDServiceable {
         partnerParams: [String: String]?,
         callbackUrl: String?,
         sandboxResult: Int?,
-        failureReason: FailureReason?,
-        metadata: Metadata
+        failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse
 
     /// Query the Identity Information of an individual using their ID number from a supported ID
@@ -202,6 +200,7 @@ public extension SmileIDServiceable {
 
 public class SmileIDService: SmileIDServiceable, ServiceRunnable {
     @Injected var serviceClient: RestServiceClient
+    @Injected var metadata: Metadata
     typealias PathType = String
 
     public func authenticate(
@@ -224,8 +223,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         callbackUrl: String? = SmileID.callbackUrl,
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
-        failureReason: FailureReason? = nil,
-        metadata: Metadata = Metadata.default()
+        failureReason: FailureReason? = nil
     ) async throws -> SmartSelfieResponse {
         try await multipart(
             to: "/v2/smart-selfie-enroll",
@@ -238,8 +236,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
             callbackUrl: callbackUrl,
             sandboxResult: sandboxResult,
             allowNewEnroll: allowNewEnroll,
-            failureReason: failureReason,
-            metadata: metadata
+            failureReason: failureReason
         )
     }
 
@@ -252,8 +249,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
         partnerParams: [String: String]? = nil,
         callbackUrl: String? = SmileID.callbackUrl,
         sandboxResult: Int? = nil,
-        failureReason: FailureReason? = nil,
-        metadata: Metadata = Metadata.default()
+        failureReason: FailureReason? = nil
     ) async throws -> SmartSelfieResponse {
         try await multipart(
             to: "/v2/smart-selfie-authentication",
@@ -265,8 +261,7 @@ public class SmileIDService: SmileIDServiceable, ServiceRunnable {
             partnerParams: partnerParams,
             callbackUrl: callbackUrl,
             sandboxResult: sandboxResult,
-            failureReason: failureReason,
-            metadata: metadata
+            failureReason: failureReason
         )
     }
 

@@ -28,22 +28,26 @@ public struct OrchestratedEnhancedSelfieCaptureScreen: View {
             allowNewEnroll: allowNewEnroll,
             skipApiSubmission: skipApiSubmission,
             extraPartnerParams: extraPartnerParams,
-            onResult: onResult,
-            localMetadata: LocalMetadata()
+            onResult: onResult
         )
     }
 
     public var body: some View {
-        if showInstructions {
-            LivenessCaptureInstructionsView(
-                showAttribution: showAttribution,
-                viewModel: viewModel
-            )
-        } else {
-            EnhancedSelfieCaptureScreen(
-                viewModel: viewModel,
-                showAttribution: showAttribution
-            )
+        ZStack {
+            if showInstructions {
+                LivenessCaptureInstructionsView(
+                    showAttribution: showAttribution,
+                    viewModel: viewModel
+                )
+            } else {
+                EnhancedSelfieCaptureScreen(
+                    viewModel: viewModel,
+                    showAttribution: showAttribution
+                )
+            }
+        }
+        .onAppear {
+            Metadata.shared.onStart()
         }
     }
 }

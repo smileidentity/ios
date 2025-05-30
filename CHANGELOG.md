@@ -1,6 +1,9 @@
 # Release Notes
 ## Unreleased
 
+### Added
+* Enhanced fraud signals collection to improve fraud prevention
+
 ### Fixed
 * Fixed a typographical error on the SmartSelfie instructions screen
 

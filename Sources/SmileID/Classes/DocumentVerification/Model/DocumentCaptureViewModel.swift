@@ -1,4 +1,6 @@
 import Combine
+import CoreMotion
+import Foundation
 import SwiftUI
 
 enum DocumentDirective: String {
@@ -12,9 +14,14 @@ private let documentAutoCaptureWaitTime: TimeInterval = 1.0
 private let analysisSampleInterval: TimeInterval = 0.350
 
 class DocumentCaptureViewModel: ObservableObject {
+
+    deinit {
+        subscribers.removeAll()
+    }
     // Initializer properties
     private let knownAspectRatio: Double?
-    private var localMetadata: LocalMetadata
+    private let metadata: Metadata = .shared
+    private var captureDuration = MonotonicTime()
 
     // Other properties
     private let defaultAspectRatio: Double
@@ -27,6 +34,7 @@ class DocumentCaptureViewModel: ObservableObject {
     private let side: DocumentCaptureSide
     private var retryCount: Int = 0
     private(set) var documentImageOrigin: DocumentImageOriginValue?
+    private var hasRecordedOrientationAtCaptureStart = false
 
     // UI properties
     @Published var unauthorizedAlert: AlertState?
@@ -43,12 +51,10 @@ class DocumentCaptureViewModel: ObservableObject {
 
     init(
         knownAspectRatio: Double? = nil,
-        side: DocumentCaptureSide,
-        localMetadata: LocalMetadata
+        side: DocumentCaptureSide
     ) {
         self.knownAspectRatio = knownAspectRatio
         self.side = side
-        self.localMetadata = localMetadata
         defaultAspectRatio = knownAspectRatio ?? 1.0
         DispatchQueue.main.async { [self] in
             idAspectRatio = defaultAspectRatio
@@ -99,13 +105,6 @@ class DocumentCaptureViewModel: ObservableObject {
                 self.documentFirstDetectedAtTime = nil
             }
         })
-    }
-
-    let metadataTimerStart = MonotonicTime()
-
-    func updateLocalMetadata(_ newMetadata: LocalMetadata) {
-        self.localMetadata = newMetadata
-        objectWillChange.send()
     }
 
     @objc func showManualCapture() {
@@ -161,16 +160,7 @@ class DocumentCaptureViewModel: ObservableObject {
     /// Called if the user declines the image in the capture confirmation dialog.
     func onRetry() {
         documentImageOrigin = nil
-        switch side {
-        case .front:
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentFrontCaptureRetries.self)
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentFrontCaptureDuration.self)
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentFrontImageOrigin.self)
-        case .back:
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentBackCaptureRetries.self)
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentBackCaptureDuration.self)
-            localMetadata.metadata.removeAllOfType(Metadatum.DocumentBackImageOrigin.self)
-        }
+        resetDocumentCaptureMetadata()
         retryCount += 1
         DispatchQueue.main.async {
             self.isCapturing = false
@@ -187,27 +177,58 @@ class DocumentCaptureViewModel: ObservableObject {
             imageData: image,
             aspectRatio: 1 / idAspectRatio
         )
-        switch side {
-        case .front:
-            localMetadata.addMetadata(
-                Metadatum.DocumentFrontCaptureDuration(duration: metadataTimerStart.elapsedTime()))
-            localMetadata.addMetadata(Metadatum.DocumentFrontCaptureRetries(retries: retryCount))
-            if let documentImageOrigin {
-                localMetadata.addMetadata(
-                    Metadatum.DocumentFrontImageOrigin(origin: documentImageOrigin))
-            }
-        case .back:
-            localMetadata.addMetadata(
-                Metadatum.DocumentBackCaptureDuration(duration: metadataTimerStart.elapsedTime()))
-            localMetadata.addMetadata(Metadatum.DocumentBackCaptureRetries(retries: retryCount))
-            if let documentImageOrigin {
-                localMetadata.addMetadata(
-                    Metadatum.DocumentBackImageOrigin(origin: documentImageOrigin))
-            }
-        }
+        collectDocumentCaptureMetadata()
         DispatchQueue.main.async { [self] in
             documentImageToConfirm = croppedImage
             isCapturing = false
+        }
+    }
+
+    private func resetDocumentCaptureMetadata() {
+        switch side {
+        case .front:
+            metadata.removeMetadata(key: .documentFrontCaptureRetries)
+            metadata.removeMetadata(key: .documentFrontCaptureDuration)
+            metadata.removeMetadata(key: .documentFrontImageOrigin)
+        case .back:
+            metadata.removeMetadata(key: .documentBackCaptureRetries)
+            metadata.removeMetadata(key: .documentBackCaptureDuration)
+            metadata.removeMetadata(key: .documentBackImageOrigin)
+        }
+        metadata.removeMetadata(key: .deviceOrientation)
+        metadata.removeMetadata(key: .deviceMovementDetected)
+        hasRecordedOrientationAtCaptureStart = false
+    }
+
+    private func collectDocumentCaptureMetadata() {
+        /*
+         At the end of the capture, we record the device orientation and
+         the capture duration
+         */
+        metadata.addMetadata(key: .deviceOrientation)
+        switch side {
+        case .front:
+            metadata.addMetadata(
+                key: .documentFrontCaptureDuration,
+                value: captureDuration.elapsedTime().milliseconds()
+            )
+            metadata.addMetadata(key: .documentFrontCaptureRetries, value: retryCount)
+
+            if let documentImageOrigin {
+                metadata.addMetadata(
+                    key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
+            }
+        case .back:
+            metadata.addMetadata(
+                key: .documentBackCaptureDuration,
+                value: captureDuration.elapsedTime().milliseconds()
+            )
+            metadata.addMetadata(key: .documentBackCaptureRetries, value: retryCount)
+
+            if let documentImageOrigin {
+                metadata.addMetadata(
+                    key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
+            }
         }
     }
 
@@ -221,6 +242,17 @@ class DocumentCaptureViewModel: ObservableObject {
     private func analyzeImage(buffer: CVPixelBuffer) {
         let now = Date().timeIntervalSince1970
         let elapsedTime = now - lastAnalysisTime
+
+        /*
+         At the start of the capture, we record the device orientation and start the capture
+         duration timer.
+         */
+        if !hasRecordedOrientationAtCaptureStart {
+            metadata.addMetadata(key: .deviceOrientation)
+            hasRecordedOrientationAtCaptureStart = true
+            captureDuration.startTime()
+        }
+
         let enoughTimeHasPassed = elapsedTime > analysisSampleInterval
         if processingImage || isCapturing || !enoughTimeHasPassed {
             return

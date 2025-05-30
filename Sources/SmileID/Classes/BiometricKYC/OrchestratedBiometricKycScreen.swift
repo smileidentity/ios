@@ -46,41 +46,46 @@ struct OrchestratedBiometricKycScreen: View {
     }
 
     var body: some View {
-        switch viewModel.step {
-        case .selfie:
-            selfieCaptureScreen
-        case let .processing(state):
-            ProcessingScreen(
-                processingState: state,
-                inProgressTitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Processing.Title"
-                ),
-                inProgressSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Processing.Subtitle"
-                ),
-                inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
-                successTitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Success.Title"
-                ),
-                successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "BiometricKYC.Success.Subtitle"
-                ),
-                successIcon: SmileIDResourcesHelper.CheckBold,
-                errorTitle: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.Error.Title"),
-                errorSubtitle: getErrorSubtitle(
-                    errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
-                    errorMessage: $viewModel.errorMessage.wrappedValue
-                ),
-                errorIcon: SmileIDResourcesHelper.Scan,
-                continueButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Continue"
-                ),
-                onContinue: { viewModel.onFinished(delegate: delegate) },
-                retryButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Retry"),
-                onRetry: viewModel.onRetry,
-                closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
-                onClose: { viewModel.onFinished(delegate: delegate) }
-            )
+        ZStack {
+            switch viewModel.step {
+            case .selfie:
+                selfieCaptureScreen
+            case let .processing(state):
+                ProcessingScreen(
+                    processingState: state,
+                    inProgressTitle: SmileIDResourcesHelper.localizedString(
+                        for: "BiometricKYC.Processing.Title"
+                    ),
+                    inProgressSubtitle: SmileIDResourcesHelper.localizedString(
+                        for: "BiometricKYC.Processing.Subtitle"
+                    ),
+                    inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
+                    successTitle: SmileIDResourcesHelper.localizedString(
+                        for: "BiometricKYC.Success.Title"
+                    ),
+                    successSubtitle: SmileIDResourcesHelper.localizedString(
+                        for: "BiometricKYC.Success.Subtitle"
+                    ),
+                    successIcon: SmileIDResourcesHelper.CheckBold,
+                    errorTitle: SmileIDResourcesHelper.localizedString(for: "BiometricKYC.Error.Title"),
+                    errorSubtitle: getErrorSubtitle(
+                        errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
+                        errorMessage: $viewModel.errorMessage.wrappedValue
+                    ),
+                    errorIcon: SmileIDResourcesHelper.Scan,
+                    continueButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.Continue"
+                    ),
+                    onContinue: { viewModel.onFinished(delegate: delegate) },
+                    retryButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Retry"),
+                    onRetry: viewModel.onRetry,
+                    closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
+                    onClose: { viewModel.onFinished(delegate: delegate) }
+                )
+            }
+        }
+        .onAppear {
+            Metadata.shared.onStart()
         }
     }
 
