@@ -1,5 +1,5 @@
 # Release Notes
-## Unreleased
+## 11.0.0
 
 ### Added 
  * Added a security feature to protect the payload between sdk and backend from unauthorized tampering.
