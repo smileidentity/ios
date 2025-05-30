@@ -54,12 +54,8 @@ SPEC CHECKSUMS:
   lottie-ios: 248b380fa1b97d18e792c37d90da7ab2aa0d6562
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
   Sentry: 1ca8405451040482877dcd344dfa3ef80b646631
-<<<<<<< HEAD
   SmileID: 6364d2728546ec84da3a4f2e2a8b9c6eec91aa3b
   SmileIDSecurity: b847101f7d7b86c1c453fb1b045146dfcbc5183d
-=======
-  SmileID: daf0c9194242722c79aa1ef080d2c63d3bbacb79
->>>>>>> main
   SwiftLint: 3d48e2fb2a3468fdaccf049e5e755df22fb40c2c
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
