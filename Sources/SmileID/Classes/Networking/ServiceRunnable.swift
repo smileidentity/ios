@@ -113,6 +113,8 @@ extension ServiceRunnable {
         let timestamp = Date().toISO8601WithMilliseconds()
         headers.append(.requestTimestamp(value: timestamp))
 
+        let metadata = metadata.collectAllMetadata()
+
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         let selfieRequest = SelfieRequest(
@@ -155,7 +157,7 @@ extension ServiceRunnable {
                 sandboxResult: sandboxResult,
                 allowNewEnroll: allowNewEnroll,
                 failureReason: failureReason,
-                metadata: metadata.collectAllMetadata(),
+                metadata: metadata,
                 boundary: boundary
             )
         )
