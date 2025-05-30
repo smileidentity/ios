@@ -59,6 +59,7 @@ public struct EnhancedKycRequest: Codable {
         self.sourceSdkVersion = sourceSdkVersion
         self.timestamp = timestamp
         self.signature = signature
+        Metadata.shared.initialize()
         self.metadata = Metadata.shared.collectAllMetadata()
     }
 
