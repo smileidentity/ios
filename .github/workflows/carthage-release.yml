@@ -33,7 +33,6 @@ jobs:
       run: zip -r ./SmileID.xcframework.zip ./Frameworks/SmileID.xcframework
       
     - name: Upload Framework to Release
-      if: github.event_name == 'release'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
