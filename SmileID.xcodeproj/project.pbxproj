@@ -4135,6 +4135,7 @@
 				6277E74F2C6511BD00AC87FB /* ZIPFoundation in Frameworks */,
 				1E98259F2C9B478C009F2CA6 /* FingerprintJS in Frameworks */,
 				1E9825A12C9B478C009F2CA6 /* SystemControl in Frameworks */,
+				6672CF0B2D88877E005DF7A6 /* SmileIDSecurity in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8403,6 +8404,7 @@
 				6277E74E2C6511BD00AC87FB /* ZIPFoundation */,
 				1E98259E2C9B478C009F2CA6 /* FingerprintJS */,
 				1E9825A02C9B478C009F2CA6 /* SystemControl */,
+				6672CF0A2D88877E005DF7A6 /* SmileIDSecurity */,
 			);
 			productName = SmileID;
 			productReference = 1EEFC21A2B583CFB00B8A934 /* SmileID.framework */;
@@ -9092,8 +9094,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/smileidentity/smile-id-security";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
