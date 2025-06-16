@@ -381,9 +381,9 @@ class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificati
         if let error {
             delegate.didError(error: error)
         } else if let savedFiles,
-           let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
-            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+           let selfiePath = getAbsoluteFilePath(from: selfieFile),
+           let documentFrontPath = getAbsoluteFilePath(from: savedFiles.documentFront) {
+            let documentBackPath = getAbsoluteFilePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,
                 documentFrontImage: documentFrontPath,
@@ -402,9 +402,9 @@ class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVe
         if let error {
             delegate.didError(error: error)
         } else if let savedFiles,
-           let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
-            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+           let selfiePath = getAbsoluteFilePath(from: selfieFile),
+           let documentFrontPath = getAbsoluteFilePath(from: savedFiles.documentFront) {
+            let documentBackPath = getAbsoluteFilePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,
                 documentFrontImage: documentFrontPath,

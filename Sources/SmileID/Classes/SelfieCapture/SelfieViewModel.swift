@@ -567,13 +567,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         if let error = self.error {
             callback.didError(error: error)
         } else if let selfieImage = selfieImage,
-            let selfiePath = getRelativePath(from: selfieImage),
+            let selfiePath = getAbsoluteFilePath(from: selfieImage),
             livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
+            !livenessImages.contains(where: { getAbsoluteFilePath(from: $0) == nil }
             )
         {
             let livenessImagesPaths = livenessImages.compactMap {
-                getRelativePath(from: $0)
+                getAbsoluteFilePath(from: $0)
             }
 
             callback.didSucceed(
