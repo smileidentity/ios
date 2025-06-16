@@ -545,18 +545,11 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         Metadata.shared.onStop()
         if let error = self.error {
             callback.didError(error: error)
-        } else if let selfieImageURL = selfieImageURL,
-            let selfiePath = getAbsoluteFilePath(from: selfieImageURL),
-            livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getAbsoluteFilePath(from: $0) == nil }
-            ) {
-            let livenessImagesPaths = livenessImages.compactMap {
-                getAbsoluteFilePath(from: $0)
-            }
-
+        } else if let selfieImageURL = selfieImageURL, livenessImages.count == numLivenessImages {
+            
             callback.didSucceed(
-                selfieImage: selfiePath,
-                livenessImages: livenessImagesPaths,
+                selfieImage: selfieImageURL,
+                livenessImages: livenessImages,
                 apiResponse: apiResponse
             )
         }

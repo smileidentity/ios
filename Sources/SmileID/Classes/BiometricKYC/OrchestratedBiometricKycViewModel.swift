@@ -66,11 +66,10 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         if let error {
             delegate.didError(error: error)
         } else if let selfieFile = selfieFile,
-           let livenessFiles = livenessFiles,
-           let selfiePath = getAbsoluteFilePath(from: selfieFile) {
+           let livenessFiles = livenessFiles {
             delegate.didSucceed(
-                selfieImage: selfiePath,
-                livenessImages: livenessFiles.compactMap { getAbsoluteFilePath(from: $0) },
+                selfieImage: selfieFile,
+                livenessImages: livenessFiles,
                 didSubmitBiometricJob: didSubmitBiometricJob
             )
         } else {

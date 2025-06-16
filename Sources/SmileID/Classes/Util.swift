@@ -96,19 +96,6 @@ func getErrorSubtitle(errorMessageRes: String?, errorMessage: String?) -> String
     }
 }
 
-func getAbsoluteFilePath(from absoluteURL: URL?) -> URL? {
-    guard let relativeURL = absoluteURL else {
-           return nil
-       }
-       do {
-           let baseDirectory = try LocalStorage.defaultDirectory
-           return baseDirectory.appendingPathComponent(relativeURL.path)
-       } catch {
-           print("Error getting default directory: \(error.localizedDescription)")
-           return nil
-       }
-}
-
 struct MonotonicTime {
     private var time: UInt64 = 0
 
