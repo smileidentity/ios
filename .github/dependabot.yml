@@ -18,15 +18,7 @@ updates:
       swift-dependencies:
         patterns:
           - '*'
-  - package-ecosystem: "cocoapods"
-    directory: "/" 
-    schedule:
-      interval: "weekly"
-      day: monday
-    groups:
-      cocoapods-dependencies:
-        patterns:
-          - '*'
+          
   - package-ecosystem: "bundler"
     directory: "/"
     schedule:
@@ -36,8 +28,4 @@ updates:
       bundler-dependencies:
         patterns:
           - '*'
-  - package-ecosystem: "cocoapods"
-    directory: "/Example"
-    schedule:
-      interval: "weekly"
-      day: monday
+
