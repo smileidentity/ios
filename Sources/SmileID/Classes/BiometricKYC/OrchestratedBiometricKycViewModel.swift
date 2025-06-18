@@ -82,7 +82,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         updateStep(.processing(.inProgress))
         Task {
             do {
-                try await handleJobSubmission()
+                try await withErrorLogging {
+                    try await handleJobSubmission()
+                }
                 resetNetworkRetries()
                 updateStep(.processing(.success))
             } catch let error as SmileIDError {
@@ -95,8 +97,22 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             }
         }
     }
+    
+    func withErrorLogging<T>(_ operation: () async throws -> T) async throws -> T {
+        do {
+            return try await operation()
+        } catch {
+            // Log the error here
+            print("⚠️ Error occurred: \(error)")
+            // Optionally: send to external logger or error monitoring system
+            SmileIDCrashReporting.hub?.capture(error: error)
+
+            throw error  // Rethrow so the caller can still handle it
+        }
+    }
 
     private func handleJobSubmission() async throws {
+        
         try fetchRequiredFiles()
 
         let zipData = try createZipData()
