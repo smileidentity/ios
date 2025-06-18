@@ -267,7 +267,7 @@ extension ServiceRunnable {
                 )
                 for index in 0..<signedHeaders.count {
                     let key = signedHeaders[index].name
-                    if let encryptedValue = encryptedHeaders[key] as? String {
+                    if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
                         signedHeaders[index].value = encryptedValue
                     }
                 }
