@@ -1,0 +1,76 @@
+name: Lint Build and Test
+
+on:
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+  MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.PAT_IOS_CERTIFICATES_REPO_B64 }}
+  FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+  ISSUER_ID: ${{ secrets.ISSUER_ID }}
+  KEY_ID: ${{ secrets.KEY_ID }}
+  APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+  FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
+
+jobs:
+  lint:
+    name: "Lint"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Danger
+        uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.15.0
+        with:
+          args: --failOnErrors --no-publish-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: "Build App and Run Unit Tests"
+    # TODO: Change back to macos-latest once it points to macOS 14 (Q2 '24)
+    runs-on: macos-14
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install bundle
+        run: bundle install
+      - name: Update Fastlane
+        run: bundle update fastlane
+      - name: Update Compile Sources
+        run: ruby ./Scripts/update_compile_sources.rb
+      - name: Write Smile Config
+        id: write_smile_config
+        # Mask the config so that it doesn't show up in the logs
+        run: |
+          INPUT_SMILE_CONFIG=$(jq -r '.inputs.smile_config // empty' $GITHUB_EVENT_PATH)
+          echo "::add-mask::$INPUT_SMILE_CONFIG"
+          if [ -n "$INPUT_SMILE_CONFIG" ]; then
+            SMILE_CONFIG="$INPUT_SMILE_CONFIG"
+          else
+            SMILE_CONFIG="$SMILE_CONFIG_PARTNER_002"
+          fi
+          echo "$SMILE_CONFIG" > smile_config.json
+          PARTNER_ID=$(jq -r '.partner_id' smile_config.json)
+          echo "partner_id=$PARTNER_ID" >> $GITHUB_OUTPUT
+        env:
+          SMILE_CONFIG_PARTNER_002: ${{ secrets.SMILE_CONFIG_PARTNER_002 }}
+      - name: Add Smile Config to Xcode Project
+        run: ruby add_smile_config.rb
+      - name: Setup Environment
+        uses: ./.github/actions/setup
+        with:
+          xcode: '15.2'
+      - name: Build Example app and Run Unit Tests
+        run: |
+          xcodebuild -resolvePackageDependencies
+          bundle exec rake test:spm    
+          bundle exec rake provision:ios
+          bundle exec rake test:package
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
