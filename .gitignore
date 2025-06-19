@@ -53,9 +53,10 @@ ArkanaKeys/*
 # JetBrains/AppCode
 .idea
 
-Example/fasstlane/report.xml
+Example/fastlane/report.xml
 Frameworks/
 SmileID.framework.zip
+.swiftpm/*
 
 ### Xcode Patch ###
 *.xcodeproj/*
