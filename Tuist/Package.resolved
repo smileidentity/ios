@@ -1,5 +1,5 @@
 {
-  "originHash" : "3a78b53e594a153a13655d50b31746fecc42806ec2188e3a8e8e65e06d27bb97",
+  "originHash" : "03a25273cc56683ed17988bc8aba6f1106a8568f5889035bc36bcd890eb36841",
   "pins" : [
     {
       "identity" : "fingerprintjs-ios",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "77c8d918c2e21e88a6f87504785429d8015aa0fc",
         "version" : "1.0.1"
+      }
+    },
+    {
+      "identity" : "swiftlintplugins",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
+      "state" : {
+        "revision" : "8545ddf4de043e6f2051c5cf204f39ef778ebf6b",
+        "version" : "0.59.1"
       }
     },
     {
