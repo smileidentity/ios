@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "SmileID",
+    name: "Dependencies",
     dependencies: [
          .package(
             url: "https://github.com/weichsel/ZIPFoundation",
@@ -19,6 +19,10 @@ let package = Package(
            .package(
              url: "https://github.com/smileidentity/smile-id-security",
              from: "1.0.1"
+           ),
+           .package(
+             url: "https://github.com/SimplyDanny/SwiftLintPlugins",
+             from: "0.59.1"
            )
     ]
 )
