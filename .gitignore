@@ -65,8 +65,8 @@ SmileID.framework.zip
 /*.gcno
 
 ### Projects ###
-*.xcodeproj
-*.xcworkspace
+SmileID.xcodeproj
+SmileID*.xcworkspace
 
 ### Tuist derived files ###
 graph.dot
