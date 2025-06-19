@@ -1,7 +1,4 @@
-import ArkanaKeys
-import netfox
-import Sentry
-import SmileID
+// import Sentry
 import SwiftUI
 import UIKit
 
@@ -16,15 +13,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().titleTextAttributes = [
             NSAttributedString.Key.foregroundColor: UIColor.black
         ]
-        if enableSentry() {
-            SentrySDK.start { options in
-                options.dsn = ArkanaKeys.Global().sENTRY_DSN
-                options.debug = true
-                options.tracesSampleRate = 1.0
-                options.profilesSampleRate = 1.0
-            }
-        }
-        NFX.sharedInstance().start()
+        // if enableSentry() {
+        //     SentrySDK.start { options in
+        //         options.dsn = ArkanaKeys.Global().sENTRY_DSN
+        //         options.debug = true
+        //         options.tracesSampleRate = 1.0
+        //         options.profilesSampleRate = 1.0
+        //     }
+        // }
+        // NFX.sharedInstance().start()
 
         // NOTE TO PARTNERS: Normally, you would call SmileID.initialize() here
 
@@ -33,10 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func enableSentry() -> Bool {
-        guard let enableSentry = Bundle.main.object(forInfoDictionaryKey: "EnableSentry") as? String else {
-            return false
-        }
-        return enableSentry == "YES"
-    }
+    // func enableSentry() -> Bool {
+    //     guard let enableSentry = Bundle.main.object(forInfoDictionaryKey: "EnableSentry") as? String else {
+    //         return false
+    //     }
+    //     return enableSentry == "YES"
+    // }
 }
