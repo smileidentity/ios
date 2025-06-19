@@ -8,7 +8,7 @@ public let SmileID = Target.target(
     deploymentTargets: .iOS("13.0"),
     infoPlist: .default,
     sources: ["Sources/SmileID/Classes/**"],
-    resources: ["Sources/Smile/Resources/**"],
+//    resources: ["Sources/Smile/Resources/**"],
     dependencies: [
         .external(name: "ZIPFoundation"),
         .external(name: "FingerprintJS"),
