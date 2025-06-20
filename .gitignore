@@ -53,6 +53,8 @@ ArkanaKeys/*
 # JetBrains/AppCode
 .idea
 
+Example/
+Example/ArkanaKeys
 Example/fastlane/report.xml
 Frameworks/
 SmileID.framework.zip
