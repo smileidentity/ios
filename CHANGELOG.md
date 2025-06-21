@@ -1,4 +1,9 @@
 # Release Notes
+## 11.0.1 (Unreleased)
+
+### Changed
+* Changed returned file paths for document and selfie captures from relative to absolute, allowing partners to access complete file locations.
+
 ## 11.0.0
 
 ### Added 

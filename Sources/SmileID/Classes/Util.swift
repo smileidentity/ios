@@ -96,22 +96,6 @@ func getErrorSubtitle(errorMessageRes: String?, errorMessage: String?) -> String
     }
 }
 
-func getRelativePath(from absoluteURL: URL?) -> URL? {
-    guard let absoluteURL = absoluteURL else {
-        return nil
-    }
-
-    let relativeComponents = absoluteURL.pathComponents
-        .drop(while: { $0 != "SmileID" })
-        .dropFirst()
-
-    if relativeComponents.isEmpty {
-        return absoluteURL
-    } else {
-        return URL(string: relativeComponents.joined(separator: "/"))
-    }
-}
-
 struct MonotonicTime {
     private var time: UInt64 = 0
 
