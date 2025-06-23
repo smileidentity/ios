@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct OrchestratedDocumentVerificationScreen: View {
-    @State private var localMetadata = LocalMetadata()
     let countryCode: String
     let documentType: String?
     let captureBothSides: Bool
@@ -50,15 +49,13 @@ struct OrchestratedDocumentVerificationScreen: View {
                 useStrictMode: useStrictMode,
                 selfieFile: bypassSelfieCaptureWithFile,
                 jobType: .documentVerification,
-                extraPartnerParams: extraPartnerParams,
-                localMetadata: localMetadata
+                extraPartnerParams: extraPartnerParams
             )
-        ).environmentObject(localMetadata)
+        )
     }
 }
 
 struct OrchestratedEnhancedDocumentVerificationScreen: View {
-    @State private var localMetadata = LocalMetadata()
     let countryCode: String
     let documentType: String?
     let consentInformation: ConsentInformation
@@ -108,10 +105,9 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
                 useStrictMode: useStrictMode,
                 selfieFile: bypassSelfieCaptureWithFile,
                 jobType: .enhancedDocumentVerification,
-                extraPartnerParams: extraPartnerParams,
-                localMetadata: localMetadata
+                extraPartnerParams: extraPartnerParams
             )
-        ).environmentObject(localMetadata)
+        )
     }
 }
 
@@ -176,80 +172,85 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     }
 
     var body: some View {
-        switch viewModel.step {
-        case .frontDocumentCapture:
-            DocumentCaptureScreen(
-                side: .front,
-                showInstructions: showInstructions,
-                showAttribution: showAttribution,
-                allowGallerySelection: allowGalleryUpload,
-                showSkipButton: false,
-                instructionsHeroImage: SmileIDResourcesHelper.DocVFrontHero,
-                instructionsTitleText: SmileIDResourcesHelper.localizedString(
-                    for: "Instructions.Document.Front.Header"
-                ),
-                instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
-                    for: "Instructions.Document.Front.Callout"
-                ),
-                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureFront"),
-                knownIdAspectRatio: idAspectRatio,
-                onConfirm: viewModel.onFrontDocumentImageConfirmed,
-                onError: viewModel.onError
-            )
-        case .backDocumentCapture:
-            DocumentCaptureScreen(
-                side: .back,
-                showInstructions: showInstructions,
-                showAttribution: showAttribution,
-                allowGallerySelection: allowGalleryUpload,
-                showSkipButton: false,
-                instructionsHeroImage: SmileIDResourcesHelper.DocVBackHero,
-                instructionsTitleText: SmileIDResourcesHelper.localizedString(
-                    for: "Instructions.Document.Back.Header"
-                ),
-                instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
-                    for: "Instructions.Document.Back.Callout"
-                ),
-                captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureBack"),
-                knownIdAspectRatio: idAspectRatio,
-                onConfirm: viewModel.onBackDocumentImageConfirmed,
-                onError: viewModel.onError,
-                onSkip: viewModel.onDocumentBackSkip
-            )
-        case .selfieCapture:
-            selfieCaptureScreen
-        case let .processing(state):
-            ProcessingScreen(
-                processingState: state,
-                inProgressTitle: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Processing.Header"
-                ),
-                inProgressSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Processing.Callout"
-                ),
-                inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
-                successTitle: SmileIDResourcesHelper.localizedString(
-                    for: "Document.Complete.Header"
-                ),
-                successSubtitle: SmileIDResourcesHelper.localizedString(
-                    for: $viewModel.errorMessageRes.wrappedValue ?? "Document.Complete.Callout"
-                ),
-                successIcon: SmileIDResourcesHelper.CheckBold,
-                errorTitle: SmileIDResourcesHelper.localizedString(for: "Document.Error.Header"),
-                errorSubtitle: getErrorSubtitle(
-                    errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
-                    errorMessage: $viewModel.errorMessage.wrappedValue
-                ),
-                errorIcon: SmileIDResourcesHelper.Scan,
-                continueButtonText: SmileIDResourcesHelper.localizedString(
-                    for: "Confirmation.Continue"
-                ),
-                onContinue: { viewModel.onFinished(delegate: onResult) },
-                retryButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Retry"),
-                onRetry: viewModel.onRetry,
-                closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
-                onClose: { viewModel.onFinished(delegate: onResult) }
-            )
+        ZStack {
+            switch viewModel.step {
+            case .frontDocumentCapture:
+                DocumentCaptureScreen(
+                    side: .front,
+                    showInstructions: showInstructions,
+                    showAttribution: showAttribution,
+                    allowGallerySelection: allowGalleryUpload,
+                    showSkipButton: false,
+                    instructionsHeroImage: SmileIDResourcesHelper.DocVFrontHero,
+                    instructionsTitleText: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.Document.Front.Header"
+                    ),
+                    instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.Document.Front.Callout"
+                    ),
+                    captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureFront"),
+                    knownIdAspectRatio: idAspectRatio,
+                    onConfirm: viewModel.onFrontDocumentImageConfirmed,
+                    onError: viewModel.onError
+                )
+            case .backDocumentCapture:
+                DocumentCaptureScreen(
+                    side: .back,
+                    showInstructions: showInstructions,
+                    showAttribution: showAttribution,
+                    allowGallerySelection: allowGalleryUpload,
+                    showSkipButton: false,
+                    instructionsHeroImage: SmileIDResourcesHelper.DocVBackHero,
+                    instructionsTitleText: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.Document.Back.Header"
+                    ),
+                    instructionsSubtitleText: SmileIDResourcesHelper.localizedString(
+                        for: "Instructions.Document.Back.Callout"
+                    ),
+                    captureTitleText: SmileIDResourcesHelper.localizedString(for: "Action.CaptureBack"),
+                    knownIdAspectRatio: idAspectRatio,
+                    onConfirm: viewModel.onBackDocumentImageConfirmed,
+                    onError: viewModel.onError,
+                    onSkip: viewModel.onDocumentBackSkip
+                )
+            case .selfieCapture:
+                selfieCaptureScreen
+            case let .processing(state):
+                ProcessingScreen(
+                    processingState: state,
+                    inProgressTitle: SmileIDResourcesHelper.localizedString(
+                        for: "Document.Processing.Header"
+                    ),
+                    inProgressSubtitle: SmileIDResourcesHelper.localizedString(
+                        for: "Document.Processing.Callout"
+                    ),
+                    inProgressIcon: SmileIDResourcesHelper.DocumentProcessing,
+                    successTitle: SmileIDResourcesHelper.localizedString(
+                        for: "Document.Complete.Header"
+                    ),
+                    successSubtitle: SmileIDResourcesHelper.localizedString(
+                        for: $viewModel.errorMessageRes.wrappedValue ?? "Document.Complete.Callout"
+                    ),
+                    successIcon: SmileIDResourcesHelper.CheckBold,
+                    errorTitle: SmileIDResourcesHelper.localizedString(for: "Document.Error.Header"),
+                    errorSubtitle: getErrorSubtitle(
+                        errorMessageRes: $viewModel.errorMessageRes.wrappedValue,
+                        errorMessage: $viewModel.errorMessage.wrappedValue
+                    ),
+                    errorIcon: SmileIDResourcesHelper.Scan,
+                    continueButtonText: SmileIDResourcesHelper.localizedString(
+                        for: "Confirmation.Continue"
+                    ),
+                    onContinue: { viewModel.onFinished(delegate: onResult) },
+                    retryButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Retry"),
+                    onRetry: viewModel.onRetry,
+                    closeButtonText: SmileIDResourcesHelper.localizedString(for: "Confirmation.Close"),
+                    onClose: { viewModel.onFinished(delegate: onResult) }
+                )
+            }
+        }
+        .onAppear {
+            Metadata.shared.onStart()
         }
     }
 

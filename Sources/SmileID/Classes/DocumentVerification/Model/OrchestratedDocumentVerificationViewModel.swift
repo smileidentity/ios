@@ -31,7 +31,8 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
     var stepToRetry: DocumentCaptureFlow?
     var didSubmitJob: Bool = false
     var error: Error?
-    var localMetadata: LocalMetadata
+    let metadata: Metadata = .shared
+    private var networkRetries: Int = 0
 
     // UI properties
     @Published var acknowledgedInstructions = false
@@ -54,8 +55,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
         useStrictMode: Bool,
         selfieFile: URL?,
         jobType: JobType,
-        extraPartnerParams: [String: String] = [:],
-        localMetadata: LocalMetadata
+        extraPartnerParams: [String: String] = [:]
     ) {
         self.userId = userId
         self.jobId = jobId
@@ -69,7 +69,6 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
         self.selfieFile = selfieFile
         self.jobType = jobType
         self.extraPartnerParams = extraPartnerParams
-        self.localMetadata = localMetadata
     }
 
     func onFrontDocumentImageConfirmed(data: Data) {
@@ -210,6 +209,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     jobId: jobId,
                     userId: userId
                 )
+                let metadata = metadata.collectAllMetadata()
                 if SmileID.allowOfflineMode {
                     try LocalStorage.saveOfflineJob(
                         jobId: jobId,
@@ -217,7 +217,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                         jobType: jobType,
                         enrollment: false,
                         allowNewEnroll: allowNewEnroll,
-                        localMetadata: localMetadata,
+                        metadata: metadata,
                         partnerParams: extraPartnerParams
                     )
                 }
@@ -225,7 +225,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 var prepUploadRequest = PrepUploadRequest(
                     partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
                     allowNewEnroll: allowNewEnroll,
-                    metadata: localMetadata.metadata.items,
+                    metadata: metadata,
                     timestamp: authResponse.timestamp,
                     signature: authResponse.signature
                 )
@@ -237,6 +237,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 } catch let error as SmileIDError {
                     switch error {
                     case .api("2215", _):
+                        incrementNetworkRetries()
                         prepUploadRequest.retry = true
                         prepUploadResponse = try await SmileID.api.prepUpload(
                             request: prepUploadRequest
@@ -272,6 +273,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                     self.onError(error: error)
                     return
                 }
+                resetNetworkRetries()
                 DispatchQueue.main.async { self.step = .processing(.success) }
             } catch let error as SmileIDError {
                 do {
@@ -339,9 +341,23 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                 self.step = stepToRetry
             }
             if case .processing = stepToRetry {
+                incrementNetworkRetries()
                 submitJob()
             }
         }
+    }
+}
+
+// MARK: - Metadata Helpers
+extension IOrchestratedDocumentVerificationViewModel {
+    private func incrementNetworkRetries() {
+        networkRetries += 1
+        Metadata.shared.addMetadata(key: .networkRetries, value: networkRetries)
+    }
+
+    func resetNetworkRetries() {
+        networkRetries = 0
+        Metadata.shared.removeMetadata(key: .networkRetries)
     }
 }
 
@@ -360,13 +376,17 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
+class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<
+    DocumentVerificationResultDelegate, DocumentVerificationJobResult
+>
+{
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let error {
             delegate.didError(error: error)
         } else if let savedFiles,
-           let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
+            let selfiePath = getRelativePath(from: selfieFile),
+            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
+        {
             let documentBackPath = getRelativePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,
@@ -381,13 +401,17 @@ class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificati
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
+class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<
+    EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
+>
+{
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let error {
             delegate.didError(error: error)
         } else if let savedFiles,
-           let selfiePath = getRelativePath(from: selfieFile),
-           let documentFrontPath = getRelativePath(from: savedFiles.documentFront) {
+            let selfiePath = getRelativePath(from: selfieFile),
+            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
+        {
             let documentBackPath = getRelativePath(from: savedFiles.documentBack)
             delegate.didSucceed(
                 selfie: selfiePath,

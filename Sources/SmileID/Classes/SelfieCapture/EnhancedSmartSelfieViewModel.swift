@@ -13,7 +13,10 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     var livenessCheckManager = LivenessCheckManager()
     private var subscribers = Set<AnyCancellable>()
     private var guideAnimationDelayTimer: Timer?
-    private let metadataTimerStart = MonotonicTime()
+    private var captureDuration = MonotonicTime()
+    private let metadata: Metadata = .shared
+    private var networkRetries: Int = 0
+    private var selfieCaptureRetries: Int = 0
 
     // MARK: Private Properties
 
@@ -21,6 +24,10 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         .orientation
     private var unlockedDeviceOrientation: UIDeviceOrientation {
         UIDevice.current.orientation
+    }
+    private var currentOrientation: UIDeviceOrientation {
+        return motionManager.isDeviceMotionAvailable
+            ? motionDeviceOrientation : unlockedDeviceOrientation
     }
 
     private var faceLayoutGuideFrame = CGRect(
@@ -55,6 +62,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private var error: Error?
     @Published public var errorMessageRes: String?
     @Published public var errorMessage: String?
+    private var hasRecordedOrientationAtCaptureStart = false
 
     // MARK: Constants
 
@@ -81,7 +89,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     private let skipApiSubmission: Bool
     private let extraPartnerParams: [String: String]
     private let onResult: SmartSelfieResultDelegate
-    private var localMetadata: LocalMetadata
 
     enum SelfieCaptureState: Equatable {
         case capturingSelfie
@@ -103,8 +110,7 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         allowNewEnroll: Bool,
         skipApiSubmission: Bool,
         extraPartnerParams: [String: String],
-        onResult: SmartSelfieResultDelegate,
-        localMetadata: LocalMetadata
+        onResult: SmartSelfieResultDelegate
     ) {
         self.isEnroll = isEnroll
         self.userId = userId
@@ -112,7 +118,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         self.skipApiSubmission = skipApiSubmission
         self.extraPartnerParams = extraPartnerParams
         self.onResult = onResult
-        self.localMetadata = localMetadata
         initialSetup()
     }
 
@@ -184,9 +189,6 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     }
 
     private func handleCameraImageBuffer(_ imageBuffer: CVPixelBuffer) {
-        let currentOrientation: UIDeviceOrientation =
-            motionManager.isDeviceMotionAvailable
-                ? motionDeviceOrientation : unlockedDeviceOrientation
         if currentOrientation == .portrait {
             analyzeFrame(imageBuffer: imageBuffer)
         } else {
@@ -198,6 +200,16 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     }
 
     private func analyzeFrame(imageBuffer: CVPixelBuffer) {
+        /*
+         At the start of the capture, we record the device orientation and start the capture
+         duration timer.
+         */
+        if !hasRecordedOrientationAtCaptureStart {
+            metadata.addMetadata(key: .deviceOrientation)
+            hasRecordedOrientationAtCaptureStart = true
+            captureDuration.startTime()
+        }
+
         currentFrameBuffer = imageBuffer
         faceDetector.processImageBuffer(imageBuffer)
         if hasDetectedValidFace && selfieImage == nil {
@@ -218,6 +230,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
         case .cancelSelfieCapture:
             handleCancelSelfieCapture()
         case .retryJobSubmission:
+            incrementNetworkRetries()
+            selfieCaptureRetries += 1
             handleViewAppeared()
         case .openApplicationSettings:
             openSettings()
@@ -457,7 +471,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
     private func captureNextFrame(capturedFrames: Int) {
         let maxFrames = LivenessTask.numberOfFramesToCapture
         guard capturedFrames < maxFrames,
-              let currentFrame = currentFrameBuffer
+            let currentFrame = currentFrameBuffer
         else {
             return
         }
@@ -475,6 +489,16 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
     }
 
     func didCompleteLivenessChallenge() {
+        /*
+        At the end of the capture, we record the device orientation and
+        the capture duration
+        */
+        metadata.addMetadata(key: .deviceOrientation)
+        metadata.addMetadata(
+            key: .selfieCaptureDuration,
+            value: captureDuration.elapsedTime().milliseconds()
+        )
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.cameraManager.pauseSession()
             self.handleSubmission()
@@ -484,7 +508,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
     func livenessChallengeTimeout() {
         let remainingImages = numLivenessImages - livenessImages.count
         let count = remainingImages > 0 ? remainingImages : 0
-        for _ in 0 ..< count {
+        for _ in 0..<count {
             if let imageBuffer = currentFrameBuffer {
                 captureLivenessImage(imageBuffer)
             }
@@ -502,8 +526,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     public func submitJob() async throws {
         // Add metadata before submission
         addSelfieCaptureMetaData()
-
-        // Create an instance of SelfieSubmissionManager to manage the submission process
+        let metadata = metadata.collectAllMetadata()
         let submissionManager = SelfieSubmissionManager(
             userId: userId,
             isEnroll: isEnroll,
@@ -512,43 +535,21 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
             selfieImageUrl: selfieImageURL,
             livenessImages: livenessImages,
             extraPartnerParams: extraPartnerParams,
-            localMetadata: localMetadata
+            metadata: metadata
         )
         submissionManager.delegate = self
         try await submissionManager.submitJob(failureReason: failureReason)
     }
 
-    private func addSelfieCaptureMetaData() {
-        localMetadata.addMetadata(
-            Metadatum.SelfieCaptureDuration(
-                duration: metadataTimerStart.elapsedTime())
-        )
-        localMetadata.addMetadata(
-            Metadatum.ActiveLivenessType(livenessType: LivenessType.headPose)
-        )
-        localMetadata.addMetadata(
-            Metadatum(
-                name: "camera_name",
-                value: cameraManager.cameraName ?? "Unknown Camera Name"
-            )
-        )
-    }
-
-    private func resetSelfieCaptureMetadata() {
-        localMetadata.metadata.removeAllOfType(
-            Metadatum.SelfieCaptureDuration.self)
-        localMetadata.metadata.removeAllOfType(
-            Metadatum.ActiveLivenessType.self)
-    }
-
     public func onFinished(callback: SmartSelfieResultDelegate) {
+        Metadata.shared.onStop()
         if let error = self.error {
             callback.didError(error: error)
         } else if let selfieImageURL = selfieImageURL,
-           let selfiePath = getRelativePath(from: selfieImageURL),
-           livenessImages.count == numLivenessImages,
-           !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-           ) {
+            let selfiePath = getRelativePath(from: selfieImageURL),
+            livenessImages.count == numLivenessImages,
+            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
+            ) {
             let livenessImagesPaths = livenessImages.compactMap {
                 getRelativePath(from: $0)
             }
@@ -564,6 +565,7 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     // MARK: SelfieJobSubmissionDelegate Methods
 
     func submissionDidSucceed(_ apiResponse: SmartSelfieResponse) {
+        resetNetworkRetries()
         invalidateSubmissionTask()
         HapticManager.shared.notification(type: .success)
         DispatchQueue.main.async {
@@ -598,5 +600,33 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
     func invalidateSubmissionTask() {
         submissionTask?.cancel()
         submissionTask = nil
+    }
+}
+
+// MARK: - Metadata Helpers
+extension EnhancedSmartSelfieViewModel {
+    private func addSelfieCaptureMetaData() {
+        metadata.addMetadata(key: .activeLivenessType, value: LivenessType.headPose.rawValue)
+        metadata.addMetadata(
+            key: .cameraName, value: cameraManager.cameraName ?? "Unknown Camera Name")
+        metadata.addMetadata(key: .selfieCaptureRetries, value: selfieCaptureRetries)
+    }
+
+    private func resetSelfieCaptureMetadata() {
+        metadata.removeMetadata(key: .selfieCaptureDuration)
+        metadata.removeMetadata(key: .activeLivenessType)
+        metadata.removeMetadata(key: .deviceOrientation)
+        metadata.removeMetadata(key: .deviceMovementDetected)
+        hasRecordedOrientationAtCaptureStart = false
+    }
+
+    private func incrementNetworkRetries() {
+        networkRetries += 1
+        Metadata.shared.addMetadata(key: .networkRetries, value: networkRetries)
+    }
+
+    private func resetNetworkRetries() {
+        networkRetries = 0
+        Metadata.shared.removeMetadata(key: .networkRetries)
     }
 }

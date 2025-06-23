@@ -3,6 +3,7 @@ import SmileIDSecurity
 
 protocol ServiceRunnable {
     var serviceClient: RestServiceClient { get }
+    var metadata: Metadata { get }
     associatedtype PathType: CustomStringConvertible
     var baseURL: URL? { get }
 
@@ -32,8 +33,7 @@ protocol ServiceRunnable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
-        failureReason: FailureReason?,
-        metadata: Metadata
+        failureReason: FailureReason?
     ) async throws -> SmartSelfieResponse
 
     /// PUT service call to a particular path with a body.
@@ -68,7 +68,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
             ],
             body: body
         )
@@ -83,7 +83,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
             ]
         )
         return try await serviceClient.send(request: request)
@@ -100,8 +100,7 @@ extension ServiceRunnable {
         callbackUrl: String? = nil,
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
-        failureReason: FailureReason? = nil,
-        metadata: Metadata = Metadata.default()
+        failureReason: FailureReason? = nil
     ) async throws -> SmartSelfieResponse {
         let boundary = generateBoundary()
         var headers: [HTTPHeader] = []
@@ -114,6 +113,8 @@ extension ServiceRunnable {
         let timestamp = Date().toISO8601WithMilliseconds()
         headers.append(.requestTimestamp(value: timestamp))
 
+        let metadata = metadata.collectAllMetadata()
+
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         let selfieRequest = SelfieRequest(
@@ -125,7 +126,7 @@ extension ServiceRunnable {
             sandboxResult: sandboxResult,
             allowNewEnroll: allowNewEnroll,
             failureReason: failureReason,
-            metadata: metadata.items
+            metadata: metadata
         )
 
         let payload = try encoder.encode(selfieRequest)
@@ -322,7 +323,7 @@ extension ServiceRunnable {
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
         failureReason: FailureReason?,
-        metadata: Metadata = Metadata.default(),
+        metadata: [Metadatum],
         boundary: String
     ) -> Data {
         let lineBreak = "\r\n"
@@ -331,10 +332,13 @@ extension ServiceRunnable {
         // Append parameters if available
         if let parameters = partnerParams {
             if let boundaryData = "--\(boundary)\(lineBreak)".data(using: .utf8),
-                let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(
+                let dispositionData =
+                    "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(
+                        using: .utf8),
+                let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(
                     using: .utf8),
-                let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8),
-                let lineBreakData = lineBreak.data(using: .utf8) {
+                let lineBreakData = lineBreak.data(using: .utf8)
+            {
                 body.append(boundaryData)
                 body.append(dispositionData)
                 body.append(contentTypeData)
@@ -354,7 +358,8 @@ extension ServiceRunnable {
             if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
                 body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                 body.append(
-                    "Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    "Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(
+                        using: .utf8)!)
                 body.append(valueData)
             }
         }
@@ -364,7 +369,8 @@ extension ServiceRunnable {
             if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
                 body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                 body.append(
-                    "Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+                    "Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)"
+                        .data(using: .utf8)!)
                 body.append(valueData)
             }
         }
@@ -375,8 +381,9 @@ extension ServiceRunnable {
             if let valueData = "\(sandboxResultString)\(lineBreak)".data(using: .utf8) {
                 body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                 body.append(
-                    "Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)".data(
-                        using: .utf8)!)
+                    "Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)"
+                        .data(
+                            using: .utf8)!)
                 body.append(valueData)
             }
         }
@@ -386,8 +393,9 @@ extension ServiceRunnable {
             if let valueData = "\(allowNewEnroll)\(lineBreak)".data(using: .utf8) {
                 body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                 body.append(
-                    "Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)".data(
-                        using: .utf8)!)
+                    "Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)"
+                        .data(
+                            using: .utf8)!)
                 body.append(valueData)
             }
         }
@@ -395,10 +403,12 @@ extension ServiceRunnable {
         // Append metadata
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-        if let metadataData = try? encoder.encode(metadata.items) {
+        if let metadataData = try? encoder.encode(metadata) {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(
+                "Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
+            body.append(
+                "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
             body.append(metadataData)
             body.append(lineBreak.data(using: .utf8)!)
         }
@@ -409,7 +419,8 @@ extension ServiceRunnable {
             body.append(
                 "Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)"
                     .data(using: .utf8)!)
-            body.append("Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(
+                "Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
             body.append(item.data)
             body.append(lineBreak.data(using: .utf8)!)
         }
@@ -419,16 +430,21 @@ extension ServiceRunnable {
         body.append(
             "Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)"
                 .data(using: .utf8)!)
-        body.append("Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+        body.append(
+            "Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
         body.append(selfieImage.data)
         body.append(lineBreak.data(using: .utf8)!)
 
         // Append failure reason if available
         if let failureReason,
-           let failureReasonData = try? encoder.encode(failureReason) {
+            let failureReasonData = try? encoder.encode(failureReason)
+        {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+            body.append(
+                "Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(
+                    using: .utf8)!)
+            body.append(
+                "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
             body.append(failureReasonData)
             body.append(lineBreak.data(using: .utf8)!)
         }

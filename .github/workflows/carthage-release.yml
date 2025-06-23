@@ -3,6 +3,7 @@ name: Build and Release Framework
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build-and-release:

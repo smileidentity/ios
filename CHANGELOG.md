@@ -1,5 +1,13 @@
 # Release Notes
-## Unreleased
+## 11.0.0
+
+### Added 
+ * Added a security feature to protect the payload between sdk and backend from unauthorized tampering.
+ * Enhanced fraud signals collection to improve fraud prevention
+  
+### Changed
+* Changes the `retry` flag to be a boolean instead of a string for prepUpload requests. This is a breaking change for stored offline jobs, where the job is written using an older sdk version and then submission is attempted using this version
+* Made calculateSignature func public 
 
 ### Added 
  * Added a security feature to protect the payload between sdk and backend from unauthorized tampering.
