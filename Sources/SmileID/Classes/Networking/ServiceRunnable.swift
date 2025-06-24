@@ -443,7 +443,7 @@ extension ServiceRunnable {
         )
 
         // Closing boundary
-        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
+        body.appendUtf8("--\(boundary)--\(lineBreak)")
         return body
     }
 
@@ -534,7 +534,7 @@ extension ServiceRunnable {
         )
 
         // Closing boundary
-        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
+        body.appendUtf8("--\(boundary)--\(lineBreak)")
         return body
     }
 
@@ -548,9 +548,9 @@ extension ServiceRunnable {
         lineBreak: String
     ) {
         guard let value = value else { return }
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append("Content-Disposition: form-data; name=\"\(name)\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-        body.append("\(value)\(lineBreak)".data(using: .utf8)!)
+        body.appendUtf8("--\(boundary)\(lineBreak)")
+        body.appendUtf8("Content-Disposition: form-data; name=\"\(name)\"\(lineBreak + lineBreak)")
+        body.appendUtf8("\(value)\(lineBreak)")
     }
 
     /// Appends a JSON-encoded field to a multipart body.
@@ -566,11 +566,11 @@ extension ServiceRunnable {
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         guard let jsonData = try? encoder.encode(encodable) else { return }
 
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append("Content-Disposition: form-data; name=\"\(name)\"\(lineBreak)".data(using: .utf8)!)
-        body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+        body.appendUtf8("--\(boundary)\(lineBreak)")
+        body.appendUtf8("Content-Disposition: form-data; name=\"\(name)\"\(lineBreak)")
+        body.appendUtf8("Content-Type: application/json\(lineBreak + lineBreak)")
         body.append(jsonData)
-        body.append(lineBreak.data(using: .utf8)!)
+        body.appendUtf8(lineBreak)
     }
 
     /// Appends a binary file field to a multipart body.
@@ -581,9 +581,22 @@ extension ServiceRunnable {
         boundary: String,
         lineBreak: String
     ) {
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(file.filename)\"\(lineBreak)".data(using: .utf8)!)
-        body.append("Content-Type: \(file.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+        body.appendUtf8("--\(boundary)\(lineBreak)")
+        body.appendUtf8("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(file.filename)\"\(lineBreak)")
+        body.appendUtf8("Content-Type: \(file.mimeType)\(lineBreak + lineBreak)")
         body.append(file.data)
+    }
+}
+
+// MARK: - Safe UTF-8 append
+
+private extension Data {
+    /// Appends UTF-8 bytes for `string`, asserting in debug if encoding fails.
+    mutating func appendUtf8(_ string: String) {
+        guard let data = string.data(using: .utf8) else {
+            assertionFailure("Failed UTF-8 encoding for: \(string)")
+            return
+        }
+        append(data)
     }
 }
