@@ -150,29 +150,17 @@ extension ServiceRunnable {
         let uploadData: Data
         if enableEncryption {
             uploadData = try createEncryptedMultiPartRequestData(
+                selfieRequest: selfieRequest,
                 selfieImage: selfieImage,
                 livenessImages: livenessImages,
-                userId: userId,
-                partnerParams: partnerParams,
-                callbackUrl: callbackUrl?.nilIfEmpty(),
-                sandboxResult: sandboxResult,
-                allowNewEnroll: allowNewEnroll,
-                failureReason: failureReason,
-                metadata: metadata,
                 boundary: boundary,
                 timestamp: timestamp
             )
         } else {
             uploadData = createMultiPartRequestData(
+                selfieRequest: selfieRequest,
                 selfieImage: selfieImage,
                 livenessImages: livenessImages,
-                userId: userId,
-                partnerParams: partnerParams,
-                callbackUrl: callbackUrl?.nilIfEmpty(),
-                sandboxResult: sandboxResult,
-                allowNewEnroll: allowNewEnroll,
-                failureReason: failureReason,
-                metadata: metadata,
                 boundary: boundary
             )
         }
@@ -358,36 +346,30 @@ extension ServiceRunnable {
     }
 
     func createEncryptedMultiPartRequestData(
+        selfieRequest: SelfieRequest,
         selfieImage: MultipartBody,
         livenessImages: [MultipartBody],
-        userId: String?,
-        partnerParams: [String: String]?,
-        callbackUrl: String?,
-        sandboxResult: Int?,
-        allowNewEnroll: Bool?,
-        failureReason: FailureReason?,
-        metadata: [Metadatum],
         boundary: String,
         timestamp: String
     ) throws -> Data {
         // Plain Text Form Fields
-        var formFields: [String: Any] = ["metadata": metadata]
-        if let partnerParams {
+        var formFields: [String: Any] = ["metadata": selfieRequest.metadata]
+        if let partnerParams = selfieRequest.partnerParams {
             formFields["partner_params"] = partnerParams
         }
-        if let userId {
+        if let userId = selfieRequest.userId {
             formFields["user_id"] = userId
         }
-        if let callbackUrl {
+        if let callbackUrl = selfieRequest.callbackUrl {
             formFields["callback_url"] = callbackUrl
         }
-        if let sandboxResult {
+        if let sandboxResult = selfieRequest.sandboxResult {
             formFields["sandbox_result"] = sandboxResult
         }
-        if let allowNewEnroll {
+        if let allowNewEnroll = selfieRequest.allowNewEnroll {
             formFields["allow_new_enroll"] = allowNewEnroll
         }
-        if let failureReason {
+        if let failureReason = selfieRequest.failureReason {
             formFields["failure_reason"] = failureReason
         }
 
@@ -466,15 +448,9 @@ extension ServiceRunnable {
     }
 
     func createMultiPartRequestData(
+        selfieRequest: SelfieRequest,
         selfieImage: MultipartBody,
         livenessImages: [MultipartBody],
-        userId: String?,
-        partnerParams: [String: String]?,
-        callbackUrl: String?,
-        sandboxResult: Int?,
-        allowNewEnroll: Bool?,
-        failureReason: FailureReason?,
-        metadata: [Metadatum],
         boundary: String
     ) -> Data {
         let lineBreak = "\r\n"
@@ -483,7 +459,7 @@ extension ServiceRunnable {
         // Text / Numeric Fields
         appendStringField(
             "user_id",
-            value: userId,
+            value: selfieRequest.userId,
             to: &body,
             boundary: boundary,
             lineBreak: lineBreak
@@ -491,7 +467,7 @@ extension ServiceRunnable {
 
         appendStringField(
             "callback_url",
-            value: callbackUrl,
+            value: selfieRequest.callbackUrl,
             to: &body,
             boundary: boundary,
             lineBreak: lineBreak
@@ -499,7 +475,7 @@ extension ServiceRunnable {
 
         appendStringField(
             "sandbox_result",
-            value: sandboxResult.map(String.init),
+            value: selfieRequest.sandboxResult.map(String.init),
             to: &body,
             boundary: boundary,
             lineBreak: lineBreak
@@ -507,7 +483,7 @@ extension ServiceRunnable {
 
         appendStringField(
             "allow_new_enroll",
-            value: allowNewEnroll.map(String.init),
+            value: selfieRequest.allowNewEnroll.map(String.init),
             to: &body,
             boundary: boundary,
             lineBreak: lineBreak
@@ -516,7 +492,7 @@ extension ServiceRunnable {
         // JSON-encoded fields
         appendJSONField(
             "partner_params",
-            encodable: partnerParams,
+            encodable: selfieRequest.partnerParams,
             to: &body,
             boundary: boundary,
             lineBreak: lineBreak
@@ -524,7 +500,7 @@ extension ServiceRunnable {
 
         appendJSONField(
             "metadata",
-            encodable: metadata,
+            encodable: selfieRequest.metadata,
             to: &body,
             boundary: boundary,
             lineBreak: lineBreak
@@ -532,7 +508,7 @@ extension ServiceRunnable {
 
         appendJSONField(
             "failure_reason",
-            encodable: failureReason,
+            encodable: selfieRequest.failureReason,
             to: &body,
             boundary: boundary,
             lineBreak: lineBreak
