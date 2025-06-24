@@ -1,4 +1,5 @@
 Pod::Spec.new do |s|
+  s.static_framework = true
   s.name             = 'SmileID'
   s.version          = '11.0.0'
   s.summary          = 'The Official Smile Identity iOS SDK.'
@@ -11,6 +12,7 @@ Pod::Spec.new do |s|
   s.dependency 'FingerprintJS'
   s.dependency 'lottie-ios', '~> 4.5.0'
   s.dependency 'SmileIDSecurity', '~> 1.0.1'
+  s.dependency 'GoogleMLKit/ObjectDetection'
   s.swift_version = '5.5'
   s.source_files = 'Sources/SmileID/Classes/**/*'
   s.resource_bundles = {
