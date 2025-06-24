@@ -17,11 +17,12 @@ private let analysisSampleInterval: TimeInterval = 0.350
 
 class DocumentCaptureViewModel: ObservableObject {
 
+    // ML Kit Object Detection
+    private let objectDetector: ObjectDetector
+    
     deinit {
         subscribers.removeAll()
     }
-    // ML Kit Object Detection
-    let options = ObjectDetectorOptions()
     
     // Initializer properties
     private let knownAspectRatio: Double?
@@ -58,6 +59,11 @@ class DocumentCaptureViewModel: ObservableObject {
         knownAspectRatio: Double? = nil,
         side: DocumentCaptureSide
     ) {
+        let options = ObjectDetectorOptions()
+        options.shouldEnableClassification = true
+        options.detectorMode = .singleImage
+        self.objectDetector = ObjectDetector.objectDetector(options: options)
+        
         self.knownAspectRatio = knownAspectRatio
         self.side = side
         defaultAspectRatio = knownAspectRatio ?? 1.0
@@ -290,12 +296,6 @@ class DocumentCaptureViewModel: ObservableObject {
             DispatchQueue.main.async { [self] in
                 self.idAspectRatio = idAspectRatio
             }
-            
-            options.shouldEnableClassification = true;
-            options.detectorMode = .singleImage
-            options.shouldEnableClassification = true
-            
-            let objectDetector = ObjectDetector.objectDetector(options: options)
             
             let visionImage = uiImage(from: buffer)
             
