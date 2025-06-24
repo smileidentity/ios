@@ -23,7 +23,7 @@ let project = Project(
                     "CODE_SIGN_STYLE": "Automatic",
                     "CODE_SIGN_IDENTITY": "Apple Development",
                 ]
-            ),
+            )
         ),
         .target(
             name: "SmileIDExampleTests",
