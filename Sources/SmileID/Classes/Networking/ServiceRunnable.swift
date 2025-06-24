@@ -22,6 +22,7 @@ protocol ServiceRunnable {
     /// - Parameters:
     ///   - path: Endpoint to execute the POST call.
     ///   - body: The contents of the body of the mulitpart request.
+    ///   - enableEncryption: Whether to encrypt the multipart payload.
     func multipart(
         to path: PathType,
         signature: String,
@@ -33,7 +34,8 @@ protocol ServiceRunnable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
-        failureReason: FailureReason?
+        failureReason: FailureReason?,
+        enableEncryption: Bool
     ) async throws -> SmartSelfieResponse
 
     /// PUT service call to a particular path with a body.
@@ -68,7 +70,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ],
             body: body
         )
@@ -83,7 +85,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ]
         )
         return try await serviceClient.send(request: request)
@@ -100,7 +102,8 @@ extension ServiceRunnable {
         callbackUrl: String? = nil,
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
-        failureReason: FailureReason? = nil
+        failureReason: FailureReason? = nil,
+        enableEncryption: Bool = false
     ) async throws -> SmartSelfieResponse {
         let boundary = generateBoundary()
         var headers: [HTTPHeader] = []
@@ -144,11 +147,23 @@ extension ServiceRunnable {
              */
         }
 
-        let request = try await createMultiPartRequest(
-            url: path,
-            method: .post,
-            headers: headers,
-            uploadData: createMultiPartRequestData(
+        let uploadData: Data
+        if enableEncryption {
+            uploadData = try createEncryptedMultiPartRequestData(
+                selfieImage: selfieImage,
+                livenessImages: livenessImages,
+                userId: userId,
+                partnerParams: partnerParams,
+                callbackUrl: callbackUrl?.nilIfEmpty(),
+                sandboxResult: sandboxResult,
+                allowNewEnroll: allowNewEnroll,
+                failureReason: failureReason,
+                metadata: metadata,
+                boundary: boundary,
+                timestamp: timestamp
+            )
+        } else {
+            uploadData = createMultiPartRequestData(
                 selfieImage: selfieImage,
                 livenessImages: livenessImages,
                 userId: userId,
@@ -160,6 +175,13 @@ extension ServiceRunnable {
                 metadata: metadata,
                 boundary: boundary
             )
+        }
+
+        let request = try await createMultiPartRequest(
+            url: path,
+            method: .post,
+            headers: headers,
+            uploadData: uploadData
         )
 
         return try await serviceClient.multipart(request: request)
@@ -258,6 +280,28 @@ extension ServiceRunnable {
                  In the future, we will handle this more gracefully once sentry integration has been implemented.
                  */
             }
+
+            if path.contains("id_verification") {
+                let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
+                    timestamp: header.value,
+                    headers: signedHeaders.toDictionary(),
+                    payload: payload
+                )
+                for index in 0..<signedHeaders.count {
+                    let key = signedHeaders[index].name
+                    if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
+                        signedHeaders[index].value = encryptedValue
+                    }
+                }
+                let request = RestRequest(
+                    url: url,
+                    method: method,
+                    headers: signedHeaders,
+                    queryParameters: queryParameters,
+                    body: encryptedPayload!
+                )
+                return request
+            }
         }
 
         do {
@@ -314,6 +358,81 @@ extension ServiceRunnable {
     }
 
     // swiftlint:disable line_length cyclomatic_complexity
+    func createEncryptedMultiPartRequestData(
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        userId: String?,
+        partnerParams: [String: String]?,
+        callbackUrl: String?,
+        sandboxResult: Int?,
+        allowNewEnroll: Bool?,
+        failureReason: FailureReason?,
+        metadata: [Metadatum],
+        boundary: String,
+        timestamp: String
+    ) throws -> Data {
+        // Prepare form fields for encryption
+        var formFields: [String: Any] = [:]
+
+        if let partnerParams = partnerParams {
+            formFields["partner_params"] = partnerParams
+        }
+        if let userId = userId {
+            formFields["user_id"] = userId
+        }
+        if let callbackUrl = callbackUrl {
+            formFields["callback_url"] = callbackUrl
+        }
+        if let sandboxResult = sandboxResult {
+            formFields["sandbox_result"] = sandboxResult
+        }
+        if let allowNewEnroll = allowNewEnroll {
+            formFields["allow_new_enroll"] = allowNewEnroll
+        }
+        if let failureReason = failureReason {
+            formFields["failure_reason"] = failureReason
+        }
+        formFields["metadata"] = metadata
+
+        // Prepare binary data for encryption
+        var binaryData: [Data] = []
+        for livenessImage in livenessImages {
+            binaryData.append(livenessImage.data)
+        }
+        binaryData.append(selfieImage.data)
+
+        // Encrypt the data
+        let (encryptedFields, encryptedBinaryData) = try SmileIDCryptoManager.shared.encryptMultipartData(
+            timestamp: timestamp,
+            formFields: formFields,
+            binaryData: binaryData
+        )
+
+        // Build multipart data with encrypted values
+        guard
+            let encryptedSelfie = MultipartBody(
+                withImage: encryptedBinaryData.last ?? selfieImage.data,
+                forName: selfieImage.filename
+            )
+        else {
+            throw SmileIDCryptoError.encodingError
+        }
+
+        let encryptedLivenessImages = zip(livenessImages, encryptedBinaryData.dropLast()).compactMap {
+            original,
+            encrypted in
+            MultipartBody(withImage: encrypted, forName: original.filename)
+        }
+
+        return createMultiPartRequestDataWithEncryption(
+            selfieImage: encryptedSelfie,
+            livenessImages: encryptedLivenessImages,
+            encryptedFields: encryptedFields,
+            boundary: boundary
+        )
+    }
+
+    // swiftlint:disable line_length cyclomatic_complexity
     func createMultiPartRequestData(
         selfieImage: MultipartBody,
         livenessImages: [MultipartBody],
@@ -334,11 +453,12 @@ extension ServiceRunnable {
             if let boundaryData = "--\(boundary)\(lineBreak)".data(using: .utf8),
                 let dispositionData =
                     "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(
-                        using: .utf8),
+                        using: .utf8
+                    ),
                 let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(
-                    using: .utf8),
-                let lineBreakData = lineBreak.data(using: .utf8)
-            {
+                    using: .utf8
+                ),
+                let lineBreakData = lineBreak.data(using: .utf8) {
                 body.append(boundaryData)
                 body.append(dispositionData)
                 body.append(contentTypeData)
@@ -359,7 +479,9 @@ extension ServiceRunnable {
                 body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                 body.append(
                     "Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(
-                        using: .utf8)!)
+                        using: .utf8
+                    )!
+                )
                 body.append(valueData)
             }
         }
@@ -370,7 +492,8 @@ extension ServiceRunnable {
                 body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
                 body.append(
                     "Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)"
-                        .data(using: .utf8)!)
+                        .data(using: .utf8)!
+                )
                 body.append(valueData)
             }
         }
@@ -383,7 +506,9 @@ extension ServiceRunnable {
                 body.append(
                     "Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)"
                         .data(
-                            using: .utf8)!)
+                            using: .utf8
+                        )!
+                )
                 body.append(valueData)
             }
         }
@@ -395,7 +520,9 @@ extension ServiceRunnable {
                 body.append(
                     "Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)"
                         .data(
-                            using: .utf8)!)
+                            using: .utf8
+                        )!
+                )
                 body.append(valueData)
             }
         }
@@ -406,9 +533,11 @@ extension ServiceRunnable {
         if let metadataData = try? encoder.encode(metadata) {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
             body.append(
-                "Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
+                "Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!
+            )
             body.append(
-                "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+                "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!
+            )
             body.append(metadataData)
             body.append(lineBreak.data(using: .utf8)!)
         }
@@ -418,9 +547,11 @@ extension ServiceRunnable {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
             body.append(
                 "Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)"
-                    .data(using: .utf8)!)
+                    .data(using: .utf8)!
+            )
             body.append(
-                "Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+                "Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!
+            )
             body.append(item.data)
             body.append(lineBreak.data(using: .utf8)!)
         }
@@ -429,9 +560,11 @@ extension ServiceRunnable {
         body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
         body.append(
             "Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)"
-                .data(using: .utf8)!)
+                .data(using: .utf8)!
+        )
         body.append(
-            "Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+            "Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!
+        )
         body.append(selfieImage.data)
         body.append(lineBreak.data(using: .utf8)!)
 
@@ -442,12 +575,72 @@ extension ServiceRunnable {
             body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
             body.append(
                 "Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(
-                    using: .utf8)!)
+                    using: .utf8
+                )!
+            )
             body.append(
-                "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+                "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!
+            )
             body.append(failureReasonData)
             body.append(lineBreak.data(using: .utf8)!)
         }
+
+        // Append final boundary
+        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
+        return body
+    }
+
+    private func createMultiPartRequestDataWithEncryption(
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        encryptedFields: [String: String],
+        boundary: String
+    ) -> Data {
+        let lineBreak = "\r\n"
+        var body = Data()
+
+        // Append encrypted form fields
+        for (key, encryptedValue) in encryptedFields.sorted(by: { $0.key < $1.key }) {
+            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+
+            if key == "partner_params" || key == "metadata" || key == "failure_reason" {
+                body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak)".data(using: .utf8)!)
+                body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+            } else {
+                body.append(
+                    "Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)".data(using: .utf8)!
+                )
+            }
+
+            body.append(encryptedValue.data(using: .utf8)!)
+            body.append(lineBreak.data(using: .utf8)!)
+        }
+
+        // Append encrypted liveness media files
+        for item in livenessImages {
+            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+            body.append(
+                "Content-Disposition: form-data; name=\"liveness_images\"; filename=\"\(item.filename)\"\(lineBreak)"
+                    .data(using: .utf8)!
+            )
+            body.append(
+                "Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!
+            )
+            body.append(item.data)
+            body.append(lineBreak.data(using: .utf8)!)
+        }
+
+        // Append encrypted selfie media file
+        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+        body.append(
+            "Content-Disposition: form-data; name=\"selfie_image\"; filename=\"\(selfieImage.filename)\"\(lineBreak)"
+                .data(using: .utf8)!
+        )
+        body.append(
+            "Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!
+        )
+        body.append(selfieImage.data)
+        body.append(lineBreak.data(using: .utf8)!)
 
         // Append final boundary
         body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
