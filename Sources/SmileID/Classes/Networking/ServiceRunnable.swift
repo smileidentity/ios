@@ -357,7 +357,6 @@ extension ServiceRunnable {
         return UUID().uuidString
     }
 
-    // swiftlint:disable line_length cyclomatic_complexity
     func createEncryptedMultiPartRequestData(
         selfieImage: MultipartBody,
         livenessImages: [MultipartBody],
@@ -371,56 +370,45 @@ extension ServiceRunnable {
         boundary: String,
         timestamp: String
     ) throws -> Data {
-        // Prepare form fields for encryption
-        var formFields: [String: Any] = [:]
-
-        if let partnerParams = partnerParams {
+        // Plain Text Form Fields
+        var formFields: [String: Any] = ["metadata": metadata]
+        if let partnerParams {
             formFields["partner_params"] = partnerParams
         }
-        if let userId = userId {
+        if let userId {
             formFields["user_id"] = userId
         }
-        if let callbackUrl = callbackUrl {
+        if let callbackUrl {
             formFields["callback_url"] = callbackUrl
         }
-        if let sandboxResult = sandboxResult {
+        if let sandboxResult {
             formFields["sandbox_result"] = sandboxResult
         }
-        if let allowNewEnroll = allowNewEnroll {
+        if let allowNewEnroll {
             formFields["allow_new_enroll"] = allowNewEnroll
         }
-        if let failureReason = failureReason {
+        if let failureReason {
             formFields["failure_reason"] = failureReason
         }
-        formFields["metadata"] = metadata
 
-        // Prepare binary data for encryption
-        var binaryData: [Data] = []
-        for livenessImage in livenessImages {
-            binaryData.append(livenessImage.data)
-        }
-        binaryData.append(selfieImage.data)
+        // Binary parts (liveness first to preserve ordering expected by backend.
+        let plainBinaries = livenessImages.map(\.data) + [selfieImage.data]
 
-        // Encrypt the data
-        let (encryptedFields, encryptedBinaryData) = try SmileIDCryptoManager.shared.encryptMultipartData(
+        let (encryptedFields, encryptedBinaries) = try SmileIDCryptoManager.shared.encryptMultipartData(
             timestamp: timestamp,
             formFields: formFields,
-            binaryData: binaryData
+            binaryData: plainBinaries
         )
 
-        // Build multipart data with encrypted values
-        guard
-            let encryptedSelfie = MultipartBody(
-                withImage: encryptedBinaryData.last ?? selfieImage.data,
-                forName: selfieImage.filename
-            )
-        else {
-            throw SmileIDCryptoError.encodingError
+        let encryptedLivenessImages = zip(livenessImages, encryptedBinaries.dropLast()).compactMap {
+            MultipartBody(withImage: $1, forName: $0.filename)
         }
 
-        let encryptedLivenessImages = zip(livenessImages, encryptedBinaryData.dropLast())
-            .compactMap { original, encrypted in
-            MultipartBody(withImage: encrypted, forName: original.filename)
+        guard let encryptedSelfie = MultipartBody(
+            withImage: encryptedBinaries.last ?? selfieImage.data,
+            forName: selfieImage.filename
+        ) else {
+            throw SmileIDCryptoError.encodingError
         }
 
         return createMultiPartRequestDataWithEncryption(
@@ -429,6 +417,52 @@ extension ServiceRunnable {
             encryptedFields: encryptedFields,
             boundary: boundary
         )
+    }
+
+    private func createMultiPartRequestDataWithEncryption(
+        selfieImage: MultipartBody,
+        livenessImages: [MultipartBody],
+        encryptedFields: [String: String],
+        boundary: String
+    ) -> Data {
+        let lineBreak = "\r\n"
+        var body = Data()
+
+        // Encrypted form fields
+        encryptedFields
+            .sorted(by: { $0.key < $1.key })
+            .forEach { key, value in
+                appendStringField(
+                    key,
+                    value: value,
+                    to: &body,
+                    boundary: boundary,
+                    lineBreak: lineBreak
+                )
+            }
+
+        // Encrypted binary fields
+        livenessImages.forEach { image in
+            appendFileField(
+                name: "liveness_images",
+                file: image,
+                to: &body,
+                boundary: boundary,
+                lineBreak: lineBreak
+            )
+        }
+
+        appendFileField(
+            name: "selfie_image",
+            file: selfieImage,
+            to: &body,
+            boundary: boundary,
+            lineBreak: lineBreak
+        )
+
+        // Closing boundary
+        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
+        return body
     }
 
     func createMultiPartRequestData(
@@ -529,7 +563,7 @@ extension ServiceRunnable {
     }
 
     // MARK: Multipart helpers
-    
+
     private func appendStringField(
         _ name: String,
         value: String?,
@@ -575,62 +609,5 @@ extension ServiceRunnable {
         body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(file.filename)\"\(lineBreak)".data(using: .utf8)!)
         body.append("Content-Type: \(file.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
         body.append(file.data)
-    }
-
-    private func createMultiPartRequestDataWithEncryption(
-        selfieImage: MultipartBody,
-        livenessImages: [MultipartBody],
-        encryptedFields: [String: String],
-        boundary: String
-    ) -> Data {
-        let lineBreak = "\r\n"
-        var body = Data()
-
-        // Append encrypted form fields
-        for (key, encryptedValue) in encryptedFields.sorted(by: { $0.key < $1.key }) {
-            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-
-            if key == "partner_params" || key == "metadata" || key == "failure_reason" {
-                body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak)".data(using: .utf8)!)
-                body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
-            } else {
-                body.append(
-                    "Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)".data(using: .utf8)!
-                )
-            }
-
-            body.append(encryptedValue.data(using: .utf8)!)
-            body.append(lineBreak.data(using: .utf8)!)
-        }
-
-        // Append encrypted liveness media files
-        for item in livenessImages {
-            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append(
-                "Content-Disposition: form-data; name=\"liveness_images\"; filename=\"\(item.filename)\"\(lineBreak)"
-                    .data(using: .utf8)!
-            )
-            body.append(
-                "Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!
-            )
-            body.append(item.data)
-            body.append(lineBreak.data(using: .utf8)!)
-        }
-
-        // Append encrypted selfie media file
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append(
-            "Content-Disposition: form-data; name=\"selfie_image\"; filename=\"\(selfieImage.filename)\"\(lineBreak)"
-                .data(using: .utf8)!
-        )
-        body.append(
-            "Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!
-        )
-        body.append(selfieImage.data)
-        body.append(lineBreak.data(using: .utf8)!)
-
-        // Append final boundary
-        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
-        return body
     }
 }
