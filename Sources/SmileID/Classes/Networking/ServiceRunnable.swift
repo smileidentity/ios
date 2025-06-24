@@ -418,9 +418,8 @@ extension ServiceRunnable {
             throw SmileIDCryptoError.encodingError
         }
 
-        let encryptedLivenessImages = zip(livenessImages, encryptedBinaryData.dropLast()).compactMap {
-            original,
-            encrypted in
+        let encryptedLivenessImages = zip(livenessImages, encryptedBinaryData.dropLast())
+            .compactMap { original, encrypted in
             MultipartBody(withImage: encrypted, forName: original.filename)
         }
 
@@ -432,7 +431,6 @@ extension ServiceRunnable {
         )
     }
 
-    // swiftlint:disable line_length cyclomatic_complexity
     func createMultiPartRequestData(
         selfieImage: MultipartBody,
         livenessImages: [MultipartBody],
@@ -448,146 +446,135 @@ extension ServiceRunnable {
         let lineBreak = "\r\n"
         var body = Data()
 
-        // Append parameters if available
-        if let parameters = partnerParams {
-            if let boundaryData = "--\(boundary)\(lineBreak)".data(using: .utf8),
-                let dispositionData =
-                    "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(
-                        using: .utf8
-                    ),
-                let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(
-                    using: .utf8
-                ),
-                let lineBreakData = lineBreak.data(using: .utf8) {
-                body.append(boundaryData)
-                body.append(dispositionData)
-                body.append(contentTypeData)
-
-                if let jsonData = try? JSONSerialization.data(
-                    withJSONObject: parameters,
-                    options: [.sortedKeys, .withoutEscapingSlashes]
-                ) {
-                    body.append(jsonData)
-                    body.append(lineBreakData)
-                }
-            }
-        }
-
-        // Append userId if available
-        if let userId = userId {
-            if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append(
-                    "Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(
-                        using: .utf8
-                    )!
-                )
-                body.append(valueData)
-            }
-        }
-
-        // Append callbackUrl if available
-        if let callbackUrl = callbackUrl {
-            if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append(
-                    "Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)"
-                        .data(using: .utf8)!
-                )
-                body.append(valueData)
-            }
-        }
-
-        // Append sandboxResult if available
-        if let sandboxResult = sandboxResult {
-            let sandboxResultString = "\(sandboxResult)"
-            if let valueData = "\(sandboxResultString)\(lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append(
-                    "Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)"
-                        .data(
-                            using: .utf8
-                        )!
-                )
-                body.append(valueData)
-            }
-        }
-
-        // Append allowNewEnroll if available
-        if let allowNewEnroll = allowNewEnroll {
-            if let valueData = "\(allowNewEnroll)\(lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append(
-                    "Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)"
-                        .data(
-                            using: .utf8
-                        )!
-                )
-                body.append(valueData)
-            }
-        }
-
-        // Append metadata
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-        if let metadataData = try? encoder.encode(metadata) {
-            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append(
-                "Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!
-            )
-            body.append(
-                "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!
-            )
-            body.append(metadataData)
-            body.append(lineBreak.data(using: .utf8)!)
-        }
-
-        // Append liveness media files
-        for item in livenessImages {
-            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append(
-                "Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)"
-                    .data(using: .utf8)!
-            )
-            body.append(
-                "Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!
-            )
-            body.append(item.data)
-            body.append(lineBreak.data(using: .utf8)!)
-        }
-
-        // Append selfie media file
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append(
-            "Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)"
-                .data(using: .utf8)!
+        // Text / Numeric Fields
+        appendStringField(
+            "user_id",
+            value: userId,
+            to: &body,
+            boundary: boundary,
+            lineBreak: lineBreak
         )
-        body.append(
-            "Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!
-        )
-        body.append(selfieImage.data)
-        body.append(lineBreak.data(using: .utf8)!)
 
-        // Append failure reason if available
-        if let failureReason,
-            let failureReasonData = try? encoder.encode(failureReason)
-        {
-            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append(
-                "Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(
-                    using: .utf8
-                )!
+        appendStringField(
+            "callback_url",
+            value: callbackUrl,
+            to: &body,
+            boundary: boundary,
+            lineBreak: lineBreak
+        )
+
+        appendStringField(
+            "sandbox_result",
+            value: sandboxResult.map(String.init),
+            to: &body,
+            boundary: boundary,
+            lineBreak: lineBreak
+        )
+
+        appendStringField(
+            "allow_new_enroll",
+            value: allowNewEnroll.map(String.init),
+            to: &body,
+            boundary: boundary,
+            lineBreak: lineBreak
+        )
+
+        // JSON-encoded fields
+        appendJSONField(
+            "partner_params",
+            encodable: partnerParams,
+            to: &body,
+            boundary: boundary,
+            lineBreak: lineBreak
+        )
+
+        appendJSONField(
+            "metadata",
+            encodable: metadata,
+            to: &body,
+            boundary: boundary,
+            lineBreak: lineBreak
+        )
+
+        appendJSONField(
+            "failure_reason",
+            encodable: failureReason,
+            to: &body,
+            boundary: boundary,
+            lineBreak: lineBreak
+        )
+
+        // Binary media fields
+        livenessImages.forEach { image in
+            appendFileField(
+                name: "liveness_images",
+                file: image,
+                to: &body,
+                boundary: boundary,
+                lineBreak: lineBreak
             )
-            body.append(
-                "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!
-            )
-            body.append(failureReasonData)
-            body.append(lineBreak.data(using: .utf8)!)
         }
 
-        // Append final boundary
+        appendFileField(
+            name: "selfie_image",
+            file: selfieImage,
+            to: &body,
+            boundary: boundary,
+            lineBreak: lineBreak
+        )
+
+        // Closing boundary
         body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
         return body
+    }
+
+    // MARK: Multipart helpers
+    
+    private func appendStringField(
+        _ name: String,
+        value: String?,
+        to body: inout Data,
+        boundary: String,
+        lineBreak: String
+    ) {
+        guard let value = value else { return }
+        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"\(name)\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+        body.append("\(value)\(lineBreak)".data(using: .utf8)!)
+    }
+
+    /// Appends a JSON-encoded field to a multipart body.
+    private func appendJSONField<T: Encodable>(
+        _ name: String,
+        encodable: T?,
+        to body: inout Data,
+        boundary: String,
+        lineBreak: String
+    ) {
+        guard let encodable = encodable else { return }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        guard let jsonData = try? encoder.encode(encodable) else { return }
+
+        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"\(name)\"\(lineBreak)".data(using: .utf8)!)
+        body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
+        body.append(jsonData)
+        body.append(lineBreak.data(using: .utf8)!)
+    }
+
+    /// Appends a binary file field to a multipart body.
+    private func appendFileField(
+        name: String,
+        file: MultipartBody,
+        to body: inout Data,
+        boundary: String,
+        lineBreak: String
+    ) {
+        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(file.filename)\"\(lineBreak)".data(using: .utf8)!)
+        body.append("Content-Type: \(file.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
+        body.append(file.data)
     }
 
     private func createMultiPartRequestDataWithEncryption(
