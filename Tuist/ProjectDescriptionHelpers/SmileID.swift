@@ -6,7 +6,6 @@ public let SmileID = Target.target(
     product: .framework,
     bundleId: "com.smileidentity.ios-sdk",
     deploymentTargets: .iOS("13.0"),
-    infoPlist: .default,
     sources: ["Sources/SmileID/Classes/**"],
     resources: [
         "Sources/SmileID/Resources/Fonts/**",
