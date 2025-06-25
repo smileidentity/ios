@@ -70,7 +70,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ],
             body: body
         )
@@ -85,7 +85,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
             ]
         )
         return try await serviceClient.send(request: request)
@@ -146,7 +146,7 @@ extension ServiceRunnable {
              In the future, we will handle this more gracefully once sentry integration has been implemented.
              */
         }
-        
+
         let builder = MultipartBuilder(boundary: boundary)
         let uploadData = enableEncryption ? try builder.buildEncrypted(
             selfieRequest: selfieRequest,
