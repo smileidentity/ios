@@ -12,63 +12,11 @@ concurrency:
 
 jobs:
   build:
-    # TODO: Change back to macos-latest once it points to macOS 14 (Q2 '24)
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout
+      - name: Run Tuist Build
         uses: actions/checkout@v4
-      - name: Setup environment
-        run: bundle install
+        uses: jdx/mise-action@v2
+        run: tuist build
 
-      - name: Select Xcode Version
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-         xcode-version: 15.2
-
-      - name: Write Smile Config
-        id: write_smile_config
-        # Mask the config so that it doesn't show up in the logs
-        run: |
-          INPUT_SMILE_CONFIG=$(jq -r '.inputs.smile_config // empty' $GITHUB_EVENT_PATH)
-          echo "::add-mask::$INPUT_SMILE_CONFIG"
-          if [ -n "$INPUT_SMILE_CONFIG" ]; then
-            SMILE_CONFIG="$INPUT_SMILE_CONFIG"
-          else
-            SMILE_CONFIG="$SMILE_CONFIG_PARTNER_002"
-          fi
-          echo "$SMILE_CONFIG" > smile_config.json
-          PARTNER_ID=$(jq -r '.partner_id' smile_config.json)
-          echo "partner_id=$PARTNER_ID" >> $GITHUB_OUTPUT
-        env:
-          SMILE_CONFIG_PARTNER_002: ${{ secrets.SMILE_CONFIG_PARTNER_002 }}
-
-      - name: Add Smile Config to Xcode Project
-        run: ruby add_smile_config.rb
-
-      - name: Build and Deploy to TestFlight 🚀
-        run: |
-          cd example
-          bundle exec fastlane releaseapp
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.PAT_IOS_CERTIFICATES_REPO_B64 }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          ISSUER_ID: ${{ secrets.ISSUER_ID }}
-          KEY_ID: ${{ secrets.KEY_ID }}
-          APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
-
-
-      - name: Send Slack Notification
-        uses: slackapi/slack-github-action@v2.1.1
-        with:
-          payload: |
-            {
-              "partner_id": "${{ steps.write_smile_config.outputs.partner_id }}",
-              "branch": "${{ github.ref }}",
-              "commit_sha": "${{ github.sha }}"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL}}
