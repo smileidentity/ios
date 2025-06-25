@@ -1,0 +1,24 @@
+use_frameworks!
+platform :ios, '13.0'
+
+project '../SmileID.xcodeproj' 
+
+target 'Sample' do
+  pod 'SmileID', :path => '../'
+  pod 'netfox'
+  pod 'Sentry', '~> 8.48.0'
+  pod 'SwiftLint'
+  pod 'ArkanaKeys', :path => './ArkanaKeys/ArkanaKeys/'
+  pod 'ArkanaKeysInterfaces', :path => './ArkanaKeys/ArkanaKeysInterfaces/'
+end
+
+post_install do |installer|
+  installer.generated_projects.each do |project|
+    project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings["DEVELOPMENT_TEAM"] = "99P7YGX9Q6"
+            config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+         end
+    end
+  end
+end
