@@ -24,6 +24,5 @@ let package = Package(
              url: "https://github.com/SimplyDanny/SwiftLintPlugins",
              from: "0.59.1"
            ),
-          //  .package(name: "ArkanaKeys", path: "../dependencies/ArkanaKeys"),
     ]
 )
