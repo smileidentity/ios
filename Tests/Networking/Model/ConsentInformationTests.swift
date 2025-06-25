@@ -41,6 +41,7 @@ class ConsentInformationTests: XCTestCase {
         XCTAssertEqual(normalizedJsonString, normalizedExpectedJson)
     }
 
+    @available(*, deprecated)
     func testLegacyConsentInformationEncoding() throws {
         // given - using legacy constructor
         let consentInformation = ConsentInformation(
@@ -102,6 +103,7 @@ class ConsentInformationTests: XCTestCase {
         XCTAssertEqual(consentInformation.consented.documentInformation, true)
     }
 
+    @available(*, deprecated)
     func testConsentInformationEquivalence() throws {
         // Compare instances created with both old and new constructors
         let newStyleConsent = ConsentInformation(
