@@ -11,11 +11,16 @@ let project = Project(
             product: .app,
             bundleId: "com.smileidentity.example-ios",
             deploymentTargets: .iOS("14.0"),
+            infoPlist: InfoPlist(stringLiteral: "Example/SmileID/Info.plist"),
             sources: ["Example/SmileID/**"],
-            resources: ["Example/SmileID/Resources/**/*.{xcassets,png,strings}"],
+            resources: [
+                "Example/SmileID/Base.lproj/*.{xib}",
+                "Example/SmileID/Resources/**/*.{xcassets,png,strings}",
+                "Example/SmileID/Models/**/*.{xcdatamodeld}",
+                "Example/SmileID/*.{json}"
+            ],
             dependencies: [
                .target(name: "SmileID")
-            //    .product(name: "ArkanaKeys")
             ],
             settings: .settings(
                 base: [
@@ -30,7 +35,6 @@ let project = Project(
             destinations: .iOS,
             product: .unitTests,
             bundleId: "com.smileidentity.example-ios",
-            infoPlist: .default,
             sources: ["Tests/**"],
             resources: [],
             dependencies: [.target(name: "Sample")]
