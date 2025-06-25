@@ -70,7 +70,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
             ],
             body: body
         )
@@ -85,7 +85,7 @@ extension ServiceRunnable {
                 .partnerID(value: SmileID.config.partnerId),
                 .sourceSDK(value: "iOS"),
                 .sourceSDKVersion(value: SmileID.version),
-                .requestTimestamp(value: Date().toISO8601WithMilliseconds())
+                .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
             ]
         )
         return try await serviceClient.send(request: request)
@@ -105,7 +105,7 @@ extension ServiceRunnable {
         failureReason: FailureReason? = nil,
         enableEncryption: Bool = false
     ) async throws -> SmartSelfieResponse {
-        let boundary = generateBoundary()
+        let boundary = UUID().uuidString
         var headers: [HTTPHeader] = []
         headers.append(.contentType(value: "multipart/form-data; boundary=\(boundary)"))
         headers.append(.partnerID(value: SmileID.config.partnerId))
@@ -146,24 +146,18 @@ extension ServiceRunnable {
              In the future, we will handle this more gracefully once sentry integration has been implemented.
              */
         }
-
-        let uploadData: Data
-        if enableEncryption {
-            uploadData = try createEncryptedMultiPartRequestData(
-                selfieRequest: selfieRequest,
-                selfieImage: selfieImage,
-                livenessImages: livenessImages,
-                boundary: boundary,
-                timestamp: timestamp
-            )
-        } else {
-            uploadData = createMultiPartRequestData(
-                selfieRequest: selfieRequest,
-                selfieImage: selfieImage,
-                livenessImages: livenessImages,
-                boundary: boundary
-            )
-        }
+        
+        let builder = MultipartBuilder(boundary: boundary)
+        let uploadData = enableEncryption ? try builder.buildEncrypted(
+            selfieRequest: selfieRequest,
+            selfieImage: selfieImage,
+            livenessImages: livenessImages,
+            timestamp: timestamp
+        ) : builder.buildUnencrypted(
+            selfieRequest: selfieRequest,
+            selfieImage: selfieImage,
+            livenessImages: livenessImages
+        )
 
         let request = try await createMultiPartRequest(
             url: path,
@@ -339,264 +333,5 @@ extension ServiceRunnable {
             queryParameters: queryParameters
         )
         return request
-    }
-
-    func generateBoundary() -> String {
-        return UUID().uuidString
-    }
-
-    func createEncryptedMultiPartRequestData(
-        selfieRequest: SelfieRequest,
-        selfieImage: MultipartBody,
-        livenessImages: [MultipartBody],
-        boundary: String,
-        timestamp: String
-    ) throws -> Data {
-        // Plain Text Form Fields
-        var formFields: [String: Any] = ["metadata": selfieRequest.metadata]
-        if let partnerParams = selfieRequest.partnerParams {
-            formFields["partner_params"] = partnerParams
-        }
-        if let userId = selfieRequest.userId {
-            formFields["user_id"] = userId
-        }
-        if let callbackUrl = selfieRequest.callbackUrl {
-            formFields["callback_url"] = callbackUrl
-        }
-        if let sandboxResult = selfieRequest.sandboxResult {
-            formFields["sandbox_result"] = sandboxResult
-        }
-        if let allowNewEnroll = selfieRequest.allowNewEnroll {
-            formFields["allow_new_enroll"] = allowNewEnroll
-        }
-        if let failureReason = selfieRequest.failureReason {
-            formFields["failure_reason"] = failureReason
-        }
-
-        // Binary parts (liveness first to preserve ordering expected by backend.
-        let plainBinaries = livenessImages.map(\.data) + [selfieImage.data]
-
-        let (encryptedFields, encryptedBinaries) = try SmileIDCryptoManager.shared.encryptMultipartData(
-            timestamp: timestamp,
-            formFields: formFields,
-            binaryData: plainBinaries
-        )
-
-        let encryptedLivenessImages = zip(livenessImages, encryptedBinaries.dropLast()).compactMap {
-            MultipartBody(withImage: $1, forName: $0.filename)
-        }
-
-        guard let encryptedSelfie = MultipartBody(
-            withImage: encryptedBinaries.last ?? selfieImage.data,
-            forName: selfieImage.filename
-        ) else {
-            throw SmileIDCryptoError.encodingError
-        }
-
-        return createMultiPartRequestDataWithEncryption(
-            selfieImage: encryptedSelfie,
-            livenessImages: encryptedLivenessImages,
-            encryptedFields: encryptedFields,
-            boundary: boundary
-        )
-    }
-
-    private func createMultiPartRequestDataWithEncryption(
-        selfieImage: MultipartBody,
-        livenessImages: [MultipartBody],
-        encryptedFields: [String: String],
-        boundary: String
-    ) -> Data {
-        let lineBreak = "\r\n"
-        var body = Data()
-
-        // Encrypted form fields
-        encryptedFields
-            .sorted(by: { $0.key < $1.key })
-            .forEach { key, value in
-                appendStringField(
-                    key,
-                    value: value,
-                    to: &body,
-                    boundary: boundary,
-                    lineBreak: lineBreak
-                )
-            }
-
-        // Encrypted binary fields
-        livenessImages.forEach { image in
-            appendFileField(
-                name: "liveness_images",
-                file: image,
-                to: &body,
-                boundary: boundary,
-                lineBreak: lineBreak
-            )
-        }
-
-        appendFileField(
-            name: "selfie_image",
-            file: selfieImage,
-            to: &body,
-            boundary: boundary,
-            lineBreak: lineBreak
-        )
-
-        // Closing boundary
-        body.appendUtf8("--\(boundary)--\(lineBreak)")
-        return body
-    }
-
-    func createMultiPartRequestData(
-        selfieRequest: SelfieRequest,
-        selfieImage: MultipartBody,
-        livenessImages: [MultipartBody],
-        boundary: String
-    ) -> Data {
-        let lineBreak = "\r\n"
-        var body = Data()
-
-        // Text / Numeric Fields
-        appendStringField(
-            "user_id",
-            value: selfieRequest.userId,
-            to: &body,
-            boundary: boundary,
-            lineBreak: lineBreak
-        )
-
-        appendStringField(
-            "callback_url",
-            value: selfieRequest.callbackUrl,
-            to: &body,
-            boundary: boundary,
-            lineBreak: lineBreak
-        )
-
-        appendStringField(
-            "sandbox_result",
-            value: selfieRequest.sandboxResult.map(String.init),
-            to: &body,
-            boundary: boundary,
-            lineBreak: lineBreak
-        )
-
-        appendStringField(
-            "allow_new_enroll",
-            value: selfieRequest.allowNewEnroll.map(String.init),
-            to: &body,
-            boundary: boundary,
-            lineBreak: lineBreak
-        )
-
-        // JSON-encoded fields
-        appendJSONField(
-            "partner_params",
-            encodable: selfieRequest.partnerParams,
-            to: &body,
-            boundary: boundary,
-            lineBreak: lineBreak
-        )
-
-        appendJSONField(
-            "metadata",
-            encodable: selfieRequest.metadata,
-            to: &body,
-            boundary: boundary,
-            lineBreak: lineBreak
-        )
-
-        appendJSONField(
-            "failure_reason",
-            encodable: selfieRequest.failureReason,
-            to: &body,
-            boundary: boundary,
-            lineBreak: lineBreak
-        )
-
-        // Binary media fields
-        livenessImages.forEach { image in
-            appendFileField(
-                name: "liveness_images",
-                file: image,
-                to: &body,
-                boundary: boundary,
-                lineBreak: lineBreak
-            )
-        }
-
-        appendFileField(
-            name: "selfie_image",
-            file: selfieImage,
-            to: &body,
-            boundary: boundary,
-            lineBreak: lineBreak
-        )
-
-        // Closing boundary
-        body.appendUtf8("--\(boundary)--\(lineBreak)")
-        return body
-    }
-
-    // MARK: Multipart helpers
-
-    private func appendStringField(
-        _ name: String,
-        value: String?,
-        to body: inout Data,
-        boundary: String,
-        lineBreak: String
-    ) {
-        guard let value = value else { return }
-        body.appendUtf8("--\(boundary)\(lineBreak)")
-        body.appendUtf8("Content-Disposition: form-data; name=\"\(name)\"\(lineBreak + lineBreak)")
-        body.appendUtf8("\(value)\(lineBreak)")
-    }
-
-    /// Appends a JSON-encoded field to a multipart body.
-    private func appendJSONField<T: Encodable>(
-        _ name: String,
-        encodable: T?,
-        to body: inout Data,
-        boundary: String,
-        lineBreak: String
-    ) {
-        guard let encodable = encodable else { return }
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-        guard let jsonData = try? encoder.encode(encodable) else { return }
-
-        body.appendUtf8("--\(boundary)\(lineBreak)")
-        body.appendUtf8("Content-Disposition: form-data; name=\"\(name)\"\(lineBreak)")
-        body.appendUtf8("Content-Type: application/json\(lineBreak + lineBreak)")
-        body.append(jsonData)
-        body.appendUtf8(lineBreak)
-    }
-
-    /// Appends a binary file field to a multipart body.
-    private func appendFileField(
-        name: String,
-        file: MultipartBody,
-        to body: inout Data,
-        boundary: String,
-        lineBreak: String
-    ) {
-        body.appendUtf8("--\(boundary)\(lineBreak)")
-        body.appendUtf8("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(file.filename)\"\(lineBreak)")
-        body.appendUtf8("Content-Type: \(file.mimeType)\(lineBreak + lineBreak)")
-        body.append(file.data)
-    }
-}
-
-// MARK: - Safe UTF-8 append
-
-private extension Data {
-    /// Appends UTF-8 bytes for `string`, asserting in debug if encoding fails.
-    mutating func appendUtf8(_ string: String) {
-        guard let data = string.data(using: .utf8) else {
-            assertionFailure("Failed UTF-8 encoding for: \(string)")
-            return
-        }
-        append(data)
     }
 }
