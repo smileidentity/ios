@@ -18,6 +18,7 @@ DerivedData
 *.hmap
 *.ipa
 smile_config.json
+Example/SmileID/smile_config.json
 
 # Bundler
 .bundle
@@ -52,6 +53,27 @@ archives
 # JetBrains/AppCode
 .idea
 
-Example/fasstlane/report.xml
+Example/
+Example/ArkanaKeys
+Example/fastlane/report.xml
 Frameworks/
 SmileID.framework.zip
+.swiftpm/*
+
+### Xcode Patch ###
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcworkspace/contents.xcworkspacedata
+/*.gcno
+
+### Projects ###
+SmileID.xcodeproj
+SmileID*.xcworkspace
+
+### Tuist derived files ###
+graph.dot
+Derived/
+
+### Tuist managed dependencies ###
+Tuist/.build

@@ -16,6 +16,7 @@ class EnhancedKycTest: BaseTestCase {
         assert(response.success)
     }
 
+    @available(*, deprecated)
     func testEnhancedKycRequestWithLegacyConsent() throws {
         // given - using the legacy consent API for backward compatibility
         let legacyConsent = ConsentInformation(

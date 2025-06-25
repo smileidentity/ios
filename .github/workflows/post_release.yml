@@ -53,35 +53,3 @@ jobs:
           branch: ios-release-notes-${{ github.event.release.tag_name }}
           labels: "release-notes"
           team-reviewers: "smileidentity/mobile"
-
-  generate-docc-reference-docs:
-    # TODO: Change back to macos-latest once it points to macOS 14 (Q2 '24)
-    runs-on: macos-14
-    timeout-minutes: 10
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v4
-        with:
-          path: ios
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v4
-        with:
-          path: docs
-          ref: gh-pages
-      - name: Setup environment
-        run: cd ios && bundle install
-      - name: Select Xcode Version
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-         xcode-version: 15.2
-      - name: Generate Archive
-        run:  xcodebuild docbuild -workspace ios/Example/SmileID.xcworkspace -scheme SmileID -destination 'generic/platform=iOS' DOCC_OUTPUT_DIR=.
-      - name: Generate Docs Site
-        run: $(xcrun --find docc) process-archive transform-for-static-hosting ios/Example/Pods/SmileID.doccarchive --output-path docs --hosting-base-path ios
-      - name: Push gh-pages branch
-        uses: stefanzweifel/git-auto-commit-action@v6
-        with:
-          repository: docs
-          branch: gh-pages
