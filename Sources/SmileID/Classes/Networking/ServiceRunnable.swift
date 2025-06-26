@@ -103,7 +103,7 @@ extension ServiceRunnable {
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
         failureReason: FailureReason? = nil,
-        enableEncryption: Bool = false
+        enableEncryption: Bool = true
     ) async throws -> SmartSelfieResponse {
         let boundary = UUID().uuidString
         var headers: [HTTPHeader] = []
@@ -148,16 +148,38 @@ extension ServiceRunnable {
         }
 
         let builder = MultipartBuilder(boundary: boundary)
-        let uploadData = enableEncryption ? try builder.buildEncrypted(
-            selfieRequest: selfieRequest,
-            selfieImage: selfieImage,
-            livenessImages: livenessImages,
-            timestamp: timestamp
-        ) : builder.buildUnencrypted(
-            selfieRequest: selfieRequest,
-            selfieImage: selfieImage,
-            livenessImages: livenessImages
-        )
+        let uploadData: Data
+
+        if enableEncryption {
+            guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
+                throw URLError(.badServerResponse)
+            }
+
+            let (_, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
+                timestamp: header.value,
+                headers: headers.toDictionary(),
+                payload: payload
+            )
+
+            guard let payload = encryptedPayload else {
+                throw URLError(.cannotDecodeContentData)
+            }
+
+            let jsonObject = try JSONSerialization.jsonObject(with: payload, options: [])
+            print("Encrypted payload content: \(jsonObject)")
+
+            guard let encryptedJson = jsonObject as? [String: Any] else {
+                throw URLError(.cannotDecodeContentData)
+            }
+
+            uploadData = builder.buildEncryptedMultipart(from: encryptedJson)
+        } else {
+            uploadData = builder.buildMultipart(
+                selfieRequest: selfieRequest,
+                selfieImage: selfieImage,
+                livenessImages: livenessImages
+            )
+        }
 
         let request = try await createMultiPartRequest(
             url: path,
@@ -269,18 +291,24 @@ extension ServiceRunnable {
                     headers: signedHeaders.toDictionary(),
                     payload: payload
                 )
+
+                guard let payload = encryptedPayload else {
+                    throw URLError(.cannotDecodeContentData)
+                }
+
                 for index in 0..<signedHeaders.count {
                     let key = signedHeaders[index].name
                     if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
                         signedHeaders[index].value = encryptedValue
                     }
                 }
+
                 let request = RestRequest(
                     url: url,
                     method: method,
                     headers: signedHeaders,
                     queryParameters: queryParameters,
-                    body: encryptedPayload!
+                    body: payload
                 )
                 return request
             }

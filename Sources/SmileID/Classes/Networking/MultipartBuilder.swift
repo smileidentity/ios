@@ -5,7 +5,7 @@ struct MultipartBuilder {
     let boundary: String
     private let lineBreak: String = "\r\n"
 
-    func buildUnencrypted(
+    func buildMultipart(
         selfieRequest: SelfieRequest,
         selfieImage: MultipartBody,
         livenessImages: [MultipartBody]
@@ -41,66 +41,28 @@ struct MultipartBuilder {
         return body
     }
 
-    func buildEncrypted(
-        selfieRequest: SelfieRequest,
-        selfieImage: MultipartBody,
-        livenessImages: [MultipartBody],
-        timestamp: String
-    ) throws -> Data {
-        // Plain Text Form Fields
-        var formFields: [String: Any] = ["metadata": selfieRequest.metadata]
-        if let partnerParams = selfieRequest.partnerParams {
-            formFields["partner_params"] = partnerParams
-        }
-        if let userId = selfieRequest.userId {
-            formFields["user_id"] = userId
-        }
-        if let callbackUrl = selfieRequest.callbackUrl {
-            formFields["callback_url"] = callbackUrl
-        }
-        if let sandboxResult = selfieRequest.sandboxResult {
-            formFields["sandbox_result"] = sandboxResult
-        }
-        if let allowNewEnroll = selfieRequest.allowNewEnroll {
-            formFields["allow_new_enroll"] = allowNewEnroll
-        }
-        if let failureReason = selfieRequest.failureReason {
-            formFields["failure_reason"] = failureReason
-        }
-
-        // Binary parts (liveness first to preserve ordering expected by backend.
-        let plainBinaries = livenessImages.map(\.data) + [selfieImage.data]
-
-        let (encryptedFields, encryptedBinaries) = try SmileIDCryptoManager.shared
-            .encryptMultipartData(
-                timestamp: timestamp,
-                formFields: formFields,
-                binaryData: plainBinaries
-            )
-
-        let encryptedLivenessImages = zip(
-            livenessImages,
-            encryptedBinaries.dropLast()
-        ).compactMap {
-            MultipartBody(withImage: $1, forName: $0.filename)
-        }
-
-        guard let encryptedSelfie = MultipartBody(
-            withImage: encryptedBinaries.last ?? selfieImage.data,
-            forName: selfieImage.filename
-        ) else {
-            throw SmileIDCryptoError.encodingError
-        }
-
-        // Assemble multipart body.
+    func buildEncryptedMultipart(from jsonObject: [String: Any]) -> Data {
         var body = Data()
-        encryptedFields.sorted(by: { $0.key < $1.key }).forEach {
-            appendStringField($0.key, value: $0.value, to: &body)
+
+        for (key, value) in jsonObject {
+            if let base64String = value as? String {
+                // Decode base64 value
+                if let decodedData = Data(base64Encoded: base64String) {
+                    // Check if this is a binary field (images)
+                    if key.contains("image") {
+                        appendBinaryField(name: key, data: decodedData, to: &body)
+                    } else {
+                        // Try to convert to string for text fields
+                        if let stringValue = String(data: decodedData, encoding: .utf8) {
+                            appendStringField(key, value: stringValue, to: &body)
+                        } else {
+                            // If not valid UTF-8, treat as binary
+                            appendBinaryField(name: key, data: decodedData, to: &body)
+                        }
+                    }
+                }
+            }
         }
-        encryptedLivenessImages.forEach {
-            appendFileField(name: "liveness_images", file: $0, to: &body)
-        }
-        appendFileField(name: "selfie_image", file: encryptedSelfie, to: &body)
 
         body.appendUtf8("--\(boundary)--\(lineBreak)")
         return body
@@ -148,5 +110,18 @@ struct MultipartBuilder {
         )
         body.appendUtf8("Content-Type: \(file.mimeType)\(lineBreak + lineBreak)")
         body.append(file.data)
+    }
+
+    /// Appends a binary field to a multipart body.
+    private func appendBinaryField(
+        name: String,
+        data: Data,
+        to body: inout Data
+    ) {
+        body.appendUtf8("--\(boundary)\(lineBreak)")
+        body.appendUtf8("Content-Disposition: form-data; name=\"\(name)\"\(lineBreak)")
+        body.appendUtf8("Content-Type: application/octet-stream\(lineBreak + lineBreak)")
+        body.append(data)
+        body.appendUtf8(lineBreak)
     }
 }
