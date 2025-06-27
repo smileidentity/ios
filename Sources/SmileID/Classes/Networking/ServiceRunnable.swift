@@ -151,12 +151,8 @@ extension ServiceRunnable {
         let uploadData: Data
 
         if enableEncryption {
-            guard let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) else {
-                throw URLError(.badServerResponse)
-            }
-
-            let (_, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
-                timestamp: header.value,
+            let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
+                timestamp: timestamp,
                 headers: headers.toDictionary(),
                 payload: payload
             )
@@ -165,8 +161,14 @@ extension ServiceRunnable {
                 throw URLError(.cannotDecodeContentData)
             }
 
+            for index in 0..<headers.count {
+                let key = headers[index].name
+                if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
+                    headers[index].value = encryptedValue
+                }
+            }
+
             let jsonObject = try JSONSerialization.jsonObject(with: payload, options: [])
-            print("Encrypted payload content: \(jsonObject)")
 
             guard let encryptedJson = jsonObject as? [String: Any] else {
                 throw URLError(.cannotDecodeContentData)
