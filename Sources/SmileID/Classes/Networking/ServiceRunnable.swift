@@ -161,12 +161,7 @@ extension ServiceRunnable {
                 throw URLError(.cannotDecodeContentData)
             }
 
-            for index in 0..<headers.count {
-                let key = headers[index].name
-                if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
-                    headers[index].value = encryptedValue
-                }
-            }
+            applyEncryptedHeaders(encryptedHeaders, to: &headers)
 
             let jsonObject = try JSONSerialization.jsonObject(with: payload, options: [])
 
@@ -298,12 +293,7 @@ extension ServiceRunnable {
                     throw URLError(.cannotDecodeContentData)
                 }
 
-                for index in 0..<signedHeaders.count {
-                    let key = signedHeaders[index].name
-                    if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
-                        signedHeaders[index].value = encryptedValue
-                    }
-                }
+                applyEncryptedHeaders(encryptedHeaders, to: &signedHeaders)
 
                 let request = RestRequest(
                     url: url,
@@ -363,5 +353,19 @@ extension ServiceRunnable {
             queryParameters: queryParameters
         )
         return request
+    }
+}
+
+extension ServiceRunnable {
+    private func applyEncryptedHeaders(
+        _ encryptedHeaders: [String: Any],
+        to headers: inout [HTTPHeader]
+    ) {
+        for index in 0..<headers.count {
+            let key = headers[index].name
+            if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
+                headers[index].value = encryptedValue
+            }
+        }
     }
 }
