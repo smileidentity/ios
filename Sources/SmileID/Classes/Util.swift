@@ -142,7 +142,7 @@ internal func mapToAPIError(_ error: Error) -> SmileIDError {
 }
 
 // todo we need to map errors properly (group api errors as one error)
-internal func getExcpetionHandler<T>(_ operation: () async throws -> T) async throws -> T {
+internal func getExceptionHandler<T>(_ operation: () async throws -> T) async throws -> T {
     do {
         return try await operation()
     } catch {
