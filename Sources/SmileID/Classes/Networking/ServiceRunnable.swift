@@ -281,31 +281,29 @@ extension ServiceRunnable {
                  In the future, we will handle this more gracefully once sentry integration has been implemented.
                  */
             }
-
-            if path.contains("id_verification") {
-                let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
-                    timestamp: header.value,
-                    headers: signedHeaders.toDictionary(),
-                    payload: payload
-                )
-
-                guard let payload = encryptedPayload else {
-                    throw URLError(.cannotDecodeContentData)
-                }
-
-                applyEncryptedHeaders(encryptedHeaders, to: &signedHeaders)
-
-                let request = RestRequest(
-                    url: url,
-                    method: method,
-                    headers: signedHeaders,
-                    queryParameters: queryParameters,
-                    body: payload
-                )
-                return request
+            
+            let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
+                timestamp: header.value,
+                headers: signedHeaders.toDictionary(),
+                payload: payload
+            )
+            
+            guard let payload = encryptedPayload else {
+                throw URLError(.cannotDecodeContentData)
             }
+            
+            applyEncryptedHeaders(encryptedHeaders, to: &signedHeaders)
+            
+            let request = RestRequest(
+                url: url,
+                method: method,
+                headers: signedHeaders,
+                queryParameters: queryParameters,
+                body: payload
+            )
+            return request
         }
-
+        
         do {
             let request = try RestRequest(
                 url: url,
