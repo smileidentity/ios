@@ -4,7 +4,7 @@ platform :ios, '13.0'
 target 'SmileID_Example' do
   pod 'SmileID', :path => '../'
   pod 'netfox'
-  pod 'Sentry', '~> 8.48.0'
+  pod 'Sentry', '~> 8.53.1'
   pod 'SwiftLint'
   pod 'ArkanaKeys', :path => './ArkanaKeys/ArkanaKeys/'
   pod 'ArkanaKeysInterfaces', :path => './ArkanaKeys/ArkanaKeysInterfaces/'

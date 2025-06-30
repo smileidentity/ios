@@ -19,6 +19,15 @@
       }
     },
     {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa",
+      "state" : {
+        "revision" : "56fb914f14922efeda6c744c0125696552b6d2b5",
+        "version" : "8.53.1"
+      }
+    },
+    {
       "identity" : "smile-id-security",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/smileidentity/smile-id-security",
