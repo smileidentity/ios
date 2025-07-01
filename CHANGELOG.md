@@ -1,4 +1,11 @@
 # Release Notes
+
+## 11.0.1
+
+### Added
+
+* Added option to disable document auto capture in DocV and Enhanced DocV
+
 ## 11.0.0
 
 ### Added 
