@@ -1,4 +1,5 @@
 Pod::Spec.new do |s|
+  s.static_framework = true
   s.name             = 'SmileID'
   s.version          = '11.0.0'
   s.summary          = 'The Official Smile Identity iOS SDK.'
