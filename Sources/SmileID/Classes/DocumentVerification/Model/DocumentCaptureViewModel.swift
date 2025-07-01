@@ -17,11 +17,11 @@ class DocumentCaptureViewModel: ObservableObject {
 
     // Vision Object Detection
     private let objectDetector = ObjectDetector()
-    
+
     deinit {
         subscribers.removeAll()
     }
-    
+
     // Initializer properties
     private let knownAspectRatio: Double?
     private let metadata: Metadata = .shared
@@ -190,14 +190,14 @@ class DocumentCaptureViewModel: ObservableObject {
 
     private func resetDocumentCaptureMetadata() {
         switch side {
-        case .front:
-            metadata.removeMetadata(key: .documentFrontCaptureRetries)
-            metadata.removeMetadata(key: .documentFrontCaptureDuration)
-            metadata.removeMetadata(key: .documentFrontImageOrigin)
-        case .back:
-            metadata.removeMetadata(key: .documentBackCaptureRetries)
-            metadata.removeMetadata(key: .documentBackCaptureDuration)
-            metadata.removeMetadata(key: .documentBackImageOrigin)
+            case .front:
+                metadata.removeMetadata(key: .documentFrontCaptureRetries)
+                metadata.removeMetadata(key: .documentFrontCaptureDuration)
+                metadata.removeMetadata(key: .documentFrontImageOrigin)
+            case .back:
+                metadata.removeMetadata(key: .documentBackCaptureRetries)
+                metadata.removeMetadata(key: .documentBackCaptureDuration)
+                metadata.removeMetadata(key: .documentBackImageOrigin)
         }
         metadata.removeMetadata(key: .deviceOrientation)
         metadata.removeMetadata(key: .deviceMovementDetected)
@@ -211,28 +211,28 @@ class DocumentCaptureViewModel: ObservableObject {
          */
         metadata.addMetadata(key: .deviceOrientation)
         switch side {
-        case .front:
-            metadata.addMetadata(
-                key: .documentFrontCaptureDuration,
-                value: captureDuration.elapsedTime().milliseconds()
-            )
-            metadata.addMetadata(key: .documentFrontCaptureRetries, value: retryCount)
-
-            if let documentImageOrigin {
+            case .front:
                 metadata.addMetadata(
-                    key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
-            }
-        case .back:
-            metadata.addMetadata(
-                key: .documentBackCaptureDuration,
-                value: captureDuration.elapsedTime().milliseconds()
-            )
-            metadata.addMetadata(key: .documentBackCaptureRetries, value: retryCount)
+                    key: .documentFrontCaptureDuration,
+                    value: captureDuration.elapsedTime().milliseconds()
+                )
+                metadata.addMetadata(key: .documentFrontCaptureRetries, value: retryCount)
 
-            if let documentImageOrigin {
+                if let documentImageOrigin {
+                    metadata.addMetadata(
+                        key: .documentFrontImageOrigin, value: documentImageOrigin.rawValue)
+                }
+            case .back:
                 metadata.addMetadata(
-                    key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
-            }
+                    key: .documentBackCaptureDuration,
+                    value: captureDuration.elapsedTime().milliseconds()
+                )
+                metadata.addMetadata(key: .documentBackCaptureRetries, value: retryCount)
+
+                if let documentImageOrigin {
+                    metadata.addMetadata(
+                        key: .documentBackImageOrigin, value: documentImageOrigin.rawValue)
+                }
         }
     }
 
@@ -267,7 +267,7 @@ class DocumentCaptureViewModel: ObservableObject {
             width: CVPixelBufferGetWidth(buffer),
             height: CVPixelBufferGetHeight(buffer)
         )
-        
+
         objectDetector.detectObjects(in: buffer) { objects, error in
             guard error == nil, let object = objects.first else {
                 self.resetBoundingBox()
@@ -279,7 +279,7 @@ class DocumentCaptureViewModel: ObservableObject {
             let width = boundingBox.width
             let height = boundingBox.height
             let aspectRatio = width / height
-        
+
             let quad = Quadrilateral(
                 topLeft: boundingBox.origin,
                 topRight: CGPoint(x: boundingBox.origin.x + boundingBox.width, y: boundingBox.origin.y),
@@ -298,7 +298,7 @@ class DocumentCaptureViewModel: ObservableObject {
                 detectedAspectRatio: detectedAspectRatio
             )
             let idAspectRatio = self.knownAspectRatio ?? detectedAspectRatio
-            
+
             DispatchQueue.main.async { [self] in
                 self.idAspectRatio = idAspectRatio
             }
