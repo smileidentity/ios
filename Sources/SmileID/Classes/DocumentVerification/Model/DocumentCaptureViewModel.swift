@@ -2,8 +2,6 @@ import Combine
 import CoreMotion
 import Foundation
 import SwiftUI
-import MLKitObjectDetection
-import MLKitVision
 
 enum DocumentDirective: String {
     case defaultInstructions = "Document.Directive.Default"
@@ -17,8 +15,8 @@ private let analysisSampleInterval: TimeInterval = 0.350
 
 class DocumentCaptureViewModel: ObservableObject {
 
-    // ML Kit Object Detection
-    private let objectDetector: ObjectDetector
+    // Vision Object Detection
+    private let objectDetector = ObjectDetector()
     
     deinit {
         subscribers.removeAll()
@@ -59,11 +57,6 @@ class DocumentCaptureViewModel: ObservableObject {
         knownAspectRatio: Double? = nil,
         side: DocumentCaptureSide
     ) {
-        let options = ObjectDetectorOptions()
-        options.shouldEnableClassification = true
-        options.detectorMode = .singleImage
-        self.objectDetector = ObjectDetector.objectDetector(options: options)
-        
         self.knownAspectRatio = knownAspectRatio
         self.side = side
         defaultAspectRatio = knownAspectRatio ?? 1.0
@@ -275,22 +268,14 @@ class DocumentCaptureViewModel: ObservableObject {
             height: CVPixelBufferGetHeight(buffer)
         )
         
-        let visionImage = uiImage(from: buffer)
-        
-        guard let visionImage = visionImage else {
-            resetBoundingBox()
-            processingImage = false
-            return
-        }
-    
-        objectDetector.process(visionImage) { objects, error in
-            guard error == nil, let object = objects?.first else {
+        objectDetector.detectObjects(in: buffer) { objects, error in
+            guard error == nil, let object = objects.first else {
                 self.resetBoundingBox()
                 self.processingImage = false
                 return
             }
-            
-            let boundingBox = object.frame
+
+            let boundingBox = object.boundingBox
             let width = boundingBox.width
             let height = boundingBox.height
             let aspectRatio = width / height
@@ -301,13 +286,13 @@ class DocumentCaptureViewModel: ObservableObject {
                 bottomRight: CGPoint(x: boundingBox.origin.x + boundingBox.width, y: boundingBox.origin.y + boundingBox.height),
                 bottomLeft: CGPoint(x: boundingBox.origin.x, y: boundingBox.origin.y + boundingBox.height)
             )
-        
+
             let isCentered = self.isRectCentered(
                 detectedRect: quad,
                 imageWidth: Double(imageSize.width),
                 imageHeight: Double(imageSize.height)
             )
-            
+
             let detectedAspectRatio = 1 / (aspectRatio ?? self.defaultAspectRatio)
             let isCorrectAspectRatio = self.isCorrectAspectRatio(
                 detectedAspectRatio: detectedAspectRatio
@@ -324,22 +309,6 @@ class DocumentCaptureViewModel: ObservableObject {
                 self.areEdgesDetected = areEdgesDetected
             }
         }
-    }
-
-    private func uiImage(from pixelBuffer: CVPixelBuffer) -> VisionImage? {
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        let context = CIContext()
-
-        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
-            return nil
-        }
-    
-        let image = UIImage(cgImage: cgImage)
-    
-        let visionImage = VisionImage(image: image)
-        visionImage.orientation = image.imageOrientation
-
-        return visionImage
     }
 
     private func resetBoundingBox() {
