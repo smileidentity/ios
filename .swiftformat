@@ -1,1 +1,9 @@
---binarygrouping none --callsiteparen same-line --decimalgrouping none --hexliteralcase lowercase --indent 2 --nospaceoperators ...,..< --octalgrouping none --patternlet inline --semicolons never
+--binarygrouping none
+--callsiteparen same-line
+--decimalgrouping none
+--hexliteralcase lowercase
+--indent 2
+--nospaceoperators ...,..< 
+--octalgrouping none
+--patternlet inline
+--semicolons never
