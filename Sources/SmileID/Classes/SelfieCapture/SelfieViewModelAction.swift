@@ -1,15 +1,15 @@
 import SwiftUI
 
 enum SelfieViewModelAction {
-    // View Setup Actions
-    case onViewAppear
-    case windowSizeDetected(CGSize, EdgeInsets)
+  // View Setup Actions
+  case onViewAppear
+  case windowSizeDetected(CGSize, EdgeInsets)
 
-    // Job Submission Actions
-    case cancelSelfieCapture
-    case retryJobSubmission
+  // Job Submission Actions
+  case cancelSelfieCapture
+  case retryJobSubmission
 
-    // Others
-    case openApplicationSettings
-    case handleError(Error)
+  // Others
+  case openApplicationSettings
+  case handleError(Error)
 }
