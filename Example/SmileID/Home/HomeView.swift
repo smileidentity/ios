@@ -213,21 +213,20 @@ private struct SmartSelfieAuthEnhancedWithUserIdEntry: View {
     }
   }
 }
-/*
+
 private struct HomeView_Previews: PreviewProvider {
   static var previews: some View {
-    _ = SmileID.initialize(
+    SmileID.initialize(
       config: Config(
         partnerId: "",
         authToken: "",
         prodLambdaUrl: "",
         testLambdaUrl: ""),
       useSandbox: true)
-    HomeView(config: Config(
+    return HomeView(config: Config(
       partnerId: "1000",
       authToken: "",
       prodLambdaUrl: "",
       testLambdaUrl: ""))
   }
 }
-*/
