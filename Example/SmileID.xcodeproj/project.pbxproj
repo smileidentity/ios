@@ -24,6 +24,7 @@
 		1ED53F722A2F28590020BEFB /* SmileEnvironmentToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */; };
 		1ED53F732A2F28590020BEFB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED53F692A2F28590020BEFB /* HomeView.swift */; };
 		1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
+		20057C102E155C760088D9C1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20057C0F2E155C760088D9C1 /* SceneDelegate.swift */; };
 		20343AED2C1C825D003536F5 /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEC2C1C825D003536F5 /* JobsView.swift */; };
 		20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEE2C206BDF003536F5 /* JobListItem.swift */; };
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
@@ -45,7 +46,7 @@
 		20B6D5EC2C21CE660023D51C /* DataStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5EB2C21CE660023D51C /* DataStoreError.swift */; };
 		20C360C82C454C130008DBDE /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C360C72C454C130008DBDE /* RootViewModel.swift */; };
 		20DFA0EC2C21917100AC2AE7 /* View+TextSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DFA0EB2C21917100AC2AE7 /* View+TextSelection.swift */; };
-		20F3D6F32C25F4D700B32751 /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		20F3D6F32C25F4D700B32751 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		20F3D6F62C25F5C100B32751 /* SmileID.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 20F3D6F42C25F5C100B32751 /* SmileID.xcdatamodeld */; };
 		5829A8C02BC7429A001C1E7E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */; };
 		585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */; };
@@ -54,7 +55,7 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		620F1E982B69194900185CD2 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620F1E972B69194900185CD2 /* AlertView.swift */; };
-		620F1E9A2B691ABB00185CD2 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		620F1E9A2B691ABB00185CD2 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		624777D02B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624777CF2B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift */; };
 		62F6766F2B0D173600417419 /* EnhancedKycWithIdInputScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F6766E2B0D173600417419 /* EnhancedKycWithIdInputScreenViewModel.swift */; };
 		62F676712B0E00E800417419 /* EnhancedKycResultDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F676702B0E00E800417419 /* EnhancedKycResultDelegate.swift */; };
@@ -108,6 +109,7 @@
 		1ED53F672A2F28590020BEFB /* EnterUserIDView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterUserIDView.swift; sourceTree = "<group>"; };
 		1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileEnvironmentToggleButton.swift; sourceTree = "<group>"; };
 		1ED53F692A2F28590020BEFB /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		20057C0F2E155C760088D9C1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		20343AEC2C1C825D003536F5 /* JobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsView.swift; sourceTree = "<group>"; };
 		20343AEE2C206BDF003536F5 /* JobListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListItem.swift; sourceTree = "<group>"; };
 		20343AF12C206CEC003536F5 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 				1ED53F622A2F28590020BEFB /* RootView.swift */,
 				20C360C72C454C130008DBDE /* RootViewModel.swift */,
 				1E60ED352A29C306002695FF /* AppDelegate.swift */,
+				20057C0F2E155C760088D9C1 /* SceneDelegate.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -572,7 +575,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1EFAB3172A375265008E3C13 /* Images.xcassets in Resources */,
-				620F1E9A2B691ABB00185CD2 /* BuildFile in Resources */,
+				620F1E9A2B691ABB00185CD2 /* (null) in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				5829A8C02BC7429A001C1E7E /* PrivacyInfo.xcprivacy in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
@@ -725,7 +728,7 @@
 				1ED53F6D2A2F28590020BEFB /* SmileTextField.swift in Sources */,
 				91CB21A52AC10C61005AEBF5 /* NavigationBar.swift in Sources */,
 				1ED53F6B2A2F28590020BEFB /* ProductCell.swift in Sources */,
-				20F3D6F32C25F4D700B32751 /* BuildFile in Sources */,
+				20F3D6F32C25F4D700B32751 /* (null) in Sources */,
 				1E60ED382A29C306002695FF /* Constants.swift in Sources */,
 				624777D02B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift in Sources */,
 				1ED53F712A2F28590020BEFB /* EnterUserIDView.swift in Sources */,
@@ -747,6 +750,7 @@
 				20456EC82D425A3C0085F906 /* DocumentVerificationDetails.swift in Sources */,
 				20456ECC2D425B270085F906 /* DocumentVerificationWithSelector.swift in Sources */,
 				6AC98990097662789B0107EB /* SettingsViewModel.swift in Sources */,
+				20057C102E155C760088D9C1 /* SceneDelegate.swift in Sources */,
 				6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */,
 				20969FE52C3FEB530003E5E0 /* IndeterminateProgressView.swift in Sources */,
 				62F676712B0E00E800417419 /* EnhancedKycResultDelegate.swift in Sources */,
