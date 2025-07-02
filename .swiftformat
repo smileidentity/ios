@@ -1,4 +1,4 @@
-binarygrouping none
+--binarygrouping none
 --callsiteparen same-line
 --decimalgrouping none
 --hexliteralcase lowercase
