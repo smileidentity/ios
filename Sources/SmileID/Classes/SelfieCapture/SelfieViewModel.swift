@@ -568,19 +568,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let error = self.error {
             callback.didError(error: error)
-        } else if let selfieImage = selfieImage,
-            let selfiePath = getRelativePath(from: selfieImage),
-            livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            )
-        {
-            let livenessImagesPaths = livenessImages.compactMap {
-                getRelativePath(from: $0)
-            }
-
+        } else if let selfieImage = selfieImage, livenessImages.count == numLivenessImages {
             callback.didSucceed(
-                selfieImage: selfiePath,
-                livenessImages: livenessImagesPaths,
+                selfieImage: selfieImage,
+                livenessImages: livenessImages,
                 apiResponse: apiResponse
             )
         } else {

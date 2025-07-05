@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
     /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
     public static let defaultRequestTimeout: TimeInterval = 60
-    public static let version = "11.0.0"
+    public static let version = "11.0.1"
     @Injected var injectedApi: SmileIDServiceable
     public static var configuration: Config { config }
 
@@ -501,6 +501,7 @@ public class SmileID {
     ///   supplied, image analysis is done to calculate the documents aspect ratio
     ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
     ///   image
+    ///   - enableAutoCapture: Enable or disable document auto capture
     ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
     ///   front side will be captured. If this is true, an option to skip back side will still be
     ///   shown
@@ -522,6 +523,7 @@ public class SmileID {
         documentType: String? = nil,
         idAspectRatio: Double? = nil,
         bypassSelfieCaptureWithFile: URL? = nil,
+        enableAutoCapture: Bool = true,
         captureBothSides: Bool = true,
         allowAgentMode: Bool = false,
         allowGalleryUpload: Bool = false,
@@ -541,6 +543,7 @@ public class SmileID {
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
             jobId: jobId,
+            enableAutoCapture: enableAutoCapture,
             allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
@@ -568,6 +571,7 @@ public class SmileID {
     ///   supplied, image analysis is done to calculate the documents aspect ratio
     ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
     ///   image
+    ///   - enableAutoCapture: Enable or disable document auto capture
     ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
     ///   front side will be captured. If this is true, an option to skip back side will still be
     ///   shown
@@ -592,6 +596,7 @@ public class SmileID {
         documentType: String? = nil,
         idAspectRatio: Double? = nil,
         bypassSelfieCaptureWithFile: URL? = nil,
+        enableAutoCapture: Bool = true,
         captureBothSides: Bool = true,
         allowAgentMode: Bool = false,
         allowGalleryUpload: Bool = false,
@@ -618,6 +623,7 @@ public class SmileID {
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
             jobId: jobId,
+            enableAutoCapture: enableAutoCapture,
             allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
