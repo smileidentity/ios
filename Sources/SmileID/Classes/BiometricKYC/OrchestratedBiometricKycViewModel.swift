@@ -81,7 +81,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         updateStep(.processing(.inProgress))
         Task {
             do {
-                try await getExcpetionHandler {
+                try await getExceptionHandler {
                     try await handleJobSubmission()
                 }
                 resetNetworkRetries()
