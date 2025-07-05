@@ -48,6 +48,7 @@ archives
 *.sentryclirc
 .sentryclirc
 **/ArkanaKeys/
+.env
 
 # JetBrains/AppCode
 .idea
