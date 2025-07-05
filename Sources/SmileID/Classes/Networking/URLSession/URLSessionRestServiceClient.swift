@@ -63,18 +63,6 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
         }
     }
 
-    private func mapToAPIError(_ error: Error) -> SmileIDError {
-        if let requestError = error as? URLError {
-            return .request(requestError)
-        } else if let decodingError = error as? DecodingError {
-            return .decode(decodingError)
-        } else if let error = error as? SmileIDError {
-            return error
-        } else {
-            return .unknown(error.localizedDescription)
-        }
-    }
-
     private func checkStatusCode(_ urlSessionResponse: URLSessionResponse) throws -> Data {
         struct ErrorResponse: Codable {
             let error: String
