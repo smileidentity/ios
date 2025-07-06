@@ -21,7 +21,6 @@ PODS:
 
 DEPENDENCIES:
   - netfox
-  - Sentry (~> 8.53.1)
   - SmileID (from `../`)
   - SwiftLint
 
@@ -49,6 +48,6 @@ SPEC CHECKSUMS:
   SwiftLint: 3d48e2fb2a3468fdaccf049e5e755df22fb40c2c
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: 9615ebdd686fde339df60f54da9bf446c2672a2d
+PODFILE CHECKSUM: bd1a6ac8b04bd8f7023a1149f08232de6f13985f
 
 COCOAPODS: 1.16.2
