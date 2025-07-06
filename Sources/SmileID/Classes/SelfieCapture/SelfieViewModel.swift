@@ -433,7 +433,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         partnerParams: extraPartnerParams
                     )
                 }
-                try await getExcpetionHandler {
+                try await getExceptionHandler {
                     let authResponse = try await SmileID.api.authenticate(
                         request: authRequest
                     )

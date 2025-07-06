@@ -397,7 +397,7 @@ extension EnhancedSmartSelfieViewModel {
             return
         }
         submissionTask = Task {
-            try await getExcpetionHandler {
+            try await getExceptionHandler {
                 try await submitJob()
             }
         }
