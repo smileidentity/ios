@@ -12,9 +12,6 @@ class SmileIDCrashReporting {
         options.dsn = ArkanaKeys.Global().sENTRY_DSN
         options.releaseName = SmileID.version
         options.enableCrashHandler = true
-        options.debug = false
-        options.tracesSampleRate = 0.1
-        options.profilesSampleRate = 0.1
 
         let scope = Sentry.Scope()
         scope.setTag(value: SmileID.config.partnerId, key: "partner_id")
