@@ -1,5 +1,4 @@
 import Sentry
-import ArkanaKeys
 
 class SmileIDCrashReporting {
     private static let smileIDPackagePrefix = "com.smileidentity"
