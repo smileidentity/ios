@@ -259,7 +259,7 @@ extension ServiceRunnable {
                  */
             }
 
-            if path.contains("id_verification") {
+            if path.contains("id_verification") || path.contains("upload") {
                 let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
                     timestamp: header.value,
                     headers: signedHeaders.toDictionary(),
