@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/smileidentity/smile-id-security",
       "state" : {
-        "branch" : "main",
-        "revision" : "77c8d918c2e21e88a6f87504785429d8015aa0fc"
+        "revision" : "778bbdd272085ab801e9f4bf4754dc8ffe70e63f",
+        "version" : "1.0.2"
       }
     },
     {
@@ -38,5 +38,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
