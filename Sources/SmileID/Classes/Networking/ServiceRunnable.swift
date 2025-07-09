@@ -281,7 +281,7 @@ extension ServiceRunnable {
                  In the future, we will handle this more gracefully once sentry integration has been implemented.
                  */
             }
-            
+
             let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
                 timestamp: header.value,
                 headers: signedHeaders.toDictionary(),
@@ -291,9 +291,9 @@ extension ServiceRunnable {
             guard let payload = encryptedPayload else {
                 throw URLError(.cannotDecodeContentData)
             }
-            
+
             applyEncryptedHeaders(encryptedHeaders, to: &signedHeaders)
-            
+
             let request = RestRequest(
                 url: url,
                 method: method,
@@ -303,7 +303,7 @@ extension ServiceRunnable {
             )
             return request
         }
-        
+
         do {
             let request = try RestRequest(
                 url: url,
