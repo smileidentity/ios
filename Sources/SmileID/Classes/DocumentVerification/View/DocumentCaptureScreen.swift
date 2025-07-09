@@ -8,6 +8,7 @@ public enum DocumentCaptureSide {
 /// This handles Instructions + Capture + Confirmation for a single side of a document
 public struct DocumentCaptureScreen: View {
     let side: DocumentCaptureSide
+    let enableAutoCapture: Bool
     let showInstructions: Bool
     let showAttribution: Bool
     let allowGallerySelection: Bool
@@ -26,6 +27,7 @@ public struct DocumentCaptureScreen: View {
 
     public init(
         side: DocumentCaptureSide,
+        enableAutoCapture: Bool,
         showInstructions: Bool,
         showAttribution: Bool,
         allowGallerySelection: Bool,
@@ -41,6 +43,7 @@ public struct DocumentCaptureScreen: View {
         onSkip: @escaping () -> Void = {}
     ) {
         self.side = side
+        self.enableAutoCapture = enableAutoCapture
         self.showInstructions = showInstructions
         self.showAttribution = showAttribution
         self.allowGallerySelection = allowGallerySelection
@@ -56,6 +59,7 @@ public struct DocumentCaptureScreen: View {
         self.onSkip = onSkip
 
         viewModel = DocumentCaptureViewModel(
+            enableAutoCapture: enableAutoCapture,
             knownAspectRatio: knownIdAspectRatio,
             side: side
         )
