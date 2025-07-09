@@ -19,6 +19,7 @@ class DocumentCaptureViewModel: ObservableObject {
         subscribers.removeAll()
     }
     // Initializer properties
+    private let enableAutoCapture: Bool
     private let knownAspectRatio: Double?
     private let metadata: Metadata = .shared
     private var captureDuration = MonotonicTime()
@@ -50,9 +51,11 @@ class DocumentCaptureViewModel: ObservableObject {
     @Published var cameraManager = CameraManager(orientation: .portrait)
 
     init(
+        enableAutoCapture: Bool,
         knownAspectRatio: Double? = nil,
         side: DocumentCaptureSide
     ) {
+        self.enableAutoCapture = enableAutoCapture
         self.knownAspectRatio = knownAspectRatio
         self.side = side
         defaultAspectRatio = knownAspectRatio ?? 1.0
@@ -80,13 +83,17 @@ class DocumentCaptureViewModel: ObservableObject {
             .store(in: &subscribers)
 
         // Show Manual Capture button after 10 seconds
-        Timer.scheduledTimer(
-            timeInterval: 10,
-            target: self,
-            selector: #selector(showManualCapture),
-            userInfo: nil,
-            repeats: false
-        )
+        if enableAutoCapture {
+            Timer.scheduledTimer(
+                timeInterval: 10,
+                target: self,
+                selector: #selector(showManualCapture),
+                userInfo: nil,
+                repeats: false
+            )
+        } else {
+            showManualCapture()
+        }
 
         // Auto capture after 1 second of edges detected
         areEdgesDetectedSubscriber = $areEdgesDetected.sink(receiveValue: { areEdgesDetected in
@@ -94,7 +101,7 @@ class DocumentCaptureViewModel: ObservableObject {
                 if let documentFirstDetectedAtTime = self.documentFirstDetectedAtTime {
                     let now = Date().timeIntervalSince1970
                     let elapsedTime = now - documentFirstDetectedAtTime
-                    if elapsedTime > documentAutoCaptureWaitTime && !self.isCapturing {
+                    if elapsedTime > documentAutoCaptureWaitTime && !self.isCapturing && enableAutoCapture {
                         self.documentImageOrigin = DocumentImageOriginValue.cameraAutoCapture
                         self.captureDocument()
                     }

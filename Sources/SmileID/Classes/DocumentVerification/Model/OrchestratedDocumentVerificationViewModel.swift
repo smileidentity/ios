@@ -383,15 +383,11 @@ class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificati
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let error {
             delegate.didError(error: error)
-        } else if let savedFiles,
-            let selfiePath = getRelativePath(from: selfieFile),
-            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
-        {
-            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+        } else if let savedFiles, let selfieFile {
             delegate.didSucceed(
-                selfie: selfiePath,
-                documentFrontImage: documentFrontPath,
-                documentBackImage: documentBackPath,
+                selfie: selfieFile,
+                documentFrontImage: savedFiles.documentFront,
+                documentBackImage: savedFiles.documentBack,
                 didSubmitDocumentVerificationJob: didSubmitJob
             )
         } else {
@@ -408,15 +404,11 @@ class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVe
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let error {
             delegate.didError(error: error)
-        } else if let savedFiles,
-            let selfiePath = getRelativePath(from: selfieFile),
-            let documentFrontPath = getRelativePath(from: savedFiles.documentFront)
-        {
-            let documentBackPath = getRelativePath(from: savedFiles.documentBack)
+        } else if let savedFiles, let selfieFile {
             delegate.didSucceed(
-                selfie: selfiePath,
-                documentFrontImage: documentFrontPath,
-                documentBackImage: documentBackPath,
+                selfie: selfieFile,
+                documentFrontImage: savedFiles.documentFront,
+                documentBackImage: savedFiles.documentBack,
                 didSubmitEnhancedDocVJob: didSubmitJob
             )
         } else {

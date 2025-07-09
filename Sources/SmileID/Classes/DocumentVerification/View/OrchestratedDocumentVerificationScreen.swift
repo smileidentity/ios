@@ -8,6 +8,7 @@ struct OrchestratedDocumentVerificationScreen: View {
     let bypassSelfieCaptureWithFile: URL?
     let userId: String
     let jobId: String
+    let enableAutoCapture: Bool
     let allowNewEnroll: Bool
     let showAttribution: Bool
     let allowGalleryUpload: Bool
@@ -28,6 +29,7 @@ struct OrchestratedDocumentVerificationScreen: View {
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
             jobId: jobId,
+            enableAutoCapture: enableAutoCapture,
             allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
@@ -64,6 +66,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
     let bypassSelfieCaptureWithFile: URL?
     let userId: String
     let jobId: String
+    let enableAutoCapture: Bool
     let allowNewEnroll: Bool
     let showAttribution: Bool
     let allowGalleryUpload: Bool
@@ -84,6 +87,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
             bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
             userId: userId,
             jobId: jobId,
+            enableAutoCapture: enableAutoCapture,
             allowNewEnroll: allowNewEnroll,
             showAttribution: showAttribution,
             allowGalleryUpload: allowGalleryUpload,
@@ -120,6 +124,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     let bypassSelfieCaptureWithFile: URL?
     let userId: String
     let jobId: String
+    let enableAutoCapture: Bool
     let allowNewEnroll: Bool
     let showAttribution: Bool
     let allowGalleryUpload: Bool
@@ -140,6 +145,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         bypassSelfieCaptureWithFile: URL?,
         userId: String,
         jobId: String,
+        enableAutoCapture: Bool,
         allowNewEnroll: Bool,
         showAttribution: Bool,
         allowGalleryUpload: Bool,
@@ -159,6 +165,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         self.bypassSelfieCaptureWithFile = bypassSelfieCaptureWithFile
         self.userId = userId
         self.jobId = jobId
+        self.enableAutoCapture = enableAutoCapture
         self.allowNewEnroll = allowNewEnroll
         self.showAttribution = showAttribution
         self.allowGalleryUpload = allowGalleryUpload
@@ -177,6 +184,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
             case .frontDocumentCapture:
                 DocumentCaptureScreen(
                     side: .front,
+                    enableAutoCapture: enableAutoCapture,
                     showInstructions: showInstructions,
                     showAttribution: showAttribution,
                     allowGallerySelection: allowGalleryUpload,
@@ -196,6 +204,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
             case .backDocumentCapture:
                 DocumentCaptureScreen(
                     side: .back,
+                    enableAutoCapture: enableAutoCapture,
                     showInstructions: showInstructions,
                     showAttribution: showAttribution,
                     allowGallerySelection: allowGalleryUpload,
