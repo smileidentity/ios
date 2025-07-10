@@ -221,36 +221,38 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
                         partnerParams: extraPartnerParams
                     )
                 }
-                let authResponse = try await SmileID.api.authenticate(request: authRequest)
-                var prepUploadRequest = PrepUploadRequest(
-                    partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
-                    allowNewEnroll: allowNewEnroll,
-                    metadata: metadata,
-                    timestamp: authResponse.timestamp,
-                    signature: authResponse.signature
-                )
-                let prepUploadResponse: PrepUploadResponse
-                do {
-                    prepUploadResponse = try await SmileID.api.prepUpload(
-                        request: prepUploadRequest
+                try await getExceptionHandler {
+                    let authResponse = try await SmileID.api.authenticate(request: authRequest)
+                    var prepUploadRequest = PrepUploadRequest(
+                        partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
+                        allowNewEnroll: allowNewEnroll,
+                        metadata: metadata,
+                        timestamp: authResponse.timestamp,
+                        signature: authResponse.signature
                     )
-                } catch let error as SmileIDError {
-                    switch error {
-                    case .api("2215", _):
-                        incrementNetworkRetries()
-                        prepUploadRequest.retry = true
+                    let prepUploadResponse: PrepUploadResponse
+                    do {
                         prepUploadResponse = try await SmileID.api.prepUpload(
                             request: prepUploadRequest
                         )
-                    default:
-                        throw error
+                    } catch let error as SmileIDError {
+                        switch error {
+                        case .api("2215", _):
+                            incrementNetworkRetries()
+                            prepUploadRequest.retry = true
+                            prepUploadResponse = try await SmileID.api.prepUpload(
+                                request: prepUploadRequest
+                            )
+                        default:
+                            throw error
+                        }
                     }
+                    let _ = try await SmileID.api.upload(
+                        zip: zipData,
+                        to: prepUploadResponse.uploadUrl
+                    )
+                    didSubmitJob = true
                 }
-                let _ = try await SmileID.api.upload(
-                    zip: zipData,
-                    to: prepUploadResponse.uploadUrl
-                )
-                didSubmitJob = true
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
                     if useStrictMode {

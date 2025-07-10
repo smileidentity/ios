@@ -112,3 +112,34 @@ struct MonotonicTime {
         return TimeInterval(elapsedNano) / TimeInterval(NSEC_PER_SEC)
     }
 }
+
+func mapToAPIError(_ error: Error) -> SmileIDError {
+    if let requestError = error as? URLError {
+        return .request(requestError)
+    } else if let decodingError = error as? DecodingError {
+        return .decode(decodingError)
+    } else if let error = error as? SmileIDError {
+        return error
+    } else {
+        return .unknown(error.localizedDescription)
+    }
+}
+
+// todo we need to map errors properly (group api errors as one error)
+func getExceptionHandler<T>(_ operation: () async throws -> T) async throws -> T {
+    do {
+        return try await operation()
+    } catch {
+        let error = mapToAPIError(error)
+        // Only capture errors that are NOT .request or .api
+        switch error {
+        case .request, .api:
+            // Do nothing (ignored)
+            break
+        default:
+            SmileIDCrashReporting.hub?.capture(error: error)
+        }
+
+        throw error
+    }
+}

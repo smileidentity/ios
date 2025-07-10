@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import Sentry
 import SmileID
 import SwiftUI
 import UIKit
@@ -45,13 +44,7 @@ class HomeViewModel: ObservableObject,
         let locationManager = CLLocationManager()
         locationManager.requestWhenInUseAuthorization()
 
-        SmileID.initialize(config: config, useSandbox: false)
-        SentrySDK.configureScope { scope in
-            scope.setTag(value: "partner_id", key: self.partnerId)
-            let user = User()
-            user.email = self.partnerId
-            scope.setUser(user)
-        }
+        SmileID.initialize(config: config, useSandbox: false, enableCrashReporting: true)
     }
 
     func onProductClicked() {
