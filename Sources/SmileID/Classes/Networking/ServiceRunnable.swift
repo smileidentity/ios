@@ -282,26 +282,28 @@ extension ServiceRunnable {
                  */
             }
 
-            let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
-                timestamp: header.value,
-                headers: signedHeaders.toDictionary(),
-                payload: payload
-            )
-            
-            guard let payload = encryptedPayload else {
-                throw URLError(.cannotDecodeContentData)
+            if path.contains("id_verification") || path.contains("upload") {
+                let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
+                    timestamp: header.value,
+                    headers: signedHeaders.toDictionary(),
+                    payload: payload
+                )
+
+                guard let payload = encryptedPayload else {
+                    throw URLError(.cannotDecodeContentData)
+                }
+
+                applyEncryptedHeaders(encryptedHeaders, to: &signedHeaders)
+
+                let request = RestRequest(
+                    url: url,
+                    method: method,
+                    headers: signedHeaders,
+                    queryParameters: queryParameters,
+                    body: payload
+                )
+                return request
             }
-
-            applyEncryptedHeaders(encryptedHeaders, to: &signedHeaders)
-
-            let request = RestRequest(
-                url: url,
-                method: method,
-                headers: signedHeaders,
-                queryParameters: queryParameters,
-                body: payload
-            )
-            return request
         }
 
         do {
