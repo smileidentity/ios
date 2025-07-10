@@ -113,7 +113,7 @@ struct MonotonicTime {
     }
 }
 
-internal func mapToAPIError(_ error: Error) -> SmileIDError {
+func mapToAPIError(_ error: Error) -> SmileIDError {
     if let requestError = error as? URLError {
         return .request(requestError)
     } else if let decodingError = error as? DecodingError {
@@ -126,7 +126,7 @@ internal func mapToAPIError(_ error: Error) -> SmileIDError {
 }
 
 // todo we need to map errors properly (group api errors as one error)
-internal func getExceptionHandler<T>(_ operation: () async throws -> T) async throws -> T {
+func getExceptionHandler<T>(_ operation: () async throws -> T) async throws -> T {
     do {
         return try await operation()
     } catch {
