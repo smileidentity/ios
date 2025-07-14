@@ -1,7 +1,4 @@
 PODS:
-  - ArkanaKeys (1.0.0):
-    - ArkanaKeysInterfaces (~> 1.0.0)
-  - ArkanaKeysInterfaces (1.0.0)
   - FingerprintJS (1.5.0):
     - FingerprintJS/Core (= 1.5.0)
   - FingerprintJS/Core (1.5.0):
@@ -22,8 +19,6 @@ PODS:
   - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
-  - ArkanaKeys (from `./ArkanaKeys/ArkanaKeys/`)
-  - ArkanaKeysInterfaces (from `./ArkanaKeys/ArkanaKeysInterfaces/`)
   - netfox
   - Sentry (~> 8.48.0)
   - SmileID (from `../`)
@@ -40,16 +35,10 @@ SPEC REPOS:
     - ZIPFoundation
 
 EXTERNAL SOURCES:
-  ArkanaKeys:
-    :path: "./ArkanaKeys/ArkanaKeys/"
-  ArkanaKeysInterfaces:
-    :path: "./ArkanaKeys/ArkanaKeysInterfaces/"
   SmileID:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ArkanaKeys: 356555f467c55ae40ba074c1b4d9cb5c38a55f3d
-  ArkanaKeysInterfaces: 81d21923368b058e2b6fd932ec96855166ef6d19
   FingerprintJS: 96410117a394cca04d0f1e2374944c8697f2cceb
   lottie-ios: 248b380fa1b97d18e792c37d90da7ab2aa0d6562
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
@@ -59,6 +48,6 @@ SPEC CHECKSUMS:
   SwiftLint: 3d48e2fb2a3468fdaccf049e5e755df22fb40c2c
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: 0aff99f038f933ca54faf251acd82e30dc5acf1b
+PODFILE CHECKSUM: e9e5126d85834015260de96bdd536c05d074fc48
 
 COCOAPODS: 1.16.2

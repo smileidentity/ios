@@ -6,8 +6,8 @@ target 'SmileID_Example' do
   pod 'netfox'
   pod 'Sentry', '~> 8.48.0'
   pod 'SwiftLint'
-  pod 'ArkanaKeys', :path => './ArkanaKeys/ArkanaKeys/'
-  pod 'ArkanaKeysInterfaces', :path => './ArkanaKeys/ArkanaKeysInterfaces/'
+  # pod 'ArkanaKeys', :path => './ArkanaKeys/ArkanaKeys/'
+  # pod 'ArkanaKeysInterfaces', :path => './ArkanaKeys/ArkanaKeysInterfaces/'
 
   target 'SmileID_Tests' do
     inherit! :search_paths
