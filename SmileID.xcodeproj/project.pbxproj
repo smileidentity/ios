@@ -75,6 +75,8 @@
 		1EEFC3C32B5849EA00B8A934 /* DependencyContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EEFC3AF2B5849D100B8A934 /* DependencyContainerTests.swift */; };
 		1EEFC3C42B5849EA00B8A934 /* BaseTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EEFC3B02B5849D100B8A934 /* BaseTestCase.swift */; };
 		204FEE49CBB7AEA266729211 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6F8CAF5C3B10F9985B25A1 /* HapticManager.swift */; };
+		20567F402E2562D100F6216E /* SmileIDSecurity in Frameworks */ = {isa = PBXBuildFile; productRef = 6672CF0A2D88877E005DF7A6 /* SmileIDSecurity */; };
+		20567F412E2562D100F6216E /* SmileIDSecurity in Frameworks */ = {isa = PBXBuildFile; productRef = 6672CF0A2D88877E005DF7A6 /* SmileIDSecurity */; };
 		2099D5DA2D3ABF85007C8CFA /* DMSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2099D5D72D3ABF85007C8CFA /* DMSans-Bold.ttf */; };
 		2099D5DB2D3ABF85007C8CFA /* DMSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2099D5D92D3ABF85007C8CFA /* DMSans-Regular.ttf */; };
 		2099D5DC2D3ABF85007C8CFA /* DMSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2099D5D82D3ABF85007C8CFA /* DMSans-Medium.ttf */; };
@@ -4868,6 +4870,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20567F402E2562D100F6216E /* SmileIDSecurity in Frameworks */,
 				1E6857CE2BF39D020019B515 /* Lottie in Frameworks */,
 				6277E74F2C6511BD00AC87FB /* ZIPFoundation in Frameworks */,
 				1E98259F2C9B478C009F2CA6 /* FingerprintJS in Frameworks */,
@@ -4890,6 +4893,7 @@
 				1E4A02382BF4EB9D00167633 /* Lottie in Frameworks */,
 				6277E7512C65153700AC87FB /* ZIPFoundation in Frameworks */,
 				1E9825A32C9B4AF2009F2CA6 /* FingerprintJS in Frameworks */,
+				20567F412E2562D100F6216E /* SmileIDSecurity in Frameworks */,
 				1E9825A52C9B4AF2009F2CA6 /* SystemControl in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
