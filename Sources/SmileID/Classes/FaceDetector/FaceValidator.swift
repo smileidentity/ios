@@ -1,145 +1,144 @@
 import Foundation
 
 protocol FaceValidatorDelegate: AnyObject {
-    func updateValidationResult(_ result: FaceValidationResult)
+  func updateValidationResult(_ result: FaceValidationResult)
 }
 
 struct FaceValidationResult {
-    let userInstruction: SelfieCaptureInstruction?
-    let hasDetectedValidFace: Bool
-    let faceInBounds: Bool
+  let userInstruction: SelfieCaptureInstruction?
+  let hasDetectedValidFace: Bool
+  let faceInBounds: Bool
 }
 
 final class FaceValidator {
-    weak var delegate: FaceValidatorDelegate?
-    private var faceLayoutGuideFrame: CGRect = .zero
+  weak var delegate: FaceValidatorDelegate?
+  private var faceLayoutGuideFrame: CGRect = .zero
 
-    // MARK: Constants
-    private let faceQualityThreshold: Float = 0.25
-    private let luminanceThreshold: ClosedRange<Int> = 40...200
-    private let selfiefaceBoundsMultiplier: CGFloat = 1.5
-    private let livenessfaceBoundsMultiplier: CGFloat = 2.2
-    private let faceBoundsThreshold: CGFloat = 50
+  // MARK: Constants
 
-    init() {}
+  private let faceQualityThreshold: Float = 0.25
+  private let luminanceThreshold: ClosedRange<Int> = 40...200
+  private let selfiefaceBoundsMultiplier: CGFloat = 1.5
+  private let livenessfaceBoundsMultiplier: CGFloat = 2.2
+  private let faceBoundsThreshold: CGFloat = 50
 
-    func setLayoutGuideFrame(with frame: CGRect) {
-        self.faceLayoutGuideFrame = frame
-    }
+  init() {}
 
-    func validate(
-        faceGeometry: FaceGeometryData,
-        faceQuality: Float,
-        brightness: Int,
-        currentLivenessTask: LivenessTask?
-    ) {
-        // check face bounds
-        let faceBoundsState = checkFaceSizeAndPosition(
-            using: faceGeometry.boundingBox,
-            shouldCheckCentering: currentLivenessTask == nil
-        )
-        let isAcceptableBounds = faceBoundsState == .detectedFaceAppropriateSizeAndPosition
+  func setLayoutGuideFrame(with frame: CGRect) {
+    faceLayoutGuideFrame = frame
+  }
 
-        // check brightness
-        let isAcceptableBrightness = luminanceThreshold.contains(brightness)
+  func validate(
+    faceGeometry: FaceGeometryData,
+    faceQuality: Float,
+    brightness: Int,
+    currentLivenessTask: LivenessTask?
+  ) {
+    // check face bounds
+    let faceBoundsState = checkFaceSizeAndPosition(
+      using: faceGeometry.boundingBox,
+      shouldCheckCentering: currentLivenessTask == nil)
+    let isAcceptableBounds = faceBoundsState == .detectedFaceAppropriateSizeAndPosition
 
-        // check face quality
-        let isAcceptableFaceQuality = checkFaceQuality(faceQuality)
+    // check brightness
+    let isAcceptableBrightness = luminanceThreshold.contains(brightness)
 
-        // check that face is ready for capture
-        let hasDetectedValidFace = checkValidFace(
-            isAcceptableBounds,
-            isAcceptableBrightness,
-            isAcceptableFaceQuality
-        )
+    // check face quality
+    let isAcceptableFaceQuality = checkFaceQuality(faceQuality)
 
-        // determine what instruction/animation to display to users
-        let userInstruction = userInstruction(
-            from: faceBoundsState,
-            detectedValidFace: hasDetectedValidFace,
-            isAcceptableBrightness: isAcceptableBrightness,
-            isAcceptableFaceQuality: isAcceptableFaceQuality,
-            livenessTask: currentLivenessTask
-        )
+    // check that face is ready for capture
+    let hasDetectedValidFace = checkValidFace(
+      isAcceptableBounds,
+      isAcceptableBrightness,
+      isAcceptableFaceQuality)
 
-        let validationResult = FaceValidationResult(
-            userInstruction: userInstruction,
-            hasDetectedValidFace: hasDetectedValidFace,
-            faceInBounds: isAcceptableBounds
-        )
-        delegate?.updateValidationResult(validationResult)
-    }
+    // determine what instruction/animation to display to users
+    let userInstruction = userInstruction(
+      from: faceBoundsState,
+      detectedValidFace: hasDetectedValidFace,
+      isAcceptableBrightness: isAcceptableBrightness,
+      isAcceptableFaceQuality: isAcceptableFaceQuality,
+      livenessTask: currentLivenessTask)
 
-    private func userInstruction(
-        from faceBoundsState: FaceBoundsState,
-        detectedValidFace: Bool,
-        isAcceptableBrightness: Bool,
-        isAcceptableFaceQuality: Bool,
-        livenessTask: LivenessTask?
-    ) -> SelfieCaptureInstruction? {
-        if detectedValidFace {
-            if let livenessTask {
-                switch livenessTask {
-                case .lookLeft:
-                    return .lookLeft
-                case .lookRight:
-                    return .lookRight
-                case .lookUp:
-                    return .lookUp
-                }
-            }
-            return nil
-        } else if !isAcceptableFaceQuality || !isAcceptableBrightness {
-            return .goodLight
-        } else if faceBoundsState == .detectedFaceOffCentre
-                    || faceBoundsState == .detectedFaceNotWithinFrame {
-            return .headInFrame
-        } else if faceBoundsState == .detectedFaceTooSmall {
-            return .moveCloser
-        } else if faceBoundsState == .detectedFaceTooLarge {
-            return .moveBack
+    let validationResult = FaceValidationResult(
+      userInstruction: userInstruction,
+      hasDetectedValidFace: hasDetectedValidFace,
+      faceInBounds: isAcceptableBounds)
+    delegate?.updateValidationResult(validationResult)
+  }
+
+  private func userInstruction(
+    from faceBoundsState: FaceBoundsState,
+    detectedValidFace: Bool,
+    isAcceptableBrightness: Bool,
+    isAcceptableFaceQuality: Bool,
+    livenessTask: LivenessTask?
+  ) -> SelfieCaptureInstruction? {
+    if detectedValidFace {
+      if let livenessTask {
+        switch livenessTask {
+        case .lookLeft:
+          return .lookLeft
+        case .lookRight:
+          return .lookRight
+        case .lookUp:
+          return .lookUp
         }
-        return nil
+      }
+      return nil
+    } else if !isAcceptableFaceQuality || !isAcceptableBrightness {
+      return .goodLight
+    } else if faceBoundsState == .detectedFaceOffCentre
+      || faceBoundsState == .detectedFaceNotWithinFrame
+    {
+      return .headInFrame
+    } else if faceBoundsState == .detectedFaceTooSmall {
+      return .moveCloser
+    } else if faceBoundsState == .detectedFaceTooLarge {
+      return .moveBack
+    }
+    return nil
+  }
+
+  // MARK: Validation Checks
+
+  private func checkFaceSizeAndPosition(
+    using boundingBox: CGRect,
+    shouldCheckCentering: Bool
+  ) -> FaceBoundsState {
+    let maxFaceWidth = faceLayoutGuideFrame.width - 20
+    let faceBoundsMultiplier = shouldCheckCentering ? selfiefaceBoundsMultiplier : livenessfaceBoundsMultiplier
+    let minFaceWidth = faceLayoutGuideFrame.width / faceBoundsMultiplier
+
+    // check how far/close face is
+    if boundingBox.width > maxFaceWidth {
+      return .detectedFaceTooLarge
+    } else if boundingBox.width < minFaceWidth {
+      return .detectedFaceTooSmall
     }
 
-    // MARK: Validation Checks
-    private func checkFaceSizeAndPosition(
-        using boundingBox: CGRect,
-        shouldCheckCentering: Bool
-    ) -> FaceBoundsState {
-        let maxFaceWidth = faceLayoutGuideFrame.width - 20
-        let faceBoundsMultiplier = shouldCheckCentering ? selfiefaceBoundsMultiplier : livenessfaceBoundsMultiplier
-        let minFaceWidth = faceLayoutGuideFrame.width / faceBoundsMultiplier
+    // check that face is centered for selfie capture only
+    if shouldCheckCentering {
+      let horizontalOffset = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
+      let verticalOffset = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
 
-        // check how far/close face is
-        if boundingBox.width > maxFaceWidth {
-            return .detectedFaceTooLarge
-        } else if boundingBox.width < minFaceWidth {
-            return .detectedFaceTooSmall
-        }
-
-        // check that face is centered for selfie capture only
-        if shouldCheckCentering {
-            let horizontalOffset = abs(boundingBox.midX - faceLayoutGuideFrame.midX)
-            let verticalOffset = abs(boundingBox.midY - faceLayoutGuideFrame.midY)
-
-            if horizontalOffset > faceBoundsThreshold || verticalOffset > faceBoundsThreshold {
-                return .detectedFaceOffCentre
-            }
-        }
-
-        return .detectedFaceAppropriateSizeAndPosition
+      if horizontalOffset > faceBoundsThreshold || verticalOffset > faceBoundsThreshold {
+        return .detectedFaceOffCentre
+      }
     }
 
-    private func checkFaceQuality(_ value: Float) -> Bool {
-        return value >= faceQualityThreshold
-    }
+    return .detectedFaceAppropriateSizeAndPosition
+  }
 
-    private func checkValidFace(
-        _ isAcceptableBounds: Bool,
-        _ isAcceptableBrightness: Bool,
-        _ isAcceptableFaceQuality: Bool
-    ) -> Bool {
-        return isAcceptableBounds && isAcceptableBrightness && isAcceptableFaceQuality
-    }
+  private func checkFaceQuality(_ value: Float) -> Bool {
+    value >= faceQualityThreshold
+  }
+
+  private func checkValidFace(
+    _ isAcceptableBounds: Bool,
+    _ isAcceptableBrightness: Bool,
+    _ isAcceptableFaceQuality: Bool
+  ) -> Bool {
+    isAcceptableBounds && isAcceptableBrightness && isAcceptableFaceQuality
+  }
 }

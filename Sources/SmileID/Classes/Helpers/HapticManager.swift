@@ -1,23 +1,23 @@
 import UIKit
 
 class HapticManager {
-    static let shared = HapticManager()
+  static let shared = HapticManager()
 
-    private init() {}
+  private init() {}
 
-    // MARK: Notification Feedback
+  // MARK: Notification Feedback
 
-    /// Triggers a notification haptic feedback
-    /// - Parameter type: The notification type (success, warning, error)
-    func notification(type: UINotificationFeedbackGenerator.FeedbackType) {
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(type)
-    }
+  /// Triggers a notification haptic feedback
+  /// - Parameter type: The notification type (success, warning, error)
+  func notification(type: UINotificationFeedbackGenerator.FeedbackType) {
+    let generator = UINotificationFeedbackGenerator()
+    generator.notificationOccurred(type)
+  }
 
-    // MARK: Impact Feedback
+  // MARK: Impact Feedback
 
-    func impact(style: UIImpactFeedbackGenerator.FeedbackStyle) {
-        let generator = UIImpactFeedbackGenerator(style: style)
-        generator.impactOccurred()
-    }
+  func impact(style: UIImpactFeedbackGenerator.FeedbackStyle) {
+    let generator = UIImpactFeedbackGenerator(style: style)
+    generator.impactOccurred()
+  }
 }
