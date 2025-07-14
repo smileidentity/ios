@@ -49,7 +49,7 @@ struct JobsView: View {
             .cancel(),
             .destructive(Text("Clear Jobs"), action: {
               viewModel.clearJobs()
-            }),
+            })
           ])
       })
 

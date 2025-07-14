@@ -49,7 +49,7 @@ class IdInfoInputViewModel: ObservableObject {
       .jobId,
       .day,
       .month,
-      .year,
+      .year
     ]
     requiredFields
       .filter { !ignoredFields.contains($0) }

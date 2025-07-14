@@ -75,7 +75,7 @@ public extension CodeScannerView {
               feature.bottomLeft,
               feature.bottomRight,
               feature.topRight,
-              feature.topLeft,
+              feature.topLeft
             ]
             let result = ScanResult(string: qrCodeLink, type: .qr, image: qrcodeImg, corners: corners)
             found(result)
@@ -129,7 +129,7 @@ public extension CodeScannerView {
           button.heightAnchor.constraint(equalToConstant: 50),
           stackView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
           stackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
-          stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+          stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
       }
 
@@ -324,7 +324,7 @@ public extension CodeScannerView {
           imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
           imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
           imageView.widthAnchor.constraint(equalToConstant: 200),
-          imageView.heightAnchor.constraint(equalToConstant: 200),
+          imageView.heightAnchor.constraint(equalToConstant: 200)
         ])
       }
 
@@ -387,7 +387,7 @@ public extension CodeScannerView {
             manualCaptureButton.heightAnchor.constraint(equalToConstant: 60),
             manualCaptureButton.widthAnchor.constraint(equalTo: manualCaptureButton.heightAnchor),
             view.centerXAnchor.constraint(equalTo: manualCaptureButton.centerXAnchor),
-            view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: manualCaptureButton.bottomAnchor, constant: 32),
+            view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: manualCaptureButton.bottomAnchor, constant: 32)
           ])
         }
 
@@ -402,7 +402,7 @@ public extension CodeScannerView {
             manualSelectButton.heightAnchor.constraint(equalToConstant: 50),
             manualSelectButton.widthAnchor.constraint(equalToConstant: 60),
             view.centerXAnchor.constraint(equalTo: manualSelectButton.centerXAnchor),
-            view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: manualSelectButton.bottomAnchor, constant: 32),
+            view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: manualSelectButton.bottomAnchor, constant: 32)
           ])
         }
 

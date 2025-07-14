@@ -327,8 +327,8 @@ public class LocalStorage {
         with: filename,
         type: .file,
         uncompressedSize: Int64(content.count)) { position, size in
-        content.subdata(in: Int(position)..<Int(position) + size)
-      }
+          content.subdata(in: Int(position)..<Int(position) + size)
+        }
     }
 
     return archive.data!

@@ -9,7 +9,5 @@
 --semicolons never
 --allman false
 --commas inline
---closingparen same-line
 --wrapreturntype preserve
---enable braces
---disable redundantSelf
+--disable redundantSelf,wrapMultilineStatementBraces,braces,wrap,wrapArguments

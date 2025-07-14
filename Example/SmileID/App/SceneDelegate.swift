@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let window = UIWindow(windowScene: windowScene)
 
     UINavigationBar.appearance().titleTextAttributes = [
-      NSAttributedString.Key.foregroundColor: UIColor.black,
+      NSAttributedString.Key.foregroundColor: UIColor.black
     ]
     NFX.sharedInstance().start()
 

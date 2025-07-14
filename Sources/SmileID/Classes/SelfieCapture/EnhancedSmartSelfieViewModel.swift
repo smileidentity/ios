@@ -258,12 +258,12 @@ extension EnhancedSmartSelfieViewModel {
     guideAnimationDelayTimer = Timer.scheduledTimer(
       withTimeInterval: 1,
       repeats: true) { _ in
-      self.elapsedGuideAnimationDelay += 1
-      if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
-        self.showGuideAnimation = true
-        self.stopGuideAnimationDelayTimer()
+        self.elapsedGuideAnimationDelay += 1
+        if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
+          self.showGuideAnimation = true
+          self.stopGuideAnimationDelayTimer()
+        }
       }
-    }
   }
 
   private func stopGuideAnimationDelayTimer() {
