@@ -69,14 +69,15 @@ public class SmileID {
   public class func initialize(
     config: Config = getConfig(),
     useSandbox: Bool = false,
-    enableCrashReporting _: Bool = false,
+    enableCrashReporting: Bool = true,
     requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
   ) {
     initialize(
       apiKey: nil,
       config: config,
       useSandbox: useSandbox,
-      requestTimeout: requestTimeout)
+      requestTimeout: requestTimeout
+    )
   }
 
   /// This method initializes SmileID. Invoke this method once in your application lifecylce
@@ -93,14 +94,14 @@ public class SmileID {
     apiKey: String? = nil,
     config: Config = getConfig(),
     useSandbox: Bool = false,
-    enableCrashReporting: Bool = false,
+    enableCrashReporting: Bool = true,
     requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
   ) {
     self.config = config
     self.useSandbox = useSandbox
     self.apiKey = apiKey
     self.requestTimeout = requestTimeout
-
+    
     if enableCrashReporting {
       SmileIDCrashReporting.enable()
     }
@@ -109,7 +110,7 @@ public class SmileID {
 
     // Increment and track SDK launch count
     trackSdkLaunchCount()
-
+    
     let fingerprinter = FingerprinterFactory.getInstance()
     Task {
       /// The fingerprint isn't currently as stable as the Device Identifier, because the
@@ -230,24 +231,20 @@ public class SmileID {
             throw error
           }
         }
-        
-        // Continue with the upload process...
-        // Collect all files for the job
-        var allFiles: [URL] = []
-        
-        // Try to get files of each type
-        let fileTypes: [FileType] = [.selfie, .liveness, .documentFront, .documentBack]
-        for fileType in fileTypes {
-          if let files = try? LocalStorage.getFilesByType(jobId: jobId, fileType: fileType) {
-            allFiles.append(contentsOf: files)
-          }
+        let allFiles: [URL]
+        do {
+          let livenessFiles =
+            try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness) ?? []
+          let additionalFiles = try [
+            LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
+            LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
+            LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
+            LocalStorage.getInfoJsonFile(jobId: jobId)
+          ].compactMap { $0 }
+          allFiles = livenessFiles + additionalFiles
+        } catch {
+          throw error
         }
-        
-        // Add JSON files
-        if let infoJson = try? LocalStorage.getInfoJsonFile(jobId: jobId) {
-          allFiles.append(infoJson)
-        }
-        
         let zipData = try LocalStorage.zipFiles(urls: allFiles)
         _ = try await SmileID.api.upload(
           zip: zipData,
