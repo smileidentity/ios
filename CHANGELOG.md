@@ -1,5 +1,5 @@
 # Release Notes
-## 11.0.2 (Unreleased)
+## 11.0.2 - July 10, 2025
 
 ### Changed
 * Changed returned file paths for document and selfie captures from relative to absolute, allowing partners to access complete file locations.
