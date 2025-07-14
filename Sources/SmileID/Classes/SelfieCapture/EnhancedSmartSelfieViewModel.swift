@@ -397,7 +397,9 @@ extension EnhancedSmartSelfieViewModel {
             return
         }
         submissionTask = Task {
-            try await submitJob()
+            try await getExceptionHandler {
+                try await submitJob()
+            }
         }
     }
 
@@ -545,18 +547,11 @@ extension EnhancedSmartSelfieViewModel: SelfieSubmissionDelegate {
         Metadata.shared.onStop()
         if let error = self.error {
             callback.didError(error: error)
-        } else if let selfieImageURL = selfieImageURL,
-            let selfiePath = getRelativePath(from: selfieImageURL),
-            livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            ) {
-            let livenessImagesPaths = livenessImages.compactMap {
-                getRelativePath(from: $0)
-            }
-
+        } else if let selfieImageURL = selfieImageURL, livenessImages.count == numLivenessImages {
+            
             callback.didSucceed(
-                selfieImage: selfiePath,
-                livenessImages: livenessImagesPaths,
+                selfieImage: selfieImageURL,
+                livenessImages: livenessImages,
                 apiResponse: apiResponse
             )
         }

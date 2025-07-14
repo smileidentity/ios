@@ -1,4 +1,15 @@
 # Release Notes
+## 11.0.2 - July 10, 2025
+
+### Changed
+* Changed returned file paths for document and selfie captures from relative to absolute, allowing partners to access complete file locations.
+
+## 11.0.1 - July 2, 2025
+
+### Added
+
+* Added option to disable document auto capture in DocV and Enhanced DocV
+
 ## 11.0.0
 
 ### Added 

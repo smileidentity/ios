@@ -66,11 +66,10 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         if let error {
             delegate.didError(error: error)
         } else if let selfieFile = selfieFile,
-           let livenessFiles = livenessFiles,
-           let selfiePath = getRelativePath(from: selfieFile) {
+           let livenessFiles = livenessFiles {
             delegate.didSucceed(
-                selfieImage: selfiePath,
-                livenessImages: livenessFiles.compactMap { getRelativePath(from: $0) },
+                selfieImage: selfieFile,
+                livenessImages: livenessFiles,
                 didSubmitBiometricJob: didSubmitBiometricJob
             )
         } else {
@@ -82,7 +81,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         updateStep(.processing(.inProgress))
         Task {
             do {
-                try await handleJobSubmission()
+                try await getExceptionHandler {
+                    try await handleJobSubmission()
+                }
                 resetNetworkRetries()
                 updateStep(.processing(.success))
             } catch let error as SmileIDError {
@@ -97,6 +98,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     private func handleJobSubmission() async throws {
+        
         try fetchRequiredFiles()
 
         let zipData = try createZipData()

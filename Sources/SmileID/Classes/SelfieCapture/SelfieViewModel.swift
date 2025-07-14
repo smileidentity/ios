@@ -433,42 +433,43 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                         partnerParams: extraPartnerParams
                     )
                 }
-                let authResponse = try await SmileID.api.authenticate(
-                    request: authRequest
-                )
-
-                var smartSelfieLivenessImages = [MultipartBody]()
-                var smartSelfieImage: MultipartBody?
-                if let selfie = try? Data(contentsOf: selfieImage),
-                    let media = MultipartBody(
+                try await getExceptionHandler {
+                    let authResponse = try await SmileID.api.authenticate(
+                        request: authRequest
+                    )
+                    
+                    var smartSelfieLivenessImages = [MultipartBody]()
+                    var smartSelfieImage: MultipartBody?
+                    if let selfie = try? Data(contentsOf: selfieImage),
+                       let media = MultipartBody(
                         withImage: selfie,
                         forName: selfieImage.lastPathComponent
-                    )
-                {
-                    smartSelfieImage = media
-                }
-                if !livenessImages.isEmpty {
-                    let livenessImageInfos = livenessImages.compactMap {
-                        liveness -> MultipartBody? in
-                        if let data = try? Data(contentsOf: liveness) {
-                            return MultipartBody(
-                                withImage: data,
-                                forName: liveness.lastPathComponent
-                            )
-                        }
-                        return nil
+                       )
+                    {
+                        smartSelfieImage = media
                     }
-
-                    smartSelfieLivenessImages.append(
-                        contentsOf: livenessImageInfos.compactMap { $0 })
-                }
-                guard let smartSelfieImage = smartSelfieImage,
-                    smartSelfieLivenessImages.count == numLivenessImages
-                else {
-                    throw SmileIDError.unknown("Selfie capture failed")
-                }
-
-                let response =
+                    if !livenessImages.isEmpty {
+                        let livenessImageInfos = livenessImages.compactMap {
+                            liveness -> MultipartBody? in
+                            if let data = try? Data(contentsOf: liveness) {
+                                return MultipartBody(
+                                    withImage: data,
+                                    forName: liveness.lastPathComponent
+                                )
+                            }
+                            return nil
+                        }
+                        
+                        smartSelfieLivenessImages.append(
+                            contentsOf: livenessImageInfos.compactMap { $0 })
+                    }
+                    guard let smartSelfieImage = smartSelfieImage,
+                          smartSelfieLivenessImages.count == numLivenessImages
+                    else {
+                        throw SmileIDError.unknown("Selfie capture failed")
+                    }
+                    
+                    let response =
                     if isEnroll {
                         try await SmileID.api.doSmartSelfieEnrollment(
                             signature: authResponse.signature,
@@ -495,7 +496,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
                             failureReason: nil
                         )
                     }
-                apiResponse = response
+                    apiResponse = response
+                }
                 do {
                     try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
                     self.selfieImage = try LocalStorage.getFileByType(
@@ -566,19 +568,10 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     public func onFinished(callback: SmartSelfieResultDelegate) {
         if let error = self.error {
             callback.didError(error: error)
-        } else if let selfieImage = selfieImage,
-            let selfiePath = getRelativePath(from: selfieImage),
-            livenessImages.count == numLivenessImages,
-            !livenessImages.contains(where: { getRelativePath(from: $0) == nil }
-            )
-        {
-            let livenessImagesPaths = livenessImages.compactMap {
-                getRelativePath(from: $0)
-            }
-
+        } else if let selfieImage = selfieImage, livenessImages.count == numLivenessImages {
             callback.didSucceed(
-                selfieImage: selfiePath,
-                livenessImages: livenessImagesPaths,
+                selfieImage: selfieImage,
+                livenessImages: livenessImages,
                 apiResponse: apiResponse
             )
         } else {

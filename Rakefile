@@ -109,7 +109,6 @@ namespace :provision do
   task :ios do
     Dir.chdir('Example') do
       sh 'bundle install'
-      sh 'arkana -c .arkana.yml'
       sh 'pod install'
       sh 'bundle exec fastlane run_match'
     end
