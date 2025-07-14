@@ -230,94 +230,29 @@ public class SmileID {
             throw error
           }
         }
-        container.register(ServiceHeaderProvider.self) { DefaultServiceHeaderProvider() }
-        container.register(Metadata.self) { Metadata.shared }
-        let instance = SmileID()
-        return instance
-      }()
-
-      /// A private static constant that initializes a `URLSession` with a default configuration.
-      /// This `URLSession` is used for creating `URLSessionDataTask`s in the networking layer.
-      /// The session configuration sets the timeout interval for requests to the value specified by
-      /// `SmileID.requestTimeout`.
-      ///
-      /// - Returns: A `URLSession` instance with the specified configuration.
-      private static let urlSession: URLSession = {
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = SmileID.requestTimeout
-        let session = URLSession(configuration: configuration)
-        return session
-      }()
-
-      private init() {}
-
-      public private(set) static var config: Config!
-      public private(set) static var useSandbox = false
-      public private(set) static var allowOfflineMode = false
-      public private(set) static var callbackUrl = ""
-
-      private(set) static var deviceId = ""
-      private(set) static var sdkLaunchCount = 0
-      private(set) static var wrapperSdkName: WrapperSdkName? = nil
-      private(set) static var wrapperSdkVersion: String? = nil
-
-      static var apiKey: String?
-      public private(set) static var theme: SmileIdTheme = DefaultTheme()
-      private(set) static var localizableStrings: SmileIDLocalizableStrings?
-      /// The timeout interval for requests. This value is initialized to the `defaultRequestTimeout`.
-      private(set) static var requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
-
-      /// This method initializes SmileID. Invoke this method once in your application lifecycle
-      /// before calling any other SmileID methods.
-      /// - Parameters:
-      ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
-      ///    for a `smile_config.json` file.
-      ///   - useSandbox: A boolean to enable the sandbox environment or not
-      ///   - enableCrashReporting:Whether to enable crash reporting for *ONLY* Smile ID related
-      ///   - requestTimeout: The timeout interval for all requests.
-      ///   An interval greater than `defaultRequestTimeout` is recommended.
-      public class func initialize(
-        config: Config = getConfig(),
-        useSandbox: Bool = false,
-        enableCrashReporting _: Bool = true,
-        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
-      ) {
-        initialize(
-          apiKey: nil,
-          config: config,
-          useSandbox: useSandbox,
-          requestTimeout: requestTimeout)
-      }
-
-      /// This method initializes SmileID. Invoke this method once in your application lifecylce
-      /// before calling any other SmileID methods.
-      /// - Parameters:
-      ///   - apiKey: The api key displayed on your partner portal
-      ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
-      ///    for a `smile_config.json` file.
-      ///   - useSandbox: A boolean to enable the sandbox environment or not
-      ///   - enableCrashReporting:Whether to enable crash reporting for *ONLY* Smile ID related
-      ///   - requestTimeout: The timeout interval for all requests.
-      ///   An interval greater than `defaultRequestTimeout` is recommended.
-      public class func initialize(
-        apiKey: String? = nil,
-        config: Config = getConfig(),
-        useSandbox: Bool = false,
-        enableCrashReporting: Bool = true,
-        requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
-      ) {
-        self.config = config
-        self.useSandbox = useSandbox
-        self.apiKey = apiKey
-        self.requestTimeout = requestTimeout
-
-        if enableCrashReporting {
-          SmileIDCrashReporting.enable()
+        
+        // Continue with the upload process...
+        // Collect all files for the job
+        var allFiles: [URL] = []
+        
+        // Try to get files of each type
+        let fileTypes: [FileType] = [.selfie, .liveness, .documentFront, .documentBack]
+        for fileType in fileTypes {
+          if let files = try? LocalStorage.getFilesByType(jobId: jobId, fileType: fileType) {
+            allFiles.append(contentsOf: files)
+          }
         }
+        
+        // Add JSON files
+        if let infoJson = try? LocalStorage.getInfoJsonFile(jobId: jobId) {
+          allFiles.append(infoJson)
+        }
+        
         let zipData = try LocalStorage.zipFiles(urls: allFiles)
         _ = try await SmileID.api.upload(
           zip: zipData,
           to: prepUploadResponse.uploadUrl)
+        
         if deleteFilesOnSuccess {
           do {
             try LocalStorage.delete(at: [jobId])

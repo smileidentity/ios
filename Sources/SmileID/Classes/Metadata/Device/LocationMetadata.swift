@@ -1,10 +1,10 @@
 import CoreLocation
 
 struct LocationInfo {
-  public var latitude: Double
-  public var longitude: Double
-  public var accuracy: LocationAccuracy
-  public var source: LocationSource
+  var latitude: Double
+  var longitude: Double
+  var accuracy: LocationAccuracy
+  var source: LocationSource
 
   static let unknown = LocationInfo(
     latitude: 0.0,
