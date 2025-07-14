@@ -3,7 +3,7 @@
 --decimalgrouping none
 --hexliteralcase lowercase
 --indent 2
---nospaceoperators ...,..< 
+--nospaceoperators ...,..<
 --octalgrouping none
 --patternlet inline
 --semicolons never
