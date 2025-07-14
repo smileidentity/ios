@@ -8,6 +8,8 @@
 --patternlet inline
 --semicolons never
 --allman false
---trailingcommas false
+--commas inline
 --closingparen same-line
+--wrapreturntype preserve
+--enable braces
 --disable redundantSelf
