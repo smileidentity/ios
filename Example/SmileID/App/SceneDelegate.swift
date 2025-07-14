@@ -1,6 +1,5 @@
 import Foundation
 import netfox
-import Sentry
 import SwiftUI
 import UIKit
 
