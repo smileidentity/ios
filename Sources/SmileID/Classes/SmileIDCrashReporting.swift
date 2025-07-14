@@ -10,7 +10,7 @@ class SmileIDCrashReporting {
 
     static func enable() {
         let options = Sentry.Options()
-        options.dsn = ArkanaKeys.Global().sENTRY_DSN
+        options.dsn = SmileIDSecurity.ArkanaKeys.Global().sENTRY_DSN
         options.releaseName = SmileID.version
         options.enableCrashHandler = true
 
