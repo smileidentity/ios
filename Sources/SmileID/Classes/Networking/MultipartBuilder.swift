@@ -46,21 +46,7 @@ struct MultipartBuilder {
 
         for (key, value) in jsonObject {
             if let base64String = value as? String {
-                // Decode base64 value
-                if let decodedData = Data(base64Encoded: base64String) {
-                    // Check if this is a binary field (images)
-                    if key.contains("image") {
-                        appendBinaryField(name: key, data: decodedData, to: &body)
-                    } else {
-                        // Try to convert to string for text fields
-                        if let stringValue = String(data: decodedData, encoding: .utf8) {
-                            appendStringField(key, value: stringValue, to: &body)
-                        } else {
-                            // If not valid UTF-8, treat as binary
-                            appendBinaryField(name: key, data: decodedData, to: &body)
-                        }
-                    }
-                }
+                appendStringField(key, value: base64String, to: &body)
             }
         }
 
@@ -110,6 +96,7 @@ struct MultipartBuilder {
         )
         body.appendUtf8("Content-Type: \(file.mimeType)\(lineBreak + lineBreak)")
         body.append(file.data)
+        body.appendUtf8(lineBreak)
     }
 
     /// Appends a binary field to a multipart body.
