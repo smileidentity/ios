@@ -69,6 +69,7 @@ jobs:
         run: |
           xcodebuild -resolvePackageDependencies
           bundle exec rake test:spm    
+          bundle exec rake provision:ios
           bundle exec rake test:package
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
