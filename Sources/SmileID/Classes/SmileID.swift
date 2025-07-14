@@ -334,7 +334,7 @@ public class SmileID {
   ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
   ///   - extraPartnerParams: Custom values specific to partners
   ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
-  @ViewBuilder public class func smartSelfieEnrollmentScreen(
+  public class func smartSelfieEnrollmentScreen(
     userId: String = generateUserId(),
     jobId: String = generateJobId(),
     allowNewEnroll: Bool = false,
@@ -357,7 +357,8 @@ public class SmileID {
       showInstructions: showInstructions,
       extraPartnerParams: extraPartnerParams,
       skipApiSubmission: skipApiSubmission,
-      onResult: delegate)
+      onResult: delegate
+    )
   }
 
   /// Perform a SmartSelfie™ Enrollment
@@ -375,7 +376,7 @@ public class SmileID {
   ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
   ///   - extraPartnerParams: Custom values specific to partners
   ///   - delegate: Callback to be invoked when the SmartSelfie™ Enrollment is complete.
-  @ViewBuilder public class func smartSelfieEnrollmentScreenEnhanced(
+  public class func smartSelfieEnrollmentScreenEnhanced(
     userId: String = generateUserId(),
     allowNewEnroll: Bool = false,
     showAttribution: Bool = true,
@@ -393,7 +394,8 @@ public class SmileID {
       showInstructions: showInstructions,
       skipApiSubmission: skipApiSubmission,
       extraPartnerParams: extraPartnerParams,
-      onResult: delegate)
+      onResult: delegate
+    )
   }
 
   /// Perform a SmartSelfie™ Authentication
@@ -417,7 +419,7 @@ public class SmileID {
   ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
   ///   - extraPartnerParams: Custom values specific to partners
   ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
-  @ViewBuilder public class func smartSelfieAuthenticationScreen(
+  public class func smartSelfieAuthenticationScreen(
     userId: String,
     jobId: String = generateJobId(),
     allowNewEnroll: Bool = false,
@@ -440,7 +442,8 @@ public class SmileID {
       showInstructions: showInstructions,
       extraPartnerParams: extraPartnerParams,
       skipApiSubmission: skipApiSubmission,
-      onResult: delegate)
+      onResult: delegate
+    )
   }
 
   /// Perform a SmartSelfie™ Authentication
@@ -458,7 +461,7 @@ public class SmileID {
   ///   - skipApiSubmission: Whether to skip api submission to SmileID and return only captured images
   ///   - extraPartnerParams: Custom values specific to partners
   ///   - delegate: Callback to be invoked when the SmartSelfie™ Authentication is complete.
-  @ViewBuilder public class func smartSelfieAuthenticationScreenEnhanced(
+  public class func smartSelfieAuthenticationScreenEnhanced(
     userId: String,
     allowNewEnroll: Bool = false,
     showAttribution: Bool = true,
@@ -476,7 +479,8 @@ public class SmileID {
       showInstructions: showInstructions,
       skipApiSubmission: skipApiSubmission,
       extraPartnerParams: extraPartnerParams,
-      onResult: delegate)
+      onResult: delegate
+    )
   }
 
   /// Perform a Document Verification
@@ -545,7 +549,8 @@ public class SmileID {
       skipApiSubmission: skipApiSubmission,
       useStrictMode: useStrictMode,
       extraPartnerParams: extraPartnerParams,
-      onResult: delegate)
+      onResult: delegate
+    )
   }
 
   /// Perform an Enhanced Document Verification
@@ -624,7 +629,8 @@ public class SmileID {
       skipApiSubmission: skipApiSubmission,
       useStrictMode: useStrictMode,
       extraPartnerParams: extraPartnerParams,
-      onResult: delegate)
+      onResult: delegate
+    )
   }
 
   public class func consentScreen(
@@ -697,6 +703,7 @@ public class SmileID {
       allowAgentMode: allowAgentMode,
       useStrictMode: useStrictMode,
       extraPartnerParams: extraPartnerParams,
-      delegate: delegate)
+      delegate: delegate
+    )
   }
 }
