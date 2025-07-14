@@ -4,7 +4,7 @@ import SwiftUI
 struct ProductCell: View {
   let product: SmileIDProduct
 
-  public var body: some View {
+  var body: some View {
     VStack(spacing: 16) {
       Image(product.image)
         .resizable()

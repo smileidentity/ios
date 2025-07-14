@@ -1,7 +1,7 @@
 import UIKit
 
 class CopyableLabel: UILabel {
-  override public var canBecomeFirstResponder: Bool {
+  override var canBecomeFirstResponder: Bool {
     true
   }
 

@@ -24,7 +24,7 @@ enum FaceBoundsState {
 struct ErrorWrapper: Equatable {
   let error: Error
 
-  public static func == (lhs: Self, rhs: Self) -> Bool {
+  static func == (lhs: Self, rhs: Self) -> Bool {
     String(reflecting: lhs.error) == String(reflecting: rhs.error)
   }
 }

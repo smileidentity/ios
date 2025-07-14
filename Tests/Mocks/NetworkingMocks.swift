@@ -225,7 +225,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
   }
 
-  public func requestBvnTotpMode(
+  func requestBvnTotpMode(
     request _: BvnTotpRequest
   ) async throws -> BvnTotpResponse {
     let response = BvnTotpResponse(
@@ -242,7 +242,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
   }
 
-  public func requestBvnOtp(
+  func requestBvnOtp(
     request _: BvnTotpModeRequest
   ) async throws -> BvnTotpModeResponse {
     let response = BvnTotpModeResponse(
@@ -257,7 +257,7 @@ class MockSmileIdentityService: SmileIDServiceable {
     }
   }
 
-  public func submitBvnOtp(
+  func submitBvnOtp(
     request _: SubmitBvnTotpRequest
   ) async throws -> SubmitBvnTotpResponse {
     let response = SubmitBvnTotpResponse(

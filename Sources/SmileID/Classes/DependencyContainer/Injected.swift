@@ -4,7 +4,7 @@ import Foundation
   var wrappedValue: DependencyType { instance }
   private let instance: DependencyType
 
-  public init() {
+  init() {
     instance = DependencyAutoResolver.resolve(DependencyType.self)
   }
 }

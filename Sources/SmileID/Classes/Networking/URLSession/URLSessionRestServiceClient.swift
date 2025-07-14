@@ -15,7 +15,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
   let decoder = JSONDecoder()
   let requestTimeout: TimeInterval
 
-  public init(
+  init(
     session: URLSessionPublisher,
     requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
   ) {
@@ -34,7 +34,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     }
   }
 
-  public func upload(request: RestRequest) async throws -> Data {
+  func upload(request: RestRequest) async throws -> Data {
     guard let requestBody = request.body else {
       throw SmileIDError.invalidRequestBody
     }
@@ -52,7 +52,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     }
   }
 
-  public func multipart<T: Decodable>(request: RestRequest) async throws -> T {
+  func multipart<T: Decodable>(request: RestRequest) async throws -> T {
     do {
       let urlRequest = try request.getURLRequest()
       let urlSessionResponse = try await session.send(request: urlRequest)
