@@ -1,4 +1,5 @@
 import Sentry
+import SmileIDSecurity
 
 class SmileIDCrashReporting {
     private static let smileIDPackagePrefix = "com.smileidentity"

@@ -13,9 +13,9 @@ PODS:
     - FingerprintJS
     - lottie-ios (~> 4.5.0)
     - Sentry (~> 8.53.1)
-    - SmileIDSecurity (~> 1.0.3)
+    - SmileIDSecurity (~> 1.0.4)
     - ZIPFoundation (~> 0.9)
-  - SmileIDSecurity (1.0.3)
+  - SmileIDSecurity (1.0.4)
   - SwiftLint (0.59.1)
   - ZIPFoundation (0.9.19)
 
@@ -43,8 +43,8 @@ SPEC CHECKSUMS:
   lottie-ios: 248b380fa1b97d18e792c37d90da7ab2aa0d6562
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
   Sentry: 1e4e974d45f09d153af4b30b42acfb1c79e957d3
-  SmileID: 2817983b208496722f20f222b2c3907176c0b9a2
-  SmileIDSecurity: e721b4a2ccc403ab61e2e14a4c7dd15fa4e4e55d
+  SmileID: e32f86487a24cb4b2d4b17cdbabc182dcf8f0b64
+  SmileIDSecurity: 85e1bb1de0849e84b3645379e2bc6d5f2aca1ef4
   SwiftLint: 3d48e2fb2a3468fdaccf049e5e755df22fb40c2c
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
