@@ -15,7 +15,7 @@ public struct HTTPQueryParameters: Equatable {
   }
 }
 
-extension [HTTPQueryParameters]: @retroactive ExpressibleByDictionaryLiteral {
+extension [HTTPQueryParameters]: ExpressibleByDictionaryLiteral {
   public init(dictionaryLiteral elements: (String, [String])...) {
     self = elements.map {
       HTTPQueryParameters(key: $0.0, values: $0.1)
