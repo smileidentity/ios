@@ -1,3 +1,0 @@
-global_secrets:
-  - SENTRY_DSN
-package_manager: cocoapods
