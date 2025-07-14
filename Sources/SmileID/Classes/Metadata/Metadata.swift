@@ -71,10 +71,8 @@ class Metadata {
   func removeMetadata(key: MetadataKey) {
     staticMetadata.removeValue(forKey: key)
 
-    for provider in providers {
-      if provider.provides.contains(key) {
-        provider.removeMetadata(forKey: key)
-      }
+    for provider in providers where provider.provides.contains(key) {
+      provider.removeMetadata(forKey: key)
     }
   }
 
@@ -139,10 +137,8 @@ extension Metadata {
   }
 
   func addMetadata(key: MetadataKey) {
-    for provider in providers {
-      if provider.provides.contains(key) {
-        provider.addMetadata(forKey: key)
-      }
+    for provider in providers where provider.provides.contains(key) {
+      provider.addMetadata(forKey: key)
     }
   }
 }

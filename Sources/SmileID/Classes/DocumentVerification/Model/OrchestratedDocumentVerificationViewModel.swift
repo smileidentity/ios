@@ -361,7 +361,10 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
   }
 }
 
-class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
+class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<
+  DocumentVerificationResultDelegate,
+  DocumentVerificationJobResult
+> {
   override func onFinished(delegate: DocumentVerificationResultDelegate) {
     if let error {
       delegate.didError(error: error)
