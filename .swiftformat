@@ -7,4 +7,7 @@
 --octalgrouping none
 --patternlet inline
 --semicolons never
+--allman false
+--trailingcommas false
+--closingparen same-line
 --disable redundantSelf
