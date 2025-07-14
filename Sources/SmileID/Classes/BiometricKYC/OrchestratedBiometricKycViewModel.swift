@@ -81,7 +81,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         updateStep(.processing(.inProgress))
         Task {
             do {
-                try await handleJobSubmission()
+                try await getExceptionHandler {
+                    try await handleJobSubmission()
+                }
                 resetNetworkRetries()
                 updateStep(.processing(.success))
             } catch let error as SmileIDError {
@@ -96,6 +98,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     }
 
     private func handleJobSubmission() async throws {
+        
         try fetchRequiredFiles()
 
         let zipData = try createZipData()

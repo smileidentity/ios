@@ -1,7 +1,4 @@
 PODS:
-  - ArkanaKeys (1.0.0):
-    - ArkanaKeysInterfaces (~> 1.0.0)
-  - ArkanaKeysInterfaces (1.0.0)
   - FingerprintJS (1.5.0):
     - FingerprintJS/Core (= 1.5.0)
   - FingerprintJS/Core (1.5.0):
@@ -9,23 +6,21 @@ PODS:
   - FingerprintJS/SystemControl (1.5.0)
   - lottie-ios (4.5.1)
   - netfox (1.21.0)
-  - Sentry (8.48.0):
-    - Sentry/Core (= 8.48.0)
-  - Sentry/Core (8.48.0)
+  - Sentry (8.53.2):
+    - Sentry/Core (= 8.53.2)
+  - Sentry/Core (8.53.2)
   - SmileID (11.0.2):
     - FingerprintJS
     - lottie-ios (~> 4.5.0)
-    - SmileIDSecurity (~> 1.0.3)
+    - Sentry (~> 8.53.2)
+    - SmileIDSecurity (~> 1.0.4)
     - ZIPFoundation (~> 0.9)
-  - SmileIDSecurity (1.0.3)
+  - SmileIDSecurity (1.0.4)
   - SwiftLint (0.59.1)
   - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
-  - ArkanaKeys (from `./ArkanaKeys/ArkanaKeys/`)
-  - ArkanaKeysInterfaces (from `./ArkanaKeys/ArkanaKeysInterfaces/`)
   - netfox
-  - Sentry (~> 8.48.0)
   - SmileID (from `../`)
   - SwiftLint
 
@@ -40,25 +35,19 @@ SPEC REPOS:
     - ZIPFoundation
 
 EXTERNAL SOURCES:
-  ArkanaKeys:
-    :path: "./ArkanaKeys/ArkanaKeys/"
-  ArkanaKeysInterfaces:
-    :path: "./ArkanaKeys/ArkanaKeysInterfaces/"
   SmileID:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ArkanaKeys: 356555f467c55ae40ba074c1b4d9cb5c38a55f3d
-  ArkanaKeysInterfaces: 81d21923368b058e2b6fd932ec96855166ef6d19
   FingerprintJS: 96410117a394cca04d0f1e2374944c8697f2cceb
   lottie-ios: 248b380fa1b97d18e792c37d90da7ab2aa0d6562
   netfox: 9d5cc727fe7576c4c7688a2504618a156b7d44b7
-  Sentry: 1ca8405451040482877dcd344dfa3ef80b646631
-  SmileID: 7332cec1d76ead117c0d9aa2acf79c4c425007ee
-  SmileIDSecurity: e721b4a2ccc403ab61e2e14a4c7dd15fa4e4e55d
+  Sentry: 59993bffde4a1ac297ba6d268dc4bbce068d7c1b
+  SmileID: 3c544d3f8b7bb64ea75c27de0d6bc736e7ef1b38
+  SmileIDSecurity: 85e1bb1de0849e84b3645379e2bc6d5f2aca1ef4
   SwiftLint: 3d48e2fb2a3468fdaccf049e5e755df22fb40c2c
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: 0aff99f038f933ca54faf251acd82e30dc5acf1b
+PODFILE CHECKSUM: bd1a6ac8b04bd8f7023a1149f08232de6f13985f
 
 COCOAPODS: 1.16.2

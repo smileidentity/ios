@@ -64,11 +64,13 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
+    ///   - enableCrashReporting:Whether to enable crash reporting for *ONLY* Smile ID related
     ///   - requestTimeout: The timeout interval for all requests.
     ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
         config: Config = getConfig(),
         useSandbox: Bool = false,
+        enableCrashReporting: Bool = false,
         requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         initialize(
@@ -86,18 +88,24 @@ public class SmileID {
     ///   - config: The smile config file. If no value is supplied, we check the app's main bundle
     ///    for a `smile_config.json` file.
     ///   - useSandbox: A boolean to enable the sandbox environment or not
+    ///   - enableCrashReporting:Whether to enable crash reporting for *ONLY* Smile ID related
     ///   - requestTimeout: The timeout interval for all requests.
     ///   An interval greater than `defaultRequestTimeout` is recommended.
     public class func initialize(
         apiKey: String? = nil,
         config: Config = getConfig(),
         useSandbox: Bool = false,
+        enableCrashReporting: Bool = false,
         requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         self.config = config
         self.useSandbox = useSandbox
         self.apiKey = apiKey
         self.requestTimeout = requestTimeout
+        
+        if enableCrashReporting {
+            SmileIDCrashReporting.enable()
+        }
 
         SmileIDResourcesHelper.registerFonts()
 
