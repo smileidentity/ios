@@ -102,6 +102,19 @@ def xcodebuild(command, project = "Example/SmileID.xcworkspace")
   end
 end
 
+
+
+namespace :provision do
+  desc 'Provision the app for building'
+  task :ios do
+    Dir.chdir('Example') do
+      sh 'bundle install'
+      sh 'pod install'
+      sh 'bundle exec fastlane run_match'
+    end
+  end
+end
+
 def xcarchive(command)
   # Check if the mint tool is installed -- if so, pipe the xcodebuild output through xcbeautify
   `which mint`
