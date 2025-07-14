@@ -22,6 +22,7 @@ protocol ServiceRunnable {
     /// - Parameters:
     ///   - path: Endpoint to execute the POST call.
     ///   - body: The contents of the body of the mulitpart request.
+    ///   - enableEncryption: Whether to encrypt the multipart payload.
     func multipart(
         to path: PathType,
         signature: String,
@@ -33,7 +34,8 @@ protocol ServiceRunnable {
         callbackUrl: String?,
         sandboxResult: Int?,
         allowNewEnroll: Bool?,
-        failureReason: FailureReason?
+        failureReason: FailureReason?,
+        enableEncryption: Bool
     ) async throws -> SmartSelfieResponse
 
     /// PUT service call to a particular path with a body.
@@ -100,9 +102,10 @@ extension ServiceRunnable {
         callbackUrl: String? = nil,
         sandboxResult: Int? = nil,
         allowNewEnroll: Bool? = nil,
-        failureReason: FailureReason? = nil
+        failureReason: FailureReason? = nil,
+        enableEncryption: Bool = true
     ) async throws -> SmartSelfieResponse {
-        let boundary = generateBoundary()
+        let boundary = UUID().uuidString
         var headers: [HTTPHeader] = []
         headers.append(.contentType(value: "multipart/form-data; boundary=\(boundary)"))
         headers.append(.partnerID(value: SmileID.config.partnerId))
@@ -144,22 +147,42 @@ extension ServiceRunnable {
              */
         }
 
+        let builder = MultipartBuilder(boundary: boundary)
+        let uploadData: Data
+
+        if enableEncryption {
+            let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
+                timestamp: timestamp,
+                headers: headers.toDictionary(),
+                payload: payload
+            )
+
+            guard let payload = encryptedPayload else {
+                throw URLError(.cannotDecodeContentData)
+            }
+
+            applyEncryptedHeaders(encryptedHeaders, to: &headers)
+
+            let jsonObject = try JSONSerialization.jsonObject(with: payload, options: [])
+
+            guard let encryptedJson = jsonObject as? [String: Any] else {
+                throw URLError(.cannotDecodeContentData)
+            }
+
+            uploadData = builder.buildEncryptedMultipart(from: encryptedJson)
+        } else {
+            uploadData = builder.buildMultipart(
+                selfieRequest: selfieRequest,
+                selfieImage: selfieImage,
+                livenessImages: livenessImages
+            )
+        }
+
         let request = try await createMultiPartRequest(
             url: path,
             method: .post,
             headers: headers,
-            uploadData: createMultiPartRequestData(
-                selfieImage: selfieImage,
-                livenessImages: livenessImages,
-                userId: userId,
-                partnerParams: partnerParams,
-                callbackUrl: callbackUrl?.nilIfEmpty(),
-                sandboxResult: sandboxResult,
-                allowNewEnroll: allowNewEnroll,
-                failureReason: failureReason,
-                metadata: metadata,
-                boundary: boundary
-            )
+            uploadData: uploadData
         )
 
         return try await serviceClient.multipart(request: request)
@@ -265,18 +288,19 @@ extension ServiceRunnable {
                     headers: signedHeaders.toDictionary(),
                     payload: payload
                 )
-                for index in 0..<signedHeaders.count {
-                    let key = signedHeaders[index].name
-                    if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
-                        signedHeaders[index].value = encryptedValue
-                    }
+
+                guard let payload = encryptedPayload else {
+                    throw URLError(.cannotDecodeContentData)
                 }
+
+                applyEncryptedHeaders(encryptedHeaders, to: &signedHeaders)
+
                 let request = RestRequest(
                     url: url,
                     method: method,
                     headers: signedHeaders,
                     queryParameters: queryParameters,
-                    body: encryptedPayload!
+                    body: payload
                 )
                 return request
             }
@@ -330,134 +354,18 @@ extension ServiceRunnable {
         )
         return request
     }
+}
 
-    func generateBoundary() -> String {
-        return UUID().uuidString
-    }
-
-    // swiftlint:disable line_length cyclomatic_complexity
-    func createMultiPartRequestData(
-        selfieImage: MultipartBody,
-        livenessImages: [MultipartBody],
-        userId: String?,
-        partnerParams: [String: String]?,
-        callbackUrl: String?,
-        sandboxResult: Int?,
-        allowNewEnroll: Bool?,
-        failureReason: FailureReason?,
-        metadata: [Metadatum],
-        boundary: String
-    ) -> Data {
-        let lineBreak = "\r\n"
-        var body = Data()
-
-        // Append parameters if available
-        if let parameters = partnerParams {
-            if let boundaryData = "--\(boundary)\(lineBreak)".data(using: .utf8),
-                let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(
-                    using: .utf8),
-                let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8),
-                let lineBreakData = lineBreak.data(using: .utf8) {
-                body.append(boundaryData)
-                body.append(dispositionData)
-                body.append(contentTypeData)
-
-                if let jsonData = try? JSONSerialization.data(
-                    withJSONObject: parameters,
-                    options: [.sortedKeys, .withoutEscapingSlashes]
-                ) {
-                    body.append(jsonData)
-                    body.append(lineBreakData)
-                }
+extension ServiceRunnable {
+    private func applyEncryptedHeaders(
+        _ encryptedHeaders: [String: Any],
+        to headers: inout [HTTPHeader]
+    ) {
+        for index in 0..<headers.count {
+            let key = headers[index].name
+            if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
+                headers[index].value = encryptedValue
             }
         }
-
-        // Append userId if available
-        if let userId = userId {
-            if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append(
-                    "Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                body.append(valueData)
-            }
-        }
-
-        // Append callbackUrl if available
-        if let callbackUrl = callbackUrl {
-            if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append(
-                    "Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-                body.append(valueData)
-            }
-        }
-
-        // Append sandboxResult if available
-        if let sandboxResult = sandboxResult {
-            let sandboxResultString = "\(sandboxResult)"
-            if let valueData = "\(sandboxResultString)\(lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append(
-                    "Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)".data(
-                        using: .utf8)!)
-                body.append(valueData)
-            }
-        }
-
-        // Append allowNewEnroll if available
-        if let allowNewEnroll = allowNewEnroll {
-            if let valueData = "\(allowNewEnroll)\(lineBreak)".data(using: .utf8) {
-                body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-                body.append(
-                    "Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)".data(
-                        using: .utf8)!)
-                body.append(valueData)
-            }
-        }
-
-        // Append metadata
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-        if let metadataData = try? encoder.encode(metadata) {
-            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
-            body.append(metadataData)
-            body.append(lineBreak.data(using: .utf8)!)
-        }
-
-        // Append liveness media files
-        for item in livenessImages {
-            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append(
-                "Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)"
-                    .data(using: .utf8)!)
-            body.append("Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
-            body.append(item.data)
-            body.append(lineBreak.data(using: .utf8)!)
-        }
-
-        // Append selfie media file
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append(
-            "Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)"
-                .data(using: .utf8)!)
-        body.append("Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
-        body.append(selfieImage.data)
-        body.append(lineBreak.data(using: .utf8)!)
-
-        // Append failure reason if available
-        if let failureReason,
-           let failureReasonData = try? encoder.encode(failureReason) {
-            body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(using: .utf8)!)
-            body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
-            body.append(failureReasonData)
-            body.append(lineBreak.data(using: .utf8)!)
-        }
-
-        // Append final boundary
-        body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
-        return body
     }
 }

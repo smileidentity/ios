@@ -188,7 +188,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
         )
     }
 
-    private func prepareForUpload(authResponse: AuthenticationResponse) async throws -> PrepUploadResponse {
+    private func prepareForUpload(authResponse: AuthenticationResponse) async throws
+        -> PrepUploadResponse
+    {
         var prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
             allowNewEnroll: allowNewEnroll,
@@ -202,7 +204,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
             )
         } catch let error as SmileIDError {
             guard case let .api(errorCode, _) = error,
-                  errorCode == "2215"
+                errorCode == "2215"
             else {
                 throw error
             }
