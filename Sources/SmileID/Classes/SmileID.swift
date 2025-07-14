@@ -70,7 +70,7 @@ public class SmileID {
     public class func initialize(
         config: Config = getConfig(),
         useSandbox: Bool = false,
-        enableCrashReporting: Bool = false,
+        enableCrashReporting: Bool = true,
         requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         initialize(
@@ -95,7 +95,7 @@ public class SmileID {
         apiKey: String? = nil,
         config: Config = getConfig(),
         useSandbox: Bool = false,
-        enableCrashReporting: Bool = false,
+        enableCrashReporting: Bool = true,
         requestTimeout: TimeInterval = SmileID.defaultRequestTimeout
     ) {
         self.config = config

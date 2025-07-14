@@ -1,4 +1,10 @@
 # Release Notes
+## Unreleased
+
+### Added
+
+* Introduce Sentry to track and report SmileID related errors on the iOS sdk. It is enabled by default using `enableCrashReporting: Bool = true,` on `SmileID.initialize()`
+
 ## 11.0.2 - July 10, 2025
 
 ### Changed
