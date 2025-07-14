@@ -64,13 +64,11 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup
         with:
-          xcode: '15.2'
+          xcode: "15.2"
       - name: Build Example app and Run Unit Tests
         run: |
           xcodebuild -resolvePackageDependencies
           bundle exec rake test:spm    
-          bundle exec rake provision:ios
           bundle exec rake test:package
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-
