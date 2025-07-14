@@ -1,5 +1,5 @@
 import Foundation
-import SmileID
+@preconcurrency import SmileID
 
 enum BiometricKycWithIdInputScreenStep {
   case loading(String)

@@ -84,8 +84,7 @@ class LivenessCheckManager: ObservableObject {
     DispatchQueue.main.async {
       self.taskTimer = Timer.scheduledTimer(
         withTimeInterval: 1.0,
-        repeats: true)
-      { [weak self] _ in
+        repeats: true) { [weak self] _ in
         self?.taskTimerFired()
       }
     }

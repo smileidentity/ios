@@ -20,8 +20,7 @@ public extension UIImage {
   func pixelBuffer(width: Int, height: Int,
                    pixelFormatType: OSType,
                    colorSpace: CGColorSpace,
-                   alphaInfo: CGImageAlphaInfo) -> CVPixelBuffer?
-  {
+                   alphaInfo: CGImageAlphaInfo) -> CVPixelBuffer? {
     var maybePixelBuffer: CVPixelBuffer?
     let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
                  kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue]

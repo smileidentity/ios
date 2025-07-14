@@ -131,8 +131,7 @@ struct Quadrilateral: Transformable {
   /// - Returns: The newly scaled and potentially rotated quadrilateral.
   func scale(_ fromSize: CGSize,
              _ toSize: CGSize,
-             withRotationAngle rotationAngle: CGFloat = 0.0) -> Quadrilateral
-  {
+             withRotationAngle rotationAngle: CGFloat = 0.0) -> Quadrilateral {
     var invertedFromSize = fromSize
     let rotated = rotationAngle != 0.0
 

@@ -81,7 +81,7 @@ private struct RadioGroupSelector_Previews: PreviewProvider {
       items: [
         first,
         IdType(code: "id2", example: [], hasBack: false, name: "ID 2"),
-        IdType(code: "id3", example: [], hasBack: true, name: "ID 3"),
+        IdType(code: "id3", example: [], hasBack: true, name: "ID 3")
       ],
       initialSelection: first,
       itemDisplayName: { $0.name },

@@ -142,7 +142,7 @@ public enum RequiredField: String, Codable {
     .country,
     .idType,
     .userId,
-    .jobId,
+    .jobId
   ]
 
   public static func sorter(this: RequiredField, that: RequiredField) -> Bool {

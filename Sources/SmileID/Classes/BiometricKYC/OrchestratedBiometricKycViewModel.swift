@@ -66,8 +66,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     if let error {
       delegate.didError(error: error)
     } else if let selfieFile,
-              let livenessFiles
-    {
+              let livenessFiles {
       delegate.didSucceed(
         selfieImage: selfieFile,
         livenessImages: livenessFiles,

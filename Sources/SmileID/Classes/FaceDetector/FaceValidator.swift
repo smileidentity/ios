@@ -89,8 +89,7 @@ final class FaceValidator {
     } else if !isAcceptableFaceQuality || !isAcceptableBrightness {
       return .goodLight
     } else if faceBoundsState == .detectedFaceOffCentre
-      || faceBoundsState == .detectedFaceNotWithinFrame
-    {
+      || faceBoundsState == .detectedFaceNotWithinFrame {
       return .headInFrame
     } else if faceBoundsState == .detectedFaceTooSmall {
       return .moveCloser

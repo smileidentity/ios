@@ -257,8 +257,7 @@ extension EnhancedSmartSelfieViewModel {
     guard guideAnimationDelayTimer == nil else { return }
     guideAnimationDelayTimer = Timer.scheduledTimer(
       withTimeInterval: 1,
-      repeats: true)
-    { _ in
+      repeats: true) { _ in
       self.elapsedGuideAnimationDelay += 1
       if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
         self.showGuideAnimation = true

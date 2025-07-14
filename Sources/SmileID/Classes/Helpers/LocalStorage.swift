@@ -326,8 +326,7 @@ public class LocalStorage {
       try archive.addEntry(
         with: filename,
         type: .file,
-        uncompressedSize: Int64(content.count))
-      { position, size in
+        uncompressedSize: Int64(content.count)) { position, size in
         content.subdata(in: Int(position)..<Int(position) + size)
       }
     }

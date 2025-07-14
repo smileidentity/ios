@@ -76,7 +76,7 @@ class ImageUtils {
     }
 
     var options: [String: Any] = [
-      kCGImageDestinationLossyCompressionQuality as String: compressionQuality,
+      kCGImageDestinationLossyCompressionQuality as String: compressionQuality
     ]
 
     if let exifDictionary {
@@ -100,8 +100,8 @@ class ImageUtils {
       String(kCVPixelBufferIOSurfacePropertiesKey): [
         String(kCVPixelBufferIOSurfaceOpenGLESTextureCompatibilityKey): true,
         String(kCVPixelBufferIOSurfaceOpenGLESFBOCompatibilityKey): true,
-        String(kCVPixelBufferIOSurfaceCoreAnimationCompatibilityKey): true,
-      ],
+        String(kCVPixelBufferIOSurfaceCoreAnimationCompatibilityKey): true
+      ]
     ]
     return attributes
   }

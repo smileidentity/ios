@@ -267,8 +267,7 @@ class DocumentCaptureViewModel: ObservableObject {
       height: CVPixelBufferGetHeight(buffer))
     RectangleDetector.rectangle(
       forPixelBuffer: buffer,
-      aspectRatio: knownAspectRatio)
-    { [self] rect in
+      aspectRatio: knownAspectRatio) { [self] rect in
       if rect == nil {
         resetBoundingBox()
         processingImage = false

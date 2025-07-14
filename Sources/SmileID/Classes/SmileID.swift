@@ -101,7 +101,7 @@ public class SmileID {
     self.useSandbox = useSandbox
     self.apiKey = apiKey
     self.requestTimeout = requestTimeout
-    
+
     if enableCrashReporting {
       SmileIDCrashReporting.enable()
     }
@@ -110,7 +110,7 @@ public class SmileID {
 
     // Increment and track SDK launch count
     trackSdkLaunchCount()
-    
+
     let fingerprinter = FingerprinterFactory.getInstance()
     Task {
       /// The fingerprint isn't currently as stable as the Device Identifier, because the
@@ -249,7 +249,7 @@ public class SmileID {
         _ = try await SmileID.api.upload(
           zip: zipData,
           to: prepUploadResponse.uploadUrl)
-        
+
         if deleteFilesOnSuccess {
           do {
             try LocalStorage.delete(at: [jobId])

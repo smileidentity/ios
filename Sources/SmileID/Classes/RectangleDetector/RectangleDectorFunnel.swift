@@ -77,8 +77,7 @@ final class RectangleFeaturesFunnel {
   ///   - completion: The completion block called when a new rectangle should be displayed.
   func add(_ rectangleFeature: Quadrilateral,
            currentlyDisplayedRectangle currentRectangle: Quadrilateral?,
-           completion: (Quadrilateral) -> Void)
-  {
+           completion: (Quadrilateral) -> Void) {
     let rectangleMatch = RectangleMatch(rectangleFeature: rectangleFeature)
     rectangles.append(rectangleMatch)
 
@@ -143,8 +142,7 @@ final class RectangleFeaturesFunnel {
   /// - Returns: The best rectangle to display between two rectangles with the same matching score.
   private func breakTie(between rect1: RectangleMatch,
                         rect2: RectangleMatch,
-                        currentRectangle: Quadrilateral) -> RectangleMatch
-  {
+                        currentRectangle: Quadrilateral) -> RectangleMatch {
     if rect1.rectangleFeature.isWithin(matchingThreshold, ofRectangleFeature: currentRectangle) {
       return rect1
     } else if rect2.rectangleFeature.isWithin(matchingThreshold, ofRectangleFeature: currentRectangle) {

@@ -8,7 +8,8 @@ public protocol DocumentVerificationResultDelegate {
   ///   - selfie: URL of captured selfie JPEG
   ///   - documentFrontImage: URL of captured front document image JPEG
   ///   - documentBackImage: URL of captured back document image JPEG (if applicable)
-  ///   - didSubmitDocumentVerificationJob: Indicates whether the job was submitted to the SmileID backend (e.g. it would be false in offline mode)
+  ///   - didSubmitDocumentVerificationJob: Indicates whether the job was submitted
+    /// to the SmileID backend (e.g. it would be false in offline mode)
   func didSucceed(
     selfie: URL,
     documentFrontImage: URL,
