@@ -4,6 +4,7 @@
 ### Added
 
 * Introduce Sentry to track and report SmileID related errors on the iOS sdk. It is enabled by default using `enableCrashReporting: Bool = true,` on `SmileID.initialize()`
+* Added `AntiFraud` response in `JobStatus` calls
 
 ## 11.0.2 - July 10, 2025
 
