@@ -5,8 +5,7 @@
 import Foundation
 
 public protocol ArkanaKeysGlobalProtocol {
-    var sENTRY_DSN: String { get }
+  var sENTRY_DSN: String { get }
 }
 
-public protocol ArkanaKeysEnvironmentProtocol {
-}
+public protocol ArkanaKeysEnvironmentProtocol {}

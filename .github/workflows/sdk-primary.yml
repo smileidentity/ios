@@ -22,6 +22,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+      - name: SwiftFormat Lint
+        uses: docker://ghcr.io/nicklockwood/swiftformat:latest
+        with:
+          args: --lint .
       - name: Danger
         uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.15.0
         with:

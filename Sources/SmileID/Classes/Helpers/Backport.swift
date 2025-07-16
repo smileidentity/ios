@@ -1,6 +1,7 @@
+import ObjectiveC
+
 // swiftlint:disable all
 import SwiftUI
-import ObjectiveC
 
 /// Provides a convenient method for backporting API,
 /// including types, functions, properties, property wrappers and more.
@@ -30,23 +31,23 @@ import ObjectiveC
 ///     }
 ///
 public struct Backport<Wrapped> {
-    /// The underlying content this backport represents.
-    public let wrapped: Wrapped
+  /// The underlying content this backport represents.
+  public let wrapped: Wrapped
 
-    /// Initializes a new Backport for the specified content.
-    /// - Parameter content: The content (type) that's being backported
-    public init(_ wrapped: Wrapped) {
-        self.wrapped = wrapped
-    }
+  /// Initializes a new Backport for the specified content.
+  /// - Parameter content: The content (type) that's being backported
+  public init(_ wrapped: Wrapped) {
+    self.wrapped = wrapped
+  }
 }
 
 public extension Backport where Wrapped == Any {
-    init(_ wrapped: Wrapped) {
-        self.wrapped = wrapped
-    }
+  init(_ wrapped: Wrapped) {
+    self.wrapped = wrapped
+  }
 }
 
 public extension NSObjectProtocol {
-    /// Wraps an `NSObject` that can be extended to provide backport functionality.
-    var backport: Backport<Self> { .init(self) }
+  /// Wraps an `NSObject` that can be extended to provide backport functionality.
+  var backport: Backport<Self> { .init(self) }
 }
