@@ -92,6 +92,7 @@ public final class JobStatusResponse<T: JobResult>: Codable {
 
 public class JobResult: Codable {
     public let actions: Actions
+    public let antiFraud: Antifraud?
     public let resultCode: String
     public let resultText: String
     public let smileJobId: String
@@ -100,6 +101,7 @@ public class JobResult: Codable {
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         actions = try container.decode(Actions.self, forKey: .actions)
+        antiFraud = try container.decode(Antifraud.self, forKey: .antiFraud)
         resultCode = try container.decode(String.self, forKey: .resultCode)
         resultText = try container.decode(String.self, forKey: .resultText)
         smileJobId = try container.decode(String.self, forKey: .smileJobId)
@@ -109,6 +111,7 @@ public class JobResult: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(actions, forKey: .actions)
+        try container.encode(antiFraud, forKey: .antiFraud)
         try container.encode(resultCode, forKey: .resultCode)
         try container.encode(resultText, forKey: .resultText)
         try container.encode(smileJobId, forKey: .smileJobId)
@@ -117,6 +120,7 @@ public class JobResult: Codable {
 
     enum CodingKeys: String, CodingKey {
         case actions = "Actions"
+        case antiFraud = "Antifraud"
         case resultCode = "ResultCode"
         case resultText = "ResultText"
         case smileJobId = "SmileJobID"
@@ -133,7 +137,6 @@ public class JobResult: Codable {
         case phoneNumber = "PhoneNumber"
         case phoneNumber2 = "PhoneNumber2"
         case address = "Address"
-        case antifraud = "Antifraud"
         case photoBase64 = "Photo"
         case fullData = "FullData"
         case secondaryIdNumber = "Secondary_ID_Number"
@@ -182,7 +185,7 @@ public class BiometricKycJobResult: JobResult {
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        antifraud = try container.decodeIfPresent(Antifraud.self, forKey: .antifraud)
+        antifraud = try container.decodeIfPresent(Antifraud.self, forKey: .antiFraud)
         dob = try container.decodeIfPresent(String.self, forKey: .dob)
         photoBase64 = try container.decodeIfPresent(String.self, forKey: .photoBase64)
         gender = try container.decodeIfPresent(String.self, forKey: .gender)
@@ -210,7 +213,7 @@ public class BiometricKycJobResult: JobResult {
 
     public override func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(antifraud, forKey: .antifraud)
+        try container.encode(antifraud, forKey: .antiFraud)
         try container.encode(dob, forKey: .dob)
         try container.encode(photoBase64, forKey: .photoBase64)
         try container.encode(gender, forKey: .gender)
@@ -300,7 +303,7 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        antifraud = try container.decodeIfPresent(Antifraud.self, forKey: .antifraud)
+        antifraud = try container.decodeIfPresent(Antifraud.self, forKey: .antiFraud)
         dob = try container.decodeIfPresent(String.self, forKey: .dob)
         photoBase64 = try container.decodeIfPresent(String.self, forKey: .photoBase64)
         gender = try container.decodeIfPresent(String.self, forKey: .gender)
@@ -328,7 +331,7 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
 
     public override func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(antifraud, forKey: .antifraud)
+        try container.encode(antifraud, forKey: .antiFraud)
         try container.encode(dob, forKey: .dob)
         try container.encode(photoBase64, forKey: .photoBase64)
         try container.encode(gender, forKey: .gender)
@@ -350,20 +353,44 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
 }
 
 public struct Antifraud: Codable {
-    public let suspectUsers: [SuspectUser]?
+    public let summary: Summary
+    public let smileSecure: SmileSecure
 
     enum CodingKeys: String, CodingKey {
+        case summary
+        case smileSecure = "smile_secure"
+    }
+}
+
+public struct Summary: Codable {
+    public let fraudSources: [String]
+    public let fraudDetected: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case fraudSources = "fraud_sources"
+        case fraudDetected = "fraud_detected"
+    }
+}
+
+public struct SmileSecure: Codable {
+    public let resultCode: String
+    public let resultText: String
+    public let suspectUsers: [SuspectUser]
+
+    enum CodingKeys: String, CodingKey {
+        case resultCode = "ResultCode"
+        case resultText = "ResultText"
         case suspectUsers = "SuspectUsers"
     }
 }
 
 public struct SuspectUser: Codable {
-    public let userId: String?
-    public let reason: String?
+    public let userId: String
+    public let reasons: [String]
 
     enum CodingKeys: String, CodingKey {
-        case reason = "reason"
         case userId = "user_id"
+        case reasons
     }
 }
 
