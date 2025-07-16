@@ -92,7 +92,6 @@ public final class JobStatusResponse<T: JobResult>: Codable {
 
 public class JobResult: Codable {
   public let actions: Actions
-  public let antiFraud: Antifraud?
   public let resultCode: String
   public let resultText: String
   public let smileJobId: String
@@ -101,7 +100,6 @@ public class JobResult: Codable {
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     actions = try container.decode(Actions.self, forKey: .actions)
-    antiFraud = try container.decode(Antifraud.self, forKey: .antiFraud)
     resultCode = try container.decode(String.self, forKey: .resultCode)
     resultText = try container.decode(String.self, forKey: .resultText)
     smileJobId = try container.decode(String.self, forKey: .smileJobId)
@@ -111,7 +109,6 @@ public class JobResult: Codable {
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
     try container.encode(actions, forKey: .actions)
-    try container.encode(antiFraud, forKey: .antiFraud)
     try container.encode(resultCode, forKey: .resultCode)
     try container.encode(resultText, forKey: .resultText)
     try container.encode(smileJobId, forKey: .smileJobId)
@@ -120,7 +117,6 @@ public class JobResult: Codable {
 
   enum CodingKeys: String, CodingKey {
     case actions = "Actions"
-    case antiFraud = "Antifraud"
     case resultCode = "ResultCode"
     case resultText = "ResultText"
     case smileJobId = "SmileJobID"
@@ -343,48 +339,6 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
     try container.encode(idNumberPreviouslyRegistered, forKey: .idNumberPreviouslyRegistered)
     try container.encode(previousRegistrantsUserIds, forKey: .previousRegistrantsUserIds)
     try super.encode(to: encoder)
-  }
-}
-
-public struct Antifraud: Codable {
-  public let summary: Summary
-  public let smileSecure: SmileSecure
-
-  enum CodingKeys: String, CodingKey {
-    case summary
-    case smileSecure = "smile_secure"
-  }
-}
-
-public struct Summary: Codable {
-  public let fraudSources: [String]
-  public let fraudDetected: Bool
-
-  enum CodingKeys: String, CodingKey {
-    case fraudSources = "fraud_sources"
-    case fraudDetected = "fraud_detected"
-  }
-}
-
-public struct SmileSecure: Codable {
-  public let resultCode: String
-  public let resultText: String
-  public let suspectUsers: [SuspectUser]
-
-  enum CodingKeys: String, CodingKey {
-    case resultCode = "ResultCode"
-    case resultText = "ResultText"
-    case suspectUsers = "SuspectUsers"
-  }
-}
-
-public struct SuspectUser: Codable {
-  public let userId: String
-  public let reasons: [String]
-
-  enum CodingKeys: String, CodingKey {
-    case userId = "user_id"
-    case reasons
   }
 }
 
