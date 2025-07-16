@@ -13,124 +13,119 @@ import SwiftUI
 ///  - onResult: The callback to invoke when the user taps the Continue button. The result will be
 ///  delivered as an `IdInfo` object.
 struct IdInfoInputScreen: View {
-    let header: String
-    let onResult: (IdInfo, ConsentInformation) -> Void
-    let dateFormatter = DateFormatter()
-    @ObservedObject var viewModel: IdInfoInputViewModel
+  let header: String
+  let onResult: (IdInfo, ConsentInformation) -> Void
+  let dateFormatter = DateFormatter()
+  @ObservedObject var viewModel: IdInfoInputViewModel
 
-    init(
-        selectedCountry: String,
-        selectedIdType: String,
-        consentInformation: ConsentInformation,
-        header: String,
-        requiredFields: [RequiredField],
-        onResult: @escaping (IdInfo, ConsentInformation) -> Void
-    ) {
-        self.header = header
-        self.onResult = onResult
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        viewModel = IdInfoInputViewModel(
-            consentInformation: consentInformation,
-            selectedCountry: selectedCountry,
-            selectedIdType: selectedIdType,
-            requiredFields: requiredFields
-        )
-    }
+  init(
+    selectedCountry: String,
+    selectedIdType: String,
+    consentInformation: ConsentInformation,
+    header: String,
+    requiredFields: [RequiredField],
+    onResult: @escaping (IdInfo, ConsentInformation) -> Void
+  ) {
+    self.header = header
+    self.onResult = onResult
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    viewModel = IdInfoInputViewModel(
+      consentInformation: consentInformation,
+      selectedCountry: selectedCountry,
+      selectedIdType: selectedIdType,
+      requiredFields: requiredFields)
+  }
 
-    var body: some View {
-        VStack(alignment: .center) {
-            Form {
-                Section(
-                    header: Text(header)
-                        .font(SmileID.theme.header2)
-                        .foregroundColor(SmileID.theme.onLight)
-                        .padding(.vertical, 8)
-                ) {
-                    let sortedKeys = viewModel.inputs.keys.sorted(by: RequiredField.sorter)
-                    ForEach(sortedKeys, id: \.self) { key in
-                        let localizedLabel = SmileIDResourcesHelper.localizedString(
-                            for: key.inputField.label
-                        )
-                        VStack(alignment: .leading) {
-                            if key == .dateOfBirth {
-                                let valueBinding = Binding<Date>(
-                                    get: {
-                                        let value = viewModel.inputs[key] ?? ""
-                                        return dateFormatter.date(from: value) ?? Date()
-                                    },
-                                    set: {
-                                        viewModel.inputs[key] = dateFormatter.string(from: $0)
-                                    }
-                                )
-                                DatePicker(
-                                    localizedLabel,
-                                    selection: valueBinding,
-                                    in: ...Date(),
-                                    displayedComponents: [.date]
-                                )
-                                .font(SmileID.theme.button)
-                                .foregroundColor(SmileID.theme.onLight)
-                                .padding(4)
-                            } else {
-                                let valueBinding = Binding<String>(
-                                    get: { viewModel.inputs[key] ?? "Error" },
-                                    set: { newValue in
-                                        viewModel.inputs[key] = newValue.filter { !$0.isWhitespace }
-                                    }
-                                )
-                                Text(localizedLabel)
-                                    .font(SmileID.theme.button)
-                                    .foregroundColor(SmileID.theme.onLight)
-                                    .padding(4)
-                                TextField(localizedLabel, text: valueBinding)
-                                    .keyboardType(key.inputField.keyboardType)
-                                    .disableAutocorrection(true)
-                                    .autocapitalization(.none)
-                                    .textFieldStyle(.roundedBorder)
-                                    .foregroundColor(SmileID.theme.onLight)
-                                    .padding(4)
-                            }
-                        }
-                    }
-                }
-            }
-            .background(SmileID.theme.backgroundLight)
-
-            Button(
-                action: { onResult(viewModel.currentIdInfo, viewModel.consentInformation) },
-                label: {
-                    Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.Continue"))
-                        .padding(16)
-                        .font(SmileID.theme.button)
-                        .frame(maxWidth: .infinity)
-                }
+  var body: some View {
+    VStack(alignment: .center) {
+      Form {
+        Section(
+          header: Text(header)
+            .font(SmileID.theme.header2)
+            .foregroundColor(SmileID.theme.onLight)
+            .padding(.vertical, 8)
+        ) {
+          let sortedKeys = viewModel.inputs.keys.sorted(by: RequiredField.sorter)
+          ForEach(sortedKeys, id: \.self) { key in
+            let localizedLabel = SmileIDResourcesHelper.localizedString(
+              for: key.inputField.label
             )
-            .disabled(!viewModel.isContinueEnabled)
-            .background(!viewModel.isContinueEnabled ? Color.gray : SmileID.theme.accent)
-            .foregroundColor(SmileID.theme.onDark)
-            .cornerRadius(60)
+            VStack(alignment: .leading) {
+              if key == .dateOfBirth {
+                let valueBinding = Binding<Date>(
+                  get: {
+                    let value = viewModel.inputs[key] ?? ""
+                    return dateFormatter.date(from: value) ?? Date()
+                  },
+                  set: {
+                    viewModel.inputs[key] = dateFormatter.string(from: $0)
+                  }
+                )
+                DatePicker(
+                  localizedLabel,
+                  selection: valueBinding,
+                  in: ...Date(),
+                  displayedComponents: [.date])
+                  .font(SmileID.theme.button)
+                  .foregroundColor(SmileID.theme.onLight)
+                  .padding(4)
+              } else {
+                let valueBinding = Binding<String>(
+                  get: { viewModel.inputs[key] ?? "Error" },
+                  set: { newValue in
+                    viewModel.inputs[key] = newValue.filter { !$0.isWhitespace }
+                  }
+                )
+                Text(localizedLabel)
+                  .font(SmileID.theme.button)
+                  .foregroundColor(SmileID.theme.onLight)
+                  .padding(4)
+                TextField(localizedLabel, text: valueBinding)
+                  .keyboardType(key.inputField.keyboardType)
+                  .disableAutocorrection(true)
+                  .autocapitalization(.none)
+                  .textFieldStyle(.roundedBorder)
+                  .foregroundColor(SmileID.theme.onLight)
+                  .padding(4)
+              }
+            }
+          }
+        }
+      }
+      .background(SmileID.theme.backgroundLight)
+
+      Button(
+        action: { onResult(viewModel.currentIdInfo, viewModel.consentInformation) },
+        label: {
+          Text(SmileIDResourcesHelper.localizedString(for: "Confirmation.Continue"))
+            .padding(16)
+            .font(SmileID.theme.button)
             .frame(maxWidth: .infinity)
-            .padding()
-        }.frame(maxWidth: .infinity)
-    }
+        })
+        .disabled(!viewModel.isContinueEnabled)
+        .background(!viewModel.isContinueEnabled ? Color.gray : SmileID.theme.accent)
+        .foregroundColor(SmileID.theme.onDark)
+        .cornerRadius(60)
+        .frame(maxWidth: .infinity)
+        .padding()
+    }.frame(maxWidth: .infinity)
+  }
 }
 
 private struct IdInfoInputScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        IdInfoInputScreen(
-            selectedCountry: "US",
-            selectedIdType: "Driver's License",
-            consentInformation: ConsentInformation(
-                consented: ConsentedInformation(
-                    consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                    personalDetails: true,
-                    contactInformation: true,
-                    documentInformation: true
-                )
-            ),
-            header: "Enter ID Info",
-            requiredFields: [.idNumber, .firstName, .lastName, .dateOfBirth, .bankCode],
-            onResult: { _, _ in }
-        )
-    }
+  static var previews: some View {
+    IdInfoInputScreen(
+      selectedCountry: "US",
+      selectedIdType: "Driver's License",
+      consentInformation: ConsentInformation(
+        consented: ConsentedInformation(
+          consentGrantedDate: Date().toISO8601WithMilliseconds(),
+          personalDetails: true,
+          contactInformation: true,
+          documentInformation: true)
+      ),
+      header: "Enter ID Info",
+      requiredFields: [.idNumber, .firstName, .lastName, .dateOfBirth, .bankCode],
+      onResult: { _, _ in })
+  }
 }
