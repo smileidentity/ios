@@ -16,6 +16,33 @@ We use [`rake`](https://github.com/ruby/rake) for task automation.
 - iOS 13 or higher
 - Xcode 14 or higher
 
+## Code Formatting
+
+This project uses [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) for automatic code formatting. The configuration is defined in `.swiftformat` at the root of the project.
+
+### Local Setup
+
+Install SwiftFormat using Homebrew:
+```shell
+brew install swiftformat
+```
+
+### Usage
+
+Format all Swift files in the project:
+```shell
+swiftformat .
+```
+
+Check for formatting issues without making changes:
+```shell
+swiftformat --lint .
+```
+
+### CI Integration
+
+SwiftFormat linting is automatically run on all pull requests. The CI will fail if code is not properly formatted according to the project's configuration.
+
 Then get certs and profiles:
 ```shell
 bundle exec fastlane run get_certificates
