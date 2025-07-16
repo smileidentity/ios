@@ -165,7 +165,6 @@ public class SmartSelfieJobResult: JobResult {
 }
 
 public class BiometricKycJobResult: JobResult {
-  public let antifraud: Antifraud?
   public let dob: String?
   public let photoBase64: String?
   public let gender: String?
@@ -185,7 +184,6 @@ public class BiometricKycJobResult: JobResult {
 
   required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    antifraud = try container.decodeIfPresent(Antifraud.self, forKey: .antiFraud)
     dob = try container.decodeIfPresent(String.self, forKey: .dob)
     photoBase64 = try container.decodeIfPresent(String.self, forKey: .photoBase64)
     gender = try container.decodeIfPresent(String.self, forKey: .gender)
@@ -213,7 +211,6 @@ public class BiometricKycJobResult: JobResult {
 
   override public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(antifraud, forKey: .antiFraud)
     try container.encode(dob, forKey: .dob)
     try container.encode(photoBase64, forKey: .photoBase64)
     try container.encode(gender, forKey: .gender)
@@ -283,7 +280,6 @@ public class DocumentVerificationJobResult: JobResult {
 }
 
 public class EnhancedDocumentVerificationJobResult: JobResult {
-  public let antifraud: Antifraud?
   public let dob: String?
   public let photoBase64: String?
   public let gender: String?
@@ -303,7 +299,6 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
 
   required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    antifraud = try container.decodeIfPresent(Antifraud.self, forKey: .antiFraud)
     dob = try container.decodeIfPresent(String.self, forKey: .dob)
     photoBase64 = try container.decodeIfPresent(String.self, forKey: .photoBase64)
     gender = try container.decodeIfPresent(String.self, forKey: .gender)
@@ -331,7 +326,6 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
 
   override public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(antifraud, forKey: .antiFraud)
     try container.encode(dob, forKey: .dob)
     try container.encode(photoBase64, forKey: .photoBase64)
     try container.encode(gender, forKey: .gender)
