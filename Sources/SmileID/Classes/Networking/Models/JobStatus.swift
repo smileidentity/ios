@@ -133,7 +133,6 @@ public class JobResult: Codable {
     case phoneNumber = "PhoneNumber"
     case phoneNumber2 = "PhoneNumber2"
     case address = "Address"
-    case antifraud = "Antifraud"
     case photoBase64 = "Photo"
     case fullData = "FullData"
     case secondaryIdNumber = "Secondary_ID_Number"
@@ -150,7 +149,7 @@ public class SmartSelfieJobResult: JobResult {
     guard let confidenceValue = try container.decodeIfPresent(String.self, forKey: .confidence) else {
       throw SmileIDError.unknown("Error decoding .confidenceValue")
     }
-    confidence = Double(confidenceValue)
+    self.confidence = Double(confidenceValue)
     try super.init(from: decoder)
   }
 
@@ -162,7 +161,6 @@ public class SmartSelfieJobResult: JobResult {
 }
 
 public class BiometricKycJobResult: JobResult {
-  public let antifraud: Antifraud?
   public let dob: String?
   public let photoBase64: String?
   public let gender: String?
@@ -182,7 +180,6 @@ public class BiometricKycJobResult: JobResult {
 
   required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    antifraud = try container.decodeIfPresent(Antifraud.self, forKey: .antifraud)
     dob = try container.decodeIfPresent(String.self, forKey: .dob)
     photoBase64 = try container.decodeIfPresent(String.self, forKey: .photoBase64)
     gender = try container.decodeIfPresent(String.self, forKey: .gender)
@@ -190,7 +187,8 @@ public class BiometricKycJobResult: JobResult {
     address = try container.decodeIfPresent(String.self, forKey: .address)
     country = try container.decodeIfPresent(String.self, forKey: .country)
     documentImageBase64 = try container.decodeIfPresent(
-      String.self, forKey: .documentImageBase64)
+      String.self, forKey: .documentImageBase64
+    )
     fullData = try container.decodeIfPresent(FlexibleDictionary.self, forKey: .fullData)
     fullName = try container.decodeIfPresent(String.self, forKey: .fullName)
     idNumber = try container.decodeIfPresent(String.self, forKey: .idNumber)
@@ -199,15 +197,16 @@ public class BiometricKycJobResult: JobResult {
     expirationDate = try container.decodeIfPresent(String.self, forKey: .expirationDate)
     secondaryIdNumber = try container.decodeIfPresent(String.self, forKey: .secondaryIdNumber)
     idNumberPreviouslyRegistered = try container.decodeIfPresent(
-      Bool.self, forKey: .idNumberPreviouslyRegistered)
+      Bool.self, forKey: .idNumberPreviouslyRegistered
+    )
     previousRegistrantsUserIds = try container.decodeIfPresent(
-      [String].self, forKey: .previousRegistrantsUserIds)
+      [String].self, forKey: .previousRegistrantsUserIds
+    )
     try super.init(from: decoder)
   }
 
   override public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(antifraud, forKey: .antifraud)
     try container.encode(dob, forKey: .dob)
     try container.encode(photoBase64, forKey: .photoBase64)
     try container.encode(gender, forKey: .gender)
@@ -251,7 +250,8 @@ public class DocumentVerificationJobResult: JobResult {
     gender = try container.decodeIfPresent(String.self, forKey: .gender)
     expirationDate = try container.decodeIfPresent(String.self, forKey: .expirationDate)
     documentImageBase64 = try container.decodeIfPresent(
-      String.self, forKey: .documentImageBase64)
+      String.self, forKey: .documentImageBase64
+    )
     phoneNumber = try container.decodeIfPresent(String.self, forKey: .phoneNumber)
     phoneNumber2 = try container.decodeIfPresent(String.self, forKey: .phoneNumber2)
     address = try container.decodeIfPresent(String.self, forKey: .address)
@@ -276,7 +276,6 @@ public class DocumentVerificationJobResult: JobResult {
 }
 
 public class EnhancedDocumentVerificationJobResult: JobResult {
-  public let antifraud: Antifraud?
   public let dob: String?
   public let photoBase64: String?
   public let gender: String?
@@ -296,7 +295,6 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
 
   required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    antifraud = try container.decodeIfPresent(Antifraud.self, forKey: .antifraud)
     dob = try container.decodeIfPresent(String.self, forKey: .dob)
     photoBase64 = try container.decodeIfPresent(String.self, forKey: .photoBase64)
     gender = try container.decodeIfPresent(String.self, forKey: .gender)
@@ -304,7 +302,8 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
     address = try container.decodeIfPresent(String.self, forKey: .address)
     country = try container.decodeIfPresent(String.self, forKey: .country)
     documentImageBase64 = try container.decodeIfPresent(
-      String.self, forKey: .documentImageBase64)
+      String.self, forKey: .documentImageBase64
+    )
     fullData = try container.decodeIfPresent(FlexibleDictionary.self, forKey: .fullData)
     fullName = try container.decodeIfPresent(String.self, forKey: .fullName)
     idNumber = try container.decodeIfPresent(String.self, forKey: .idNumber)
@@ -313,15 +312,16 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
     expirationDate = try container.decodeIfPresent(String.self, forKey: .expirationDate)
     secondaryIdNumber = try container.decodeIfPresent(String.self, forKey: .secondaryIdNumber)
     idNumberPreviouslyRegistered = try container.decodeIfPresent(
-      Bool.self, forKey: .idNumberPreviouslyRegistered)
+      Bool.self, forKey: .idNumberPreviouslyRegistered
+    )
     previousRegistrantsUserIds = try container.decodeIfPresent(
-      [String].self, forKey: .previousRegistrantsUserIds)
+      [String].self, forKey: .previousRegistrantsUserIds
+    )
     try super.init(from: decoder)
   }
 
   override public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(antifraud, forKey: .antifraud)
     try container.encode(dob, forKey: .dob)
     try container.encode(photoBase64, forKey: .photoBase64)
     try container.encode(gender, forKey: .gender)
@@ -339,24 +339,6 @@ public class EnhancedDocumentVerificationJobResult: JobResult {
     try container.encode(idNumberPreviouslyRegistered, forKey: .idNumberPreviouslyRegistered)
     try container.encode(previousRegistrantsUserIds, forKey: .previousRegistrantsUserIds)
     try super.encode(to: encoder)
-  }
-}
-
-public struct Antifraud: Codable {
-  public let suspectUsers: [SuspectUser]?
-
-  enum CodingKeys: String, CodingKey {
-    case suspectUsers = "SuspectUsers"
-  }
-}
-
-public struct SuspectUser: Codable {
-  public let userId: String?
-  public let reason: String?
-
-  enum CodingKeys: String, CodingKey {
-    case reason
-    case userId = "user_id"
   }
 }
 
@@ -403,55 +385,72 @@ public struct Actions: Codable {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     documentCheck = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .documentCheck) ?? .notApplicable
+      forKey: .documentCheck
+    ) ?? .notApplicable
     humanReviewCompare = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .humanReviewCompare) ?? .notApplicable
+      forKey: .humanReviewCompare
+    ) ?? .notApplicable
     humanReviewDocumentCheck = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .humanReviewDocumentCheck) ?? .notApplicable
+      forKey: .humanReviewDocumentCheck
+    ) ?? .notApplicable
     humanReviewLivenessCheck = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .humanReviewLivenessCheck) ?? .notApplicable
+      forKey: .humanReviewLivenessCheck
+    ) ?? .notApplicable
     humanReviewSelfieCheck = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .humanReviewSelfieCheck) ?? .notApplicable
+      forKey: .humanReviewSelfieCheck
+    ) ?? .notApplicable
     humanReviewUpdateSelfie = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .humanReviewUpdateSelfie) ?? .notApplicable
+      forKey: .humanReviewUpdateSelfie
+    ) ?? .notApplicable
     livenessCheck = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .livenessCheck) ?? .notApplicable
+      forKey: .livenessCheck
+    ) ?? .notApplicable
     selfieCheck = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .selfieCheck) ?? .notApplicable
+      forKey: .selfieCheck
+    ) ?? .notApplicable
     registerSelfie = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .registerSelfie) ?? .notApplicable
+      forKey: .registerSelfie
+    ) ?? .notApplicable
     returnPersonalInfo = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .returnPersonalInfo) ?? .notApplicable
+      forKey: .returnPersonalInfo
+    ) ?? .notApplicable
     selfieProvided = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .selfieProvided) ?? .notApplicable
+      forKey: .selfieProvided
+    ) ?? .notApplicable
     selfieToIdAuthorityCompare = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .selfieToIdAuthorityCompare) ?? .notApplicable
+      forKey: .selfieToIdAuthorityCompare
+    ) ?? .notApplicable
     selfieToIdCardCompare = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .selfieToIdCardCompare) ?? .notApplicable
+      forKey: .selfieToIdCardCompare
+    ) ?? .notApplicable
     selfieToRegisteredSelfieCompare = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .selfieToRegisteredSelfieCompare) ?? .notApplicable
+      forKey: .selfieToRegisteredSelfieCompare
+    ) ?? .notApplicable
     updateRegisteredSelfieOnFile = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .updateRegisteredSelfieOnFile) ?? .notApplicable
+      forKey: .updateRegisteredSelfieOnFile
+    ) ?? .notApplicable
     verifyDocument = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .verifyDocument) ?? .notApplicable
+      forKey: .verifyDocument
+    ) ?? .notApplicable
     verifyIdNumber = try container.decodeIfPresent(
       ActionResult.self,
-      forKey: .verifyIdNumber) ?? .notApplicable
+      forKey: .verifyIdNumber
+    ) ?? .notApplicable
   }
 
   init(
@@ -563,7 +562,7 @@ public struct FlexibleDictionary: Codable {
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
-    dictionary = try container.decode([String: Value].self)
+    self.dictionary = try container.decode([String: Value].self)
   }
 
   public func encode(to encoder: Encoder) throws {
