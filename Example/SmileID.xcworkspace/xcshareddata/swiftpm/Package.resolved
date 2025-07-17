@@ -2,6 +2,15 @@
   "originHash" : "20880887b42d9215c51d0807d30cc9451cab4ee1418a22c36e7375de20ba958e",
   "pins" : [
     {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+        "version" : "5.10.2"
+      }
+    },
+    {
       "identity" : "fingerprintjs-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/fingerprintjs/fingerprintjs-ios",
