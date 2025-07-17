@@ -16,7 +16,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
   private var extraPartnerParams: [String: String]
   private let metadata: Metadata = .shared
   private var idInfo: IdInfo
-  private var consentInformation: ConsentInformation
+  private var consentInformation: ConsentInformation?
 
   // MARK: - Other Properties
 
