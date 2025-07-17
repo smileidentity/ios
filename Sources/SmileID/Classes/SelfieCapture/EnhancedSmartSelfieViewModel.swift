@@ -436,18 +436,18 @@ extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
     }
   }
 
-	func faceDetectorTrackingStateChanged(
-		_ detector: EnhancedFaceDetector,
-		state: FaceTrackingState
-	) {
-		// TODO:
-	}
+  func faceDetectorTrackingStateChanged(
+    _: EnhancedFaceDetector,
+    state _: FaceTrackingState
+  ) {
+    // TODO:
+  }
 
-	func faceDetectorTrackingDidReset(
-		_ detector: EnhancedFaceDetector
-	) {
-		// TODO:
-	}
+  func faceDetectorTrackingDidReset(
+    _: EnhancedFaceDetector
+  ) {
+    // TODO:
+  }
 }
 
 // MARK: FaceValidatorDelegate Methods
