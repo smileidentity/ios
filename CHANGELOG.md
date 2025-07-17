@@ -8,6 +8,7 @@
 ### Changed
 
 * Removed `AntiFraud` response in `JobStatus` calls
+* Removed the default `ConsentInformation`
 
 ## 11.0.2 - July 10, 2025
 
