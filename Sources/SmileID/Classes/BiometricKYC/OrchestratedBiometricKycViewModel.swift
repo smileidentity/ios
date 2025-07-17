@@ -41,7 +41,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     allowNewEnroll: Bool,
     idInfo: IdInfo,
     useStrictMode: Bool,
-    consentInformation: ConsentInformation,
+    consentInformation: ConsentInformation?,
     extraPartnerParams: [String: String] = [:]
   ) {
     self.userId = userId
