@@ -1,0 +1,77 @@
+name: SmileID
+
+options:
+  bundleIdPrefix: com.smileidentity
+  deploymentTarget: 
+    iOS: 13.0
+  schemes:
+    shared: true
+
+packages:
+  ZIPFoundation:
+    url: https://github.com/weichsel/ZIPFoundation.git
+    from: 0.9.0
+  FingerprintJS:
+    url: https://github.com/fingerprintjs/fingerprintjs-ios
+    from: 1.5.0
+  Lottie:
+    url: https://github.com/airbnb/lottie-spm
+    from: 4.5.0
+  SmileIDSecurity:
+    url: https://github.com/smileidentity/smile-id-security
+    from: 1.0.4
+  Sentry:
+    url: https://github.com/getsentry/sentry-cocoa
+    from: 8.53.2
+
+targets:
+  SmileID:
+    type: framework
+    platform: iOS
+    deploymentTarget: 13.0
+    sources:
+      - Sources/SmileID/Classes/*
+      - Sources/SmileID/Resources/*
+      - README.md
+      - CHANGELOG.md
+      - CONTRIBUTING.md
+    dependencies:
+      - package: ZIPFoundation
+      - package: FingerprintJS
+      - package: Lottie
+      - package: SmileIDSecurity
+      - package: Sentry
+    scheme:
+      gatherCoverageData: true
+      testTargets: 
+        - name: SmileIDTests
+
+  SmileIDTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests
+    dependencies:
+      - target: SmileID
+    scheme:
+      gatherCoverageData: true
+      testTargets: 
+        - name: SmileIDTests
+
+  SmileID_Example:
+    type: application 
+    platform: iOS
+    deploymentTarget: 14.0
+    sources:
+      - Example/SmileID/*
+    dependencies:
+      - target: SmileID
+    settings:
+      base:
+        PRODUCT_NAME: SmileID
+        ENABLE_BITCODE: NO
+        DEVELOPMENT_TEAM: 99P7YGX9Q6
+        INFOPLIST_FILE: Example/SmileID/Info.plist
+        MARKETING_VERSION: 1.0.1
+        CURRENT_PROJECT_VERSION: 1
+
