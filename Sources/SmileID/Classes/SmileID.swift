@@ -602,7 +602,7 @@ public class SmileID {
     showAttribution: Bool = true,
     useStrictMode: Bool = false,
     extraPartnerParams: [String: String] = [:],
-    consentInformation: ConsentInformation?,
+    consentInformation: ConsentInformation? = nil,
     delegate: EnhancedDocumentVerificationResultDelegate
   ) -> some View {
     Metadata.shared.initialize()
