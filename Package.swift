@@ -16,7 +16,8 @@ let package = Package(
     .package(url: "https://github.com/airbnb/lottie-spm", from: "4.5.0"),
     .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", from: "1.5.0"),
     .package(url: "https://github.com/smileidentity/smile-id-security", from: "1.0.4"),
-    .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.53.2")
+    .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.53.2"),
+    .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.10.2"))
   ],
   targets: [
     .target(
@@ -26,7 +27,8 @@ let package = Package(
         .product(name: "FingerprintJS", package: "fingerprintjs-ios"),
         .product(name: "Lottie", package: "lottie-spm"),
         .product(name: "SmileIDSecurity", package: "smile-id-security"),
-        .product(name: "Sentry", package: "sentry-cocoa")
+        .product(name: "Sentry", package: "sentry-cocoa"),
+        .product(name: "Alamofire", package: "Alamofire")
       ],
       path: "Sources/SmileID",
       resources: [.process("Resources")]),
