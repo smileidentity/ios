@@ -8,7 +8,7 @@ class IdInfoInputViewModel: ObservableObject {
 
   private let selectedCountry: String
   private let selectedIdType: String
-  let consentInformation: ConsentInformation
+  let consentInformation: ConsentInformation?
 
   // MARK: - UI Properties
 
@@ -31,7 +31,7 @@ class IdInfoInputViewModel: ObservableObject {
   }
 
   init(
-    consentInformation: ConsentInformation,
+    consentInformation: ConsentInformation?,
     selectedCountry: String,
     selectedIdType: String,
     requiredFields: [RequiredField]

@@ -14,17 +14,17 @@ import SwiftUI
 ///  delivered as an `IdInfo` object.
 struct IdInfoInputScreen: View {
   let header: String
-  let onResult: (IdInfo, ConsentInformation) -> Void
+  let onResult: (IdInfo, ConsentInformation?) -> Void
   let dateFormatter = DateFormatter()
   @ObservedObject var viewModel: IdInfoInputViewModel
 
   init(
     selectedCountry: String,
     selectedIdType: String,
-    consentInformation: ConsentInformation,
+    consentInformation: ConsentInformation?,
     header: String,
     requiredFields: [RequiredField],
-    onResult: @escaping (IdInfo, ConsentInformation) -> Void
+    onResult: @escaping (IdInfo, ConsentInformation?) -> Void
   ) {
     self.header = header
     self.onResult = onResult

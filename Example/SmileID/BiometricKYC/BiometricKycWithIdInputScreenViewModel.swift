@@ -7,7 +7,7 @@ enum BiometricKycWithIdInputScreenStep {
   case consent(country: String, idType: String, requiredFields: [RequiredField])
   case idInput(country: String, idType: String,
                consentInformation: ConsentInformation?, requiredFields: [RequiredField])
-  case sdk(idInfo: IdInfo, consentInformation: ConsentInformation)
+  case sdk(idInfo: IdInfo, consentInformation: ConsentInformation?)
 }
 
 class BiometricKycWithIdInputScreenViewModel: ObservableObject {
@@ -118,7 +118,7 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
     }
   }
 
-  func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation) {
+  func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation?) {
     DispatchQueue.main.async {
       self.step = .sdk(
         idInfo: idInfo,
