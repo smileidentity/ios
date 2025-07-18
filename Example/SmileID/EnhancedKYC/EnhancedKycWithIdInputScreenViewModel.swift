@@ -20,13 +20,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
 
   @Published @MainActor var idInfo = IdInfo(country: "")
   // default to false
-  @Published @MainActor var consentInformation = ConsentInformation(
-    consented: ConsentedInformation(
-      consentGrantedDate: Date().toISO8601WithMilliseconds(),
-      personalDetails: false,
-      contactInformation: false,
-      documentInformation: false)
-  )
+    @Published @MainActor var consentInformation: ConsentInformation? = nil
 
   init(userId: String, jobId: String) {
     self.userId = userId
@@ -93,19 +87,11 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
               requiredFields: requiredFields)
           }
         } else {
-          /* We don't need consent. Mark it as false for this product
-           since it's not needed, unless we want to change this */
-          let consentInfo = ConsentInformation(
-            consented: ConsentedInformation(
-              consentGrantedDate: Date().toISO8601WithMilliseconds(),
-              personalDetails: false,
-              contactInformation: false,
-              documentInformation: false)
-          )
+        
           onConsentGranted(
             country: country,
             idType: idType,
-            consentInformation: consentInfo,
+            consentInformation: nil,
             requiredFields: requiredFields)
         }
       } catch {

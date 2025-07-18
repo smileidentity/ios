@@ -6,7 +6,7 @@ enum BiometricKycWithIdInputScreenStep {
   case idTypeSelection([CountryInfo])
   case consent(country: String, idType: String, requiredFields: [RequiredField])
   case idInput(country: String, idType: String,
-               consentInformation: ConsentInformation, requiredFields: [RequiredField])
+               consentInformation: ConsentInformation?, requiredFields: [RequiredField])
   case sdk(idInfo: IdInfo, consentInformation: ConsentInformation)
 }
 
@@ -86,17 +86,10 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
           /* We don't need consent. Mark it as false for this
            product since it's not needed, unless we want to change this
             */
-          let consentInfo = ConsentInformation(
-            consented: ConsentedInformation(
-              consentGrantedDate: Date().toISO8601WithMilliseconds(),
-              personalDetails: false,
-              contactInformation: false,
-              documentInformation: false)
-          )
           onConsentGranted(
             country: country,
             idType: idType,
-            consentInformation: consentInfo,
+            consentInformation: nil,
             requiredFields: requiredFields)
         }
       } catch {
@@ -113,7 +106,7 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
   }
 
   func onConsentGranted(country: String, idType: String,
-                        consentInformation: ConsentInformation,
+                        consentInformation: ConsentInformation?,
                         requiredFields: [RequiredField])
   {
     DispatchQueue.main.async {
