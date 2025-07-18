@@ -127,7 +127,7 @@ class LivenessCheckManager: ObservableObject {
     currentTask = livenessTaskSequence[currentTaskIndex]
   }
 
-  private func resetLivenessChallenge() {
+  func resetLivenessChallenge() {
     currentTask = nil
     currentTaskIndex = 0
     lookLeftProgress = 0

@@ -135,6 +135,9 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
 
     faceValidator.setLayoutGuideFrame(with: faceLayoutGuideFrame)
 
+    // Enable face tracking for enhanced selfie capture
+    faceDetector.enableFaceTracking(true)
+
     livenessCheckManager.$lookLeftProgress
       .merge(
         with: livenessCheckManager.$lookRightProgress,
@@ -438,15 +441,34 @@ extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
 
   func faceDetectorTrackingStateChanged(
     _: EnhancedFaceDetector,
-    state _: FaceTrackingState
+    state: FaceTrackingState
   ) {
-    // TODO:
+    DispatchQueue.main.async {
+      switch state {
+      case .detecting:
+        self.publishUserInstruction(.headInFrame)
+      case .tracking:
+        // Face is being tracked successfully, no specific instruction needed
+        break
+      case .lost:
+        self.publishUserInstruction(.headInFrame)
+      case .reset:
+        // Reset liveness check when face tracking resets
+        self.livenessCheckManager.resetLivenessChallenge()
+        self.publishUserInstruction(.headInFrame)
+      }
+    }
   }
 
   func faceDetectorTrackingDidReset(
     _: EnhancedFaceDetector
   ) {
-    // TODO:
+    DispatchQueue.main.async {
+      // Reset the selfie capture state when face tracking resets
+      // This prevents users from using a different face to complete the process
+      self.resetSelfieCaptureState()
+      self.publishUserInstruction(.headInFrame)
+    }
   }
 }
 
