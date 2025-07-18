@@ -58,7 +58,7 @@ struct OrchestratedDocumentVerificationScreen: View {
 struct OrchestratedEnhancedDocumentVerificationScreen: View {
   let countryCode: String
   let documentType: String?
-  let consentInformation: ConsentInformation
+  let consentInformation: ConsentInformation?
   let captureBothSides: Bool
   let idAspectRatio: Double?
   let bypassSelfieCaptureWithFile: URL?
