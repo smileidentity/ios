@@ -30,7 +30,7 @@ struct FaceTrackingConfiguration {
 
   static let `default` = FaceTrackingConfiguration(
     confidenceThreshold: 0.3,
-    trackingLevel: .fast,
+    trackingLevel: .accurate,
     maxTrackingLossFrames: 30,
     usesCPUOnly: false
   )
