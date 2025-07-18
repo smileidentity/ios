@@ -19,8 +19,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
   @Published @MainActor var step = EnhancedKycWithIdInputScreenStep.loading("Loading ID Types…")
 
   @Published @MainActor var idInfo = IdInfo(country: "")
-  // default to false
-    @Published @MainActor var consentInformation: ConsentInformation? = nil
+  @Published @MainActor var consentInformation: ConsentInformation? = nil
 
   init(userId: String, jobId: String) {
     self.userId = userId
@@ -87,7 +86,6 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
               requiredFields: requiredFields)
           }
         } else {
-        
           onConsentGranted(
             country: country,
             idType: idType,
