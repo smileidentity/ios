@@ -5,7 +5,7 @@ enum EnhancedKycWithIdInputScreenStep {
   case loading(String)
   case idTypeSelection([CountryInfo])
   case consent(country: String, idType: String, requiredFields: [RequiredField])
-  case idInput(country: String, idType: String, consentInformation: ConsentInformation,
+  case idInput(country: String, idType: String, consentInformation: ConsentInformation?,
                requiredFields: [RequiredField])
   case processing(ProcessingState)
 }
@@ -19,14 +19,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
   @Published @MainActor var step = EnhancedKycWithIdInputScreenStep.loading("Loading ID Types…")
 
   @Published @MainActor var idInfo = IdInfo(country: "")
-  // default to false
-  @Published @MainActor var consentInformation = ConsentInformation(
-    consented: ConsentedInformation(
-      consentGrantedDate: Date().toISO8601WithMilliseconds(),
-      personalDetails: false,
-      contactInformation: false,
-      documentInformation: false)
-  )
+  @Published @MainActor var consentInformation: ConsentInformation? = nil
 
   init(userId: String, jobId: String) {
     self.userId = userId
@@ -93,19 +86,10 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
               requiredFields: requiredFields)
           }
         } else {
-          /* We don't need consent. Mark it as false for this product
-           since it's not needed, unless we want to change this */
-          let consentInfo = ConsentInformation(
-            consented: ConsentedInformation(
-              consentGrantedDate: Date().toISO8601WithMilliseconds(),
-              personalDetails: false,
-              contactInformation: false,
-              documentInformation: false)
-          )
           onConsentGranted(
             country: country,
             idType: idType,
-            consentInformation: consentInfo,
+            consentInformation: nil,
             requiredFields: requiredFields)
         }
       } catch {
@@ -122,7 +106,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
   }
 
   func onConsentGranted(country: String, idType: String,
-                        consentInformation: ConsentInformation,
+                        consentInformation: ConsentInformation?,
                         requiredFields: [RequiredField])
   {
     DispatchQueue.main.async {
@@ -134,7 +118,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     }
   }
 
-  func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation) {
+  func onIdFieldsEntered(idInfo: IdInfo, consentInformation: ConsentInformation?) {
     DispatchQueue.main.async {
       self.idInfo = idInfo
       self.consentInformation = consentInformation
@@ -143,7 +127,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
     doEnhancedKyc(idInfo: idInfo, consentInformation: consentInformation)
   }
 
-  func doEnhancedKyc(idInfo: IdInfo, consentInformation: ConsentInformation) {
+  func doEnhancedKyc(idInfo: IdInfo, consentInformation: ConsentInformation?) {
     DispatchQueue.main.async { self.step = .loading("Loading...") }
     Task {
       do {

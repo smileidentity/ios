@@ -4,7 +4,7 @@ public struct EnhancedKycRequest: Codable {
   public let country: String
   public let idType: String
   public let idNumber: String
-  public let consentInformation: ConsentInformation
+  public let consentInformation: ConsentInformation?
   public let firstName: String?
   public let middleName: String?
   public let lastName: String?
@@ -24,12 +24,7 @@ public struct EnhancedKycRequest: Codable {
     country: String,
     idType: String,
     idNumber: String,
-    consentInformation: ConsentInformation = ConsentInformation(
-      consented: ConsentedInformation(consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                                      personalDetails: false,
-                                      contactInformation: false,
-                                      documentInformation: false)
-    ),
+    consentInformation: ConsentInformation? = nil,
     firstName: String? = nil,
     middleName: String? = nil,
     lastName: String? = nil,

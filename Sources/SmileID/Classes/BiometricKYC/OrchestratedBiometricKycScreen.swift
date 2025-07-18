@@ -15,7 +15,7 @@ struct OrchestratedBiometricKycScreen: View {
 
   init(
     idInfo: IdInfo,
-    consentInformation: ConsentInformation,
+    consentInformation: ConsentInformation? = nil,
     userId: String,
     jobId: String,
     allowNewEnroll: Bool,

@@ -602,12 +602,7 @@ public class SmileID {
     showAttribution: Bool = true,
     useStrictMode: Bool = false,
     extraPartnerParams: [String: String] = [:],
-    consentInformation: ConsentInformation = ConsentInformation(
-      consented: ConsentedInformation(consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                                      personalDetails: false,
-                                      contactInformation: false,
-                                      documentInformation: false)
-    ),
+    consentInformation: ConsentInformation? = nil,
     delegate: EnhancedDocumentVerificationResultDelegate
   ) -> some View {
     Metadata.shared.initialize()
@@ -683,12 +678,7 @@ public class SmileID {
     showInstructions: Bool = true,
     useStrictMode: Bool = false,
     extraPartnerParams: [String: String] = [:],
-    consentInformation: ConsentInformation = ConsentInformation(
-      consented: ConsentedInformation(consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                                      personalDetails: false,
-                                      contactInformation: false,
-                                      documentInformation: false)
-    ),
+    consentInformation: ConsentInformation?,
     delegate: BiometricKycResultDelegate
   ) -> some View {
     Metadata.shared.initialize()
