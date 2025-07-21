@@ -3,7 +3,9 @@ import Combine
 import Foundation
 
 public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
+
 	// MARK: - Constants
+
 	private enum Constants {
 		static let intraImageMinDelay: TimeInterval = 0.35
 		static let noFaceResetDelay: TimeInterval = 3
@@ -34,6 +36,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	}
 
 	// MARK: - Immutable Configuration
+
 	private let isEnroll: Bool
 	private let userId: String
 	private let jobId: String
@@ -42,10 +45,12 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	private let extraPartnerParams: [String: String]
 
 	// MARK: Dependencies
+
 	private let metadata: Metadata = .shared
 	private let faceDetector = FaceDetector()
 
 	// MARK: - Timing / State
+
 	private var captureDuration = MonotonicTime()
 	private var networkRetries: Int = 0
 	private var selfieCaptureRetries: Int = 0
@@ -69,6 +74,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	}
 
 	// MARK: - Capture Artifacts
+
 	var selfieImage: URL?
 	var livenessImages: [URL] = []
 	var apiResponse: SmartSelfieResponse?
@@ -82,6 +88,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	private var subscribers = Set<AnyCancellable>()
 
 	// MARK: - UI Published Properties
+
 	@Published var unauthorizedAlert: AlertState?
 	@Published var directive: String = Directive.start.rawValue
 	/// we use `errorMessageRes` to map to the actual code to the stringRes to allow localization,
@@ -127,6 +134,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	}
 
 	// MARK: - Setup Helpers
+
 	private func configureCameraSession() {
 		if cameraManager.session.canSetSessionPreset(.vga640x480) {
 			cameraManager.session.sessionPreset = .vga640x480
@@ -361,6 +369,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	}
 
 	// MARK: - Metadata Recording
+
 	/// Records orientation + start time once at beginning of capture session.
 	private func recordCaptureStartIfNeeded() {
 		guard !hasRecordedOrientationAtCaptureStart else { return }
@@ -379,6 +388,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	}
 
 	// MARK: - Directive Utilities
+
 	private func updateDirective(_ directive: Directive) {
 		updateOnMain { self.directive = directive.rawValue }
 	}
@@ -467,6 +477,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	}
 
 	// MARK: - Head Rotation Gate
+
 	/// Returns `true` if the user has rotated their head sufficiently since the last capture,
 	/// helping us collect a diverse set of liveness images.
 	func hasFaceRotatedEnough(face: VNFaceObservation) -> Bool {
@@ -497,6 +508,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	}
 
 	// MARK: - UI / State Reset
+
 	/// Resets *only* the UI published properties related to an in-progress capture.
 	private func resetCaptureUIState() {
 		updateOnMain {
@@ -507,6 +519,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	}
 
 	// MARK: - Main Thread Helper
+
 	/// Ensures UI mutations execute on the main thread.
 	@inline(__always) private func updateOnMain(_ block: @escaping () -> Void) {
 		if Thread.isMainThread {
@@ -533,6 +546,7 @@ extension SelfieViewModel {
 }
 
 // MARK: - Job Submission
+
 extension SelfieViewModel {
 	public func submitJob() {
 		metadata.addMetadata(key: .activeLivenessType, value: LivenessType.smile.rawValue)
