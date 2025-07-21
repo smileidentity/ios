@@ -341,6 +341,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 				jobId: jobId,
 				selfieFile: imageData
 			)
+			selfieImage = selfieURL
 
 			recordCaptureEnd()
 			updateOnMain {
