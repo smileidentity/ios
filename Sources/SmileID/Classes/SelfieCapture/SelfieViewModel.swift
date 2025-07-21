@@ -267,11 +267,11 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
 	/// Ensure bounding box stays within the safe central region
 	private func validateFacePosition(_ face: VNFaceObservation) -> Bool {
-		let bbox = face.boundingBox
-		if bbox.minX < Constants.minFaceCenteredThreshold
-			|| bbox.minY < Constants.minFaceCenteredThreshold
-			|| bbox.maxX > Constants.maxFaceCenteredThreshold
-			|| bbox.maxY > Constants.maxFaceAreaThreshold {
+		let boundingBox = face.boundingBox
+		if boundingBox.minX < Constants.minFaceCenteredThreshold
+			|| boundingBox.minY < Constants.minFaceCenteredThreshold
+			|| boundingBox.maxX > Constants.maxFaceCenteredThreshold
+			|| boundingBox.maxY > Constants.maxFaceCenteredThreshold {
 			updateDirective(.putFaceInOval)
 			return false
 		}
@@ -560,10 +560,10 @@ extension SelfieViewModel {
 				else {
 					throw SmileIDError.unknown("Selfie capture failed")
 				}
-				let jobType =
+				let jobType: JobType =
 					isEnroll
-					? JobType.smartSelfieEnrollment
-					: JobType.smartSelfieAuthentication
+					? .smartSelfieEnrollment
+					: .smartSelfieAuthentication
 				let authRequest = AuthenticationRequest(
 					jobType: jobType,
 					enrollment: isEnroll,
@@ -571,6 +571,7 @@ extension SelfieViewModel {
 					userId: userId
 				)
 				let metadata = metadata.collectAllMetadata()
+
 				if SmileID.allowOfflineMode {
 					try LocalStorage.saveOfflineJob(
 						jobId: jobId,
@@ -582,6 +583,7 @@ extension SelfieViewModel {
 						partnerParams: extraPartnerParams
 					)
 				}
+
 				try await getExceptionHandler {
 					let authResponse = try await SmileID.api.authenticate(
 						request: authRequest
@@ -590,6 +592,7 @@ extension SelfieViewModel {
 					// Build multipart bodies
 					var smartSelfieLivenessImages = [MultipartBody]()
 					var smartSelfieImage: MultipartBody?
+
 					if let selfie = try? Data(contentsOf: selfieImage),
 						let media = MultipartBody(
 							withImage: selfie,
@@ -599,11 +602,11 @@ extension SelfieViewModel {
 					}
 
 					if !livenessImages.isEmpty {
-						let livenessImageInfos = livenessImages.compactMap { liveness -> MultipartBody? in
-							if let data = try? Data(contentsOf: liveness) {
+						let livenessImageInfos = livenessImages.compactMap { url -> MultipartBody? in
+							if let data = try? Data(contentsOf: url) {
 								return MultipartBody(
 									withImage: data,
-									forName: liveness.lastPathComponent
+									forName: url.lastPathComponent
 								)
 							}
 							return nil
@@ -619,35 +622,15 @@ extension SelfieViewModel {
 						throw SmileIDError.unknown("Selfie capture failed")
 					}
 
-					let response =
-						if isEnroll {
-							try await SmileID.api.doSmartSelfieEnrollment(
-								signature: authResponse.signature,
-								timestamp: authResponse.timestamp,
-								selfieImage: smartSelfieImage,
-								livenessImages: smartSelfieLivenessImages,
-								userId: userId,
-								partnerParams: extraPartnerParams,
-								callbackUrl: SmileID.callbackUrl,
-								sandboxResult: nil,
-								allowNewEnroll: allowNewEnroll,
-								failureReason: nil
-							)
-						} else {
-							try await SmileID.api.doSmartSelfieAuthentication(
-								signature: authResponse.signature,
-								timestamp: authResponse.timestamp,
-								userId: userId,
-								selfieImage: smartSelfieImage,
-								livenessImages: smartSelfieLivenessImages,
-								partnerParams: extraPartnerParams,
-								callbackUrl: SmileID.callbackUrl,
-								sandboxResult: nil,
-								failureReason: nil
-							)
-						}
-					apiResponse = response
+					let response = try await self.performSmartSelfieNetworkCall(
+						isEnroll: self.isEnroll,
+						authResponse: authResponse,
+						smartSelfieImage: smartSelfieImage,
+						smartSelfieLivenessImages: smartSelfieLivenessImages
+					)
+					self.apiResponse = response
 				}
+
 				do {
 					try LocalStorage.moveToSubmittedJobs(jobId: self.jobId)
 					self.selfieImage = try LocalStorage.getFileByType(
@@ -662,7 +645,7 @@ extension SelfieViewModel {
 							submitted: true
 						) ?? []
 				} catch {
-					print("Error moving job to submitted directory: \(error)")
+					self.debug("Error moving job to submitted directory: \(error)")
 					self.error = error
 				}
 				resetNetworkRetries()
