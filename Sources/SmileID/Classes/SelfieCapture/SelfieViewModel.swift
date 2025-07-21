@@ -179,13 +179,13 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 			try faceDetector.detect(imageBuffer: image) { [weak self] request, error in
 				guard let self else { return }
 				if let error {
-					self.debug("Face detection error: \(error.localizedDescription)")
+					debug("Face detection error: \(error.localizedDescription)", category: "SelfieViewModel")
 					self.error = error
 					return
 				}
 
 				guard let faces = request.results as? [VNFaceObservation] else {
-					self.debug("Unexpected detection result type.")
+					debug("Unexpected detection result type.", category: "SelfieViewModel")
 					return
 				}
 
@@ -196,7 +196,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 				)
 			}
 		} catch {
-			debug("Vision request error: \(error.localizedDescription)")
+			debug("Vision request error: \(error.localizedDescription)", category: "SelfieViewModel")
 		}
 	}
 
@@ -211,7 +211,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 			updateDirective(.unableToDetectFace)
 			// Reset if user leaves frame for too long.
 			if elapsed > Constants.noFaceResetDelay {
-				debug("Resetting capture due to prolonged no-face condition.")
+				debug("Resetting capture due to prolonged no-face condition.", category: "SelfieViewModel")
 				resetCaptureUIState()
 				selfieImage = nil
 				livenessImages = []
@@ -227,7 +227,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 		}
 
 		guard let face = faces.first else {
-			debug("faces.first unexpectedly nil after non-empty check.")
+			debug("faces.first unexpectedly nil after non-empty check.", category: "SelfieViewModel")
 			return
 		}
 
@@ -240,14 +240,14 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
 		// TODO: Use mouth deformation as an alternative signal for non-ARKit capture
 		if userNeedsToSmile, currentlyUsingArKit, !isSmiling {
-			debug("Awaiting smile signal from ARKit.")
+			debug("Awaiting smile signal from ARKit.", category: "SelfieViewModel")
 			return
 		}
 
 		// Perform the rotation checks *after* changing directive to Capturing
 		// -- we don't want to explicitly tell the user to move their head.
 		guard hasFaceRotatedEnough(face: face) else {
-			debug("Insufficient head rotation; waiting for movement to ensure diversity.")
+			debug("Insufficient head rotation; waiting for movement to ensure diversity.", category: "SelfieViewModel")
 			return
 		}
 
@@ -257,7 +257,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 		do {
 			try captureFrame(image, orientation: orientation)
 		} catch {
-			debug("Error saving image: \(error.localizedDescription)")
+			debug("Error saving image: \(error.localizedDescription)", category: "SelfieViewModel")
 			self.error = error
 			updateOnMain { self.processingState = .error }
 		}
@@ -472,7 +472,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 	func hasFaceRotatedEnough(face: VNFaceObservation) -> Bool {
 		guard let roll = face.roll?.doubleValue, let yaw = face.yaw?.doubleValue
 		else {
-			debug("Roll and yaw unexpectedly nil")
+			debug("Roll and yaw unexpectedly nil", category: "SelfieViewModel")
 			return true
 		}
 		var didPitchChange = false
@@ -516,14 +516,6 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 		}
 	}
 
-	// MARK: - Debug Helper
-
-	/// Lightweight debug logging (compiled out in Release).
-	private func debug(_ message: @autoclosure () -> String) {
-		#if DEBUG
-			print("[SelfieViewModel] \(message())")
-		#endif
-	}
 }
 
 // MARK: - Metadata Helpers
@@ -645,7 +637,7 @@ extension SelfieViewModel {
 							submitted: true
 						) ?? []
 				} catch {
-					self.debug("Error moving job to submitted directory: \(error)")
+					debug("Error moving job to submitted directory: \(error)", category: "SelfieViewModel")
 					self.error = error
 				}
 				resetNetworkRetries()
@@ -670,7 +662,7 @@ extension SelfieViewModel {
 							) ?? []
 					}
 				} catch {
-					self.debug("Error moving job to submitted directory: \(error)")
+					debug("Error moving job to submitted directory: \(error)", category: "SelfieViewModel")
 					self.error = error
 					return
 				}
@@ -681,7 +673,7 @@ extension SelfieViewModel {
 						self.processingState = .success
 					}
 				} else {
-					self.debug("Error submitting job: \(error)")
+					debug("Error submitting job: \(error)", category: "SelfieViewModel")
 					let (errorMessageRes, errorMessage) = toErrorMessage(
 						error: error
 					)
@@ -691,7 +683,7 @@ extension SelfieViewModel {
 					updateOnMain { self.processingState = .error }
 				}
 			} catch {
-				self.debug("Error submitting job: \(error)")
+				debug("Error submitting job: \(error)", category: "SelfieViewModel")
 				self.error = error
 				updateOnMain { self.processingState = .error }
 			}
