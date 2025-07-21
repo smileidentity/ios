@@ -71,9 +71,7 @@ class FaceAnalyzer: FaceAnalyzerType {
     completion: @escaping (Result) -> Void
   ) {
     do {
-      try faceDetector.detect(imageBuffer: buffer) {
-        [weak self] request,
-          error in
+      try faceDetector.detect(imageBuffer: buffer) { [weak self] request, error in
         guard let self else { return }
 
         if let error {
