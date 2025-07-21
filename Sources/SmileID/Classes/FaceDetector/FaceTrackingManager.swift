@@ -1,7 +1,7 @@
+import Dispatch
 import Foundation
 import UIKit
 import Vision
-import Dispatch
 
 class FaceTrackingManager: NSObject {
   private var trackingRequest: VNTrackObjectRequest?
@@ -11,7 +11,7 @@ class FaceTrackingManager: NSObject {
   private var trackingLossFrameCount: Int = 0
 
   private let configuration: FaceTrackingConfiguration
-	private let trackerQueue = DispatchQueue(label: "com.smileid.tracking")
+  private let trackerQueue = DispatchQueue(label: "com.smileid.tracking")
   weak var delegate: FaceTrackingDelegate?
 
   init(configuration: FaceTrackingConfiguration = .default) {
@@ -40,20 +40,20 @@ class FaceTrackingManager: NSObject {
 
     updateState(.tracking)
   }
-	
-	func processFrame(
-		_ pixelBuffer: CVPixelBuffer,
-		orientation: CGImagePropertyOrientation = .leftMirrored
-	) {
-		trackerQueue.async {
-			self._processFrame(pixelBuffer, orientation: orientation)
-		}
-	}
 
-	private func _processFrame(
-		_ pixelBuffer: CVPixelBuffer,
-		orientation: CGImagePropertyOrientation = .leftMirrored
-	) {
+  func processFrame(
+    _ pixelBuffer: CVPixelBuffer,
+    orientation: CGImagePropertyOrientation = .leftMirrored
+  ) {
+    trackerQueue.async {
+      self._processFrame(pixelBuffer, orientation: orientation)
+    }
+  }
+
+  private func _processFrame(
+    _ pixelBuffer: CVPixelBuffer,
+    orientation: CGImagePropertyOrientation = .leftMirrored
+  ) {
     guard let trackingRequest,
           currentState == .tracking else { return }
 
