@@ -47,7 +47,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
   private let metadata: Metadata = .shared
   private let faceDetector = FaceDetector()
-	private let faceTrackingManager = FaceTrackingManager()
+  private let faceTrackingManager = FaceTrackingManager()
 
   // MARK: - Timing / State
 
@@ -119,7 +119,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     self.skipApiSubmission = skipApiSubmission
     self.extraPartnerParams = extraPartnerParams
 
-		faceTrackingManager.delegate = self
+    faceTrackingManager.delegate = self
 
     configureCameraSession()
     bindCameraAuthorization()
@@ -181,8 +181,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
   func analyzeImage(image: CVPixelBuffer) {
     recordCaptureStartIfNeeded()
 
-		// Forward every frame to the tracker
-		faceTrackingManager.processFrame(image, orientation: .leftMirrored)
+    // Forward every frame to the tracker
+    faceTrackingManager.processFrame(image, orientation: .leftMirrored)
 
     // Enforce minimal spacing between auto captures
     let elapsed = Date().timeIntervalSince(lastAutoCaptureTime)
@@ -230,9 +230,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
         livenessImages = []
         cleanUpSelfieCapture()
       }
-			
-			// Clear tracking when no face present
-			faceTrackingManager.resetTracking()
+
+      // Clear tracking when no face present
+      faceTrackingManager.resetTracking()
 
       return
     }
@@ -247,11 +247,11 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
       debug("faces.first unexpectedly nil after non-empty check.", category: "SelfieViewModel")
       return
     }
-		
-		// Start face tracking on the first detected face
-		if !faceTrackingManager.isTracking {
-			faceTrackingManager.startTracking(with: face)
-		}
+
+    // Start face tracking on the first detected face
+    if !faceTrackingManager.isTracking {
+      faceTrackingManager.startTracking(with: face)
+    }
 
     guard validateFacePosition(face) else { return }
     guard validateFaceArea(face) else { return }
@@ -430,7 +430,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
   /// Called when the user rejects the captured selfie and wants to try again.
   public func onSelfieRejected() {
-		faceTrackingManager.resetTracking()
+    faceTrackingManager.resetTracking()
     resetCaptureUIState()
     selfieImage = nil
     livenessImages = []
@@ -533,14 +533,14 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
   }
 
-	private func resetForNewFace() {
-		resetCaptureUIState()
-		selfieImage = nil
-		livenessImages = []
-		shouldAnalyzeImages = true
-		faceTrackingManager.resetTracking()
-		cleanUpSelfieCapture()
-	}
+  private func resetForNewFace() {
+    resetCaptureUIState()
+    selfieImage = nil
+    livenessImages = []
+    shouldAnalyzeImages = true
+    faceTrackingManager.resetTracking()
+    cleanUpSelfieCapture()
+  }
 
   // MARK: - Main Thread Helper
 
@@ -557,42 +557,42 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 // MARK: FaceTrackingDelegate
 
 extension SelfieViewModel: FaceTrackingDelegate {
-	func faceTrackingStateChanged(_ state: FaceTrackingState) {
-		switch state {
-		case .detecting:
-			updateDirective(.unableToDetectFace)
-		case .tracking:
-			// A face is locked-on; directive logic will be handled by vision validations
-			break
-		case .lost:
-			updateDirective(.unableToDetectFace)
-		case .reset:
-			resetForNewFace()
-		}
-	}
+  func faceTrackingStateChanged(_ state: FaceTrackingState) {
+    switch state {
+    case .detecting:
+      updateDirective(.unableToDetectFace)
+    case .tracking:
+      // A face is locked-on; directive logic will be handled by vision validations
+      break
+    case .lost:
+      updateDirective(.unableToDetectFace)
+    case .reset:
+      resetForNewFace()
+    }
+  }
 
-	func faceTrackingDidFail(with error: FaceTrackingError) {
-		debug("Face tracking error: \(error)", category: "SelfieViewModel")
-		switch error {
-		case .multipleFacesDetected:
-			updateDirective(.multipleFaces)
-		case .noFaceDetected:
-			updateDirective(.unableToDetectFace)
-		case .trackingLost, .trackingConfidenceTooLow:
-			updateDirective(.unableToDetectFace)
-		case .differentFaceDetected:
-			// Start over when a new face shows up.
-			resetForNewFace()
-		}
-	}
+  func faceTrackingDidFail(with error: FaceTrackingError) {
+    debug("Face tracking error: \(error)", category: "SelfieViewModel")
+    switch error {
+    case .multipleFacesDetected:
+      updateDirective(.multipleFaces)
+    case .noFaceDetected:
+      updateDirective(.unableToDetectFace)
+    case .trackingLost, .trackingConfidenceTooLow:
+      updateDirective(.unableToDetectFace)
+    case .differentFaceDetected:
+      // Start over when a new face shows up.
+      resetForNewFace()
+    }
+  }
 
-	func faceTrackingDidReset() {
-		debug(
-			"Face tracking reset - restarting capture flow",
-			category: "SelfieViewModel"
-		)
-		resetForNewFace()
-	}
+  func faceTrackingDidReset() {
+    debug(
+      "Face tracking reset - restarting capture flow",
+      category: "SelfieViewModel"
+    )
+    resetForNewFace()
+  }
 }
 
 // MARK: - Metadata Helpers
