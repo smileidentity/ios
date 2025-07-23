@@ -6,7 +6,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-
 jobs:
   lint:
     name: "Lint"
@@ -27,16 +26,13 @@ jobs:
 
   build:
     name: "Build App and Run Unit Tests"
-    # TODO: Change back to macos-latest once it points to macOS 14 (Q2 '24)
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install bundle
         run: bundle install
-      - name: Update Compile Sources
-        run: ruby ./Scripts/update_compile_sources.rb
       - name: Write Smile Config
         id: write_smile_config
         # Mask the config so that it doesn't show up in the logs
@@ -58,7 +54,7 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup
         with:
-          xcode: "15.2"
+          xcode: "16.4"
       - name: Build Example app and Run Unit Tests
         run: |
           xcodebuild -resolvePackageDependencies
