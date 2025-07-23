@@ -80,6 +80,7 @@
 		91CB21A52AC10C61005AEBF5 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */; };
 		91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC32AB481FE00A8D36B /* PollingTests.swift */; };
 		91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */; };
+		200C41F62E30D05600C0F3CF /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F52E30D05600C0F3CF /* SmileID */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -185,6 +186,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				200C41F62E30D05600C0F3CF /* SmileID in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -529,7 +531,7 @@
 			);
 			mainGroup = 607FACC71AFB9204008FA782;
 			packageReferences = (
-				200C41F02E30CFAD00C0F3CF /* XCLocalSwiftPackageReference "../../smile-identity-ios" */,
+				200C41F02E30CFAD00C0F3CF /* XCLocalSwiftPackageReference ".." */,
 				200C41F32E30D04400C0F3CF /* XCRemoteSwiftPackageReference "netfox" */,
 			);
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
@@ -982,9 +984,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		200C41F02E30CFAD00C0F3CF /* XCLocalSwiftPackageReference "../../smile-identity-ios" */ = {
+		200C41F02E30CFAD00C0F3CF /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../smile-identity-ios";
+			relativePath = "..";
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -1008,6 +1010,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 200C41F32E30D04400C0F3CF /* XCRemoteSwiftPackageReference "netfox" */;
 			productName = netfox;
+		};
+		200C41F52E30D05600C0F3CF /* SmileID */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileID;
 		};
 /* End XCSwiftPackageProductDependency section */
 

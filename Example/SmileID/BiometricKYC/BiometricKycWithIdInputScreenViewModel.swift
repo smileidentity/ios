@@ -107,8 +107,7 @@ class BiometricKycWithIdInputScreenViewModel: ObservableObject {
 
   func onConsentGranted(country: String, idType: String,
                         consentInformation: ConsentInformation?,
-                        requiredFields: [RequiredField])
-  {
+                        requiredFields: [RequiredField]) {
     DispatchQueue.main.async {
       self.step = .idInput(
         country: country,

@@ -10,8 +10,7 @@ class HomeViewModel: ObservableObject,
   DocumentVerificationResultDelegate,
   EnhancedDocumentVerificationResultDelegate,
   EnhancedKycResultDelegate,
-  BiometricKycResultDelegate
-{
+  BiometricKycResultDelegate {
   // MARK: - UI Properties
 
   @Published var dismissed = false
@@ -62,8 +61,7 @@ class HomeViewModel: ObservableObject,
   @objc func didError(error: Error) {
     dismissModal()
     if let smileIDError = error as? SmileIDError,
-       case .operationCanceled = smileIDError
-    {
+       case .operationCanceled = smileIDError {
       return
     } else {
       showToast = true
@@ -91,8 +89,7 @@ class HomeViewModel: ObservableObject,
       apiResponse: apiResponse,
       suffix: "The User ID has been copied to your clipboard")
     if let apiResponse,
-       let date = apiResponse.createdAt.jobTimestampDate()
-    {
+       let date = apiResponse.createdAt.jobTimestampDate() {
       do {
         try dataStoreClient.saveJob(
           data: JobData(
@@ -127,8 +124,7 @@ class HomeViewModel: ObservableObject,
       jobName: "SmartSelfie Authentication",
       apiResponse: apiResponse)
     if let apiResponse,
-       let date = apiResponse.createdAt.jobTimestampDate()
-    {
+       let date = apiResponse.createdAt.jobTimestampDate() {
       do {
         try dataStoreClient.saveJob(
           data: JobData(

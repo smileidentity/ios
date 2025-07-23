@@ -19,7 +19,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
   @Published @MainActor var step = EnhancedKycWithIdInputScreenStep.loading("Loading ID Types…")
 
   @Published @MainActor var idInfo = IdInfo(country: "")
-  @Published @MainActor var consentInformation: ConsentInformation? = nil
+  @Published @MainActor var consentInformation: ConsentInformation?
 
   init(userId: String, jobId: String) {
     self.userId = userId
@@ -107,8 +107,7 @@ class EnhancedKycWithIdInputScreenViewModel: ObservableObject {
 
   func onConsentGranted(country: String, idType: String,
                         consentInformation: ConsentInformation?,
-                        requiredFields: [RequiredField])
-  {
+                        requiredFields: [RequiredField]) {
     DispatchQueue.main.async {
       self.step = .idInput(
         country: country,
