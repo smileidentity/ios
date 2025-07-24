@@ -142,11 +142,12 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     if let livenessFiles {
       allFiles.append(contentsOf: livenessFiles)
     }
-    let securityInfo = try? createSecurityInfo(files: allFiles)
+    let securityInfo = try? SecurityInfo.create(from: allFiles).obfuscate().encode()
     if let securityInfo {
       return try LocalStorage.zipFiles(
         urls: allFiles,
-        data: ["security_info.json": securityInfo])
+        data: ["security_info.json": securityInfo]
+      )
     } else {
       /*
        In case we can't add the security info the backend will throw an unauthorized error.

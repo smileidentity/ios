@@ -173,8 +173,9 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
           selfie: selfieFile,
           livenessImages: livenessFiles)
         allFiles.append(info)
+
         let zipData: Data
-        let securityInfo = try? createSecurityInfo(files: allFiles)
+        let securityInfo = try? SecurityInfo.create(from: allFiles).obfuscate().encode()
         if let securityInfo {
           zipData = try LocalStorage.zipFiles(
             urls: allFiles,
@@ -186,6 +187,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
            */
           zipData = try LocalStorage.zipFiles(urls: allFiles)
         }
+
         self.savedFiles = DocumentCaptureResultStore(
           allFiles: allFiles,
           documentFront: frontDocumentUrl,
