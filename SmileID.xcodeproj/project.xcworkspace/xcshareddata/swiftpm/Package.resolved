@@ -1,5 +1,5 @@
 {
-  "originHash" : "60ccf1f3bdb356f89e96f70a8531c34eebffe2363a31000c069923d65f56f54d",
+  "originHash" : "cf0f285ece557f61e5baafaee15d8e6239f8d702ad58c9d53601f659c93a08fc",
   "pins" : [
     {
       "identity" : "fingerprintjs-ios",
@@ -20,12 +20,21 @@
       }
     },
     {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa.git",
+      "state" : {
+        "revision" : "ca92efeb24b10052cd2a79e5205f42c5a16770ec",
+        "version" : "8.53.2"
+      }
+    },
+    {
       "identity" : "smile-id-security",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/smileidentity/smile-id-security",
       "state" : {
-        "revision" : "778bbdd272085ab801e9f4bf4754dc8ffe70e63f",
-        "version" : "1.0.2"
+        "revision" : "92849f3f890583b6d060c9dddaf5dfa0289d1627",
+        "version" : "1.0.4"
       }
     },
     {

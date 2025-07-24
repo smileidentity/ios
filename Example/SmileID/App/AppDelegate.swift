@@ -1,13 +1,13 @@
 import UIKit
 
-@UIApplicationMain
+@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    var window: UIWindow?
+  var window: UIWindow?
 
-    func application(
-        _: UIApplication,
-        didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
-    ) -> Bool {
-        return true
-    }
+  func application(
+    _: UIApplication,
+    didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    true
+  }
 }

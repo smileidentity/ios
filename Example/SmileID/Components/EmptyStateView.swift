@@ -2,42 +2,42 @@ import SmileID
 import SwiftUI
 
 struct EmptyStateView: View {
-    var systemImage: String
-    var message: String
-    var actionTitle: String
-    var action: (() -> Void)?
+  var systemImage: String
+  var message: String
+  var actionTitle: String
+  var action: (() -> Void)?
 
-    init(
-        systemImage: String = "exclamationmark.triangle.fill",
-        message: String,
-        actionTitle: String = "Try Again",
-        action: (() -> Void)? = nil
-    ) {
-        self.systemImage = systemImage
-        self.message = message
-        self.actionTitle = actionTitle
-        self.action = action
-    }
+  init(
+    systemImage: String = "exclamationmark.triangle.fill",
+    message: String,
+    actionTitle: String = "Try Again",
+    action: (() -> Void)? = nil
+  ) {
+    self.systemImage = systemImage
+    self.message = message
+    self.actionTitle = actionTitle
+    self.action = action
+  }
 
-    var body: some View {
-        VStack(spacing: 10) {
-            Spacer()
-            Image(systemName: systemImage)
-                .font(.title)
-            Text(message)
-            Button { action?() } label: {
-                Text(actionTitle)
-                    .fontWeight(.semibold)
-                    .accentColor(SmileID.theme.accent)
-            }
-            .padding(.top)
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(SmileID.theme.backgroundLight.ignoresSafeArea())
+  var body: some View {
+    VStack(spacing: 10) {
+      Spacer()
+      Image(systemName: systemImage)
+        .font(.title)
+      Text(message)
+      Button { action?() } label: {
+        Text(actionTitle)
+          .fontWeight(.semibold)
+          .accentColor(SmileID.theme.accent)
+      }
+      .padding(.top)
+      Spacer()
     }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(SmileID.theme.backgroundLight.ignoresSafeArea())
+  }
 }
 
 #Preview {
-    EmptyStateView(message: "No jobs found")
+  EmptyStateView(message: "No jobs found")
 }
