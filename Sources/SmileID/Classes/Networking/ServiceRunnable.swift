@@ -11,7 +11,7 @@ protocol ServiceRunnable {
   /// - Parameters:
   ///   - path: Endpoint to execute the POST call.
   ///   - body: The contents of the body of the request.
-  func post<U: Decodable>(to path: PathType, with body: some Encodable) async throws -> U
+  func post<T: Encodable, U: Decodable>(to path: PathType, with body: T) async throws -> U
 
   /// Get service call to a particular path
   /// - Parameters:
@@ -22,6 +22,7 @@ protocol ServiceRunnable {
   /// - Parameters:
   ///   - path: Endpoint to execute the POST call.
   ///   - body: The contents of the body of the mulitpart request.
+  ///   - enableEncryption: Whether to encrypt the multipart payload.
   func multipart(
     to path: PathType,
     signature: String,
@@ -33,7 +34,8 @@ protocol ServiceRunnable {
     callbackUrl: String?,
     sandboxResult: Int?,
     allowNewEnroll: Bool?,
-    failureReason: FailureReason?
+    failureReason: FailureReason?,
+    enableEncryption: Bool
   ) async throws -> SmartSelfieResponse
 
   /// PUT service call to a particular path with a body.
@@ -70,7 +72,8 @@ extension ServiceRunnable {
         .sourceSDKVersion(value: SmileID.version),
         .requestTimestamp(value: Date().toISO8601WithMilliseconds())
       ],
-      body: body)
+      body: body
+    )
     return try await serviceClient.send(request: request)
   }
 
@@ -83,7 +86,8 @@ extension ServiceRunnable {
         .sourceSDK(value: "iOS"),
         .sourceSDKVersion(value: SmileID.version),
         .requestTimestamp(value: Date().toISO8601WithMilliseconds())
-      ])
+      ]
+    )
     return try await serviceClient.send(request: request)
   }
 
@@ -98,9 +102,10 @@ extension ServiceRunnable {
     callbackUrl: String? = nil,
     sandboxResult: Int? = nil,
     allowNewEnroll: Bool? = nil,
-    failureReason: FailureReason? = nil
+    failureReason: FailureReason? = nil,
+    enableEncryption: Bool = true
   ) async throws -> SmartSelfieResponse {
-    let boundary = generateBoundary()
+    let boundary = UUID().uuidString
     var headers: [HTTPHeader] = []
     headers.append(.contentType(value: "multipart/form-data; boundary=\(boundary)"))
     headers.append(.partnerID(value: SmileID.config.partnerId))
@@ -124,13 +129,15 @@ extension ServiceRunnable {
       sandboxResult: sandboxResult,
       allowNewEnroll: allowNewEnroll,
       failureReason: failureReason,
-      metadata: metadata)
+      metadata: metadata
+    )
 
     let payload = try encoder.encode(selfieRequest)
     let requestMac = try? SmileIDCryptoManager.shared.sign(
       timestamp: timestamp,
       headers: headers.toDictionary(),
-      payload: payload)
+      payload: payload
+    )
     if let requestMac {
       headers.append(.requestMac(value: requestMac))
     } else {
@@ -140,21 +147,43 @@ extension ServiceRunnable {
        */
     }
 
+    let builder = MultipartBuilder(boundary: boundary)
+    let uploadData: Data
+
+    if enableEncryption {
+      let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
+        timestamp: timestamp,
+        headers: headers.toDictionary(),
+        payload: payload
+      )
+
+      guard let payload = encryptedPayload else {
+        throw URLError(.cannotDecodeContentData)
+      }
+
+      applyEncryptedHeaders(encryptedHeaders, to: &headers)
+
+      let jsonObject = try JSONSerialization.jsonObject(with: payload, options: [])
+
+      guard let encryptedJson = jsonObject as? [String: Any] else {
+        throw URLError(.cannotDecodeContentData)
+      }
+
+      uploadData = builder.buildEncryptedMultipart(from: encryptedJson)
+    } else {
+      uploadData = builder.buildMultipart(
+        selfieRequest: selfieRequest,
+        selfieImage: selfieImage,
+        livenessImages: livenessImages
+      )
+    }
+
     let request = try await createMultiPartRequest(
       url: path,
       method: .post,
       headers: headers,
-      uploadData: createMultiPartRequestData(
-        selfieImage: selfieImage,
-        livenessImages: livenessImages,
-        userId: userId,
-        partnerParams: partnerParams,
-        callbackUrl: callbackUrl?.nilIfEmpty(),
-        sandboxResult: sandboxResult,
-        allowNewEnroll: allowNewEnroll,
-        failureReason: failureReason,
-        metadata: metadata,
-        boundary: boundary))
+      uploadData: uploadData
+    )
 
     return try await serviceClient.multipart(request: request)
   }
@@ -182,7 +211,8 @@ extension ServiceRunnable {
       url: url,
       method: method,
       headers: headers,
-      body: uploadData)
+      body: uploadData
+    )
     return request
   }
 
@@ -195,7 +225,8 @@ extension ServiceRunnable {
       url: url,
       method: restMethod,
       headers: [.contentType(value: "application/zip")],
-      uploadData: data)
+      uploadData: data
+    )
     return try await serviceClient.upload(request: uploadRequest)
   }
 
@@ -214,7 +245,8 @@ extension ServiceRunnable {
       url: url,
       method: method,
       headers: headers,
-      body: uploadData)
+      body: uploadData
+    )
     return request
   }
 
@@ -239,7 +271,8 @@ extension ServiceRunnable {
       let requestMac = try? SmileIDCryptoManager.shared.sign(
         timestamp: header.value,
         headers: headers.toDictionary(),
-        payload: payload)
+        payload: payload
+      )
       if let requestMac {
         signedHeaders.append(.requestMac(value: requestMac))
       } else {
@@ -247,6 +280,29 @@ extension ServiceRunnable {
          In case we can't add the security info the backend will throw an unauthorized error.
          In the future, we will handle this more gracefully once sentry integration has been implemented.
          */
+      }
+
+      if path.contains("id_verification") || path.contains("upload") {
+        let (encryptedHeaders, encryptedPayload) = try SmileIDCryptoManager.shared.encrypt(
+          timestamp: header.value,
+          headers: signedHeaders.toDictionary(),
+          payload: payload
+        )
+
+        guard let payload = encryptedPayload else {
+          throw URLError(.cannotDecodeContentData)
+        }
+
+        applyEncryptedHeaders(encryptedHeaders, to: &signedHeaders)
+
+        let request = RestRequest(
+          url: url,
+          method: method,
+          headers: signedHeaders,
+          queryParameters: queryParameters,
+          body: payload
+        )
+        return request
       }
     }
 
@@ -256,7 +312,8 @@ extension ServiceRunnable {
         method: method,
         headers: signedHeaders,
         queryParameters: queryParameters,
-        body: body)
+        body: body
+      )
       return request
     } catch {
       throw error
@@ -278,7 +335,8 @@ extension ServiceRunnable {
     if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
       let requestMac = try? SmileIDCryptoManager.shared.sign(
         timestamp: header.value,
-        headers: headers.toDictionary())
+        headers: headers.toDictionary()
+      )
       if let requestMac {
         signedHeaders.append(.requestMac(value: requestMac))
       } else {
@@ -292,136 +350,22 @@ extension ServiceRunnable {
       url: url,
       method: method,
       headers: signedHeaders,
-      queryParameters: queryParameters)
+      queryParameters: queryParameters
+    )
     return request
   }
+}
 
-  func generateBoundary() -> String {
-    UUID().uuidString
-  }
-
-  // swiftlint:disable cyclomatic_complexity
-  func createMultiPartRequestData(
-    selfieImage: MultipartBody,
-    livenessImages: [MultipartBody],
-    userId: String?,
-    partnerParams: [String: String]?,
-    callbackUrl: String?,
-    sandboxResult: Int?,
-    allowNewEnroll: Bool?,
-    failureReason: FailureReason?,
-    metadata: [Metadatum],
-    boundary: String
-  ) -> Data {
-    let lineBreak = "\r\n"
-    var body = Data()
-
-    // Append parameters if available
-    if let parameters = partnerParams {
-      if let boundaryData = "--\(boundary)\(lineBreak)".data(using: .utf8),
-         let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(
-           using: .utf8),
-         let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8),
-         let lineBreakData = lineBreak.data(using: .utf8) {
-        body.append(boundaryData)
-        body.append(dispositionData)
-        body.append(contentTypeData)
-
-        if let jsonData = try? JSONSerialization.data(
-          withJSONObject: parameters,
-          options: [.sortedKeys, .withoutEscapingSlashes]) {
-          body.append(jsonData)
-          body.append(lineBreakData)
-        }
+extension ServiceRunnable {
+  private func applyEncryptedHeaders(
+    _ encryptedHeaders: [String: Any],
+    to headers: inout [HTTPHeader]
+  ) {
+    for index in 0..<headers.count {
+      let key = headers[index].name
+      if let encryptedValue = encryptedHeaders[key.lowercased()] as? String {
+        headers[index].value = encryptedValue
       }
     }
-
-    // Append userId if available
-    if let userId {
-      if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append(
-          "Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-        body.append(valueData)
-      }
-    }
-
-    // Append callbackUrl if available
-    if let callbackUrl {
-      if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append(
-          "Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(using: .utf8)!)
-        body.append(valueData)
-      }
-    }
-
-    // Append sandboxResult if available
-    if let sandboxResult {
-      let sandboxResultString = "\(sandboxResult)"
-      if let valueData = "\(sandboxResultString)\(lineBreak)".data(using: .utf8) {
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append(
-          "Content-Disposition: form-data; name=\"sandbox_result\"\(lineBreak + lineBreak)".data(
-            using: .utf8)!)
-        body.append(valueData)
-      }
-    }
-
-    // Append allowNewEnroll if available
-    if let allowNewEnroll {
-      if let valueData = "\(allowNewEnroll)\(lineBreak)".data(using: .utf8) {
-        body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-        body.append(
-          "Content-Disposition: form-data; name=\"allow_new_enroll\"\(lineBreak + lineBreak)".data(
-            using: .utf8)!)
-        body.append(valueData)
-      }
-    }
-
-    // Append metadata
-    let encoder = JSONEncoder()
-    encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-    if let metadataData = try? encoder.encode(metadata) {
-      body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-      body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
-      body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
-      body.append(metadataData)
-      body.append(lineBreak.data(using: .utf8)!)
-    }
-
-    // Append liveness media files
-    for item in livenessImages {
-      body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-      body.append(
-        "Content-Disposition: form-data; name=\"\("liveness_images")\"; filename=\"\(item.filename)\"\(lineBreak)"
-          .data(using: .utf8)!)
-      body.append("Content-Type: \(item.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
-      body.append(item.data)
-      body.append(lineBreak.data(using: .utf8)!)
-    }
-
-    // Append selfie media file
-    body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-    body.append(
-      "Content-Disposition: form-data; name=\"\("selfie_image")\"; filename=\"\(selfieImage.filename)\"\(lineBreak)"
-        .data(using: .utf8)!)
-    body.append("Content-Type: \(selfieImage.mimeType)\(lineBreak + lineBreak)".data(using: .utf8)!)
-    body.append(selfieImage.data)
-    body.append(lineBreak.data(using: .utf8)!)
-
-    // Append failure reason if available
-    if let failureReason,
-       let failureReasonData = try? encoder.encode(failureReason) {
-      body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-      body.append("Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(using: .utf8)!)
-      body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
-      body.append(failureReasonData)
-      body.append(lineBreak.data(using: .utf8)!)
-    }
-
-    // Append final boundary
-    body.append("--\(boundary)--\(lineBreak)".data(using: .utf8)!)
-    return body
   }
 }
