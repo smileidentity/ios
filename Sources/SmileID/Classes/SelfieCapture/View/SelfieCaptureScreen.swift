@@ -50,6 +50,9 @@ public struct SelfieCaptureScreen: View {
       }
       .padding(24)
     }
+		.onDisappear {
+			viewModel.cameraManager.pauseSession()
+		}
     .preferredColorScheme(.light)
     .alert(item: $viewModel.unauthorizedAlert) { alert in
       Alert(

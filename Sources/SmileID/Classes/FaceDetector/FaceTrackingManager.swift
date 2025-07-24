@@ -135,6 +135,9 @@ class FaceTrackingManager: NSObject {
   }
 
   deinit {
-    resetTracking()
+		trackingRequest?.isLastFrame = true
+		trackingRequest = nil
+		trackedFaceUUID = nil
+		trackingLossFrameCount = 0
   }
 }

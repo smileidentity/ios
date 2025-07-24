@@ -135,6 +135,15 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     )
   }
 
+  deinit {
+    // Clean up face tracking
+    faceTrackingManager.resetTracking()
+    faceTrackingManager.delegate = nil
+
+    // Cancel all Combine subscriptions
+    subscribers.removeAll()
+  }
+
   // MARK: - Setup Helpers
 
   private func configureCameraSession() {
