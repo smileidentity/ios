@@ -376,7 +376,10 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<DocumentVerificationResultDelegate, DocumentVerificationJobResult> {
+class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<
+    DocumentVerificationResultDelegate, DocumentVerificationJobResult
+>
+{
     override func onFinished(delegate: DocumentVerificationResultDelegate) {
         if let error {
             delegate.didError(error: error)
@@ -394,7 +397,10 @@ class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificati
 }
 
 // swiftlint:disable opening_brace
-class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult> {
+class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<
+    EnhancedDocumentVerificationResultDelegate, EnhancedDocumentVerificationJobResult
+>
+{
     override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
         if let error {
             delegate.didError(error: error)

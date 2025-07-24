@@ -103,7 +103,7 @@ public class SmileID {
 
         // Increment and track SDK launch count
         trackSdkLaunchCount()
-        
+
         let fingerprinter = FingerprinterFactory.getInstance()
         Task {
             /// The fingerprint isn't currently as stable as the Device Identifier, because the
@@ -229,12 +229,12 @@ public class SmileID {
                 let allFiles: [URL]
                 do {
                     let livenessFiles =
-                    try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness) ?? []
+                        try LocalStorage.getFilesByType(jobId: jobId, fileType: .liveness) ?? []
                     let additionalFiles = try [
                         LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
                         LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-                        LocalStorage.getInfoJsonFile(jobId: jobId)
+                        LocalStorage.getInfoJsonFile(jobId: jobId),
                     ].compactMap { $0 }
                     allFiles = livenessFiles + additionalFiles
                 } catch {
@@ -598,10 +598,11 @@ public class SmileID {
         useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         consentInformation: ConsentInformation = ConsentInformation(
-            consented: ConsentedInformation(consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                                            personalDetails: false,
-                                            contactInformation: false,
-                                            documentInformation: false)
+            consented: ConsentedInformation(
+                consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                personalDetails: false,
+                contactInformation: false,
+                documentInformation: false)
         ),
         delegate: EnhancedDocumentVerificationResultDelegate
     ) -> some View {
@@ -680,10 +681,11 @@ public class SmileID {
         useStrictMode: Bool = false,
         extraPartnerParams: [String: String] = [:],
         consentInformation: ConsentInformation = ConsentInformation(
-            consented: ConsentedInformation(consentGrantedDate: Date().toISO8601WithMilliseconds(),
-                                            personalDetails: false,
-                                            contactInformation: false,
-                                            documentInformation: false)
+            consented: ConsentedInformation(
+                consentGrantedDate: Date().toISO8601WithMilliseconds(),
+                personalDetails: false,
+                contactInformation: false,
+                documentInformation: false)
         ),
         delegate: BiometricKycResultDelegate
     ) -> some View {
