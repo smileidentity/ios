@@ -8,6 +8,7 @@ struct OrchestratedDocumentVerificationScreen: View {
   let bypassSelfieCaptureWithFile: URL?
   let userId: String
   let jobId: String
+  let autoCaptureTimeout: TimeInterval
   let enableAutoCapture: Bool
   let allowNewEnroll: Bool
   let showAttribution: Bool
@@ -29,6 +30,7 @@ struct OrchestratedDocumentVerificationScreen: View {
       bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
       userId: userId,
       jobId: jobId,
+      autoCaptureTimeout: autoCaptureTimeout,
       enableAutoCapture: enableAutoCapture,
       allowNewEnroll: allowNewEnroll,
       showAttribution: showAttribution,
@@ -64,6 +66,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
   let bypassSelfieCaptureWithFile: URL?
   let userId: String
   let jobId: String
+  let autoCaptureTimeout: TimeInterval
   let enableAutoCapture: Bool
   let allowNewEnroll: Bool
   let showAttribution: Bool
@@ -85,6 +88,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
       bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
       userId: userId,
       jobId: jobId,
+      autoCaptureTimeout: autoCaptureTimeout,
       enableAutoCapture: enableAutoCapture,
       allowNewEnroll: allowNewEnroll,
       showAttribution: showAttribution,
@@ -120,6 +124,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
   let bypassSelfieCaptureWithFile: URL?
   let userId: String
   let jobId: String
+  let autoCaptureTimeout: TimeInterval
   let enableAutoCapture: Bool
   let allowNewEnroll: Bool
   let showAttribution: Bool
@@ -141,6 +146,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     bypassSelfieCaptureWithFile: URL?,
     userId: String,
     jobId: String,
+    autoCaptureTimeout: TimeInterval,
     enableAutoCapture: Bool,
     allowNewEnroll: Bool,
     showAttribution: Bool,
@@ -161,6 +167,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     self.bypassSelfieCaptureWithFile = bypassSelfieCaptureWithFile
     self.userId = userId
     self.jobId = jobId
+    self.autoCaptureTimeout = autoCaptureTimeout
     self.enableAutoCapture = enableAutoCapture
     self.allowNewEnroll = allowNewEnroll
     self.showAttribution = showAttribution

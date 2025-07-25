@@ -10,7 +10,6 @@ enum DocumentDirective: String {
 
 private let correctAspectRatioTolerance = 0.1
 private let centeredTolerance = 30.0
-private let documentAutoCaptureWaitTime: TimeInterval = 1.0
 private let analysisSampleInterval: TimeInterval = 0.350
 
 class DocumentCaptureViewModel: ObservableObject {
@@ -19,6 +18,7 @@ class DocumentCaptureViewModel: ObservableObject {
   }
 
   // Initializer properties
+  private let autoCaptureTimeout: TimeInterval
   private let enableAutoCapture: Bool
   private let knownAspectRatio: Double?
   private let metadata: Metadata = .shared
@@ -51,10 +51,12 @@ class DocumentCaptureViewModel: ObservableObject {
   @Published var cameraManager = CameraManager(orientation: .portrait)
 
   init(
+    autoCaptureTimeout: TimeInterval,
     enableAutoCapture: Bool,
     knownAspectRatio: Double? = nil,
     side: DocumentCaptureSide
   ) {
+    self.autoCaptureTimeout = autoCaptureTimeout
     self.enableAutoCapture = enableAutoCapture
     self.knownAspectRatio = knownAspectRatio
     self.side = side
@@ -100,7 +102,7 @@ class DocumentCaptureViewModel: ObservableObject {
         if let documentFirstDetectedAtTime = self.documentFirstDetectedAtTime {
           let now = Date().timeIntervalSince1970
           let elapsedTime = now - documentFirstDetectedAtTime
-          if elapsedTime > documentAutoCaptureWaitTime, !self.isCapturing, enableAutoCapture {
+          if elapsedTime > autoCaptureTimeout, !self.isCapturing, enableAutoCapture {
             self.documentImageOrigin = DocumentImageOriginValue.cameraAutoCapture
             self.captureDocument()
           }
