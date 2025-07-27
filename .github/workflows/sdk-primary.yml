@@ -31,8 +31,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install bundle
-        run: bundle install
       - name: Write Smile Config
         id: write_smile_config
         # Mask the config so that it doesn't show up in the logs
@@ -62,7 +60,7 @@ jobs:
       - name: Build Example app and Run Unit Tests
         run: |
           xcodebuild -resolvePackageDependencies
-          bundle exec rake provision:ios
-          bundle exec rake test:package
+          rake provision:ios
+          rake test:package
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
