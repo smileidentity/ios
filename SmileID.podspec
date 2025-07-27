@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.dependency 'FingerprintJS'
   s.dependency 'lottie-ios', '~> 4.5.0'
   s.dependency 'Sentry', '~> 8.53.2'
-  s.dependency 'SmileIDSecurity', '~> 1.0.4'
+  s.dependency 'SmileIDSecurity', '1.0.4'
   s.swift_version = '5.5'
   s.source_files = 'Sources/SmileID/Classes/**/*'
   s.resource_bundles = {
