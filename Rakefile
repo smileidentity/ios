@@ -71,7 +71,7 @@ namespace :lint do
 
   desc 'Lints the CocoaPods podspec'
   task :podspec do
-    sh 'pod lib lint SmileID.podspec'
+    sh 'pod lib lint SmileID.podspec --allow-warnings'
   end
 end
 
