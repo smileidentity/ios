@@ -1,4 +1,4 @@
-use_frameworks!
+use_frameworks! :linkage => :static
 platform :ios, '13.0'
 
 target 'SmileID_Example' do

@@ -109,7 +109,8 @@ namespace :provision do
   task :ios do
     Dir.chdir('Example') do
       sh 'bundle install'
-      sh 'pod install'
+      sh 'pod deintegrate || true'
+      sh 'pod install --clean-install'
     end
   end
 end
