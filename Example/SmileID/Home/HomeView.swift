@@ -221,14 +221,14 @@ private struct HomeView_Previews: PreviewProvider {
       authToken: "",
       prodLambdaUrl: "",
       testLambdaUrl: ""))
-    .onAppear {
-      SmileID.initialize(
-        config: Config(
-          partnerId: "",
-          authToken: "",
-          prodLambdaUrl: "",
-          testLambdaUrl: ""),
-        useSandbox: true)
-    }
+      .onAppear {
+        SmileID.initialize(
+          config: Config(
+            partnerId: "",
+            authToken: "",
+            prodLambdaUrl: "",
+            testLambdaUrl: ""),
+          useSandbox: true)
+      }
   }
 }

@@ -98,11 +98,11 @@ struct SmileConfigEntryView: View {
         codeTypes: [.qr],
         scanInterval: 1,
         showViewfinder: true) { response in
-        if case .success(let result) = response {
-          let configJson = result.string
-          onNewSmileConfig(configJson)
+          if case .success(let result) = response {
+            let configJson = result.string
+            onNewSmileConfig(configJson)
+          }
         }
-      }
     }
   }
 }
