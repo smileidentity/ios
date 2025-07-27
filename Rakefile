@@ -82,7 +82,7 @@ namespace :format do
   end
 end
 
-def xcodebuild(command, project = "Example/SmileID.xcworkspace")
+def xcodebuild(command, project = "Example/SmileID.xcodeproj")
   # Determine the project flag based on the file extension
   project_flag = if project.end_with?(".xcworkspace")
                    "-workspace"
