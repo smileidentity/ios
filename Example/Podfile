@@ -4,7 +4,6 @@ platform :ios, '13.0'
 target 'SmileID_Example' do
   pod 'SmileID', :path => '../'
   pod 'netfox'
-  pod 'SwiftLint'
 
   target 'SmileID_Tests' do
     inherit! :search_paths

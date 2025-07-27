@@ -60,7 +60,7 @@ jobs:
       - name: Build Example app and Run Unit Tests
         run: |
           xcodebuild -resolvePackageDependencies
-          rake provision:ios
+          rake lint:podspec
           rake test:package
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
