@@ -187,7 +187,6 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
       case .frontDocumentCapture:
         DocumentCaptureScreen(
           side: .front,
-          autoCaptureTimeout: autoCaptureTimeout,
           enableAutoCapture: enableAutoCapture,
           showInstructions: showInstructions,
           showAttribution: showAttribution,
@@ -207,7 +206,6 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
       case .backDocumentCapture:
         DocumentCaptureScreen(
           side: .back,
-          autoCaptureTimeout: autoCaptureTimeout,
           enableAutoCapture: enableAutoCapture,
           showInstructions: showInstructions,
           showAttribution: showAttribution,
