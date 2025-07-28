@@ -13,4 +13,4 @@ disabled_rules:
 excluded:
   - Pods
 included:
-  - ../Sources
+  - Sources

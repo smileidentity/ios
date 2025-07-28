@@ -8,17 +8,15 @@ struct ResourcesView: View {
         VStack(spacing: 16) {
           ResourceCell(
             title: "Explore Documentation",
-            caption: "Read everything relating to our stack")
-          {
-            openUrl("https://docs.usesmileid.com/")
-          }
+            caption: "Read everything relating to our stack") {
+              openUrl("https://docs.usesmileid.com/")
+            }
 
           ResourceCell(
             title: "Privacy Policy",
-            caption: "Learn more about how we handle data")
-          {
-            openUrl("https://usesmileid.com/privacy-policy")
-          }
+            caption: "Learn more about how we handle data") {
+              openUrl("https://usesmileid.com/privacy-policy")
+            }
 
           ResourceCell(title: "View FAQs", caption: "Explore frequently asked questions") {
             openUrl("https://docs.usesmileid.com/further-reading/faqs")
@@ -26,10 +24,9 @@ struct ResourcesView: View {
 
           ResourceCell(
             title: "Supported ID Types and Documents",
-            caption: "See our coverage range across the continent")
-          {
-            openUrl("https://docs.usesmileid.com/supported-id-types/for-individuals-kyc")
-          }
+            caption: "See our coverage range across the continent") {
+              openUrl("https://docs.usesmileid.com/supported-id-types/for-individuals-kyc")
+            }
 
           AboutUsCell(imageName: "info.circle.fill", title: "About Us") {
             openUrl("https://usesmileid.com/about-us")

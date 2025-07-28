@@ -36,7 +36,7 @@ class JobItemModel: ObservableObject {
       request: request,
       interval: 1,
       numAttempts: 30)
-    var response: JobStatusResponse<JobResult>? = nil
+    var response: JobStatusResponse<JobResult>?
 
     for try await res in pollStream {
       response = res

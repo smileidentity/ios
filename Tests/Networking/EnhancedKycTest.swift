@@ -3,6 +3,16 @@ import Foundation
 import XCTest
 
 class EnhancedKycTest: BaseTestCase {
+  override func setUpWithError() throws {
+    try super.setUpWithError()
+    let config = Config(
+      partnerId: "id",
+      authToken: "token",
+      prodLambdaUrl: "url",
+      testLambdaUrl: "url")
+    SmileID.initialize(config: config)
+  }
+
   func testShouldDecodeEnhancedKycAsyncResponseJson() throws {
     // given
     let json = """

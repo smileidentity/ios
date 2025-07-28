@@ -100,18 +100,17 @@ struct WelcomeScreen: View {
       CodeScannerView(
         codeTypes: [.qr],
         scanInterval: 1,
-        showViewfinder: true)
-      { response in
-        if case .success(let result) = response {
-          let configJson = result.string
-          let response = updateSmileConfig(configJson)
-          if let config = response {
-            self.config = config
-            showSuccess = true
-            showQrCodeScanner = false
+        showViewfinder: true) { response in
+          if case .success(let result) = response {
+            let configJson = result.string
+            let response = updateSmileConfig(configJson)
+            if let config = response {
+              self.config = config
+              showSuccess = true
+              showQrCodeScanner = false
+            }
           }
         }
-      }
     }
     .overlay(
       Group {

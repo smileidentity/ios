@@ -6,15 +6,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-  MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.PAT_IOS_CERTIFICATES_REPO_B64 }}
-  FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-  ISSUER_ID: ${{ secrets.ISSUER_ID }}
-  KEY_ID: ${{ secrets.KEY_ID }}
-  APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
-  FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 10
-
 jobs:
   lint:
     name: "Lint"
@@ -35,18 +26,11 @@ jobs:
 
   build:
     name: "Build App and Run Unit Tests"
-    # TODO: Change back to macos-latest once it points to macOS 14 (Q2 '24)
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install bundle
-        run: bundle install
-      - name: Update Fastlane
-        run: bundle update fastlane
-      - name: Update Compile Sources
-        run: ruby ./Scripts/update_compile_sources.rb
       - name: Write Smile Config
         id: write_smile_config
         # Mask the config so that it doesn't show up in the logs
@@ -68,12 +52,15 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup
         with:
-          xcode: "15.2"
+          xcode: "16.2"
+      - name: Verify active Xcode
+        run: |
+          echo "Current developer directory: $(xcode-select -p)"
+          ls -1 /Applications | grep Xcode || true
       - name: Build Example app and Run Unit Tests
         run: |
           xcodebuild -resolvePackageDependencies
-          bundle exec rake test:spm    
-          bundle exec rake provision:ios
-          bundle exec rake test:package
+          rake lint:podspec
+          rake test:package
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
