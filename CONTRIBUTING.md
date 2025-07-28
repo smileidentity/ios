@@ -79,8 +79,6 @@ bundle exec rake test:example
 
 The project uses Xcode Cloud for building the Example project. This eliminates the need for manual certificate and provisioning profile management that was previously handled through fastlane.
 
-
-
 ## Optional: Code Formatting and Quality Checks
 
 To ensure our project maintains high-quality standards and consistency across contributions, we leverage the `pre-commit` framework for automated code formatting and quality checks. This tool helps us enforce coding standards, perform syntax checks, and automatically format code according to predefined rules before commits are made, reducing the need for manual code review for stylistic concerns.
