@@ -28,7 +28,7 @@ let package = Package(
         .product(name: "SmileIDSecurity", package: "smile-id-security"),
         .product(name: "Sentry", package: "sentry-cocoa")
       ],
-      path: "Sources/SmileID",
+      path: "Sources",
       resources: [.process("Resources")]),
     .testTarget(
       name: "SmileIDTests",

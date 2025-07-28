@@ -26,6 +26,7 @@
 		20057C102E155C760088D9C1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20057C0F2E155C760088D9C1 /* SceneDelegate.swift */; };
 		200C41F22E30CFAD00C0F3CF /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F12E30CFAD00C0F3CF /* SmileID */; };
 		200C41F52E30D04500C0F3CF /* netfox in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F42E30D04500C0F3CF /* netfox */; };
+		200C41F62E30D05600C0F3CF /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F52E30D05600C0F3CF /* SmileID */; };
 		20343AED2C1C825D003536F5 /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEC2C1C825D003536F5 /* JobsView.swift */; };
 		20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEE2C206BDF003536F5 /* JobListItem.swift */; };
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
@@ -80,7 +81,6 @@
 		91CB21A52AC10C61005AEBF5 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */; };
 		91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC32AB481FE00A8D36B /* PollingTests.swift */; };
 		91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */; };
-		200C41F62E30D05600C0F3CF /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F52E30D05600C0F3CF /* SmileID */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -986,7 +986,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		200C41F02E30CFAD00C0F3CF /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "..";
+			relativePath = ..;
 		};
 /* End XCLocalSwiftPackageReference section */
 

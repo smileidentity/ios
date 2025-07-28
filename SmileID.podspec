@@ -13,8 +13,8 @@ Pod::Spec.new do |s|
   s.dependency 'Sentry', '8.53.2'
   s.dependency 'SmileIDSecurity', '1.0.4'
   s.swift_version = '5.7'
-  s.source_files = 'Sources/SmileID/Classes/**/*'
+  s.source_files = 'Sources/Classes/**/*'
   s.resource_bundles = {
-    'SmileID_SmileID' => ['Sources/SmileID/Resources/**/*.{storyboard,storyboardc,xib,nib,xcassets,json,png,ttf,lproj,xcprivacy,mlmodel,mlmodelc,lottie}']
+    'SmileID_SmileID' => ['Sources/Resources/**/*.{storyboard,storyboardc,xib,nib,xcassets,json,png,ttf,lproj,xcprivacy,mlmodel,mlmodelc,lottie}']
   }
 end
