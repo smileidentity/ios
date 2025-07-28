@@ -62,6 +62,7 @@ public struct DocumentCaptureScreen: View {
     self.onSkip = onSkip
 
     viewModel = DocumentCaptureViewModel(
+      autoCaptureTimeout: autoCaptureTimeout,
       enableAutoCapture: enableAutoCapture,
       knownAspectRatio: knownIdAspectRatio,
       side: side)
