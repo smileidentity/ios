@@ -11,6 +11,26 @@ This repo contains all the code required to run the Smile Identity SDK. The proj
 We use [`mint`](https://github.com/yonaskolb/Mint) for running swift command line tool packages.
 We use [`rake`](https://github.com/ruby/rake) for task automation.
 
+## Dependency Resolution
+
+### Ruby Dependencies
+Install Ruby dependencies using Bundler:
+```shell
+bundle install
+```
+
+### Swift Package Dependencies
+The project uses Swift Package Manager for dependencies. Xcode will automatically resolve packages when you open the project, but you can also resolve them manually:
+```shell
+xcodebuild -resolvePackageDependencies
+```
+
+### Mint Dependencies
+Install Mint-managed tools:
+```shell
+mint bootstrap
+```
+
 ## Requirements
 
 - iOS 13 or higher
@@ -43,25 +63,6 @@ swiftformat --lint .
 
 SwiftFormat linting is automatically run on all pull requests. The CI will fail if code is not properly formatted according to the project's configuration.
 
-Then get certs and profiles:
-```shell
-bundle exec fastlane run get_certificates
-bundle exec fastlane match development --readonly
-bundle exec fastlane match appstore --readonly
-```
-
-## Sentry setup (Sample app only)
-
-```shell
-export SENTRY_DSN='your_sentry_dsn'
-```
-Run the following command to install the required variable for use in the example app
-
-```shell
-bundle exec arkana -c .arkana.yml -l swift 
-```
-bundle exec rake test:package
-
 ## SDK Tests
 
 ```shell
@@ -76,16 +77,7 @@ bundle exec rake test:example
 
 ## CI Setup
 
-The `GITHUB_PAT_IOS_CERTIFICATES_REPO_B64` secret is created by running
-
-```shell
-echo -n smileidentity:your_personal_access_token | base64
-```
-
-`your_personal_access_token` is the fine-grained personal access token created that has permissions
-to the [`smileidentity/ios-certificates`](https://github.com/smileidentity/ios-certificates) repo.
-
-A new token can be obtained at https://github.com/settings/personal-access-tokens/new
+The project uses Xcode Cloud for building the Example project. This eliminates the need for manual certificate and provisioning profile management that was previously handled through fastlane.
 
 
 
