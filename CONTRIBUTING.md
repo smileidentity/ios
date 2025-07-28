@@ -47,6 +47,17 @@ Install SwiftFormat using Homebrew:
 brew install swiftformat
 ```
 
+## Code Linting
+
+This project uses [SwiftLint](https://github.com/realm/SwiftLint) for enforcing Swift style and conventions. SwiftLint is required for the build script phase to run properly.
+
+### Local Setup
+
+Install SwiftLint using Homebrew:
+```shell
+brew install swiftlint
+```
+
 ### Usage
 
 Format all Swift files in the project:
