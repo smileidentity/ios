@@ -9,7 +9,7 @@ struct OrchestratedDocumentVerificationScreen: View {
   let userId: String
   let jobId: String
   let autoCaptureTimeout: TimeInterval
-  let enableAutoCapture: Bool
+  let autoCapture: AutoCapture
   let allowNewEnroll: Bool
   let showAttribution: Bool
   let allowGalleryUpload: Bool
@@ -31,7 +31,7 @@ struct OrchestratedDocumentVerificationScreen: View {
       userId: userId,
       jobId: jobId,
       autoCaptureTimeout: autoCaptureTimeout,
-      enableAutoCapture: enableAutoCapture,
+      autoCapture: autoCapture,
       allowNewEnroll: allowNewEnroll,
       showAttribution: showAttribution,
       allowGalleryUpload: allowGalleryUpload,
@@ -67,7 +67,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
   let userId: String
   let jobId: String
   let autoCaptureTimeout: TimeInterval
-  let enableAutoCapture: Bool
+  let autoCapture: AutoCapture
   let allowNewEnroll: Bool
   let showAttribution: Bool
   let allowGalleryUpload: Bool
@@ -89,7 +89,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
       userId: userId,
       jobId: jobId,
       autoCaptureTimeout: autoCaptureTimeout,
-      enableAutoCapture: enableAutoCapture,
+      autoCapture: autoCapture,
       allowNewEnroll: allowNewEnroll,
       showAttribution: showAttribution,
       allowGalleryUpload: allowGalleryUpload,
@@ -125,7 +125,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
   let userId: String
   let jobId: String
   let autoCaptureTimeout: TimeInterval
-  let enableAutoCapture: Bool
+  let autoCapture: AutoCapture
   let allowNewEnroll: Bool
   let showAttribution: Bool
   let allowGalleryUpload: Bool
@@ -147,7 +147,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     userId: String,
     jobId: String,
     autoCaptureTimeout: TimeInterval,
-    enableAutoCapture: Bool,
+    autoCapture: AutoCapture,
     allowNewEnroll: Bool,
     showAttribution: Bool,
     allowGalleryUpload: Bool,
@@ -168,7 +168,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     self.userId = userId
     self.jobId = jobId
     self.autoCaptureTimeout = autoCaptureTimeout
-    self.enableAutoCapture = enableAutoCapture
+    self.autoCapture = autoCapture
     self.allowNewEnroll = allowNewEnroll
     self.showAttribution = showAttribution
     self.allowGalleryUpload = allowGalleryUpload
@@ -188,7 +188,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         DocumentCaptureScreen(
           side: .front,
           autoCaptureTimeout: autoCaptureTimeout,
-          enableAutoCapture: enableAutoCapture,
+          autoCapture: autoCapture,
           showInstructions: showInstructions,
           showAttribution: showAttribution,
           allowGallerySelection: allowGalleryUpload,
@@ -208,7 +208,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
         DocumentCaptureScreen(
           side: .back,
           autoCaptureTimeout: autoCaptureTimeout,
-          enableAutoCapture: enableAutoCapture,
+          autoCapture: autoCapture,
           showInstructions: showInstructions,
           showAttribution: showAttribution,
           allowGallerySelection: allowGalleryUpload,

@@ -19,7 +19,7 @@ class DocumentCaptureViewModel: ObservableObject {
 
   // Initializer properties
   private let autoCaptureTimeout: TimeInterval
-  private let enableAutoCapture: Bool
+  private let autoCapture: AutoCapture
   private let knownAspectRatio: Double?
   private let metadata: Metadata = .shared
   private var captureDuration = MonotonicTime()
@@ -52,12 +52,12 @@ class DocumentCaptureViewModel: ObservableObject {
 
   init(
     autoCaptureTimeout: TimeInterval,
-    enableAutoCapture: Bool,
+    autoCapture: AutoCapture,
     knownAspectRatio: Double? = nil,
     side: DocumentCaptureSide
   ) {
     self.autoCaptureTimeout = autoCaptureTimeout
-    self.enableAutoCapture = enableAutoCapture
+    self.autoCapture = autoCapture
     self.knownAspectRatio = knownAspectRatio
     self.side = side
     defaultAspectRatio = knownAspectRatio ?? 1.0
@@ -84,15 +84,22 @@ class DocumentCaptureViewModel: ObservableObject {
       .sink(receiveValue: analyzeImage)
       .store(in: &subscribers)
 
-    if enableAutoCapture {
+    switch autoCapture {
+    case .manualCaptureOnly:
+      showManualCapture()
+
+    case .autoCaptureOnly:
+      // Do nothing; do not show manual capture button
+      break
+
+    case .autoCapture:
       Timer.scheduledTimer(
         timeInterval: autoCaptureTimeout,
         target: self,
         selector: #selector(showManualCapture),
         userInfo: nil,
-        repeats: false)
-    } else {
-      showManualCapture()
+        repeats: false
+      )
     }
 
     // Auto capture after 1 second of edges detected
@@ -101,7 +108,9 @@ class DocumentCaptureViewModel: ObservableObject {
         if let documentFirstDetectedAtTime = self.documentFirstDetectedAtTime {
           let now = Date().timeIntervalSince1970
           let elapsedTime = now - documentFirstDetectedAtTime
-          if elapsedTime > autoCaptureTimeout, !self.isCapturing, enableAutoCapture {
+          if elapsedTime > autoCaptureTimeout,
+             !self.isCapturing,
+             [.autoCapture, .autoCaptureOnly].contains(autoCapture) {
             self.documentImageOrigin = DocumentImageOriginValue.cameraAutoCapture
             self.captureDocument()
           }

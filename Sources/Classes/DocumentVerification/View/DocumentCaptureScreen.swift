@@ -9,7 +9,7 @@ public enum DocumentCaptureSide {
 public struct DocumentCaptureScreen: View {
   let side: DocumentCaptureSide
   let autoCaptureTimeout: TimeInterval
-  let enableAutoCapture: Bool
+  let autoCapture: AutoCapture
   let showInstructions: Bool
   let showAttribution: Bool
   let allowGallerySelection: Bool
@@ -29,7 +29,7 @@ public struct DocumentCaptureScreen: View {
   public init(
     side: DocumentCaptureSide,
     autoCaptureTimeout: TimeInterval,
-    enableAutoCapture: Bool,
+    autoCapture: AutoCapture,
     showInstructions: Bool,
     showAttribution: Bool,
     allowGallerySelection: Bool,
@@ -46,7 +46,7 @@ public struct DocumentCaptureScreen: View {
   ) {
     self.side = side
     self.autoCaptureTimeout = autoCaptureTimeout
-    self.enableAutoCapture = enableAutoCapture
+    self.autoCapture = autoCapture
     self.showInstructions = showInstructions
     self.showAttribution = showAttribution
     self.allowGallerySelection = allowGallerySelection
@@ -63,7 +63,7 @@ public struct DocumentCaptureScreen: View {
 
     viewModel = DocumentCaptureViewModel(
       autoCaptureTimeout: autoCaptureTimeout,
-      enableAutoCapture: enableAutoCapture,
+      autoCapture: autoCapture,
       knownAspectRatio: knownIdAspectRatio,
       side: side)
   }
