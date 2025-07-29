@@ -498,6 +498,7 @@ public class SmileID {
   ///   supplied, image analysis is done to calculate the documents aspect ratio
   ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
   ///   image
+  ///   - autoCaptureTimeout: Change the default document auto capture timeout on the sdk
   ///   - enableAutoCapture: Enable or disable document auto capture
   ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
   ///   front side will be captured. If this is true, an option to skip back side will still be
@@ -520,6 +521,7 @@ public class SmileID {
     documentType: String? = nil,
     idAspectRatio: Double? = nil,
     bypassSelfieCaptureWithFile: URL? = nil,
+    autoCaptureTimeout: TimeInterval = 10.0,
     enableAutoCapture: Bool = true,
     captureBothSides: Bool = true,
     allowAgentMode: Bool = false,
@@ -540,6 +542,7 @@ public class SmileID {
       bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
       userId: userId,
       jobId: jobId,
+      autoCaptureTimeout: autoCaptureTimeout,
       enableAutoCapture: enableAutoCapture,
       allowNewEnroll: allowNewEnroll,
       showAttribution: showAttribution,
@@ -568,6 +571,7 @@ public class SmileID {
   ///   supplied, image analysis is done to calculate the documents aspect ratio
   ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
   ///   image
+  ///   - autoCaptureTimeout: Change the default document auto capture timeout on the sdk
   ///   - enableAutoCapture: Enable or disable document auto capture
   ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
   ///   front side will be captured. If this is true, an option to skip back side will still be
@@ -593,6 +597,7 @@ public class SmileID {
     documentType: String? = nil,
     idAspectRatio: Double? = nil,
     bypassSelfieCaptureWithFile: URL? = nil,
+    autoCaptureTimeout: TimeInterval = 10.0,
     enableAutoCapture: Bool = true,
     captureBothSides: Bool = true,
     allowAgentMode: Bool = false,
@@ -615,6 +620,7 @@ public class SmileID {
       bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
       userId: userId,
       jobId: jobId,
+      autoCaptureTimeout: autoCaptureTimeout,
       enableAutoCapture: enableAutoCapture,
       allowNewEnroll: allowNewEnroll,
       showAttribution: showAttribution,
