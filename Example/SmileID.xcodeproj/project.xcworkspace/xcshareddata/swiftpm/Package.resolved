@@ -1,0 +1,60 @@
+{
+  "originHash" : "dd10be05b79b8cde0e51ad7d271977fd3ad14c19b9d212888e81e42ea39ae55c",
+  "pins" : [
+    {
+      "identity" : "fingerprintjs-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fingerprintjs/fingerprintjs-ios",
+      "state" : {
+        "revision" : "2e2ead3d02c46736d9b4a66373700489113e293a",
+        "version" : "1.6.0"
+      }
+    },
+    {
+      "identity" : "lottie-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-spm",
+      "state" : {
+        "revision" : "04f2fd18cc9404a0a0917265a449002674f24ec9",
+        "version" : "4.5.2"
+      }
+    },
+    {
+      "identity" : "netfox",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kasketis/netfox",
+      "state" : {
+        "revision" : "557576032736fd3140422baefb68b8f76c55088f",
+        "version" : "1.21.0"
+      }
+    },
+    {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa",
+      "state" : {
+        "revision" : "ca92efeb24b10052cd2a79e5205f42c5a16770ec",
+        "version" : "8.53.2"
+      }
+    },
+    {
+      "identity" : "smile-id-security",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/smileidentity/smile-id-security",
+      "state" : {
+        "revision" : "92849f3f890583b6d060c9dddaf5dfa0289d1627",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "zipfoundation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/weichsel/ZIPFoundation.git",
+      "state" : {
+        "revision" : "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0",
+        "version" : "0.9.19"
+      }
+    }
+  ],
+  "version" : 3
+}
