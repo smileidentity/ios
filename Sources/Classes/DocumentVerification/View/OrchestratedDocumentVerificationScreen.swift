@@ -8,6 +8,7 @@ struct OrchestratedDocumentVerificationScreen: View {
   let bypassSelfieCaptureWithFile: URL?
   let userId: String
   let jobId: String
+  let autoCaptureTimeout: TimeInterval
   let autoCapture: AutoCapture
   let allowNewEnroll: Bool
   let showAttribution: Bool
@@ -29,6 +30,7 @@ struct OrchestratedDocumentVerificationScreen: View {
       bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
       userId: userId,
       jobId: jobId,
+      autoCaptureTimeout: autoCaptureTimeout,
       autoCapture: autoCapture,
       allowNewEnroll: allowNewEnroll,
       showAttribution: showAttribution,
@@ -64,6 +66,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
   let bypassSelfieCaptureWithFile: URL?
   let userId: String
   let jobId: String
+  let autoCaptureTimeout: TimeInterval
   let autoCapture: AutoCapture
   let allowNewEnroll: Bool
   let showAttribution: Bool
@@ -85,6 +88,7 @@ struct OrchestratedEnhancedDocumentVerificationScreen: View {
       bypassSelfieCaptureWithFile: bypassSelfieCaptureWithFile,
       userId: userId,
       jobId: jobId,
+      autoCaptureTimeout: autoCaptureTimeout,
       autoCapture: autoCapture,
       allowNewEnroll: allowNewEnroll,
       showAttribution: showAttribution,
@@ -120,6 +124,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
   let bypassSelfieCaptureWithFile: URL?
   let userId: String
   let jobId: String
+  let autoCaptureTimeout: TimeInterval
   let autoCapture: AutoCapture
   let allowNewEnroll: Bool
   let showAttribution: Bool
@@ -141,6 +146,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     bypassSelfieCaptureWithFile: URL?,
     userId: String,
     jobId: String,
+    autoCaptureTimeout: TimeInterval,
     autoCapture: AutoCapture,
     allowNewEnroll: Bool,
     showAttribution: Bool,
@@ -161,6 +167,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
     self.bypassSelfieCaptureWithFile = bypassSelfieCaptureWithFile
     self.userId = userId
     self.jobId = jobId
+    self.autoCaptureTimeout = autoCaptureTimeout
     self.autoCapture = autoCapture
     self.allowNewEnroll = allowNewEnroll
     self.showAttribution = showAttribution
@@ -180,6 +187,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
       case .frontDocumentCapture:
         DocumentCaptureScreen(
           side: .front,
+          autoCaptureTimeout: autoCaptureTimeout,
           autoCapture: autoCapture,
           showInstructions: showInstructions,
           showAttribution: showAttribution,
@@ -199,6 +207,7 @@ private struct IOrchestratedDocumentVerificationScreen<T, U: JobResult>: View {
       case .backDocumentCapture:
         DocumentCaptureScreen(
           side: .back,
+          autoCaptureTimeout: autoCaptureTimeout,
           autoCapture: autoCapture,
           showInstructions: showInstructions,
           showAttribution: showAttribution,

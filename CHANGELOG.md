@@ -4,10 +4,13 @@
 ### Added
 
 * Introduce Sentry to track and report SmileID related errors on the iOS sdk. It is enabled by default using `enableCrashReporting: Bool = true,` on `SmileID.initialize()`
+* Added `autoCaptureTimeout` that allows partners to override the default 10 seconds auto capture
+  timeout
 
 ### Changed
 
 * Removed `AntiFraud` response in `JobStatus` calls
+* Removed the default `ConsentInformation` set when no consent is passed
 * Removed the default `ConsentInformation`
 * Changed `enableAutoCapture` to `AutoCapture` enum to allow to allow partners change document capture options
 

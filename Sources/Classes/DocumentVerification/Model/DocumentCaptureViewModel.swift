@@ -10,7 +10,6 @@ enum DocumentDirective: String {
 
 private let correctAspectRatioTolerance = 0.1
 private let centeredTolerance = 30.0
-private let documentAutoCaptureWaitTime: TimeInterval = 1.0
 private let analysisSampleInterval: TimeInterval = 0.350
 
 class DocumentCaptureViewModel: ObservableObject {
@@ -19,6 +18,7 @@ class DocumentCaptureViewModel: ObservableObject {
   }
 
   // Initializer properties
+  private let autoCaptureTimeout: TimeInterval
   private let autoCapture: AutoCapture
   private let knownAspectRatio: Double?
   private let metadata: Metadata = .shared
@@ -49,19 +49,21 @@ class DocumentCaptureViewModel: ObservableObject {
   @Published var captureError: Error?
   @Published var isCapturing = false
   @Published var cameraManager = CameraManager(orientation: .portrait)
-
-  init(
-    autoCapture: AutoCapture,
-    knownAspectRatio: Double? = nil,
-    side: DocumentCaptureSide
+  
+    init(
+      autoCaptureTimeout: TimeInterval,
+      autoCapture: AutoCapture,
+      knownAspectRatio: Double? = nil,
+      side: DocumentCaptureSide
   ) {
-    self.autoCapture = autoCapture
-    self.knownAspectRatio = knownAspectRatio
-    self.side = side
-    defaultAspectRatio = knownAspectRatio ?? 1.0
-    DispatchQueue.main.async { [self] in
-      idAspectRatio = defaultAspectRatio
-    }
+      self.autoCaptureTimeout = autoCaptureTimeout
+      self.autoCapture = autoCapture
+      self.knownAspectRatio = knownAspectRatio
+      self.side = side
+      defaultAspectRatio = knownAspectRatio ?? 1.0
+      DispatchQueue.main.async { [self] in
+        idAspectRatio = defaultAspectRatio
+      }
 
     cameraManager.$status
       .receive(on: DispatchQueue.main)
@@ -82,10 +84,9 @@ class DocumentCaptureViewModel: ObservableObject {
       .sink(receiveValue: analyzeImage)
       .store(in: &subscribers)
 
-    // Show Manual Capture button after 10 seconds
     if enableAutoCapture {
       Timer.scheduledTimer(
-        timeInterval: 10,
+        timeInterval: autoCaptureTimeout,
         target: self,
         selector: #selector(showManualCapture),
         userInfo: nil,
@@ -100,7 +101,7 @@ class DocumentCaptureViewModel: ObservableObject {
         if let documentFirstDetectedAtTime = self.documentFirstDetectedAtTime {
           let now = Date().timeIntervalSince1970
           let elapsedTime = now - documentFirstDetectedAtTime
-          if elapsedTime > documentAutoCaptureWaitTime, !self.isCapturing, enableAutoCapture {
+          if elapsedTime > autoCaptureTimeout, !self.isCapturing, enableAutoCapture {
             self.documentImageOrigin = DocumentImageOriginValue.cameraAutoCapture
             self.captureDocument()
           }
