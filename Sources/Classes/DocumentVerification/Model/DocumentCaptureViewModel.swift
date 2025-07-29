@@ -84,15 +84,22 @@ class DocumentCaptureViewModel: ObservableObject {
       .sink(receiveValue: analyzeImage)
       .store(in: &subscribers)
 
-    if enableAutoCapture {
+    switch autoCapture {
+    case .manualCaptureOnly:
+      showManualCapture()
+
+    case .autoCaptureOnly:
+      // Do nothing; do not show manual capture button
+      break
+
+    case .autoCapture:
       Timer.scheduledTimer(
         timeInterval: autoCaptureTimeout,
         target: self,
         selector: #selector(showManualCapture),
         userInfo: nil,
-        repeats: false)
-    } else {
-      showManualCapture()
+        repeats: false
+      )
     }
 
     // Auto capture after 1 second of edges detected
