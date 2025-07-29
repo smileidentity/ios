@@ -7,3 +7,9 @@ struct DocumentCaptureResultStore {
   var selfie: URL
   var livenessImages: [URL]
 }
+
+public enum AutoCapture {
+  case autoCapture
+  case autoCaptureOnly
+  case manualCaptureOnly
+}

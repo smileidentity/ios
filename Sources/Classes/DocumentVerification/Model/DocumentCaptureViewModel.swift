@@ -19,7 +19,7 @@ class DocumentCaptureViewModel: ObservableObject {
   }
 
   // Initializer properties
-  private let enableAutoCapture: Bool
+  private let autoCapture: AutoCapture
   private let knownAspectRatio: Double?
   private let metadata: Metadata = .shared
   private var captureDuration = MonotonicTime()
@@ -51,11 +51,11 @@ class DocumentCaptureViewModel: ObservableObject {
   @Published var cameraManager = CameraManager(orientation: .portrait)
 
   init(
-    enableAutoCapture: Bool,
+    autoCapture: AutoCapture,
     knownAspectRatio: Double? = nil,
     side: DocumentCaptureSide
   ) {
-    self.enableAutoCapture = enableAutoCapture
+    self.autoCapture = autoCapture
     self.knownAspectRatio = knownAspectRatio
     self.side = side
     defaultAspectRatio = knownAspectRatio ?? 1.0
