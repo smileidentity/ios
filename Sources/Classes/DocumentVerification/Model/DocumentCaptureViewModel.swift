@@ -84,10 +84,9 @@ class DocumentCaptureViewModel: ObservableObject {
       .sink(receiveValue: analyzeImage)
       .store(in: &subscribers)
 
-    // Show Manual Capture button after 10 seconds
     if enableAutoCapture {
       Timer.scheduledTimer(
-        timeInterval: 10,
+        timeInterval: autoCaptureTimeout,
         target: self,
         selector: #selector(showManualCapture),
         userInfo: nil,
