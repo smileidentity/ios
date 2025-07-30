@@ -6,6 +6,7 @@
 * Introduce Sentry to track and report SmileID related errors on the iOS sdk. It is enabled by default using `enableCrashReporting: Bool = true,` on `SmileID.initialize()`
 * Added `autoCaptureTimeout` that allows partners to override the default 10 seconds auto capture
   timeout
+* Add new wrapper name `reactNativeExpo` for React Native Expo SDK.
 
 ### Changed
 

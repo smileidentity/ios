@@ -22,4 +22,5 @@ enum CameraFacingValue: String, Codable {
 public enum WrapperSdkName: String {
   case flutter
   case reactNative = "react_native"
+  case reactNativeExpo = "react_native_expo"
 }
