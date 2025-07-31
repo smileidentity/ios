@@ -32,21 +32,20 @@ public struct SelfieCaptureScreen: View {
           .font(SmileID.theme.header4)
           .transition(.slide)
 
-        if allowAgentMode {
-          let textColor = agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent
-          let bgColor = agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain
-          Toggle(isOn: $viewModel.useBackCamera) {
-            Text(SmileIDResourcesHelper.localizedString(for: "Camera.AgentMode"))
-              .font(SmileID.theme.header4)
-              .foregroundColor(textColor)
-          }
-          .padding(10)
-          .background(bgColor)
-          .cornerRadius(25)
-          .shadow(radius: 25)
-          .animation(.default)
-          .frame(maxWidth: 200)
+        let textColor = agentMode ? SmileID.theme.backgroundMain : SmileID.theme.accent
+        let bgColor = agentMode ? SmileID.theme.accent : SmileID.theme.backgroundMain
+        Toggle(isOn: $viewModel.useBackCamera) {
+          Text(SmileIDResourcesHelper.localizedString(for: "Camera.AgentMode"))
+            .font(SmileID.theme.header4)
+            .foregroundColor(textColor)
         }
+        .padding(10)
+        .background(bgColor)
+        .cornerRadius(25)
+        .shadow(radius: 25)
+        .animation(.default)
+        .frame(maxWidth: 200)
+        .opacity(allowAgentMode ? 1.0 : 0.0)
       }
       .padding(24)
     }
