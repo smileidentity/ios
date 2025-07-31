@@ -1,5 +1,5 @@
 # Release Notes
-## Unreleased
+## 11.1.0 - July 31, 2025
 
 ### Added
 
@@ -10,10 +10,13 @@
 
 ### Changed
 
+* Changed `enableAutoCapture` to `AutoCapture` enum to allow to allow partners change document capture options
+
+### Removed
+
 * Removed `AntiFraud` response in `JobStatus` calls
 * Removed the default `ConsentInformation` set when no consent is passed
 * Removed the default `ConsentInformation`
-* Changed `enableAutoCapture` to `AutoCapture` enum to allow to allow partners change document capture options
 
 ## 11.0.2 - July 10, 2025
 
