@@ -38,15 +38,6 @@
       }
     },
     {
-      "identity" : "smile-id-security",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/smileidentity/smile-id-security",
-      "state" : {
-        "revision" : "92849f3f890583b6d060c9dddaf5dfa0289d1627",
-        "version" : "1.0.4"
-      }
-    },
-    {
       "identity" : "zipfoundation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/weichsel/ZIPFoundation.git",
