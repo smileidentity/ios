@@ -16,7 +16,6 @@ class DeviceOrientationMetadata: MetadataProtocol {
   private enum OrientationType: String {
     case portrait
     case landscape
-    case flat
     case unknown
   }
 
@@ -57,11 +56,8 @@ class DeviceOrientationMetadata: MetadataProtocol {
   private func detectOrientationChange(from data: CMAccelerometerData) -> OrientationType {
     let accelerationX = data.acceleration.x
     let accelerationY = data.acceleration.y
-    let accelerationZ = data.acceleration.z
 
-    if abs(accelerationZ) > 0.85 {
-      return OrientationType.flat
-    } else if abs(accelerationY) > abs(accelerationX) {
+    if abs(accelerationY) > abs(accelerationX) {
       return OrientationType.portrait
     } else {
       return OrientationType.landscape
