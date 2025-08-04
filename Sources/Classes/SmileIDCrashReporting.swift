@@ -1,4 +1,5 @@
 import Sentry
+import SmileIDSecurity
 import UIKit
 
 class SmileIDCrashReporting {

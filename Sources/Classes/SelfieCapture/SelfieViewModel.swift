@@ -14,9 +14,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     static let minFaceAreaThreshold = 0.125
     static let maxFaceAreaThreshold = 0.25
     static let faceRotationThreshold = 0.03
-    static let faceRollThreshold = 0.025 // roll has a smaller range than yaw
+    static let faceRollThreshold = 0.025  // roll has a smaller range than yaw
     static let numLivenessImages = 7
-    static var numTotalSteps: Int { numLivenessImages + 1 } // numLivenessImages + 1 selfie image
+    static var numTotalSteps: Int { numLivenessImages + 1 }  // numLivenessImages + 1 selfie image
     static let livenessImageSize = 320
     static let selfieImageSize = 640
   }
@@ -128,7 +128,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     // Initial metadata for camera facing.
     let cameraFacing: CameraFacingValue =
       useBackCamera
-        ? .backCamera : .frontCamera
+      ? .backCamera : .frontCamera
     metadata.addMetadata(
       key: .selfieImageOrigin,
       value: cameraFacing.rawValue
@@ -278,12 +278,14 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     // Perform the rotation checks *after* changing directive to Capturing
     // -- we don't want to explicitly tell the user to move their head.
     guard hasFaceRotatedEnough(face: face) else {
-      debug("Insufficient head rotation; waiting for movement to ensure diversity.", category: "SelfieViewModel")
+      debug(
+        "Insufficient head rotation; waiting for movement to ensure diversity.",
+        category: "SelfieViewModel")
       return
     }
 
     // All good - perform capture.
-    let orientation: CGImagePropertyOrientation = currentlyUsingArKit ? .right : .up
+    let orientation: CGImagePropertyOrientation = getUprightOrientation()
     lastAutoCaptureTime = Date()
     do {
       try captureFrame(image, orientation: orientation)
@@ -302,7 +304,8 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     if boundingBox.minX < Constants.minFaceCenteredThreshold
       || boundingBox.minY < Constants.minFaceCenteredThreshold
       || boundingBox.maxX > Constants.maxFaceCenteredThreshold
-      || boundingBox.maxY > Constants.maxFaceCenteredThreshold {
+      || boundingBox.maxY > Constants.maxFaceCenteredThreshold
+    {
       updateDirective(.putFaceInOval)
       return false
     }
@@ -312,7 +315,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
   /// Ensures the face fills an acceptable area range.
   private func validateFaceArea(_ face: VNFaceObservation) -> Bool {
     let bbox = face.boundingBox
-    let faceFillRatio = bbox.width * bbox.height // image area normalized to 1.0
+    let faceFillRatio = bbox.width * bbox.height  // image area normalized to 1.0
     if faceFillRatio < Constants.minFaceAreaThreshold {
       updateDirective(.moveCloser)
       return false
@@ -387,7 +390,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     updateOnMain {
       self.captureProgress =
         Double(self.livenessImages.count)
-          / Double(Constants.numTotalSteps)
+        / Double(Constants.numTotalSteps)
     }
   }
 
@@ -551,6 +554,43 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     cleanUpSelfieCapture()
   }
 
+  // MARK: - Orientation Helper
+
+  /// Returns the correct orientation to ensure upright images regardless of device orientation
+  private func getUprightOrientation() -> CGImagePropertyOrientation {
+    let deviceOrientation = UIDevice.current.orientation
+
+    if currentlyUsingArKit {
+      // ARKit frames need different correction based on device orientation
+      switch deviceOrientation {
+      case .portrait:
+        return .right
+      case .portraitUpsideDown:
+        return .left
+      case .landscapeLeft:
+        return .up
+      case .landscapeRight:
+        return .down
+      default:
+        return .right  // Default for portrait when orientation is unknown
+      }
+    } else {
+      // Regular camera frames need different correction based on device orientation
+      switch deviceOrientation {
+      case .portrait:
+        return .up
+      case .portraitUpsideDown:
+        return .down
+      case .landscapeLeft:
+        return .right
+      case .landscapeRight:
+        return .left
+      default:
+        return .up  // Default for portrait when orientation is unknown
+      }
+    }
+  }
+
   // MARK: - Main Thread Helper
 
   /// Ensures UI mutations execute on the main thread.
@@ -641,8 +681,8 @@ extension SelfieViewModel {
         }
         let jobType: JobType =
           isEnroll
-            ? .smartSelfieEnrollment
-            : .smartSelfieAuthentication
+          ? .smartSelfieEnrollment
+          : .smartSelfieAuthentication
         let authRequest = AuthenticationRequest(
           jobType: jobType,
           enrollment: isEnroll,
@@ -673,10 +713,11 @@ extension SelfieViewModel {
           var smartSelfieImage: MultipartBody?
 
           if let selfie = try? Data(contentsOf: selfieImage),
-             let media = MultipartBody(
-               withImage: selfie,
-               forName: selfieImage.lastPathComponent
-             ) {
+            let media = MultipartBody(
+              withImage: selfie,
+              forName: selfieImage.lastPathComponent
+            )
+          {
             smartSelfieImage = media
           }
 
@@ -696,7 +737,7 @@ extension SelfieViewModel {
             )
           }
           guard let smartSelfieImage,
-                smartSelfieLivenessImages.count == Constants.numLivenessImages
+            smartSelfieLivenessImages.count == Constants.numLivenessImages
           else {
             throw SmileIDError.unknown("Selfie capture failed")
           }
@@ -754,7 +795,8 @@ extension SelfieViewModel {
           return
         }
         if SmileID.allowOfflineMode,
-           SmileIDError.isNetworkFailure(error: error) {
+          SmileIDError.isNetworkFailure(error: error)
+        {
           updateOnMain {
             self.errorMessageRes = "Offline.Message"
             self.processingState = .success
