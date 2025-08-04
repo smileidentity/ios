@@ -1,4 +1,10 @@
 # Release Notes
+
+## [Unreleased]
+
+### Added
+* Orientation helper to `SelfieViewModel` for consistent selfie image capture.
+
 ## 11.1.0 - July 31, 2025
 
 ### Added
