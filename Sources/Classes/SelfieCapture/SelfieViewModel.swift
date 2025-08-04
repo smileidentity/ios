@@ -259,7 +259,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     // All good - perform capture.
-    let orientation: CGImagePropertyOrientation = currentlyUsingArKit ? .right : .up
+    let orientation: CGImagePropertyOrientation = getUprightOrientation()
     lastAutoCaptureTime = Date()
     do {
       try captureFrame(image, orientation: orientation)
@@ -514,6 +514,43 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
       self.captureProgress = 0
       self.selfieToConfirm = nil
       self.processingState = nil
+    }
+  }
+
+  // MARK: - Orientation Helper
+
+  /// Returns the correct orientation to ensure upright images regardless of device orientation
+  private func getUprightOrientation() -> CGImagePropertyOrientation {
+    let deviceOrientation = UIDevice.current.orientation
+
+    if currentlyUsingArKit {
+      // ARKit frames need different correction based on device orientation
+      switch deviceOrientation {
+      case .portrait:
+        return .right
+      case .portraitUpsideDown:
+        return .left
+      case .landscapeLeft:
+        return .up
+      case .landscapeRight:
+        return .down
+      default:
+        return .right // Default for portrait when orientation is unknown
+      }
+    } else {
+      // Regular camera frames need different correction based on device orientation
+      switch deviceOrientation {
+      case .portrait:
+        return .up
+      case .portraitUpsideDown:
+        return .down
+      case .landscapeLeft:
+        return .right
+      case .landscapeRight:
+        return .left
+      default:
+        return .up // Default for portrait when orientation is unknown
+      }
     }
   }
 
