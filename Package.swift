@@ -9,7 +9,25 @@ let package = Package(
   products: [
     .library(
       name: "SmileID",
-      targets: ["SmileID"])
+      targets: ["SmileID"]),
+    .library(
+      name: "SmileIDAnalytics",
+      targets: ["SmileIDAnalytics"]),
+    .library(
+      name: "SmileIDCamera",
+      targets: ["SmileIDCamera"]),
+    .library(
+      name: "SmileIDML",
+      targets: ["SmileIDML"]),
+    .library(
+      name: "SmileIDNetworking",
+      targets: ["SmileIDNetworking"]),
+    .library(
+      name: "SmileIDStorage",
+      targets: ["SmileIDStorage"]),
+    .library(
+      name: "SmileIDUI",
+      targets: ["SmileIDUI"])
   ],
   dependencies: [
     .package(url: "https://github.com/weichsel/ZIPFoundation.git", exact: "0.9.19"),
@@ -30,6 +48,38 @@ let package = Package(
       ],
       path: "Sources",
       resources: [.process("Resources")]),
+    .target(
+      name: "SmileIDAnalytics",
+      dependencies: [
+        .product(name: "Sentry", package: "sentry-cocoa"),
+        .product(name: "FingerprintJS", package: "fingerprintjs-ios")
+      ],
+      path: "SmileIDAnalytics"),
+    .target(
+      name: "SmileIDCamera",
+      dependencies: [],
+      path: "SmileIDCamera"),
+    .target(
+      name: "SmileIDML",
+      dependencies: [],
+      path: "SmileIDML"),
+    .target(
+      name: "SmileIDNetworking",
+      dependencies: [
+        .product(name: "ZIPFoundation", package: "ZIPFoundation"),
+        .product(name: "SmileIDSecurity", package: "smile-id-security")
+      ],
+      path: "SmileIDNetworking"),
+    .target(
+      name: "SmileIDStorage",
+      dependencies: [],
+      path: "SmileIDStorage"),
+    .target(
+      name: "SmileIDUI",
+      dependencies: [
+        .product(name: "Lottie", package: "lottie-spm")
+      ],
+      path: "SmileIDUI"),
     .testTarget(
       name: "SmileIDTests",
       dependencies: ["SmileID"],
