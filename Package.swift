@@ -26,7 +26,7 @@ let package = Package(
       name: "Storage",
       targets: ["Storage"]),
     .library(
-      name: "UI", 
+      name: "UI",
       targets: ["UI"])
   ],
   dependencies: [

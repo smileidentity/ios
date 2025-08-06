@@ -1,5 +1,5 @@
 import Foundation
 
-public struct Analytics {
-    public static let version = "12.0.0"
+public enum Analytics {
+  public static let version = "12.0.0"
 }
