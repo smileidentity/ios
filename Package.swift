@@ -50,29 +50,29 @@ let package = Package(
       dependencies: [
         .product(name: "Lottie", package: "lottie-spm")
       ],
-      path: "Sources/SmileIDUI"),
+      path: "SmileIDUI"),
     .target(
       name: "SmileIDNetworking",
       dependencies: [
         .product(name: "ZIPFoundation", package: "ZIPFoundation"),
         .product(name: "SmileIDSecurity", package: "smile-id-security")
       ],
-      path: "Sources/SmileIDNetworking"),
+      path: "SmileIDNetworking"),
     .target(
       name: "SmileIDML",
       dependencies: [],
-      path: "Sources/SmileIDML"),
+      path: "SmileIDML"),
     .target(
       name: "SmileIDAnalytics",
       dependencies: [
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "FingerprintJS", package: "fingerprintjs-ios")
       ],
-      path: "Sources/SmileIDAnalytics"),
+      path: "SmileIDAnalytics"),
     .target(
       name: "SmileIDStorage",
       dependencies: [],
-      path: "Sources/SmileIDStorage"),
+      path: "SmileIDStorage"),
     .testTarget(
       name: "SmileIDTests",
       dependencies: ["SmileID"],
