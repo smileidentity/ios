@@ -1,5 +1,5 @@
 import Foundation
 
-public struct SmileIDStorage {
+public struct ML {
     public static let version = "12.0.0"
 }
