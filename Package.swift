@@ -11,20 +11,20 @@ let package = Package(
       name: "SmileID",
       targets: ["SmileID"]),
     .library(
-      name: "SmileIDUI", 
-      targets: ["SmileIDUI"]),
+      name: "UI", 
+      targets: ["UI"]),
     .library(
-      name: "SmileIDNetworking",
-      targets: ["SmileIDNetworking"]),
+      name: "Networking",
+      targets: ["Networking"]),
     .library(
-      name: "SmileIDML",
-      targets: ["SmileIDML"]),
+      name: "ML",
+      targets: ["ML"]),
     .library(
-      name: "SmileIDAnalytics",
-      targets: ["SmileIDAnalytics"]),
+      name: "Analytics",
+      targets: ["Analytics"]),
     .library(
-      name: "SmileIDStorage",
-      targets: ["SmileIDStorage"])
+      name: "Storage",
+      targets: ["Storage"])
   ],
   dependencies: [
     .package(url: "https://github.com/weichsel/ZIPFoundation.git", exact: "0.9.19"),
@@ -46,33 +46,33 @@ let package = Package(
       path: "Sources",
       resources: [.process("Resources")]),
     .target(
-      name: "SmileIDUI",
+      name: "UI",
       dependencies: [
         .product(name: "Lottie", package: "lottie-spm")
       ],
-      path: "SmileIDUI"),
+      path: "UI"),
     .target(
-      name: "SmileIDNetworking",
+      name: "Networking",
       dependencies: [
         .product(name: "ZIPFoundation", package: "ZIPFoundation"),
         .product(name: "SmileIDSecurity", package: "smile-id-security")
       ],
-      path: "SmileIDNetworking"),
+      path: "Networking"),
     .target(
-      name: "SmileIDML",
+      name: "ML",
       dependencies: [],
-      path: "SmileIDML"),
+      path: "ML"),
     .target(
-      name: "SmileIDAnalytics",
+      name: "Analytics",
       dependencies: [
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "FingerprintJS", package: "fingerprintjs-ios")
       ],
-      path: "SmileIDAnalytics"),
+      path: "Analytics"),
     .target(
-      name: "SmileIDStorage",
+      name: "Storage",
       dependencies: [],
-      path: "SmileIDStorage"),
+      path: "Storage"),
     .testTarget(
       name: "SmileIDTests",
       dependencies: ["SmileID"],
