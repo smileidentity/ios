@@ -544,7 +544,7 @@
 			mainGroup = 607FACC71AFB9204008FA782;
 			packageReferences = (
 				200C41F32E30D04400C0F3CF /* XCRemoteSwiftPackageReference "netfox" */,
-				20A9CDD32E43C481004D1A9E /* XCLocalSwiftPackageReference "../../smile-identity-ios" */,
+				20A9CDD32E43C481004D1A9E /* XCLocalSwiftPackageReference ".." */,
 			);
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
 			projectDirPath = "";
@@ -990,9 +990,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		20A9CDD32E43C481004D1A9E /* XCLocalSwiftPackageReference "../../smile-identity-ios" */ = {
+		20A9CDD32E43C481004D1A9E /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../smile-identity-ios";
+			relativePath = ..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
