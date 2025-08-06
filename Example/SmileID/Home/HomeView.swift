@@ -1,6 +1,5 @@
 import Analytics
 import SmileID
-import SmileID.UI
 import SwiftUI
 
 struct HomeView: View {
