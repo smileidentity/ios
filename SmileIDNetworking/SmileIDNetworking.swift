@@ -1,5 +1,5 @@
 import Foundation
 
-public enum Analytics {
+public enum SmileIDNetworking {
   public static let version = "12.0.0"
 }

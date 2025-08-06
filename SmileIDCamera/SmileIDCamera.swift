@@ -1,5 +1,5 @@
 import Foundation
 
-public enum UI {
+public enum SmileIDCamera {
   public static let version = "12.0.0"
 }

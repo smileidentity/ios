@@ -1,5 +1,5 @@
 import Foundation
 
-public enum ML {
+public enum SmileIDStorage {
   public static let version = "12.0.0"
 }

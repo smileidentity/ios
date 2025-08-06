@@ -11,23 +11,23 @@ let package = Package(
       name: "SmileID",
       targets: ["SmileID"]),
     .library(
-      name: "Analytics",
-      targets: ["Analytics"]),
+      name: "SmileIDAnalytics",
+      targets: ["SmileIDAnalytics"]),
     .library(
-      name: "Camera",
-      targets: ["Camera"]),
+      name: "SmileIDCamera",
+      targets: ["SmileIDCamera"]),
     .library(
-      name: "ML",
-      targets: ["ML"]),
+      name: "SmileIDML",
+      targets: ["SmileIDML"]),
     .library(
-      name: "Networking",
-      targets: ["Networking"]),
+      name: "SmileIDNetworking",
+      targets: ["SmileIDNetworking"]),
     .library(
-      name: "Storage",
-      targets: ["Storage"]),
+      name: "SmileIDStorage",
+      targets: ["SmileIDStorage"]),
     .library(
-      name: "UI",
-      targets: ["UI"])
+      name: "SmileIDUI",
+      targets: ["SmileIDUI"])
   ],
   dependencies: [
     .package(url: "https://github.com/weichsel/ZIPFoundation.git", exact: "0.9.19"),
@@ -49,37 +49,37 @@ let package = Package(
       path: "Sources",
       resources: [.process("Resources")]),
     .target(
-      name: "Analytics",
+      name: "SmileIDAnalytics",
       dependencies: [
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "FingerprintJS", package: "fingerprintjs-ios")
       ],
-      path: "Analytics"),
+      path: "SmileIDAnalytics"),
     .target(
-      name: "Camera",
+      name: "SmileIDCamera",
       dependencies: [],
-      path: "Camera"),
+      path: "SmileIDCamera"),
     .target(
-      name: "ML",
+      name: "SmileIDML",
       dependencies: [],
-      path: "ML"),
+      path: "SmileIDML"),
     .target(
-      name: "Networking",
+      name: "SmileIDNetworking",
       dependencies: [
         .product(name: "ZIPFoundation", package: "ZIPFoundation"),
         .product(name: "SmileIDSecurity", package: "smile-id-security")
       ],
-      path: "Networking"),
+      path: "SmileIDNetworking"),
     .target(
-      name: "Storage",
+      name: "SmileIDStorage",
       dependencies: [],
-      path: "Storage"),
+      path: "SmileIDStorage"),
     .target(
-      name: "UI",
+      name: "SmileIDUI",
       dependencies: [
         .product(name: "Lottie", package: "lottie-spm")
       ],
-      path: "UI"),
+      path: "SmileIDUI"),
     .testTarget(
       name: "SmileIDTests",
       dependencies: ["SmileID"],

@@ -1,5 +1,5 @@
 import Foundation
 
-public enum Camera {
+public enum SmileIDML {
   public static let version = "12.0.0"
 }

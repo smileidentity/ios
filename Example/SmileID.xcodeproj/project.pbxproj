@@ -36,6 +36,13 @@
 		20456ECC2D425B270085F906 /* DocumentVerificationWithSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20456ECB2D425B270085F906 /* DocumentVerificationWithSelector.swift */; };
 		20456ECE2D425BB80085F906 /* EnhancedDocumentVerificationWithSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20456ECD2D425BB80085F906 /* EnhancedDocumentVerificationWithSelector.swift */; };
 		204C95A12CDA455600A07386 /* FaceValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204C95A02CDA455600A07386 /* FaceValidatorTests.swift */; };
+		2053F11C2E43BEA5000BA509 /* Analytics in Frameworks */ = {isa = PBXBuildFile; productRef = 2053F11B2E43BEA5000BA509 /* Analytics */; };
+		2053F11E2E43BEA5000BA509 /* Camera in Frameworks */ = {isa = PBXBuildFile; productRef = 2053F11D2E43BEA5000BA509 /* Camera */; };
+		2053F1202E43BEA5000BA509 /* ML in Frameworks */ = {isa = PBXBuildFile; productRef = 2053F11F2E43BEA5000BA509 /* ML */; };
+		2053F1222E43BEA5000BA509 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 2053F1212E43BEA5000BA509 /* Networking */; };
+		2053F1242E43BEA5000BA509 /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 2053F1232E43BEA5000BA509 /* SmileID */; };
+		2053F1262E43BEA5000BA509 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 2053F1252E43BEA5000BA509 /* Storage */; };
+		2053F1282E43BEA5000BA509 /* UI in Frameworks */ = {isa = PBXBuildFile; productRef = 2053F1272E43BEA5000BA509 /* UI */; };
 		205FB4A52C29AF1500FDE64F /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205FB4A42C29AF1500FDE64F /* Date+Extensions.swift */; };
 		205FB4A72C2C32A500FDE64F /* JobItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205FB4A62C2C32A500FDE64F /* JobItemModel.swift */; };
 		2089720E2C2624EE00D07D68 /* DataStoreClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2089720D2C2624EE00D07D68 /* DataStoreClient.swift */; };
@@ -177,8 +184,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2053F1222E43BEA5000BA509 /* Networking in Frameworks */,
+				2053F1242E43BEA5000BA509 /* SmileID in Frameworks */,
+				2053F1202E43BEA5000BA509 /* ML in Frameworks */,
+				2053F11C2E43BEA5000BA509 /* Analytics in Frameworks */,
+				2053F1282E43BEA5000BA509 /* UI in Frameworks */,
+				2053F1262E43BEA5000BA509 /* Storage in Frameworks */,
 				200C41F52E30D04500C0F3CF /* netfox in Frameworks */,
 				200C41F22E30CFAD00C0F3CF /* SmileID in Frameworks */,
+				2053F11E2E43BEA5000BA509 /* Camera in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,8 +541,8 @@
 			);
 			mainGroup = 607FACC71AFB9204008FA782;
 			packageReferences = (
-				200C41F02E30CFAD00C0F3CF /* XCLocalSwiftPackageReference ".." */,
 				200C41F32E30D04400C0F3CF /* XCRemoteSwiftPackageReference "netfox" */,
+				2053F11A2E43BEA5000BA509 /* XCLocalSwiftPackageReference "../../smile-identity-ios" */,
 			);
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
 			projectDirPath = "";
@@ -974,9 +988,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		200C41F02E30CFAD00C0F3CF /* XCLocalSwiftPackageReference ".." */ = {
+		2053F11A2E43BEA5000BA509 /* XCLocalSwiftPackageReference "../../smile-identity-ios" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ..;
+			relativePath = "../../smile-identity-ios";
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -1004,6 +1018,34 @@
 		200C41F52E30D05600C0F3CF /* SmileID */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SmileID;
+		};
+		2053F11B2E43BEA5000BA509 /* Analytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Analytics;
+		};
+		2053F11D2E43BEA5000BA509 /* Camera */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Camera;
+		};
+		2053F11F2E43BEA5000BA509 /* ML */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ML;
+		};
+		2053F1212E43BEA5000BA509 /* Networking */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Networking;
+		};
+		2053F1232E43BEA5000BA509 /* SmileID */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileID;
+		};
+		2053F1252E43BEA5000BA509 /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Storage;
+		};
+		2053F1272E43BEA5000BA509 /* UI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UI;
 		};
 /* End XCSwiftPackageProductDependency section */
 
