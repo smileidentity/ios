@@ -1,4 +1,3 @@
-import Analytics
 import SmileID
 import SwiftUI
 
