@@ -11,20 +11,23 @@ let package = Package(
       name: "SmileID",
       targets: ["SmileID"]),
     .library(
-      name: "UI", 
-      targets: ["UI"]),
+      name: "Analytics",
+      targets: ["Analytics"]),
     .library(
-      name: "Networking",
-      targets: ["Networking"]),
+      name: "Camera",
+      targets: ["Camera"]),
     .library(
       name: "ML",
       targets: ["ML"]),
     .library(
-      name: "Analytics",
-      targets: ["Analytics"]),
+      name: "Networking",
+      targets: ["Networking"]),
     .library(
       name: "Storage",
-      targets: ["Storage"])
+      targets: ["Storage"]),
+    .library(
+      name: "UI", 
+      targets: ["UI"])
   ],
   dependencies: [
     .package(url: "https://github.com/weichsel/ZIPFoundation.git", exact: "0.9.19"),
@@ -46,11 +49,20 @@ let package = Package(
       path: "Sources",
       resources: [.process("Resources")]),
     .target(
-      name: "UI",
+      name: "Analytics",
       dependencies: [
-        .product(name: "Lottie", package: "lottie-spm")
+        .product(name: "Sentry", package: "sentry-cocoa"),
+        .product(name: "FingerprintJS", package: "fingerprintjs-ios")
       ],
-      path: "UI"),
+      path: "Analytics"),
+    .target(
+      name: "Camera",
+      dependencies: [],
+      path: "Camera"),
+    .target(
+      name: "ML",
+      dependencies: [],
+      path: "ML"),
     .target(
       name: "Networking",
       dependencies: [
@@ -59,20 +71,15 @@ let package = Package(
       ],
       path: "Networking"),
     .target(
-      name: "ML",
-      dependencies: [],
-      path: "ML"),
-    .target(
-      name: "Analytics",
-      dependencies: [
-        .product(name: "Sentry", package: "sentry-cocoa"),
-        .product(name: "FingerprintJS", package: "fingerprintjs-ios")
-      ],
-      path: "Analytics"),
-    .target(
       name: "Storage",
       dependencies: [],
       path: "Storage"),
+    .target(
+      name: "UI",
+      dependencies: [
+        .product(name: "Lottie", package: "lottie-spm")
+      ],
+      path: "UI"),
     .testTarget(
       name: "SmileIDTests",
       dependencies: ["SmileID"],
