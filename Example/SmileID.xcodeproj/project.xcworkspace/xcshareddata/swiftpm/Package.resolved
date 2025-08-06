@@ -1,5 +1,5 @@
 {
-  "originHash" : "dd10be05b79b8cde0e51ad7d271977fd3ad14c19b9d212888e81e42ea39ae55c",
+  "originHash" : "a8ee3617518608160442ee1fbb39c08d56292f902f8d574ecd154cbce7e1e0d8",
   "pins" : [
     {
       "identity" : "fingerprintjs-ios",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
       "state" : {
-        "revision" : "ca92efeb24b10052cd2a79e5205f42c5a16770ec",
-        "version" : "8.53.2"
+        "revision" : "156495496cb101e2f0a6b059f12dafcff1912197",
+        "version" : "8.54.0"
       }
     },
     {
