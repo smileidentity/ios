@@ -1,22 +1,22 @@
 import SwiftUI
 
-struct SmileIDInstructionsScreen<ContinueButtonStyle: ButtonStyle, CancelButtonStyle: ButtonStyle>: View {
-  var continueButtonStyle: ContinueButtonStyle
-  var cancelButtonStyle: CancelButtonStyle
-
+struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View>: View {
   var onContinue: () -> Void
   var onCancel: () -> Void
+
+	@ViewBuilder var continueButton: ContinueButton
+	@ViewBuilder var cancelButton: CancelButton
 
   init(
     onContinue: @escaping () -> Void,
     onCancel: @escaping () -> Void,
-    continueButtonStyle: ContinueButtonStyle = SmileIDButtonStyle(),
-    cancelButtonStyle: CancelButtonStyle = SmileIDButtonStyle()
+		@ViewBuilder continueButton: () -> ContinueButton,
+		@ViewBuilder cancelButton: () -> CancelButton
   ) {
     self.onContinue = onContinue
     self.onCancel = onCancel
-    self.continueButtonStyle = continueButtonStyle
-    self.cancelButtonStyle = cancelButtonStyle
+    self.continueButton = continueButton()
+    self.cancelButton = cancelButton()
   }
 
   var body: some View {
@@ -29,18 +29,29 @@ struct SmileIDInstructionsScreen<ContinueButtonStyle: ButtonStyle, CancelButtonS
       }
 
       VStack {
-        Button("Continue") {
-          onContinue()
-        }
-        .buttonStyle(continueButtonStyle)
-
-        Button("Cancel") {
-          onCancel()
-        }
-        .buttonStyle(cancelButtonStyle)
+        continueButton
+        cancelButton
       }
       .padding()
     }
+  }
+}
+
+extension SmileIDInstructionsScreen where ContinueButton == SmileIDButton, CancelButton == SmileIDButton {
+  init(
+    onContinue: @escaping () -> Void,
+    onCancel: @escaping () -> Void
+  ) {
+    self.init(
+      onContinue: onContinue,
+      onCancel: onCancel,
+			continueButton: {
+				SmileIDButton(text: "Continue", onClick: onContinue)
+			},
+			cancelButton: {
+				SmileIDButton(text: "Cancel", onClick: onCancel)
+			}
+    )
   }
 }
 
