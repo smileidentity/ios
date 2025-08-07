@@ -4,14 +4,14 @@ struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View>: View
   var onContinue: () -> Void
   var onCancel: () -> Void
 
-	@ViewBuilder var continueButton: ContinueButton
-	@ViewBuilder var cancelButton: CancelButton
+  @ViewBuilder var continueButton: ContinueButton
+  @ViewBuilder var cancelButton: CancelButton
 
   init(
     onContinue: @escaping () -> Void,
     onCancel: @escaping () -> Void,
-		@ViewBuilder continueButton: () -> ContinueButton,
-		@ViewBuilder cancelButton: () -> CancelButton
+    @ViewBuilder continueButton: () -> ContinueButton,
+    @ViewBuilder cancelButton: () -> CancelButton
   ) {
     self.onContinue = onContinue
     self.onCancel = onCancel
@@ -45,12 +45,12 @@ extension SmileIDInstructionsScreen where ContinueButton == SmileIDButton, Cance
     self.init(
       onContinue: onContinue,
       onCancel: onCancel,
-			continueButton: {
-				SmileIDButton(text: "Continue", onClick: onContinue)
-			},
-			cancelButton: {
-				SmileIDButton(text: "Cancel", onClick: onCancel)
-			}
+      continueButton: {
+        SmileIDButton(text: "Continue", onClick: onContinue)
+      },
+      cancelButton: {
+        SmileIDButton(text: "Cancel", onClick: onCancel)
+      }
     )
   }
 }
