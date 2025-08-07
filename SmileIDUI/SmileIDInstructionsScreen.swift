@@ -1,11 +1,28 @@
 import SwiftUI
 
-struct SmileIDInstructionsScreen: View {
+struct SmileIDInstructionsScreen<ContinueButtonStyle: ButtonStyle, CancelButtonStyle: ButtonStyle>: View {
+
+	var onContinue: () -> Void
+	var onCancel: () -> Void
+	var continueButtonStyle: ContinueButtonStyle
+	var cancelButtonStyle: CancelButtonStyle
+
+	init(
+		onContinue: @escaping () -> Void,
+		onCancel: @escaping () -> Void,
+		continueButtonStyle: ContinueButtonStyle = SmileIDButtonStyle(),
+		cancelButtonStyle: CancelButtonStyle = SmileIDButtonStyle()
+	) {
+		self.onContinue = onContinue
+		self.onCancel = onCancel
+		self.continueButtonStyle = continueButtonStyle
+		self.cancelButtonStyle = cancelButtonStyle
+	}
+
 	var body: some View {
 		VStack {
 			ScrollView(.vertical) {
-				// Image(uiImage: <#T##UIImage#>)
-				
+
 				Text("Some header here")
 					.font(.title)
 				Text("Some subtitle here")
@@ -14,14 +31,14 @@ struct SmileIDInstructionsScreen: View {
 
 			VStack {
 				Button("Continue") {
-					print("continue button")
+					onContinue()
 				}
-				.buttonStyle(SmileIDButtonStyle())
+				.buttonStyle(continueButtonStyle)
 
-				Button("Continue") {
-					print("continue button")
+				Button("Cancel") {
+					onCancel()
 				}
-				.buttonStyle(SmileIDButtonStyle())
+				.buttonStyle(cancelButtonStyle)
 			}
 			.padding()
 		}
@@ -31,7 +48,10 @@ struct SmileIDInstructionsScreen: View {
 #if DEBUG
 #Preview {
 	NavigationView {
-		SmileIDInstructionsScreen()
+		SmileIDInstructionsScreen(
+			onContinue: {},
+			onCancel: {}
+		)
 	}
 }
 #endif
