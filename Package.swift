@@ -80,34 +80,33 @@ let package = Package(
       dependencies: [
         .product(name: "Lottie", package: "lottie-spm")
       ],
-      path: "SmileIDUI",
-      exclude: ["Tests"]),
+      path: "SmileIDUI"),
     .testTarget(
       name: "SmileIDTests",
       dependencies: ["SmileID"],
-      path: "Tests"),
+      path: "Tests/SmileIDTests"),
     .testTarget(
       name: "SmileIDUITests",
       dependencies: ["SmileIDUI", "SmileID"],
-      path: "SmileIDUI/Tests"),
+      path: "Tests/SmileIDUITests"),
     .testTarget(
       name: "SmileIDAnalyticsTests",
       dependencies: ["SmileIDAnalytics"],
-      path: "SmileIDAnalytics/Tests"),
+      path: "Tests/SmileIDAnalyticsTests"),
     .testTarget(
       name: "SmileIDCameraTests",
       dependencies: ["SmileIDCamera"],
-      path: "SmileIDCamera/Tests"),
+      path: "Tests/SmileIDCameraTests"),
     .testTarget(
       name: "SmileIDMLTests",
       dependencies: ["SmileIDML"],
-      path: "SmileIDML/Tests"),
+      path: "Tests/SmileIDMLTests"),
     .testTarget(
       name: "SmileIDNetworkingTests",
       dependencies: ["SmileIDNetworking"],
-      path: "SmileIDNetworking/Tests"),
+      path: "Tests/SmileIDNetworkingTests"),
     .testTarget(
       name: "SmileIDStorageTests",
       dependencies: ["SmileIDStorage"],
-      path: "SmileIDStorage/Tests")
+      path: "Tests/SmileIDStorageTests")
   ])
