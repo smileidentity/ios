@@ -79,9 +79,14 @@ let package = Package(
       dependencies: [
         .product(name: "Lottie", package: "lottie-spm")
       ],
-      path: "SmileIDUI"),
+      path: "SmileIDUI",
+      exclude: ["Tests"]),
     .testTarget(
       name: "SmileIDTests",
       dependencies: ["SmileID"],
-      path: "Tests")
+      path: "Tests"),
+    .testTarget(
+      name: "SmileIDUITests",
+      dependencies: ["SmileIDUI", "SmileID"],
+      path: "SmileIDUI/Tests")
   ])
