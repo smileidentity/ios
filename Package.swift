@@ -54,7 +54,8 @@ let package = Package(
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "FingerprintJS", package: "fingerprintjs-ios")
       ],
-      path: "SmileIDAnalytics"),
+      path: "SmileIDAnalytics/Classes",
+      resources: [.process("../Resources")]),
     .target(
       name: "SmileIDCamera",
       dependencies: [],
@@ -88,5 +89,25 @@ let package = Package(
     .testTarget(
       name: "SmileIDUITests",
       dependencies: ["SmileIDUI", "SmileID"],
-      path: "SmileIDUI/Tests")
+      path: "SmileIDUI/Tests"),
+    .testTarget(
+      name: "SmileIDAnalyticsTests",
+      dependencies: ["SmileIDAnalytics"],
+      path: "SmileIDAnalytics/Tests"),
+    .testTarget(
+      name: "SmileIDCameraTests",
+      dependencies: ["SmileIDCamera"],
+      path: "SmileIDCamera/Tests"),
+    .testTarget(
+      name: "SmileIDMLTests",
+      dependencies: ["SmileIDML"],
+      path: "SmileIDML/Tests"),
+    .testTarget(
+      name: "SmileIDNetworkingTests",
+      dependencies: ["SmileIDNetworking"],
+      path: "SmileIDNetworking/Tests"),
+    .testTarget(
+      name: "SmileIDStorageTests",
+      dependencies: ["SmileIDStorage"],
+      path: "SmileIDStorage/Tests")
   ])
