@@ -59,54 +59,59 @@ let package = Package(
     .target(
       name: "SmileIDCamera",
       dependencies: [],
-      path: "SmileIDCamera"),
+      path: "SmileIDCamera/Classes",
+      resources: [.process("../Resources")]),
     .target(
       name: "SmileIDML",
       dependencies: [],
-      path: "SmileIDML"),
+      path: "SmileIDML/Classes",
+      resources: [.process("../Resources")]),
     .target(
       name: "SmileIDNetworking",
       dependencies: [
         .product(name: "ZIPFoundation", package: "ZIPFoundation"),
         .product(name: "SmileIDSecurity", package: "smile-id-security")
       ],
-      path: "SmileIDNetworking"),
+      path: "SmileIDNetworking/Classes",
+      resources: [.process("../Resources")]),
     .target(
       name: "SmileIDStorage",
       dependencies: [],
-      path: "SmileIDStorage"),
+      path: "SmileIDStorage/Classes",
+      resources: [.process("../Resources")]),
     .target(
       name: "SmileIDUI",
       dependencies: [
         .product(name: "Lottie", package: "lottie-spm")
       ],
-      path: "SmileIDUI"),
+      path: "SmileIDUI/Classes",
+      resources: [.process("../Resources")]),
     .testTarget(
       name: "SmileIDTests",
       dependencies: ["SmileID"],
-      path: "Tests/SmileIDTests"),
+      path: "Tests"),
     .testTarget(
       name: "SmileIDUITests",
       dependencies: ["SmileIDUI", "SmileID"],
-      path: "Tests/SmileIDUITests"),
+      path: "SmileIDUI/Tests"),
     .testTarget(
       name: "SmileIDAnalyticsTests",
       dependencies: ["SmileIDAnalytics"],
-      path: "Tests/SmileIDAnalyticsTests"),
+      path: "SmileIDAnalytics/Tests"),
     .testTarget(
       name: "SmileIDCameraTests",
       dependencies: ["SmileIDCamera"],
-      path: "Tests/SmileIDCameraTests"),
+      path: "SmileIDCamera/Tests"),
     .testTarget(
       name: "SmileIDMLTests",
       dependencies: ["SmileIDML"],
-      path: "Tests/SmileIDMLTests"),
+      path: "SmileIDML/Tests"),
     .testTarget(
       name: "SmileIDNetworkingTests",
       dependencies: ["SmileIDNetworking"],
-      path: "Tests/SmileIDNetworkingTests"),
+      path: "SmileIDNetworking/Tests"),
     .testTarget(
       name: "SmileIDStorageTests",
       dependencies: ["SmileIDStorage"],
-      path: "Tests/SmileIDStorageTests")
+      path: "SmileIDStorage/Tests")
   ])
