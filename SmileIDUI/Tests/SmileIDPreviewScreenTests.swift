@@ -15,7 +15,7 @@ class SmileIDPreviewScreenTests: XCTestCase {
 
     XCTAssertEqual(continueCallCount, 1)
   }
-  
+
   func testRetryButtonIsClickable() {
     var retryCallCount = 0
 
