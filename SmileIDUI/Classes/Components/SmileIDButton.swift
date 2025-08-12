@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SmileIDButton: View {
+public struct SmileIDButton: View {
   var text: String
   var onClick: () -> Void
 
@@ -12,7 +12,7 @@ struct SmileIDButton: View {
     self.onClick = onClick
   }
 
-  var body: some View {
+  public var body: some View {
     Button(action: onClick) {
       Text(text)
         .frame(maxWidth: .infinity)

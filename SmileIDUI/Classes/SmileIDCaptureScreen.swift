@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct SmileIDCaptureScreen<ContinueButton: View>: View {
+public struct SmileIDCaptureScreen<ContinueButton: View>: View {
   let scanType: ScanType
   let onContinue: () -> Void
 
   @ViewBuilder let continueButton: ContinueButton
 
-  init(
+  public init(
     scanType: ScanType,
     onContinue: @escaping () -> Void,
     @ViewBuilder continueButton: () -> ContinueButton
@@ -16,7 +16,7 @@ struct SmileIDCaptureScreen<ContinueButton: View>: View {
     self.continueButton = continueButton()
   }
 
-  var body: some View {
+	public var body: some View {
     ZStack {
       SmileIDCameraPreview()
         .edgesIgnoringSafeArea(.all)
@@ -44,7 +44,7 @@ struct SmileIDCaptureScreen<ContinueButton: View>: View {
 }
 
 extension SmileIDCaptureScreen where ContinueButton == SmileIDButton {
-  init(
+  public init(
     scanType: ScanType,
     onContinue: @escaping () -> Void
   ) {

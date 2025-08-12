@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: View {
+public struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: View {
   var onContinue: () -> Void
   var onRetry: () -> Void
 
   @ViewBuilder var continueButton: ContinueButton
   @ViewBuilder var retryButton: RetryButton
 
-  init(
+	public init(
     onContinue: @escaping () -> Void,
     onRetry: @escaping () -> Void,
     @ViewBuilder continueButton: () -> ContinueButton,
@@ -19,7 +19,7 @@ struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: View {
     self.retryButton = retryButton()
   }
 
-  var body: some View {
+	public var body: some View {
     VStack {
       ScrollView(.vertical) {
         Text("Preview")
@@ -38,7 +38,7 @@ struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: View {
 }
 
 extension SmileIDPreviewScreen where ContinueButton == SmileIDButton, RetryButton == SmileIDButton {
-  init(
+  public init(
     onContinue: @escaping () -> Void,
     onRetry: @escaping () -> Void
   ) {

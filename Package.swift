@@ -71,7 +71,7 @@ let package = Package(
       resources: [.process("../Resources")]),
     .target(
       name: "SmileIDNavigation",
-      dependencies: [],
+      dependencies: ["SmileIDUI"],
       path: "SmileIDNavigation/Classes",
       resources: [.process("../Resources")]),
     .target(
