@@ -1,17 +1,5 @@
 [
   {
-    "identifier": "i386",
-    "model": "iPhone Simulator"
-  },
-  {
-    "identifier": "x86_64",
-    "model": "iPhone Simulator"
-  },
-  {
-    "identifier": "arm64",
-    "model": "iPhone Simulator"
-  },
-  {
     "identifier": "iPhone1,1",
     "model": "iPhone"
   },
