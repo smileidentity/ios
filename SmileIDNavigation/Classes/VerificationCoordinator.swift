@@ -156,7 +156,7 @@ final class VerificationCoordinator: ObservableObject {
 // MARK: Navigation helpers
 
 extension VerificationCoordinator {
-  var canGoBack: Bool { index > 0 }
+	var canGoBack: Bool { index > 0 && route[index] != .processing }
 
   func goBack() {
     guard canGoBack else { return }
