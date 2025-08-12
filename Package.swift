@@ -20,6 +20,9 @@ let package = Package(
       name: "SmileIDML",
       targets: ["SmileIDML"]),
     .library(
+      name: "SmileIDNavigation",
+      targets: ["SmileIDNavigation"]),
+    .library(
       name: "SmileIDNetworking",
       targets: ["SmileIDNetworking"]),
     .library(
@@ -67,6 +70,11 @@ let package = Package(
       path: "SmileIDML/Classes",
       resources: [.process("../Resources")]),
     .target(
+      name: "SmileIDNavigation",
+      dependencies: [],
+      path: "SmileIDNavigation/Classes",
+      resources: [.process("../Resources")]),
+    .target(
       name: "SmileIDNetworking",
       dependencies: [
         .product(name: "ZIPFoundation", package: "ZIPFoundation"),
@@ -106,6 +114,10 @@ let package = Package(
       name: "SmileIDMLTests",
       dependencies: ["SmileIDML"],
       path: "SmileIDML/Tests"),
+    .testTarget(
+      name: "SmileIDNavigationTests",
+      dependencies: ["SmileIDNavigation"],
+      path: "SmileIDNavigation/Tests"),
     .testTarget(
       name: "SmileIDNetworkingTests",
       dependencies: ["SmileIDNetworking"],
