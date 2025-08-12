@@ -36,17 +36,17 @@ enum VerificationEvent {
 
   var label: String {
     switch self {
-    case let .started(product):
+    case .started(let product):
       return "Started"
-    case let .stepChanged(step):
+    case .stepChanged(let step):
       return "Step Changed - \(step.hashValue)"
     case .captured(let kind):
       return "Captured - \(kind.rawValue)"
     case .submitted:
       return "Submitted"
-    case let .succeeded(submissionId):
+    case .succeeded(let submissionId):
       return "Succeeded"
-    case let .failed(message):
+    case .failed(let message):
       return "Failed"
     case .cancelled:
       return "Cancelled"
@@ -156,7 +156,7 @@ final class VerificationCoordinator: ObservableObject {
 // MARK: Navigation helpers
 
 extension VerificationCoordinator {
-	var canGoBack: Bool { index > 0 && route[index] != .done }
+  var canGoBack: Bool { index > 0 && route[index] != .done }
 
   func goBack() {
     guard canGoBack else { return }

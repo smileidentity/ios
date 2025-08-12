@@ -8,25 +8,25 @@ public struct SmileIDNavigationHost: View {
 
   public var body: some View {
     NavigationView {
-			ZStack {
-				NavigationLink(
-					destination: destinationView,
-					isActive: Binding(
-						get: { coordinator.currentDestination != .instructions },
-						set: { _ in }
-					)
-				) {
-					EmptyView()
-				}
-				.hidden()
-				
-				SmileIDInstructionsScreen(
-					onContinue: {
-						coordinator.navigate(to: .capture)
-					},
-					onCancel: {}
-				)
-			}
+      ZStack {
+        NavigationLink(
+          destination: destinationView,
+          isActive: Binding(
+            get: { coordinator.currentDestination != .instructions },
+            set: { _ in }
+          )
+        ) {
+          EmptyView()
+        }
+        .hidden()
+
+        SmileIDInstructionsScreen(
+          onContinue: {
+            coordinator.navigate(to: .capture)
+          },
+          onCancel: {}
+        )
+      }
     }
     .navigationViewStyle(StackNavigationViewStyle())
   }
@@ -35,37 +35,37 @@ public struct SmileIDNavigationHost: View {
   private var destinationView: some View {
     switch coordinator.currentDestination {
     case .instructions:
-			SmileIDInstructionsScreen(
-				onContinue: {
-					coordinator.navigate(to: .capture)
-				},
-				onCancel: {}
-			)
+      SmileIDInstructionsScreen(
+        onContinue: {
+          coordinator.navigate(to: .capture)
+        },
+        onCancel: {}
+      )
     case .capture:
-			SmileIDCaptureScreen(
-				scanType: .selfie,
-				onContinue: {
-					coordinator.navigate(to: .preview)
-				}
-			)
+      SmileIDCaptureScreen(
+        scanType: .selfie,
+        onContinue: {
+          coordinator.navigate(to: .preview)
+        }
+      )
     case .preview:
-			SmileIDPreviewScreen(
-				onContinue: {
-					coordinator.navigate(to: .processing)
-				},
-				onRetry: {
-					coordinator.navigateUp()
-				}
-			)
+      SmileIDPreviewScreen(
+        onContinue: {
+          coordinator.navigate(to: .processing)
+        },
+        onRetry: {
+          coordinator.navigateUp()
+        }
+      )
     case .processing:
-			SmileIDProcessingScreen(
-				onContinue: {
-					coordinator.popToRoot()
-				},
-				onCancel: {
-					coordinator.navigateUp()
-				}
-			)
+      SmileIDProcessingScreen(
+        onContinue: {
+          coordinator.popToRoot()
+        },
+        onCancel: {
+          coordinator.navigateUp()
+        }
+      )
     }
   }
 }
