@@ -1,3 +1,5 @@
+import Foundation
+import StoreKit
 
 struct BuildInfo {
   var platform: String
@@ -6,13 +8,13 @@ struct BuildInfo {
   func toCodableObject() -> [String: CodableValue] {
     [
       "platform": .string(platform),
-      "build_source": .string(buildSource),
+      "build_source": .string(buildSource)
     ]
   }
 }
 
-func getBuildInfo() -> BuildInfo {
-  let platform = Platform.iphone.rawValue
+func getBuildInfo() async -> BuildInfo {
+  var platform = Platform.iphone.rawValue
   let info = ProcessInfo.processInfo
   if info.isMacCatalystApp {
     platform = Platform.mac.rawValue
@@ -25,11 +27,26 @@ func getBuildInfo() -> BuildInfo {
   if info.environment["SIMULATOR_MODEL_IDENTIFIER"] != nil {
     platform = Platform.simulator.rawValue
   }
-  let buildSource = Bundle.main.appStoreReceiptURL
+
+  let buildSource: String = await {
+    if #available(iOS 16.0, *) {
+      do {
+        let result = try await AppTransaction.shared
+        switch result {
+        case .verified: return result.jwsRepresentation
+        case .unverified: return "unknown"
+        }
+      } catch {
+        return "unknown"
+      }
+    } else {
+      return "unknown"
+    }
+  }()
+
   let buildInfo = BuildInfo(
     platform: platform,
     buildSource: buildSource
   )
-  print(buildInfo)
   return buildInfo
 }
