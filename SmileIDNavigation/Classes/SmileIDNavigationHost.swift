@@ -2,24 +2,31 @@ import SmileIDUI
 import SwiftUI
 
 public struct SmileIDNavigationHost: View {
-  @Backport.StateObject private var coordinator = DefaultNavigationCoordinator()
+  @ObservedObject private var coordinator = DefaultNavigationCoordinator()
 
   public init() {}
 
   public var body: some View {
     NavigationView {
-      NavigationLink(
-        destination: destinationView,
-        isActive: Binding(
-          get: { coordinator.currentDestination != .instructions },
-          set: { _ in }
-        )
-      ) {
-        EmptyView()
-      }
-      .hidden()
-
-      OrchestratedInstructionsScreen(coordinator: coordinator)
+			ZStack {
+				NavigationLink(
+					destination: destinationView,
+					isActive: Binding(
+						get: { coordinator.currentDestination != .instructions },
+						set: { _ in }
+					)
+				) {
+					EmptyView()
+				}
+				.hidden()
+				
+				SmileIDInstructionsScreen(
+					onContinue: {
+						coordinator.navigate(to: .capture)
+					},
+					onCancel: {}
+				)
+			}
     }
     .navigationViewStyle(StackNavigationViewStyle())
   }
@@ -28,13 +35,37 @@ public struct SmileIDNavigationHost: View {
   private var destinationView: some View {
     switch coordinator.currentDestination {
     case .instructions:
-      OrchestratedInstructionsScreen(coordinator: coordinator)
+			SmileIDInstructionsScreen(
+				onContinue: {
+					coordinator.navigate(to: .capture)
+				},
+				onCancel: {}
+			)
     case .capture:
-      OrchestratedCaptureScreen(coordinator: coordinator)
+			SmileIDCaptureScreen(
+				scanType: .selfie,
+				onContinue: {
+					coordinator.navigate(to: .preview)
+				}
+			)
     case .preview:
-      OrchestratedPreviewScreen(coordinator: coordinator)
+			SmileIDPreviewScreen(
+				onContinue: {
+					coordinator.navigate(to: .processing)
+				},
+				onRetry: {
+					coordinator.navigateUp()
+				}
+			)
     case .processing:
-      OrchestratedProcessingScreen(coordinator: coordinator)
+			SmileIDProcessingScreen(
+				onContinue: {
+					coordinator.popToRoot()
+				},
+				onCancel: {
+					coordinator.navigateUp()
+				}
+			)
     }
   }
 }

@@ -12,7 +12,7 @@ enum Step: Hashable, Codable, Sendable {
   case capture(CaptureKind)
   case preview(CaptureKind)
   case processing
-  // case done
+  case done
 }
 
 struct VerificationConfig {
@@ -36,17 +36,17 @@ enum VerificationEvent {
 
   var label: String {
     switch self {
-    case .started(let product):
+    case let .started(product):
       return "Started"
-    case .stepChanged(let step):
+    case let .stepChanged(step):
       return "Step Changed - \(step.hashValue)"
     case .captured(let kind):
       return "Captured - \(kind.rawValue)"
     case .submitted:
       return "Submitted"
-    case .succeeded(let submissionId):
+    case let .succeeded(submissionId):
       return "Succeeded"
-    case .failed(let message):
+    case let .failed(message):
       return "Failed"
     case .cancelled:
       return "Cancelled"
@@ -147,7 +147,7 @@ final class VerificationCoordinator: ObservableObject {
       steps.append(.preview(.selfie))
     }
     steps.append(.processing)
-    // steps.append(.done)
+    steps.append(.done)
 
     route = steps
   }
@@ -156,7 +156,7 @@ final class VerificationCoordinator: ObservableObject {
 // MARK: Navigation helpers
 
 extension VerificationCoordinator {
-	var canGoBack: Bool { index > 0 && route[index] != .processing }
+	var canGoBack: Bool { index > 0 && route[index] != .done }
 
   func goBack() {
     guard canGoBack else { return }
