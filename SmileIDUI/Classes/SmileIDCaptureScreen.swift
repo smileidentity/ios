@@ -16,7 +16,7 @@ public struct SmileIDCaptureScreen<ContinueButton: View>: View {
     self.continueButton = continueButton()
   }
 
-	public var body: some View {
+  public var body: some View {
     ZStack {
       SmileIDCameraPreview()
         .edgesIgnoringSafeArea(.all)
@@ -43,8 +43,8 @@ public struct SmileIDCaptureScreen<ContinueButton: View>: View {
   }
 }
 
-extension SmileIDCaptureScreen where ContinueButton == SmileIDButton {
-  public init(
+public extension SmileIDCaptureScreen where ContinueButton == SmileIDButton {
+  init(
     scanType: ScanType,
     onContinue: @escaping () -> Void
   ) {

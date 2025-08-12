@@ -37,8 +37,8 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
   }
 }
 
-extension SmileIDInstructionsScreen where ContinueButton == SmileIDButton, CancelButton == SmileIDButton {
-  public init(
+public extension SmileIDInstructionsScreen where ContinueButton == SmileIDButton, CancelButton == SmileIDButton {
+  init(
     onContinue: @escaping () -> Void,
     onCancel: @escaping () -> Void
   ) {

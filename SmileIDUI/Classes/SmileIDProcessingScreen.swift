@@ -7,7 +7,7 @@ public struct SmileIDProcessingScreen<ContinueButton: View, CancelButton: View>:
   @ViewBuilder var continueButton: ContinueButton
   @ViewBuilder var cancelButton: CancelButton
 
-	public init(
+  public init(
     onContinue: @escaping () -> Void,
     onCancel: @escaping () -> Void,
     @ViewBuilder continueButton: () -> ContinueButton,
@@ -19,7 +19,7 @@ public struct SmileIDProcessingScreen<ContinueButton: View, CancelButton: View>:
     self.cancelButton = cancelButton()
   }
 
-	public var body: some View {
+  public var body: some View {
     VStack {
       ScrollView(.vertical) {
         Text("Processing")
@@ -37,8 +37,8 @@ public struct SmileIDProcessingScreen<ContinueButton: View, CancelButton: View>:
   }
 }
 
-extension SmileIDProcessingScreen where ContinueButton == SmileIDButton, CancelButton == SmileIDButton {
-	public init(
+public extension SmileIDProcessingScreen where ContinueButton == SmileIDButton, CancelButton == SmileIDButton {
+  init(
     onContinue: @escaping () -> Void,
     onCancel: @escaping () -> Void
   ) {

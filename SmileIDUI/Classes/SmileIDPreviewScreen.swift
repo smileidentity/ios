@@ -7,7 +7,7 @@ public struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: Vie
   @ViewBuilder var continueButton: ContinueButton
   @ViewBuilder var retryButton: RetryButton
 
-	public init(
+  public init(
     onContinue: @escaping () -> Void,
     onRetry: @escaping () -> Void,
     @ViewBuilder continueButton: () -> ContinueButton,
@@ -19,7 +19,7 @@ public struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: Vie
     self.retryButton = retryButton()
   }
 
-	public var body: some View {
+  public var body: some View {
     VStack {
       ScrollView(.vertical) {
         Text("Preview")
@@ -37,8 +37,8 @@ public struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: Vie
   }
 }
 
-extension SmileIDPreviewScreen where ContinueButton == SmileIDButton, RetryButton == SmileIDButton {
-  public init(
+public extension SmileIDPreviewScreen where ContinueButton == SmileIDButton, RetryButton == SmileIDButton {
+  init(
     onContinue: @escaping () -> Void,
     onRetry: @escaping () -> Void
   ) {
