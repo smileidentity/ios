@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 public protocol NavigationCoordinator: ObservableObject {
   func navigate(to destination: NavigationDestination)
