@@ -59,9 +59,7 @@ public struct SmileIDNavigationHost: View {
       )
     case .processing:
       SmileIDProcessingScreen(
-        onContinue: {
-          coordinator.popToRoot()
-        },
+        onContinue: {},
         onCancel: {
           coordinator.navigateUp()
         }
