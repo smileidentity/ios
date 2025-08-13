@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct SmileIDProcessingScreen<ContinueButton: View, CancelButton: View>: View {
+public struct SmileIDProcessingScreen<ContinueButton: View, CancelButton: View>: View {
   var onContinue: () -> Void
   var onCancel: () -> Void
 
   @ViewBuilder var continueButton: ContinueButton
   @ViewBuilder var cancelButton: CancelButton
 
-  init(
+  public init(
     onContinue: @escaping () -> Void,
     onCancel: @escaping () -> Void,
     @ViewBuilder continueButton: () -> ContinueButton,
@@ -19,7 +19,7 @@ struct SmileIDProcessingScreen<ContinueButton: View, CancelButton: View>: View {
     self.cancelButton = cancelButton()
   }
 
-  var body: some View {
+  public var body: some View {
     VStack {
       ScrollView(.vertical) {
         Text("Processing")
@@ -37,7 +37,7 @@ struct SmileIDProcessingScreen<ContinueButton: View, CancelButton: View>: View {
   }
 }
 
-extension SmileIDProcessingScreen where ContinueButton == SmileIDButton, CancelButton == SmileIDButton {
+public extension SmileIDProcessingScreen where ContinueButton == SmileIDButton, CancelButton == SmileIDButton {
   init(
     onContinue: @escaping () -> Void,
     onCancel: @escaping () -> Void
