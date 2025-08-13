@@ -1,6 +1,6 @@
 import Foundation
 
-enum ScanType: CaseIterable {
+public enum ScanType: CaseIterable {
   case documentFront
   case documentBack
   case selfie
