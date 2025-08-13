@@ -114,7 +114,7 @@ struct VerificationFlowView: View {
           requiresSelfie: true
         )
       ),
-      onEvent: { event in
+      onEvent: { _ in
         print("event.label")
       },
       onCompletion: { result in

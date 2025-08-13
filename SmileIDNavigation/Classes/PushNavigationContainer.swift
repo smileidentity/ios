@@ -47,12 +47,10 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
   }
 
   func updateUIViewController(_ nav: _NavBoxController, context _: Context) {
-    // Desired stack is the prefix up to current index.
     let desired = visibleStack()
     let current = nav.destinationStack
 
     guard desired != current else {
-      // Still update cancel/back state/title if needed
       if let top = nav.topViewController, let destination = desired.last {
         top.title = titleFor(destination)
         top.navigationItem.hidesBackButton = shouldHideBack(destination)
@@ -80,7 +78,6 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
         nav.setViewControllers(Array(nav.viewControllers.prefix(desired.count)), animated: false)
       }
     } else if desired.last != current.last {
-      // Same depth but different top (rare) → replace top without animation
       var vcs = nav.viewControllers
       if let destination = desired.last {
         let vc = UIHostingController(rootView: makeView(destination))
@@ -96,27 +93,23 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
   }
 
   private func visibleStack() -> [NavigationDestination] {
-    // Publicly expose the visible stack via currentDestination and internal route depth.
-    // Since route is private, we approximate by replaying from start until currentDestination.
-    // Coordinator advances one destination at a time, so we can build from product config deterministically.
-    // Build the same route here:
     var destinations: [NavigationDestination] = []
     if coordinator.config.showInstructions { destinations.append(.instructions) }
     if coordinator.config.product.requiresDocInfo { destinations.append(.documentInfo) }
     if coordinator.config.product.requiresDocFront {
-			destinations.append(.capture(.documentFront))
-			destinations.append(.preview(.documentFront))
+      destinations.append(.capture(.documentFront))
+      destinations.append(.preview(.documentFront))
     }
     if coordinator.config.product.requiresDocBack {
-			destinations.append(.capture(.documentBack))
-			destinations.append(.preview(.documentBack))
+      destinations.append(.capture(.documentBack))
+      destinations.append(.preview(.documentBack))
     }
     if coordinator.config.product.requiresSelfie {
-			destinations.append(.capture(.selfie))
-			destinations.append(.preview(.selfie))
+      destinations.append(.capture(.selfie))
+      destinations.append(.preview(.selfie))
     }
-		destinations.append(.processing)
-		destinations.append(.done)
+    destinations.append(.processing)
+    destinations.append(.done)
     // Truncate up to currentDestination
     if let idx = destinations.firstIndex(of: coordinator.currentDestination) {
       return Array(destinations.prefix(idx + 1))

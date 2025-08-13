@@ -46,7 +46,7 @@ enum VerificationError: Error, Equatable, Sendable {
   case unknown(String)
 }
 
-// Todo: Supported product combos: Use Builder/enum pattern here later.
+// TODO: Supported product combos: Use Builder/enum pattern here later.
 public struct VerificationProduct: Sendable, Equatable {
   public let requiresDocInfo: Bool
   public let requiresDocFront: Bool
@@ -77,7 +77,7 @@ final class VerificationCoordinator: ObservableObject {
     }
   }
 
-  // Todo: Collected artifacts: Consider moving this to view model later.
+  // TODO: Collected artifacts: Consider moving this to view model later.
   @Published private(set) var docInfo: [String: String] = [:]
   @Published private(set) var docFrontImage: UIImage?
   @Published private(set) var docBackImage: UIImage?
@@ -104,7 +104,7 @@ final class VerificationCoordinator: ObservableObject {
     eventSink?(.started(product: config.product))
     buildRoute()
     index = 0
-		emitDestination()
+    emitDestination()
   }
 
   func cancel() {
@@ -142,19 +142,19 @@ extension VerificationCoordinator {
   func goBack() {
     guard canGoBack else { return }
     index -= 1
-		emitDestination()
+    emitDestination()
   }
 
   func goToNext() {
     guard index + 1 < route.count else { return }
     index += 1
-		emitDestination()
+    emitDestination()
   }
 
   private func goTo(destination: NavigationDestination) {
     if let found = route.firstIndex(of: destination) {
       index = found
-			emitDestination()
+      emitDestination()
     }
   }
 
@@ -166,7 +166,7 @@ extension VerificationCoordinator {
     // Find the nearest capture step before the current index
     if let captureIndex = route[..<index].lastIndex(of: .capture(kind)) {
       index = captureIndex
-			emitDestination()
+      emitDestination()
     }
   }
 
