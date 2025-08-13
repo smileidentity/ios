@@ -16,10 +16,10 @@ enum NavigationDestination: Hashable, Codable, Sendable {
 }
 
 struct VerificationConfig {
-  public var showInstructions: Bool = true
-  public var product: VerificationProduct
+  var showInstructions: Bool = true
+  var product: VerificationProduct
 
-  public init(showInstructions: Bool = true, product: VerificationProduct) {
+  init(showInstructions: Bool = true, product: VerificationProduct) {
     self.showInstructions = showInstructions
     self.product = product
   }
@@ -188,7 +188,7 @@ extension VerificationCoordinator {
     goToNext() // move to preview
   }
 
-  public func rejectCapture(_ kind: CaptureKind) {
+  func rejectCapture(_ kind: CaptureKind) {
     // Clear the stored image and return to capture
     switch kind {
     case .documentFront: docFrontImage = nil
