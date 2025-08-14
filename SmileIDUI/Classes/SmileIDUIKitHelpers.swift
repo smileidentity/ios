@@ -1,40 +1,19 @@
 import SwiftUI
 import UIKit
 
-// MARK: - Configuration
-
-public struct SmileIDScreenConfiguration {
-  public var continueButtonTitle: String
-  public var cancelButtonTitle: String
-  public var retryButtonTitle: String
-
-  public init(
-    continueButtonTitle: String = "Continue",
-    cancelButtonTitle: String = "Cancel",
-    retryButtonTitle: String = "Retry"
-  ) {
-    self.continueButtonTitle = continueButtonTitle
-    self.cancelButtonTitle = cancelButtonTitle
-    self.retryButtonTitle = retryButtonTitle
-  }
-
-  public static let `default` = SmileIDScreenConfiguration()
-}
-
 // MARK: - UIViewController Factory Extensions
 
 public extension SmileIDCaptureScreen where ContinueButton == SmileIDButton {
   static func viewController(
     scanType: ScanType,
-    onContinue: @escaping () -> Void,
-    configuration: SmileIDScreenConfiguration = .default
+    onContinue: @escaping () -> Void
   ) -> UIViewController {
     let screen = SmileIDCaptureScreen(
       scanType: scanType,
       onContinue: onContinue,
       continueButton: {
         SmileIDButton(
-          text: configuration.continueButtonTitle,
+          text: "Continue",
           onClick: onContinue
         )
       }
@@ -46,21 +25,20 @@ public extension SmileIDCaptureScreen where ContinueButton == SmileIDButton {
 public extension SmileIDInstructionsScreen where ContinueButton == SmileIDButton, CancelButton == SmileIDButton {
   static func viewController(
     onContinue: @escaping () -> Void,
-    onCancel: @escaping () -> Void,
-    configuration: SmileIDScreenConfiguration = .default
+    onCancel: @escaping () -> Void
   ) -> UIViewController {
     let screen = SmileIDInstructionsScreen(
       onContinue: onContinue,
       onCancel: onCancel,
       continueButton: {
         SmileIDButton(
-          text: configuration.continueButtonTitle,
+          text: "Continue",
           onClick: onContinue
         )
       },
       cancelButton: {
         SmileIDButton(
-          text: configuration.cancelButtonTitle,
+          text: "Cancel",
           onClick: onCancel
         )
       }
@@ -72,21 +50,20 @@ public extension SmileIDInstructionsScreen where ContinueButton == SmileIDButton
 public extension SmileIDPreviewScreen where ContinueButton == SmileIDButton, RetryButton == SmileIDButton {
   static func viewController(
     onContinue: @escaping () -> Void,
-    onRetry: @escaping () -> Void,
-    configuration: SmileIDScreenConfiguration = .default
+    onRetry: @escaping () -> Void
   ) -> UIViewController {
     let screen = SmileIDPreviewScreen(
       onContinue: onContinue,
       onRetry: onRetry,
       continueButton: {
         SmileIDButton(
-          text: configuration.continueButtonTitle,
+          text: "Continue",
           onClick: onContinue
         )
       },
       retryButton: {
         SmileIDButton(
-          text: configuration.retryButtonTitle,
+          text: "Retry",
           onClick: onRetry
         )
       }
@@ -98,21 +75,20 @@ public extension SmileIDPreviewScreen where ContinueButton == SmileIDButton, Ret
 public extension SmileIDProcessingScreen where ContinueButton == SmileIDButton, CancelButton == SmileIDButton {
   static func viewController(
     onContinue: @escaping () -> Void,
-    onCancel: @escaping () -> Void,
-    configuration: SmileIDScreenConfiguration = .default
+    onCancel: @escaping () -> Void
   ) -> UIViewController {
     let screen = SmileIDProcessingScreen(
       onContinue: onContinue,
       onCancel: onCancel,
       continueButton: {
         SmileIDButton(
-          text: configuration.continueButtonTitle,
+          text: "Continue",
           onClick: onContinue
         )
       },
       cancelButton: {
         SmileIDButton(
-          text: configuration.cancelButtonTitle,
+          text: "Cancel",
           onClick: onCancel
         )
       }
