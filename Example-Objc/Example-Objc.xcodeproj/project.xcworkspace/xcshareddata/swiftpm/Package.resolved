@@ -1,22 +1,13 @@
 {
-  "originHash" : "19de982325dd2cdd1450f995f3e6f982bc072e68b8e752b840149c62dedb7588",
+  "originHash" : "20880887b42d9215c51d0807d30cc9451cab4ee1418a22c36e7375de20ba958e",
   "pins" : [
     {
       "identity" : "fingerprintjs-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/fingerprintjs/fingerprintjs-ios",
       "state" : {
-        "revision" : "bd93291c149e328919a9a2881575494f6ea9245f",
-        "version" : "1.5.0"
-      }
-    },
-    {
-      "identity" : "ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/smileidentity/ios/",
-      "state" : {
-        "revision" : "c1b312c59a0e43d746e00c8a3594fd41c6df54c0",
-        "version" : "10.3.5"
+        "revision" : "2e2ead3d02c46736d9b4a66373700489113e293a",
+        "version" : "1.6.0"
       }
     },
     {
@@ -24,8 +15,26 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/airbnb/lottie-spm",
       "state" : {
-        "revision" : "8c6edf4f0fa84fe9c058600a4295eb0c01661c69",
-        "version" : "4.5.1"
+        "revision" : "04f2fd18cc9404a0a0917265a449002674f24ec9",
+        "version" : "4.5.2"
+      }
+    },
+    {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa",
+      "state" : {
+        "revision" : "156495496cb101e2f0a6b059f12dafcff1912197",
+        "version" : "8.54.0"
+      }
+    },
+    {
+      "identity" : "smile-id-security",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/smileidentity/smile-id-security",
+      "state" : {
+        "revision" : "529cc3e4a69428f86e4a885f068a4737ed5f38c3",
+        "version" : "11.1.0"
       }
     },
     {
@@ -38,5 +47,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
