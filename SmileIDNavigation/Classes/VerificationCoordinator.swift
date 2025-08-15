@@ -1,70 +1,18 @@
 import SwiftUI
 
-enum CaptureKind: String, Hashable, Codable, Sendable {
-  case documentFront
-  case documentBack
-  case selfie
-}
+public struct VerificationConfig {
+  public var showInstructions: Bool = true
+  public var product: BusinessProduct
 
-enum NavigationDestination: Hashable, Codable, Sendable {
-  case instructions
-  case documentInfo
-  case capture(CaptureKind)
-  case preview(CaptureKind)
-  case processing
-  case done
-}
-
-struct VerificationConfig {
-  var showInstructions: Bool = true
-  var product: VerificationProduct
-
-  init(showInstructions: Bool = true, product: VerificationProduct) {
+  public init(showInstructions: Bool = true, product: BusinessProduct) {
     self.showInstructions = showInstructions
     self.product = product
   }
 }
 
-enum VerificationEvent {
-  case started(product: VerificationProduct)
-  case destinationChanged(NavigationDestination)
-  case captured(kind: CaptureKind)
-  case submitted
-  case succeeded(submissionId: String)
-  case failed(message: String)
-  case cancelled
-}
-
-public struct VerificationSuccess: Sendable, Equatable {
-  public let submissionId: String
-}
-
-enum VerificationError: Error, Equatable, Sendable {
-  case cancelled
-  case network(String)
-  case invalidCapture(String)
-  case unknown(String)
-}
-
-// TODO: Supported product combos: Use Builder/enum pattern here later.
-public struct VerificationProduct: Sendable, Equatable {
-  public let requiresDocInfo: Bool
-  public let requiresDocFront: Bool
-  public let requiresDocBack: Bool
-  public let requiresSelfie: Bool
-  public init(requiresDocInfo: Bool, requiresDocFront: Bool, requiresDocBack: Bool, requiresSelfie: Bool) {
-    self.requiresDocInfo = requiresDocInfo
-    self.requiresDocFront = requiresDocFront
-    self.requiresDocBack = requiresDocBack
-    self.requiresSelfie = requiresSelfie
-  }
-}
-
-typealias VerificationCompletion = (Result<VerificationSuccess, VerificationError>) -> Void
-typealias VerificationEventSink = (VerificationEvent) -> Void
 
 @MainActor
-final class VerificationCoordinator: ObservableObject {
+public final class VerificationCoordinator: ObservableObject {
   @Published private(set) var currentDestination: NavigationDestination = .instructions
 
   // Internal route and index
@@ -88,7 +36,7 @@ final class VerificationCoordinator: ObservableObject {
   let eventSink: VerificationEventSink?
   let complete: VerificationCompletion
 
-  init(
+  public init(
     config: VerificationConfig,
     eventSink: VerificationEventSink? = nil,
     complete: @escaping VerificationCompletion
@@ -115,22 +63,7 @@ final class VerificationCoordinator: ObservableObject {
   // MARK: Route building
 
   private func buildRoute() {
-    // build initial route
-    var steps: [NavigationDestination] = []
-    if config.showInstructions { steps.append(.instructions) }
-    if config.product.requiresDocInfo { steps.append(.documentInfo) }
-    if config.product.requiresDocFront { steps.append(.capture(.documentFront)) }
-    if config.product.requiresDocFront { steps.append(.preview(.documentFront)) }
-    if config.product.requiresDocBack { steps.append(.capture(.documentBack)) }
-    if config.product.requiresDocBack { steps.append(.preview(.documentBack)) }
-    if config.product.requiresSelfie {
-      steps.append(.capture(.selfie))
-      steps.append(.preview(.selfie))
-    }
-    steps.append(.processing)
-    steps.append(.done)
-
-    route = steps
+    route = config.product.generateRoute(showInstructions: config.showInstructions)
   }
 }
 

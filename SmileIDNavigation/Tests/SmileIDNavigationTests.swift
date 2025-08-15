@@ -25,12 +25,10 @@ final class SmileIDNavigationTests: XCTestCase {
   func testVerificationCoordinatorInitialization() {
     let config = VerificationConfig(
       showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: true
-      )
+      product: VerificationProductBuilder
+        .documentVerification()
+        .captureOneSide()
+        .build()
     )
 
     let coordinator = VerificationCoordinator(
@@ -49,12 +47,11 @@ final class SmileIDNavigationTests: XCTestCase {
   func testCoordinatorStart() {
     let config = VerificationConfig(
       showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: false
-      )
+      product: VerificationProductBuilder
+        .documentVerification()
+        .captureOneSide()
+        .hidePreview()
+        .build()
     )
 
     let coordinator = VerificationCoordinator(
@@ -82,12 +79,11 @@ final class SmileIDNavigationTests: XCTestCase {
   func testCoordinatorCancel() {
     let config = VerificationConfig(
       showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: false
-      )
+      product: VerificationProductBuilder
+        .documentVerification()
+        .captureOneSide()
+        .hidePreview()
+        .build()
     )
 
     let coordinator = VerificationCoordinator(
@@ -116,12 +112,10 @@ final class SmileIDNavigationTests: XCTestCase {
   func testNavigationFlow() {
     let config = VerificationConfig(
       showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: false
-      )
+      product: VerificationProductBuilder
+        .documentVerification()
+        .captureOneSide()
+        .build()
     )
 
     let coordinator = VerificationCoordinator(
@@ -143,12 +137,10 @@ final class SmileIDNavigationTests: XCTestCase {
   func testNavigationBackwards() {
     let config = VerificationConfig(
       showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: false
-      )
+      product: VerificationProductBuilder
+        .documentVerification()
+        .captureOneSide()
+        .build()
     )
 
     let coordinator = VerificationCoordinator(

@@ -102,29 +102,3 @@ struct VerificationFlowView: View {
     }
   }
 }
-
-#if DEBUG
-  #Preview {
-    VerificationFlowView(
-      config: VerificationConfig(
-        product: VerificationProduct(
-          requiresDocInfo: false,
-          requiresDocFront: true,
-          requiresDocBack: true,
-          requiresSelfie: true
-        )
-      ),
-      onEvent: { _ in
-        print("event.label")
-      },
-      onCompletion: { result in
-        switch result {
-        case .success:
-          print("success")
-        case .failure:
-          print("failure")
-        }
-      }
-    )
-  }
-#endif
