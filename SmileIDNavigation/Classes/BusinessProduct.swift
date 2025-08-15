@@ -5,14 +5,14 @@ public enum BusinessProduct: Sendable, Equatable {
   case documentVerification(DocumentVerificationConfig)
   case biometricKYC(BiometricKYCConfig)
 
-  public func generateRoute(showInstructions: Bool = true) -> [NavigationDestination] {
+  public func generateRoute() -> [NavigationDestination] {
     switch self {
     case .selfieEnrolment(let config):
-      return config.generateRoute(showInstructions: showInstructions)
+      return config.generateRoute()
     case .documentVerification(let config):
-      return config.generateRoute(showInstructions: showInstructions)
+      return config.generateRoute()
     case .biometricKYC(let config):
-      return config.generateRoute(showInstructions: showInstructions)
+      return config.generateRoute()
     }
   }
 

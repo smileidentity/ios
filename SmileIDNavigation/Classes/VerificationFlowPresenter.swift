@@ -4,12 +4,12 @@ import UIKit
 public enum VerificationFlowPresenter {
   // Create a UIViewController that hosts the SwiftUI flow.
   static func makeViewController(
-    config: VerificationConfig,
+    product: BusinessProduct,
     onEvent: VerificationEventSink? = nil,
     onCompletion: @escaping VerificationCompletion
   ) -> UIViewController {
     let root = VerificationFlowView(
-      config: config,
+      product: product,
       onEvent: onEvent,
       onCompletion: onCompletion
     )
@@ -19,12 +19,12 @@ public enum VerificationFlowPresenter {
   // Present modally from UIKit and await a completion via callback
   static func present(
     from presenter: UIViewController,
-    config: VerificationConfig,
+    product: BusinessProduct,
     onEvent: VerificationEventSink? = nil,
     onCompletion: @escaping VerificationCompletion
   ) {
     let viewController = makeViewController(
-      config: config,
+      product: product,
       onEvent: onEvent,
       onCompletion: onCompletion
     )

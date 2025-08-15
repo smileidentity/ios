@@ -1,9 +1,15 @@
 import SwiftUI
 
 public final class SelfieEnrolmentBuilder {
+  private var showInstructions: Bool = true
   private var showPreview: Bool = true
   private var livenessType: LivenessType = .smileDetection
   private var extraParams: [String: String] = [:]
+
+  public func hideInstructions() -> SelfieEnrolmentBuilder {
+    showInstructions = false
+    return self
+  }
 
   public func hidePreview() -> SelfieEnrolmentBuilder {
     showPreview = false
@@ -27,6 +33,7 @@ public final class SelfieEnrolmentBuilder {
   public func build() -> BusinessProduct {
     .selfieEnrolment(
       SelfieEnrolmentConfig(
+        showInstructions: showInstructions,
         showPreview: showPreview,
         extraParams: extraParams
       )
@@ -35,12 +42,18 @@ public final class SelfieEnrolmentBuilder {
 }
 
 public final class DocumentVerificationBuilder {
+  private var showInstructions: Bool = true
   private var showPreview: Bool = true
   private var captureBothSides: Bool = true
   private var captureMode: CaptureMode = .manual
   private var livenessType: LivenessType = .smileDetection
   private var documentInfo: [String: String]?
   private var extraParams: [String: String] = [:]
+
+  public func hideInstructions() -> DocumentVerificationBuilder {
+    showInstructions = false
+    return self
+  }
 
   public func hidePreview() -> DocumentVerificationBuilder {
     showPreview = false
@@ -75,6 +88,7 @@ public final class DocumentVerificationBuilder {
   public func build() -> BusinessProduct {
     .documentVerification(
       DocumentVerificationConfig(
+        showInstructions: showInstructions,
         showPreview: showPreview,
         captureBothSides: captureBothSides,
         captureMode: captureMode,
@@ -87,10 +101,16 @@ public final class DocumentVerificationBuilder {
 }
 
 public final class BiometricKYCBuilder {
+  private var showInstructions: Bool = true
   private var documentInfo: [String: String]?
   private var consentInfo: [String: String]?
   private var livenessType: LivenessType = .smileDetection
   private var extraParams: [String: String] = [:]
+
+  public func hideInstructions() -> BiometricKYCBuilder {
+    showInstructions = false
+    return self
+  }
 
   public func withDocumentInfo(_ info: [String: String]) -> BiometricKYCBuilder {
     documentInfo = info
@@ -115,6 +135,7 @@ public final class BiometricKYCBuilder {
   public func build() -> BusinessProduct {
     .biometricKYC(
       BiometricKYCConfig(
+        showInstructions: showInstructions,
         documentInfo: documentInfo,
         consentInfo: consentInfo,
         livenessType: livenessType,

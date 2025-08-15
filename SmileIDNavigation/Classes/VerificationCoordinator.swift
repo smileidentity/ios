@@ -1,15 +1,5 @@
 import SwiftUI
 
-public struct VerificationConfig {
-  public var showInstructions: Bool = true
-  public var product: BusinessProduct
-
-  public init(showInstructions: Bool = true, product: BusinessProduct) {
-    self.showInstructions = showInstructions
-    self.product = product
-  }
-}
-
 @MainActor
 public final class VerificationCoordinator: ObservableObject {
   @Published private(set) var currentDestination: NavigationDestination = .instructions
@@ -31,16 +21,16 @@ public final class VerificationCoordinator: ObservableObject {
   @Published private(set) var selfieImage: UIImage?
 
   // Config & callbacks
-  let config: VerificationConfig
+  let product: BusinessProduct
   let eventSink: VerificationEventSink?
   let complete: VerificationCompletion
 
   public init(
-    config: VerificationConfig,
+    product: BusinessProduct,
     eventSink: VerificationEventSink? = nil,
     complete: @escaping VerificationCompletion
   ) {
-    self.config = config
+    self.product = product
     self.eventSink = eventSink
     self.complete = complete
   }
@@ -48,7 +38,7 @@ public final class VerificationCoordinator: ObservableObject {
   // MARK: Lifecycle
 
   func start() {
-    eventSink?(.started(product: config.product))
+    eventSink?(.started(product: product))
     buildRoute()
     index = 0
     emitDestination()
@@ -62,7 +52,7 @@ public final class VerificationCoordinator: ObservableObject {
   // MARK: Route building
 
   private func buildRoute() {
-    route = config.product.generateRoute(showInstructions: config.showInstructions)
+    route = product.generateRoute()
   }
 }
 

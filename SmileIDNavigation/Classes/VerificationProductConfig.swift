@@ -1,22 +1,25 @@
 import SwiftUI
 
 protocol VerificationProductConfig: Sendable, Equatable {
-  func generateRoute(showInstructions: Bool) -> [NavigationDestination]
+  func generateRoute() -> [NavigationDestination]
 }
 
 public struct SelfieEnrolmentConfig: VerificationProductConfig {
+  let showInstructions: Bool
   let showPreview: Bool
   let extraParams: [String: String]
 
   public init(
+    showInstructions: Bool = true,
     showPreview: Bool = true,
     extraParams: [String: String] = [:]
   ) {
+    self.showInstructions = showInstructions
     self.showPreview = showPreview
     self.extraParams = extraParams
   }
 
-  func generateRoute(showInstructions: Bool) -> [NavigationDestination] {
+  func generateRoute() -> [NavigationDestination] {
     var steps: [NavigationDestination] = []
 
     if showInstructions {
@@ -37,6 +40,7 @@ public struct SelfieEnrolmentConfig: VerificationProductConfig {
 }
 
 public struct DocumentVerificationConfig: VerificationProductConfig {
+  let showInstructions: Bool
   let showPreview: Bool
   let captureBothSides: Bool
   let captureMode: CaptureMode
@@ -45,6 +49,7 @@ public struct DocumentVerificationConfig: VerificationProductConfig {
   let extraParams: [String: String]
 
   public init(
+    showInstructions: Bool = true,
     showPreview: Bool = true,
     captureBothSides: Bool = true,
     captureMode: CaptureMode = .manual,
@@ -52,6 +57,7 @@ public struct DocumentVerificationConfig: VerificationProductConfig {
     documentInfo: [String: String]? = nil,
     extraParams: [String: String] = [:]
   ) {
+    self.showInstructions = showInstructions
     self.showPreview = showPreview
     self.captureBothSides = captureBothSides
     self.captureMode = captureMode
@@ -60,7 +66,7 @@ public struct DocumentVerificationConfig: VerificationProductConfig {
     self.extraParams = extraParams
   }
 
-  func generateRoute(showInstructions: Bool) -> [NavigationDestination] {
+  func generateRoute() -> [NavigationDestination] {
     var steps: [NavigationDestination] = []
 
     if showInstructions {
@@ -96,24 +102,27 @@ public struct DocumentVerificationConfig: VerificationProductConfig {
 }
 
 public struct BiometricKYCConfig: VerificationProductConfig {
+  let showInstructions: Bool
   let documentInfo: [String: String]?
   let consentInfo: [String: String]?
   let livenessType: LivenessType
   let extraParams: [String: String]
 
   public init(
+    showInstructions: Bool = true,
     documentInfo: [String: String]? = nil,
     consentInfo: [String: String]? = nil,
     livenessType: LivenessType = .smileDetection,
     extraParams: [String: String] = [:]
   ) {
+    self.showInstructions = showInstructions
     self.documentInfo = documentInfo
     self.consentInfo = consentInfo
     self.livenessType = livenessType
     self.extraParams = extraParams
   }
 
-  func generateRoute(showInstructions: Bool) -> [NavigationDestination] {
+  func generateRoute() -> [NavigationDestination] {
     var steps: [NavigationDestination] = []
 
     if showInstructions {

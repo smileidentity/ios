@@ -2,21 +2,21 @@ import SmileIDUI
 import SwiftUI
 
 struct VerificationFlowView: View {
-  private let config: VerificationConfig
+  private let product: BusinessProduct
   private let onEvent: VerificationEventSink?
   private let onCompletion: VerificationCompletion
 
   @ObservedObject private var coordinator: VerificationCoordinator
 
   init(
-    config: VerificationConfig,
+    product: BusinessProduct,
     onEvent: VerificationEventSink? = nil,
     onCompletion: @escaping VerificationCompletion
   ) {
-    self.config = config
+    self.product = product
     self.onEvent = onEvent
     self.onCompletion = onCompletion
-    self.coordinator = VerificationCoordinator(config: config, eventSink: onEvent, complete: onCompletion)
+    self.coordinator = VerificationCoordinator(product: product, eventSink: onEvent, complete: onCompletion)
   }
 
   var body: some View {
