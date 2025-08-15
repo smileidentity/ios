@@ -85,15 +85,11 @@ struct VerificationDemoView: View {
   }
 
   private func startSelfieEnrolment() {
-    let prod = VerificationProductBuilder
+    let product = VerificationProductBuilder
       .selfieEnrolment()
-
-    let product =
-      VerificationProductBuilder
-        .selfieEnrolment()
-        .hidePreview()
-        .withExtraParams(["userId": "demo_user_123", "sessionId": "session_456"])
-        .build()
+      .hidePreview()
+      .withExtraParams(["userId": "demo_user_123", "sessionId": "session_456"])
+      .build()
 
     selectedProduct = """
     VerificationProductBuilder

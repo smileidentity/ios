@@ -10,12 +10,16 @@ public final class SelfieEnrolmentBuilder {
     return self
   }
 
-  //	public func withLivenessType(_ type: LivenessType) -> SelfieEnrolmentBuilder {
-  //		livenessType = type
-  //		return self
-  //	}
+	public func withLivenessType(
+		_ type: LivenessType
+	) -> SelfieEnrolmentBuilder {
+		livenessType = type
+		return self
+	}
 
-  public func withExtraParams(_ params: [String: String]) -> SelfieEnrolmentBuilder {
+	public func withExtraParams(
+		_ params: [String: String]
+	) -> SelfieEnrolmentBuilder {
     extraParams = params
     return self
   }
