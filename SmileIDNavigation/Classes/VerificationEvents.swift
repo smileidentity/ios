@@ -12,7 +12,7 @@ public enum VerificationEvent {
 
 public struct VerificationSuccess: Sendable, Equatable {
   public let submissionId: String
-  
+
   public init(submissionId: String) {
     self.submissionId = submissionId
   }

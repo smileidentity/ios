@@ -10,7 +10,6 @@ public struct VerificationConfig {
   }
 }
 
-
 @MainActor
 public final class VerificationCoordinator: ObservableObject {
   @Published private(set) var currentDestination: NavigationDestination = .instructions

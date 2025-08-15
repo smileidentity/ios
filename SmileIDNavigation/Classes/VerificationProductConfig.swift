@@ -7,31 +7,31 @@ protocol VerificationProductConfig: Sendable, Equatable {
 public struct SelfieEnrolmentConfig: VerificationProductConfig {
   let showPreview: Bool
   let extraParams: [String: String]
-  
-	public init(
-		showPreview: Bool = true,
-		extraParams: [String: String] = [:]
-	) {
+
+  public init(
+    showPreview: Bool = true,
+    extraParams: [String: String] = [:]
+  ) {
     self.showPreview = showPreview
     self.extraParams = extraParams
   }
-  
+
   func generateRoute(showInstructions: Bool) -> [NavigationDestination] {
     var steps: [NavigationDestination] = []
-    
+
     if showInstructions {
       steps.append(.instructions)
     }
-    
+
     steps.append(.capture(.selfie))
-    
+
     if showPreview {
       steps.append(.preview(.selfie))
     }
-    
+
     steps.append(.processing)
     steps.append(.done)
-    
+
     return steps
   }
 }
@@ -43,8 +43,8 @@ public struct DocumentVerificationConfig: VerificationProductConfig {
   let livenessType: LivenessType
   let documentInfo: [String: String]?
   let extraParams: [String: String]
-  
-	public init(
+
+  public init(
     showPreview: Bool = true,
     captureBothSides: Bool = true,
     captureMode: CaptureMode = .manual,
@@ -59,38 +59,38 @@ public struct DocumentVerificationConfig: VerificationProductConfig {
     self.documentInfo = documentInfo
     self.extraParams = extraParams
   }
-  
+
   func generateRoute(showInstructions: Bool) -> [NavigationDestination] {
     var steps: [NavigationDestination] = []
-    
+
     if showInstructions {
       steps.append(.instructions)
     }
-    
+
     if documentInfo != nil {
       steps.append(.documentInfo)
     }
-    
+
     steps.append(.capture(.documentFront))
     if showPreview {
       steps.append(.preview(.documentFront))
     }
-    
+
     if captureBothSides {
       steps.append(.capture(.documentBack))
       if showPreview {
         steps.append(.preview(.documentBack))
       }
     }
-    
+
     steps.append(.capture(.selfie))
     if showPreview {
       steps.append(.preview(.selfie))
     }
-    
+
     steps.append(.processing)
     steps.append(.done)
-    
+
     return steps
   }
 }
@@ -100,8 +100,8 @@ public struct BiometricKYCConfig: VerificationProductConfig {
   let consentInfo: [String: String]?
   let livenessType: LivenessType
   let extraParams: [String: String]
-  
-	public init(
+
+  public init(
     documentInfo: [String: String]? = nil,
     consentInfo: [String: String]? = nil,
     livenessType: LivenessType = .smileDetection,
@@ -112,19 +112,19 @@ public struct BiometricKYCConfig: VerificationProductConfig {
     self.livenessType = livenessType
     self.extraParams = extraParams
   }
-  
+
   func generateRoute(showInstructions: Bool) -> [NavigationDestination] {
     var steps: [NavigationDestination] = []
-    
+
     if showInstructions {
       steps.append(.instructions)
     }
-    
+
     steps.append(.capture(.selfie))
     steps.append(.preview(.selfie))
     steps.append(.processing)
     steps.append(.done)
-    
+
     return steps
   }
 }

@@ -94,7 +94,7 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
 
   private func visibleStack() -> [NavigationDestination] {
     let fullRoute = coordinator.config.product.generateRoute(showInstructions: coordinator.config.showInstructions)
-    
+
     // Truncate up to currentDestination
     if let idx = fullRoute.firstIndex(of: coordinator.currentDestination) {
       return Array(fullRoute.prefix(idx + 1))
