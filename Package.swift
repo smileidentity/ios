@@ -37,7 +37,7 @@ let package = Package(
     .package(url: "https://github.com/airbnb/lottie-spm", exact: "4.5.2"),
     .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", exact: "1.6.0"),
     .package(url: "https://github.com/smileidentity/smile-id-security", exact: "11.1.0"),
-    .package(url: "https://github.com/getsentry/sentry-cocoa", exact: "8.54.0")
+    .package(url: "https://github.com/getsentry/sentry-cocoa", exact: "8.55.0")
   ],
   targets: [
     .target(
