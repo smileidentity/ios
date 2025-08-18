@@ -29,6 +29,10 @@ class Metadata {
 
   private func setDefaultMetadata() {
     addMetadata(key: .activeLivenessVersion, value: "1.0.0")
+    Task {
+      let buildInfo = await getBuildInfo()
+      addMetadata(key: .buildInfo, value: buildInfo.toCodableObject())
+    }
     addMetadata(key: .clientIP, value: getIPAddress(useIPv4: true))
     addMetadata(key: .deviceModel, value: UIDevice.current.modelName)
     addMetadata(key: .deviceOS, value: UIDevice.current.systemVersion)

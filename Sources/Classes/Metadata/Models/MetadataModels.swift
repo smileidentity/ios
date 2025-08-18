@@ -24,3 +24,9 @@ public enum WrapperSdkName: String {
   case reactNative = "react_native"
   case reactNativeExpo = "react_native_expo"
 }
+
+public enum Platform: String {
+  case mac
+  case simulator
+  case iphone
+}
