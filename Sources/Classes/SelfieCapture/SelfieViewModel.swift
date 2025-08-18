@@ -14,9 +14,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     static let minFaceAreaThreshold = 0.125
     static let maxFaceAreaThreshold = 0.25
     static let faceRotationThreshold = 0.03
-    static let faceRollThreshold = 0.025  // roll has a smaller range than yaw
+    static let faceRollThreshold = 0.025 // roll has a smaller range than yaw
     static let numLivenessImages = 7
-    static var numTotalSteps: Int { numLivenessImages + 1 }  // numLivenessImages + 1 selfie image
+    static var numTotalSteps: Int { numLivenessImages + 1 } // numLivenessImages + 1 selfie image
     static let livenessImageSize = 320
     static let selfieImageSize = 640
   }
@@ -128,7 +128,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     // Initial metadata for camera facing.
     let cameraFacing: CameraFacingValue =
       useBackCamera
-      ? .backCamera : .frontCamera
+        ? .backCamera : .frontCamera
     metadata.addMetadata(
       key: .selfieImageOrigin,
       value: cameraFacing.rawValue
@@ -314,7 +314,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
   /// Ensures the face fills an acceptable area range.
   private func validateFaceArea(_ face: VNFaceObservation) -> Bool {
     let bbox = face.boundingBox
-    let faceFillRatio = bbox.width * bbox.height  // image area normalized to 1.0
+    let faceFillRatio = bbox.width * bbox.height // image area normalized to 1.0
     if faceFillRatio < Constants.minFaceAreaThreshold {
       updateDirective(.moveCloser)
       return false
@@ -389,7 +389,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     updateOnMain {
       self.captureProgress =
         Double(self.livenessImages.count)
-        / Double(Constants.numTotalSteps)
+          / Double(Constants.numTotalSteps)
     }
   }
 
@@ -571,7 +571,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
       case .landscapeRight:
         return .down
       default:
-        return .right  // Default for portrait when orientation is unknown
+        return .right // Default for portrait when orientation is unknown
       }
     } else {
       // Regular camera frames need different correction based on device orientation
@@ -585,7 +585,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
       case .landscapeRight:
         return .left
       default:
-        return .up  // Default for portrait when orientation is unknown
+        return .up // Default for portrait when orientation is unknown
       }
     }
   }
@@ -680,8 +680,8 @@ extension SelfieViewModel {
         }
         let jobType: JobType =
           isEnroll
-          ? .smartSelfieEnrollment
-          : .smartSelfieAuthentication
+            ? .smartSelfieEnrollment
+            : .smartSelfieAuthentication
         let authRequest = AuthenticationRequest(
           jobType: jobType,
           enrollment: isEnroll,
@@ -712,10 +712,10 @@ extension SelfieViewModel {
           var smartSelfieImage: MultipartBody?
 
           if let selfie = try? Data(contentsOf: selfieImage),
-            let media = MultipartBody(
-              withImage: selfie,
-              forName: selfieImage.lastPathComponent
-            ) {
+             let media = MultipartBody(
+               withImage: selfie,
+               forName: selfieImage.lastPathComponent
+             ) {
             smartSelfieImage = media
           }
 
@@ -735,7 +735,7 @@ extension SelfieViewModel {
             )
           }
           guard let smartSelfieImage,
-            smartSelfieLivenessImages.count == Constants.numLivenessImages
+                smartSelfieLivenessImages.count == Constants.numLivenessImages
           else {
             throw SmileIDError.unknown("Selfie capture failed")
           }
@@ -793,7 +793,7 @@ extension SelfieViewModel {
           return
         }
         if SmileID.allowOfflineMode,
-          SmileIDError.isNetworkFailure(error: error) {
+           SmileIDError.isNetworkFailure(error: error) {
           updateOnMain {
             self.errorMessageRes = "Offline.Message"
             self.processingState = .success
