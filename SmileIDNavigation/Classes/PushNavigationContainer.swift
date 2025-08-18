@@ -93,26 +93,11 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
   }
 
   private func visibleStack() -> [NavigationDestination] {
-    var destinations: [NavigationDestination] = []
-    if coordinator.config.showInstructions { destinations.append(.instructions) }
-    if coordinator.config.product.requiresDocInfo { destinations.append(.documentInfo) }
-    if coordinator.config.product.requiresDocFront {
-      destinations.append(.capture(.documentFront))
-      destinations.append(.preview(.documentFront))
-    }
-    if coordinator.config.product.requiresDocBack {
-      destinations.append(.capture(.documentBack))
-      destinations.append(.preview(.documentBack))
-    }
-    if coordinator.config.product.requiresSelfie {
-      destinations.append(.capture(.selfie))
-      destinations.append(.preview(.selfie))
-    }
-    destinations.append(.processing)
-    destinations.append(.done)
+    let fullRoute = coordinator.product.generateRoute()
+
     // Truncate up to currentDestination
-    if let idx = destinations.firstIndex(of: coordinator.currentDestination) {
-      return Array(destinations.prefix(idx + 1))
+    if let idx = fullRoute.firstIndex(of: coordinator.currentDestination) {
+      return Array(fullRoute.prefix(idx + 1))
     }
     return [coordinator.currentDestination]
   }
