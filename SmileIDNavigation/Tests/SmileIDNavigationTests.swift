@@ -23,18 +23,13 @@ final class SmileIDNavigationTests: XCTestCase {
   // MARK: - VerificationCoordinator Tests
 
   func testVerificationCoordinatorInitialization() {
-    let config = VerificationConfig(
-      showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: true
-      )
-    )
+    let product = VerificationProductBuilder
+      .documentVerification()
+      .captureOneSide()
+      .build()
 
     let coordinator = VerificationCoordinator(
-      config: config,
+      product: product,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
@@ -47,18 +42,14 @@ final class SmileIDNavigationTests: XCTestCase {
   }
 
   func testCoordinatorStart() {
-    let config = VerificationConfig(
-      showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: false
-      )
-    )
+    let product = VerificationProductBuilder
+      .documentVerification()
+      .captureOneSide()
+      .hidePreview()
+      .build()
 
     let coordinator = VerificationCoordinator(
-      config: config,
+      product: product,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
@@ -66,8 +57,8 @@ final class SmileIDNavigationTests: XCTestCase {
     coordinator.start()
 
     XCTAssertEqual(mockEventSink.count, 2)
-    if case .started(let product) = mockEventSink[0] {
-      XCTAssertEqual(product, config.product)
+    if case .started(let startedProduct) = mockEventSink[0] {
+      XCTAssertEqual(startedProduct, product)
     } else {
       XCTFail("Expected started event")
     }
@@ -80,18 +71,14 @@ final class SmileIDNavigationTests: XCTestCase {
   }
 
   func testCoordinatorCancel() {
-    let config = VerificationConfig(
-      showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: false
-      )
-    )
+    let product = VerificationProductBuilder
+      .documentVerification()
+      .captureOneSide()
+      .hidePreview()
+      .build()
 
     let coordinator = VerificationCoordinator(
-      config: config,
+      product: product,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
@@ -114,18 +101,13 @@ final class SmileIDNavigationTests: XCTestCase {
   }
 
   func testNavigationFlow() {
-    let config = VerificationConfig(
-      showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: false
-      )
-    )
+    let product = VerificationProductBuilder
+      .documentVerification()
+      .captureOneSide()
+      .build()
 
     let coordinator = VerificationCoordinator(
-      config: config,
+      product: product,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
@@ -141,18 +123,13 @@ final class SmileIDNavigationTests: XCTestCase {
   }
 
   func testNavigationBackwards() {
-    let config = VerificationConfig(
-      showInstructions: true,
-      product: VerificationProduct(
-        requiresDocInfo: false,
-        requiresDocFront: true,
-        requiresDocBack: false,
-        requiresSelfie: false
-      )
-    )
+    let product = VerificationProductBuilder
+      .documentVerification()
+      .captureOneSide()
+      .build()
 
     let coordinator = VerificationCoordinator(
-      config: config,
+      product: product,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
