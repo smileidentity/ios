@@ -8,7 +8,7 @@ public struct VerificationFlowView: View {
 
   @ObservedObject private var coordinator: VerificationCoordinator
 
-	public init(
+  public init(
     product: BusinessProduct,
     onEvent: VerificationEventSink? = nil,
     onCompletion: @escaping VerificationCompletion
@@ -19,7 +19,7 @@ public struct VerificationFlowView: View {
     self.coordinator = VerificationCoordinator(product: product, eventSink: onEvent, complete: onCompletion)
   }
 
-	public var body: some View {
+  public var body: some View {
     PushNavigationContainer(
       coordinator: coordinator,
       titleFor: title(for:),
