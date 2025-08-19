@@ -27,6 +27,15 @@
 		200C41F22E30CFAD00C0F3CF /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F12E30CFAD00C0F3CF /* SmileID */; };
 		200C41F52E30D04500C0F3CF /* netfox in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F42E30D04500C0F3CF /* netfox */; };
 		200C41F62E30D05600C0F3CF /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F52E30D05600C0F3CF /* SmileID */; };
+		2026C20E2E54AE74002544E0 /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C20D2E54AE74002544E0 /* SmileID */; };
+		2026C2102E54AE74002544E0 /* SmileIDAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C20F2E54AE74002544E0 /* SmileIDAnalytics */; };
+		2026C2122E54AE74002544E0 /* SmileIDCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2112E54AE74002544E0 /* SmileIDCamera */; };
+		2026C2142E54AE74002544E0 /* SmileIDML in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2132E54AE74002544E0 /* SmileIDML */; };
+		2026C2162E54AE74002544E0 /* SmileIDNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2152E54AE74002544E0 /* SmileIDNavigation */; };
+		2026C2182E54AE74002544E0 /* SmileIDNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2172E54AE74002544E0 /* SmileIDNetworking */; };
+		2026C21A2E54AE74002544E0 /* SmileIDStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2192E54AE74002544E0 /* SmileIDStorage */; };
+		2026C21C2E54AE74002544E0 /* SmileIDUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C21B2E54AE74002544E0 /* SmileIDUI */; };
+		2026C21E2E54AEBF002544E0 /* VerificationDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2026C21D2E54AEBB002544E0 /* VerificationDemoView.swift */; };
 		20343AED2C1C825D003536F5 /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEC2C1C825D003536F5 /* JobsView.swift */; };
 		20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEE2C206BDF003536F5 /* JobListItem.swift */; };
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
@@ -118,6 +127,7 @@
 		1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileEnvironmentToggleButton.swift; sourceTree = "<group>"; };
 		1ED53F692A2F28590020BEFB /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		20057C0F2E155C760088D9C1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		2026C21D2E54AEBB002544E0 /* VerificationDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationDemoView.swift; sourceTree = "<group>"; };
 		20343AEC2C1C825D003536F5 /* JobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsView.swift; sourceTree = "<group>"; };
 		20343AEE2C206BDF003536F5 /* JobListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListItem.swift; sourceTree = "<group>"; };
 		20343AF12C206CEC003536F5 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
@@ -185,13 +195,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2026C2182E54AE74002544E0 /* SmileIDNetworking in Frameworks */,
+				2026C20E2E54AE74002544E0 /* SmileID in Frameworks */,
 				2053F1242E43BEA5000BA509 /* SmileID in Frameworks */,
 				20A9CDDF2E43C481004D1A9E /* SmileIDStorage in Frameworks */,
+				2026C21A2E54AE74002544E0 /* SmileIDStorage in Frameworks */,
+				2026C2102E54AE74002544E0 /* SmileIDAnalytics in Frameworks */,
 				20A9CDD72E43C481004D1A9E /* SmileIDAnalytics in Frameworks */,
+				2026C2142E54AE74002544E0 /* SmileIDML in Frameworks */,
+				2026C21C2E54AE74002544E0 /* SmileIDUI in Frameworks */,
 				200C41F52E30D04500C0F3CF /* netfox in Frameworks */,
 				20A9CDDD2E43C481004D1A9E /* SmileIDNetworking in Frameworks */,
 				200C41F22E30CFAD00C0F3CF /* SmileID in Frameworks */,
 				20A9CDD92E43C481004D1A9E /* SmileIDCamera in Frameworks */,
+				2026C2162E54AE74002544E0 /* SmileIDNavigation in Frameworks */,
+				2026C2122E54AE74002544E0 /* SmileIDCamera in Frameworks */,
 				20A9CDD52E43C481004D1A9E /* SmileID in Frameworks */,
 				20A9CDDB2E43C481004D1A9E /* SmileIDML in Frameworks */,
 				20A9CDE12E43C481004D1A9E /* SmileIDUI in Frameworks */,
@@ -301,6 +319,7 @@
 		20B6D5DA2C21B72F0023D51C /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				2026C21D2E54AEBB002544E0 /* VerificationDemoView.swift */,
 				6AC982147640002B81F72DEC /* SettingsView.swift */,
 				6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */,
 			);
@@ -544,7 +563,7 @@
 			mainGroup = 607FACC71AFB9204008FA782;
 			packageReferences = (
 				200C41F32E30D04400C0F3CF /* XCRemoteSwiftPackageReference "netfox" */,
-				20A9CDD32E43C481004D1A9E /* XCLocalSwiftPackageReference ".." */,
+				2026C20C2E54AE74002544E0 /* XCLocalSwiftPackageReference "../../smile-identity-ios" */,
 			);
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
 			projectDirPath = "";
@@ -659,6 +678,7 @@
 				20456EC82D425A3C0085F906 /* DocumentVerificationDetails.swift in Sources */,
 				20456ECC2D425B270085F906 /* DocumentVerificationWithSelector.swift in Sources */,
 				6AC98990097662789B0107EB /* SettingsViewModel.swift in Sources */,
+				2026C21E2E54AEBF002544E0 /* VerificationDemoView.swift in Sources */,
 				20057C102E155C760088D9C1 /* SceneDelegate.swift in Sources */,
 				6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */,
 				20969FE52C3FEB530003E5E0 /* IndeterminateProgressView.swift in Sources */,
@@ -990,9 +1010,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		20A9CDD32E43C481004D1A9E /* XCLocalSwiftPackageReference ".." */ = {
+		2026C20C2E54AE74002544E0 /* XCLocalSwiftPackageReference "../../smile-identity-ios" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ..;
+			relativePath = "../../smile-identity-ios";
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -1020,6 +1040,38 @@
 		200C41F52E30D05600C0F3CF /* SmileID */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SmileID;
+		};
+		2026C20D2E54AE74002544E0 /* SmileID */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileID;
+		};
+		2026C20F2E54AE74002544E0 /* SmileIDAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileIDAnalytics;
+		};
+		2026C2112E54AE74002544E0 /* SmileIDCamera */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileIDCamera;
+		};
+		2026C2132E54AE74002544E0 /* SmileIDML */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileIDML;
+		};
+		2026C2152E54AE74002544E0 /* SmileIDNavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileIDNavigation;
+		};
+		2026C2172E54AE74002544E0 /* SmileIDNetworking */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileIDNetworking;
+		};
+		2026C2192E54AE74002544E0 /* SmileIDStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileIDStorage;
+		};
+		2026C21B2E54AE74002544E0 /* SmileIDUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmileIDUI;
 		};
 		2053F1232E43BEA5000BA509 /* SmileID */ = {
 			isa = XCSwiftPackageProductDependency;
