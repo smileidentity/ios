@@ -17,6 +17,12 @@ final class _CancelProxy: NSObject {
 final class _NavBoxController: UINavigationController {
   var destinationStack: [NavigationDestination] = []
   var cancelProxy: _CancelProxy?
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    // Disable interactive swipe-to-go-back gesture
+    interactivePopGestureRecognizer?.isEnabled = false
+  }
 }
 
 /// Bridges SwiftUI destinations into a real UINavigationController to get native push/pop animations on 13
@@ -27,11 +33,11 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
   let makeView: (NavigationDestination) -> Content
   let onCancel: () -> Void
 
-  let shouldHideBack: (NavigationDestination) -> Bool
-
   func makeUIViewController(context _: Context) -> _NavBoxController {
     let nav = _NavBoxController()
     nav.navigationBar.prefersLargeTitles = false
+    // Ensure swipe back is disabled at creation
+    nav.interactivePopGestureRecognizer?.isEnabled = false
 
     // Root controller
     let rootDestination = coordinator.currentDestination
@@ -48,6 +54,8 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
   }
 
   func updateUIViewController(_ nav: _NavBoxController, context _: Context) {
+    // Keep swipe back disabled on updates
+    nav.interactivePopGestureRecognizer?.isEnabled = false
     let desired = visibleStack()
     let current = nav.destinationStack
 

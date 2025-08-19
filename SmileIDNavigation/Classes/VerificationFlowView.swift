@@ -24,8 +24,7 @@ public struct VerificationFlowView: View {
       coordinator: coordinator,
       titleFor: title(for:),
       makeView: { stepView($0) },
-      onCancel: { coordinator.cancel() },
-      shouldHideBack: { $0 == .done }
+      onCancel: { coordinator.cancel() }
     )
     .onAppear { coordinator.start() }
   }
