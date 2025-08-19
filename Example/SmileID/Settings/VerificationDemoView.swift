@@ -58,7 +58,7 @@ struct VerificationDemoView: View {
       Spacer()
     }
     .padding()
-    .sheet(item: $activeProduct, onDismiss: {
+    .fullScreenCover(item: $activeProduct, onDismiss: {
       activeProduct = nil
     }) { active in
       VerificationFlowView(
