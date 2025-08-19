@@ -37,7 +37,8 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
     let rootDestination = coordinator.currentDestination
     let rootVC = UIHostingController(rootView: makeView(rootDestination))
     rootVC.title = titleFor(rootDestination)
-    rootVC.navigationItem.hidesBackButton = shouldHideBack(rootDestination)
+    // Always hide the back button for a clean push flow
+    rootVC.navigationItem.hidesBackButton = true
     nav.viewControllers = [rootVC]
     nav.destinationStack = [rootDestination]
 
@@ -53,7 +54,8 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
     guard desired != current else {
       if let top = nav.topViewController, let destination = desired.last {
         top.title = titleFor(destination)
-        top.navigationItem.hidesBackButton = shouldHideBack(destination)
+        // Ensure back button remains hidden on updates
+        top.navigationItem.hidesBackButton = true
         configureCancel(for: destination, in: nav)
       }
       return
@@ -65,7 +67,8 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
       for destination in desired.dropFirst(current.count) {
         let vc = UIHostingController(rootView: makeView(destination))
         vc.title = titleFor(destination)
-        vc.navigationItem.hidesBackButton = shouldHideBack(destination)
+        // Hide back button on newly pushed controllers
+        vc.navigationItem.hidesBackButton = true
         nav.pushViewController(vc, animated: true)
       }
     } else if desired.count < current.count {
@@ -82,7 +85,8 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
       if let destination = desired.last {
         let vc = UIHostingController(rootView: makeView(destination))
         vc.title = titleFor(destination)
-        vc.navigationItem.hidesBackButton = shouldHideBack(destination)
+        // Hide back button when replacing the top controller
+        vc.navigationItem.hidesBackButton = true
         vcs[vcs.count - 1] = vc
         nav.setViewControllers(vcs, animated: false)
       }
