@@ -435,6 +435,16 @@ extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
       self.publishUserInstruction(.headInFrame)
     }
   }
+
+  func faceDetectorDidLoseTracking(_: EnhancedFaceDetector) {
+    // Reset capture process/state when tracking is lost so the user starts afresh
+    DispatchQueue.main.async {
+      self.livenessCheckManager.resetLivenessChallenge()
+      self.resetSelfieCaptureState()
+      self.resetGuideAnimationDelayTimer()
+      self.publishUserInstruction(.headInFrame)
+    }
+  }
 }
 
 // MARK: FaceValidatorDelegate Methods
