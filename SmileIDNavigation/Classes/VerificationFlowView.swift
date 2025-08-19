@@ -1,14 +1,14 @@
 import SmileIDUI
 import SwiftUI
 
-struct VerificationFlowView: View {
+public struct VerificationFlowView: View {
   private let product: BusinessProduct
   private let onEvent: VerificationEventSink?
   private let onCompletion: VerificationCompletion
 
   @ObservedObject private var coordinator: VerificationCoordinator
 
-  init(
+  public init(
     product: BusinessProduct,
     onEvent: VerificationEventSink? = nil,
     onCompletion: @escaping VerificationCompletion
@@ -19,7 +19,7 @@ struct VerificationFlowView: View {
     self.coordinator = VerificationCoordinator(product: product, eventSink: onEvent, complete: onCompletion)
   }
 
-  var body: some View {
+  public var body: some View {
     PushNavigationContainer(
       coordinator: coordinator,
       titleFor: title(for:),
