@@ -8,7 +8,7 @@ public struct VerificationFlowView: View {
 
   @ObservedObject private var coordinator: VerificationCoordinator
 
-	public init(
+  public init(
     product: BusinessProduct,
     onEvent: VerificationEventSink? = nil,
     onCompletion: @escaping VerificationCompletion
@@ -16,10 +16,11 @@ public struct VerificationFlowView: View {
     self.product = product
     self.onEvent = onEvent
     self.onCompletion = onCompletion
-    self.coordinator = VerificationCoordinator(product: product, eventSink: onEvent, complete: onCompletion)
+    self.coordinator = VerificationCoordinator(
+      product: product, eventSink: onEvent, complete: onCompletion)
   }
 
-	public var body: some View {
+  public var body: some View {
     PushNavigationContainer(
       coordinator: coordinator,
       titleFor: title(for:),
@@ -41,9 +42,11 @@ public struct VerificationFlowView: View {
     case .documentInfo:
       EmptyView()
     case .capture(let kind):
-      SmileIDCaptureScreen(scanType: .documentBack, onContinue: {
-        coordinator.acceptCapture(kind, image: UIImage())
-      })
+      SmileIDCaptureScreen(
+        scanType: .documentBack,
+        onContinue: {
+          coordinator.acceptCapture(kind, image: UIImage())
+        })
     case .preview(let kind):
       SmileIDPreviewScreen(
         onContinue: {
