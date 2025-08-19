@@ -73,11 +73,11 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
     if desired.count > current.count {
       // Push the new destinations
       for destination in desired.dropFirst(current.count) {
-        let vc = UIHostingController(rootView: makeView(destination))
-        vc.title = titleFor(destination)
+        let viewController = UIHostingController(rootView: makeView(destination))
+        viewController.title = titleFor(destination)
         // Hide back button on newly pushed controllers
-        vc.navigationItem.hidesBackButton = true
-        nav.pushViewController(vc, animated: true)
+        viewController.navigationItem.hidesBackButton = true
+        nav.pushViewController(viewController, animated: true)
       }
     } else if desired.count < current.count {
       // Pop to a previous controller
