@@ -16,7 +16,8 @@ public struct VerificationFlowView: View {
     self.product = product
     self.onEvent = onEvent
     self.onCompletion = onCompletion
-    self.coordinator = VerificationCoordinator(product: product, eventSink: onEvent, complete: onCompletion)
+    self.coordinator = VerificationCoordinator(
+      product: product, eventSink: onEvent, complete: onCompletion)
   }
 
   public var body: some View {
@@ -24,8 +25,7 @@ public struct VerificationFlowView: View {
       coordinator: coordinator,
       titleFor: title(for:),
       makeView: { stepView($0) },
-      onCancel: { coordinator.cancel() },
-      shouldHideBack: { $0 == .done }
+      onCancel: { coordinator.cancel() }
     )
     .onAppear { coordinator.start() }
   }
@@ -42,9 +42,11 @@ public struct VerificationFlowView: View {
     case .documentInfo:
       EmptyView()
     case .capture(let kind):
-      SmileIDCaptureScreen(scanType: .documentBack, onContinue: {
-        coordinator.acceptCapture(kind, image: UIImage())
-      })
+      SmileIDCaptureScreen(
+        scanType: .documentBack,
+        onContinue: {
+          coordinator.acceptCapture(kind, image: UIImage())
+        })
     case .preview(let kind):
       SmileIDPreviewScreen(
         onContinue: {
