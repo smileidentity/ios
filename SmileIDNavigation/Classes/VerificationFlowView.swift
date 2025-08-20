@@ -2,14 +2,14 @@ import SmileIDUI
 import SwiftUI
 
 public struct VerificationFlowView: View {
-	@Backport.StateObject private var viewModel: VerificationFlowViewModel
+  @Backport.StateObject private var viewModel: VerificationFlowViewModel
 
   public init(
     product: BusinessProduct,
     onEvent: VerificationEventSink? = nil,
     onCompletion: @escaping VerificationCompletion
   ) {
-		_viewModel = Backport.StateObject(wrappedValue: VerificationFlowViewModel(
+    _viewModel = Backport.StateObject(wrappedValue: VerificationFlowViewModel(
       product: product,
       onEvent: onEvent,
       onCompletion: onCompletion

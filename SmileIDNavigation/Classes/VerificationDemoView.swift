@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct VerificationDemoView: View {
-	@Backport.StateObject private var viewModel = VerificationDemoViewModel()
+  @Backport.StateObject private var viewModel = VerificationDemoViewModel()
 
   var body: some View {
     VStack(spacing: 30) {

@@ -47,4 +47,3 @@ final class VerificationDemoViewModel: ObservableObject {
     activeProduct = ActiveProduct(product: product)
   }
 }
-

@@ -25,6 +25,7 @@ public final class VerificationFlowViewModel: ObservableObject {
   }
 
   // MARK: - Routing proxies
+
   func start() { coordinator.start() }
   func cancel() { coordinator.cancel() }
   func goToNext() { coordinator.goToNext() }
@@ -33,6 +34,7 @@ public final class VerificationFlowViewModel: ObservableObject {
   func rejectCapture(_ kind: CaptureKind) { coordinator.rejectCapture(kind) }
 
   // MARK: - Presentation helpers moved out of the View
+
   func image(for kind: CaptureKind) -> UIImage? {
     switch kind {
     case .documentFront: return coordinator.docFrontImage
@@ -62,4 +64,3 @@ public final class VerificationFlowViewModel: ObservableObject {
     }
   }
 }
-
