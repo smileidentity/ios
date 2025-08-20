@@ -124,7 +124,7 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
         let alert = UIAlertController(
           title: "Cancel Verification",
           message: "Are you sure you want to cancel?",
-					preferredStyle: .actionSheet
+          preferredStyle: .actionSheet
         )
         alert.addAction(UIAlertAction(title: "Resume", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: { _ in
