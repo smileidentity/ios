@@ -1,14 +1,14 @@
 import SmileIDUI
 import SwiftUI
 
-struct VerificationFlowView: View {
+public struct VerificationFlowView: View {
   private let product: BusinessProduct
   private let onEvent: VerificationEventSink?
   private let onCompletion: VerificationCompletion
 
   @ObservedObject private var coordinator: VerificationCoordinator
 
-  init(
+  public init(
     product: BusinessProduct,
     onEvent: VerificationEventSink? = nil,
     onCompletion: @escaping VerificationCompletion
@@ -16,16 +16,16 @@ struct VerificationFlowView: View {
     self.product = product
     self.onEvent = onEvent
     self.onCompletion = onCompletion
-    self.coordinator = VerificationCoordinator(product: product, eventSink: onEvent, complete: onCompletion)
+    self.coordinator = VerificationCoordinator(
+      product: product, eventSink: onEvent, complete: onCompletion)
   }
 
-  var body: some View {
+  public var body: some View {
     PushNavigationContainer(
       coordinator: coordinator,
       titleFor: title(for:),
       makeView: { stepView($0) },
-      onCancel: { coordinator.cancel() },
-      shouldHideBack: { $0 == .done }
+      onCancel: { coordinator.cancel() }
     )
     .onAppear { coordinator.start() }
   }
@@ -42,9 +42,11 @@ struct VerificationFlowView: View {
     case .documentInfo:
       EmptyView()
     case .capture(let kind):
-      SmileIDCaptureScreen(scanType: .documentBack, onContinue: {
-        coordinator.acceptCapture(kind, image: UIImage())
-      })
+      SmileIDCaptureScreen(
+        scanType: .documentBack,
+        onContinue: {
+          coordinator.acceptCapture(kind, image: UIImage())
+        })
     case .preview(let kind):
       SmileIDPreviewScreen(
         onContinue: {
