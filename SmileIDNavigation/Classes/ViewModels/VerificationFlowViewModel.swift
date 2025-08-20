@@ -8,6 +8,7 @@ public final class VerificationFlowViewModel: ObservableObject {
 
   // Coordinator remains responsible for navigation orchestration
   public let coordinator: VerificationCoordinator
+  @Published public var state: VerificationFlowState
 
   public init(
     product: BusinessProduct,
@@ -17,8 +18,11 @@ public final class VerificationFlowViewModel: ObservableObject {
     self.product = product
     self.onEvent = onEvent
     self.onCompletion = onCompletion
+    let flowState = VerificationFlowState()
+    self.state = flowState
     self.coordinator = VerificationCoordinator(
       product: product,
+      state: flowState,
       eventSink: onEvent,
       complete: onCompletion
     )
@@ -37,9 +41,9 @@ public final class VerificationFlowViewModel: ObservableObject {
 
   func image(for kind: CaptureKind) -> UIImage? {
     switch kind {
-    case .documentFront: return coordinator.docFrontImage
-    case .documentBack: return coordinator.docBackImage
-    case .selfie: return coordinator.selfieImage
+    case .documentFront: return state.docFrontImage
+    case .documentBack: return state.docBackImage
+    case .selfie: return state.selfieImage
     }
   }
 
