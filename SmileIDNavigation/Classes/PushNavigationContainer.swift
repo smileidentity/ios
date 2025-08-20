@@ -119,7 +119,19 @@ struct PushNavigationContainer<Content: View>: UIViewControllerRepresentable {
     if destination == .done {
       top.navigationItem.rightBarButtonItem = nil
     } else {
-      let proxy = nav.cancelProxy ?? _CancelProxy(onTap: onCancel)
+      let proxy = _CancelProxy(onTap: { [weak nav] in
+        guard let presenter = nav?.topViewController else { return }
+        let alert = UIAlertController(
+          title: "Cancel Verification",
+          message: "Are you sure you want to cancel?",
+					preferredStyle: .actionSheet
+        )
+        alert.addAction(UIAlertAction(title: "Resume", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: { _ in
+          onCancel()
+        }))
+        presenter.present(alert, animated: true)
+      })
       nav.cancelProxy = proxy
       let item = UIBarButtonItem(
         title: "Cancel",
