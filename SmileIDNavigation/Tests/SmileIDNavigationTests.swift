@@ -136,8 +136,10 @@ final class SmileIDNavigationTests: XCTestCase {
       .captureOneSide()
       .build()
 
+    let state = VerificationFlowState()
     let coordinator = VerificationCoordinator(
       product: product,
+      state: state,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
