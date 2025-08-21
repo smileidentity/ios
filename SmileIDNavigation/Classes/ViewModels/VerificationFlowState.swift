@@ -9,4 +9,3 @@ public final class VerificationFlowState: ObservableObject {
 
   public init() {}
 }
-

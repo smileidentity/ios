@@ -3,61 +3,63 @@ import SwiftUI
 
 @MainActor
 class CaptureScreenViewModel: ObservableObject {
+  // MARK: - Configuration
 
-	// MARK: - Configuration
-	let scanType: ScanType
-	let onContinue: () -> Void
+  let scanType: ScanType
+  let onContinue: () -> Void
 
-	// MARK: - Published State
-	@Published var captureState: CaptureState = .idle
-	@Published var capturedImage: Data?
-	@Published var errorState: ErrorState?
+  // MARK: - Published State
 
-	// MARK: - Private State
-	private var subscribers = Set<AnyCancellable>()
+  @Published var captureState: CaptureState = .idle
+  @Published var capturedImage: Data?
+  @Published var errorState: ErrorState?
 
-	init(
-		scanType: ScanType,
-		onContinue: @escaping () -> Void
-	) {
-		self.scanType = scanType
-		self.onContinue = onContinue
-	}
+  // MARK: - Private State
 
-	deinit {
-		subscribers.removeAll()
-	}
+  private var subscribers = Set<AnyCancellable>()
 
-	// MARK: - Actions
+  init(
+    scanType: ScanType,
+    onContinue: @escaping () -> Void
+  ) {
+    self.scanType = scanType
+    self.onContinue = onContinue
+  }
 
-	func startCapture() {
-		// Future: Implement capture logic
-	}
+  deinit {
+    subscribers.removeAll()
+  }
 
-	func retryCapture() {
-		// Future: Implement retry logic
-	}
+  // MARK: - Actions
 
-	func acceptCapture() {
-		// Future: Implement accept logic
-		onContinue()
-	}
+  func startCapture() {
+    // Future: Implement capture logic
+  }
 
-	func rejectCapture() {
-		// Future: Implement reject logic
-	}
+  func retryCapture() {
+    // Future: Implement retry logic
+  }
+
+  func acceptCapture() {
+    // Future: Implement accept logic
+    onContinue()
+  }
+
+  func rejectCapture() {
+    // Future: Implement reject logic
+  }
 }
 
 // MARK: - Supporting Types
 
 enum CaptureState {
-	case idle
-	case capturing
-	case completed
-	case error
+  case idle
+  case capturing
+  case completed
+  case error
 }
 
 enum ErrorState: Error {
-	case cameraUnavailable
-	case captureFailure
+  case cameraUnavailable
+  case captureFailure
 }

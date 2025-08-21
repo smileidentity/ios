@@ -1,23 +1,25 @@
-import SwiftUI
 import Combine
+import SwiftUI
 
 @MainActor
 class PreviewScreenViewModel: ObservableObject {
-  
   // MARK: - Configuration
+
   let capturedImage: Data?
   let scanType: ScanType
   let onContinue: () -> Void
   let onRetry: () -> Void
-  
+
   // MARK: - Published State
+
   @Published var previewState: PreviewState = .displaying
   @Published var errorState: ErrorState?
   @Published var isImageLoading = false
-  
+
   // MARK: - Private State
+
   private var subscribers = Set<AnyCancellable>()
-  
+
   init(
     capturedImage: Data?,
     scanType: ScanType,
@@ -29,23 +31,23 @@ class PreviewScreenViewModel: ObservableObject {
     self.onContinue = onContinue
     self.onRetry = onRetry
   }
-  
+
   deinit {
     subscribers.removeAll()
   }
-  
+
   // MARK: - Actions
-  
+
   func acceptImage() {
     // Future: Implement acceptance logic
     onContinue()
   }
-  
+
   func rejectImage() {
     // Future: Implement rejection logic
     onRetry()
   }
-  
+
   func loadPreview() {
     // Future: Implement image loading/processing
   }
