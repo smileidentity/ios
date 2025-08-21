@@ -25,6 +25,7 @@ enum MetadataKey: String {
   case networkConnection = "network_connection"
   case networkRetries = "network_retries"
   case numberOfCameras = "number_of_cameras"
+  case packageName = "package_name"
   case proxyDetected = "proxy"
   case proximitySensor = "proximity_sensor"
   case securityPolicyVersion = "security_policy_version"
