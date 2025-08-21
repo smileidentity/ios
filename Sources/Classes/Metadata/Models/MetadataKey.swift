@@ -3,7 +3,8 @@ import Foundation
 enum MetadataKey: String {
   case activeLivenessType = "active_liveness_type"
   case activeLivenessVersion = "active_liveness_version"
-  case buildInfo = "build_info"
+  case buildPlatform = "build_platform"
+  case buildReceipt = "build_receipt"
   case cameraName = "camera_name"
   case clientIP = "client_ip"
   case deviceModel = "device_model"
