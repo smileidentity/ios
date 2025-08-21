@@ -45,6 +45,7 @@ class Metadata {
     addMetadata(key: .geolocation, value: currentLocation().toCodableObject())
     addMetadata(key: .memoryInfo, value: ProcessInfo.processInfo.availableMemoryInMB)
     addMetadata(key: .numberOfCameras, value: AVCaptureDevice.numberOfCameras)
+    addMetadata(key: .packageName, value: Bundle.main.bundleIdentifier ?? "unknown")
     addMetadata(key: .proximitySensor, value: UIDevice.current.hasProximitySensor)
     addMetadata(key: .proxyDetected, value: isProxyDetected())
     addMetadata(key: .screenResolution, value: UIScreen.main.formattedResolution)
