@@ -14,11 +14,8 @@ public final class VerificationCoordinator: ObservableObject {
     }
   }
 
-  // TODO: Collected artifacts: Consider moving this to view model later.
-  @Published private(set) var docInfo: [String: String] = [:]
-  @Published private(set) var docFrontImage: UIImage?
-  @Published private(set) var docBackImage: UIImage?
-  @Published private(set) var selfieImage: UIImage?
+  // Flow state (extracted from Coordinator responsibilities)
+  let state: VerificationFlowState
 
   // Config & callbacks
   let product: BusinessProduct
@@ -27,10 +24,12 @@ public final class VerificationCoordinator: ObservableObject {
 
   public init(
     product: BusinessProduct,
+    state: VerificationFlowState,
     eventSink: VerificationEventSink? = nil,
     complete: @escaping VerificationCompletion
   ) {
     self.product = product
+    self.state = state
     self.eventSink = eventSink
     self.complete = complete
   }
@@ -95,15 +94,15 @@ extension VerificationCoordinator {
   // MARK: Data mutations from screens
 
   func documentInfoCompleted(_ info: [String: String]) {
-    docInfo = info
+    state.docInfo = info
     goToNext()
   }
 
   func acceptCapture(_ kind: CaptureKind, image: UIImage) {
     switch kind {
-    case .documentFront: docFrontImage = image
-    case .documentBack: docBackImage = image
-    case .selfie: selfieImage = image
+    case .documentFront: state.docFrontImage = image
+    case .documentBack: state.docBackImage = image
+    case .selfie: state.selfieImage = image
     }
 
     eventSink?(.captured(kind: kind))
@@ -113,9 +112,9 @@ extension VerificationCoordinator {
   func rejectCapture(_ kind: CaptureKind) {
     // Clear the stored image and return to capture
     switch kind {
-    case .documentFront: docFrontImage = nil
-    case .documentBack: docBackImage = nil
-    case .selfie: selfieImage = nil
+    case .documentFront: state.docFrontImage = nil
+    case .documentBack: state.docBackImage = nil
+    case .selfie: state.selfieImage = nil
     }
     goBackToCapture(kind)
   }

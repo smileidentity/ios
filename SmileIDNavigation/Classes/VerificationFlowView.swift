@@ -2,32 +2,28 @@ import SmileIDUI
 import SwiftUI
 
 public struct VerificationFlowView: View {
-  private let product: BusinessProduct
-  private let onEvent: VerificationEventSink?
-  private let onCompletion: VerificationCompletion
-
-  @ObservedObject private var coordinator: VerificationCoordinator
+  @Backport.StateObject private var viewModel: VerificationFlowViewModel
 
   public init(
     product: BusinessProduct,
     onEvent: VerificationEventSink? = nil,
     onCompletion: @escaping VerificationCompletion
   ) {
-    self.product = product
-    self.onEvent = onEvent
-    self.onCompletion = onCompletion
-    self.coordinator = VerificationCoordinator(
-      product: product, eventSink: onEvent, complete: onCompletion)
+    _viewModel = Backport.StateObject(wrappedValue: VerificationFlowViewModel(
+      product: product,
+      onEvent: onEvent,
+      onCompletion: onCompletion
+    ))
   }
 
   public var body: some View {
     PushNavigationContainer(
-      coordinator: coordinator,
-      titleFor: title(for:),
+      coordinator: viewModel.coordinator,
+      titleFor: viewModel.title(for:),
       makeView: { stepView($0) },
-      onCancel: { coordinator.cancel() }
+      onCancel: { viewModel.cancel() }
     )
-    .onAppear { coordinator.start() }
+    .onAppear { viewModel.start() }
   }
 
   @ViewBuilder
@@ -35,9 +31,9 @@ public struct VerificationFlowView: View {
     switch step {
     case .instructions:
       SmileIDInstructionsScreen(
-        onContinue: coordinator.goToNext,
+        onContinue: viewModel.goToNext,
         onCancel: {
-          coordinator.cancel()
+          viewModel.cancel()
         })
     case .documentInfo:
       EmptyView()
@@ -45,15 +41,15 @@ public struct VerificationFlowView: View {
       SmileIDCaptureScreen(
         scanType: .documentBack,
         onContinue: {
-          coordinator.acceptCapture(kind, image: UIImage())
+          viewModel.acceptCapture(kind, image: UIImage())
         })
     case .preview(let kind):
       SmileIDPreviewScreen(
         onContinue: {
-          coordinator.goToNext()
+          viewModel.goToNext()
         },
         onRetry: {
-          coordinator.rejectCapture(
+          viewModel.rejectCapture(
             kind
           )
         }
@@ -61,46 +57,17 @@ public struct VerificationFlowView: View {
     case .processing:
       SmileIDProcessingScreen(
         onContinue: {
-          coordinator.goToNext()
+          viewModel.goToNext()
         },
         onCancel: {
-          coordinator.cancel()
+          viewModel.cancel()
         })
     case .done:
       SmileIDProcessingScreen(
         onContinue: {},
         onCancel: {
-          coordinator.cancel()
+          viewModel.cancel()
         })
-    }
-  }
-
-  private func image(for kind: CaptureKind) -> UIImage? {
-    switch kind {
-    case .documentFront: return coordinator.docFrontImage
-    case .documentBack: return coordinator.docBackImage
-    case .selfie: return coordinator.selfieImage
-    }
-  }
-
-  private func title(for step: NavigationDestination) -> String {
-    switch step {
-    case .instructions: return "Instructions"
-    case .documentInfo: return "Document Info"
-    case .capture(.documentFront): return "Front of Document"
-    case .capture(.documentBack): return "Back of Document"
-    case .capture(.selfie): return "Selfie"
-    case .preview(let kind): return "Preview \(kindTitle(kind))"
-    case .processing: return "Submitting…"
-    case .done: return "Done"
-    }
-  }
-
-  private func kindTitle(_ kind: CaptureKind) -> String {
-    switch kind {
-    case .documentFront: return "Front"
-    case .documentBack: return "Back"
-    case .selfie: return "Selfie"
     }
   }
 }
