@@ -28,17 +28,19 @@ final class SmileIDNavigationTests: XCTestCase {
       .captureOneSide()
       .build()
 
+    let state = VerificationFlowState()
     let coordinator = VerificationCoordinator(
       product: product,
+      state: state,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
 
     XCTAssertEqual(coordinator.currentDestination, .instructions)
-    XCTAssertTrue(coordinator.docInfo.isEmpty)
-    XCTAssertNil(coordinator.docFrontImage)
-    XCTAssertNil(coordinator.docBackImage)
-    XCTAssertNil(coordinator.selfieImage)
+    XCTAssertTrue(coordinator.state.docInfo.isEmpty)
+    XCTAssertNil(coordinator.state.docFrontImage)
+    XCTAssertNil(coordinator.state.docBackImage)
+    XCTAssertNil(coordinator.state.selfieImage)
   }
 
   func testCoordinatorStart() {
@@ -48,8 +50,10 @@ final class SmileIDNavigationTests: XCTestCase {
       .hidePreview()
       .build()
 
+    let state = VerificationFlowState()
     let coordinator = VerificationCoordinator(
       product: product,
+      state: state,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
@@ -77,8 +81,10 @@ final class SmileIDNavigationTests: XCTestCase {
       .hidePreview()
       .build()
 
+    let state = VerificationFlowState()
     let coordinator = VerificationCoordinator(
       product: product,
+      state: state,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
@@ -106,8 +112,10 @@ final class SmileIDNavigationTests: XCTestCase {
       .captureOneSide()
       .build()
 
+    let state = VerificationFlowState()
     let coordinator = VerificationCoordinator(
       product: product,
+      state: state,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )
@@ -128,8 +136,10 @@ final class SmileIDNavigationTests: XCTestCase {
       .captureOneSide()
       .build()
 
+    let state = VerificationFlowState()
     let coordinator = VerificationCoordinator(
       product: product,
+      state: state,
       eventSink: { self.mockEventSink.append($0) },
       complete: { self.mockCompletion = $0 }
     )

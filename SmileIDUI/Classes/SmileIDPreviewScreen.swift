@@ -4,10 +4,13 @@ public struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: Vie
   var onContinue: () -> Void
   var onRetry: () -> Void
 
+  @Backport.StateObject private var viewModel: PreviewScreenViewModel
   @ViewBuilder var continueButton: ContinueButton
   @ViewBuilder var retryButton: RetryButton
 
   public init(
+    capturedImage: Data? = nil,
+    scanType: ScanType = .selfie,
     onContinue: @escaping () -> Void,
     onRetry: @escaping () -> Void,
     @ViewBuilder continueButton: () -> ContinueButton,
@@ -15,6 +18,14 @@ public struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: Vie
   ) {
     self.onContinue = onContinue
     self.onRetry = onRetry
+    self._viewModel = Backport.StateObject(
+      wrappedValue: PreviewScreenViewModel(
+        capturedImage: capturedImage,
+        scanType: scanType,
+        onContinue: onContinue,
+        onRetry: onRetry
+      )
+    )
     self.continueButton = continueButton()
     self.retryButton = retryButton()
   }
@@ -39,10 +50,14 @@ public struct SmileIDPreviewScreen<ContinueButton: View, RetryButton: View>: Vie
 
 public extension SmileIDPreviewScreen where ContinueButton == SmileIDButton, RetryButton == SmileIDButton {
   init(
+    capturedImage: Data? = nil,
+    scanType: ScanType = .selfie,
     onContinue: @escaping () -> Void,
     onRetry: @escaping () -> Void
   ) {
     self.init(
+      capturedImage: capturedImage,
+      scanType: scanType,
       onContinue: onContinue,
       onRetry: onRetry,
       continueButton: {

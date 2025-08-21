@@ -4,6 +4,7 @@ public struct SmileIDProcessingScreen<ContinueButton: View, CancelButton: View>:
   var onContinue: () -> Void
   var onCancel: () -> Void
 
+  @Backport.StateObject private var viewModel: ProcessingScreenViewModel
   @ViewBuilder var continueButton: ContinueButton
   @ViewBuilder var cancelButton: CancelButton
 
@@ -15,6 +16,12 @@ public struct SmileIDProcessingScreen<ContinueButton: View, CancelButton: View>:
   ) {
     self.onContinue = onContinue
     self.onCancel = onCancel
+    self._viewModel = Backport.StateObject(
+      wrappedValue: ProcessingScreenViewModel(
+        onContinue: onContinue,
+        onCancel: onCancel
+      )
+    )
     self.continueButton = continueButton()
     self.cancelButton = cancelButton()
   }

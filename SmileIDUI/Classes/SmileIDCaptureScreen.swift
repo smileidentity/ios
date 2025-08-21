@@ -4,6 +4,7 @@ public struct SmileIDCaptureScreen<ContinueButton: View>: View {
   let scanType: ScanType
   let onContinue: () -> Void
 
+  @Backport.StateObject private var viewModel: CaptureScreenViewModel
   @ViewBuilder let continueButton: ContinueButton
 
   public init(
@@ -13,6 +14,12 @@ public struct SmileIDCaptureScreen<ContinueButton: View>: View {
   ) {
     self.scanType = scanType
     self.onContinue = onContinue
+    self._viewModel = Backport.StateObject(
+      wrappedValue: CaptureScreenViewModel(
+        scanType: scanType,
+        onContinue: onContinue
+      )
+    )
     self.continueButton = continueButton()
   }
 
@@ -34,7 +41,7 @@ public struct SmileIDCaptureScreen<ContinueButton: View>: View {
 
   @ViewBuilder
   private var overlayView: some View {
-    switch scanType {
+    switch viewModel.scanType {
     case .documentFront, .documentBack:
       DocumentShapedView()
     case .selfie:

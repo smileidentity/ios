@@ -1,12 +1,7 @@
 import SwiftUI
 
-private struct ActiveProduct: Identifiable {
-  let id = UUID()
-  let product: BusinessProduct
-}
-
 struct VerificationDemoView: View {
-  @State private var activeProduct: ActiveProduct?
+  @Backport.StateObject private var viewModel = VerificationDemoViewModel()
 
   var body: some View {
     VStack(spacing: 30) {
@@ -17,7 +12,7 @@ struct VerificationDemoView: View {
 
       VStack(spacing: 20) {
         Button(action: {
-          startSelfieEnrolment()
+          viewModel.startSelfieEnrolment()
         }) {
           Text("Selfie Enrolment")
             .font(.headline)
@@ -29,7 +24,7 @@ struct VerificationDemoView: View {
         }
 
         Button(action: {
-          startDocumentVerification()
+          viewModel.startDocumentVerification()
         }) {
           Text("Document Verification")
             .font(.headline)
@@ -41,7 +36,7 @@ struct VerificationDemoView: View {
         }
 
         Button(action: {
-          startBiometricKYC()
+          viewModel.startBiometricKYC()
         }) {
           Text("Biometric KYC")
             .font(.headline)
@@ -57,8 +52,8 @@ struct VerificationDemoView: View {
       Spacer()
     }
     .padding()
-    .sheet(item: $activeProduct, onDismiss: {
-      activeProduct = nil
+    .sheet(item: $viewModel.activeProduct, onDismiss: {
+      viewModel.activeProduct = nil
     }) { active in
       VerificationFlowView(
         product: active.product,
@@ -66,48 +61,10 @@ struct VerificationDemoView: View {
           print("Verification event: \(event)")
         },
         onCompletion: { _ in
-          self.activeProduct = nil
+          self.viewModel.activeProduct = nil
         }
       )
     }
-  }
-
-  private func startSelfieEnrolment() {
-    let product =
-      VerificationProductBuilder
-        .selfieEnrolment()
-        .hidePreview()
-        .withExtraParams(["userId": "demo_user_123", "sessionId": "session_456"])
-        .build()
-
-    activeProduct = ActiveProduct(product: product)
-  }
-
-  private func startDocumentVerification() {
-    let product =
-      VerificationProductBuilder
-        .documentVerification()
-        .captureOneSide()
-        .withAutoCapture()
-        .withLivenessType(.headPose)
-        .withDocumentInfo(["documentType": "passport", "country": "NG"])
-        .withExtraParams(["partnerId": "partner_789"])
-        .build()
-
-    activeProduct = ActiveProduct(product: product)
-  }
-
-  private func startBiometricKYC() {
-    let product =
-      VerificationProductBuilder
-        .biometricKYC()
-        .withDocumentInfo(["idNumber": "A12345678", "idType": "national_id"])
-        .withConsentInfo(["dataProcessing": "granted", "timestamp": "2024-01-15T10:30:00Z"])
-        .withLivenessType(.smileDetection)
-        .withExtraParams(["kycLevel": "enhanced", "region": "africa"])
-        .build()
-
-    activeProduct = ActiveProduct(product: product)
   }
 }
 
