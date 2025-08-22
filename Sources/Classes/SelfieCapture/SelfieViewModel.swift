@@ -258,27 +258,27 @@ public final class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
       if !faceTracker.isTracking {
         faceTracker.startTracking(from: faces[0])
       }
-		case 0:
-			break
+    case 0:
+      break
     default:
-			// two or more faces: cancel tracker and require restart
+      // two or more faces: cancel tracker and require restart
       faceTracker.cancelTracking()
     }
 
-		// Validation cascade
-		if faces.isEmpty {
-			updateDirective(.unableToDetectFace)
-			// If the face has been gone for a while, reset entire capture flow.
-			if elapsed > Constants.noFaceResetDelay {
-				resetTrackerAndUI()
-			}
-			return
-		}
+    // Validation cascade
+    if faces.isEmpty {
+      updateDirective(.unableToDetectFace)
+      // If the face has been gone for a while, reset entire capture flow.
+      if elapsed > Constants.noFaceResetDelay {
+        resetTrackerAndUI()
+      }
+      return
+    }
 
-		if faces.count > 1 {
-			updateDirective(.multipleFaces)
-			return
-		}
+    if faces.count > 1 {
+      updateDirective(.multipleFaces)
+      return
+    }
 
     guard let face = faces.first else { return }
     guard validateFacePosition(face),
