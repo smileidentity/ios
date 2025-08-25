@@ -1,9 +1,12 @@
 # Release Notes
 
-## [Unreleased]
+## 11.1.1 - August 25, 20225
 
 ### Added
 * Orientation helper to `SelfieViewModel` for consistent selfie image capture.
+
+### Fixed
+* Fixed document auto-capture not working when `autoCapture` is set to `.autoCaptureOnly`.
 
 ## 11.1.0 - July 31, 2025
 
