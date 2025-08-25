@@ -498,8 +498,9 @@ public class SmileID {
   ///   supplied, image analysis is done to calculate the documents aspect ratio
   ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
   ///   image
-  ///   - autoCaptureTimeout: Change the default document auto capture timeout on the sdk
-  ///   - enableAutoCapture: Enable or disable document auto capture
+  ///   - autoCaptureTimeout: The timeout before showing manual capture button (default: 10 seconds)
+  ///   - autoCapture: Controls the document capture mode - .autoCapture (both auto and manual),
+  ///   .autoCaptureOnly (auto only), or .manualCaptureOnly (manual only)
   ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
   ///   front side will be captured. If this is true, an option to skip back side will still be
   ///   shown
@@ -571,8 +572,9 @@ public class SmileID {
   ///   supplied, image analysis is done to calculate the documents aspect ratio
   ///   - bypassSelfieCaptureWithFile: If provided, selfie capture will be bypassed using this
   ///   image
-  ///   - autoCaptureTimeout: Change the default document auto capture timeout on the sdk
-  ///   - enableAutoCapture: Enable or disable document auto capture
+  ///   - autoCaptureTimeout: The timeout before showing manual capture button (default: 10 seconds)
+  ///   - autoCapture: Controls the document capture mode - .autoCapture (both auto and manual),
+  ///   .autoCaptureOnly (auto only), or .manualCaptureOnly (manual only)
   ///   - captureBothSides: Whether to capture both sides of the ID or not. Otherwise, only the
   ///   front side will be captured. If this is true, an option to skip back side will still be
   ///   shown
