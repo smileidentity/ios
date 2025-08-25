@@ -11,6 +11,7 @@ enum DocumentDirective: String {
 private let correctAspectRatioTolerance = 0.1
 private let centeredTolerance = 30.0
 private let analysisSampleInterval: TimeInterval = 0.350
+private let documentAutoCaptureWaitTime: TimeInterval = 1.0
 
 class DocumentCaptureViewModel: ObservableObject {
   deinit {
@@ -108,7 +109,7 @@ class DocumentCaptureViewModel: ObservableObject {
         if let documentFirstDetectedAtTime = self.documentFirstDetectedAtTime {
           let now = Date().timeIntervalSince1970
           let elapsedTime = now - documentFirstDetectedAtTime
-          if elapsedTime > 1.0,
+          if elapsedTime > documentAutoCaptureWaitTime,
              !self.isCapturing,
              [.autoCapture, .autoCaptureOnly].contains(autoCapture) {
             self.documentImageOrigin = DocumentImageOriginValue.cameraAutoCapture
