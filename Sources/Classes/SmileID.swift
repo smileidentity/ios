@@ -6,7 +6,7 @@ import UIKit
 public class SmileID {
   /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
   public static let defaultRequestTimeout: TimeInterval = 60
-  public static let version = "11.1.0"
+  public static let version = "11.1.1"
   @Injected var injectedApi: SmileIDServiceable
   public static var configuration: Config { config }
 
