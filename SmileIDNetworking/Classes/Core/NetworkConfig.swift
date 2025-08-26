@@ -16,7 +16,7 @@ struct NetworkConfig {
     cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData,
     waitsForConnectivity: Bool = true,
     additionalHeaders: [String: String] = [:],
-    lodRedactions: Set<String> = [
+    logRedactions _: Set<String> = [
       "authorization",
       "x-api-key",
       "-signature",
