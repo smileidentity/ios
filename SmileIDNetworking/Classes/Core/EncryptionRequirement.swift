@@ -1,6 +1,6 @@
 import Foundation
 
 enum EncryptionRequirement {
-	case none
-	case body
+  case none
+  case body
 }
