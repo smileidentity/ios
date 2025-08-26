@@ -209,11 +209,22 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     }
 
     currentFrameBuffer = imageBuffer
-    faceDetector.processImageBuffer(imageBuffer)
+    faceDetector.processImageBuffer(
+      imageBuffer,
+      orientation: visionOrientationForCurrentCamera()
+    )
     if hasDetectedValidFace, selfieImage == nil {
       captureSelfieImage(imageBuffer)
       HapticManager.shared.notification(type: .success)
       livenessCheckManager.initiateLivenessCheck()
+    }
+  }
+
+  private func visionOrientationForCurrentCamera() -> CGImagePropertyOrientation {
+    switch cameraManager.cameraPosition {
+    case .some(.front): return .leftMirrored
+    case .some(.back): return .right
+    default: return .leftMirrored
     }
   }
 

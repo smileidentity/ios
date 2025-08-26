@@ -41,9 +41,12 @@ class EnhancedFaceDetector: NSObject {
   }
 
   /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
-  func processImageBuffer(_ imageBuffer: CVPixelBuffer) {
+  func processImageBuffer(
+    _ imageBuffer: CVPixelBuffer,
+    orientation: CGImagePropertyOrientation = .leftMirrored
+  ) {
     // Update tracker each frame; do not short‑circuit detection to preserve behavior
-    switch faceTracker.update(with: imageBuffer) {
+    switch faceTracker.update(with: imageBuffer, orientation: orientation) {
     case .lost(let exceeded):
       if exceeded {
         // Notify delegate that tracking has been lost for a sustained period.
@@ -61,7 +64,7 @@ class EnhancedFaceDetector: NSObject {
       try sequenceHandler.perform(
         [detectFaceRectanglesRequest, detectCaptureQualityRequest],
         on: imageBuffer,
-        orientation: .leftMirrored)
+        orientation: orientation)
       guard let faceDetections = detectFaceRectanglesRequest.results,
             let faceQualityObservations = detectCaptureQualityRequest.results,
             let faceObservation = faceDetections.first,

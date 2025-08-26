@@ -31,13 +31,21 @@ final class VisionFaceTracker {
   /// Attempt to update the existing tracker with a new frame.
   /// - Returns: `.tracked(face)` when tracking succeeds, `.lost` when it fails,
   ///            or `.noTracker` when no active tracker exists.
-  func update(with pixelBuffer: CVPixelBuffer) -> UpdateResult {
+  func update(
+    with pixelBuffer: CVPixelBuffer,
+    orientation: CGImagePropertyOrientation = .leftMirrored
+  ) -> UpdateResult {
     guard let trackingRequest else { return .noTracker }
 
     var result: UpdateResult = .noTracker
     queue.sync {
       do {
-        try sequenceRequestHandler.perform([trackingRequest], on: pixelBuffer)
+        // Use the same orientation as detection to keep coordinates consistent.
+        try sequenceRequestHandler.perform(
+          [trackingRequest],
+          on: pixelBuffer,
+          orientation: orientation
+        )
 
         if let observation = trackingRequest.results?.first as? VNDetectedObjectObservation,
            observation.confidence > confidenceThreshold,

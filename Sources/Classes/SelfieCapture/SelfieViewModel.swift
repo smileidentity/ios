@@ -199,15 +199,11 @@ public final class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     else { return }
 
     // Try to update an existing Vision tracker *before* we run heavy detection.
-    switch faceTracker.update(with: pixelBuffer) {
-    case .tracked(let face):
-      // successful update – feed synthetic VNFaceObservation downstream
-      handleDetectionResults(
-        [face],
-        elapsed: Date().timeIntervalSince(lastAutoCaptureTime),
-        image: pixelBuffer
-      )
-      return
+    let orientationForVision = visionOrientationForCurrentCamera()
+    switch faceTracker.update(with: pixelBuffer, orientation: orientationForVision) {
+    case .tracked:
+      // Presence confirmed via tracker; still run detection for accurate geometry.
+      break
     case .lost(let exceeded) where exceeded:
       // Tracker lost beyond tolerance – reset UI and continue with detection fallback
       resetTrackerAndUI()
@@ -217,7 +213,10 @@ public final class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
 
     // Fallback to full face-detection when no active tracker.
     do {
-      try faceDetector.detect(imageBuffer: pixelBuffer) { [weak self] req, err in
+      try faceDetector.detect(
+        imageBuffer: pixelBuffer,
+        orientation: orientationForVision
+      ) { [weak self] req, err in
         guard let self else { return }
         if let err {
           debug(
@@ -276,6 +275,7 @@ public final class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     if faces.count > 1 {
+			resetCaptureUIState()
       updateDirective(.multipleFaces)
       return
     }
@@ -480,6 +480,16 @@ public final class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
       case .landscapeRight: return .left
       default: return .up
       }
+    }
+  }
+
+  /// Orientation used for Vision detection/tracking in portrait mode.
+  /// Front camera is mirrored, back camera is not.
+  private func visionOrientationForCurrentCamera() -> CGImagePropertyOrientation {
+    switch cameraManager.cameraPosition {
+    case .some(.front): return .leftMirrored
+    case .some(.back): return .right
+    default: return .leftMirrored
     }
   }
 
