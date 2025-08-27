@@ -7,7 +7,7 @@ struct NetworkConfig {
   var cachePolicy: URLRequest.CachePolicy
   var waitsForConnectivity: Bool
   var additionalHeaders: [String: String]
-  var lodRedactions: Set<String>
+  var logRedactions: Set<String>
 
   init(
     environment: Environment,
@@ -31,6 +31,6 @@ struct NetworkConfig {
     self.cachePolicy = cachePolicy
     self.waitsForConnectivity = waitsForConnectivity
     self.additionalHeaders = additionalHeaders
-    self.lodRedactions = lodRedactions
+    self.logRedactions = logRedactions
   }
 }
