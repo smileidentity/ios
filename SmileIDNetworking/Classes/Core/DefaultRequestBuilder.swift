@@ -58,27 +58,27 @@ final class DefaultRequestBuilder {
       }
     }
 
-		// TODO: Use the right header values
-		// Internal hints for middlewares
-		if endpoint.requiresAuth {
-			request.setValue("1", forHTTPHeaderField: InternalHeaders.needsAuth)
-		}
+    // TODO: Use the right header values
+    // Internal hints for middlewares
+    if endpoint.requiresAuth {
+      request.setValue("1", forHTTPHeaderField: InternalHeaders.needsAuth)
+    }
 
-		switch endpoint.signing {
-		case .none:
-			break
-		case .header:
-			request.setValue("header", forHTTPHeaderField: InternalHeaders.needsSignature)
-		case .body:
-			request.setValue("body", forHTTPHeaderField: InternalHeaders.needsSignature)
-		}
+    switch endpoint.signing {
+    case .none:
+      break
+    case .header:
+      request.setValue("header", forHTTPHeaderField: InternalHeaders.needsSignature)
+    case .body:
+      request.setValue("body", forHTTPHeaderField: InternalHeaders.needsSignature)
+    }
 
-		switch endpoint.encryption {
-		case .none:
-			break
-		case .body:
-			request.setValue("body", forHTTPHeaderField: InternalHeaders.needsEncryption)
-		}
+    switch endpoint.encryption {
+    case .none:
+      break
+    case .body:
+      request.setValue("body", forHTTPHeaderField: InternalHeaders.needsEncryption)
+    }
 
     return request
   }
