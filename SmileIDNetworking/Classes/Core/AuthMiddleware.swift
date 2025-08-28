@@ -44,7 +44,7 @@ final class AuthMiddleware: HTTPClientMiddleware {
   }
 
   private func removeInternalHints(_ req: inout URLRequest) {
-    req.setValue(nil, forHTTPHeaderField: InternalHeaders.needsEncryption)
+    req.setValue(nil, forHTTPHeaderField: InternalHeaders.needsAuth)
   }
 }
 

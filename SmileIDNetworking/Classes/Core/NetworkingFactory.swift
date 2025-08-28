@@ -47,7 +47,7 @@ enum NetworkingFactory {
     let encrypt: HTTPClientProtocol = {
       if let key = encryptionKey {
         return EncryptionMiddleware(
-          next: encrypt,
+          next: auth,
           encryptor: AESGCMEncryptor(key: key),
           shouldEncrypt: { req in
             (req.value(forHTTPHeaderField: InternalHeaders.needsEncryption) ?? "").lowercased() == "body"
