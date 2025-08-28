@@ -1,9 +1,9 @@
 import Foundation
 
-final class DefaultRequestBuilder {
+final class DefaultRequestBuilder: RequestBuilding {
   private let jsonEncoder: JSONEncoder
 
-  init(jsonEncoder: JSONEncoder) {
+  init(jsonEncoder: JSONEncoder = JSONEncoder()) {
     self.jsonEncoder = jsonEncoder
     self.jsonEncoder.dateEncodingStrategy = .iso8601
   }
