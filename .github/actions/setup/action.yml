@@ -10,9 +10,21 @@ runs:
   using: composite
   steps:
   - name: Select Xcode ${{ inputs.xcode }}
-    run: sudo xcode-select --switch /Applications/Xcode_${{ inputs.xcode }}.app
     if: ${{ inputs.xcode }}
     shell: bash
+    run: |
+      set -euo pipefail
+      XCODE_APP="/Applications/Xcode_${{ inputs.xcode }}.app"
+      if [ -d "$XCODE_APP" ]; then
+        echo "Switching to $XCODE_APP"
+        sudo xcode-select --switch "$XCODE_APP"
+      else
+        echo "Requested $XCODE_APP not found; keeping default Xcode."
+        echo "Available Xcodes:"
+        ls -1 /Applications | grep -E '^Xcode' || true
+        echo "Active Xcode: $(xcode-select -p)"
+        xcodebuild -version || true
+      fi
 
   - name: Install Mint via Homebrew
     run: brew install mint
