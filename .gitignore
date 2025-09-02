@@ -53,6 +53,9 @@ ArkanaKeys/*
 # JetBrains/AppCode
 .idea
 
+# VSCode
+.vscode/
+
 Example/fasstlane/report.xml
 Frameworks/
 SmileID.framework.zip
