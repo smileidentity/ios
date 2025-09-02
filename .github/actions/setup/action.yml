@@ -27,10 +27,30 @@ runs:
       fi
 
   - name: Install Mint via Homebrew
-    run: brew install mint
+    run: |
+      if command -v mint >/dev/null; then
+        echo "mint already installed"
+      else
+        echo "Installing mint via Homebrew"
+        export HOMEBREW_NO_AUTO_UPDATE=1
+        export HOMEBREW_NO_INSTALL_CLEANUP=1
+        brew install mint
+      fi
     if: ${{ inputs.install-mint == 'true' }}
     shell: bash
 
+  - name: Configure Bundler path
+    run: bundle config set path vendor/bundle
+    shell: bash
+
+  - name: Cache Ruby gems
+    uses: actions/cache@v4
+    with:
+      path: vendor/bundle
+      key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+      restore-keys: |
+        ${{ runner.os }}-gems-
+
   - name: Install Ruby Gems
-    run: bundle install
+    run: bundle install --jobs 4 --retry 3
     shell: bash
