@@ -26,7 +26,7 @@ jobs:
 
   build:
     name: "Build App and Run Unit Tests"
-    runs-on: macos-latest
+    runs-on: macos-15
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -52,7 +52,7 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup
         with:
-          xcode: "16.2"
+          xcode: "16.4"
       - name: Verify active Xcode
         run: |
           echo "Current developer directory: $(xcode-select -p)"
