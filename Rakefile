@@ -14,9 +14,9 @@ end
 namespace :lint do
   desc 'Lints the CocoaPods podspec'
   task :podspec do
-    xcrun simctl list
-    xcrun simctl bootstatus booted || xcrun simctl boot "iPhone 15"
-    sh 'pod lib lint SmileID.podspec --allow-warnings --verbose --no-clean
+    sh 'xcrun simctl list'
+    sh 'xcrun simctl bootstatus booted || xcrun simctl boot "iPhone SE (3rd generation)"'
+    sh 'pod lib lint SmileID.podspec --allow-warnings --verbose --no-clean'
   end
 end
 
