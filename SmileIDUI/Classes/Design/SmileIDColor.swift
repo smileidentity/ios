@@ -14,6 +14,28 @@ public struct DynamicColor: Equatable, Hashable {
       scheme == .dark ? dark : light
     }
   }
+
+  public var standard: Pair
+  public var highContrast: Pair?
+
+  public init(
+    standard: Pair,
+    highContrast: Pair? = nil
+  ) {
+    self.standard = standard
+    self.highContrast = highContrast
+  }
+
+  @inlinable public func resolve(
+    _ scheme: ColorScheme,
+    contrast: ColorSchemeContrast
+  ) -> Color {
+    if contrast == .increased,
+       let highContrast {
+      return highContrast.resolve(scheme)
+    }
+    return standard.resolve(scheme)
+  }
 }
 
 public struct SmileIDColor: Equatable {
