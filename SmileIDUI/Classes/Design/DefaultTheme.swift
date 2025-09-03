@@ -9,7 +9,7 @@ public struct DefaultTheme: SmileIDTheme {
       primary: .init(
         standard: .init(
           light: Color(hex: "#151F72"),
-          dark: Color(hex: "#")
+          dark: Color(hex: "#4D88FF")
         )
       ),
       primaryForeground: .init(
@@ -70,17 +70,14 @@ public struct DefaultTheme: SmileIDTheme {
 
     self.colors = base
     self.typography = SmileIDTypography(
-      provider: CustomFontProvider(
-        familyName: "DMSans",
-        weights: [
-          .pageHeading: (24, .headline),
-          .sectionHeading: (14, .headline),
-          .subHeading: (14, .subheadline),
-          .cardTitle: (14, .body),
-          .cardSubTitle: (12, .body),
-          .body: (12, .body),
-          .button: (16, .body)
-        ]
+      spec: TypographySpec(
+        pageHeading: FontSpec(source: .face(name: "DMSans-Bold"), size: 24, relativeTo: .headline),
+        sectionHeading: FontSpec(source: .face(name: "DMSans-Bold"), size: 14, relativeTo: .headline),
+        subHeading: FontSpec(source: .face(name: "DMSans-Medium"), size: 14, relativeTo: .subheadline),
+        cardTitle: FontSpec(source: .face(name: "DMSans-Medium"), size: 14, relativeTo: .body),
+        cardSubTitle: FontSpec(source: .face(name: "DMSans-Regular"), size: 12, relativeTo: .body),
+        body: FontSpec(source: .face(name: "DMSans-Regular"), size: 12, relativeTo: .body),
+        button: FontSpec(source: .face(name: "DMSans-Medium"), size: 16, relativeTo: .body)
       )
     )
   }

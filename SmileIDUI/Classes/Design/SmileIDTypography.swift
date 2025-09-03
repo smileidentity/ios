@@ -1,78 +1,79 @@
 import SwiftUI
 
-public enum FontRole: CaseIterable {
-  case pageHeading
-  case sectionHeading
-  case subHeading
-  case cardTitle
-  case cardSubTitle
-  case body
-  case button
+/// Describes the source of a font
+public enum FontSource {
+  case face(name: String)     // specific PostScript face, e.g., "DMSans-Bold"
+  case family(name: String)   // family name; system decides the face
 }
 
-/// Provider to resolver font per role, with Dynamic Type support
-public protocol FontProvider {
-  func font(for role: FontRole) -> Font
-}
+/// Strongly-typed specification for a given role
+public struct FontSpec {
+  public var source: FontSource
+  public var size: CGFloat
+  public var relativeTo: Font.TextStyle
 
-/// System font provider (Respects Dynamic Type automatically)
-public struct SystemFontProvider: FontProvider {
-  public init() {}
+	public init(
+		source: FontSource,
+		size: CGFloat,
+		relativeTo: Font.TextStyle
+	) {
+    self.source = source
+    self.size = size
+    self.relativeTo = relativeTo
+  }
 
-  public func font(for role: FontRole) -> Font {
-    switch role {
-    case .pageHeading:
-      return .system(.largeTitle, design: .default)
-    case .sectionHeading:
-      return .system(.title, design: .default)
-    case .subHeading:
-      return .system(.headline, design: .default)
-    case .cardTitle:
-      return .system(.title, design: .default)
-    case .cardSubTitle:
-      return .system(.headline, design: .default)
-    case .body:
-      return .system(.body, design: .default)
-    case .button:
-      return .system(.headline, design: .default).weight(.semibold)
+  public func font() -> Font {
+    switch source {
+    case let .face(name), let .family(name):
+      if #available(iOS 14.0, *) {
+        return .custom(name, size: size, relativeTo: relativeTo)
+      } else {
+        return .custom(name, size: size)
+      }
     }
   }
 }
 
-/// Custom font provider. Use `relativeTo:`to support Dynamic Type
-public struct CustomFontProvider: FontProvider {
-  public var familyName: String
-  public var weights: [
-    FontRole: (size: CGFloat, relativeTo: Font.TextStyle)
-  ]
+/// Full typography spec; explicit value per role
+public struct TypographySpec {
+  public var pageHeading: FontSpec
+  public var sectionHeading: FontSpec
+  public var subHeading: FontSpec
+  public var cardTitle: FontSpec
+  public var cardSubTitle: FontSpec
+  public var body: FontSpec
+  public var button: FontSpec
 
   public init(
-    familyName: String,
-    weights: [
-      FontRole: (size: CGFloat, relativeTo: Font.TextStyle)
-    ]
+    pageHeading: FontSpec,
+    sectionHeading: FontSpec,
+    subHeading: FontSpec,
+    cardTitle: FontSpec,
+    cardSubTitle: FontSpec,
+    body: FontSpec,
+    button: FontSpec
   ) {
-    self.familyName = familyName
-    self.weights = weights
-  }
-
-  public func font(for role: FontRole) -> Font {
-    let spec = weights[role] ?? (16, .body)
-    if #available(iOS 14.0, *) {
-      return .custom(familyName, size: spec.size, relativeTo: spec.relativeTo)
-    } else {
-      return .custom(familyName, size: spec.size)
-    }
+    self.pageHeading = pageHeading
+    self.sectionHeading = sectionHeading
+    self.subHeading = subHeading
+    self.cardTitle = cardTitle
+    self.cardSubTitle = cardSubTitle
+    self.body = body
+    self.button = button
   }
 }
 
+/// Public facade exposing fonts for each role directly
 public struct SmileIDTypography {
-  public var provider: FontProvider
-  public init(provider: FontProvider) {
-    self.provider = provider
-  }
+  public var spec: TypographySpec
 
-  public func font(_ role: FontRole) -> Font {
-    provider.font(for: role)
-  }
+  public init(spec: TypographySpec) { self.spec = spec }
+
+  public var pageHeading: Font { spec.pageHeading.font() }
+  public var sectionHeading: Font { spec.sectionHeading.font() }
+  public var subHeading: Font { spec.subHeading.font() }
+  public var cardTitle: Font { spec.cardTitle.font() }
+  public var cardSubTitle: Font { spec.cardSubTitle.font() }
+  public var body: Font { spec.body.font() }
+  public var button: Font { spec.button.font() }
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreText
 
 public class SmileIDResourcesHelper {
   private static var loadedFonts: [String: String] = .init()
@@ -32,6 +33,12 @@ public class SmileIDResourcesHelper {
   }()
 
   public static func registerFonts() {
+    // Register all DMSans faces
+    for item in DMSans.allCases {
+      loadFontIfNeeded(name: item.rawValue)
+    }
+
+    // Register all Epilogue faces
     for item in Epilogue.allCases {
       loadFontIfNeeded(name: item.rawValue)
     }
