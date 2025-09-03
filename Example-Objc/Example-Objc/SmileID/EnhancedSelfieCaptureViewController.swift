@@ -4,10 +4,11 @@ import UIKit
 
 @objcMembers
 class EnhancedSelfieCaptureViewModel: NSObject, @preconcurrency SmartSelfieResultDelegate {
-  func didSucceed(selfieImage: URL, livenessImages: [URL], apiResponse: SmartSelfieResponse?) {
+  @MainActor func didSucceed(selfieImage: URL, livenessImages: [URL], apiResponse: SmartSelfieResponse?) {
     print(selfieImage)
     print(livenessImages.map { $0 })
     print(apiResponse?.code ?? "")
+    UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
   }
 
   @MainActor func didError(error: any Error) {

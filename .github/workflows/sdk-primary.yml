@@ -53,10 +53,27 @@ jobs:
         uses: ./.github/actions/setup
         with:
           xcode: "16.4"
+          install-mint: "false"
       - name: Verify active Xcode
         run: |
           echo "Current developer directory: $(xcode-select -p)"
           ls -1 /Applications | grep Xcode || true
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.swiftpm
+            ~/Library/Caches/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: ${{ runner.os }}-spm-
+      - name: Cache CocoaPods (validator downloads)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-cocoapods-${{ hashFiles('SmileID.podspec') }}
+          restore-keys: ${{ runner.os }}-cocoapods-
       - name: Build Example app and Run Unit Tests
         run: |
           xcodebuild -resolvePackageDependencies
@@ -64,3 +81,5 @@ jobs:
           rake test:package
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SKIP_DERIVEDDATA_CLEAN: "1"
+          COCOAPODS_DISABLE_STATS: "true"
