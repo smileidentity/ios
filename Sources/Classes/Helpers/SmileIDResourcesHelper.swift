@@ -1,5 +1,5 @@
-import SwiftUI
 import CoreText
+import SwiftUI
 
 public class SmileIDResourcesHelper {
   private static var loadedFonts: [String: String] = .init()

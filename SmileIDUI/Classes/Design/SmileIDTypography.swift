@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Describes the source of a font
 public enum FontSource {
-  case face(name: String)     // specific PostScript face, e.g., "DMSans-Bold"
-  case family(name: String)   // family name; system decides the face
+  case face(name: String) // specific PostScript face, e.g., "DMSans-Bold"
+  case family(name: String) // family name; system decides the face
 }
 
 /// Strongly-typed specification for a given role
@@ -12,11 +12,11 @@ public struct FontSpec {
   public var size: CGFloat
   public var relativeTo: Font.TextStyle
 
-	public init(
-		source: FontSource,
-		size: CGFloat,
-		relativeTo: Font.TextStyle
-	) {
+  public init(
+    source: FontSource,
+    size: CGFloat,
+    relativeTo: Font.TextStyle
+  ) {
     self.source = source
     self.size = size
     self.relativeTo = relativeTo
@@ -24,7 +24,7 @@ public struct FontSpec {
 
   public func font() -> Font {
     switch source {
-    case let .face(name), let .family(name):
+    case .face(let name), .family(let name):
       if #available(iOS 14.0, *) {
         return .custom(name, size: size, relativeTo: relativeTo)
       } else {

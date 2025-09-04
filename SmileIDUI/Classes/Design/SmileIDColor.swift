@@ -49,7 +49,7 @@ public struct SmileIDColor: Equatable {
   public var warningFill: DynamicColor
   public var warningIcon: DynamicColor
   public var warningStroke: DynamicColor
-  
+
   public init(
     primary: DynamicColor,
     primaryForeground: DynamicColor,
