@@ -275,7 +275,7 @@ public final class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     }
 
     if faces.count > 1 {
-			resetCaptureUIState()
+      resetCaptureUIState()
       updateDirective(.multipleFaces)
       return
     }
