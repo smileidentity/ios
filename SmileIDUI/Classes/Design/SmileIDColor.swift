@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct DynamicColor: Equatable, Hashable {
+public struct AdaptiveColor: Equatable, Hashable {
   public struct Pair: Equatable, Hashable {
     public var light: Color
     public var dark: Color
@@ -39,28 +39,28 @@ public struct DynamicColor: Equatable, Hashable {
 }
 
 public struct SmileIDColor: Equatable {
-  public var primary: DynamicColor
-  public var primaryForeground: DynamicColor
-  public var background: DynamicColor
-  public var cardBackground: DynamicColor
-  public var titleText: DynamicColor
-  public var cardText: DynamicColor
-  public var stroke: DynamicColor
-  public var warningFill: DynamicColor
-  public var warningIcon: DynamicColor
-  public var warningStroke: DynamicColor
+  public var primary: AdaptiveColor
+  public var primaryForeground: AdaptiveColor
+  public var background: AdaptiveColor
+  public var cardBackground: AdaptiveColor
+  public var titleText: AdaptiveColor
+  public var cardText: AdaptiveColor
+  public var stroke: AdaptiveColor
+  public var warningFill: AdaptiveColor
+  public var warningIcon: AdaptiveColor
+  public var warningStroke: AdaptiveColor
 
   public init(
-    primary: DynamicColor,
-    primaryForeground: DynamicColor,
-    background: DynamicColor,
-    cardBackground: DynamicColor,
-    titleText: DynamicColor,
-    cardText: DynamicColor,
-    stroke: DynamicColor,
-    warningFill: DynamicColor,
-    warningIcon: DynamicColor,
-    warningStroke: DynamicColor
+    primary: AdaptiveColor,
+    primaryForeground: AdaptiveColor,
+    background: AdaptiveColor,
+    cardBackground: AdaptiveColor,
+    titleText: AdaptiveColor,
+    cardText: AdaptiveColor,
+    stroke: AdaptiveColor,
+    warningFill: AdaptiveColor,
+    warningIcon: AdaptiveColor,
+    warningStroke: AdaptiveColor
   ) {
     self.primary = primary
     self.primaryForeground = primaryForeground
