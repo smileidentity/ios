@@ -40,24 +40,20 @@ extension Color {
   }
 
   func components() -> ColorComponent {
-    let scanner = Scanner(
-      string: description.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-    )
-    var hexNumber: UInt64 = 0
-    var red: CGFloat = 0.0, green: CGFloat = 0.0, blue: CGFloat = 0.0, alpha: CGFloat = 0.0
-
-    let result = scanner.scanHexInt64(&hexNumber)
-    if result {
-      red = CGFloat((hexNumber & 0xff00_0000) >> 24) / 255
-      green = CGFloat((hexNumber & 0x00ff_0000) >> 16) / 255
-      blue = CGFloat((hexNumber & 0x0000_ff00) >> 8) / 255
-      alpha = CGFloat(hexNumber & 0x0000_00ff) / 255
-    }
+    let uiColor = self.uiColor()
+    var red: CGFloat = 0
+    var green: CGFloat = 0
+    var blue: CGFloat = 0
+    var alpha: CGFloat = 0
+  
+    uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+  
     return ColorComponent(
-      red: red,
-      green: green,
-      blue: blue,
-      alpha: alpha)
+      red: Double(red),
+      green: Double(green),
+      blue: Double(blue),
+      alpha: Double(alpha)
+    )
   }
 }
 
