@@ -2,18 +2,22 @@ import SwiftUI
 
 public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View>: View {
   // MARK: - Actions
+
   var onContinue: () -> Void
   var onCancel: () -> Void
 
   // MARK: - Dependencies
+
   @Environment(\.smileIDTheme) private var theme
   @Environment(\.colorScheme) private var colorScheme
 
   // MARK: - Buttons (Injected)
+
   @ViewBuilder var continueButton: ContinueButton
   @ViewBuilder var cancelButton: CancelButton
 
   // MARK: - Init
+
   public init(
     onContinue: @escaping () -> Void,
     onCancel: @escaping () -> Void,
@@ -27,6 +31,7 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
   }
 
   // MARK: - Body
+
   public var body: some View {
     ZStack(alignment: .topTrailing) {
       background
@@ -51,6 +56,7 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
   }
 
   // MARK: - Subviews
+
   private var background: some View {
     color(theme.colors.background)
       .edgesIgnoringSafeArea(.all)
@@ -105,12 +111,14 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
   }
 
   // MARK: - Helpers
+
   private func color(_ adaptive: AdaptiveColor) -> Color {
     adaptive.standard.resolve(colorScheme)
   }
 }
 
 // MARK: - Components
+
 private struct InstructionCard: View {
   @Environment(\.smileIDTheme) private var theme
   @Environment(\.colorScheme) private var colorScheme
