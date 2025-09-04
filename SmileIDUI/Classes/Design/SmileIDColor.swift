@@ -49,4 +49,28 @@ public struct SmileIDColor: Equatable {
   public var warningFill: DynamicColor
   public var warningIcon: DynamicColor
   public var warningStroke: DynamicColor
+  
+  public init(
+    primary: DynamicColor,
+    primaryForeground: DynamicColor,
+    background: DynamicColor,
+    cardBackground: DynamicColor,
+    titleText: DynamicColor,
+    cardText: DynamicColor,
+    stroke: DynamicColor,
+    warningFill: DynamicColor,
+    warningIcon: DynamicColor,
+    warningStroke: DynamicColor
+  ) {
+    self.primary = primary
+    self.primaryForeground = primaryForeground
+    self.background = background
+    self.cardBackground = cardBackground
+    self.titleText = titleText
+    self.cardText = cardText
+    self.stroke = stroke
+    self.warningFill = warningFill
+    self.warningIcon = warningIcon
+    self.warningStroke = warningStroke
+  }
 }
