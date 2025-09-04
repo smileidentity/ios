@@ -68,7 +68,7 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
         // Large card container with heading + rules
         VStack(alignment: .leading, spacing: 16) {
           Text("Let’s verify your selfie")
-            .font(theme.typography.pageHeading)
+            .font(theme.typography.pageHeading.weight(.bold))
             .foregroundColor(color(theme.colors.titleText))
 
           Text("Your selfie is encrypted and used only for verification.")
