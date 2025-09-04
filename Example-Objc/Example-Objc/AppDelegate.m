@@ -1,4 +1,7 @@
 #import "AppDelegate.h"
+#import "Example_Objc-Swift.h"
+
+@import SmileID;
 
 @interface AppDelegate ()
 
@@ -9,6 +12,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+
+    // Initialize SmileID SDK using the Objective-C bridge
+    [SmileIDObjCBridge initializeSDK];
+
     return YES;
 }
 
