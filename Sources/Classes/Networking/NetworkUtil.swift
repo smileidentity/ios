@@ -10,15 +10,16 @@ public func calculateSignature(timestamp: String) throws -> String {
       userInfo: [
         NSLocalizedDescriptionKey:
           """
-          API key not set. If using the authToken from smile_config.json, \
-          ensure you have set the signature/timestamp properties on the request from the \
-          values returned by SmileID.authenticate.signature/timestamp
-          """
+        API key not set. If using the authToken from smile_config.json, \
+        ensure you have set the signature/timestamp properties on the request from the \
+        values returned by SmileID.authenticate.signature/timestamp
+        """
       ])
   }
   let hashContent = "\(timestamp)\(SmileID.config.partnerId)sid_request"
   guard let hmac = hashContent.hmac(algorithm: .SHA256, key: apiKey) else {
-    throw NSError(domain: "", code: 1, userInfo: [NSLocalizedDescriptionKey: "HMAC calculation failed"])
+    throw NSError(
+      domain: "", code: 1, userInfo: [NSLocalizedDescriptionKey: "HMAC calculation failed"])
   }
 
   return hmac.base64EncodedString()
@@ -57,8 +58,8 @@ enum CryptoAlgorithm {
   }
 }
 
-public extension AnyPublisher {
-  func async() async throws -> Output {
+extension AnyPublisher {
+  public func async() async throws -> Output {
     try await withCheckedThrowingContinuation { continuation in
       var cancellable: AnyCancellable?
       var finishedWithoutValue = true

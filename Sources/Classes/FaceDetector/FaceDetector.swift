@@ -16,13 +16,14 @@ class FaceDetector: NSObject {
     )
 
     // Use most recent models or fallback to older versions
-    detectCaptureQualityRequest.revision = if #available(iOS 17.0, *) {
-      VNDetectFaceCaptureQualityRequestRevision3
-    } else if #available(iOS 14.0, *) {
-      VNDetectFaceCaptureQualityRequestRevision2
-    } else {
-      VNDetectFaceCaptureQualityRequestRevision1
-    }
+    detectCaptureQualityRequest.revision =
+      if #available(iOS 17.0, *) {
+        VNDetectFaceCaptureQualityRequestRevision3
+      } else if #available(iOS 14.0, *) {
+        VNDetectFaceCaptureQualityRequestRevision2
+      } else {
+        VNDetectFaceCaptureQualityRequestRevision1
+      }
 
     try sequenceHandler.perform(
       [detectCaptureQualityRequest],

@@ -1,35 +1,41 @@
 import UIKit
 import VideoToolbox
 
-public extension UIImage {
+extension UIImage {
   /**
      Resizes the image to `width` x `height` and converts it to an ARGB
      `CVPixelBuffer`.
    */
-  func pixelBuffer(width: Int, height: Int) -> CVPixelBuffer? {
-    pixelBuffer(width: width, height: height,
-                pixelFormatType: kCVPixelFormatType_32ARGB,
-                colorSpace: CGColorSpaceCreateDeviceRGB(),
-                alphaInfo: .noneSkipFirst)
+  public func pixelBuffer(width: Int, height: Int) -> CVPixelBuffer? {
+    pixelBuffer(
+      width: width, height: height,
+      pixelFormatType: kCVPixelFormatType_32ARGB,
+      colorSpace: CGColorSpaceCreateDeviceRGB(),
+      alphaInfo: .noneSkipFirst)
   }
 
   /**
      Resizes the image to `width` x `height` and converts it to a `CVPixelBuffer`
      with the specified pixel format, color space, and alpha channel.
    */
-  func pixelBuffer(width: Int, height: Int,
-                   pixelFormatType: OSType,
-                   colorSpace: CGColorSpace,
-                   alphaInfo: CGImageAlphaInfo) -> CVPixelBuffer? {
+  public func pixelBuffer(
+    width: Int, height: Int,
+    pixelFormatType: OSType,
+    colorSpace: CGColorSpace,
+    alphaInfo: CGImageAlphaInfo
+  ) -> CVPixelBuffer? {
     var maybePixelBuffer: CVPixelBuffer?
-    let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
-                 kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue]
-    let status = CVPixelBufferCreate(kCFAllocatorDefault,
-                                     width,
-                                     height,
-                                     pixelFormatType,
-                                     attrs as CFDictionary,
-                                     &maybePixelBuffer)
+    let attrs = [
+      kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+      kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue,
+    ]
+    let status = CVPixelBufferCreate(
+      kCFAllocatorDefault,
+      width,
+      height,
+      pixelFormatType,
+      attrs as CFDictionary,
+      &maybePixelBuffer)
 
     guard status == kCVReturnSuccess, let pixelBuffer = maybePixelBuffer else {
       return nil
@@ -41,13 +47,15 @@ public extension UIImage {
     }
     defer { CVPixelBufferUnlockBaseAddress(pixelBuffer, flags) }
 
-    guard let context = CGContext(data: CVPixelBufferGetBaseAddress(pixelBuffer),
-                                  width: width,
-                                  height: height,
-                                  bitsPerComponent: 8,
-                                  bytesPerRow: CVPixelBufferGetBytesPerRow(pixelBuffer),
-                                  space: colorSpace,
-                                  bitmapInfo: alphaInfo.rawValue)
+    guard
+      let context = CGContext(
+        data: CVPixelBufferGetBaseAddress(pixelBuffer),
+        width: width,
+        height: height,
+        bitsPerComponent: 8,
+        bytesPerRow: CVPixelBufferGetBytesPerRow(pixelBuffer),
+        space: colorSpace,
+        bitmapInfo: alphaInfo.rawValue)
     else {
       return nil
     }
@@ -62,14 +70,14 @@ public extension UIImage {
   }
 }
 
-public extension UIImage {
+extension UIImage {
   /**
      Creates a new UIImage from a CVPixelBuffer.
 
      - Note: Not all CVPixelBuffer pixel formats support conversion into a
              CGImage-compatible pixel format.
    */
-  convenience init?(pixelBuffer: CVPixelBuffer) {
+  public convenience init?(pixelBuffer: CVPixelBuffer) {
     if let cgImage = CGImage.create(pixelBuffer: pixelBuffer) {
       self.init(cgImage: cgImage)
     } else {

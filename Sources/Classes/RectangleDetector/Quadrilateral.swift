@@ -33,7 +33,8 @@ struct Quadrilateral: Transformable {
   }
 
   var perimeter: Double {
-    let perimeter = topLeft.distanceTo(point: topRight)
+    let perimeter =
+      topLeft.distanceTo(point: topRight)
       + topRight.distanceTo(point: bottomRight)
       + bottomRight.distanceTo(point: bottomLeft)
       + bottomLeft.distanceTo(point: topLeft)
@@ -86,10 +87,11 @@ struct Quadrilateral: Transformable {
     let bottomRight = bottomRight.cartesian(withHeight: height)
     let bottomLeft = bottomLeft.cartesian(withHeight: height)
 
-    return Quadrilateral(topLeft: topLeft,
-                         topRight: topRight,
-                         bottomRight: bottomRight,
-                         bottomLeft: bottomLeft)
+    return Quadrilateral(
+      topLeft: topLeft,
+      topRight: topRight,
+      bottomRight: bottomRight,
+      bottomLeft: bottomLeft)
   }
 
   /// Checks whether the quadrilateral is within a given distance of another quadrilateral.
@@ -129,9 +131,11 @@ struct Quadrilateral: Transformable {
   ///   - toSize: The size to scale the quadrilateral to.
   ///   - rotationAngle: The optional rotation to apply.
   /// - Returns: The newly scaled and potentially rotated quadrilateral.
-  func scale(_ fromSize: CGSize,
-             _ toSize: CGSize,
-             withRotationAngle rotationAngle: CGFloat = 0.0) -> Quadrilateral {
+  func scale(
+    _ fromSize: CGSize,
+    _ toSize: CGSize,
+    withRotationAngle rotationAngle: CGFloat = 0.0
+  ) -> Quadrilateral {
     var invertedFromSize = fromSize
     let rotated = rotationAngle != 0.0
 
@@ -140,8 +144,10 @@ struct Quadrilateral: Transformable {
     }
 
     var transformedQuad = self
-    let invertedFromSizeWidth = invertedFromSize.width == 0 ? .leastNormalMagnitude : invertedFromSize.width
-    let invertedFromSizeHeight = invertedFromSize.height == 0 ? .leastNormalMagnitude : invertedFromSize.height
+    let invertedFromSizeWidth =
+      invertedFromSize.width == 0 ? .leastNormalMagnitude : invertedFromSize.width
+    let invertedFromSizeHeight =
+      invertedFromSize.height == 0 ? .leastNormalMagnitude : invertedFromSize.height
 
     let scaleWidth = toSize.width / invertedFromSizeWidth
     let scaleHeight = toSize.height / invertedFromSizeHeight
@@ -182,7 +188,7 @@ struct Quadrilateral: Transformable {
     let xSortedBottomMostPoints = sortPointsByXValue(bottomMostPoints)
 
     guard xSortedTopMostPoints.count > 1,
-          xSortedBottomMostPoints.count > 1
+      xSortedBottomMostPoints.count > 1
     else {
       return
     }

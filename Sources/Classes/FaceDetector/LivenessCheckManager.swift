@@ -84,9 +84,10 @@ class LivenessCheckManager: ObservableObject {
     DispatchQueue.main.async {
       self.taskTimer = Timer.scheduledTimer(
         withTimeInterval: 1.0,
-        repeats: true) { [weak self] _ in
-          self?.taskTimerFired()
-        }
+        repeats: true
+      ) { [weak self] _ in
+        self?.taskTimerFired()
+      }
     }
   }
 
@@ -156,7 +157,7 @@ class LivenessCheckManager: ObservableObject {
       if yawValue < -minYawAngleThreshold {
         let progress =
           yawValue
-            .normalized(min: -minYawAngleThreshold, max: -maxYawAngleThreshold)
+          .normalized(min: -minYawAngleThreshold, max: -maxYawAngleThreshold)
         lookLeftProgress = min(max(lookLeftProgress, progress), 1.0)
         if lookLeftProgress == 1.0 {
           completeCurrentTask()
@@ -166,7 +167,7 @@ class LivenessCheckManager: ObservableObject {
       if yawValue > minYawAngleThreshold {
         let progress =
           yawValue
-            .normalized(min: minYawAngleThreshold, max: maxYawAngleThreshold)
+          .normalized(min: minYawAngleThreshold, max: maxYawAngleThreshold)
         lookRightProgress = min(max(lookRightProgress, progress), 1.0)
         if lookRightProgress == 1.0 {
           completeCurrentTask()
@@ -176,7 +177,7 @@ class LivenessCheckManager: ObservableObject {
       if pitchValue < -minPitchAngleThreshold {
         let progress =
           pitchValue
-            .normalized(min: -minPitchAngleThreshold, max: -maxPitchAngleThreshold)
+          .normalized(min: -minPitchAngleThreshold, max: -maxPitchAngleThreshold)
         lookUpProgress = min(max(lookUpProgress, progress), 1.0)
         if lookUpProgress == 1.0 {
           completeCurrentTask()

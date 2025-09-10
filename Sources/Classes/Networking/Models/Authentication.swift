@@ -80,6 +80,7 @@ public struct AuthenticationResponse: Codable {
   public var success: Bool
   public var signature: String
   public var timestamp: String
+  public var policy: Int?
   public var partnerParams: PartnerParams
   public var consentInfo: ConsentInfo?
 
@@ -87,11 +88,13 @@ public struct AuthenticationResponse: Codable {
     success: Bool,
     signature: String,
     timestamp: String,
+    policy: Int?,
     partnerParams: PartnerParams
   ) {
     self.success = success
     self.signature = signature
     self.timestamp = timestamp
+    self.policy = policy
     self.partnerParams = partnerParams
   }
 
@@ -99,6 +102,7 @@ public struct AuthenticationResponse: Codable {
     case success
     case signature
     case timestamp
+    case policy
     case partnerParams = "partner_params"
     case consentInfo = "consent_info"
   }

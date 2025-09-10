@@ -146,7 +146,8 @@ public class SmartSelfieJobResult: JobResult {
 
   required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    guard let confidenceValue = try container.decodeIfPresent(String.self, forKey: .confidence) else {
+    guard let confidenceValue = try container.decodeIfPresent(String.self, forKey: .confidence)
+    else {
       throw SmileIDError.unknown("Error decoding .confidenceValue")
     }
     self.confidence = Double(confidenceValue)
@@ -383,74 +384,91 @@ public struct Actions: Codable {
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    documentCheck = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .documentCheck
-    ) ?? .notApplicable
-    humanReviewCompare = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .humanReviewCompare
-    ) ?? .notApplicable
-    humanReviewDocumentCheck = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .humanReviewDocumentCheck
-    ) ?? .notApplicable
-    humanReviewLivenessCheck = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .humanReviewLivenessCheck
-    ) ?? .notApplicable
-    humanReviewSelfieCheck = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .humanReviewSelfieCheck
-    ) ?? .notApplicable
-    humanReviewUpdateSelfie = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .humanReviewUpdateSelfie
-    ) ?? .notApplicable
-    livenessCheck = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .livenessCheck
-    ) ?? .notApplicable
-    selfieCheck = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .selfieCheck
-    ) ?? .notApplicable
-    registerSelfie = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .registerSelfie
-    ) ?? .notApplicable
-    returnPersonalInfo = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .returnPersonalInfo
-    ) ?? .notApplicable
-    selfieProvided = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .selfieProvided
-    ) ?? .notApplicable
-    selfieToIdAuthorityCompare = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .selfieToIdAuthorityCompare
-    ) ?? .notApplicable
-    selfieToIdCardCompare = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .selfieToIdCardCompare
-    ) ?? .notApplicable
-    selfieToRegisteredSelfieCompare = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .selfieToRegisteredSelfieCompare
-    ) ?? .notApplicable
-    updateRegisteredSelfieOnFile = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .updateRegisteredSelfieOnFile
-    ) ?? .notApplicable
-    verifyDocument = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .verifyDocument
-    ) ?? .notApplicable
-    verifyIdNumber = try container.decodeIfPresent(
-      ActionResult.self,
-      forKey: .verifyIdNumber
-    ) ?? .notApplicable
+    documentCheck =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .documentCheck
+      ) ?? .notApplicable
+    humanReviewCompare =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .humanReviewCompare
+      ) ?? .notApplicable
+    humanReviewDocumentCheck =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .humanReviewDocumentCheck
+      ) ?? .notApplicable
+    humanReviewLivenessCheck =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .humanReviewLivenessCheck
+      ) ?? .notApplicable
+    humanReviewSelfieCheck =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .humanReviewSelfieCheck
+      ) ?? .notApplicable
+    humanReviewUpdateSelfie =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .humanReviewUpdateSelfie
+      ) ?? .notApplicable
+    livenessCheck =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .livenessCheck
+      ) ?? .notApplicable
+    selfieCheck =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .selfieCheck
+      ) ?? .notApplicable
+    registerSelfie =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .registerSelfie
+      ) ?? .notApplicable
+    returnPersonalInfo =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .returnPersonalInfo
+      ) ?? .notApplicable
+    selfieProvided =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .selfieProvided
+      ) ?? .notApplicable
+    selfieToIdAuthorityCompare =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .selfieToIdAuthorityCompare
+      ) ?? .notApplicable
+    selfieToIdCardCompare =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .selfieToIdCardCompare
+      ) ?? .notApplicable
+    selfieToRegisteredSelfieCompare =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .selfieToRegisteredSelfieCompare
+      ) ?? .notApplicable
+    updateRegisteredSelfieOnFile =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .updateRegisteredSelfieOnFile
+      ) ?? .notApplicable
+    verifyDocument =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .verifyDocument
+      ) ?? .notApplicable
+    verifyIdNumber =
+      try container.decodeIfPresent(
+        ActionResult.self,
+        forKey: .verifyIdNumber
+      ) ?? .notApplicable
   }
 
   init(
@@ -543,7 +561,8 @@ public struct FlexibleDictionary: Codable {
       } else if let boolValue = try? container.decode(Bool.self) {
         self = .bool(boolValue)
       } else {
-        throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode value")
+        throw DecodingError.dataCorruptedError(
+          in: container, debugDescription: "Cannot decode value")
       }
     }
 

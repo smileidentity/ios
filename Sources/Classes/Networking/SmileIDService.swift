@@ -87,7 +87,7 @@ public protocol SmileIDServiceable {
   func submitBvnOtp(request: SubmitBvnTotpRequest) async throws -> SubmitBvnTotpResponse
 }
 
-public extension SmileIDServiceable {
+extension SmileIDServiceable {
   /// Polls the server for the status of a Job until it is complete. This should be called after
   /// the  Job has been submitted to the server. The returned flow will be updated with every job
   /// status response. The flow will complete when the job is complete, or the attempt limit is
@@ -97,7 +97,7 @@ public extension SmileIDServiceable {
   ///   - request: The JobStatus request to made
   ///   - interval: The time interval in seconds between each poll
   ///   - numAttempts: The maximum number of polls before ending the flow
-  func pollJobStatus<T: JobResult>(
+  public func pollJobStatus<T: JobResult>(
     request: JobStatusRequest,
     interval: TimeInterval,
     numAttempts: Int
@@ -107,7 +107,8 @@ public extension SmileIDServiceable {
         var latestError: Error?
         for _ in 0..<numAttempts {
           do {
-            let response: JobStatusResponse<T> = try await SmileID.api.getJobStatus(request: request)
+            let response: JobStatusResponse<T> = try await SmileID.api.getJobStatus(
+              request: request)
             continuation.yield(response)
             // Reset the error if the API response was successful
             latestError = nil
@@ -117,7 +118,7 @@ public extension SmileIDServiceable {
           } catch {
             latestError = error
           }
-          try await Task.sleep(nanoseconds: UInt64(interval * 1000000000))
+          try await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
         }
         if let latestError {
           continuation.finish(throwing: latestError)
@@ -137,7 +138,7 @@ public extension SmileIDServiceable {
   ///   - request: The JobStatus request to made
   ///   - interval: The time interval in seconds between each poll
   ///   - numAttempts: The maximum number of polls before ending the flow
-  func pollSmartSelfieJobStatus(
+  public func pollSmartSelfieJobStatus(
     request: JobStatusRequest,
     interval: TimeInterval,
     numAttempts: Int
@@ -154,7 +155,7 @@ public extension SmileIDServiceable {
   ///   - request: The JobStatus request to made
   ///   - interval: The time interval in seconds between each poll
   ///   - numAttempts: The maximum number of polls before ending the flow
-  func pollDocumentVerificationJobStatus(
+  public func pollDocumentVerificationJobStatus(
     request: JobStatusRequest,
     interval: TimeInterval,
     numAttempts: Int
@@ -171,7 +172,7 @@ public extension SmileIDServiceable {
   ///   - request: The JobStatus request to made
   ///   - interval: The time interval in seconds between each poll
   ///   - numAttempts: The maximum number of polls before ending the flow
-  func pollBiometricKycJobStatus(
+  public func pollBiometricKycJobStatus(
     request: JobStatusRequest,
     interval: TimeInterval,
     numAttempts: Int
@@ -189,7 +190,7 @@ public extension SmileIDServiceable {
   ///   - request: The JobStatus request to made
   ///   - interval: The time interval in seconds between each poll
   ///   - numAttempts: The maximum number of polls before ending the flow
-  func pollEnhancedDocumentVerificationJobStatus(
+  public func pollEnhancedDocumentVerificationJobStatus(
     request: JobStatusRequest,
     interval: TimeInterval,
     numAttempts: Int

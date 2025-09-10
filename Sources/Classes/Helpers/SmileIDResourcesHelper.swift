@@ -14,7 +14,7 @@ public class SmileIDResourcesHelper {
       Bundle.main.resourceURL,
 
       // Bundle should be present here when the package is linked into a framework.
-      Bundle(for: SmileIDResourcesHelper.self).resourceURL
+      Bundle(for: SmileIDResourcesHelper.self).resourceURL,
     ]
 
     let bundleName = "SmileID_SmileID"
@@ -127,7 +127,8 @@ public class SmileIDResourcesHelper {
             NSException(
               name: .internalInconsistencyException,
               reason: errorDescription as String?,
-              userInfo: [NSUnderlyingErrorKey: nsError as Any]).raise()
+              userInfo: [NSUnderlyingErrorKey: nsError as Any]
+            ).raise()
           }
         }
       }

@@ -71,9 +71,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
 
     // Calculate acceleration magnitude
     let magnitude = sqrt(
-      accelerationX * accelerationX +
-        accelerationY * accelerationY +
-        accelerationZ * accelerationZ
+      accelerationX * accelerationX + accelerationY * accelerationY + accelerationZ * accelerationZ
     )
 
     let gravity = 0.981
@@ -95,7 +93,8 @@ class DeviceOrientationMetadata: MetadataProtocol {
      */
     let movementChange: Double = {
       if let minMovementChange = deviceMovements.min(),
-         let maxMovementChange = deviceMovements.max() {
+        let maxMovementChange = deviceMovements.max()
+      {
         return maxMovementChange - minMovementChange
       } else {
         return -1.0

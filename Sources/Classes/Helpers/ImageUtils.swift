@@ -1,5 +1,5 @@
-import Accelerate
 import AVFoundation
+import Accelerate
 import CoreImage
 import CoreVideo
 import MobileCoreServices
@@ -32,10 +32,11 @@ class ImageUtils {
 
     let newWidth = Int(CGFloat(height) / aspectRatio)
 
-    guard let resizedImage = resizeCGImage(
-      cgImage,
-      newWidth: newWidth,
-      newHeight: height)
+    guard
+      let resizedImage = resizeCGImage(
+        cgImage,
+        newWidth: newWidth,
+        newHeight: height)
     else {
       return nil
     }
@@ -48,13 +49,14 @@ class ImageUtils {
     newHeight: Int
   ) -> CGImage? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
-    guard let context = CGContext(
-      data: nil, width: newWidth,
-      height: newHeight,
-      bitsPerComponent: 8,
-      bytesPerRow: newWidth * 4,
-      space: colorSpace,
-      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+    guard
+      let context = CGContext(
+        data: nil, width: newWidth,
+        height: newHeight,
+        bitsPerComponent: 8,
+        bytesPerRow: newWidth * 4,
+        space: colorSpace,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
     else {
       return nil
     }
@@ -100,8 +102,8 @@ class ImageUtils {
       String(kCVPixelBufferIOSurfacePropertiesKey): [
         String(kCVPixelBufferIOSurfaceOpenGLESTextureCompatibilityKey): true,
         String(kCVPixelBufferIOSurfaceOpenGLESFBOCompatibilityKey): true,
-        String(kCVPixelBufferIOSurfaceCoreAnimationCompatibilityKey): true
-      ]
+        String(kCVPixelBufferIOSurfaceCoreAnimationCompatibilityKey): true,
+      ],
     ]
     return attributes
   }

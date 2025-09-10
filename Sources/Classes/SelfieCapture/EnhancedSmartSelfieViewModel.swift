@@ -138,7 +138,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     livenessCheckManager.$lookLeftProgress
       .merge(
         with: livenessCheckManager.$lookRightProgress,
-        livenessCheckManager.$lookUpProgress)
+        livenessCheckManager.$lookUpProgress
+      )
       .filter { $0 != 0 }
       .receive(on: DispatchQueue.main)
       .sink { [weak self] _ in
@@ -163,7 +164,8 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
       .throttle(
         for: 0.35,
         scheduler: DispatchQueue.global(qos: .userInitiated),
-        latest: true)
+        latest: true
+      )
       // Drop the first ~2 seconds to allow the user to settle in
       .dropFirst(5)
       .compactMap { $0 }
@@ -257,13 +259,14 @@ extension EnhancedSmartSelfieViewModel {
     guard guideAnimationDelayTimer == nil else { return }
     guideAnimationDelayTimer = Timer.scheduledTimer(
       withTimeInterval: 1,
-      repeats: true) { _ in
-        self.elapsedGuideAnimationDelay += 1
-        if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
-          self.showGuideAnimation = true
-          self.stopGuideAnimationDelayTimer()
-        }
+      repeats: true
+    ) { _ in
+      self.elapsedGuideAnimationDelay += 1
+      if self.elapsedGuideAnimationDelay == self.guideAnimationDelayTime {
+        self.showGuideAnimation = true
+        self.stopGuideAnimationDelayTimer()
       }
+    }
   }
 
   private func stopGuideAnimationDelayTimer() {
@@ -461,7 +464,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
   private func captureNextFrame(capturedFrames: Int) {
     let maxFrames = LivenessTask.numberOfFramesToCapture
     guard capturedFrames < maxFrames,
-          let currentFrame = currentFrameBuffer
+      let currentFrame = currentFrameBuffer
     else {
       return
     }

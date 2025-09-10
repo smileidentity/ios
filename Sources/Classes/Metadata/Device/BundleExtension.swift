@@ -4,7 +4,8 @@ extension Bundle {
   /// Gets the host application name and version in the format "App Name v1.0.0"
   var hostApplicationInfo: String {
     // Get the app name (display name or bundle name)
-    let appName = object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
+    let appName =
+      object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
       ?? object(forInfoDictionaryKey: "CFBundleName") as? String
 
     // Get the app version

@@ -82,50 +82,48 @@ public struct IdInfo: Codable {
   }
 }
 
-/**
- * Class representing user consent information submitted with verification jobs.
- * As of version 10.6.2, the structure was updated to match API requirements by nesting
- * consent fields under a "consented" object. This class provides backward compatibility
- * with previous SDK versions while maintaining the new API-compatible JSON structure.
- *
- * Preferred usage (current API format):
- * ```
- * let consentInfo = ConsentInformation(
- *     consented: ConsentedInformation(
- *         consentGrantedDate: getCurrentIsoTimestamp(),
- *         personalDetails: true,
- *         contactInformation: true,
- *         documentInformation: true
- *     )
- * )
- * ```
- *
- * For backward compatibility, you can also use the secondary convenience initializer with the old property names:
- * ```
- * // Direct construction with legacy property names (will be converted to the new structure internally)
- * let consentInfo = ConsentInformation(
- *     consentGrantedDate: getCurrentIsoTimestamp(),
- *     personalDetailsConsentGranted: true,
- *     contactInfoConsentGranted: true,
- *     documentInfoConsentGranted: true
- * )
- * ```
- *
- * Or the legacy factory method:
- * ```
- * // Legacy factory method (will be converted to the new structure internally)
- * let consentInfo = ConsentInformation.createLegacy(
- *     consentGrantedDate: getCurrentIsoTimestamp(),
- *     personalDetailsConsentGranted: true,
- *     contactInfoConsentGranted: true,
- *     documentInfoConsentGranted: true
- * )
- * ```
- *
- * All three approaches will produce identical API-compatible JSON output with the nested structure.
- *
- * @property consented The nested consent information object containing all consent fields
- */
+/// Class representing user consent information submitted with verification jobs.
+/// As of version 10.6.2, the structure was updated to match API requirements by nesting
+/// consent fields under a "consented" object. This class provides backward compatibility
+/// with previous SDK versions while maintaining the new API-compatible JSON structure.
+///
+/// Preferred usage (current API format):
+/// ```
+/// let consentInfo = ConsentInformation(
+///     consented: ConsentedInformation(
+///         consentGrantedDate: getCurrentIsoTimestamp(),
+///         personalDetails: true,
+///         contactInformation: true,
+///         documentInformation: true
+///     )
+/// )
+/// ```
+///
+/// For backward compatibility, you can also use the secondary convenience initializer with the old property names:
+/// ```
+/// // Direct construction with legacy property names (will be converted to the new structure internally)
+/// let consentInfo = ConsentInformation(
+///     consentGrantedDate: getCurrentIsoTimestamp(),
+///     personalDetailsConsentGranted: true,
+///     contactInfoConsentGranted: true,
+///     documentInfoConsentGranted: true
+/// )
+/// ```
+///
+/// Or the legacy factory method:
+/// ```
+/// // Legacy factory method (will be converted to the new structure internally)
+/// let consentInfo = ConsentInformation.createLegacy(
+///     consentGrantedDate: getCurrentIsoTimestamp(),
+///     personalDetailsConsentGranted: true,
+///     contactInfoConsentGranted: true,
+///     documentInfoConsentGranted: true
+/// )
+/// ```
+///
+/// All three approaches will produce identical API-compatible JSON output with the nested structure.
+///
+/// @property consented The nested consent information object containing all consent fields
 public struct ConsentInformation: Codable {
   public let consented: ConsentedInformation
 
@@ -228,15 +226,13 @@ public struct ConsentInformation: Codable {
   }
 }
 
-/**
- * Represents the detailed consent information nested within [ConsentInformation].
- * This class follows the API's expected structure for consent data.
- *
- * @property consentGrantedDate The ISO timestamp of when consent was granted
- * @property personalDetails Whether consent for personal details was granted
- * @property contactInformation Whether consent for contact information was granted
- * @property documentInformation Whether consent for document information was granted
- */
+/// Represents the detailed consent information nested within [ConsentInformation].
+/// This class follows the API's expected structure for consent data.
+///
+/// @property consentGrantedDate The ISO timestamp of when consent was granted
+/// @property personalDetails Whether consent for personal details was granted
+/// @property contactInformation Whether consent for contact information was granted
+/// @property documentInformation Whether consent for document information was granted
 public struct ConsentedInformation: Codable {
   public let consentGrantedDate: String
   public let personalDetails: Bool

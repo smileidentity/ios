@@ -16,7 +16,9 @@ class RectangleDetector {
     // Create the rectangle request, and, if found, return the largest rectangle (else return nothing).
     let rectangleDetectionRequest: VNDetectRectanglesRequest = {
       let rectDetectRequest = VNDetectRectanglesRequest(completionHandler: { request, error in
-        guard error == nil, let results = request.results as? [VNRectangleObservation], !results.isEmpty else {
+        guard error == nil, let results = request.results as? [VNRectangleObservation],
+          !results.isEmpty
+        else {
           completion(nil)
           return
         }
@@ -54,9 +56,11 @@ class RectangleDetector {
   ///   - pixelBuffer: The pixelBuffer to detect rectangles on.
   ///   - aspectRatio: The aspect ratio of rectangles to detect
   ///   - completion: The biggest rectangle on the CVPixelBuffer
-  static func rectangle(forPixelBuffer pixelBuffer: CVPixelBuffer,
-                        aspectRatio: Double?,
-                        completion: @escaping ((Quadrilateral?) -> Void)) {
+  static func rectangle(
+    forPixelBuffer pixelBuffer: CVPixelBuffer,
+    aspectRatio: Double?,
+    completion: @escaping ((Quadrilateral?) -> Void)
+  ) {
     let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
     RectangleDetector.completeImageRequest(
       for: imageRequestHandler,
@@ -72,7 +76,8 @@ protocol RectangleDetectionDelegate: NSObjectProtocol {
   /// - Parameters:
   ///   - quad: The detected quadrilateral in the coordinates of the image.
   ///   - imageSize: The size of the image the quadrilateral has been detected on.
-  func didDetectQuad(quad: Quadrilateral?, _ imageSize: CGSize, completion: ((Quadrilateral) -> Void)?)
+  func didDetectQuad(
+    quad: Quadrilateral?, _ imageSize: CGSize, completion: ((Quadrilateral) -> Void)?)
 }
 
 /// Data structure representing the result of the detection of a quadrilateral.

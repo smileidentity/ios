@@ -173,19 +173,23 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
           selfie: selfieFile,
           livenessImages: livenessFiles)
         allFiles.append(info)
-        let zipData: Data
-        let securityInfo = try? createSecurityInfo(files: allFiles)
-        if let securityInfo {
-          zipData = try LocalStorage.zipFiles(
-            urls: allFiles,
-            data: ["security_info.json": securityInfo])
-        } else {
-          /*
-           In case we can't add the security info the backend will throw an unauthorized error.
-           In the future, we will handle this more gracefully once sentry integration has been implemented.
-           */
-          zipData = try LocalStorage.zipFiles(urls: allFiles)
+        var zipData: Data
+        let policy = SmileID.policy.decodePolicyBitCode()
+        if policy.first?.active == true {
+          let securityInfo = try? createSecurityInfo(files: allFiles)
+          if let securityInfo {
+            zipData = try LocalStorage.zipFiles(
+              urls: allFiles,
+              data: ["security_info.json": securityInfo])
+          } else {
+            /*
+                 In case we can't add the security info the backend will throw an unauthorized error.
+                 In the future, we will handle this more gracefully once sentry integration has been implemented.
+                 */
+            zipData = try LocalStorage.zipFiles(urls: allFiles)
+          }
         }
+        zipData = try LocalStorage.zipFiles(urls: allFiles)
         self.savedFiles = DocumentCaptureResultStore(
           allFiles: allFiles,
           documentFront: frontDocumentUrl,
@@ -214,6 +218,7 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
         }
         try await getExceptionHandler {
           let authResponse = try await SmileID.api.authenticate(request: authRequest)
+          SmileID.policy = authResponse.policy
           var prepUploadRequest = PrepUploadRequest(
             partnerParams: authResponse.partnerParams.copy(extras: self.extraPartnerParams),
             allowNewEnroll: allowNewEnroll,
@@ -364,7 +369,8 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<
   DocumentVerificationResultDelegate,
   DocumentVerificationJobResult
-> {
+>
+{
   override func onFinished(delegate: DocumentVerificationResultDelegate) {
     if let error {
       delegate.didError(error: error)
@@ -383,7 +389,8 @@ class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificati
 class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<
   EnhancedDocumentVerificationResultDelegate,
   EnhancedDocumentVerificationJobResult
-> {
+>
+{
   override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
     if let error {
       delegate.didError(error: error)

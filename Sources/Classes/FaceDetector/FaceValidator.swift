@@ -89,7 +89,8 @@ final class FaceValidator {
     } else if !isAcceptableFaceQuality || !isAcceptableBrightness {
       return .goodLight
     } else if faceBoundsState == .detectedFaceOffCentre
-      || faceBoundsState == .detectedFaceNotWithinFrame {
+      || faceBoundsState == .detectedFaceNotWithinFrame
+    {
       return .headInFrame
     } else if faceBoundsState == .detectedFaceTooSmall {
       return .moveCloser
@@ -106,7 +107,8 @@ final class FaceValidator {
     shouldCheckCentering: Bool
   ) -> FaceBoundsState {
     let maxFaceWidth = faceLayoutGuideFrame.width - 20
-    let faceBoundsMultiplier = shouldCheckCentering ? selfiefaceBoundsMultiplier : livenessfaceBoundsMultiplier
+    let faceBoundsMultiplier =
+      shouldCheckCentering ? selfiefaceBoundsMultiplier : livenessfaceBoundsMultiplier
     let minFaceWidth = faceLayoutGuideFrame.width / faceBoundsMultiplier
 
     // check how far/close face is

@@ -103,11 +103,12 @@ public struct OrchestratedSelfieCaptureScreen: View {
       } else {
         SelfieCaptureScreen(
           viewModel: viewModel,
-          allowAgentMode: allowAgentMode)
-          .onAppear {
-            UIScreen.main.brightness = 1
-          }
-          .onDisappear { UIScreen.main.brightness = originalBrightness }
+          allowAgentMode: allowAgentMode
+        )
+        .onAppear {
+          UIScreen.main.brightness = 1
+        }
+        .onDisappear { UIScreen.main.brightness = originalBrightness }
       }
     }
     .onAppear {

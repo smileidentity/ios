@@ -83,7 +83,8 @@ private struct SmileButton_Previews: PreviewProvider {
     SmileButton(
       title: "Instructions.Action",
       backgroundColor: .blue,
-      clicked: {})
-      .environment(\.locale, Locale(identifier: "en"))
+      clicked: {}
+    )
+    .environment(\.locale, Locale(identifier: "en"))
   }
 }

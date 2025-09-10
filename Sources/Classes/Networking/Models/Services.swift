@@ -32,22 +32,28 @@ public struct HostedWeb: Codable {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     basicKyc = try container.decode(
       CountryCodeToCountryInfo.self,
-      forKey: .basicKyc).toCountryInfo()
+      forKey: .basicKyc
+    ).toCountryInfo()
     biometricKyc = try container.decode(
       CountryCodeToCountryInfo.self,
-      forKey: .biometricKyc).toCountryInfo()
+      forKey: .biometricKyc
+    ).toCountryInfo()
     enhancedKyc = try container.decode(
       CountryCodeToCountryInfo.self,
-      forKey: .enhancedKyc).toCountryInfo()
+      forKey: .enhancedKyc
+    ).toCountryInfo()
     docVerification = try container.decode(
       CountryCodeToCountryInfo.self,
-      forKey: .docVerification).toCountryInfo()
+      forKey: .docVerification
+    ).toCountryInfo()
     enhancedDocumentVerification = try container.decode(
       CountryCodeToCountryInfo.self,
-      forKey: .enhancedDocumentVerification).toCountryInfo()
+      forKey: .enhancedDocumentVerification
+    ).toCountryInfo()
     enhancedKycSmartSelfie = try container.decode(
       CountryCodeToCountryInfo.self,
-      forKey: .enhancedKycSmartSelfie).toCountryInfo()
+      forKey: .enhancedKycSmartSelfie
+    ).toCountryInfo()
   }
 
   private enum CodingKeys: String, CodingKey {
@@ -62,11 +68,9 @@ public struct HostedWeb: Codable {
 
 // MARK: - CountryInfo
 
-/**
- * The countryCode field is not populated/returned by the API response, hence it being marked as
- * mutable. However, it should be populated before usage of this class/when the response gets decoded.
- * The same applies to availableIdTypes
- */
+/// The countryCode field is not populated/returned by the API response, hence it being marked as
+/// mutable. However, it should be populated before usage of this class/when the response gets decoded.
+/// The same applies to availableIdTypes
 public struct CountryInfo: Codable, Identifiable {
   public var countryCode = ""
   public let name: String
@@ -84,16 +88,15 @@ public struct CountryInfo: Codable, Identifiable {
     name = try container.decode(String.self, forKey: .name)
     availableIdTypes = try container.decode(
       IdTypeKeyToAvailableIdType.self,
-      forKey: .availableIdTypes).toAvailableIdTypes()
+      forKey: .availableIdTypes
+    ).toAvailableIdTypes()
   }
 }
 
 // MARK: - AvailableIdType
 
-/**
- * The  idTypeKey field is not populated/returned by the API response, hence it being marked as
- * mutable. However, it should be populated before usage of this class/when the response gets decoded
- */
+/// The  idTypeKey field is not populated/returned by the API response, hence it being marked as
+/// mutable. However, it should be populated before usage of this class/when the response gets decoded
 public struct AvailableIdType: Codable, Identifiable, Equatable {
   public var idTypeKey = ""
   public let label: String
@@ -142,7 +145,7 @@ public enum RequiredField: String, Codable {
     .country,
     .idType,
     .userId,
-    .jobId
+    .jobId,
   ]
 
   public static func sorter(this: RequiredField, that: RequiredField) -> Bool {

@@ -49,9 +49,9 @@ class EnhancedFaceDetector: NSObject {
         on: imageBuffer,
         orientation: .leftMirrored)
       guard let faceDetections = detectFaceRectanglesRequest.results,
-            let faceQualityObservations = detectCaptureQualityRequest.results,
-            let faceObservation = faceDetections.first,
-            let faceQualityObservation = faceQualityObservations.first
+        let faceQualityObservations = detectCaptureQualityRequest.results,
+        let faceObservation = faceDetections.first,
+        let faceQualityObservation = faceQualityObservations.first
       else {
         resultDelegate?.faceDetector(
           self, didFailWithError: FaceDetectorError.noFaceDetected)
@@ -59,7 +59,8 @@ class EnhancedFaceDetector: NSObject {
       }
 
       guard faceDetections.count == 1 else {
-        resultDelegate?.faceDetector(self, didFailWithError: FaceDetectorError.multipleFacesDetected)
+        resultDelegate?.faceDetector(
+          self, didFailWithError: FaceDetectorError.multipleFacesDetected)
         return
       }
 
@@ -78,7 +79,7 @@ class EnhancedFaceDetector: NSObject {
           yaw: faceObservation.yaw ?? 0.0,
           pitch: faceObservation.pitch ?? 0.0,
           direction: faceDirection(faceObservation: faceObservation))
-      } else { // Fallback on earlier versions
+      } else {  // Fallback on earlier versions
         faceGeometryData = FaceGeometryData(
           boundingBox: convertedBoundingBox,
           roll: faceObservation.roll ?? 0.0,
@@ -110,7 +111,7 @@ class EnhancedFaceDetector: NSObject {
     try handler.perform([request])
 
     guard let results = request.results,
-          let face = results.first
+      let face = results.first
     else {
       throw FaceDetectorError.noFaceDetected
     }
@@ -143,8 +144,8 @@ class EnhancedFaceDetector: NSObject {
 
   private func calculateBrightness(_ image: UIImage?) -> Int {
     guard let image, let cgImage = image.cgImage,
-          let imageData = cgImage.dataProvider?.data,
-          let dataPointer = CFDataGetBytePtr(imageData)
+      let imageData = cgImage.dataProvider?.data,
+      let dataPointer = CFDataGetBytePtr(imageData)
     else {
       return 0
     }

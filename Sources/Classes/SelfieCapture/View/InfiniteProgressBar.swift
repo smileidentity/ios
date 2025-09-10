@@ -14,9 +14,11 @@ struct InfiniteProgressBar: View {
     RoundedRectangle(cornerRadius: 2)
       .foregroundColor(SmileID.theme.tertiary.opacity(0.4))
       .frame(height: height)
-      .overlay(GeometryReader { geo in
-        overlayRect(in: geo.frame(in: .global))
-      })
+      .overlay(
+        GeometryReader { geo in
+          overlayRect(in: geo.frame(in: .global))
+        }
+      )
       .clipped()
       .preferredColorScheme(.light)
   }

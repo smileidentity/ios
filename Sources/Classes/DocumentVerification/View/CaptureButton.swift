@@ -5,9 +5,10 @@ struct CaptureButton: View {
   var body: some View {
     Button(
       action: action,
-      label: { Image(uiImage: SmileIDResourcesHelper.Capture) })
-      .frame(width: 70, height: 70, alignment: .center)
-      .preferredColorScheme(.light)
+      label: { Image(uiImage: SmileIDResourcesHelper.Capture) }
+    )
+    .frame(width: 70, height: 70, alignment: .center)
+    .preferredColorScheme(.light)
   }
 }
 
