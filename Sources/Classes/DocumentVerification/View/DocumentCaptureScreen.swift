@@ -92,10 +92,11 @@ public struct DocumentCaptureScreen: View {
       showSkipButton: showSkipButton,
       onSkip: onSkip,
       onInstructionsAcknowledgedSelectFromGallery: viewModel.onGalleryClick,
-      onInstructionsAcknowledgedTakePhoto: viewModel.onTakePhotoClick)
-      .sheet(isPresented: $viewModel.showPhotoPicker) {
-        ImagePicker(onImageSelected: viewModel.onPhotoSelectedFromGallery)
-      }
+      onInstructionsAcknowledgedTakePhoto: viewModel.onTakePhotoClick
+    )
+    .sheet(isPresented: $viewModel.showPhotoPicker) {
+      ImagePicker(onImageSelected: viewModel.onPhotoSelectedFromGallery)
+    }
   }
 
   private func errorView(error: Error) -> some View {
@@ -135,16 +136,17 @@ public struct DocumentCaptureScreen: View {
       showCaptureInProgress: viewModel.isCapturing,
       showManualCaptureButton: viewModel.showManualCaptureButton,
       cameraManager: viewModel.cameraManager,
-      onCaptureClick: viewModel.captureDocument)
-      .alert(item: $viewModel.unauthorizedAlert) { alert in
-        Alert(
-          title: Text(alert.title),
-          message: Text(alert.message ?? ""),
-          primaryButton: .default(
-            Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
-            action: { viewModel.openSettings() }),
-          secondaryButton: .cancel())
-      }
+      onCaptureClick: viewModel.captureDocument
+    )
+    .alert(item: $viewModel.unauthorizedAlert) { alert in
+      Alert(
+        title: Text(alert.title),
+        message: Text(alert.message ?? ""),
+        primaryButton: .default(
+          Text(SmileIDResourcesHelper.localizedString(for: "Camera.Unauthorized.PrimaryAction")),
+          action: { viewModel.openSettings() }),
+        secondaryButton: .cancel())
+    }
   }
 }
 

@@ -45,6 +45,7 @@ public class SmileID {
   public private(set) static var useSandbox = false
   public private(set) static var allowOfflineMode = false
   public private(set) static var callbackUrl: String = ""
+  internal static var policy: Int?
 
   private(set) static var deviceId: String = ""
   private(set) static var sdkLaunchCount: Int = 0
@@ -239,7 +240,7 @@ public class SmileID {
             LocalStorage.getFileByType(jobId: jobId, fileType: .selfie),
             LocalStorage.getFileByType(jobId: jobId, fileType: .documentFront),
             LocalStorage.getFileByType(jobId: jobId, fileType: .documentBack),
-            LocalStorage.getInfoJsonFile(jobId: jobId)
+            LocalStorage.getInfoJsonFile(jobId: jobId),
           ].compactMap { $0 }
           allFiles = livenessFiles + additionalFiles
         } catch {

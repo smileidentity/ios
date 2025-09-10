@@ -75,9 +75,11 @@ final class RectangleFeaturesFunnel {
   ///   - rectangleFeature: The rectangle to feed to the funnel.
   ///   - currentRectangle: The currently displayed rectangle. This is used to avoid displaying very close rectangles.
   ///   - completion: The completion block called when a new rectangle should be displayed.
-  func add(_ rectangleFeature: Quadrilateral,
-           currentlyDisplayedRectangle currentRectangle: Quadrilateral?,
-           completion: (Quadrilateral) -> Void) {
+  func add(
+    _ rectangleFeature: Quadrilateral,
+    currentlyDisplayedRectangle currentRectangle: Quadrilateral?,
+    completion: (Quadrilateral) -> Void
+  ) {
     let rectangleMatch = RectangleMatch(rectangleFeature: rectangleFeature)
     rectangles.append(rectangleMatch)
 
@@ -91,7 +93,8 @@ final class RectangleFeaturesFunnel {
 
     updateRectangleMatches()
 
-    guard let bestRectangle = bestRectangle(withCurrentlyDisplayedRectangle: currentRectangle) else {
+    guard let bestRectangle = bestRectangle(withCurrentlyDisplayedRectangle: currentRectangle)
+    else {
       return
     }
 
@@ -105,7 +108,9 @@ final class RectangleFeaturesFunnel {
   /// Parameters:
   ///   - currentRectangle: The currently displayed rectangle. This is used to avoid displaying very close rectangles.
   /// Returns: The best rectangle to display given the current history.
-  private func bestRectangle(withCurrentlyDisplayedRectangle currentRectangle: Quadrilateral?) -> RectangleMatch? {
+  private func bestRectangle(withCurrentlyDisplayedRectangle currentRectangle: Quadrilateral?)
+    -> RectangleMatch?
+  {
     var bestMatch: RectangleMatch?
     guard !rectangles.isEmpty else { return nil }
     for rectangle in rectangles.reversed() {
@@ -140,12 +145,16 @@ final class RectangleFeaturesFunnel {
   ///   - rect2: The second rectangle to compare.
   ///   - currentRectangle: The currently displayed rectangle. This is used to avoid displaying very close rectangles.
   /// - Returns: The best rectangle to display between two rectangles with the same matching score.
-  private func breakTie(between rect1: RectangleMatch,
-                        rect2: RectangleMatch,
-                        currentRectangle: Quadrilateral) -> RectangleMatch {
+  private func breakTie(
+    between rect1: RectangleMatch,
+    rect2: RectangleMatch,
+    currentRectangle: Quadrilateral
+  ) -> RectangleMatch {
     if rect1.rectangleFeature.isWithin(matchingThreshold, ofRectangleFeature: currentRectangle) {
       return rect1
-    } else if rect2.rectangleFeature.isWithin(matchingThreshold, ofRectangleFeature: currentRectangle) {
+    } else if rect2.rectangleFeature.isWithin(
+      matchingThreshold, ofRectangleFeature: currentRectangle)
+    {
       return rect2
     }
 

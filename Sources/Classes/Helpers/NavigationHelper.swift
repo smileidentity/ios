@@ -21,8 +21,8 @@ public struct ModalModeKey: EnvironmentKey {
   public static let defaultValue = Binding<Bool>.constant(false)
 }
 
-public extension EnvironmentValues {
-  var modalMode: Binding<Bool> {
+extension EnvironmentValues {
+  public var modalMode: Binding<Bool> {
     get { self[ModalModeKey.self] }
     set { self[ModalModeKey.self] = newValue }
   }

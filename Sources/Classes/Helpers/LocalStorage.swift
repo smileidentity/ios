@@ -98,9 +98,10 @@ public class LocalStorage {
   ) throws -> URL {
     var imageInfoArray = [UploadImageInfo]()
     if let selfie {
-      imageInfoArray.append(UploadImageInfo(
-        imageTypeId: .selfieJpgFile,
-        fileName: selfie.lastPathComponent))
+      imageInfoArray.append(
+        UploadImageInfo(
+          imageTypeId: .selfieJpgFile,
+          fileName: selfie.lastPathComponent))
     }
     if let livenessImages {
       let livenessImageInfos = livenessImages.map { liveness in
@@ -111,19 +112,22 @@ public class LocalStorage {
       imageInfoArray.append(contentsOf: livenessImageInfos)
     }
     if let documentFront {
-      imageInfoArray.append(UploadImageInfo(
-        imageTypeId: .idCardJpgFile,
-        fileName: documentFront.lastPathComponent))
+      imageInfoArray.append(
+        UploadImageInfo(
+          imageTypeId: .idCardJpgFile,
+          fileName: documentFront.lastPathComponent))
     }
     if let documentBack {
-      imageInfoArray.append(UploadImageInfo(
-        imageTypeId: .idCardRearJpgFile,
-        fileName: documentBack.lastPathComponent))
+      imageInfoArray.append(
+        UploadImageInfo(
+          imageTypeId: .idCardRearJpgFile,
+          fileName: documentBack.lastPathComponent))
     }
-    let data = try jsonEncoder.encode(UploadRequest(
-      images: imageInfoArray,
-      idInfo: idInfo,
-      consentInformation: consentInformation))
+    let data = try jsonEncoder.encode(
+      UploadRequest(
+        images: imageInfoArray,
+        idInfo: idInfo,
+        consentInformation: consentInformation))
     return try createSmileFile(to: jobId, name: "info.json", file: data)
   }
 
@@ -163,7 +167,9 @@ public class LocalStorage {
     jobId: String
   ) throws -> AuthenticationRequest {
     let contents = try getDirectoryContents(jobId: jobId)
-    let authenticationrequest = contents.first(where: { $0.lastPathComponent == "authentication_request.json" })
+    let authenticationrequest = contents.first(where: {
+      $0.lastPathComponent == "authentication_request.json"
+    })
     let data = try Data(contentsOf: authenticationrequest!)
     return try jsonDecoder.decode(AuthenticationRequest.self, from: data)
   }
@@ -188,8 +194,8 @@ public class LocalStorage {
             extras: partnerParams),
           allowNewEnroll: allowNewEnroll,
           metadata: metadata,
-          timestamp: "", // remove this so it is not stored offline
-          signature: "" // remove this so it is not stored offline
+          timestamp: "",  // remove this so it is not stored offline
+          signature: ""  // remove this so it is not stored offline
         ))
       _ = try createAuthenticationRequestFile(
         jobId: jobId,
@@ -198,12 +204,14 @@ public class LocalStorage {
           enrollment: enrollment,
           jobId: jobId,
           userId: userId,
-          authToken: "" // remove this so it is not stored offline
+          authToken: ""  // remove this so it is not stored offline
         ))
     }
   }
 
-  private static func write(_ data: Data, to url: URL, options completeFileProtection: Bool = true) throws -> URL {
+  private static func write(_ data: Data, to url: URL, options completeFileProtection: Bool = true)
+    throws -> URL
+  {
     let directoryURL = url.deletingLastPathComponent()
     try fileManager.createDirectory(
       at: directoryURL,
@@ -326,9 +334,10 @@ public class LocalStorage {
       try archive.addEntry(
         with: filename,
         type: .file,
-        uncompressedSize: Int64(content.count)) { position, size in
-          content.subdata(in: Int(position)..<Int(position) + size)
-        }
+        uncompressedSize: Int64(content.count)
+      ) { position, size in
+        content.subdata(in: Int(position)..<Int(position) + size)
+      }
     }
 
     return archive.data!
@@ -364,7 +373,8 @@ public class LocalStorage {
 
   static func deleteLivenessAndSelfieFiles(at jobIds: [String]) throws {
     func deleteMatchingFiles(in directory: URL) throws {
-      let contents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+      let contents = try FileManager.default.contentsOfDirectory(
+        at: directory, includingPropertiesForKeys: nil)
       try contents.forEach { url in
         let filename = url.lastPathComponent
         if filename.starts(with: "si_liveness_") || filename.starts(with: "si_selfie_") {
@@ -383,8 +393,8 @@ public class LocalStorage {
   }
 }
 
-public extension Date {
-  var millisecondsSince1970: Int64 {
+extension Date {
+  public var millisecondsSince1970: Int64 {
     Int64((timeIntervalSince1970 * 1000.0).rounded())
   }
 }

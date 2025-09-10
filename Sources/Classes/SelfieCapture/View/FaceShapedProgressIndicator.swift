@@ -16,8 +16,10 @@ struct FaceShapedProgressIndicator: View {
           .trim(from: 0, to: progress)
           .stroke(
             SmileID.theme.success,
-            style: StrokeStyle(lineWidth: 10, lineCap: .round))
-          .animation(.easeInOut, value: progress))
+            style: StrokeStyle(lineWidth: 10, lineCap: .round)
+          )
+          .animation(.easeInOut, value: progress)
+      )
       .edgesIgnoringSafeArea(.all)
       .preferredColorScheme(.light)
   }

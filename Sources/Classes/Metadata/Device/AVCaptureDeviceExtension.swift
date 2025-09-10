@@ -10,7 +10,7 @@ extension AVCaptureDevice {
         .builtInDualCamera,
         .builtInDualWideCamera,
         .builtInUltraWideCamera,
-        .builtInTrueDepthCamera
+        .builtInTrueDepthCamera,
       ],
       mediaType: .video,
       position: .unspecified)

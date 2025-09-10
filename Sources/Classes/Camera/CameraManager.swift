@@ -121,7 +121,8 @@ class CameraManager: NSObject, ObservableObject {
   }
 
   private func getCameraForPosition(_ position: AVCaptureDevice.Position)
-    -> AVCaptureDevice? {
+    -> AVCaptureDevice?
+  {
     switch position {
     case .front:
       return AVCaptureDevice.default(
@@ -161,7 +162,8 @@ class CameraManager: NSObject, ObservableObject {
     sessionQueue.async { [self] in
       if !session.isRunning {
         if let currentInput = session.inputs.first
-          as? AVCaptureDeviceInput {
+          as? AVCaptureDeviceInput
+        {
           session.removeInput(currentInput)
         }
         addCameraInput(position: position)
@@ -170,7 +172,8 @@ class CameraManager: NSObject, ObservableObject {
       } else {
         session.beginConfiguration()
         if let currentInput = session.inputs.first
-          as? AVCaptureDeviceInput {
+          as? AVCaptureDeviceInput
+        {
           session.removeInput(currentInput)
         }
         addCameraInput(position: position)
@@ -196,7 +199,7 @@ class CameraManager: NSObject, ObservableObject {
 
   func capturePhoto() {
     guard let connection = photoOutput.connection(with: .video),
-          connection.isEnabled, connection.isActive
+      connection.isEnabled, connection.isActive
     else {
       set(error: .cameraUnavailable)
       print("Camera unavailable")

@@ -39,7 +39,8 @@ public struct LivenessCaptureInstructionsView: View {
           destination: EnhancedSelfieCaptureScreen(
             viewModel: viewModel,
             showAttribution: showAttribution),
-          isActive: $showSelfieCaptureView) { EmptyView() }
+          isActive: $showSelfieCaptureView
+        ) { EmptyView() }
 
         SmileButton(
           title: "Action.GetStarted",
