@@ -79,17 +79,20 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
           InstructionCard(
             icon: Image(systemName: "square.stack.3d.up"),
             title: "Good Light",
-            subtitle: "Make sure you are in a well lit environment where your face is clear and visible.")
+            subtitle: "Make sure you are in a well lit environment where your face is clear and visible."
+					)
 
           InstructionCard(
             icon: Image(systemName: "square.stack.3d.up"),
             title: "Face Camera",
-            subtitle: "Keep your face centred and look straight into the camera.")
+            subtitle: "Keep your face centred and look straight into the camera."
+					)
 
           InstructionCard(
             icon: Image(systemName: "square.stack.3d.up"),
             title: "Remove Obstructions",
-            subtitle: "Remove any unnecessary glasses, hats, or any items that may hide your face.")
+            subtitle: "Remove any unnecessary glasses, hats, or any items that may hide your face."
+					)
         }
         .padding(20)
         .background(
@@ -111,101 +114,6 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
   }
 
   // MARK: - Helpers
-
-  private func color(_ adaptive: AdaptiveColor) -> Color {
-    adaptive.standard.resolve(colorScheme)
-  }
-}
-
-// MARK: - Components
-
-private struct InstructionCard: View {
-  @Environment(\.smileIDTheme) private var theme
-  @Environment(\.colorScheme) private var colorScheme
-
-  var icon: Image
-  var title: String
-  var subtitle: String
-
-  var body: some View {
-    HStack(alignment: .top, spacing: 12) {
-      ZStack {
-        Circle()
-          .fill(color(theme.colors.stroke).opacity(colorScheme == .dark ? 0.24 : 0.25))
-        icon
-          .font(.system(size: 18, weight: .semibold))
-          .foregroundColor(color(theme.colors.titleText))
-      }
-      .frame(width: 44, height: 44)
-
-      VStack(alignment: .leading, spacing: 4) {
-        Text(title)
-          .font(theme.typography.cardTitle)
-          .foregroundColor(color(theme.colors.titleText))
-
-        Text(subtitle)
-          .font(theme.typography.cardSubTitle)
-          .foregroundColor(color(theme.colors.cardText))
-      }
-
-      Spacer(minLength: 0)
-    }
-    .padding(16)
-    .background(
-      RoundedRectangle(cornerRadius: 16, style: .continuous)
-        .fill(color(theme.colors.cardBackground))
-    )
-    .overlay(
-      RoundedRectangle(cornerRadius: 16, style: .continuous)
-        .stroke(color(theme.colors.stroke), lineWidth: 1)
-    )
-  }
-
-  private func color(_ adaptive: AdaptiveColor) -> Color {
-    adaptive.standard.resolve(colorScheme)
-  }
-}
-
-private struct WarningCallout: View {
-  @Environment(\.smileIDTheme) private var theme
-  @Environment(\.colorScheme) private var colorScheme
-
-  var body: some View {
-    HStack(alignment: .top, spacing: 12) {
-      Image(systemName: "exclamationmark.triangle.fill")
-        .font(.system(size: 18, weight: .semibold))
-        .foregroundColor(iconColor)
-        .padding(.top, 2)
-
-      Text("Avoid poor lighting, accessories, or looking away as this may lead to rejection of your selfie.")
-        .font(theme.typography.body)
-        .foregroundColor(textColor)
-
-      Spacer(minLength: 0)
-    }
-    .padding(16)
-    .background(
-      RoundedRectangle(cornerRadius: 14, style: .continuous)
-        .fill(backgroundFill)
-    )
-    .overlay(
-      RoundedRectangle(cornerRadius: 14, style: .continuous)
-        .stroke(color(theme.colors.warningStroke), lineWidth: 1)
-    )
-  }
-
-  private var backgroundFill: Color {
-    let fill = color(theme.colors.warningFill)
-    return colorScheme == .dark ? fill : fill.opacity(0.10)
-  }
-
-  private var textColor: Color {
-    colorScheme == .dark ? color(theme.colors.primaryForeground) : color(theme.colors.warningFill)
-  }
-
-  private var iconColor: Color {
-    color(theme.colors.warningIcon)
-  }
 
   private func color(_ adaptive: AdaptiveColor) -> Color {
     adaptive.standard.resolve(colorScheme)
