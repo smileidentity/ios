@@ -80,19 +80,19 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
             icon: Image(systemName: "square.stack.3d.up"),
             title: "Good Light",
             subtitle: "Make sure you are in a well lit environment where your face is clear and visible."
-					)
+          )
 
           InstructionCard(
             icon: Image(systemName: "square.stack.3d.up"),
             title: "Face Camera",
             subtitle: "Keep your face centred and look straight into the camera."
-					)
+          )
 
           InstructionCard(
             icon: Image(systemName: "square.stack.3d.up"),
             title: "Remove Obstructions",
             subtitle: "Remove any unnecessary glasses, hats, or any items that may hide your face."
-					)
+          )
         }
         .padding(20)
         .background(
