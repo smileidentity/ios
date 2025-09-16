@@ -46,10 +46,11 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
             .font(theme.typography.body)
             .foregroundColor(color(theme.colors.cardText))
             .multilineTextAlignment(.center)
+            .padding(.horizontal, 8)
 
           continueButton
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 32)
         .padding(.vertical, 16)
       }
     }
@@ -65,7 +66,6 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
   private var content: some View {
     ScrollView(.vertical, showsIndicators: true) {
       VStack(alignment: .leading, spacing: 20) {
-        // Large card container with heading + rules
         VStack(alignment: .leading, spacing: 16) {
           Text("Let’s verify your selfie")
             .font(theme.typography.pageHeading.weight(.bold))
@@ -99,15 +99,10 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
           RoundedRectangle(cornerRadius: 16, style: .continuous)
             .fill(color(theme.colors.cardBackground))
         )
-        .overlay(
-          RoundedRectangle(cornerRadius: 16, style: .continuous)
-            .stroke(color(theme.colors.stroke), lineWidth: colorScheme == .dark ? 0.5 : 0)
-        )
 
-        // Warning callout
         WarningCallout()
       }
-      .padding(.horizontal, 24)
+      .padding(.horizontal, 16)
       .padding(.top, 24)
       .padding(.bottom, 12)
     }
@@ -129,7 +124,6 @@ public extension SmileIDInstructionsScreen where ContinueButton == SmileIDButton
       onContinue: onContinue,
       onCancel: onCancel,
       continueButton: {
-        // Default CTA text matches the mock
         SmileIDButton(text: "Take Selfie", onClick: onContinue)
       },
       cancelButton: {

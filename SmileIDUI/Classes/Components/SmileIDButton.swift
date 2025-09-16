@@ -25,12 +25,12 @@ public struct SmileIDButton: View {
         .font(theme.typography.button)
         .foregroundColor(color(theme.colors.primaryForeground))
         .frame(maxWidth: .infinity, minHeight: 56)
-        .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
     .buttonStyle(PlainButtonStyle())
     .frame(maxWidth: .infinity)
     .background(
-      RoundedRectangle(cornerRadius: 16, style: .continuous)
+      RoundedRectangle(cornerRadius: 8, style: .continuous)
         .fill(color(theme.colors.primary))
     )
   }

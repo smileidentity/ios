@@ -33,11 +33,11 @@ struct InstructionCard: View {
     }
     .padding(16)
     .background(
-      RoundedRectangle(cornerRadius: 16, style: .continuous)
+      RoundedRectangle(cornerRadius: 8, style: .continuous)
         .fill(color(theme.colors.cardBackground))
     )
     .overlay(
-      RoundedRectangle(cornerRadius: 16, style: .continuous)
+      RoundedRectangle(cornerRadius: 8, style: .continuous)
         .stroke(color(theme.colors.stroke), lineWidth: 1)
     )
   }
@@ -49,10 +49,13 @@ struct InstructionCard: View {
 
 #if DEBUG
   #Preview {
-    InstructionCard(
-      icon: Image(systemName: "square.stack.3d.up"),
-      title: "Remove Obstructions",
-      subtitle: "Remove any unnecessary glasses, hats, or any items that may hide your face."
-    )
+    VStack {
+      InstructionCard(
+        icon: Image(systemName: "square.stack.3d.up"),
+        title: "Remove Obstructions",
+        subtitle: "Remove any unnecessary glasses, hats, or any items that may hide your face."
+      )
+    }
+    .padding()
   }
 #endif
