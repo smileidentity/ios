@@ -13,7 +13,7 @@ public final class CameraSession: NSObject, CameraSessionProtocol {
   }
 
   private let session = AVCaptureSession()
-  private let sessionQueue = DispatchQueue(label: "com.smileid.camera-session")
+  private let sessionQueue = DispatchQueue(label: "com.smileid.camera.session")
   private let sessionQueueKey = DispatchSpecificKey<Void>()
   private var videoInput: AVCaptureDeviceInput?
   private var videoOuput: AVCaptureVideoDataOutput?
