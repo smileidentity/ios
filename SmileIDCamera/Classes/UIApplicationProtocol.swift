@@ -5,7 +5,7 @@ public protocol UIApplicationProtocol: AnyObject {
   func open(
     _ url: URL,
     options: [UIApplication.OpenExternalURLOptionsKey: Any],
-    completionHandler completion: (@Sendable (Bool) -> Void)?
+    completionHandler completion: ((Bool) -> Void)?
   )
 }
 
