@@ -9,6 +9,7 @@ class FaceDetector: NSObject {
   /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
   func detect(
     imageBuffer: CVPixelBuffer,
+    orientation: CGImagePropertyOrientation = .leftMirrored,
     completionHandler: @escaping VNRequestCompletionHandler
   ) throws {
     let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest(
@@ -27,6 +28,6 @@ class FaceDetector: NSObject {
     try sequenceHandler.perform(
       [detectCaptureQualityRequest],
       on: imageBuffer,
-      orientation: .leftMirrored)
+      orientation: orientation)
   }
 }
