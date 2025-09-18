@@ -30,19 +30,23 @@ public struct OrchestratedConsentScreen: View {
   }
 }
 
-private let consentInfos = [(
-  SmileIDResourcesHelper.ConsentPersonalInfo,
-  "Consent.PersonalDetailsTitle",
-  "Consent.PersonalDetailsSubtitle"
-), (
-  SmileIDResourcesHelper.ConsentContactDetails,
-  "Consent.ContactInfoTitle",
-  "Consent.ContactInfoSubtitle"
-), (
-  SmileIDResourcesHelper.ConsentDocumentInfo,
-  "Consent.DocumentInfoTitle",
-  "Consent.DocumentInfoSubtitle"
-)]
+private let consentInfos = [
+  (
+    SmileIDResourcesHelper.ConsentPersonalInfo,
+    "Consent.PersonalDetailsTitle",
+    "Consent.PersonalDetailsSubtitle"
+  ),
+  (
+    SmileIDResourcesHelper.ConsentContactDetails,
+    "Consent.ContactInfoTitle",
+    "Consent.ContactInfoSubtitle"
+  ),
+  (
+    SmileIDResourcesHelper.ConsentDocumentInfo,
+    "Consent.DocumentInfoTitle",
+    "Consent.DocumentInfoSubtitle"
+  ),
+]
 
 /// Consent screen for SmileID
 public struct ConsentScreen: View {

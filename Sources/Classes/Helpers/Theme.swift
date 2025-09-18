@@ -22,76 +22,76 @@ public protocol SmileIdTheme {
   var body: Font { get }
 }
 
-public extension SmileIdTheme {
+extension SmileIdTheme {
   // Not in brand hand book
-  var onDark: Color {
+  public var onDark: Color {
     Color(hex: "#F6EDE4")
   }
 
-  var onLight: Color {
+  public var onLight: Color {
     Color(hex: "#2D2B2A")
   }
 
   // Not in brand handbook
-  var backgroundDark: Color {
+  public var backgroundDark: Color {
     Color(hex: "#C0C0A5")
   }
 
-  var backgroundMain: Color {
+  public var backgroundMain: Color {
     Color(hex: "#FFFFFF")
   }
 
-  var backgroundLightest: Color {
+  public var backgroundLightest: Color {
     Color(hex: "#F9F0E7")
   }
 
   // Not in brand handbook
-  var backgroundLight: Color {
+  public var backgroundLight: Color {
     Color(hex: "#E2DCD5")
   }
 
-  var success: Color {
+  public var success: Color {
     Color(hex: "#2CC05C")
   }
 
-  var error: Color {
+  public var error: Color {
     Color(hex: "#91190F")
   }
 
-  var accent: Color {
+  public var accent: Color {
     Color(hex: "#001096")
   }
 
-  var tertiary: Color {
+  public var tertiary: Color {
     Color(hex: "#2D2B2A)")
   }
 
   // TO-DO: Rename fonts when Kwame comes up with a naming convention
-  var header1: Font {
+  public var header1: Font {
     DMSansFont.bold(with: 24)
   }
 
-  var header2: Font {
+  public var header2: Font {
     DMSansFont.bold(with: 20)
   }
 
-  var header3: Font {
+  public var header3: Font {
     DMSansFont.medium(with: 20)
   }
 
-  var header4: Font {
+  public var header4: Font {
     DMSansFont.medium(with: 16)
   }
 
-  var header5: Font {
+  public var header5: Font {
     DMSansFont.medium(with: 12)
   }
 
-  var button: Font {
+  public var button: Font {
     header4
   }
 
-  var body: Font {
+  public var body: Font {
     DMSansFont.regular(with: 16)
   }
 }

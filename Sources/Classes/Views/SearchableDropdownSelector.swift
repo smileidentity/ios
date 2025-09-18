@@ -85,7 +85,7 @@ private struct SearchableDropdownSelectorUnselected_Previews: PreviewProvider {
           idTypes: []),
         ValidDocument(
           country: Country(code: "ca", continent: "NA", name: "Canada"),
-          idTypes: [])
+          idTypes: []),
       ],
       selectedItem: nil,
       itemDisplayName: { $0.country.name },
@@ -103,7 +103,7 @@ private struct SearchableDropdownSelectorSelected_Previews: PreviewProvider {
         first,
         ValidDocument(
           country: Country(code: "ca", continent: "NA", name: "Canada"),
-          idTypes: [])
+          idTypes: []),
       ],
       selectedItem: first,
       itemDisplayName: { $0.country.name },

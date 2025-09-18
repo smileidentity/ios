@@ -16,11 +16,13 @@ struct FaceBoundingArea: View {
       faceShape
         .stroke(
           faceInBounds ? selfieCaptured ? .clear : SmileID.theme.success : SmileID.theme.error,
-          style: StrokeStyle(lineWidth: 8))
+          style: StrokeStyle(lineWidth: 8)
+        )
         .frame(width: 260, height: 360)
 
       if let guideAnimation,
-         showGuideAnimation {
+        showGuideAnimation
+      {
         LottieView {
           try await DotLottieFile
             .named(

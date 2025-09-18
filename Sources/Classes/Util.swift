@@ -13,10 +13,10 @@ private func generateId(_ prefix: String) -> String {
   prefix + UUID().uuidString
 }
 
-public extension View {
+extension View {
   /// Cuts out the given shape from the view. This is used instead of a ZStack with a shape and a
   /// blendMode of .destinationOut because that causes issues on iOS 14 devices
-  func cutout(_ shape: some Shape) -> some View {
+  public func cutout(_ shape: some Shape) -> some View {
     clipShape(
       StackedShape(bottom: Rectangle(), top: shape),
       style: FillStyle(eoFill: true))
@@ -140,5 +140,30 @@ func getExceptionHandler<T>(_ operation: () async throws -> T) async throws -> T
     }
 
     throw error
+  }
+}
+
+let POLICY_NAMES = [
+  "payload_signing",
+  "payload_encryption",
+  "rooted_device_check",
+]
+
+struct PolicyStatus {
+  let name: String
+  let active: Bool
+}
+
+extension Optional where Wrapped == Int {
+  func decodePolicyBitCode() -> [PolicyStatus] {
+    return self.map { bitCode in
+      let binary = String(bitCode, radix: 2)
+      let binaryArray = Array(binary.reversed())  // Reverse for easier indexing
+
+      return POLICY_NAMES.enumerated().map { index, name in
+        let bit = index < binaryArray.count ? binaryArray[index] == "1" : false
+        return PolicyStatus(name: name, active: bit)  // bit is Bool, not Bool?
+      }
+    } ?? POLICY_NAMES.map { PolicyStatus(name: $0, active: true) }  // Default to true when nil
   }
 }

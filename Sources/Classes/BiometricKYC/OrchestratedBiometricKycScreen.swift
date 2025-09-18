@@ -34,14 +34,15 @@ struct OrchestratedBiometricKycScreen: View {
     self.allowAgentMode = allowAgentMode
     self.useStrictMode = useStrictMode
     self.delegate = delegate
-    _viewModel = Backport.StateObject(wrappedValue: OrchestratedBiometricKycViewModel(
-      userId: userId,
-      jobId: jobId,
-      allowNewEnroll: allowNewEnroll,
-      idInfo: idInfo,
-      useStrictMode: useStrictMode,
-      consentInformation: consentInformation,
-      extraPartnerParams: extraPartnerParams))
+    _viewModel = Backport.StateObject(
+      wrappedValue: OrchestratedBiometricKycViewModel(
+        userId: userId,
+        jobId: jobId,
+        allowNewEnroll: allowNewEnroll,
+        idInfo: idInfo,
+        useStrictMode: useStrictMode,
+        consentInformation: consentInformation,
+        extraPartnerParams: extraPartnerParams))
   }
 
   var body: some View {

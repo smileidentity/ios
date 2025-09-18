@@ -60,6 +60,8 @@ final class SelfieSubmissionManager {
       // Authenticate the request with the API
       let authResponse = try await SmileID.api.authenticate(request: authRequest)
 
+      SmileID.policy = authResponse.policy
+
       // Prepare the images for submission
       let (smartSelfieImage, smartSelfieLivenessImages) = try prepareImagesForSubmission()
 
@@ -79,7 +81,7 @@ final class SelfieSubmissionManager {
 
   private func validateImages() throws {
     guard selfieImageUrl != nil,
-          livenessImages.count == numLivenessImages
+      livenessImages.count == numLivenessImages
     else {
       throw SmileIDError.unknown("Selfie capture failed")
     }
@@ -113,7 +115,7 @@ final class SelfieSubmissionManager {
 
   private func createMultipartBody(from fileURL: URL?) -> MultipartBody? {
     guard let fileURL,
-          let imageData = try? Data(contentsOf: fileURL)
+      let imageData = try? Data(contentsOf: fileURL)
     else {
       return nil
     }

@@ -17,36 +17,36 @@ public class DefaultServiceHeaderProvider: ServiceHeaderProvider {
   }
 }
 
-public extension HTTPHeader {
-  static func contentType(value: String) -> HTTPHeader {
+extension HTTPHeader {
+  public static func contentType(value: String) -> HTTPHeader {
     HTTPHeader(name: "Content-Type", value: value)
   }
 
-  static func partnerID(value: String) -> HTTPHeader {
+  public static func partnerID(value: String) -> HTTPHeader {
     HTTPHeader(name: "SmileID-Partner-ID", value: value)
   }
 
-  static func requestSignature(value: String) -> HTTPHeader {
+  public static func requestSignature(value: String) -> HTTPHeader {
     HTTPHeader(name: "SmileID-Request-Signature", value: value)
   }
 
-  static func timestamp(value: String) -> HTTPHeader {
+  public static func timestamp(value: String) -> HTTPHeader {
     HTTPHeader(name: "SmileID-Timestamp", value: value)
   }
 
-  static func sourceSDK(value: String) -> HTTPHeader {
+  public static func sourceSDK(value: String) -> HTTPHeader {
     HTTPHeader(name: "SmileID-Source-SDK", value: value)
   }
 
-  static func sourceSDKVersion(value: String) -> HTTPHeader {
+  public static func sourceSDKVersion(value: String) -> HTTPHeader {
     HTTPHeader(name: "SmileID-Source-SDK-Version", value: value)
   }
 
-  static func requestTimestamp(value: String) -> HTTPHeader {
+  public static func requestTimestamp(value: String) -> HTTPHeader {
     HTTPHeader(name: "SmileID-Request-Timestamp", value: value)
   }
 
-  static func requestMac(value: String) -> HTTPHeader {
+  public static func requestMac(value: String) -> HTTPHeader {
     HTTPHeader(name: "SmileID-Request-Mac", value: value)
   }
 }
