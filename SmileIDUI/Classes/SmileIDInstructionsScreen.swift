@@ -1,11 +1,22 @@
 import SwiftUI
 
 public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View>: View {
+  // MARK: - Actions
+
   var onContinue: () -> Void
   var onCancel: () -> Void
 
+  // MARK: - Dependencies
+
+  @Environment(\.smileIDTheme) private var theme
+  @Environment(\.colorScheme) private var colorScheme
+
+  // MARK: - Buttons (Injected)
+
   @ViewBuilder var continueButton: ContinueButton
   @ViewBuilder var cancelButton: CancelButton
+
+  // MARK: - Init
 
   public init(
     onContinue: @escaping () -> Void,
@@ -19,21 +30,88 @@ public struct SmileIDInstructionsScreen<ContinueButton: View, CancelButton: View
     self.cancelButton = cancelButton()
   }
 
-  public var body: some View {
-    VStack {
-      ScrollView(.vertical) {
-        Text("Some header here")
-          .font(.title)
-        Text("Some subtitle here")
-        Spacer()
-      }
+  // MARK: - Body
 
-      VStack {
-        continueButton
-        cancelButton
+  public var body: some View {
+    ZStack(alignment: .topTrailing) {
+      background
+
+      // Content + bottom CTA
+      VStack(spacing: 0) {
+        content
+
+        // Bottom area with sticky CTA
+        VStack(spacing: 12) {
+          Text("By clicking on Take Selfie, you consent to provide us with the requested data.")
+            .font(theme.typography.body)
+            .foregroundColor(color(theme.colors.cardText))
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, 8)
+
+          continueButton
+        }
+        .padding(.horizontal, 32)
+        .padding(.vertical, 16)
       }
-      .padding()
     }
+  }
+
+  // MARK: - Subviews
+
+  private var background: some View {
+    color(theme.colors.background)
+      .edgesIgnoringSafeArea(.all)
+  }
+
+  private var content: some View {
+    ScrollView(.vertical, showsIndicators: true) {
+      VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 16) {
+          Text("Let’s verify your selfie")
+            .font(theme.typography.pageHeading.weight(.bold))
+            .foregroundColor(color(theme.colors.titleText))
+
+          Text("Your selfie is encrypted and used only for verification.")
+            .font(theme.typography.subHeading)
+            .foregroundColor(color(theme.colors.cardText))
+
+          // Rule cards
+          InstructionCard(
+            icon: Image(systemName: "square.stack.3d.up"),
+            title: "Good Light",
+            subtitle: "Make sure you are in a well lit environment where your face is clear and visible."
+          )
+
+          InstructionCard(
+            icon: Image(systemName: "square.stack.3d.up"),
+            title: "Face Camera",
+            subtitle: "Keep your face centred and look straight into the camera."
+          )
+
+          InstructionCard(
+            icon: Image(systemName: "square.stack.3d.up"),
+            title: "Remove Obstructions",
+            subtitle: "Remove any unnecessary glasses, hats, or any items that may hide your face."
+          )
+        }
+        .padding(20)
+        .background(
+          RoundedRectangle(cornerRadius: 16, style: .continuous)
+            .fill(color(theme.colors.cardBackground))
+        )
+
+        WarningCallout()
+      }
+      .padding(.horizontal, 16)
+      .padding(.top, 24)
+      .padding(.bottom, 12)
+    }
+  }
+
+  // MARK: - Helpers
+
+  private func color(_ adaptive: AdaptiveColor) -> Color {
+    adaptive.standard.resolve(colorScheme)
   }
 }
 
@@ -46,7 +124,7 @@ public extension SmileIDInstructionsScreen where ContinueButton == SmileIDButton
       onContinue: onContinue,
       onCancel: onCancel,
       continueButton: {
-        SmileIDButton(text: "Continue", onClick: onContinue)
+        SmileIDButton(text: "Take Selfie", onClick: onContinue)
       },
       cancelButton: {
         SmileIDButton(text: "Cancel", onClick: onCancel)

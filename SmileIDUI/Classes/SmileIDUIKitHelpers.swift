@@ -32,7 +32,7 @@ public extension SmileIDInstructionsScreen where ContinueButton == SmileIDButton
       onCancel: onCancel,
       continueButton: {
         SmileIDButton(
-          text: "Continue",
+          text: "Take Selfie",
           onClick: onContinue
         )
       },
