@@ -8,6 +8,8 @@ public final class CameraViewModel: NSObject, ObservableObject {
   @Published public private(set) var lastError: Error?
   @Published public private(set) var deviceProperties: CameraDeviceProperties?
   @Published public private(set) var lastSampleBuffer: CMSampleBuffer?
+  @Published public private(set) var metadata: CameraExifMetadata?
+  private var metadataExtractor: CameraMetadataExtractor?
 
   public let session: CameraSessionProtocol
 
@@ -126,6 +128,25 @@ private extension CameraViewModel {
   func startSession() {
     session.startRunning(completionQueue: .main) { [weak self] in
       self?.isSessionRunning = true
+    }
+  }
+}
+
+/* CameraViewModel metadata hook */
+public extension CameraViewModel {
+  func enableMetadataExtraction(
+    _ extractor: CameraMetadataExtractor = CameraMetadataExtractor()
+  ) {
+    metadataExtractor = extractor
+  }
+}
+
+private extension CameraViewModel {
+  func handleMetadataIfNeeded(from sampleBuffer: CMSampleBuffer) {
+    guard let extractor = metadataExtractor else { return }
+    let parsed = extractor.metadata(from: sampleBuffer)
+    DispatchQueue.main.async {
+      self.metadata = parsed
     }
   }
 }
