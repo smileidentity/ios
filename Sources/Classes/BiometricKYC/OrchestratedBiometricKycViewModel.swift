@@ -66,7 +66,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     if let error {
       delegate.didError(error: error)
     } else if let selfieFile,
-      let livenessFiles
+              let livenessFiles
     {
       delegate.didSucceed(
         selfieImage: selfieFile,
@@ -154,9 +154,9 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
           data: ["security_info.json": securityInfo])
       } else {
         /*
-             In case we can't add the security info the backend will throw an unauthorized error.
-             In the future, we will handle this more gracefully once sentry integration has been implemented.
-             */
+         In case we can't add the security info the backend will throw an unauthorized error.
+         In the future, we will handle this more gracefully once sentry integration has been implemented.
+         */
         return try LocalStorage.zipFiles(urls: allFiles)
       }
     }
@@ -205,7 +205,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
       )
     } catch let error as SmileIDError {
       guard case .api(let errorCode, _) = error,
-        errorCode == "2215"
+            errorCode == "2215"
       else {
         throw error
       }

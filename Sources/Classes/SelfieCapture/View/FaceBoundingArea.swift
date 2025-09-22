@@ -21,7 +21,7 @@ struct FaceBoundingArea: View {
         .frame(width: 260, height: 360)
 
       if let guideAnimation,
-        showGuideAnimation
+         showGuideAnimation
       {
         LottieView {
           try await DotLottieFile

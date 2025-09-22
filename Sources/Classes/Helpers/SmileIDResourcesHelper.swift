@@ -15,7 +15,7 @@ public class SmileIDResourcesHelper {
       Bundle.main.resourceURL,
 
       // Bundle should be present here when the package is linked into a framework.
-      Bundle(for: SmileIDResourcesHelper.self).resourceURL,
+      Bundle(for: SmileIDResourcesHelper.self).resourceURL
     ]
 
     let bundleName = "SmileID_SmileID"

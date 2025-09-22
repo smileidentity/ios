@@ -17,7 +17,7 @@ class RectangleDetector {
     let rectangleDetectionRequest: VNDetectRectanglesRequest = {
       let rectDetectRequest = VNDetectRectanglesRequest(completionHandler: { request, error in
         guard error == nil, let results = request.results as? [VNRectangleObservation],
-          !results.isEmpty
+              !results.isEmpty
         else {
           completion(nil)
           return

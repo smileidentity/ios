@@ -10,10 +10,10 @@ public func calculateSignature(timestamp: String) throws -> String {
       userInfo: [
         NSLocalizedDescriptionKey:
           """
-        API key not set. If using the authToken from smile_config.json, \
-        ensure you have set the signature/timestamp properties on the request from the \
-        values returned by SmileID.authenticate.signature/timestamp
-        """
+          API key not set. If using the authToken from smile_config.json, \
+          ensure you have set the signature/timestamp properties on the request from the \
+          values returned by SmileID.authenticate.signature/timestamp
+          """
       ])
   }
   let hashContent = "\(timestamp)\(SmileID.config.partnerId)sid_request"
@@ -58,8 +58,8 @@ enum CryptoAlgorithm {
   }
 }
 
-extension AnyPublisher {
-  public func async() async throws -> Output {
+public extension AnyPublisher {
+  func async() async throws -> Output {
     try await withCheckedThrowingContinuation { continuation in
       var cancellable: AnyCancellable?
       var finishedWithoutValue = true

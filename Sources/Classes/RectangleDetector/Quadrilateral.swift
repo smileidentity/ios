@@ -35,9 +35,9 @@ struct Quadrilateral: Transformable {
   var perimeter: Double {
     let perimeter =
       topLeft.distanceTo(point: topRight)
-      + topRight.distanceTo(point: bottomRight)
-      + bottomRight.distanceTo(point: bottomLeft)
-      + bottomLeft.distanceTo(point: topLeft)
+        + topRight.distanceTo(point: bottomRight)
+        + bottomRight.distanceTo(point: bottomLeft)
+        + bottomLeft.distanceTo(point: topLeft)
     return Double(perimeter)
   }
 
@@ -188,7 +188,7 @@ struct Quadrilateral: Transformable {
     let xSortedBottomMostPoints = sortPointsByXValue(bottomMostPoints)
 
     guard xSortedTopMostPoints.count > 1,
-      xSortedBottomMostPoints.count > 1
+          xSortedBottomMostPoints.count > 1
     else {
       return
     }

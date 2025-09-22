@@ -7,7 +7,7 @@ extension ProcessInfo {
     let physicalMemory = physicalMemory
 
     // Convert to MB (1 MB = 1,048,576 bytes)
-    let memoryInMB = physicalMemory / 1_048_576
+    let memoryInMB = physicalMemory / 1048576
 
     return Int(memoryInMB)
   }

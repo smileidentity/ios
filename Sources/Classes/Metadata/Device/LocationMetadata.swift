@@ -17,7 +17,7 @@ struct LocationInfo {
       "latitude": .double(latitude),
       "longitude": .double(longitude),
       "accuracy": .string(accuracy.rawValue),
-      "source": .string(source.rawValue),
+      "source": .string(source.rawValue)
     ]
   }
 }

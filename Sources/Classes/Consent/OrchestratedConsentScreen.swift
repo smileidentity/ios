@@ -45,7 +45,7 @@ private let consentInfos = [
     SmileIDResourcesHelper.ConsentDocumentInfo,
     "Consent.DocumentInfoTitle",
     "Consent.DocumentInfoSubtitle"
-  ),
+  )
 ]
 
 /// Consent screen for SmileID

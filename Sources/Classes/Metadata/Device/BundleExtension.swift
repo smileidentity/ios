@@ -6,7 +6,7 @@ extension Bundle {
     // Get the app name (display name or bundle name)
     let appName =
       object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
-      ?? object(forInfoDictionaryKey: "CFBundleName") as? String
+        ?? object(forInfoDictionaryKey: "CFBundleName") as? String
 
     // Get the app version
     let appVersion = object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String

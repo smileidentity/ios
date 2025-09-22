@@ -45,7 +45,7 @@ public struct EnhancedSelfieCaptureScreen: View {
                   showGuideAnimation: viewModel.showGuideAnimation,
                   guideAnimation: viewModel.userInstruction?.guideAnimation)
                 if let currentLivenessTask = viewModel.livenessCheckManager.currentTask,
-                  viewModel.faceInBounds
+                   viewModel.faceInBounds
                 {
                   LivenessGuidesView(
                     currentLivenessTask: currentLivenessTask,

@@ -6,7 +6,7 @@ import SwiftUI
 @available(macOS, deprecated: 11.0)
 @available(tvOS, deprecated: 14.0)
 @available(watchOS, deprecated: 7.0)
-extension Backport where Wrapped: ObservableObject {
+public extension Backport where Wrapped: ObservableObject {
   /// A property wrapper type that instantiates an observable object.
   ///
   /// Create a state object in a ``SwiftUI/View``, ``SwiftUI/App``, or
@@ -45,7 +45,7 @@ extension Backport where Wrapped: ObservableObject {
   /// model:
   ///
   ///     Toggle("Enabled", isOn: $model.isEnabled)
-  @propertyWrapper public struct StateObject: DynamicProperty {
+  @propertyWrapper struct StateObject: DynamicProperty {
     private final class Wrapper: ObservableObject {
       private var subject = PassthroughSubject<Void, Never>()
 

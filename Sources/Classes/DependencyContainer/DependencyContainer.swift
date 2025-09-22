@@ -47,8 +47,8 @@ extension DependencyContainer: DependencyResolver {
   }
 }
 
-extension DependencyContainer {
-  fileprivate func key(forType type: (some Any).Type) -> String {
+private extension DependencyContainer {
+  func key(forType type: (some Any).Type) -> String {
     String(describing: type)
   }
 }

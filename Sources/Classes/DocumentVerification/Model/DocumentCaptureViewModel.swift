@@ -110,8 +110,8 @@ class DocumentCaptureViewModel: ObservableObject {
           let now = Date().timeIntervalSince1970
           let elapsedTime = now - documentFirstDetectedAtTime
           if elapsedTime > documentAutoCaptureWaitTime,
-            !self.isCapturing,
-            [.autoCapture, .autoCaptureOnly].contains(autoCapture)
+             !self.isCapturing,
+             [.autoCapture, .autoCaptureOnly].contains(autoCapture)
           {
             self.documentImageOrigin = DocumentImageOriginValue.cameraAutoCapture
             self.captureDocument()

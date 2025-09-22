@@ -199,7 +199,7 @@ class CameraManager: NSObject, ObservableObject {
 
   func capturePhoto() {
     guard let connection = photoOutput.connection(with: .video),
-      connection.isEnabled, connection.isActive
+          connection.isEnabled, connection.isActive
     else {
       set(error: .cameraUnavailable)
       print("Camera unavailable")

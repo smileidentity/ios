@@ -464,7 +464,7 @@ extension EnhancedSmartSelfieViewModel: LivenessCheckManagerDelegate {
   private func captureNextFrame(capturedFrames: Int) {
     let maxFrames = LivenessTask.numberOfFramesToCapture
     guard capturedFrames < maxFrames,
-      let currentFrame = currentFrameBuffer
+          let currentFrame = currentFrameBuffer
     else {
       return
     }

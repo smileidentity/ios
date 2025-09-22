@@ -1,4 +1,5 @@
 import ObjectiveC
+
 // swiftlint:disable all
 import SwiftUI
 
@@ -40,13 +41,13 @@ public struct Backport<Wrapped> {
   }
 }
 
-extension Backport where Wrapped == Any {
-  public init(_ wrapped: Wrapped) {
+public extension Backport where Wrapped == Any {
+  init(_ wrapped: Wrapped) {
     self.wrapped = wrapped
   }
 }
 
-extension NSObjectProtocol {
+public extension NSObjectProtocol {
   /// Wraps an `NSObject` that can be extended to provide backport functionality.
-  public var backport: Backport<Self> { .init(self) }
+  var backport: Backport<Self> { .init(self) }
 }

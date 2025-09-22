@@ -68,7 +68,7 @@ extension ServiceRunnable {
         .partnerID(value: SmileID.config.partnerId),
         .sourceSDK(value: "iOS"),
         .sourceSDKVersion(value: SmileID.version),
-        .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
+        .requestTimestamp(value: Date().toISO8601WithMilliseconds())
       ],
       body: body)
     return try await serviceClient.send(request: request)
@@ -82,7 +82,7 @@ extension ServiceRunnable {
         .partnerID(value: SmileID.config.partnerId),
         .sourceSDK(value: "iOS"),
         .sourceSDKVersion(value: SmileID.version),
-        .requestTimestamp(value: Date().toISO8601WithMilliseconds()),
+        .requestTimestamp(value: Date().toISO8601WithMilliseconds())
       ])
     return try await serviceClient.send(request: request)
   }
@@ -137,9 +137,9 @@ extension ServiceRunnable {
         headers.append(.requestMac(value: requestMac))
       } else {
         /*
-                 In case we can't add the security info the backend will throw an unauthorized error.
-                 In the future, we will handle this more gracefully once sentry integration has been implemented.
-                 */
+         In case we can't add the security info the backend will throw an unauthorized error.
+         In the future, we will handle this more gracefully once sentry integration has been implemented.
+         */
       }
     }
 
@@ -249,9 +249,9 @@ extension ServiceRunnable {
           signedHeaders.append(.requestMac(value: requestMac))
         } else {
           /*
-                     In case we can't add the security info the backend will throw an unauthorized error.
-                     In the future, we will handle this more gracefully once sentry integration has been implemented.
-                     */
+           In case we can't add the security info the backend will throw an unauthorized error.
+           In the future, we will handle this more gracefully once sentry integration has been implemented.
+           */
         }
       }
     }
@@ -291,9 +291,9 @@ extension ServiceRunnable {
           signedHeaders.append(.requestMac(value: requestMac))
         } else {
           /*
-                     In case we can't add the security info the backend will throw an unauthorized error.
-                     In the future, we will handle this more gracefully once sentry integration has been implemented.
-                     */
+           In case we can't add the security info the backend will throw an unauthorized error.
+           In the future, we will handle this more gracefully once sentry integration has been implemented.
+           */
         }
       }
     }
@@ -328,12 +328,12 @@ extension ServiceRunnable {
     // Append parameters if available
     if let parameters = partnerParams {
       if let boundaryData = "--\(boundary)\(lineBreak)".data(using: .utf8),
-        let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)"
-          .data(
-            using: .utf8),
-        let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(
-          using: .utf8),
-        let lineBreakData = lineBreak.data(using: .utf8)
+         let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)"
+         .data(
+           using: .utf8),
+         let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(
+           using: .utf8),
+         let lineBreakData = lineBreak.data(using: .utf8)
       {
         body.append(boundaryData)
         body.append(dispositionData)
@@ -428,7 +428,7 @@ extension ServiceRunnable {
 
     // Append failure reason if available
     if let failureReason,
-      let failureReasonData = try? encoder.encode(failureReason)
+       let failureReasonData = try? encoder.encode(failureReason)
     {
       body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
       body.append(

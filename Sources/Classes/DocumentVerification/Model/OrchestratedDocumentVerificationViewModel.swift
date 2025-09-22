@@ -183,9 +183,9 @@ class IOrchestratedDocumentVerificationViewModel<T, U: JobResult>: ObservableObj
               data: ["security_info.json": securityInfo])
           } else {
             /*
-                 In case we can't add the security info the backend will throw an unauthorized error.
-                 In the future, we will handle this more gracefully once sentry integration has been implemented.
-                 */
+             In case we can't add the security info the backend will throw an unauthorized error.
+             In the future, we will handle this more gracefully once sentry integration has been implemented.
+             */
             zipData = try LocalStorage.zipFiles(urls: allFiles)
           }
         }

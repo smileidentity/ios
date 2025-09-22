@@ -194,8 +194,8 @@ public class LocalStorage {
             extras: partnerParams),
           allowNewEnroll: allowNewEnroll,
           metadata: metadata,
-          timestamp: "",  // remove this so it is not stored offline
-          signature: ""  // remove this so it is not stored offline
+          timestamp: "", // remove this so it is not stored offline
+          signature: "" // remove this so it is not stored offline
         ))
       _ = try createAuthenticationRequestFile(
         jobId: jobId,
@@ -204,7 +204,7 @@ public class LocalStorage {
           enrollment: enrollment,
           jobId: jobId,
           userId: userId,
-          authToken: ""  // remove this so it is not stored offline
+          authToken: "" // remove this so it is not stored offline
         ))
     }
   }
@@ -393,8 +393,8 @@ public class LocalStorage {
   }
 }
 
-extension Date {
-  public var millisecondsSince1970: Int64 {
+public extension Date {
+  var millisecondsSince1970: Int64 {
     Int64((timeIntervalSince1970 * 1000.0).rounded())
   }
 }

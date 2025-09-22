@@ -1,5 +1,5 @@
-import AVFoundation
 import Accelerate
+import AVFoundation
 import CoreImage
 import CoreVideo
 import MobileCoreServices
@@ -102,8 +102,8 @@ class ImageUtils {
       String(kCVPixelBufferIOSurfacePropertiesKey): [
         String(kCVPixelBufferIOSurfaceOpenGLESTextureCompatibilityKey): true,
         String(kCVPixelBufferIOSurfaceOpenGLESFBOCompatibilityKey): true,
-        String(kCVPixelBufferIOSurfaceCoreAnimationCompatibilityKey): true,
-      ],
+        String(kCVPixelBufferIOSurfaceCoreAnimationCompatibilityKey): true
+      ]
     ]
     return attributes
   }

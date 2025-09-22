@@ -1,12 +1,12 @@
 import UIKit
 import VideoToolbox
 
-extension UIImage {
+public extension UIImage {
   /**
      Resizes the image to `width` x `height` and converts it to an ARGB
      `CVPixelBuffer`.
    */
-  public func pixelBuffer(width: Int, height: Int) -> CVPixelBuffer? {
+  func pixelBuffer(width: Int, height: Int) -> CVPixelBuffer? {
     pixelBuffer(
       width: width, height: height,
       pixelFormatType: kCVPixelFormatType_32ARGB,
@@ -18,7 +18,7 @@ extension UIImage {
      Resizes the image to `width` x `height` and converts it to a `CVPixelBuffer`
      with the specified pixel format, color space, and alpha channel.
    */
-  public func pixelBuffer(
+  func pixelBuffer(
     width: Int, height: Int,
     pixelFormatType: OSType,
     colorSpace: CGColorSpace,
@@ -27,7 +27,7 @@ extension UIImage {
     var maybePixelBuffer: CVPixelBuffer?
     let attrs = [
       kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
-      kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue,
+      kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue
     ]
     let status = CVPixelBufferCreate(
       kCFAllocatorDefault,
@@ -70,14 +70,14 @@ extension UIImage {
   }
 }
 
-extension UIImage {
+public extension UIImage {
   /**
      Creates a new UIImage from a CVPixelBuffer.
 
      - Note: Not all CVPixelBuffer pixel formats support conversion into a
              CGImage-compatible pixel format.
    */
-  public convenience init?(pixelBuffer: CVPixelBuffer) {
+  convenience init?(pixelBuffer: CVPixelBuffer) {
     if let cgImage = CGImage.create(pixelBuffer: pixelBuffer) {
       self.init(cgImage: cgImage)
     } else {

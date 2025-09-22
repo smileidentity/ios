@@ -69,7 +69,7 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
     }
     let decoder = JSONDecoder()
     guard let httpResponse = urlSessionResponse.response as? HTTPURLResponse,
-      httpResponse.isSuccess
+          httpResponse.isSuccess
     else {
       if let decodedError = try? decoder.decode(
         SmileIDErrorResponse.self,
