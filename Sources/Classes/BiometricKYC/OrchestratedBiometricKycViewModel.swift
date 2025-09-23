@@ -66,8 +66,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
     if let error {
       delegate.didError(error: error)
     } else if let selfieFile,
-              let livenessFiles
-    {
+              let livenessFiles {
       delegate.didSucceed(
         selfieImage: selfieFile,
         livenessImages: livenessFiles,
@@ -191,8 +190,7 @@ class OrchestratedBiometricKycViewModel: ObservableObject {
   }
 
   private func prepareForUpload(authResponse: AuthenticationResponse) async throws
-    -> PrepUploadResponse
-  {
+    -> PrepUploadResponse {
     var prepUploadRequest = PrepUploadRequest(
       partnerParams: authResponse.partnerParams.copy(extras: extraPartnerParams),
       allowNewEnroll: allowNewEnroll,

@@ -109,8 +109,7 @@ final class RectangleFeaturesFunnel {
   ///   - currentRectangle: The currently displayed rectangle. This is used to avoid displaying very close rectangles.
   /// Returns: The best rectangle to display given the current history.
   private func bestRectangle(withCurrentlyDisplayedRectangle currentRectangle: Quadrilateral?)
-    -> RectangleMatch?
-  {
+    -> RectangleMatch? {
     var bestMatch: RectangleMatch?
     guard !rectangles.isEmpty else { return nil }
     for rectangle in rectangles.reversed() {
@@ -153,8 +152,7 @@ final class RectangleFeaturesFunnel {
     if rect1.rectangleFeature.isWithin(matchingThreshold, ofRectangleFeature: currentRectangle) {
       return rect1
     } else if rect2.rectangleFeature.isWithin(
-      matchingThreshold, ofRectangleFeature: currentRectangle)
-    {
+      matchingThreshold, ofRectangleFeature: currentRectangle) {
       return rect2
     }
 

@@ -369,8 +369,7 @@ extension IOrchestratedDocumentVerificationViewModel: SmartSelfieResultDelegate 
 class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<
   DocumentVerificationResultDelegate,
   DocumentVerificationJobResult
->
-{
+> {
   override func onFinished(delegate: DocumentVerificationResultDelegate) {
     if let error {
       delegate.didError(error: error)
@@ -389,8 +388,7 @@ class OrchestratedDocumentVerificationViewModel: IOrchestratedDocumentVerificati
 class OrchestratedEnhancedDocumentVerificationViewModel: IOrchestratedDocumentVerificationViewModel<
   EnhancedDocumentVerificationResultDelegate,
   EnhancedDocumentVerificationJobResult
->
-{
+> {
   override func onFinished(delegate: EnhancedDocumentVerificationResultDelegate) {
     if let error {
       delegate.didError(error: error)

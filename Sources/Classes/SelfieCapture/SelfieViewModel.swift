@@ -280,8 +280,7 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     if boundingBox.minX < Constants.minFaceCenteredThreshold
       || boundingBox.minY < Constants.minFaceCenteredThreshold
       || boundingBox.maxX > Constants.maxFaceCenteredThreshold
-      || boundingBox.maxY > Constants.maxFaceCenteredThreshold
-    {
+      || boundingBox.maxY > Constants.maxFaceCenteredThreshold {
       updateDirective(.putFaceInOval)
       return false
     }
@@ -643,8 +642,7 @@ extension SelfieViewModel {
              let media = MultipartBody(
                withImage: selfie,
                forName: selfieImage.lastPathComponent
-             )
-          {
+             ) {
             smartSelfieImage = media
           }
 
@@ -722,8 +720,7 @@ extension SelfieViewModel {
           return
         }
         if SmileID.allowOfflineMode,
-           SmileIDError.isNetworkFailure(error: error)
-        {
+           SmileIDError.isNetworkFailure(error: error) {
           updateOnMain {
             self.errorMessageRes = "Offline.Message"
             self.processingState = .success

@@ -210,8 +210,7 @@ public class LocalStorage {
   }
 
   private static func write(_ data: Data, to url: URL, options completeFileProtection: Bool = true)
-    throws -> URL
-  {
+    throws -> URL {
     let directoryURL = url.deletingLastPathComponent()
     try fileManager.createDirectory(
       at: directoryURL,

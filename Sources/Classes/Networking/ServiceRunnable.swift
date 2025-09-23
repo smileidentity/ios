@@ -333,16 +333,14 @@ extension ServiceRunnable {
            using: .utf8),
          let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(
            using: .utf8),
-         let lineBreakData = lineBreak.data(using: .utf8)
-      {
+         let lineBreakData = lineBreak.data(using: .utf8) {
         body.append(boundaryData)
         body.append(dispositionData)
         body.append(contentTypeData)
 
         if let jsonData = try? JSONSerialization.data(
           withJSONObject: parameters,
-          options: [.sortedKeys, .withoutEscapingSlashes])
-        {
+          options: [.sortedKeys, .withoutEscapingSlashes]) {
           body.append(jsonData)
           body.append(lineBreakData)
         }
@@ -428,8 +426,7 @@ extension ServiceRunnable {
 
     // Append failure reason if available
     if let failureReason,
-       let failureReasonData = try? encoder.encode(failureReason)
-    {
+       let failureReasonData = try? encoder.encode(failureReason) {
       body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
       body.append(
         "Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(using: .utf8)!)
