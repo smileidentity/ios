@@ -10,6 +10,11 @@ jobs:
   lint:
     name: "Lint"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+      statuses: write
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
@@ -19,10 +24,11 @@ jobs:
           args: --lint .
       - name: Danger
         uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.15.0
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         with:
-          args: --failOnErrors --no-publish-check
+          args: ci --failOnErrors --no-publish-check
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     name: "Build App and Run Unit Tests"
