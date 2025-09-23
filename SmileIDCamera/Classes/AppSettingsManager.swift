@@ -1,16 +1,10 @@
 import UIKit
 
 public final class AppSettingsManager: AppSettingsProtocol {
-  private let application: UIApplicationProtocol
-  private let settingsURL: URL?
+  private let application: UIApplication = .shared
+  private(set) lazy var settingsURL: URL? = URL(string: UIApplication.openSettingsURLString)
 
-  public init(
-    application: UIApplicationProtocol = UIApplication.shared,
-    settingsURL: URL? = URL(string: UIApplication.openSettingsURLString)
-  ) {
-    self.application = application
-    self.settingsURL = settingsURL
-  }
+  public init() {}
 
   public var canOpenAppSettings: Bool {
     guard let url = settingsURL else { return false }
