@@ -5,7 +5,10 @@ extension Color {
     let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
     var int: UInt64 = 0
     Scanner(string: hex).scanHexInt64(&int)
-    let alpha, red, green, blue: UInt64
+    let alpha: UInt64
+    let red: UInt64
+    let green: UInt64
+    let blue: UInt64
     switch hex.count {
     case 3: // RGB (12-bit)
       (alpha, red, green, blue) =
@@ -44,7 +47,10 @@ extension Color {
       string: description.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
     )
     var hexNumber: UInt64 = 0
-    var red: CGFloat = 0.0, green: CGFloat = 0.0, blue: CGFloat = 0.0, alpha: CGFloat = 0.0
+    var red: CGFloat = 0.0
+    var green: CGFloat = 0.0
+    var blue: CGFloat = 0.0
+    var alpha: CGFloat = 0.0
 
     let result = scanner.scanHexInt64(&hexNumber)
     if result {

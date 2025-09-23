@@ -18,7 +18,8 @@ public func calculateSignature(timestamp: String) throws -> String {
   }
   let hashContent = "\(timestamp)\(SmileID.config.partnerId)sid_request"
   guard let hmac = hashContent.hmac(algorithm: .SHA256, key: apiKey) else {
-    throw NSError(domain: "", code: 1, userInfo: [NSLocalizedDescriptionKey: "HMAC calculation failed"])
+    throw NSError(
+      domain: "", code: 1, userInfo: [NSLocalizedDescriptionKey: "HMAC calculation failed"])
   }
 
   return hmac.base64EncodedString()

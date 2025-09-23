@@ -79,9 +79,8 @@ class URLSessionRestServiceClient: NSObject, RestServiceClient {
       if let httpError = try? decoder.decode(
         ErrorResponse.self,
         from: urlSessionResponse.data) {
-        throw SmileIDError.httpError((
-          urlSessionResponse.response as? HTTPURLResponse
-        )?.statusCode ?? 500, httpError.error)
+        throw SmileIDError.httpError(
+          (urlSessionResponse.response as? HTTPURLResponse)?.statusCode ?? 500, httpError.error)
       }
       throw SmileIDError.httpError(
         (urlSessionResponse.response as? HTTPURLResponse)?.statusCode ?? 500,

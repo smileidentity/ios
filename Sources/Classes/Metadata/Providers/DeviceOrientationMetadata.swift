@@ -71,9 +71,7 @@ class DeviceOrientationMetadata: MetadataProtocol {
 
     // Calculate acceleration magnitude
     let magnitude = sqrt(
-      accelerationX * accelerationX +
-        accelerationY * accelerationY +
-        accelerationZ * accelerationZ
+      accelerationX * accelerationX + accelerationY * accelerationY + accelerationZ * accelerationZ
     )
 
     let gravity = 0.981

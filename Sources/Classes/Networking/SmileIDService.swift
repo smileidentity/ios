@@ -107,7 +107,8 @@ public extension SmileIDServiceable {
         var latestError: Error?
         for _ in 0..<numAttempts {
           do {
-            let response: JobStatusResponse<T> = try await SmileID.api.getJobStatus(request: request)
+            let response: JobStatusResponse<T> = try await SmileID.api.getJobStatus(
+              request: request)
             continuation.yield(response)
             // Reset the error if the API response was successful
             latestError = nil

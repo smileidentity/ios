@@ -142,3 +142,28 @@ func getExceptionHandler<T>(_ operation: () async throws -> T) async throws -> T
     throw error
   }
 }
+
+let policyNames = [
+  "payload_signing",
+  "payload_encryption",
+  "rooted_device_check"
+]
+
+struct PolicyStatus {
+  let name: String
+  let active: Bool
+}
+
+extension Int? {
+  func decodePolicyBitCode() -> [PolicyStatus] {
+    self.map { bitCode in
+      let binary = String(bitCode, radix: 2)
+      let binaryArray = Array(binary.reversed()) // Reverse for easier indexing
+
+      return policyNames.enumerated().map { index, name in
+        let bit = index < binaryArray.count ? binaryArray[index] == "1" : false
+        return PolicyStatus(name: name, active: bit) // bit is Bool, not Bool?
+      }
+    } ?? policyNames.map { PolicyStatus(name: $0, active: true) } // Default to true when nil
+  }
+}

@@ -45,6 +45,7 @@ public class SmileID {
   public private(set) static var useSandbox = false
   public private(set) static var allowOfflineMode = false
   public private(set) static var callbackUrl: String = ""
+  static var policy: Int?
 
   private(set) static var deviceId: String = ""
   private(set) static var sdkLaunchCount: Int = 0

@@ -60,6 +60,8 @@ final class SelfieSubmissionManager {
       // Authenticate the request with the API
       let authResponse = try await SmileID.api.authenticate(request: authRequest)
 
+      SmileID.policy = authResponse.policy
+
       // Prepare the images for submission
       let (smartSelfieImage, smartSelfieLivenessImages) = try prepareImagesForSubmission()
 

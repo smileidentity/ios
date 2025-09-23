@@ -106,7 +106,8 @@ final class FaceValidator {
     shouldCheckCentering: Bool
   ) -> FaceBoundsState {
     let maxFaceWidth = faceLayoutGuideFrame.width - 20
-    let faceBoundsMultiplier = shouldCheckCentering ? selfiefaceBoundsMultiplier : livenessfaceBoundsMultiplier
+    let faceBoundsMultiplier =
+      shouldCheckCentering ? selfiefaceBoundsMultiplier : livenessfaceBoundsMultiplier
     let minFaceWidth = faceLayoutGuideFrame.width / faceBoundsMultiplier
 
     // check how far/close face is

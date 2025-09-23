@@ -59,7 +59,8 @@ class EnhancedFaceDetector: NSObject {
       }
 
       guard faceDetections.count == 1 else {
-        resultDelegate?.faceDetector(self, didFailWithError: FaceDetectorError.multipleFacesDetected)
+        resultDelegate?.faceDetector(
+          self, didFailWithError: FaceDetectorError.multipleFacesDetected)
         return
       }
 

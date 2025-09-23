@@ -134,7 +134,8 @@ public class SmileIDResourcesHelper {
             NSException(
               name: .internalInconsistencyException,
               reason: errorDescription as String?,
-              userInfo: [NSUnderlyingErrorKey: nsError as Any]).raise()
+              userInfo: [NSUnderlyingErrorKey: nsError as Any]
+            ).raise()
           }
         }
       }

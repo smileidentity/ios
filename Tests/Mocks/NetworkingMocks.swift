@@ -33,6 +33,7 @@ class MockSmileIdentityService: SmileIDServiceable {
       success: true,
       signature: "sig",
       timestamp: "time",
+      policy: nil,
       partnerParams: params)
     if MockHelper.shouldFail {
       throw SmileIDError.request(URLError(.resourceUnavailable))

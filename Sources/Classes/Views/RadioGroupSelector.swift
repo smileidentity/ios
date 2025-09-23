@@ -61,14 +61,15 @@ public struct RadioGroupSelector<T>: View where T: Identifiable & Equatable {
             .padding(16)
             .font(SmileID.theme.button)
             .frame(maxWidth: .infinity)
-        })
-        .disabled(isDisabled)
-        .background(isDisabled ? Color.gray : SmileID.theme.accent)
-        .foregroundColor(SmileID.theme.onDark)
-        .cornerRadius(60)
-        .frame(maxWidth: .infinity)
-        .padding()
-        .preferredColorScheme(.light)
+        }
+      )
+      .disabled(isDisabled)
+      .background(isDisabled ? Color.gray : SmileID.theme.accent)
+      .foregroundColor(SmileID.theme.onDark)
+      .cornerRadius(60)
+      .frame(maxWidth: .infinity)
+      .padding()
+      .preferredColorScheme(.light)
     }
   }
 }

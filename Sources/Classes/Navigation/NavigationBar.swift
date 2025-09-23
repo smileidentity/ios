@@ -6,7 +6,8 @@ struct NavigationBar: View {
     HStack {
       Button(
         action: backButtonHandler,
-        label: { Image(uiImage: SmileIDResourcesHelper.ArrowLeft) }).padding(.leading)
+        label: { Image(uiImage: SmileIDResourcesHelper.ArrowLeft) }
+      ).padding(.leading)
       Spacer()
     }
     .frame(height: 50)

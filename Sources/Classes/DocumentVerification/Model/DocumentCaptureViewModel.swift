@@ -278,32 +278,33 @@ class DocumentCaptureViewModel: ObservableObject {
       height: CVPixelBufferGetHeight(buffer))
     RectangleDetector.rectangle(
       forPixelBuffer: buffer,
-      aspectRatio: knownAspectRatio) { [self] rect in
-        if rect == nil {
-          resetBoundingBox()
-          processingImage = false
-          return
-        }
-        let detectedAspectRatio = 1 / (rect?.aspectRatio ?? defaultAspectRatio)
-        let isCorrectAspectRatio = isCorrectAspectRatio(
-          detectedAspectRatio: detectedAspectRatio
-        )
-        let idAspectRatio = knownAspectRatio ?? detectedAspectRatio
-        let isCentered = isRectCentered(
-          detectedRect: rect,
-          imageWidth: Double(imageSize.width),
-          imageHeight: Double(imageSize.height))
+      aspectRatio: knownAspectRatio
+    ) { [self] rect in
+      if rect == nil {
+        resetBoundingBox()
+        processingImage = false
+        return
+      }
+      let detectedAspectRatio = 1 / (rect?.aspectRatio ?? defaultAspectRatio)
+      let isCorrectAspectRatio = isCorrectAspectRatio(
+        detectedAspectRatio: detectedAspectRatio
+      )
+      let idAspectRatio = knownAspectRatio ?? detectedAspectRatio
+      let isCentered = isRectCentered(
+        detectedRect: rect,
+        imageWidth: Double(imageSize.width),
+        imageHeight: Double(imageSize.height))
+      DispatchQueue.main.async { [self] in
+        self.idAspectRatio = idAspectRatio
+      }
+      textDetector.detectText(buffer: buffer) { [self] hasText in
+        processingImage = false
+        let areEdgesDetected = isCentered && isCorrectAspectRatio && hasText
         DispatchQueue.main.async { [self] in
-          self.idAspectRatio = idAspectRatio
-        }
-        textDetector.detectText(buffer: buffer) { [self] hasText in
-          processingImage = false
-          let areEdgesDetected = isCentered && isCorrectAspectRatio && hasText
-          DispatchQueue.main.async { [self] in
-            self.areEdgesDetected = areEdgesDetected
-          }
+          self.areEdgesDetected = areEdgesDetected
         }
       }
+    }
   }
 
   private func resetBoundingBox() {

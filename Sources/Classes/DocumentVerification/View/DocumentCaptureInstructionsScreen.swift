@@ -39,14 +39,18 @@ public struct DocumentCaptureInstructionsScreen: View {
             HStack(spacing: 16) {
               Image(uiImage: SmileIDResourcesHelper.Light)
               VStack(alignment: .leading, spacing: 8) {
-                Text(SmileIDResourcesHelper.localizedString(
-                  for: "Instructions.GoodLight"
-                ))
+                Text(
+                  SmileIDResourcesHelper.localizedString(
+                    for: "Instructions.GoodLight"
+                  )
+                )
                 .font(SmileID.theme.header4)
                 .foregroundColor(SmileID.theme.accent)
-                Text(SmileIDResourcesHelper.localizedString(
-                  for: "Instructions.GoodLightBody"
-                ))
+                Text(
+                  SmileIDResourcesHelper.localizedString(
+                    for: "Instructions.GoodLightBody"
+                  )
+                )
                 .multilineTextAlignment(.leading)
                 .font(SmileID.theme.header5)
                 .foregroundColor(SmileID.theme.tertiary)
@@ -57,14 +61,18 @@ public struct DocumentCaptureInstructionsScreen: View {
             HStack(spacing: 16) {
               Image(uiImage: SmileIDResourcesHelper.ClearImage)
               VStack(alignment: .leading, spacing: 8) {
-                Text(SmileIDResourcesHelper.localizedString(
-                  for: "Instructions.ClearImage"
-                ))
+                Text(
+                  SmileIDResourcesHelper.localizedString(
+                    for: "Instructions.ClearImage"
+                  )
+                )
                 .font(SmileID.theme.header4)
                 .foregroundColor(SmileID.theme.accent)
-                Text(SmileIDResourcesHelper.localizedString(
-                  for: "Instructions.ClearImageBody"
-                ))
+                Text(
+                  SmileIDResourcesHelper.localizedString(
+                    for: "Instructions.ClearImageBody"
+                  )
+                )
                 .multilineTextAlignment(.leading)
                 .font(SmileID.theme.header5)
                 .foregroundColor(SmileID.theme.tertiary)
@@ -84,8 +92,9 @@ public struct DocumentCaptureInstructionsScreen: View {
                 .multilineTextAlignment(.center)
                 .font(SmileID.theme.button)
                 .foregroundColor(SmileID.theme.tertiary.opacity(0.8))
-            })
-            .frame(height: 48)
+            }
+          )
+          .frame(height: 48)
         }
 
         SmileButton(

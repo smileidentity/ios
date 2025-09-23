@@ -127,17 +127,20 @@ extension ServiceRunnable {
       metadata: metadata)
 
     let payload = try encoder.encode(selfieRequest)
-    let requestMac = try? SmileIDCryptoManager.shared.sign(
-      timestamp: timestamp,
-      headers: headers.toDictionary(),
-      payload: payload)
-    if let requestMac {
-      headers.append(.requestMac(value: requestMac))
-    } else {
-      /*
-       In case we can't add the security info the backend will throw an unauthorized error.
-       In the future, we will handle this more gracefully once sentry integration has been implemented.
-       */
+    let policy = SmileID.policy.decodePolicyBitCode()
+    if policy.first?.active == true {
+      let requestMac = try? SmileIDCryptoManager.shared.sign(
+        timestamp: timestamp,
+        headers: headers.toDictionary(),
+        payload: payload)
+      if let requestMac {
+        headers.append(.requestMac(value: requestMac))
+      } else {
+        /*
+         In case we can't add the security info the backend will throw an unauthorized error.
+         In the future, we will handle this more gracefully once sentry integration has been implemented.
+         */
+      }
     }
 
     let request = try await createMultiPartRequest(
@@ -236,17 +239,20 @@ extension ServiceRunnable {
 
     var signedHeaders = headers
     if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
-      let requestMac = try? SmileIDCryptoManager.shared.sign(
-        timestamp: header.value,
-        headers: headers.toDictionary(),
-        payload: payload)
-      if let requestMac {
-        signedHeaders.append(.requestMac(value: requestMac))
-      } else {
-        /*
-         In case we can't add the security info the backend will throw an unauthorized error.
-         In the future, we will handle this more gracefully once sentry integration has been implemented.
-         */
+      let policy = SmileID.policy.decodePolicyBitCode()
+      if policy.first?.active == true {
+        let requestMac = try? SmileIDCryptoManager.shared.sign(
+          timestamp: header.value,
+          headers: headers.toDictionary(),
+          payload: payload)
+        if let requestMac {
+          signedHeaders.append(.requestMac(value: requestMac))
+        } else {
+          /*
+           In case we can't add the security info the backend will throw an unauthorized error.
+           In the future, we will handle this more gracefully once sentry integration has been implemented.
+           */
+        }
       }
     }
 
@@ -276,16 +282,19 @@ extension ServiceRunnable {
 
     var signedHeaders = headers
     if let header = headers.first(where: { $0.name == "SmileID-Request-Timestamp" }) {
-      let requestMac = try? SmileIDCryptoManager.shared.sign(
-        timestamp: header.value,
-        headers: headers.toDictionary())
-      if let requestMac {
-        signedHeaders.append(.requestMac(value: requestMac))
-      } else {
-        /*
-         In case we can't add the security info the backend will throw an unauthorized error.
-         In the future, we will handle this more gracefully once sentry integration has been implemented.
-         */
+      let policy = SmileID.policy.decodePolicyBitCode()
+      if policy.first?.active == true {
+        let requestMac = try? SmileIDCryptoManager.shared.sign(
+          timestamp: header.value,
+          headers: headers.toDictionary())
+        if let requestMac {
+          signedHeaders.append(.requestMac(value: requestMac))
+        } else {
+          /*
+           In case we can't add the security info the backend will throw an unauthorized error.
+           In the future, we will handle this more gracefully once sentry integration has been implemented.
+           */
+        }
       }
     }
     let request = RestRequest(
@@ -319,9 +328,11 @@ extension ServiceRunnable {
     // Append parameters if available
     if let parameters = partnerParams {
       if let boundaryData = "--\(boundary)\(lineBreak)".data(using: .utf8),
-         let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)".data(
+         let dispositionData = "Content-Disposition: form-data; name=\"partner_params\"\(lineBreak)"
+         .data(
            using: .utf8),
-         let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8),
+         let contentTypeData = "Content-Type: application/json\(lineBreak + lineBreak)".data(
+           using: .utf8),
          let lineBreakData = lineBreak.data(using: .utf8) {
         body.append(boundaryData)
         body.append(dispositionData)
@@ -341,7 +352,8 @@ extension ServiceRunnable {
       if let valueData = "\(userId)\(lineBreak)".data(using: .utf8) {
         body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
         body.append(
-          "Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+          "Content-Disposition: form-data; name=\"user_id\"\(lineBreak + lineBreak)".data(
+            using: .utf8)!)
         body.append(valueData)
       }
     }
@@ -351,7 +363,8 @@ extension ServiceRunnable {
       if let valueData = "\(callbackUrl)\(lineBreak)".data(using: .utf8) {
         body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
         body.append(
-          "Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(using: .utf8)!)
+          "Content-Disposition: form-data; name=\"callback_url\"\(lineBreak + lineBreak)".data(
+            using: .utf8)!)
         body.append(valueData)
       }
     }
@@ -384,7 +397,8 @@ extension ServiceRunnable {
     encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
     if let metadataData = try? encoder.encode(metadata) {
       body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-      body.append("Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
+      body.append(
+        "Content-Disposition: form-data; name=\"metadata\"\(lineBreak)".data(using: .utf8)!)
       body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
       body.append(metadataData)
       body.append(lineBreak.data(using: .utf8)!)
@@ -414,7 +428,8 @@ extension ServiceRunnable {
     if let failureReason,
        let failureReasonData = try? encoder.encode(failureReason) {
       body.append("--\(boundary)\(lineBreak)".data(using: .utf8)!)
-      body.append("Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(using: .utf8)!)
+      body.append(
+        "Content-Disposition: form-data; name=\"failure_reason\"\(lineBreak)".data(using: .utf8)!)
       body.append("Content-Type: application/json\(lineBreak + lineBreak)".data(using: .utf8)!)
       body.append(failureReasonData)
       body.append(lineBreak.data(using: .utf8)!)

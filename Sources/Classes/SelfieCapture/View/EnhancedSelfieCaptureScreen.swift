@@ -24,9 +24,10 @@ public struct EnhancedSelfieCaptureScreen: View {
           ZStack {
             CameraView(
               cameraManager: viewModel.cameraManager,
-              selfieViewModel: viewModel)
-              .cornerRadius(40)
-              .frame(height: cameraContainerHeight)
+              selfieViewModel: viewModel
+            )
+            .cornerRadius(40)
+            .frame(height: cameraContainerHeight)
 
             RoundedRectangle(cornerRadius: 40)
               .fill(SmileID.theme.tertiary.opacity(0.8))
@@ -82,9 +83,10 @@ public struct EnhancedSelfieCaptureScreen: View {
               Spacer()
               UserInstructionsView(
                 instruction: processingState.title,
-                message: processingState == .error ? getErrorSubtitle(
-                  errorMessageRes: viewModel.errorMessageRes,
-                  errorMessage: viewModel.errorMessage) : nil)
+                message: processingState == .error
+                  ? getErrorSubtitle(
+                    errorMessageRes: viewModel.errorMessageRes,
+                    errorMessage: viewModel.errorMessage) : nil)
             }
             SubmissionStatusView(processState: processingState)
               .padding(.bottom, 40)

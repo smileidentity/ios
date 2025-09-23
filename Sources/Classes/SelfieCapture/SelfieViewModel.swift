@@ -254,7 +254,9 @@ public class SelfieViewModel: ObservableObject, ARKitSmileDelegate {
     // Perform the rotation checks *after* changing directive to Capturing
     // -- we don't want to explicitly tell the user to move their head.
     guard hasFaceRotatedEnough(face: face) else {
-      debug("Insufficient head rotation; waiting for movement to ensure diversity.", category: "SelfieViewModel")
+      debug(
+        "Insufficient head rotation; waiting for movement to ensure diversity.",
+        category: "SelfieViewModel")
       return
     }
 
@@ -629,6 +631,8 @@ extension SelfieViewModel {
           let authResponse = try await SmileID.api.authenticate(
             request: authRequest
           )
+
+          SmileID.policy = authResponse.policy
 
           // Build multipart bodies
           var smartSelfieLivenessImages = [MultipartBody]()
