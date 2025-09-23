@@ -12,7 +12,7 @@ struct InstructionCard: View {
     HStack(alignment: .top, spacing: 12) {
       ZStack {
         Circle()
-					.fill(color(theme.colors.stroke).opacity(0.25))
+          .fill(color(theme.colors.stroke).opacity(0.25))
         icon
           .font(.system(size: 18, weight: .semibold))
           .foregroundColor(color(theme.colors.titleText))
