@@ -7,7 +7,7 @@ public final class CameraPreviewView: UIView {
   }
 
   public var videoPreviewLayer: AVCaptureVideoPreviewLayer {
-    layer as! AVCaptureVideoPreviewLayer
+    layer as? AVCaptureVideoPreviewLayer ?? AVCaptureVideoPreviewLayer()
   }
 
   public weak var session: CameraSessionProtocol? {
