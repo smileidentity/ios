@@ -21,7 +21,7 @@ enum NetworkError: Error, LocalizedError {
       return "Response was not HTTPURLResponse"
     case .transport(let error):
       return "Transport error: \(error.localizedDescription)"
-    case .server(let status, let code, let message, let data):
+    case .server(let status, let code, let message, _):
       return "Server \(status): \(code ?? "-") \(message ?? "-")"
     case .decodingFailed(let error):
       return "Decoding failed: \(error.localizedDescription)"
