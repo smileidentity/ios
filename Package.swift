@@ -37,7 +37,8 @@ let package = Package(
     .package(url: "https://github.com/airbnb/lottie-spm", exact: "4.5.2"),
     .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", exact: "1.6.0"),
     .package(url: "https://github.com/smileidentity/smile-id-security", exact: "11.1.1"),
-    .package(url: "https://github.com/getsentry/sentry-cocoa", exact: "8.56.0")
+    .package(url: "https://github.com/getsentry/sentry-cocoa", exact: "8.56.0"),
+    .package(url: "https://github.com/paescebu/SwiftTasksVision", branch: "prototype/reduce_iOS_minimum_deployment_target")
   ],
   targets: [
     .target(
@@ -66,7 +67,9 @@ let package = Package(
       resources: [.process("../Resources")]),
     .target(
       name: "SmileIDML",
-      dependencies: [],
+      dependencies: [
+        .product(name: "SwiftTasksVision", package: "SwiftTasksVision")
+      ],
       path: "SmileIDML/Classes",
       resources: [.process("../Resources")]),
     .target(

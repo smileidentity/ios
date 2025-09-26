@@ -37,6 +37,15 @@
       }
     },
     {
+      "identity" : "swifttasksvision",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/paescebu/SwiftTasksVision",
+      "state" : {
+        "branch" : "prototype/reduce_iOS_minimum_deployment_target",
+        "revision" : "21fca8154f3792e33ef8bc983ca19ce813abd880"
+      }
+    },
+    {
       "identity" : "zipfoundation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/weichsel/ZIPFoundation.git",
