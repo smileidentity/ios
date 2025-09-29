@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/paescebu/SwiftTasksVision",
       "state" : {
-        "branch" : "prototype/reduce_iOS_minimum_deployment_target",
-        "revision" : "21fca8154f3792e33ef8bc983ca19ce813abd880"
+        "branch" : "main",
+        "revision" : "2cba94cf7d38ace98e32dc08d1de7a6895f05057"
       }
     },
     {
