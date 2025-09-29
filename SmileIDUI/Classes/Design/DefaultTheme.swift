@@ -45,7 +45,7 @@ public struct DefaultTheme: SmileIDTheme {
       stroke: .init(
         standard: .init(
           light: Color(hex: "#EAECF0"),
-          dark: Color(hex: "#EAECF0")
+          dark: Color(hex: "#EAECF0").opacity(0.15)
         )
       ),
       warningFill: .init(
@@ -74,7 +74,7 @@ public struct DefaultTheme: SmileIDTheme {
         pageHeading: FontSpec(source: .face(name: "DMSans-Bold"), size: 24, relativeTo: .headline),
         sectionHeading: FontSpec(source: .face(name: "DMSans-Bold"), size: 14, relativeTo: .headline),
         subHeading: FontSpec(source: .face(name: "DMSans-Medium"), size: 14, relativeTo: .subheadline),
-        cardTitle: FontSpec(source: .face(name: "DMSans-Medium"), size: 14, relativeTo: .body),
+        cardTitle: FontSpec(source: .face(name: "DMSans-Bold"), size: 14, relativeTo: .body),
         cardSubTitle: FontSpec(source: .face(name: "DMSans-Regular"), size: 12, relativeTo: .body),
         body: FontSpec(source: .face(name: "DMSans-Regular"), size: 12, relativeTo: .body),
         button: FontSpec(source: .face(name: "DMSans-Medium"), size: 16, relativeTo: .body)
