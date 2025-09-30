@@ -17,6 +17,9 @@ struct ModelConfiguration {
   var qualityProvider: ModelProviderType = .vision
   var minDocumentSharpness: Float = 0.7
   var glareDetectionEnabled: Bool = true
+  var minQualityScore: Float
+  var minBrightness: Float
+  var maxBrightness: Float
 
   // Performance
   var enableDebugVisualization: Bool = false

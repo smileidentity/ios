@@ -1,10 +1,10 @@
 import Foundation
 
-enum ModelError {
+enum ModelError: Error {
   case modelNotLoaded
   case modelLoadFailed(underlying: Error)
   case inferenceError(underlying: Error)
-  case invalidInput(String)
+  case invalidInput
   case unsupportedConfiguration
   case memoryPressure
 }

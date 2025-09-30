@@ -3,7 +3,7 @@ import Foundation
 struct DocumentDetectionResult {
   let boundingBox: CGRect
   let corners: [CGPoint] // For perspective correction
-  let documentType: DocumentType
+  let documentType: DocumentType?
   let confidence: Float
 }
 

@@ -5,7 +5,5 @@ struct FaceLandmarks {
   let rightEye: CGPoint
   let nose: CGPoint
   let mouth: CGPoint
-  let leftEar: CGPoint?
-  let rightEar: CGPoint?
   // Additional landmarks as needed
 }
