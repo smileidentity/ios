@@ -209,11 +209,22 @@ public class EnhancedSmartSelfieViewModel: ObservableObject {
     }
 
     currentFrameBuffer = imageBuffer
-    faceDetector.processImageBuffer(imageBuffer)
+    faceDetector.processImageBuffer(
+      imageBuffer,
+      orientation: visionOrientationForCurrentCamera()
+    )
     if hasDetectedValidFace, selfieImage == nil {
       captureSelfieImage(imageBuffer)
       HapticManager.shared.notification(type: .success)
       livenessCheckManager.initiateLivenessCheck()
+    }
+  }
+
+  private func visionOrientationForCurrentCamera() -> CGImagePropertyOrientation {
+    switch cameraManager.cameraPosition {
+    case .some(.front): return .leftMirrored
+    case .some(.back): return .right
+    default: return .leftMirrored
     }
   }
 
@@ -432,6 +443,16 @@ extension EnhancedSmartSelfieViewModel: FaceDetectorResultDelegate {
     _: EnhancedFaceDetector, didFailWithError _: Error
   ) {
     DispatchQueue.main.async {
+      self.publishUserInstruction(.headInFrame)
+    }
+  }
+
+  func faceDetectorDidLoseTracking(_: EnhancedFaceDetector) {
+    // Reset capture process/state when tracking is lost so the user starts afresh
+    DispatchQueue.main.async {
+      self.livenessCheckManager.resetLivenessChallenge()
+      self.resetSelfieCaptureState()
+      self.resetGuideAnimationDelayTimer()
       self.publishUserInstruction(.headInFrame)
     }
   }

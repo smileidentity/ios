@@ -23,6 +23,7 @@ protocol FaceDetectorResultDelegate: AnyObject {
     brightness: Int
   )
   func faceDetector(_ detector: EnhancedFaceDetector, didFailWithError error: Error)
+  func faceDetectorDidLoseTracking(_ detector: EnhancedFaceDetector)
 }
 
 class EnhancedFaceDetector: NSObject {
@@ -30,6 +31,7 @@ class EnhancedFaceDetector: NSObject {
   private let faceMovementThreshold: CGFloat = 0.15
 
   private var sequenceHandler = VNSequenceRequestHandler()
+  private let faceTracker = VisionFaceTracker()
 
   weak var viewDelegate: FaceDetectorViewDelegate?
   weak var resultDelegate: FaceDetectorResultDelegate?
@@ -39,7 +41,22 @@ class EnhancedFaceDetector: NSObject {
   }
 
   /// Run Face Capture quality and Face Bounding Box and roll/pitch/yaw tracking
-  func processImageBuffer(_ imageBuffer: CVPixelBuffer) {
+  func processImageBuffer(
+    _ imageBuffer: CVPixelBuffer,
+    orientation: CGImagePropertyOrientation = .leftMirrored
+  ) {
+    // Update tracker each frame; do not short‑circuit detection to preserve behavior
+    switch faceTracker.update(with: imageBuffer, orientation: orientation) {
+    case .lost(let exceeded):
+      if exceeded {
+        // Notify delegate that tracking has been lost for a sustained period.
+        resultDelegate?.faceDetectorDidLoseTracking(self)
+        faceTracker.cancelTracking()
+      }
+    default:
+      break
+    }
+
     let detectFaceRectanglesRequest = VNDetectFaceRectanglesRequest()
     let detectCaptureQualityRequest = VNDetectFaceCaptureQualityRequest()
 
@@ -47,7 +64,7 @@ class EnhancedFaceDetector: NSObject {
       try sequenceHandler.perform(
         [detectFaceRectanglesRequest, detectCaptureQualityRequest],
         on: imageBuffer,
-        orientation: .leftMirrored)
+        orientation: orientation)
       guard let faceDetections = detectFaceRectanglesRequest.results,
             let faceQualityObservations = detectCaptureQualityRequest.results,
             let faceObservation = faceDetections.first,
@@ -55,12 +72,21 @@ class EnhancedFaceDetector: NSObject {
       else {
         resultDelegate?.faceDetector(
           self, didFailWithError: FaceDetectorError.noFaceDetected)
+        // If detection fails, clear tracker to ensure a fresh start next frame.
+        faceTracker.cancelTracking()
         return
       }
 
       guard faceDetections.count == 1 else {
         resultDelegate?.faceDetector(self, didFailWithError: FaceDetectorError.multipleFacesDetected)
+        // Ambiguous detection; cancel tracker so we reinitialize when single face appears.
+        faceTracker.cancelTracking()
         return
+      }
+
+      // Initialize tracker when we have a single, valid face and no active tracking.
+      if !faceTracker.isTracking {
+        faceTracker.startTracking(from: faceObservation)
       }
 
       let convertedBoundingBox =
@@ -94,6 +120,7 @@ class EnhancedFaceDetector: NSObject {
           brightness: brightness)
     } catch {
       resultDelegate?.faceDetector(self, didFailWithError: error)
+      faceTracker.cancelTracking()
     }
   }
 
