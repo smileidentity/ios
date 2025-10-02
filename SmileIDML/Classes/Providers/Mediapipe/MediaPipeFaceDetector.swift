@@ -4,29 +4,25 @@ import MediaPipeTasksVision
 final class MediaPipeFaceDetector: FaceDetecting {
   private let faceDetector: FaceDetector
   private let configuration: ModelConfiguration
-  private let modelPath: String
+  private var nextVideoTimestampMs: Int = 0
 
-  init(configuration _: ModelConfiguration) throws {
+  init(configuration: ModelConfiguration) throws {
     guard let path = Bundle.main.path(
       forResource: "face_detection_model",
       ofType: "tflite"
     ) else {
       throw ModelError.modelLoadFailed(
-        underlying: NSError(domain: "ModelPath", code: -1,
-                            userInfo: [NSLocalizedDescriptionKey: "face_detection_model.tflite not found"])
+        underlying: NSError(
+          domain: "ModelPath",
+          code: -1,
+          userInfo: [
+            NSLocalizedDescriptionKey: "face_detection_model.tflite not found"
+          ]
+        )
       )
     }
-    self.modelPath = path
-    ...
-  }
-
-  private var nextVideoTimestampMs: Int = 0
-
-  init(
-    configuration: ModelConfiguration
-  ) throws {
     let options = FaceDetectorOptions()
-    options.baseOptions.modelAssetPath = modelPath ?? ""
+    options.baseOptions.modelAssetPath = path
     options.runningMode = .video
     options.minDetectionConfidence = 0.5
 
