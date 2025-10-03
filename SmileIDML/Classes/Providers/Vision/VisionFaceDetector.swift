@@ -56,9 +56,11 @@ final class VisionFaceDetector: FaceDetecting {
   private func convertToResult(
     _ observation: VNFaceObservation
   ) -> FaceDetectionResult {
+    let normalizedBoundingBox = normalizeBoundingBox(observation.boundingBox)
+
     if #available(iOS 15.0, *) {
       FaceDetectionResult(
-        boundingBox: observation.boundingBox,
+        boundingBox: normalizedBoundingBox,
         landmarks: convertLandmarks(observation.landmarks),
         trackingID: observation.uuid.hashValue,
         roll: observation.roll?.floatValue,
@@ -68,7 +70,7 @@ final class VisionFaceDetector: FaceDetecting {
       )
     } else {
       FaceDetectionResult(
-        boundingBox: observation.boundingBox,
+        boundingBox: normalizedBoundingBox,
         landmarks: convertLandmarks(observation.landmarks),
         trackingID: observation.uuid.hashValue,
         roll: observation.roll?.floatValue,
@@ -87,6 +89,16 @@ final class VisionFaceDetector: FaceDetecting {
       rightEye: landmarks.rightEye?.normalizedPoints.first ?? .zero,
       nose: landmarks.nose?.normalizedPoints.first ?? .zero,
       mouth: landmarks.innerLips?.normalizedPoints.first ?? .zero
+    )
+  }
+
+  private func normalizeBoundingBox(_ boundingBox: CGRect) -> CGRect {
+    // Vision reports bounding boxes using a bottom-left origin; flip them to our top-left coordinate space.
+    CGRect(
+      x: boundingBox.origin.x,
+      y: 1 - boundingBox.origin.y - boundingBox.height,
+      width: boundingBox.width,
+      height: boundingBox.height
     )
   }
 }
