@@ -59,7 +59,7 @@ final class VisionFaceDetector: FaceDetecting {
     let normalizedBoundingBox = normalizeBoundingBox(observation.boundingBox)
 
     if #available(iOS 15.0, *) {
-      FaceDetectionResult(
+      return FaceDetectionResult(
         boundingBox: normalizedBoundingBox,
         landmarks: convertLandmarks(observation.landmarks),
         trackingID: observation.uuid.hashValue,
@@ -69,7 +69,7 @@ final class VisionFaceDetector: FaceDetecting {
         confidence: observation.confidence
       )
     } else {
-      FaceDetectionResult(
+      return FaceDetectionResult(
         boundingBox: normalizedBoundingBox,
         landmarks: convertLandmarks(observation.landmarks),
         trackingID: observation.uuid.hashValue,
