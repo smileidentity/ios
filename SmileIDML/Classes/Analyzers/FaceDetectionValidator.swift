@@ -2,7 +2,7 @@ import Foundation
 
 /// Validates face detection results against requirements
 /// used by orchestration layer to provide user feedback
-final class FaceValidationEngine {
+final class FaceDetectionValidator {
   private let configuration: ModelConfiguration
 
   init(configuration: ModelConfiguration) {
