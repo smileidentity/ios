@@ -159,7 +159,7 @@ struct CaptureScreenContent: View {
   let onCaptureClick: () -> Void
 
   var body: some View {
-    VStack(alignment: .center, spacing: 16) {
+    VStack(alignment: .center, spacing: 8) {
       ZStack {
         CameraView(cameraManager: cameraManager)
           .onAppear { cameraManager.switchCamera(to: .back) }
@@ -173,7 +173,20 @@ struct CaptureScreenContent: View {
         .font(SmileID.theme.header4)
         .foregroundColor(SmileID.theme.accent)
         .frame(alignment: .center)
-        .padding()
+        .padding(8)
+
+      Text(areEdgesDetected ? "Document Detected" : "No Document Detected")
+        .multilineTextAlignment(.center)
+        .font(SmileID.theme.body)
+        .foregroundColor(areEdgesDetected ? SmileID.theme.success : .gray)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(
+          Capsule()
+            .fill(areEdgesDetected ? SmileID.theme.success.opacity(0.1) : Color.gray.opacity(0.1))
+        )
+        .frame(alignment: .center)
+
       Text(subtitle)
         .multilineTextAlignment(.center)
         .font(SmileID.theme.body)
