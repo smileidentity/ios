@@ -2,6 +2,13 @@ import AVFoundation
 import Foundation
 import SwiftUI
 
+struct CameraFrame {
+  let sampleBuffer: CMSampleBuffer
+  let pixelBuffer: CVPixelBuffer
+  let orientation: UIImage.Orientation
+  let timestampMilliseconds: Int
+}
+
 class CameraManager: NSObject, ObservableObject {
   enum Orientation {
     case portrait
@@ -25,6 +32,7 @@ class CameraManager: NSObject, ObservableObject {
   }
 
   var capturedImagePublisher: Published<Data?>.Publisher { $capturedImage }
+  var cameraFramePublisher: Published<CameraFrame?>.Publisher { $cameraFrame }
   let videoOutputQueue = DispatchQueue(
     label: "com.smileidentity.videooutput",
     qos: .userInitiated,
@@ -44,6 +52,7 @@ class CameraManager: NSObject, ObservableObject {
   private let photoOutput = AVCapturePhotoOutput()
   @Published private(set) var status = Status.unconfigured
   private var orientation: Orientation
+  @Published private var cameraFrame: CameraFrame?
 
   init(orientation: Orientation) {
     self.orientation = orientation
@@ -216,6 +225,13 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
   ) {
     guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
     else { return }
+    let orientation = UIImage.Orientation(deviceOrientation: UIDevice.current.orientation)
+    let timestamp = Int(Date().timeIntervalSince1970 * 1000)
+    cameraFrame = CameraFrame(
+      sampleBuffer: sampleBuffer,
+      pixelBuffer: imageBuffer,
+      orientation: orientation,
+      timestampMilliseconds: timestamp)
     self.sampleBuffer = imageBuffer
   }
 }
@@ -235,5 +251,22 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
       return
     }
     capturedImage = imageData
+  }
+}
+
+extension UIImage.Orientation {
+  init(deviceOrientation: UIDeviceOrientation) {
+    switch deviceOrientation {
+    case .portrait, .faceUp, .faceDown, .unknown:
+      self = .up
+    case .landscapeLeft:
+      self = .left
+    case .landscapeRight:
+      self = .right
+    case .portraitUpsideDown:
+      self = .down
+    @unknown default:
+      self = .up
+    }
   }
 }

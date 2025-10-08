@@ -1012,7 +1012,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		2026C20C2E54AE74002544E0 /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "..";
+			relativePath = ..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
