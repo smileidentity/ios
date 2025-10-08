@@ -16,5 +16,13 @@ struct DocumentVerificationView: View {
       captureBothSides: verificationDetails.captureBothSides,
       allowGalleryUpload: true,
       delegate: delegate)
+    .onAppear {
+      SmileID.setDocumentDetectionBackend(.mediapipeOnly)
+      SmileID.setDocumentDetectionLoggingEnabled(true)
+    }
+    .onDisappear {
+      SmileID.setDocumentDetectionBackend(.automatic)
+      SmileID.setDocumentDetectionLoggingEnabled(false)
+    }
   }
 }

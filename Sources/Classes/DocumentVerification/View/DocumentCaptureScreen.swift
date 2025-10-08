@@ -132,6 +132,7 @@ public struct DocumentCaptureScreen: View {
       subtitle: SmileIDResourcesHelper.localizedString(for: viewModel.directive.rawValue),
       idAspectRatio: viewModel.idAspectRatio,
       areEdgesDetected: viewModel.areEdgesDetected,
+      classificationLabel: viewModel.classificationLabel,
       showCaptureInProgress: viewModel.isCapturing,
       showManualCaptureButton: viewModel.showManualCaptureButton,
       cameraManager: viewModel.cameraManager,
@@ -153,12 +154,15 @@ struct CaptureScreenContent: View {
   let subtitle: String
   let idAspectRatio: Double
   let areEdgesDetected: Bool
+  let classificationLabel: String?
   let showCaptureInProgress: Bool
   let showManualCaptureButton: Bool
   let cameraManager: CameraManager
   let onCaptureClick: () -> Void
 
   var body: some View {
+    let detectionText = classificationLabel ?? (areEdgesDetected ? "Document Detected" : "No Document Detected")
+
     VStack(alignment: .center, spacing: 8) {
       ZStack {
         CameraView(cameraManager: cameraManager)
@@ -175,7 +179,7 @@ struct CaptureScreenContent: View {
         .frame(alignment: .center)
         .padding(8)
 
-      Text(areEdgesDetected ? "Document Detected" : "No Document Detected")
+      Text(detectionText)
         .multilineTextAlignment(.center)
         .font(SmileID.theme.body)
         .foregroundColor(areEdgesDetected ? SmileID.theme.success : .gray)

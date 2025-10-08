@@ -16,6 +16,7 @@ private let documentAutoCaptureWaitTime: TimeInterval = 1.0
 class DocumentCaptureViewModel: ObservableObject {
   deinit {
     subscribers.removeAll()
+    MediapipeDocumentDetector.reset()
   }
 
   // Initializer properties
@@ -37,6 +38,7 @@ class DocumentCaptureViewModel: ObservableObject {
   private var retryCount: Int = 0
   private(set) var documentImageOrigin: DocumentImageOriginValue?
   private var hasRecordedOrientationAtCaptureStart = false
+  private var latestCameraFrame: CameraFrame?
 
   // UI properties
   @Published var unauthorizedAlert: AlertState?
@@ -44,6 +46,7 @@ class DocumentCaptureViewModel: ObservableObject {
   @Published var showPhotoPicker = false
   @Published var directive: DocumentDirective = .defaultInstructions
   @Published var areEdgesDetected = false
+  @Published var classificationLabel: String?
   @Published var idAspectRatio = 1.0
   @Published var showManualCaptureButton = false
   @Published var documentImageToConfirm: Data?
@@ -83,6 +86,13 @@ class DocumentCaptureViewModel: ObservableObject {
       .receive(on: DispatchQueue(label: "com.smileidentity.receivebuffer"))
       .compactMap { $0 }
       .sink(receiveValue: analyzeImage)
+      .store(in: &subscribers)
+
+    cameraManager.cameraFramePublisher
+      .compactMap { $0 }
+      .sink { [weak self] frame in
+        self?.latestCameraFrame = frame
+      }
       .store(in: &subscribers)
 
     switch autoCapture {
@@ -186,6 +196,7 @@ class DocumentCaptureViewModel: ObservableObject {
       self.captureError = nil
       self.directive = .defaultInstructions
       self.areEdgesDetected = false
+      self.classificationLabel = nil
     }
   }
 
@@ -277,13 +288,18 @@ class DocumentCaptureViewModel: ObservableObject {
       width: CVPixelBufferGetWidth(buffer),
       height: CVPixelBufferGetHeight(buffer))
 
+    let currentFrame = latestCameraFrame
+
     DocumentDetector.detectQuadrilateral(
       in: buffer,
+      sampleBuffer: currentFrame?.sampleBuffer,
+      orientation: currentFrame?.orientation,
+      timestampMilliseconds: currentFrame?.timestampMilliseconds,
       imageSize: imageSize,
-      aspectRatio: knownAspectRatio) { [weak self] rect in
+      aspectRatio: knownAspectRatio) { [weak self] detection in
         guard let self else { return }
         self.handleDetectionResult(
-          rect: rect,
+          detection: detection,
           buffer: buffer,
           imageSize: imageSize)
       }
@@ -295,16 +311,20 @@ class DocumentCaptureViewModel: ObservableObject {
   ///   - buffer: The source pixel buffer used for text detection fallbacks.
   ///   - imageSize: Frame dimensions, used for centering checks and scaling.
   private func handleDetectionResult(
-    rect: Quadrilateral?,
+    detection: DocumentDetection?,
     buffer: CVPixelBuffer,
     imageSize: CGSize
   ) {
-    guard let rect else {
+    guard let detection else {
+      if SmileID.documentDetectionLoggingEnabled {
+        print("[SmileID][DocumentCaptureViewModel] No document detection returned for current frame.")
+      }
       resetBoundingBox()
       processingImage = false
       return
     }
 
+    let rect = detection.quadrilateral
     let rawAspectRatio = rect.aspectRatio
     let detectedAspectRatio = rawAspectRatio == 0 ? defaultAspectRatio : 1 / rawAspectRatio
     let isCorrectAspectRatio = isCorrectAspectRatio(
@@ -317,8 +337,20 @@ class DocumentCaptureViewModel: ObservableObject {
       imageHeight: Double(imageSize.height))
     DispatchQueue.main.async { [self] in
       self.idAspectRatio = idAspectRatio
+      self.classificationLabel = detection.classification
     }
     textDetector.detectText(buffer: buffer) { [self] hasText in
+      if SmileID.documentDetectionLoggingEnabled {
+        logDetection(
+          label: detection.classification,
+          confidence: detection.confidence,
+          rect: rect,
+          imageSize: imageSize,
+          source: detection.source,
+          isCentered: isCentered,
+          isAspectRatioMatch: isCorrectAspectRatio,
+          hasText: hasText)
+      }
       processingImage = false
       let areEdgesDetected = isCentered && isCorrectAspectRatio && hasText
       DispatchQueue.main.async { [self] in
@@ -330,6 +362,7 @@ class DocumentCaptureViewModel: ObservableObject {
   private func resetBoundingBox() {
     DispatchQueue.main.async {
       self.areEdgesDetected = false
+      self.classificationLabel = nil
       self.idAspectRatio = self.defaultAspectRatio
     }
   }
@@ -370,6 +403,31 @@ class DocumentCaptureViewModel: ObservableObject {
     let isCenteredVertically = deltaY < tolerance
 
     return isCenteredHorizontally && isCenteredVertically
+  }
+
+  private func logDetection(
+    label: String?,
+    confidence: Float?,
+    rect: Quadrilateral,
+    imageSize: CGSize,
+    source: DocumentDetection.Source,
+    isCentered: Bool,
+    isAspectRatioMatch: Bool,
+    hasText: Bool
+  ) {
+    guard SmileID.documentDetectionLoggingEnabled else { return }
+    let labelLog = label ?? "nil"
+    let confidenceLog: String
+    if let confidence {
+      confidenceLog = String(format: "%.3f", confidence)
+    } else {
+      confidenceLog = "nil"
+    }
+    print(
+      "[SmileID][DocumentCaptureViewModel] source=\(source) " +
+        "label='\(labelLog)' confidence=\(confidenceLog) centered=\(isCentered)" +
+        " aspectMatch=\(isAspectRatioMatch) hasText=\(hasText) rect=\(rect.cgRect) imageSize=\(imageSize)"
+    )
   }
 
   func openSettings() {

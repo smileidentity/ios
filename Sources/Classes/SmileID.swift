@@ -4,6 +4,12 @@ import SwiftUI
 import UIKit
 
 public class SmileID {
+  public enum DocumentDetectionBackend {
+    case automatic
+    case mediapipeOnly
+    case visionOnly
+  }
+
   /// The default value for `timeoutIntervalForRequest` for URLSession default configuration.
   public static let defaultRequestTimeout: TimeInterval = 60
   public static let version = "11.1.1"
@@ -45,6 +51,8 @@ public class SmileID {
   public private(set) static var useSandbox = false
   public private(set) static var allowOfflineMode = false
   public private(set) static var callbackUrl: String = ""
+  public private(set) static var documentDetectionBackend: DocumentDetectionBackend = .mediapipeOnly
+  public private(set) static var documentDetectionLoggingEnabled = false
 
   private(set) static var deviceId: String = ""
   private(set) static var sdkLaunchCount: Int = 0
@@ -132,6 +140,14 @@ public class SmileID {
     defaults.set(newCount, forKey: key)
 
     sdkLaunchCount = newCount
+  }
+
+  public class func setDocumentDetectionBackend(_ backend: DocumentDetectionBackend) {
+    documentDetectionBackend = backend
+  }
+
+  public class func setDocumentDetectionLoggingEnabled(_ enabled: Bool) {
+    documentDetectionLoggingEnabled = enabled
   }
 
   /// Sets the state of offline mode for the SDK.

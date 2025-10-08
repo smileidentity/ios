@@ -1,28 +1,85 @@
 import CoreGraphics
 import CoreImage
+import CoreMedia
 import CoreVideo
 import Foundation
+import UIKit
 import Vision
+
+struct DocumentDetection {
+  enum Source {
+    case mediapipe
+    case vision
+  }
+
+  let source: Source
+  let quadrilateral: Quadrilateral
+  let classification: String?
+  let confidence: Float?
+}
 
 enum DocumentDetector {
   static func detectQuadrilateral(
     in pixelBuffer: CVPixelBuffer,
+    sampleBuffer: CMSampleBuffer?,
+    orientation: UIImage.Orientation?,
+    timestampMilliseconds: Int?,
     imageSize: CGSize,
     aspectRatio _: Double?,
-    completion: @escaping (Quadrilateral?) -> Void
+    completion: @escaping (DocumentDetection?) -> Void
   ) {
-    if #available(iOS 15.0, *) {
-      DocumentSegmentation.perform(
-        on: pixelBuffer,
+    let performVisionDetection = {
+      if #available(iOS 15.0, *) {
+        DocumentSegmentation.perform(
+          on: pixelBuffer,
+          imageSize: imageSize,
+          completion: completion)
+      } else {
+        RectangleDetector.rectangle(
+          forPixelBuffer: pixelBuffer,
+          aspectRatio: nil
+        ) { quadrilateral in
+          guard let quadrilateral else {
+            completion(nil)
+            return
+          }
+          completion(DocumentDetection(
+            source: .vision,
+            quadrilateral: quadrilateral,
+            classification: nil,
+            confidence: nil))
+        }
+      }
+    }
+
+    switch SmileID.documentDetectionBackend {
+    case .mediapipeOnly:
+      MediapipeDocumentDetector.detect(
+        pixelBuffer: pixelBuffer,
+        sampleBuffer: sampleBuffer,
+        orientation: orientation,
+        timestampMilliseconds: timestampMilliseconds,
         imageSize: imageSize,
         completion: completion)
-    } else {
-      // Fallback to RectangleDetector
-//      RectangleDetector.rectangle(
-//        forPixelBuffer: pixelBuffer,
-//        aspectRatio: aspectRatio,
-//        completion: completion
-      //			)
+
+    case .visionOnly:
+      performVisionDetection()
+
+    case .automatic:
+      MediapipeDocumentDetector.detect(
+        pixelBuffer: pixelBuffer,
+        sampleBuffer: sampleBuffer,
+        orientation: orientation,
+        timestampMilliseconds: timestampMilliseconds,
+        imageSize: imageSize
+      ) { detection in
+        if let detection {
+          completion(detection)
+        } else {
+          log("Mediapipe detection unavailable; falling back to Vision.")
+          performVisionDetection()
+        }
+      }
     }
   }
 
@@ -73,7 +130,7 @@ enum DocumentDetector {
     static func perform(
       on pixelBuffer: CVPixelBuffer,
       imageSize: CGSize,
-      completion: @escaping (Quadrilateral?) -> Void
+      completion: @escaping (DocumentDetection?) -> Void
     ) {
       let request = VNDetectDocumentSegmentationRequest { request, error in
         if let error {
@@ -96,7 +153,11 @@ enum DocumentDetector {
         let quadrilateral = Quadrilateral(rectangleObservation: bestObservation)
         let transform = CGAffineTransform.identity
           .scaledBy(x: imageSize.width, y: imageSize.height)
-        completion(quadrilateral.applying(transform))
+        completion(DocumentDetection(
+          source: .vision,
+          quadrilateral: quadrilateral.applying(transform),
+          classification: nil,
+          confidence: nil))
       }
 
       let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
@@ -107,5 +168,10 @@ enum DocumentDetector {
         completion(nil)
       }
     }
+  }
+
+  private static func log(_ message: String) {
+    guard SmileID.documentDetectionLoggingEnabled else { return }
+    print("[SmileID][DocumentDetector] \(message)")
   }
 }
