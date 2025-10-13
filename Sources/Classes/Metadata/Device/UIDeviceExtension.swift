@@ -2,6 +2,31 @@ import Foundation
 import UIKit
 
 extension UIDevice {
+  struct DeviceModel: Decodable {
+    let identifier: String
+    let model: String
+    static var all: [DeviceModel] {
+      _ = UIDevice.current.name
+      guard
+        let devicesUrl = SmileIDResourcesHelper.bundle.url(
+          forResource: "devicemodels",
+          withExtension: "json"
+        )
+      else { return [] }
+      do {
+        let data = try Data(contentsOf: devicesUrl)
+        let devices = try JSONDecoder().decode(
+          [DeviceModel].self,
+          from: data
+        )
+        return devices
+      } catch {
+        print("Error decoding device models: \(error)")
+        return []
+      }
+    }
+  }
+
   var modelName: String {
     var systemInfo = utsname()
     uname(&systemInfo)
@@ -27,24 +52,22 @@ extension UIDevice {
     return result
   }
 
-  struct DeviceModel: Decodable {
-    let identifier: String
-    let model: String
-    static var all: [DeviceModel] {
-      _ = UIDevice.current.name
-      guard
-        let devicesUrl = SmileIDResourcesHelper.bundle.url(
-          forResource: "devicemodels", withExtension: "json")
-      else { return [] }
-      do {
-        let data = try Data(contentsOf: devicesUrl)
-        let devices = try JSONDecoder().decode(
-          [DeviceModel].self, from: data)
-        return devices
-      } catch {
-        print("Error decoding device models: \(error)")
-        return []
-      }
-    }
+  var isSimulator: Bool {
+    #if targetEnvironment(simulator)
+      return true
+    #else
+      return false
+    #endif
+  }
+
+  var isJailBroken: Bool {
+    if UIDevice.current.isSimulator { return false }
+    if JailBrokenHelper.hasCydiaInstalled() { return true }
+    if JailBrokenHelper.isContainsSuspiciousApps() { return true }
+    if JailBrokenHelper.isSuspiciousSystemPathsExists() { return true }
+    if JailBrokenHelper.canEditSystemFiles() { return true }
+    if JailBrokenHelper.hasSuspiciousSymlinks() { return true }
+    if JailBrokenHelper.checkDYLD() { return true }
+    return false
   }
 }
