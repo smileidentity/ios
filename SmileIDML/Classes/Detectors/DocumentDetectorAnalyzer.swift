@@ -1,4 +1,4 @@
-class FaceDetectorAnalyzer: Analyzer {
+class DocumentDetectorAnalyzer: Analyzer {
   typealias Input = AnalyzerInput
   typealias State = IdentityScanState
   typealias Output = AnalyzerOutput
@@ -10,7 +10,7 @@ class FaceDetectorAnalyzer: Analyzer {
   }
 
   /**
-   * We will run face detection here, using MediaPipe and pass back the output
+   * We will run document detection here, using MediaPipe and pass back the output
    *
    * We can easily swap out implementations here for other analyzers like CoreML
    */
@@ -18,8 +18,8 @@ class FaceDetectorAnalyzer: Analyzer {
     // Your face detection logic here - can now use Mediapipe or CoreML
 
     // Return FaceDetectorOutput
-    FaceDetectorOutput(
-      faces: [], // Your detected faces array
+    DocumentDetectorOutput(
+      documents: [], // Your detected documents array
       resultScore: 0.0 // Your confidence score
     )
   }
@@ -30,7 +30,7 @@ class FaceDetectorAnalyzer: Analyzer {
     typealias Input = AnalyzerInput
     typealias State = IdentityScanState
     typealias Output = AnalyzerOutput
-    typealias AnalyzerType = FaceDetectorAnalyzer
+    typealias AnalyzerType = DocumentDetectorAnalyzer
 
     let minDetectionConfidence: Float
 
@@ -38,8 +38,8 @@ class FaceDetectorAnalyzer: Analyzer {
       self.minDetectionConfidence = minDetectionConfidence
     }
 
-    func newInstance() -> FaceDetectorAnalyzer? {
-      FaceDetectorAnalyzer(
+    func newInstance() -> DocumentDetectorAnalyzer? {
+      DocumentDetectorAnalyzer(
         minDetectionConfidence: minDetectionConfidence
       )
     }
@@ -47,5 +47,5 @@ class FaceDetectorAnalyzer: Analyzer {
 
   // MARK: - Constants
 
-  static let MODEL_NAME = "blaze_face_short_range.tflite"
+  static let MODEL_NAME = "document_detector.tflite"
 }
