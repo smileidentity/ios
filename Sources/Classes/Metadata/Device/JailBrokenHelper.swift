@@ -1,4 +1,5 @@
 import Darwin
+import MachO
 import Foundation
 import UIKit
 
