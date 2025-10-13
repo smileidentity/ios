@@ -45,13 +45,29 @@ enum JailBrokenHelper {
   }
 
   static func hasSuspiciousSymlinks() -> Bool {
-    let paths = ["/Library", "/usr/lib", "/bin", "/etc", "/var"]
+    let paths = ["/Applications", "/Library", "/usr/lib", "/bin", "/etc", "/var"]
+    let knownSafeSymlinks: [String: (String) -> Bool] = [
+      "/bin": { destination in destination.hasSuffix("/private/bin") || destination == "private/bin" },
+      "/etc": { destination in destination.hasSuffix("/private/etc") || destination == "private/etc" },
+      "/tmp": { destination in destination.hasSuffix("/private/tmp") || destination == "private/tmp" },
+      "/var": { destination in destination.hasSuffix("/private/var") || destination == "private/var" }
+    ]
+
     for path in paths {
       do {
         let attributes = try FileManager.default.attributesOfItem(atPath: path)
-        if attributes[.type] as? FileAttributeType == .typeSymbolicLink {
-          return true
+        guard attributes[.type] as? FileAttributeType == .typeSymbolicLink else {
+          continue
         }
+
+        if let isKnownSafe = knownSafeSymlinks[path] {
+          let destination = try FileManager.default.destinationOfSymbolicLink(atPath: path)
+          if isKnownSafe(destination) {
+            continue
+          }
+        }
+
+        return true
       } catch {
         continue
       }
