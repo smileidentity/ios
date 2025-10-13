@@ -30,7 +30,8 @@ protocol Closeable {
   func close() throws
 }
 
-/// Type-erased wrapper for Analyzer (iOS 13 compatible) - when we move to iOS 16, we can remove this and use associated types
+/// Type-erased wrapper for Analyzer (iOS 13 compatible) 
+/// when we move to iOS 16, we can remove this and use associated types
 class AnyAnalyzer<Input, State, Output> {
   private let _analyze: (Input, State) async -> Output
   private let baseAnalyzer: Any
