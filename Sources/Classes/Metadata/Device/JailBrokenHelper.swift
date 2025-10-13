@@ -95,11 +95,20 @@ enum JailBrokenHelper {
       "libellekit.dylib"
     ]
 
-    for library in suspiciousLibraries {
-      guard let handle = dlopen(library, RTLD_NOW) else { continue }
-      dlclose(handle)
+    for index in 0..<_dyld_image_count() {
+      guard let cName = _dyld_get_image_name(index) else { continue }
+      let imagePath = String(cString: cName)
+      if suspiciousLibraries.contains(where: { imagePath.localizedCaseInsensitiveContains($0) }) {
+        return true
+      }
+    }
+
+    let fileManager = FileManager.default
+    for library in suspiciousLibraries
+    where fileManager.fileExists(atPath: "/usr/lib/\(library)") || fileManager.fileExists(atPath: "/Library/MobileSubstrate/DynamicLibraries/\(library)") {
       return true
     }
+
     return false
   }
 
