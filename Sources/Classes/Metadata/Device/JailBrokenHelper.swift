@@ -1,6 +1,6 @@
 import Darwin
-import MachO
 import Foundation
+import MachO
 import UIKit
 
 enum JailBrokenHelper {
@@ -106,7 +106,7 @@ enum JailBrokenHelper {
 
     let fileManager = FileManager.default
     for library in suspiciousLibraries
-    where fileManager.fileExists(atPath: "/usr/lib/\(library)") || fileManager.fileExists(atPath: "/Library/MobileSubstrate/DynamicLibraries/\(library)") {
+      where fileManager.fileExists(atPath: "/usr/lib/\(library)") || fileManager.fileExists(atPath: "/Library/MobileSubstrate/DynamicLibraries/\(library)") {
       return true
     }
 
