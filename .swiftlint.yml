@@ -3,12 +3,13 @@ disabled_rules:
   - type_body_length
   - redundant_discardable_let
   - function_body_length
-  - blanket_disable_command
   - function_parameter_count
   - large_tuple
   - class_delegate_protocol
   - type_name
   - redundant_string_enum_value
+  - identifier_name
+  - nesting
 
 excluded:
   - Pods
