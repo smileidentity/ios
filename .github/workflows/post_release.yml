@@ -80,7 +80,7 @@ jobs:
       - name: Generate Docs Site
         run: $(xcrun --find docc) process-archive transform-for-static-hosting ios/Example/Pods/SmileID.doccarchive --output-path docs --hosting-base-path ios
       - name: Push gh-pages branch
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           repository: docs
           branch: gh-pages
