@@ -38,7 +38,7 @@ class FaceDetectorAnalyzer: Analyzer {
       self.minDetectionConfidence = minDetectionConfidence
     }
 
-    func newInstance() async -> FaceDetectorAnalyzer? {
+    func newInstance() -> FaceDetectorAnalyzer? {
       FaceDetectorAnalyzer(
         minDetectionConfidence: minDetectionConfidence
       )
