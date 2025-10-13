@@ -67,7 +67,6 @@ extension UIDevice {
     if JailBrokenHelper.isSuspiciousSystemPathsExists() { return true }
     if JailBrokenHelper.canEditSystemFiles() { return true }
     if JailBrokenHelper.hasSuspiciousSymlinks() { return true }
-    if JailBrokenHelper.hasSandboxViolation() { return true }
     if JailBrokenHelper.checkDYLD() { return true }
     return false
   }

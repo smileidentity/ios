@@ -33,16 +33,21 @@ enum JailBrokenHelper {
   // MARK: - Advanced Checks
 
   static func canEditSystemFiles() -> Bool {
-    let jailBreakText = "Developer Insider"
-    let path = "/private/" + jailBreakText
+    let attempts = [
+      (contents: "Developer Insider", path: "/private/Developer Insider"),
+      (contents: "sandbox_test", path: "/private/sandbox_test")
+    ]
 
-    do {
-      try jailBreakText.write(toFile: path, atomically: true, encoding: .utf8)
-      try FileManager.default.removeItem(atPath: path)
-      return true
-    } catch {
-      return false
+    for attempt in attempts {
+      do {
+        try attempt.contents.write(toFile: attempt.path, atomically: true, encoding: .utf8)
+        try FileManager.default.removeItem(atPath: attempt.path)
+        return true
+      } catch {
+        continue
+      }
     }
+    return false
   }
 
   static func hasSuspiciousSymlinks() -> Bool {
@@ -76,16 +81,6 @@ enum JailBrokenHelper {
     return false
   }
 
-  static func hasSandboxViolation() -> Bool {
-    do {
-      try "sandbox_test".write(toFile: "/private/sandbox_test", atomically: true, encoding: .utf8)
-      try FileManager.default.removeItem(atPath: "/private/sandbox_test")
-      return true
-    } catch {
-      return false
-    }
-  }
-
   // Checks for suspicious dylibs
   static func checkDYLD() -> Bool {
     let suspiciousLibraries = [
@@ -116,7 +111,7 @@ enum JailBrokenHelper {
 
   // MARK: - Path Lists (same as previous version)
 
-  static var suspiciousAppsPathToCheck: [String] {
+  private static var suspiciousAppsPathToCheck: [String] {
     [
       // Traditional jailbreaks
       "/Applications/Cydia.app",
@@ -146,7 +141,7 @@ enum JailBrokenHelper {
     ]
   }
 
-  static var suspiciousSystemPathsToCheck: [String] {
+  private static var suspiciousSystemPathsToCheck: [String] {
     [
       // Traditional paths
       "/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist",
