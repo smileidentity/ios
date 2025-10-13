@@ -7,25 +7,25 @@ enum JailBrokenHelper {
   // MARK: - Direct Checks
 
   static func hasCydiaInstalled() -> Bool {
-    UIApplication.shared.canOpenURL(URL(string: "cydia://")!)
-      || UIApplication.shared.canOpenURL(URL(string: "sileo://")!)
-      || UIApplication.shared.canOpenURL(URL(string: "zbra://")!)
+    guard let cydiaURL = URL(string: "cydia://"),
+          let sileoURL = URL(string: "sileo://"),
+          let zbraURL = URL(string: "zbra://")
+    else { return false }
+    return UIApplication.shared.canOpenURL(cydiaURL)
+      || UIApplication.shared.canOpenURL(sileoURL)
+      || UIApplication.shared.canOpenURL(zbraURL)
   }
 
   static func isContainsSuspiciousApps() -> Bool {
-    for path in suspiciousAppsPathToCheck {
-      if FileManager.default.fileExists(atPath: path) {
-        return true
-      }
+    for path in suspiciousAppsPathToCheck where FileManager.default.fileExists(atPath: path) {
+      return true
     }
     return false
   }
 
   static func isSuspiciousSystemPathsExists() -> Bool {
-    for path in suspiciousSystemPathsToCheck {
-      if FileManager.default.fileExists(atPath: path) {
-        return true
-      }
+    for path in suspiciousSystemPathsToCheck where FileManager.default.fileExists(atPath: path) {
+      return true
     }
     return false
   }
@@ -106,7 +106,8 @@ enum JailBrokenHelper {
 
     let fileManager = FileManager.default
     for library in suspiciousLibraries
-      where fileManager.fileExists(atPath: "/usr/lib/\(library)") || fileManager.fileExists(atPath: "/Library/MobileSubstrate/DynamicLibraries/\(library)") {
+      where fileManager.fileExists(atPath: "/usr/lib/\(library)")
+      || fileManager.fileExists(atPath: "/Library/MobileSubstrate/DynamicLibraries/\(library)") {
       return true
     }
 
