@@ -1,3 +1,4 @@
+import Darwin
 import Foundation
 import UIKit
 
@@ -79,9 +80,9 @@ enum JailBrokenHelper {
     ]
 
     for library in suspiciousLibraries {
-      if dlopen(library, RTLD_NOW) != nil {
-        return true
-      }
+      guard let handle = dlopen(library, RTLD_NOW) else { continue }
+      dlclose(handle)
+      return true
     }
     return false
   }
