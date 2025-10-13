@@ -18,7 +18,7 @@ jobs:
         with:
           args: --lint .
       - name: Danger
-        uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.15.0
+        uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.22.0
         with:
           args: --failOnErrors --no-publish-check
         env:
