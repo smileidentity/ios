@@ -14,7 +14,7 @@ enum IdentityScanState {
   case found(type: ScanType, transitioner: IdentityScanStateTransitioner)
 
   /**
-   * State when satisfaction checking passed.
+   * State when satisfaction ch/ecking passed.
    *
    * Note when Satisfied is reached, [timeoutAt] won't be checked.
    */
