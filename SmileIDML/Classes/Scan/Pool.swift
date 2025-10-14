@@ -41,7 +41,7 @@ class AnyAnalyzer<Input, State, Output> {
     self.baseAnalyzer = analyzer
   }
 
-  func analyze(data: Input, state: State) async -> Output {
+  func analyze(data: Input, state: State) async throws -> Output {
     await _analyze(data, state)
   }
 
@@ -82,5 +82,172 @@ struct AnalyzerPool<DataFrame, State, Output> {
         try? closeable.close() // Suppresses errors, continues closing
       }
     }
+  }
+}
+
+/// A loop to execute repeated analysis. The loop uses tasks to run the Analyzer.analyze method.
+/// If the Analyzer is threadsafe, multiple tasks will be used. If not, a single task will be used.
+///
+/// Any data enqueued while the analyzers are at capacity will be dropped.
+///
+/// This will process data until the result aggregator returns true.
+///
+/// Note: an analyzer loop can only be started once. Once it terminates, it cannot be restarted.
+class AnalyzerLoop<DataFrame, State, Output>: ResultHandler {
+  typealias Input = DataFrame
+  typealias Verdict = Bool
+
+  private let analyzerPool: AnalyzerPool<DataFrame, State, Output>
+  private let analyzerLoopErrorListener: AnalyzerLoopErrorListener
+
+  private var started: Bool = false
+  private var startedAt: Date?
+  private var finished: Bool = false
+
+  private var workerTask: Task<Void, Never>?
+
+  init(
+    analyzerPool: AnalyzerPool<DataFrame, State, Output>,
+    analyzerLoopErrorListener: AnalyzerLoopErrorListener
+  ) {
+    self.analyzerPool = analyzerPool
+    self.analyzerLoopErrorListener = analyzerLoopErrorListener
+  }
+
+  func subscribeToFlow(
+    _ stream: AsyncStream<DataFrame>
+  ) -> Task<Void, Never>? {
+    // Check if already started
+    if started {
+      _ = analyzerLoopErrorListener.onAnalyzerFailure(AnalyzerError.alreadySubscribed)
+      return nil
+    }
+
+    started = true
+    startedAt = Date()
+
+    if analyzerPool.analyzers.isEmpty {
+      _ = analyzerLoopErrorListener.onAnalyzerFailure(AnalyzerError.noAnalyzersAvailable)
+      return nil
+    }
+
+    workerTask = Task {
+      await withTaskGroup(of: Void.self) { group in
+        for analyzer in analyzerPool.analyzers {
+          group.addTask {
+            await self.startWorker(stream: stream, analyzer: analyzer)
+          }
+        }
+      }
+    }
+
+    return workerTask
+  }
+
+  func unsubscribeFromFlow() async {
+    workerTask?.cancel()
+    workerTask = nil
+    started = false
+    finished = false
+  }
+
+  /// Launch a worker task that has access to the analyzer's analyze method and the result handler
+  private func startWorker(
+    stream: AsyncStream<DataFrame>,
+    analyzer: AnyAnalyzer<DataFrame, State, Output>
+  ) async {
+    for await frame in stream {
+      guard !Task.isCancelled else { break }
+
+      do {
+        let analyzerResult = try await analyzer.analyze(data: frame, state: getState())
+
+        do {
+          try finished = await onResult(result: analyzerResult, data: frame)
+        } catch {
+          await handleResultFailure(error)
+        }
+      } catch {
+        await handleAnalyzerFailure(error)
+      }
+
+      if finished {
+        await unsubscribeFromFlow()
+        break
+      }
+    }
+  }
+
+  private func handleAnalyzerFailure(_ error: Error) async {
+    let shouldTerminate = await MainActor.run {
+      analyzerLoopErrorListener.onAnalyzerFailure(error)
+    }
+
+    if shouldTerminate {
+      await unsubscribeFromFlow()
+    }
+  }
+
+  private func handleResultFailure(_ error: Error) async {
+    let shouldTerminate = await MainActor.run {
+      analyzerLoopErrorListener.onResultFailure(error)
+    }
+
+    if shouldTerminate {
+      await unsubscribeFromFlow()
+    }
+  }
+
+  func getState() -> State {
+    fatalError("Must be implemented by subclass")
+  }
+
+  func onResult(result _: Output, data _: DataFrame) async throws -> Bool {
+    fatalError("Must be implemented by subclass")
+  }
+}
+
+/// This kind of AnalyzerLoop will process data until the result handler indicates that it has
+/// reached a terminal state and is no longer listening.
+///
+/// Data can be added to a queue for processing by a camera or other producer. It will be consumed by
+/// FIFO. If no data is available, the analyzer pauses until data becomes available.
+///
+/// If the enqueued data exceeds the allowed memory size, the bottom of the data stack will be
+/// dropped and will not be processed. This alleviates memory pressure when producers are faster than
+/// the consuming analyzer.
+class ProcessBoundAnalyzerLoop<DataFrame, State, Output>: AnalyzerLoop<DataFrame, State, Output> {
+  private let resultHandler: StatefulResultHandler<DataFrame, State, Output, Bool>
+
+  init(
+    analyzerPool: AnalyzerPool<DataFrame, State, Output>,
+    resultHandler: StatefulResultHandler<DataFrame, State, Output, Bool>,
+    analyzerLoopErrorListener: AnalyzerLoopErrorListener
+  ) {
+    self.resultHandler = resultHandler
+    super.init(
+      analyzerPool: analyzerPool,
+      analyzerLoopErrorListener: analyzerLoopErrorListener
+    )
+  }
+
+  /// Subscribe to a stream. Loops can only subscribe to a single stream at a time.
+  func subscribeTo(_ stream: AsyncStream<DataFrame>) -> Task<Void, Never>? {
+    subscribeToFlow(stream)
+  }
+
+  /// Unsubscribe from the stream.
+  func unsubscribe() {
+    Task {
+      await unsubscribeFromFlow()
+    }
+  }
+
+  override func onResult(result: Output, data: DataFrame) async -> Bool {
+    await resultHandler.onResult(result: result, data: data)
+  }
+
+  override func getState() -> State {
+    resultHandler.state
   }
 }
