@@ -41,13 +41,13 @@ protocol AggregateResultListener<InterimResult, FinalResult> {
   associatedtype FinalResult
 
   /// The aggregated result of an AnalyzerLoop is available.
-  func onResult(result: FinalResult) async
+  func onResult(result: FinalResult) /// An interim result is available, but the AnalyzerLoop is still processing more data frames.
+    /// This is useful for displaying a debug window or handling state updates during a scan.
+    async
 
-  /// An interim result is available, but the AnalyzerLoop is still processing more data frames.
-  /// This is useful for displaying a debug window or handling state updates during a scan.
-  func onInterimResult(result: InterimResult) async
+  func onInterimResult(result: InterimResult) /// The result aggregator was reset back to its original state.
+    async
 
-  /// The result aggregator was reset back to its original state.
   func onReset() async
 }
 
