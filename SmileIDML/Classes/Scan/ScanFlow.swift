@@ -15,11 +15,11 @@ protocol ScanFlow {
     imageStream: AsyncStream<DataType>,
     parameters: Parameters,
     onError: @escaping (Error) -> Void
-  ) async
-
-  /**
+  ) /**
    * In the event that the scan cannot complete, halt the flow to halt analyzers and free up CPU
    * and memory.
    */
+    async
+
   func cancelFlow()
 }
