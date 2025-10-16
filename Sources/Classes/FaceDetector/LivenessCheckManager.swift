@@ -36,6 +36,8 @@ class LivenessCheckManager: ObservableObject {
   private let minYawAngleThreshold: CGFloat = 0.15
   /// The maximum threshold for yaw (left-right head movement)
   private let maxYawAngleThreshold: CGFloat = 0.25
+  /// The maximum allowed yaw when the head should remain centered
+  private let centeredYawAngleThreshold: CGFloat = 0.10
   /// The minimum threshold for pitch (up-down head movement)
   private let minPitchAngleThreshold: CGFloat = 0.15
   /// The maximum threshold for pitch (up-down head movement)
@@ -173,6 +175,7 @@ class LivenessCheckManager: ObservableObject {
         }
       }
     case .lookUp:
+      guard abs(yawValue) <= centeredYawAngleThreshold else { return }
       if pitchValue < -minPitchAngleThreshold {
         let progress =
           pitchValue
