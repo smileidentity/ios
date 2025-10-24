@@ -3,12 +3,12 @@ import Foundation
 // MARK: - Validation State
 
 /// Represents the validation state of a flow configuration.
-enum ValidationState {
+public enum ValidationState {
     case valid
     case invalid([FlowValidationIssue])
     
     /// Computed property for checking if valid
-    var isValid: Bool {
+    public var isValid: Bool {
         if case .valid = self {
             return true
         }
@@ -16,12 +16,12 @@ enum ValidationState {
     }
     
     /// Computed property for checking if invalid
-    var isInvalid: Bool {
+    public var isInvalid: Bool {
         return !isValid
     }
     
     /// Get all validation issues
-    var issues: [FlowValidationIssue] {
+    public var issues: [FlowValidationIssue] {
         if case .invalid(let issues) = self {
             return issues
         }
@@ -29,7 +29,7 @@ enum ValidationState {
     }
     
     /// Get the primary (first) issue if invalid
-    var primaryIssue: FlowValidationIssue? {
+    public var primaryIssue: FlowValidationIssue? {
         if case .invalid(let issues) = self {
             return issues.first
         }
@@ -40,14 +40,14 @@ enum ValidationState {
 // MARK: - Screen Index
 
 /// Inline value structure for screen indices to avoid confusion with other integers.
-struct ScreenIndex: Equatable, Hashable, CustomStringConvertible {
+public struct ScreenIndex: Equatable, Hashable, CustomStringConvertible {
     let value: Int
     
     init(_ value: Int) {
         self.value = value
     }
     
-    var description: String {
+    public var description: String {
         return "\(value)"
     }
 }
@@ -55,18 +55,18 @@ struct ScreenIndex: Equatable, Hashable, CustomStringConvertible {
 // MARK: - Issue Severity
 
 /// Severity levels for validation issues.
-enum IssueSeverity: String {
+public enum IssueSeverity: String {
     case error
     case warning
     
-    var symbol: String {
+    public var symbol: String {
         switch self {
         case .error: return "❌"
         case .warning: return "⚠️"
         }
     }
     
-    var displayName: String {
+    public var displayName: String {
         return rawValue.capitalized
     }
 }
@@ -74,7 +74,7 @@ enum IssueSeverity: String {
 // MARK: - Flow Validation Issue Protocol
 
 /// Sealed hierarchy for detailed validation issues enabling exhaustive handling.
-protocol FlowValidationIssue {
+public protocol FlowValidationIssue {
     var severity: IssueSeverity { get }
     var message: String { get }
     var suggestedFix: String? { get }
@@ -82,10 +82,10 @@ protocol FlowValidationIssue {
 
 // MARK: - No Screens Defined Issue
 
-struct NoScreensDefinedIssue: FlowValidationIssue {
-    let severity: IssueSeverity
-    let message: String
-    let suggestedFix: String?
+public struct NoScreensDefinedIssue: FlowValidationIssue {
+    public let severity: IssueSeverity
+    public let message: String
+    public let suggestedFix: String?
     
     init(severity: IssueSeverity = .error) {
         self.severity = severity
@@ -96,10 +96,10 @@ struct NoScreensDefinedIssue: FlowValidationIssue {
 
 // MARK: - Empty Screens Block Issue
 
-struct EmptyScreensBlockIssue: FlowValidationIssue {
-    let severity: IssueSeverity
-    let message: String
-    let suggestedFix: String?
+public struct EmptyScreensBlockIssue: FlowValidationIssue {
+    public let severity: IssueSeverity
+    public let message: String
+    public let suggestedFix: String?
     
     init(severity: IssueSeverity = .error) {
         self.severity = severity
@@ -110,10 +110,10 @@ struct EmptyScreensBlockIssue: FlowValidationIssue {
 
 // MARK: - Duplicate Screen Type Issue
 
-struct DuplicateScreenTypeIssue: FlowValidationIssue {
-    let screenType: ScreenType
-    let indices: [ScreenIndex]
-    let severity: IssueSeverity
+public struct DuplicateScreenTypeIssue: FlowValidationIssue {
+    public let screenType: ScreenType
+    public let indices: [ScreenIndex]
+    public let severity: IssueSeverity
     
     init(
         screenType: ScreenType,
@@ -125,21 +125,21 @@ struct DuplicateScreenTypeIssue: FlowValidationIssue {
         self.severity = severity
     }
     
-    var message: String {
+    public var message: String {
         let indicesString = indices.map { $0.description }.joined(separator: ", ")
         return "Duplicate screen type '\(screenType)' found at indices: \(indicesString)"
     }
     
-    var suggestedFix: String? {
+    public var suggestedFix: String? {
         return "Each screen must be unique. Remove the duplicates or change their types."
     }
 }
 
 // MARK: - Invalid Screen Order Issue
 
-struct InvalidScreenOrderIssue: FlowValidationIssue {
-    let detail: String
-    let severity: IssueSeverity
+public struct InvalidScreenOrderIssue: FlowValidationIssue {
+    public let detail: String
+    public let severity: IssueSeverity
     
     init(
         description detail: String,
@@ -149,20 +149,20 @@ struct InvalidScreenOrderIssue: FlowValidationIssue {
         self.severity = severity
     }
     
-    var message: String {
+    public var message: String {
         return "Screen order issue: \(detail)"
     }
     
-    var suggestedFix: String? {
+    public var suggestedFix: String? {
         return "Recommended order: Instructions → Capture → Preview"
     }
 }
 
 // MARK: - Invalid Selfie Capture Config Issue
 
-struct InvalidSelfieCaptureConfigIssue: FlowValidationIssue {
-    let detail: String
-    let severity: IssueSeverity
+public struct InvalidSelfieCaptureConfigIssue: FlowValidationIssue {
+    public let detail: String
+    public let severity: IssueSeverity
     
     init(
         detail: String,
@@ -172,20 +172,20 @@ struct InvalidSelfieCaptureConfigIssue: FlowValidationIssue {
         self.severity = severity
     }
     
-    var message: String {
+    public var message: String {
         return "Invalid selfie capture configuration: \(detail)"
     }
     
-    var suggestedFix: String? {
+    public var suggestedFix: String? {
         return "Ensure enableLiveness and numLivenessImages are properly configured."
     }
 }
 
 // MARK: - Invalid Document Capture Config Issue
 
-struct InvalidDocumentCaptureConfigIssue: FlowValidationIssue {
-    let detail: String
-    let severity: IssueSeverity
+public struct InvalidDocumentCaptureConfigIssue: FlowValidationIssue {
+    public let detail: String
+    public let severity: IssueSeverity
     
     init(
         detail: String,
@@ -195,11 +195,11 @@ struct InvalidDocumentCaptureConfigIssue: FlowValidationIssue {
         self.severity = severity
     }
     
-    var message: String {
+    public var message: String {
         return "Invalid document capture configuration: \(detail)"
     }
     
-    var suggestedFix: String? {
+    public var suggestedFix: String? {
         return "Ensure document-specific properties are valid."
     }
 }
@@ -207,7 +207,7 @@ struct InvalidDocumentCaptureConfigIssue: FlowValidationIssue {
 // MARK: - Equatable Conformance
 
 extension ValidationState: Equatable {
-    static func == (lhs: ValidationState, rhs: ValidationState) -> Bool {
+    public static func == (lhs: ValidationState, rhs: ValidationState) -> Bool {
         switch (lhs, rhs) {
         case (.valid, .valid):
             return true
@@ -220,21 +220,21 @@ extension ValidationState: Equatable {
 }
 
 extension NoScreensDefinedIssue: Equatable {
-    static func == (lhs: NoScreensDefinedIssue, rhs: NoScreensDefinedIssue) -> Bool {
+    public static func == (lhs: NoScreensDefinedIssue, rhs: NoScreensDefinedIssue) -> Bool {
         return lhs.severity == rhs.severity &&
                lhs.message == rhs.message
     }
 }
 
 extension EmptyScreensBlockIssue: Equatable {
-    static func == (lhs: EmptyScreensBlockIssue, rhs: EmptyScreensBlockIssue) -> Bool {
+    public static func == (lhs: EmptyScreensBlockIssue, rhs: EmptyScreensBlockIssue) -> Bool {
         return lhs.severity == rhs.severity &&
                lhs.message == rhs.message
     }
 }
 
 extension DuplicateScreenTypeIssue: Equatable {
-    static func == (lhs: DuplicateScreenTypeIssue, rhs: DuplicateScreenTypeIssue) -> Bool {
+    public static func == (lhs: DuplicateScreenTypeIssue, rhs: DuplicateScreenTypeIssue) -> Bool {
         return lhs.screenType == rhs.screenType &&
                lhs.indices == rhs.indices &&
                lhs.severity == rhs.severity
@@ -242,21 +242,21 @@ extension DuplicateScreenTypeIssue: Equatable {
 }
 
 extension InvalidScreenOrderIssue: Equatable {
-    static func == (lhs: InvalidScreenOrderIssue, rhs: InvalidScreenOrderIssue) -> Bool {
+    public static func == (lhs: InvalidScreenOrderIssue, rhs: InvalidScreenOrderIssue) -> Bool {
         return lhs.detail == rhs.detail &&
                lhs.severity == rhs.severity
     }
 }
 
 extension InvalidSelfieCaptureConfigIssue: Equatable {
-    static func == (lhs: InvalidSelfieCaptureConfigIssue, rhs: InvalidSelfieCaptureConfigIssue) -> Bool {
+    public static func == (lhs: InvalidSelfieCaptureConfigIssue, rhs: InvalidSelfieCaptureConfigIssue) -> Bool {
         return lhs.detail == rhs.detail &&
                lhs.severity == rhs.severity
     }
 }
 
 extension InvalidDocumentCaptureConfigIssue: Equatable {
-    static func == (lhs: InvalidDocumentCaptureConfigIssue, rhs: InvalidDocumentCaptureConfigIssue) -> Bool {
+    public static func == (lhs: InvalidDocumentCaptureConfigIssue, rhs: InvalidDocumentCaptureConfigIssue) -> Bool {
         return lhs.detail == rhs.detail &&
                lhs.severity == rhs.severity
     }
@@ -265,21 +265,21 @@ extension InvalidDocumentCaptureConfigIssue: Equatable {
 // MARK: - Hashable Conformance
 
 extension NoScreensDefinedIssue: Hashable {
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(severity)
         hasher.combine(message)
     }
 }
 
 extension EmptyScreensBlockIssue: Hashable {
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(severity)
         hasher.combine(message)
     }
 }
 
 extension DuplicateScreenTypeIssue: Hashable {
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(screenType)
         hasher.combine(indices)
         hasher.combine(severity)
@@ -287,21 +287,21 @@ extension DuplicateScreenTypeIssue: Hashable {
 }
 
 extension InvalidScreenOrderIssue: Hashable {
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(detail)
         hasher.combine(severity)
     }
 }
 
 extension InvalidSelfieCaptureConfigIssue: Hashable {
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(detail)
         hasher.combine(severity)
     }
 }
 
 extension InvalidDocumentCaptureConfigIssue: Hashable {
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(detail)
         hasher.combine(severity)
     }
@@ -348,13 +348,13 @@ extension ValidationState {
 }
 
 extension ScreenIndex: Comparable {
-    static func < (lhs: ScreenIndex, rhs: ScreenIndex) -> Bool {
+    public static func < (lhs: ScreenIndex, rhs: ScreenIndex) -> Bool {
         return lhs.value < rhs.value
     }
 }
 
 extension IssueSeverity: Comparable {
-    static func < (lhs: IssueSeverity, rhs: IssueSeverity) -> Bool {
+    public static func < (lhs: IssueSeverity, rhs: IssueSeverity) -> Bool {
         switch (lhs, rhs) {
         case (.warning, .error):
             return true

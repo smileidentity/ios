@@ -25,12 +25,12 @@ struct FlowNavigationView: View {
     
     @ViewBuilder
     private var startDestinationView: some View {
-        if let firstScreen = configuration.screens.first,
+        if let firstStep = configuration.steps.first,
            navigationManager.navigationPath.isEmpty {
-            screenView(for: firstScreen)
+            stepView(for: firstStep)
         } else if let currentType = navigationManager.navigationPath.last,
-                  let screen = configuration.screens.first(where: { $0.type == currentType }) {
-            screenView(for: screen)
+                  let step = configuration.steps.first(where: { $0.type == currentType }) {
+            stepView(for: step)
         } else {
             Text("No screens configured")
         }
@@ -38,28 +38,22 @@ struct FlowNavigationView: View {
     
     @ViewBuilder
     private func destinationView(for screenType: ScreenType) -> some View {
-        if let screen = configuration.screens.first(where: { $0.type == screenType }) {
-            screenView(for: screen)
+        if let step = configuration.steps.first(where: { $0.type == screenType }) {
+            stepView(for: step)
         } else {
             Text("Screen not found")
         }
     }
     
     @ViewBuilder
-    private func screenView(for screen: Screen) -> some View {
-        switch screen.type {
-        case .instructions:
-            if let config = screen.configuration as? InstructionsScreenConfiguration {
-                OrchestratedBuilderInstructionsScreen(configuration: config)
-            }
-        case .capture:
-            if let config = screen.configuration as? CaptureScreenConfiguration {
-                OrchestratedBuilderCaptureScreen(configuration: config)
-            }
-        case .preview:
-            if let config = screen.configuration as? PreviewScreenConfiguration {
-                OrchestratedBuilderPreviewScreen(configuration: config)
-            }
+    private func stepView(for step: FlowStep) -> some View {
+        switch step {
+        case .instructions(let config):
+            OrchestratedBuilderInstructionsScreen(configuration: config)
+        case .capture(let config):
+            OrchestratedBuilderCaptureScreen(configuration: config)
+        case .preview(let config):
+            OrchestratedBuilderPreviewScreen(configuration: config)
         }
     }
 }

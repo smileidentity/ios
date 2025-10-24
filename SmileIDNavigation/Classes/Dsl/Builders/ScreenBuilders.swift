@@ -1,30 +1,5 @@
 import SwiftUI
 
-// MARK: - Result Builders
-
-@resultBuilder
-public struct ScreensResultBuilder {
-    public static func buildBlock(_ components: ScreenBuilder...) -> [ScreenBuilder] {
-        return Array(components)
-    }
-    
-    public static func buildOptional(_ component: [ScreenBuilder]?) -> [ScreenBuilder] {
-        return component ?? []
-    }
-    
-    public static func buildEither(first component: [ScreenBuilder]) -> [ScreenBuilder] {
-        return component
-    }
-    
-    public static func buildEither(second component: [ScreenBuilder]) -> [ScreenBuilder] {
-        return component
-    }
-    
-    public static func buildArray(_ components: [[ScreenBuilder]]) -> [ScreenBuilder] {
-        return components.flatMap { $0 }
-    }
-}
-
 // MARK: - Screen Builder
 
 public class ScreenBuilder {
@@ -54,45 +29,18 @@ public class ScreenBuilder {
         return self
     }
     
-    public func build() -> Screen {
+    public func build() -> FlowStep {
         guard let config = configuration else {
             fatalError("Screen configuration not set")
         }
-        return Screen(configuration: config)
+        // Map underlying configuration to typed FlowStep
+        if let instructions = config as? InstructionsScreenConfiguration { return .instructions(instructions) }
+        if let capture = config as? CaptureScreenConfiguration { return .capture(capture) }
+        if let preview = config as? PreviewScreenConfiguration { return .preview(preview) }
+        fatalError("Unknown configuration type: \(config)")
     }
 }
 
-// MARK: - Screens Builder
-
-public class ScreensBuilder {
-    private var screenBuilders: [ScreenBuilder] = []
-    
-    public func screens(@ScreensResultBuilder _ content: () -> [ScreenBuilder]) {
-        let builders = content()
-        
-        // Validate no duplicate screen types
-        let types = builders.map { $0.build().type }
-        let uniqueTypes = Set(types)
-        precondition(
-            types.count == uniqueTypes.count,
-            "Duplicate screen types found"
-        )
-        
-        screenBuilders = builders
-    }
-    
-    public func buildScreens() -> [Screen] {
-        return screenBuilders.map { $0.build() }
-    }
-}
-
-// MARK: - DSL Function
-
-public func screen(_ configure: (ScreenBuilder) -> Void) -> ScreenBuilder {
-    let builder = ScreenBuilder()
-    configure(builder)
-    return builder
-}
 
 // MARK: - Capture Config Builder
 

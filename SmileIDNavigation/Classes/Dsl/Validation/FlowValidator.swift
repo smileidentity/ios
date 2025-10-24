@@ -18,28 +18,27 @@ final class FlowValidator {
     func validate(configuration: FlowConfiguration) -> ValidationState {
         var issues: [FlowValidationIssue] = []
         
-        if configuration.screens.isEmpty {
+        if configuration.steps.isEmpty {
             issues.append(NoScreensDefinedIssue())
             return .invalid(issues)
         }
         
-        // Validate each screen configuration
-        for screen in configuration.screens {
-            if let captureConfig = screen.configuration as? CaptureScreenConfiguration {
-                if let issue = validateCaptureConfig(captureConfig) {
-                    issues.append(issue)
-                }
+        // Validate each capture configuration step
+        for step in configuration.steps {
+            if case let .capture(captureConfig) = step,
+               let issue = validateCaptureConfig(captureConfig) {
+                issues.append(issue)
             }
         }
-        
+
         // Check for duplicate screen types
-        let duplicates = findDuplicateScreenTypes(in: configuration.screens)
+        let duplicates = findDuplicateScreenTypes(in: configuration.steps)
         for (type, indices) in duplicates {
             issues.append(DuplicateScreenTypeIssue(screenType: type, indices: indices))
         }
         
         // Validate screen order
-        if let orderIssue = validateScreenOrder(configuration.screens) {
+        if let orderIssue = validateScreenOrder(configuration.steps) {
             issues.append(orderIssue)
         }
         
@@ -101,9 +100,9 @@ final class FlowValidator {
     
     // MARK: - Private Validation Methods
     
-    private func validateScreenOrder(_ screens: [Screen]) -> FlowValidationIssue? {
-        guard let captureIndex = screens.firstIndex(where: { $0.type == .capture }),
-              let previewIndex = screens.firstIndex(where: { $0.type == .preview }) else {
+    private func validateScreenOrder(_ steps: [FlowStep]) -> FlowValidationIssue? {
+        guard let captureIndex = steps.firstIndex(where: { $0.type == .capture }),
+              let previewIndex = steps.firstIndex(where: { $0.type == .preview }) else {
             return nil
         }
         
@@ -148,12 +147,12 @@ final class FlowValidator {
     }
     
     private func findDuplicateScreenTypes(
-        in screens: [Screen]
+        in steps: [FlowStep]
     ) -> [ScreenType: [ScreenIndex]] {
         var typeIndices: [ScreenType: [ScreenIndex]] = [:]
         
-        for (index, screen) in screens.enumerated() {
-            typeIndices[screen.type, default: []].append(ScreenIndex(index))
+        for (index, step) in steps.enumerated() {
+            typeIndices[step.type, default: []].append(ScreenIndex(index))
         }
         
         return typeIndices.filter { $0.value.count > 1 }

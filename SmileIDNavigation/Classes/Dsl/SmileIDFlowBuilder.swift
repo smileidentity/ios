@@ -23,19 +23,34 @@ public class SmileIDFlowBuilder: ObservableObject {
         smileConfigData = builder.build()
     }
     
-    /// Configure the screens in this flow
-    public func screens(@ScreensResultBuilder _ content: () -> [ScreenBuilder]) {
-        screenBuilders = content()
+    // MARK: - Convenience API (Improved DSL)
+
+    /// Append an instructions screen.
+    @discardableResult
+    public func instructions(_ configure: (InstructionsConfigBuilder) -> Void) -> Self {
+        let b = ScreenBuilder(); b.instructions(configure); screenBuilders.append(b); return self
+    }
+
+    /// Append a capture screen.
+    @discardableResult
+    public func capture(_ configure: (CaptureConfigBuilder) -> Void) -> Self {
+        let b = ScreenBuilder(); b.capture(configure); screenBuilders.append(b); return self
+    }
+
+    /// Append a preview screen.
+    @discardableResult
+    public func preview(_ configure: (PreviewConfigBuilder) -> Void) -> Self {
+        let b = ScreenBuilder(); b.preview(configure); screenBuilders.append(b); return self
     }
     
     /// Validates the current builder configuration without building.
-    func validate() -> ValidationState {
+    public func validate() -> ValidationState {
         return FlowValidator.shared.validateBuilder(screenBuilders: screenBuilders)
     }
     
     // MARK: - Flow Build Result
     
-    enum FlowBuildResult {
+    public enum FlowBuildResult {
         case success(FlowConfiguration)
         case invalid(ValidationState)
         
@@ -63,7 +78,7 @@ public class SmileIDFlowBuilder: ObservableObject {
     
     // MARK: - Build Method
     
-       func build() -> FlowBuildResult {
+    public func build() -> FlowBuildResult {
         // Validate builder state
         let builderValidation = validate()
         
@@ -71,11 +86,11 @@ public class SmileIDFlowBuilder: ObservableObject {
             return .invalid(.invalid(issues))
         }
         
-    // Build configuration (each ScreenBuilder already returns a Screen)
-    let screens = screenBuilders.map { $0.build() }
+        // Build steps (each ScreenBuilder now returns a FlowStep)
+        let steps = screenBuilders.map { $0.build() }
         
         let configuration = FlowConfiguration(
-            screens: screens,
+            steps: steps,
             enableDebugMode: smileConfigData?.enableDebugMode ?? false,
             allowOfflineMode: smileConfigData?.allowOfflineMode ?? false,
             onResult: onResult
@@ -163,9 +178,7 @@ public class SmileConfigBuilder {
 class SmileIDIsolatedContext: ObservableObject {
     static let shared = SmileIDIsolatedContext()
     
-    // Add your dependencies here
-    // Example: var apiService: APIService
-    
+    // dependencies go here
     private init() {
         // Initialize dependencies
     }
@@ -193,7 +206,8 @@ public struct SmileIDFlow: View {
 
 @resultBuilder
 public struct SmileIDFlowBuilderDSL {
-    public static func buildBlock(_ components: Void...) -> Void {
-        return ()
-    }
+    public static func buildBlock(_ components: Void...) -> Void { () }
+    public static func buildExpression(_ expression: Void) -> Void { () }
+    // Allow chaining expressions that return the builder itself (SmileIDFlowBuilder)
+    public static func buildExpression(_ expression: SmileIDFlowBuilder) -> Void { () }
 }

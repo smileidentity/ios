@@ -19,9 +19,9 @@ public class FlowNavigationManager: ObservableObject {
             collectedData[currentScreenType] = result
         }
         // Advance index
-        if currentScreenIndex < configuration.screens.count - 1 {
+        if currentScreenIndex < configuration.steps.count - 1 {
             currentScreenIndex += 1
-            let nextType = configuration.screens[currentScreenIndex].type
+            let nextType = configuration.steps[currentScreenIndex].type
             navigationPath.append(nextType)
         } else {
             // Complete flow
@@ -47,11 +47,19 @@ public class FlowNavigationManager: ObservableObject {
             osVersion: UIDevice.current.systemVersion,
             screenDensity: Float(UIScreen.main.scale),
             locale: Locale.current.identifier,
-            captureMode: configuration.screens.first { $0.type == .capture }
-                .flatMap { ($0.configuration as? CaptureScreenConfiguration)?.mode == .selfie ? "selfie" : "document" } ?? "unknown",
+            captureMode: configuration.steps.first { $0.type == .capture }
+                .flatMap { step -> String in
+                    if case let .capture(cfg) = step { return cfg.mode == .selfie ? "selfie" : "document" }
+                    return "unknown"
+                } ?? "unknown",
             flashUsed: false
         )
-        let integrityHash = String(collectedData.hashValue)
+        var hasher = Hasher()
+        for (type, result) in collectedData.sorted(by: { $0.key.hashValue < $1.key.hashValue }) {
+            hasher.combine(type)
+            hasher.combine(String(describing: result))
+        }
+        let integrityHash = String(hasher.finalize())
         return CapturedFlowData(
             screens: collectedData,
             metadata: metadata,
