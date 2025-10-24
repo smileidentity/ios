@@ -37,7 +37,6 @@ class Metadata {
     addMetadata(key: .clientIP, value: getIPAddress(useIPv4: true))
     addMetadata(key: .deviceModel, value: UIDevice.current.modelName)
     addMetadata(key: .deviceOS, value: UIDevice.current.systemVersion)
-    addMetadata(key: .deviceJailBroken, value: UIDevice.current.isJailBroken)
     addMetadata(key: .fingerprint, value: SmileID.deviceId)
     addMetadata(key: .hostApplication, value: Bundle.main.hostApplicationInfo)
     addMetadata(key: .locale, value: Locale.current.identifier)

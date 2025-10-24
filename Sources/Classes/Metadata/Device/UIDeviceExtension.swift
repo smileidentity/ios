@@ -59,15 +59,4 @@ extension UIDevice {
       return false
     #endif
   }
-
-  var isJailBroken: Bool {
-    if UIDevice.current.isSimulator { return false }
-    if JailBrokenHelper.hasCydiaInstalled() { return true }
-    if JailBrokenHelper.isContainsSuspiciousApps() { return true }
-    if JailBrokenHelper.isSuspiciousSystemPathsExists() { return true }
-    if JailBrokenHelper.canEditSystemFiles() { return true }
-    if JailBrokenHelper.hasSuspiciousSymlinks() { return true }
-    if JailBrokenHelper.checkDYLD() { return true }
-    return false
-  }
 }
