@@ -26,6 +26,10 @@ public extension HTTPHeader {
     HTTPHeader(name: "SmileID-Partner-ID", value: value)
   }
 
+  static func loader(value: String) -> HTTPHeader {
+    HTTPHeader(name: "SmileID-loader", value: value)
+  }
+
   static func requestSignature(value: String) -> HTTPHeader {
     HTTPHeader(name: "SmileID-Request-Signature", value: value)
   }

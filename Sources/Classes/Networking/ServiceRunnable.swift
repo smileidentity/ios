@@ -66,6 +66,7 @@ extension ServiceRunnable {
       headers: [
         .contentType(value: "application/json"),
         .partnerID(value: SmileID.config.partnerId),
+        .loader(value: SmileIDLoader.loader()),
         .sourceSDK(value: "iOS"),
         .sourceSDKVersion(value: SmileID.version),
         .requestTimestamp(value: Date().toISO8601WithMilliseconds())
@@ -80,6 +81,7 @@ extension ServiceRunnable {
       method: .get,
       headers: [
         .partnerID(value: SmileID.config.partnerId),
+        .loader(value: SmileIDLoader.loader()),
         .sourceSDK(value: "iOS"),
         .sourceSDKVersion(value: SmileID.version),
         .requestTimestamp(value: Date().toISO8601WithMilliseconds())
@@ -104,6 +106,7 @@ extension ServiceRunnable {
     var headers: [HTTPHeader] = []
     headers.append(.contentType(value: "multipart/form-data; boundary=\(boundary)"))
     headers.append(.partnerID(value: SmileID.config.partnerId))
+    headers.append(.loader(value: SmileIDLoader.loader()))
     headers.append(.requestSignature(value: signature))
     headers.append(.timestamp(value: timestamp))
     headers.append(.sourceSDK(value: "iOS"))
@@ -194,7 +197,10 @@ extension ServiceRunnable {
     let uploadRequest = try await createUploadRequest(
       url: url,
       method: restMethod,
-      headers: [.contentType(value: "application/zip")],
+      headers: [
+        .contentType(value: "application/zip"),
+        .loader(value: SmileIDLoader.loader())
+      ],
       uploadData: data)
     return try await serviceClient.upload(request: uploadRequest)
   }
