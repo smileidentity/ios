@@ -1,9 +1,64 @@
 import SwiftUI
 
+// MARK: - Screens DSL Result Builder
+
+@resultBuilder
+public struct ScreensDSL {
+    public static func buildBlock(_ components: FlowStep...) -> [FlowStep] { components }
+    public static func buildOptional(_ component: [FlowStep]?) -> [FlowStep] { component ?? [] }
+    public static func buildEither(first component: [FlowStep]) -> [FlowStep] { component }
+    public static func buildEither(second component: [FlowStep]) -> [FlowStep] { component }
+    public static func buildArray(_ components: [[FlowStep]]) -> [FlowStep] { components.flatMap { $0 } }
+}
+
+// MARK: - Top-level Screen Constructors (DSL)
+
+/// Creates an instructions screen step using a declarative DSL block.
+/// Example:
+/// ```swift
+/// instructions { instructions in
+///     instructions.showAttribution = true
+/// }
+/// ```
+public func instructions(_ configure: (InstructionsConfigBuilder) -> Void) -> FlowStep {
+    let builder = InstructionsConfigBuilder()
+    configure(builder)
+    return .instructions(builder.build())
+}
+
+/// Creates a capture screen step.
+/// Example:
+/// ```swift
+/// capture { capture in
+///     capture.mode = .selfie
+///     selfie { selfie in
+///         selfie.allowAgentMode = false
+///     }
+/// }
+/// ```
+public func capture(_ configure: (CaptureConfigBuilder) -> Void) -> FlowStep {
+    let builder = CaptureConfigBuilder()
+    configure(builder)
+    return .capture(builder.build())
+}
+
+/// Creates a preview screen step.
+/// Example:
+/// ```swift
+/// preview { capture in
+///     capture.allowRetake = true
+/// }
+/// ```
+public func preview(_ configure: (PreviewConfigBuilder) -> Void) -> FlowStep {
+    let builder = PreviewConfigBuilder()
+    configure(builder)
+    return .preview(builder.build())
+}
+
 // MARK: - Screen Builder
 
 public class ScreenBuilder {
-    private var configuration: ScreenConfiguration?
+    internal var configuration: ScreenConfiguration?
     
     @discardableResult
     public func instructions(_ configure: (InstructionsConfigBuilder) -> Void) -> ScreenBuilder {
@@ -38,6 +93,28 @@ public class ScreenBuilder {
         if let capture = config as? CaptureScreenConfiguration { return .capture(capture) }
         if let preview = config as? PreviewScreenConfiguration { return .preview(preview) }
         fatalError("Unknown configuration type: \(config)")
+    }
+}
+
+// MARK: - DSL Convenience Initializers
+
+extension ScreenBuilder {
+    /// Convenience init from a concrete `ScreenConfiguration` used by the DSL adapter.
+    convenience init(configuration: ScreenConfiguration) {
+        self.init()
+        self.configuration = configuration
+    }
+    /// Convenience init from a `FlowStep` enum case.
+    convenience init(flowStep: FlowStep) {
+        self.init()
+        switch flowStep {
+        case .instructions(let cfg):
+            self.configuration = cfg
+        case .capture(let cfg):
+            self.configuration = cfg
+        case .preview(let cfg):
+            self.configuration = cfg
+        }
     }
 }
 

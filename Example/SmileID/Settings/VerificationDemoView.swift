@@ -15,35 +15,27 @@ struct VerificationDemoView: View {
                     config.allowOfflineMode = false
                 }
                 
+                builder.screens {
+                    instructions { instructions in
+                        instructions.showAttribution = true
+                    }
+                    capture { capture in
+                        capture.mode = .selfie
+                        capture.selfie { selfie in
+                            selfie.allowAgentMode = false
+                        }
+                    }
+                    preview { preview in
+                        preview.allowRetake = true
+                    }
+                }
+                
                 builder.onResult = { result in
                     switch result {
                     case .success(let data):
                         print("Flow completed: \(data)")
                     case .failure(let error):
                         print("Flow failed: \(error)")
-                    }
-                }
-                builder.screens { screens in
-                    screens.screen { screen in
-                        screen.instructions { instructions in
-                            instructions.showAttribution = true
-                        }
-                    }
-                    
-                    screens.screen { screen in
-                        screen.capture { capture in
-                            capture.mode = .selfie
-                            capture.selfie { selfie in
-                                selfie.allowAgentMode = false
-                            }
-
-                        }
-                    }
-                    
-                    screens.screen { screen in
-                        screen.preview { preview in
-                            preview.allowRetake = true
-                        }
                     }
                 }
             }
