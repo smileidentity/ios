@@ -23,24 +23,30 @@ public class SmileIDFlowBuilder: ObservableObject {
         smileConfigData = builder.build()
     }
     
-    // MARK: - Convenience API (Improved DSL)
-
-    /// Append an instructions screen.
-    @discardableResult
-    public func instructions(_ configure: (InstructionsConfigBuilder) -> Void) -> Self {
-        let b = ScreenBuilder(); b.instructions(configure); screenBuilders.append(b); return self
-    }
-
-    /// Append a capture screen.
-    @discardableResult
-    public func capture(_ configure: (CaptureConfigBuilder) -> Void) -> Self {
-        let b = ScreenBuilder(); b.capture(configure); screenBuilders.append(b); return self
-    }
-
-    /// Append a preview screen.
-    @discardableResult
-    public func preview(_ configure: (PreviewConfigBuilder) -> Void) -> Self {
-        let b = ScreenBuilder(); b.preview(configure); screenBuilders.append(b); return self
+    // MARK: - Screens Block API
+    
+    /// Configure multiple screens in a declarative block
+    /// - Parameter configure: Closure to configure screens
+    ///
+    /// Example:
+    /// ```swift
+    /// builder.screens { screens in
+    ///     screens.screen { screen in
+    ///         screen.instructions { instructions in
+    ///             instructions.showAttribution = true
+    ///         }
+    ///     }
+    ///     screens.screen { screen in
+    ///         screen.capture { capture in
+    ///             capture.mode = .selfie
+    ///         }
+    ///     }
+    /// }
+    /// ```
+    public func screens(_ configure: (ScreensBuilder) -> Void) {
+        let builder = ScreensBuilder()
+        configure(builder)
+        screenBuilders.append(contentsOf: builder.screens)
     }
     
     /// Validates the current builder configuration without building.

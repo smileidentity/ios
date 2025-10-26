@@ -23,19 +23,29 @@ struct VerificationDemoView: View {
                         print("Flow failed: \(error)")
                     }
                 }
-                builder
-                    .instructions { instructions in
-                        instructions.showAttribution = true
-                    }
-                    .capture { capture in
-                        capture.mode = .selfie
-                        capture.selfie { selfie in
-                            selfie.allowAgentMode = false
+                builder.screens { screens in
+                    screens.screen { screen in
+                        screen.instructions { instructions in
+                            instructions.showAttribution = true
                         }
                     }
-                    .preview { preview in
-                        preview.allowRetake = true
+                    
+                    screens.screen { screen in
+                        screen.capture { capture in
+                            capture.mode = .selfie
+                            capture.selfie { selfie in
+                                selfie.allowAgentMode = false
+                            }
+
+                        }
                     }
+                    
+                    screens.screen { screen in
+                        screen.preview { preview in
+                            preview.allowRetake = true
+                        }
+                    }
+                }
             }
         }
   }

@@ -41,6 +41,24 @@ public class ScreenBuilder {
     }
 }
 
+// MARK: - Screens Container Builder
+public class ScreensBuilder {
+    internal var screens: [ScreenBuilder] = []
+    
+    public init() {}
+    
+    /// Creates and adds a screen to the collection
+    /// - Parameter configure: Closure to configure the screen
+    /// - Returns: The created ScreenBuilder (for potential chaining)
+    @discardableResult
+    public func screen(_ configure: (ScreenBuilder) -> Void) -> ScreenBuilder {
+        let builder = ScreenBuilder()
+        configure(builder)
+        screens.append(builder)
+        return builder
+    }
+}
+
 
 // MARK: - Capture Config Builder
 
