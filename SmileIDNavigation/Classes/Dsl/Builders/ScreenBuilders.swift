@@ -22,7 +22,7 @@ public struct ScreensDSL {
 /// ```
 public func instructions(_ instructionsConfigBuilder: (InstructionsConfigBuilder) -> Void) -> FlowStep {
   let builder = InstructionsConfigBuilder()
-    instructionsConfigBuilder(builder)
+  instructionsConfigBuilder(builder)
   return .instructions(builder.build())
 }
 
@@ -38,7 +38,7 @@ public func instructions(_ instructionsConfigBuilder: (InstructionsConfigBuilder
 /// ```
 public func capture(_ captureConfigBuilder: (CaptureConfigBuilder) -> Void) -> FlowStep {
   let builder = CaptureConfigBuilder()
-    captureConfigBuilder(builder)
+  captureConfigBuilder(builder)
   return .capture(builder.build())
 }
 
@@ -51,7 +51,7 @@ public func capture(_ captureConfigBuilder: (CaptureConfigBuilder) -> Void) -> F
 /// ```
 public func preview(_ previewConfigBuilder: (PreviewConfigBuilder) -> Void) -> FlowStep {
   let builder = PreviewConfigBuilder()
-    previewConfigBuilder(builder)
+  previewConfigBuilder(builder)
   return .preview(builder.build())
 }
 
@@ -62,7 +62,7 @@ public class ScreenBuilder {
 
   public func build() -> FlowStep {
     guard let config = configuration else {
-        // todo throw proper errors
+      // todo throw proper errors
       fatalError("Screen configuration not set")
     }
     // Map underlying configuration to typed FlowStep
@@ -109,7 +109,7 @@ public class ScreensBuilder {
   @discardableResult
   public func screen(_ screenBuilder: (ScreenBuilder) -> Void) -> ScreenBuilder {
     let builder = ScreenBuilder()
-      screenBuilder(builder)
+    screenBuilder(builder)
     screens.append(builder)
     return builder
   }
