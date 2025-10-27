@@ -14,7 +14,7 @@ enum IdentityScanState {
   case found(type: ScanType, transitioner: IdentityScanStateTransitioner)
 
   /**
-   * State when satisfaction checking passed.
+   * State when satisfaction ch/ecking passed.
    *
    * Note when Satisfied is reached, [timeoutAt] won't be checked.
    */
@@ -39,8 +39,7 @@ enum IdentityScanState {
    * Type of documents being scanned
    */
   enum ScanType {
-    case documentFront
-    case documentBack
+    case document
     case selfie
   }
 
