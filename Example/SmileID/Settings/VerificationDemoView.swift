@@ -39,7 +39,6 @@ struct VerificationDemoView: View {
       }
     }
   }
-
 }
 
 #if DEBUG

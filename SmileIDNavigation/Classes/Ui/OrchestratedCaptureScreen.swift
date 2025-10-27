@@ -8,12 +8,12 @@ struct OrchestratedBuilderCaptureScreen: View {
   @EnvironmentObject private var navigationManager: FlowNavigationManager
 
   var body: some View {
-      SmileIDCaptureScreen(
-        scanType: .documentBack,
-        onContinue: {
-            // Advance to next screen without a capture result (placeholder)
-            navigationManager.navigateToNext(currentScreenType: .capture)
-        }
-        )
+    SmileIDCaptureScreen(
+      scanType: .documentBack,
+      onContinue: {
+        // Advance to next screen without a capture result (placeholder)
+        navigationManager.navigateToNext(currentScreenType: .capture)
       }
+    )
+  }
 }

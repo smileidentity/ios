@@ -6,13 +6,11 @@ struct OrchestratedBuilderPreviewScreen: View {
   @EnvironmentObject private var navigationManager: FlowNavigationManager
 
   var body: some View {
-      SmileIDPreviewScreen(
-        onContinue: {
-            navigationManager.navigateToNext(currentScreenType: .preview)
-        },
-        onRetry: {
-
-        }
-      )
+    SmileIDPreviewScreen(
+      onContinue: {
+        navigationManager.navigateToNext(currentScreenType: .preview)
+      },
+      onRetry: {}
+    )
   }
 }

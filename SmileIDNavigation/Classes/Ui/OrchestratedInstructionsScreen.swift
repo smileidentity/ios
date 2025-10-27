@@ -6,10 +6,9 @@ struct OrchestratedBuilderInstructionsScreen: View {
   @EnvironmentObject private var navigationManager: FlowNavigationManager
 
   var body: some View {
-      SmileIDInstructionsScreen(
-        onContinue: navigateForward,
-        onCancel: {
-        })
+    SmileIDInstructionsScreen(
+      onContinue: navigateForward,
+      onCancel: {})
   }
 
   private func navigateForward() {
