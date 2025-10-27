@@ -39,8 +39,7 @@ enum IdentityScanState {
    * Type of documents being scanned
    */
   enum ScanType {
-    case documentFront
-    case documentBack
+    case document
     case selfie
   }
 
