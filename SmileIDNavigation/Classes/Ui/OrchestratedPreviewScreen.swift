@@ -1,3 +1,4 @@
+import SmileIDUI
 import SwiftUI
 
 struct OrchestratedBuilderPreviewScreen: View {
@@ -5,22 +6,13 @@ struct OrchestratedBuilderPreviewScreen: View {
   @EnvironmentObject private var navigationManager: FlowNavigationManager
 
   var body: some View {
-    VStack(spacing: 24) {
-      Text("Preview")
-      Text(configuration.allowRetake ? "Retake Allowed" : "Retake Disabled")
-        .font(.footnote)
-        .foregroundColor(.secondary)
-      HStack(spacing: 16) {
-        if configuration.allowRetake {
-          Button("Retake") {
-            navigationManager.navigateBack()
-          }
+      SmileIDPreviewScreen(
+        onContinue: {
+            navigationManager.navigateToNext(currentScreenType: .preview)
+        },
+        onRetry: {
+
         }
-        Button("Finish") {
-          navigationManager.navigateToNext(currentScreenType: .preview)
-        }
-      }
-    }
-    .padding()
+      )
   }
 }
