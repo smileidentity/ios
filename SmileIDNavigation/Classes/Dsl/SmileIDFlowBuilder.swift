@@ -24,28 +24,6 @@ public class SmileIDFlowBuilder: ObservableObject {
 
   // MARK: - Screens Block API
 
-  /// Configure multiple screens in a declarative block
-  /// - Parameter configure: Closure to configure screens
-  ///
-  /// Example:
-  /// ```swift
-  /// builder.screens { screens in
-  ///     instructions { instructions in
-  ///             instructions.showAttribution = true
-  ///         }
-  ///     }
-  ///     capture { capture in
-  ///             capture.mode = .selfie
-  ///         }
-  ///     }
-  /// }
-  /// ```
-  public func screens(_ configure: (ScreensBuilder) -> Void) {
-    let builder = ScreensBuilder()
-    configure(builder)
-    screenBuilders.append(contentsOf: builder.screens)
-  }
-
   /// DSL-based screens configuration using `@ScreensDSL` result builder.
   /// This enables a fully declarative style:
   /// ```swift

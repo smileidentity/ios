@@ -20,9 +20,9 @@ public struct ScreensDSL {
 ///     instructions.showAttribution = true
 /// }
 /// ```
-public func instructions(_ configure: (InstructionsConfigBuilder) -> Void) -> FlowStep {
+public func instructions(_ instructionsConfigBuilder: (InstructionsConfigBuilder) -> Void) -> FlowStep {
   let builder = InstructionsConfigBuilder()
-  configure(builder)
+    instructionsConfigBuilder(builder)
   return .instructions(builder.build())
 }
 
@@ -36,9 +36,9 @@ public func instructions(_ configure: (InstructionsConfigBuilder) -> Void) -> Fl
 ///     }
 /// }
 /// ```
-public func capture(_ configure: (CaptureConfigBuilder) -> Void) -> FlowStep {
+public func capture(_ captureConfigBuilder: (CaptureConfigBuilder) -> Void) -> FlowStep {
   let builder = CaptureConfigBuilder()
-  configure(builder)
+    captureConfigBuilder(builder)
   return .capture(builder.build())
 }
 
@@ -49,9 +49,9 @@ public func capture(_ configure: (CaptureConfigBuilder) -> Void) -> FlowStep {
 ///     capture.allowRetake = true
 /// }
 /// ```
-public func preview(_ configure: (PreviewConfigBuilder) -> Void) -> FlowStep {
+public func preview(_ previewConfigBuilder: (PreviewConfigBuilder) -> Void) -> FlowStep {
   let builder = PreviewConfigBuilder()
-  configure(builder)
+    previewConfigBuilder(builder)
   return .preview(builder.build())
 }
 
@@ -60,32 +60,9 @@ public func preview(_ configure: (PreviewConfigBuilder) -> Void) -> FlowStep {
 public class ScreenBuilder {
   var configuration: ScreenConfiguration?
 
-  @discardableResult
-  public func instructions(_ configure: (InstructionsConfigBuilder) -> Void) -> ScreenBuilder {
-    let builder = InstructionsConfigBuilder()
-    configure(builder)
-    configuration = builder.build()
-    return self
-  }
-
-  @discardableResult
-  public func capture(_ configure: (CaptureConfigBuilder) -> Void) -> ScreenBuilder {
-    let builder = CaptureConfigBuilder()
-    configure(builder)
-    configuration = builder.build()
-    return self
-  }
-
-  @discardableResult
-  public func preview(_ configure: (PreviewConfigBuilder) -> Void) -> ScreenBuilder {
-    let builder = PreviewConfigBuilder()
-    configure(builder)
-    configuration = builder.build()
-    return self
-  }
-
   public func build() -> FlowStep {
     guard let config = configuration else {
+        // todo throw proper errors
       fatalError("Screen configuration not set")
     }
     // Map underlying configuration to typed FlowStep
@@ -130,9 +107,9 @@ public class ScreensBuilder {
   /// - Parameter configure: Closure to configure the screen
   /// - Returns: The created ScreenBuilder (for potential chaining)
   @discardableResult
-  public func screen(_ configure: (ScreenBuilder) -> Void) -> ScreenBuilder {
+  public func screen(_ screenBuilder: (ScreenBuilder) -> Void) -> ScreenBuilder {
     let builder = ScreenBuilder()
-    configure(builder)
+      screenBuilder(builder)
     screens.append(builder)
     return builder
   }
@@ -145,15 +122,15 @@ public class CaptureConfigBuilder {
   private var selfieConfig: SelfieCaptureConfigBuilder?
   private var documentConfig: DocumentCaptureConfigBuilder?
 
-  public func selfie(_ configure: (SelfieCaptureConfigBuilder) -> Void) {
+  public func selfie(_ selfieCaptureConfig: (SelfieCaptureConfigBuilder) -> Void) {
     let builder = SelfieCaptureConfigBuilder()
-    configure(builder)
+    selfieCaptureConfig(builder)
     selfieConfig = builder
   }
 
-  public func document(_ configure: (DocumentCaptureConfigBuilder) -> Void) {
+  public func document(_ documentCaptureConfig: (DocumentCaptureConfigBuilder) -> Void) {
     let builder = DocumentCaptureConfigBuilder()
-    configure(builder)
+    documentCaptureConfig(builder)
     documentConfig = builder
   }
 

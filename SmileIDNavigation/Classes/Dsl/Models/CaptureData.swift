@@ -190,12 +190,6 @@ extension CapturedFlowData: Hashable {
     hasher.combine(captureTimestamp)
     hasher.combine(sdkVersion)
   }
-
-  public var hashValue: Int {
-    var hasher = Hasher()
-    hash(into: &hasher)
-    return hasher.finalize()
-  }
 }
 
 extension ScreenCaptureResult: Hashable {
@@ -215,12 +209,6 @@ extension ScreenCaptureResult: Hashable {
       hasher.combine(quality)
     }
   }
-
-  public var hashValue: Int {
-    var hasher = Hasher()
-    hash(into: &hasher)
-    return hasher.finalize()
-  }
 }
 
 extension CaptureMetadata: Hashable {
@@ -231,12 +219,6 @@ extension CaptureMetadata: Hashable {
     hasher.combine(locale)
     hasher.combine(captureMode)
     hasher.combine(flashUsed)
-  }
-
-  public var hashValue: Int {
-    var hasher = Hasher()
-    hash(into: &hasher)
-    return hasher.finalize()
   }
 }
 
