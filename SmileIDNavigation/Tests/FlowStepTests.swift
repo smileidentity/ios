@@ -32,12 +32,19 @@ final class FlowStepTests: XCTestCase {
     let config = FlowConfiguration(steps: steps)
     let manager = FlowNavigationManager(configuration: config)
     XCTAssertEqual(manager.currentScreenIndex, 0)
-    manager.navigateToNext(currentScreenType: .instructions, result: .consent(granted: true, timestamp: 1))
+    manager.navigateToNext(
+        currentScreenType: .instructions,
+        result: .consent(granted: true, timestamp: 1)
+    )
     XCTAssertEqual(manager.currentScreenIndex, 1)
-    manager.navigateToNext(currentScreenType: .capture, result: .selfieCapture(imageUri: "uri", livenessImages: [], qualityScore: 0.8))
+    manager.navigateToNext(
+        currentScreenType: .capture,
+        result: .selfieCapture(imageUri: "uri", livenessImages: [], qualityScore: 0.8)
+    )
     XCTAssertEqual(manager.currentScreenIndex, 2)
     manager.navigateToNext(currentScreenType: .preview)
-    // After last step completion, index should remain at last (2) and flow result fired via onResult (not asserted here)
+    // After last step completion, index should remain at last (2)
+    // and flow result fired via onResult (not asserted here)
     XCTAssertEqual(manager.currentScreenIndex, 2)
   }
 }

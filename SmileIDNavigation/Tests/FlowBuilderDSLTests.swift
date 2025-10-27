@@ -47,7 +47,10 @@ final class FlowBuilderDSLTests: XCTestCase {
     let result = builder.build()
     switch result {
     case .invalid(let state):
-      XCTAssertTrue(state.issues.contains { $0 is EmptyScreensBlockIssue }, "Expected EmptyScreensBlockIssue for no DSL screens")
+      XCTAssertTrue(
+        state.issues.contains { $0 is EmptyScreensBlockIssue },
+        "Expected EmptyScreensBlockIssue for no DSL screens"
+      )
     case .success:
       XCTFail("Expected invalid build when no screens configured")
     }
@@ -67,7 +70,10 @@ final class FlowBuilderDSLTests: XCTestCase {
       // Configuration builds, but FlowValidator should mark invalid when rendered
       let validation = FlowValidator.shared.validate(configuration: config)
       if case .invalid(let issues) = validation {
-        XCTAssertTrue(issues.contains { $0 is InvalidSelfieCaptureConfigIssue }, "Expected InvalidSelfieCaptureConfigIssue")
+        XCTAssertTrue(
+            issues.contains { $0 is InvalidSelfieCaptureConfigIssue },
+            "Expected InvalidSelfieCaptureConfigIssue"
+        )
       } else {
         XCTFail("Expected invalid configuration due to missing selfie config")
       }

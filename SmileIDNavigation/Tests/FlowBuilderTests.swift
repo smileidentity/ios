@@ -66,16 +66,28 @@ final class FlowBuilderTests: XCTestCase {
     // First run
     if case .success(let config) = builder.build() {
       let manager = FlowNavigationManager(configuration: config)
-      manager.navigateToNext(currentScreenType: .instructions, result: .consent(granted: true, timestamp: 1))
-      manager.navigateToNext(currentScreenType: .capture, result: .selfieCapture(imageUri: "uri", livenessImages: [], qualityScore: 0.9))
+      manager.navigateToNext(
+        currentScreenType: .instructions,
+        result: .consent(granted: true, timestamp: 1)
+      )
+      manager.navigateToNext(
+        currentScreenType: .capture,
+        result: .selfieCapture(imageUri: "uri", livenessImages: [], qualityScore: 0.9)
+      )
       manager.navigateToNext(currentScreenType: .preview)
     } else { XCTFail("Expected success config build") }
 
     // Second run with same sequence
     if case .success(let config) = builder.build() {
       let manager = FlowNavigationManager(configuration: config)
-      manager.navigateToNext(currentScreenType: .instructions, result: .consent(granted: true, timestamp: 1))
-      manager.navigateToNext(currentScreenType: .capture, result: .selfieCapture(imageUri: "uri", livenessImages: [], qualityScore: 0.9))
+      manager.navigateToNext(
+        currentScreenType: .instructions,
+        result: .consent(granted: true, timestamp: 1)
+      )
+      manager.navigateToNext(
+        currentScreenType: .capture,
+        result: .selfieCapture(imageUri: "uri", livenessImages: [], qualityScore: 0.9)
+      )
       manager.navigateToNext(currentScreenType: .preview)
     } else { XCTFail("Expected success config build") }
 

@@ -104,7 +104,8 @@ public struct EmptyScreensBlockIssue: FlowValidationIssue {
   init(severity: IssueSeverity = .error) {
     self.severity = severity
     self.message = "screens { } block is empty - no screens were added"
-    self.suggestedFix = "Add screens using the builder: screen { instructions { ... } | capture { ... } | preview { ... } }"
+      self.suggestedFix = "Add screens using the builder: screen { " +
+          "instructions { ... } | capture { ... } | preview { ... } }"
   }
 }
 
