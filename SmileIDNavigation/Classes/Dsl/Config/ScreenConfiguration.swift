@@ -97,12 +97,12 @@ public enum DocumentSide { case front, back }
 // MARK: - SmileID SDK Configuration
 
 public struct SmileConfig { public let enableDebugMode: Bool
-    public let allowOfflineMode: Bool
-    
-    public init(enableDebugMode: Bool = false, allowOfflineMode: Bool = false) {
-        self.enableDebugMode = enableDebugMode
-        self.allowOfflineMode = allowOfflineMode
-    }
+  public let allowOfflineMode: Bool
+
+  public init(enableDebugMode: Bool = false, allowOfflineMode: Bool = false) {
+    self.enableDebugMode = enableDebugMode
+    self.allowOfflineMode = allowOfflineMode
+  }
 }
 
 // MARK: - Equatable Conformance
@@ -118,16 +118,17 @@ public extension InstructionsScreenConfiguration {
 // MARK: - Hashable Conformance
 
 extension InstructionsScreenConfiguration: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(showAttribution)
-    }
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(showAttribution)
+  }
 }
+
 extension CaptureScreenConfiguration: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(mode)
-        hasher.combine(selfie)
-        hasher.combine(document)
-    }
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(mode)
+    hasher.combine(selfie)
+    hasher.combine(document)
+  }
 }
 
 // MARK: - Instructions Defaults

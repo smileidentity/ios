@@ -71,8 +71,8 @@ final class FlowBuilderDSLTests: XCTestCase {
       let validation = FlowValidator.shared.validate(configuration: config)
       if case .invalid(let issues) = validation {
         XCTAssertTrue(
-            issues.contains { $0 is InvalidSelfieCaptureConfigIssue },
-            "Expected InvalidSelfieCaptureConfigIssue"
+          issues.contains { $0 is InvalidSelfieCaptureConfigIssue },
+          "Expected InvalidSelfieCaptureConfigIssue"
         )
       } else {
         XCTFail("Expected invalid configuration due to missing selfie config")

@@ -33,13 +33,13 @@ final class FlowStepTests: XCTestCase {
     let manager = FlowNavigationManager(configuration: config)
     XCTAssertEqual(manager.currentScreenIndex, 0)
     manager.navigateToNext(
-        currentScreenType: .instructions,
-        result: .consent(granted: true, timestamp: 1)
+      currentScreenType: .instructions,
+      result: .consent(granted: true, timestamp: 1)
     )
     XCTAssertEqual(manager.currentScreenIndex, 1)
     manager.navigateToNext(
-        currentScreenType: .capture,
-        result: .selfieCapture(imageUri: "uri", livenessImages: [], qualityScore: 0.8)
+      currentScreenType: .capture,
+      result: .selfieCapture(imageUri: "uri", livenessImages: [], qualityScore: 0.8)
     )
     XCTAssertEqual(manager.currentScreenIndex, 2)
     manager.navigateToNext(currentScreenType: .preview)
