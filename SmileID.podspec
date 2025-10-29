@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
   s.dependency 'SmileIDSecurity', '11.1.1'
   s.swift_version = '5.7'
   s.source_files = 'Sources/Classes/**/*'
-  s.vendored_frameworks = 'SmileIDSDK.xcframework'
+  s.vendored_frameworks = 'SmileIDSDK-xcframeworks/SmileIDSDK.xcframework'
 end
