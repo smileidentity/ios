@@ -9,28 +9,8 @@ let package = Package(
   products: [
     .library(
       name: "SmileID",
-      targets: ["SmileID"]),
-    .library(
-      name: "SmileIDAnalytics",
-      targets: ["SmileIDAnalytics"]),
-    .library(
-      name: "SmileIDCamera",
-      targets: ["SmileIDCamera"]),
-    .library(
-      name: "SmileIDML",
-      targets: ["SmileIDML"]),
-    .library(
-      name: "SmileIDNavigation",
-      targets: ["SmileIDNavigation"]),
-    .library(
-      name: "SmileIDNetworking",
-      targets: ["SmileIDNetworking"]),
-    .library(
-      name: "SmileIDStorage",
-      targets: ["SmileIDStorage"]),
-    .library(
-      name: "SmileIDUI",
-      targets: ["SmileIDUI"])
+      targets: ["SmileID"]
+    )
   ],
   dependencies: [
     .package(url: "https://github.com/weichsel/ZIPFoundation.git", exact: "0.9.20"),
@@ -43,87 +23,20 @@ let package = Package(
     .target(
       name: "SmileID",
       dependencies: [
+        "SmileIDSDK",
         .product(name: "ZIPFoundation", package: "ZIPFoundation"),
-        .product(name: "FingerprintJS", package: "fingerprintjs-ios"),
         .product(name: "Lottie", package: "lottie-spm"),
-        .product(name: "SmileIDSecurity", package: "smile-id-security"),
-        .product(name: "Sentry", package: "sentry-cocoa")
-      ],
-      path: "Sources",
-      resources: [.process("Resources")]),
-    .target(
-      name: "SmileIDAnalytics",
-      dependencies: [
+        .product(name: "FingerprintJS", package: "fingerprintjs-ios"),
         .product(name: "Sentry", package: "sentry-cocoa"),
-        .product(name: "FingerprintJS", package: "fingerprintjs-ios")
-      ],
-      path: "SmileIDAnalytics/Classes",
-      resources: [.process("../Resources")]),
-    .target(
-      name: "SmileIDCamera",
-      dependencies: [],
-      path: "SmileIDCamera/Classes",
-      resources: [.process("../Resources")]),
-    .target(
-      name: "SmileIDML",
-      dependencies: [],
-      path: "SmileIDML/Classes",
-      resources: [.process("../Resources")]),
-    .target(
-      name: "SmileIDNavigation",
-      dependencies: ["SmileIDUI"],
-      path: "SmileIDNavigation/Classes",
-      resources: [.process("../Resources")]),
-    .target(
-      name: "SmileIDNetworking",
-      dependencies: [
-        .product(name: "ZIPFoundation", package: "ZIPFoundation"),
         .product(name: "SmileIDSecurity", package: "smile-id-security")
       ],
-      path: "SmileIDNetworking/Classes",
-      resources: [.process("../Resources")]),
-    .target(
-      name: "SmileIDStorage",
-      dependencies: [],
-      path: "SmileIDStorage/Classes",
-      resources: [.process("../Resources")]),
-    .target(
-      name: "SmileIDUI",
-      dependencies: [
-        .product(name: "Lottie", package: "lottie-spm")
-      ],
-      path: "SmileIDUI/Classes",
-      resources: [.process("../Resources")]),
-    .testTarget(
-      name: "SmileIDTests",
-      dependencies: ["SmileID"],
-      path: "Tests"),
-    .testTarget(
-      name: "SmileIDUITests",
-      dependencies: ["SmileIDUI", "SmileID"],
-      path: "SmileIDUI/Tests"),
-    .testTarget(
-      name: "SmileIDAnalyticsTests",
-      dependencies: ["SmileIDAnalytics"],
-      path: "SmileIDAnalytics/Tests"),
-    .testTarget(
-      name: "SmileIDCameraTests",
-      dependencies: ["SmileIDCamera"],
-      path: "SmileIDCamera/Tests"),
-    .testTarget(
-      name: "SmileIDMLTests",
-      dependencies: ["SmileIDML"],
-      path: "SmileIDML/Tests"),
-    .testTarget(
-      name: "SmileIDNavigationTests",
-      dependencies: ["SmileIDNavigation"],
-      path: "SmileIDNavigation/Tests"),
-    .testTarget(
-      name: "SmileIDNetworkingTests",
-      dependencies: ["SmileIDNetworking"],
-      path: "SmileIDNetworking/Tests"),
-    .testTarget(
-      name: "SmileIDStorageTests",
-      dependencies: ["SmileIDStorage"],
-      path: "SmileIDStorage/Tests")
-  ])
+      path: "Sources",
+      sources: ["Classes"]
+    ),
+    .binaryTarget(
+      name: "SmileIDSDK",
+      url: "...",
+      checksum: "..."
+    )
+  ]
+)
