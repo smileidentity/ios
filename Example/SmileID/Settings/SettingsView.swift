@@ -1,5 +1,4 @@
 import SmileID
-import SmileIDNavigation
 import SwiftUI
 
 struct SettingsView: View {
@@ -13,20 +12,6 @@ struct SettingsView: View {
             imageName: "doc.badge.gearshape",
             title: "Update Smile Config",
             action: viewModel.onUpdateSmileConfigSelected)
-
-          NavigationLink(destination: VerificationDemoView()) {
-            HStack(alignment: .top) {
-              Image(systemName: "testtube.2")
-                .foregroundColor(SmileID.theme.onLight)
-              VStack(alignment: .leading, spacing: 16) {
-                Text("v12 Sample Screens (WIP)")
-                  .font(SmileID.theme.button)
-                  .foregroundColor(SmileID.theme.onLight)
-                  .multilineTextAlignment(.leading)
-                Divider()
-              }
-            }
-          }
 
           Spacer()
         }
