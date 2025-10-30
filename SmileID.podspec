@@ -5,8 +5,17 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://docs.usesmileid.com/integration-options/mobile/getting-started'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Japhet' => 'japhet@usesmileid.com', 'Juma Allan' => 'juma@usesmileid.com', 'Vansh Gandhi' => 'vansh@usesmileid.com', 'Tobi Omotayo' => 'oluwatobi@usesmileid.com', 'Harun Wangereka' => 'harun@usesmileid.com' }
-  s.source           = { :http => 'https://github.com/smileidentity/ios/releases/download/v11.1.2/SmileIDSDK-xcframeworks-v11.1.2.zip', :sha256 => '0250201418c498cb3541ba2abcfd9d6c185aed15aedc61e8c303b41efec6a34a' }
-  s.vendored_frameworks = 'SmileIDSDK.xcframework'
+  s.source           = { :git => 'https://github.com/smileidentity/ios.git', :tag => "v#{s.version}" }
+  s.prepare_command = <<-CMD
+    set -e
+    FRAMEWORK_ZIP="SmileIDSDK-xcframeworks-v#{s.version}.zip"
+    FRAMEWORK_URL="https://github.com/smileidentity/ios/releases/download/v#{s.version}/SmileIDSDK-xcframeworks-v#{s.version}.zip"
+    rm -rf SmileIDSDK-xcframeworks
+    curl -fL -o "${FRAMEWORK_ZIP}" "${FRAMEWORK_URL}"
+    unzip -qo "${FRAMEWORK_ZIP}"
+    rm "${FRAMEWORK_ZIP}"
+  CMD
+  s.vendored_frameworks = 'SmileIDSDK-xcframeworks/SmileIDSDK.xcframework'
   s.ios.deployment_target = '13.0'
   s.dependency 'ZIPFoundation', '0.9.20'
   s.dependency 'FingerprintJS', '1.6.0'
