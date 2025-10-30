@@ -75,7 +75,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1E59E33D2BA1E64C00D2BAD2 /* PartnerParamsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartnerParamsTests.swift; sourceTree = "<group>"; };
 		1E60ED322A29C306002695FF /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1E60ED332A29C306002695FF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1E60ED352A29C306002695FF /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -116,7 +115,6 @@
 		5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestartableTimerTest.swift; sourceTree = "<group>"; };
 		58C5F1D72B05925800A6080C /* BiometricKycWithIdInputScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricKycWithIdInputScreen.swift; sourceTree = "<group>"; };
-		58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycTest.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Smile ID.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Smile ID.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -139,14 +137,7 @@
 		6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentSelectorViewModel.swift; sourceTree = "<group>"; };
 		6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionRestServiceClientTests.swift; sourceTree = "<group>"; };
-		918321E12A52E36A00D6FB7F /* XCTestExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XCTestExtension.swift; path = ../../Tests/XCTestExtension.swift; sourceTree = "<group>"; };
-		918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyContainerTests.swift; sourceTree = "<group>"; };
-		918321E42A52E36A00D6FB7F /* BaseTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTestCase.swift; sourceTree = "<group>"; };
-		918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingMocks.swift; sourceTree = "<group>"; };
 		91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
-		91D9FBC32AB481FE00A8D36B /* PollingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingTests.swift; sourceTree = "<group>"; };
-		91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateSignatureTests.swift; sourceTree = "<group>"; };
 		94E7560A47E255DD8215C183 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		9755B6A19CF28DE212F24C83 /* SmileID.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SmileID.podspec; path = ../SmileID.podspec; sourceTree = "<group>"; };
 		C8CD2E3DB817D8C6334E9240 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -168,14 +159,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1E59E33C2BA1E5BF00D2BAD2 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				1E59E33D2BA1E64C00D2BAD2 /* PartnerParamsTests.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		20343AF02C206C8D003536F5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -349,10 +332,6 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				918321E22A52E36A00D6FB7F /* DependencyContainer */,
-				918321E52A52E36A00D6FB7F /* Mocks */,
-				918321DF2A52E36A00D6FB7F /* Networking */,
-				918321E12A52E36A00D6FB7F /* XCTestExtension.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 				585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */,
 				204C95A02CDA455600A07386 /* FaceValidatorTests.swift */,
@@ -395,38 +374,6 @@
 				6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */,
 			);
 			path = CodeScanner;
-			sourceTree = "<group>";
-		};
-		918321DF2A52E36A00D6FB7F /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				1E59E33C2BA1E5BF00D2BAD2 /* Model */,
-				918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */,
-				58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */,
-				91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */,
-				91D9FBC32AB481FE00A8D36B /* PollingTests.swift */,
-			);
-			name = Networking;
-			path = ../../Tests/Networking;
-			sourceTree = "<group>";
-		};
-		918321E22A52E36A00D6FB7F /* DependencyContainer */ = {
-			isa = PBXGroup;
-			children = (
-				918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */,
-				918321E42A52E36A00D6FB7F /* BaseTestCase.swift */,
-			);
-			name = DependencyContainer;
-			path = ../../Tests/DependencyContainer;
-			sourceTree = "<group>";
-		};
-		918321E52A52E36A00D6FB7F /* Mocks */ = {
-			isa = PBXGroup;
-			children = (
-				918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */,
-			);
-			name = Mocks;
-			path = ../../Tests/Mocks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
