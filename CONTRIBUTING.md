@@ -74,12 +74,6 @@ swiftformat --lint .
 
 SwiftFormat linting is automatically run on all pull requests. The CI will fail if code is not properly formatted according to the project's configuration.
 
-## SDK Tests
-
-```shell
-bundle exec rake test:package
-```
-
 ## Example App Tests
 
 ```shell
@@ -192,4 +186,3 @@ exit 0
 
 - **[SwiftLint GitHub Repository](https://github.com/realm/SwiftLint)**: Explore Swiftlint to learn more about enforcing Swift styles and conventions.
 - **[SwiftFormat GitHub Repository](https://github.com/nicklockwood/SwiftFormat)**: Explore SwiftFormat for comprehensive Swift code formatting rules and configurations.
-

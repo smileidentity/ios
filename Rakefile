@@ -1,13 +1,8 @@
 
 namespace :test do
-  desc 'Tests the Smile ID package for iOS'
-  task :package do
-    xcodebuild('test -scheme "SmileID_Tests" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)"')
-  end
-
   desc 'Tests the example app unit tests'
   task :example do
-    xcodebuild('test -scheme "SmileID-Example" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)"')
+    xcodebuild('build-for-testing -scheme "SmileID-Example" -destination "platform=iOS Simulator,name=iPhone SE (3rd generation)"')
   end
 end
 

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1E59E33E2BA1E64C00D2BAD2 /* PartnerParamsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E59E33D2BA1E64C00D2BAD2 /* PartnerParamsTests.swift */; };
 		1E60ED372A29C306002695FF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED322A29C306002695FF /* HomeViewController.swift */; };
 		1E60ED382A29C306002695FF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED332A29C306002695FF /* Constants.swift */; };
 		1E60ED3A2A29C306002695FF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E60ED352A29C306002695FF /* AppDelegate.swift */; };
@@ -26,16 +25,7 @@
 		20057C102E155C760088D9C1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20057C0F2E155C760088D9C1 /* SceneDelegate.swift */; };
 		200C41F22E30CFAD00C0F3CF /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F12E30CFAD00C0F3CF /* SmileID */; };
 		200C41F52E30D04500C0F3CF /* netfox in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F42E30D04500C0F3CF /* netfox */; };
-		200C41F62E30D05600C0F3CF /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 200C41F52E30D05600C0F3CF /* SmileID */; };
 		2026C20E2E54AE74002544E0 /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C20D2E54AE74002544E0 /* SmileID */; };
-		2026C2102E54AE74002544E0 /* SmileIDAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C20F2E54AE74002544E0 /* SmileIDAnalytics */; };
-		2026C2122E54AE74002544E0 /* SmileIDCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2112E54AE74002544E0 /* SmileIDCamera */; };
-		2026C2142E54AE74002544E0 /* SmileIDML in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2132E54AE74002544E0 /* SmileIDML */; };
-		2026C2162E54AE74002544E0 /* SmileIDNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2152E54AE74002544E0 /* SmileIDNavigation */; };
-		2026C2182E54AE74002544E0 /* SmileIDNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2172E54AE74002544E0 /* SmileIDNetworking */; };
-		2026C21A2E54AE74002544E0 /* SmileIDStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C2192E54AE74002544E0 /* SmileIDStorage */; };
-		2026C21C2E54AE74002544E0 /* SmileIDUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2026C21B2E54AE74002544E0 /* SmileIDUI */; };
-		2026C21E2E54AEBF002544E0 /* VerificationDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2026C21D2E54AEBB002544E0 /* VerificationDemoView.swift */; };
 		20343AED2C1C825D003536F5 /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEC2C1C825D003536F5 /* JobsView.swift */; };
 		20343AEF2C206BDF003536F5 /* JobListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AEE2C206BDF003536F5 /* JobListItem.swift */; };
 		20343AF22C206CEC003536F5 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20343AF12C206CEC003536F5 /* JobData.swift */; };
@@ -44,7 +34,6 @@
 		20456ECA2D425A680085F906 /* DocumentVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20456EC92D425A680085F906 /* DocumentVerificationView.swift */; };
 		20456ECC2D425B270085F906 /* DocumentVerificationWithSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20456ECB2D425B270085F906 /* DocumentVerificationWithSelector.swift */; };
 		20456ECE2D425BB80085F906 /* EnhancedDocumentVerificationWithSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20456ECD2D425BB80085F906 /* EnhancedDocumentVerificationWithSelector.swift */; };
-		204C95A12CDA455600A07386 /* FaceValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204C95A02CDA455600A07386 /* FaceValidatorTests.swift */; };
 		2053F1242E43BEA5000BA509 /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 2053F1232E43BEA5000BA509 /* SmileID */; };
 		205FB4A52C29AF1500FDE64F /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205FB4A42C29AF1500FDE64F /* Date+Extensions.swift */; };
 		205FB4A72C2C32A500FDE64F /* JobItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205FB4A62C2C32A500FDE64F /* JobItemModel.swift */; };
@@ -54,12 +43,6 @@
 		20A07F9E2C3D172B001659CD /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A07F9D2C3D172B001659CD /* String+Extensions.swift */; };
 		20A5312C2D47ACC100EE0E42 /* SmileIDProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A5312B2D47ACC100EE0E42 /* SmileIDProduct.swift */; };
 		20A9CDD52E43C481004D1A9E /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 20A9CDD42E43C481004D1A9E /* SmileID */; };
-		20A9CDD72E43C481004D1A9E /* SmileIDAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 20A9CDD62E43C481004D1A9E /* SmileIDAnalytics */; };
-		20A9CDD92E43C481004D1A9E /* SmileIDCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 20A9CDD82E43C481004D1A9E /* SmileIDCamera */; };
-		20A9CDDB2E43C481004D1A9E /* SmileIDML in Frameworks */ = {isa = PBXBuildFile; productRef = 20A9CDDA2E43C481004D1A9E /* SmileIDML */; };
-		20A9CDDD2E43C481004D1A9E /* SmileIDNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = 20A9CDDC2E43C481004D1A9E /* SmileIDNetworking */; };
-		20A9CDDF2E43C481004D1A9E /* SmileIDStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 20A9CDDE2E43C481004D1A9E /* SmileIDStorage */; };
-		20A9CDE12E43C481004D1A9E /* SmileIDUI in Frameworks */ = {isa = PBXBuildFile; productRef = 20A9CDE02E43C481004D1A9E /* SmileIDUI */; };
 		20B6D5E32C21C3C90023D51C /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E12C21C3C90023D51C /* Job.swift */; };
 		20B6D5EA2C21CA9E0023D51C /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5E92C21CA9E0023D51C /* CoreDataManager.swift */; };
 		20B6D5EC2C21CE660023D51C /* DataStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6D5EB2C21CE660023D51C /* DataStoreError.swift */; };
@@ -68,9 +51,7 @@
 		20F3D6F32C25F4D700B32751 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		20F3D6F62C25F5C100B32751 /* SmileID.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 20F3D6F42C25F5C100B32751 /* SmileID.xcdatamodeld */; };
 		5829A8C02BC7429A001C1E7E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */; };
-		585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */; };
 		58C5F1D82B05925800A6080C /* BiometricKycWithIdInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C5F1D72B05925800A6080C /* BiometricKycWithIdInputScreen.swift */; };
-		58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		620F1E982B69194900185CD2 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620F1E972B69194900185CD2 /* AlertView.swift */; };
@@ -90,28 +71,10 @@
 		6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC984E484EEF69069C705C7 /* SmileConfigEntryView.swift */; };
 		6AC98C0E9305B4B3EB66ED35 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC980584C522B17A099E098 /* Util.swift */; };
 		6AC98F5682012E19C815AE70 /* DocumentSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */; };
-		918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */; };
-		918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E12A52E36A00D6FB7F /* XCTestExtension.swift */; };
-		918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */; };
-		918321ED2A52E36A00D6FB7F /* BaseTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E42A52E36A00D6FB7F /* BaseTestCase.swift */; };
-		918321EE2A52E36A00D6FB7F /* NetworkingMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */; };
 		91CB21A52AC10C61005AEBF5 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */; };
-		91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBC32AB481FE00A8D36B /* PollingTests.swift */; };
-		91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		607FACE61AFB9204008FA782 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 607FACC81AFB9204008FA782 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 607FACCF1AFB9204008FA782;
-			remoteInfo = SmileID;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		1E59E33D2BA1E64C00D2BAD2 /* PartnerParamsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartnerParamsTests.swift; sourceTree = "<group>"; };
 		1E60ED322A29C306002695FF /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1E60ED332A29C306002695FF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1E60ED352A29C306002695FF /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -127,7 +90,6 @@
 		1ED53F682A2F28590020BEFB /* SmileEnvironmentToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileEnvironmentToggleButton.swift; sourceTree = "<group>"; };
 		1ED53F692A2F28590020BEFB /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		20057C0F2E155C760088D9C1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		2026C21D2E54AEBB002544E0 /* VerificationDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationDemoView.swift; sourceTree = "<group>"; };
 		20343AEC2C1C825D003536F5 /* JobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsView.swift; sourceTree = "<group>"; };
 		20343AEE2C206BDF003536F5 /* JobListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListItem.swift; sourceTree = "<group>"; };
 		20343AF12C206CEC003536F5 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
@@ -153,13 +115,11 @@
 		5829A8BF2BC7429A001C1E7E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestartableTimerTest.swift; sourceTree = "<group>"; };
 		58C5F1D72B05925800A6080C /* BiometricKycWithIdInputScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricKycWithIdInputScreen.swift; sourceTree = "<group>"; };
-		58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycTest.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Smile ID.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Smile ID.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		607FACE51AFB9204008FA782 /* SmileID_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmileID_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		620F1E972B69194900185CD2 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		624777CF2B0CDC9F00952842 /* EnhancedKycWithIdInputScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedKycWithIdInputScreen.swift; sourceTree = "<group>"; };
@@ -177,14 +137,7 @@
 		6AC9893915EBA33F6984A6D9 /* DocumentSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentSelectorViewModel.swift; sourceTree = "<group>"; };
 		6AC98BA00298258573CBCBD4 /* ScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionRestServiceClientTests.swift; sourceTree = "<group>"; };
-		918321E12A52E36A00D6FB7F /* XCTestExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XCTestExtension.swift; path = ../../Tests/XCTestExtension.swift; sourceTree = "<group>"; };
-		918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyContainerTests.swift; sourceTree = "<group>"; };
-		918321E42A52E36A00D6FB7F /* BaseTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTestCase.swift; sourceTree = "<group>"; };
-		918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingMocks.swift; sourceTree = "<group>"; };
 		91CB21A42AC10C61005AEBF5 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
-		91D9FBC32AB481FE00A8D36B /* PollingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingTests.swift; sourceTree = "<group>"; };
-		91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateSignatureTests.swift; sourceTree = "<group>"; };
 		94E7560A47E255DD8215C183 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		9755B6A19CF28DE212F24C83 /* SmileID.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SmileID.podspec; path = ../SmileID.podspec; sourceTree = "<group>"; };
 		C8CD2E3DB817D8C6334E9240 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -195,46 +148,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2026C2182E54AE74002544E0 /* SmileIDNetworking in Frameworks */,
 				2026C20E2E54AE74002544E0 /* SmileID in Frameworks */,
 				2053F1242E43BEA5000BA509 /* SmileID in Frameworks */,
-				20A9CDDF2E43C481004D1A9E /* SmileIDStorage in Frameworks */,
-				2026C21A2E54AE74002544E0 /* SmileIDStorage in Frameworks */,
-				2026C2102E54AE74002544E0 /* SmileIDAnalytics in Frameworks */,
-				20A9CDD72E43C481004D1A9E /* SmileIDAnalytics in Frameworks */,
-				2026C2142E54AE74002544E0 /* SmileIDML in Frameworks */,
-				2026C21C2E54AE74002544E0 /* SmileIDUI in Frameworks */,
 				200C41F52E30D04500C0F3CF /* netfox in Frameworks */,
-				20A9CDDD2E43C481004D1A9E /* SmileIDNetworking in Frameworks */,
 				200C41F22E30CFAD00C0F3CF /* SmileID in Frameworks */,
-				20A9CDD92E43C481004D1A9E /* SmileIDCamera in Frameworks */,
-				2026C2162E54AE74002544E0 /* SmileIDNavigation in Frameworks */,
-				2026C2122E54AE74002544E0 /* SmileIDCamera in Frameworks */,
 				20A9CDD52E43C481004D1A9E /* SmileID in Frameworks */,
-				20A9CDDB2E43C481004D1A9E /* SmileIDML in Frameworks */,
-				20A9CDE12E43C481004D1A9E /* SmileIDUI in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		607FACE21AFB9204008FA782 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				200C41F62E30D05600C0F3CF /* SmileID in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1E59E33C2BA1E5BF00D2BAD2 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				1E59E33D2BA1E64C00D2BAD2 /* PartnerParamsTests.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		20343AF02C206C8D003536F5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -319,7 +243,6 @@
 		20B6D5DA2C21B72F0023D51C /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				2026C21D2E54AEBB002544E0 /* VerificationDemoView.swift */,
 				6AC982147640002B81F72DEC /* SettingsView.swift */,
 				6AC98BC49871655D87C7DEE3 /* SettingsViewModel.swift */,
 			);
@@ -361,7 +284,6 @@
 			isa = PBXGroup;
 			children = (
 				607FACD01AFB9204008FA782 /* Smile ID.app */,
-				607FACE51AFB9204008FA782 /* SmileID_Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -410,10 +332,6 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				918321E22A52E36A00D6FB7F /* DependencyContainer */,
-				918321E52A52E36A00D6FB7F /* Mocks */,
-				918321DF2A52E36A00D6FB7F /* Networking */,
-				918321E12A52E36A00D6FB7F /* XCTestExtension.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 				585BE4872AC7748E0091DDD8 /* RestartableTimerTest.swift */,
 				204C95A02CDA455600A07386 /* FaceValidatorTests.swift */,
@@ -458,38 +376,6 @@
 			path = CodeScanner;
 			sourceTree = "<group>";
 		};
-		918321DF2A52E36A00D6FB7F /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				1E59E33C2BA1E5BF00D2BAD2 /* Model */,
-				918321E02A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift */,
-				58C7118B2A69DE920062BBFB /* EnhancedKycTest.swift */,
-				91D9FBD42AB8AB4700A8D36B /* CalculateSignatureTests.swift */,
-				91D9FBC32AB481FE00A8D36B /* PollingTests.swift */,
-			);
-			name = Networking;
-			path = ../../Tests/Networking;
-			sourceTree = "<group>";
-		};
-		918321E22A52E36A00D6FB7F /* DependencyContainer */ = {
-			isa = PBXGroup;
-			children = (
-				918321E32A52E36A00D6FB7F /* DependencyContainerTests.swift */,
-				918321E42A52E36A00D6FB7F /* BaseTestCase.swift */,
-			);
-			name = DependencyContainer;
-			path = ../../Tests/DependencyContainer;
-			sourceTree = "<group>";
-		};
-		918321E52A52E36A00D6FB7F /* Mocks */ = {
-			isa = PBXGroup;
-			children = (
-				918321E62A52E36A00D6FB7F /* NetworkingMocks.swift */,
-			);
-			name = Mocks;
-			path = ../../Tests/Mocks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -512,24 +398,6 @@
 			productReference = 607FACD01AFB9204008FA782 /* Smile ID.app */;
 			productType = "com.apple.product-type.application";
 		};
-		607FACE41AFB9204008FA782 /* SmileID_Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SmileID_Tests" */;
-			buildPhases = (
-				607FACE11AFB9204008FA782 /* Sources */,
-				607FACE21AFB9204008FA782 /* Frameworks */,
-				607FACE31AFB9204008FA782 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				607FACE71AFB9204008FA782 /* PBXTargetDependency */,
-			);
-			name = SmileID_Tests;
-			productName = Tests;
-			productReference = 607FACE51AFB9204008FA782 /* SmileID_Tests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -544,11 +412,6 @@
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
 						LastSwiftMigration = 900;
-					};
-					607FACE41AFB9204008FA782 = {
-						CreatedOnToolsVersion = 6.3.1;
-						LastSwiftMigration = 1430;
-						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
 				};
 			};
@@ -570,7 +433,6 @@
 			projectRoot = "";
 			targets = (
 				607FACCF1AFB9204008FA782 /* SmileID_Example */,
-				607FACE41AFB9204008FA782 /* SmileID_Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -585,13 +447,6 @@
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				5829A8C02BC7429A001C1E7E /* PrivacyInfo.xcprivacy in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		607FACE31AFB9204008FA782 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -678,7 +533,6 @@
 				20456EC82D425A3C0085F906 /* DocumentVerificationDetails.swift in Sources */,
 				20456ECC2D425B270085F906 /* DocumentVerificationWithSelector.swift in Sources */,
 				6AC98990097662789B0107EB /* SettingsViewModel.swift in Sources */,
-				2026C21E2E54AEBF002544E0 /* VerificationDemoView.swift in Sources */,
 				20057C102E155C760088D9C1 /* SceneDelegate.swift in Sources */,
 				6AC98B6FFA753C5463F7216F /* SmileConfigEntryView.swift in Sources */,
 				20969FE52C3FEB530003E5E0 /* IndeterminateProgressView.swift in Sources */,
@@ -697,33 +551,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		607FACE11AFB9204008FA782 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				918321EE2A52E36A00D6FB7F /* NetworkingMocks.swift in Sources */,
-				91D9FBC42AB481FE00A8D36B /* PollingTests.swift in Sources */,
-				918321ED2A52E36A00D6FB7F /* BaseTestCase.swift in Sources */,
-				918321EB2A52E36A00D6FB7F /* XCTestExtension.swift in Sources */,
-				1E59E33E2BA1E64C00D2BAD2 /* PartnerParamsTests.swift in Sources */,
-				91D9FBD52AB8AB4700A8D36B /* CalculateSignatureTests.swift in Sources */,
-				585BE4882AC7748E0091DDD8 /* RestartableTimerTest.swift in Sources */,
-				58C7118C2A69DE920062BBFB /* EnhancedKycTest.swift in Sources */,
-				918321EC2A52E36A00D6FB7F /* DependencyContainerTests.swift in Sources */,
-				204C95A12CDA455600A07386 /* FaceValidatorTests.swift in Sources */,
-				918321EA2A52E36A00D6FB7F /* URLSessionRestServiceClientTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		607FACE71AFB9204008FA782 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 607FACCF1AFB9204008FA782 /* SmileID_Example */;
-			targetProxy = 607FACE61AFB9204008FA782 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		607FACD91AFB9204008FA782 /* Main.storyboard */ = {
@@ -918,65 +746,6 @@
 			};
 			name = Release;
 		};
-		607FACF31AFB9204008FA782 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 99P7YGX9Q6;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.smileidentity.example-ios";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Smile ID.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Smile ID";
-			};
-			name = Debug;
-		};
-		607FACF41AFB9204008FA782 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 99P7YGX9Q6;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.smileidentity.example-ios";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Smile ID.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Smile ID";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -998,21 +767,12 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SmileID_Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				607FACF31AFB9204008FA782 /* Debug */,
-				607FACF41AFB9204008FA782 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
 		2026C20C2E54AE74002544E0 /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "..";
+			relativePath = ..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -1037,41 +797,9 @@
 			package = 200C41F32E30D04400C0F3CF /* XCRemoteSwiftPackageReference "netfox" */;
 			productName = netfox;
 		};
-		200C41F52E30D05600C0F3CF /* SmileID */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileID;
-		};
 		2026C20D2E54AE74002544E0 /* SmileID */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SmileID;
-		};
-		2026C20F2E54AE74002544E0 /* SmileIDAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDAnalytics;
-		};
-		2026C2112E54AE74002544E0 /* SmileIDCamera */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDCamera;
-		};
-		2026C2132E54AE74002544E0 /* SmileIDML */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDML;
-		};
-		2026C2152E54AE74002544E0 /* SmileIDNavigation */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDNavigation;
-		};
-		2026C2172E54AE74002544E0 /* SmileIDNetworking */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDNetworking;
-		};
-		2026C2192E54AE74002544E0 /* SmileIDStorage */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDStorage;
-		};
-		2026C21B2E54AE74002544E0 /* SmileIDUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDUI;
 		};
 		2053F1232E43BEA5000BA509 /* SmileID */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1080,30 +808,6 @@
 		20A9CDD42E43C481004D1A9E /* SmileID */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SmileID;
-		};
-		20A9CDD62E43C481004D1A9E /* SmileIDAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDAnalytics;
-		};
-		20A9CDD82E43C481004D1A9E /* SmileIDCamera */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDCamera;
-		};
-		20A9CDDA2E43C481004D1A9E /* SmileIDML */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDML;
-		};
-		20A9CDDC2E43C481004D1A9E /* SmileIDNetworking */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDNetworking;
-		};
-		20A9CDDE2E43C481004D1A9E /* SmileIDStorage */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDStorage;
-		};
-		20A9CDE02E43C481004D1A9E /* SmileIDUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SmileIDUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 

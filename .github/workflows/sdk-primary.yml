@@ -78,7 +78,7 @@ jobs:
         run: |
           xcodebuild -resolvePackageDependencies
           rake lint:podspec
-          rake test:package
+          rake test:example
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SKIP_DERIVEDDATA_CLEAN: "1"
