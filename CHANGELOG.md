@@ -1,6 +1,6 @@
 # Release Notes
 
-## 11.1.2 - October 31st, 2025
+## 11.1.2 - October 31, 2025
 
 ### Changed
 * Improved liveness check user experience for faster, smoother head turn detection.
