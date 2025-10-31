@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://docs.usesmileid.com/integration-options/mobile/getting-started'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Japhet' => 'japhet@usesmileid.com', 'Juma Allan' => 'juma@usesmileid.com', 'Vansh Gandhi' => 'vansh@usesmileid.com', 'Tobi Omotayo' => 'oluwatobi@usesmileid.com', 'Harun Wangereka' => 'harun@usesmileid.com' }
-  s.source           = { :git => 'https://github.com/smileidentity/ios.git', :tag => "v#{s.version}" }
+  s.source           = { :http => 'https://github.com/smileidentity/ios/releases/download/v11.1.2/SmileIDSDK-xcframeworks-v11.1.2.zip', :sha256 => '9ab1e32a6c715f0ddcf5e3692fc586b5455ed2ed3578b03f55d5b078aac64fc9' }
   s.prepare_command = <<-CMD
     set -e
     FRAMEWORK_ZIP="SmileIDSDK-xcframeworks-v#{s.version}.zip"
