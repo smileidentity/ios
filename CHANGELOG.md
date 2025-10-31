@@ -1,6 +1,13 @@
 # Release Notes
 
-## 11.1.1 - August 25, 20225
+## 11.1.2 - October 31st, 2025
+
+### Changed
+* Improved liveness check user experience for faster, smoother head turn detection.
+* Added the new EnhancedSmartSelfie™ animations in the instruction and capture screens.
+
+
+## 11.1.1 - August 25, 2025
 
 ### Added
 * Orientation helper to `SelfieViewModel` for consistent selfie image capture.

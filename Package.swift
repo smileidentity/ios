@@ -16,7 +16,7 @@ let package = Package(
     .package(url: "https://github.com/weichsel/ZIPFoundation.git", exact: "0.9.20"),
     .package(url: "https://github.com/airbnb/lottie-spm", exact: "4.5.2"),
     .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", exact: "1.6.0"),
-    .package(url: "https://github.com/smileidentity/smile-id-security", exact: "11.1.1"),
+    .package(url: "https://github.com/smileidentity/smile-id-security", exact: "11.1.2"),
     .package(url: "https://github.com/getsentry/sentry-cocoa", exact: "8.57.0")
   ],
   targets: [
@@ -33,10 +33,9 @@ let package = Package(
       path: "Sources",
       sources: ["Classes"]
     ),
-    .binaryTarget(
-      name: "SmileIDSDK",
-      url: "https://github.com/smileidentity/ios/releases/download/v11.1.2/SmileIDSDK.xcframework.zip",
-      checksum: "ed7bd27ff850b3e608382c54e4a6b67171e8a6c67e68bda3df7180b7f640a1b4"
-    )
+		.binaryTarget(
+			name: "SmileIDSDK",
+			path: "SmileIDSDK.xcframework"
+		)
   ]
 )
