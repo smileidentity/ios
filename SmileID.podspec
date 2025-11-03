@@ -18,19 +18,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '13.0'
   s.swift_version = '5.7'
   s.source_files = 'Sources/Classes/**/*.{swift}'
-  s.prepare_command = <<-CMD
-    set -e
-    FRAMEWORK_ZIP="SmileIDSDK-xcframeworks-v#{s.version}.zip"
-    FRAMEWORK_URL="https://github.com/smileidentity/ios/releases/download/v#{s.version}/SmileIDSDK-xcframeworks-v#{s.version}.zip"
-    rm -rf SmileIDSDK-xcframeworks
-    curl -fL -o "${FRAMEWORK_ZIP}" "${FRAMEWORK_URL}"
-    unzip -qo "${FRAMEWORK_ZIP}"
-    rm "${FRAMEWORK_ZIP}"
-  CMD
-  s.vendored_frameworks = 'SmileIDSDK-xcframeworks/SmileIDSDK.xcframework'
-  s.dependency 'ZIPFoundation', '0.9.20'
-  s.dependency 'FingerprintJS', '1.6.0'
-  s.dependency 'lottie-ios', '4.5.2'
-  s.dependency 'Sentry', '8.57.0'
-  s.dependency 'SmileIDSecurity', '11.1.2'
+  s.dependency 'SmileIDSDK', s.version.to_s
 end
