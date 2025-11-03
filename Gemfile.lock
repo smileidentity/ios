@@ -249,7 +249,7 @@ GEM
     plist (3.7.2)
     public_suffix (4.0.7)
     rainbow (3.1.1)
-    rake (13.3.0)
+    rake (13.3.1)
     representable (3.2.0)
       declarative (< 0.1.0)
       trailblazer-option (>= 0.1.1, < 0.2.0)
@@ -309,7 +309,7 @@ DEPENDENCIES
   arkana
   cocoapods (~> 1.16.2)
   fastlane
-  rake (~> 13.3.0)
+  rake (~> 13.3.1)
   xcodeproj
 
 BUNDLED WITH
