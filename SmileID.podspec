@@ -16,7 +16,11 @@ Pod::Spec.new do |s|
     :tag => "v#{s.version}"
   }
   s.ios.deployment_target = '13.0'
-  s.swift_version = '5.7'
+  s.swift_version = '5.9'
   s.source_files = 'Sources/Classes/**/*.{swift}'
   s.dependency 'SmileIDSDK', s.version.to_s
+
+  s.pod_target_xcconfig = {
+    'BUILD_LIBRARY_FOR_DISTRIBUTION' => 'YES'
+  }
 end
