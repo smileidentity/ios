@@ -14,9 +14,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '13.0'
   s.swift_version = '5.9'
 
-  s.source = {
-    :http => "https://github.com/smileidentity/ios/releases/download/v#{s.version}/SmileIDSDK-xcframeworks-v#{s.version}.zip"
-  }
+  s.source = { :http => "https://github.com/smileidentity/ios/releases/download/v#{s.version}/SmileIDSDK-xcframeworks-v#{s.version}.zip" }
   s.vendored_frameworks = 'SmileIDSDK-xcframeworks/SmileIDSDK.xcframework'
 
   s.dependency 'ZIPFoundation', '0.9.20'
