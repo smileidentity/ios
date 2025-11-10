@@ -16,7 +16,8 @@ let package = Package(
     .package(url: "https://github.com/weichsel/ZIPFoundation.git", exact: "0.9.20"),
     .package(url: "https://github.com/airbnb/lottie-spm", exact: "4.5.2"),
     .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", exact: "1.6.0"),
-    .package(url: "https://github.com/getsentry/sentry-cocoa", exact: "8.57.1")
+    .package(url: "https://github.com/smileidentity/smile-id-security", exact: "11.1.2"),
+    .package(url: "https://github.com/getsentry/sentry-cocoa", exact: "8.57.2")
   ],
   targets: [
     .target(
