@@ -1,5 +1,13 @@
 # Release Notes
 
+## 11.1.3 - November 10, 2025
+
+### Changed
+* Make Lottie a vendored framework for Cocoapods
+
+### Removed
+* Removed SmileIDSecurity dependency
+
 ## 11.1.2 - October 31, 2025
 
 ### Changed
