@@ -31,11 +31,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ios
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: ios
       - name: Checkout docs
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: smileidentity/docs
           path: docs
@@ -61,11 +61,11 @@ jobs:
       contents: write
     steps:
       - name: Checkout main branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: ios
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: docs
           ref: gh-pages
