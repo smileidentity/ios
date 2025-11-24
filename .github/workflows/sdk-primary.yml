@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: SwiftFormat Lint
         uses: docker://ghcr.io/nicklockwood/swiftformat:latest
         with:
@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Write Smile Config
         id: write_smile_config
         # Mask the config so that it doesn't show up in the logs
