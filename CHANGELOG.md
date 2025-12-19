@@ -1,4 +1,13 @@
 # Release Notes
+## 11.1.4 - December 19, 2025
+
+### Added
+* Added luminance checks to normal SelfieCapture flow to detect bad lighting conditions.
+* Added device orientation checks to normal SelfieCapture flow to detect device rotation during capture.
+* Added smile sensitivity parameter for customizable selfie capture thresholds.
+
+### Fixed
+* Fixed face natural position during selfie capture to present a more fluid selfie capture experience
 
 ## 11.1.3 - November 10, 2025
 
