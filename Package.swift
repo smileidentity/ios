@@ -33,8 +33,8 @@ let package = Package(
     ),
     .binaryTarget(
       name: "SmileIDSDK",
-      url: "https://github.com/smileidentity/ios/releases/download/v11.1.4/SmileIDSDK.xcframework.zip",
-      checksum: "6aa2e4200cbeeb05b5727075445dd48c6f82edd3495815a0f8bc1a5135f8855a"
+      url: "https://github.com/smileidentity/ios/releases/download/v11.1.5/SmileIDSDK.xcframework.zip",
+      checksum: "6cbfd860635213f455abb0d07dd8f30fa8793735ef3d86750a77ff4004d1e37f"
     )
   ]
 )

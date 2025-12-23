@@ -1,4 +1,10 @@
 # Release Notes
+
+## 11.1.5 - December 23, 2025
+
+### Added
+* Added smile sensitivity parameter to biometric and document verification.
+
 ## 11.1.4 - December 19, 2025
 
 ### Added
