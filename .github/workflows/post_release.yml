@@ -6,27 +6,6 @@ on:
       - created
 
 jobs:
-  bump-cross-platform-sdks:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Create Flutter PR
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
-            -H "Accept: application/vnd.github.everest-preview+json" \
-            -H "Content-Type: application/json" \
-            https://api.github.com/repos/smileidentity/flutter/actions/workflows/release_ios.yml/dispatches \
-            --data '{"ref": "main","inputs": {"ios_release_version": "${{ github.event.release.tag_name }}" }}'
-      - name: Create React Native PR
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
-            -H "Accept: application/vnd.github.everest-preview+json" \
-            -H "Content-Type: application/json" \
-            https://api.github.com/repos/smileidentity/react-native/actions/workflows/ios_release.yml/dispatches \
-            --data '{"ref": "main","inputs": {"ios_release_version": "${{ github.event.release.tag_name }}" }}'
-
   update-docs-release-notes:
     runs-on: ubuntu-latest
     steps:
@@ -53,34 +32,3 @@ jobs:
           branch: ios-release-notes-${{ github.event.release.tag_name }}
           labels: "release-notes"
           team-reviewers: "smileidentity/mobile"
-
-  generate-docc-reference-docs:
-    runs-on: macos-15
-    timeout-minutes: 10
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v6
-        with:
-          path: ios
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v6
-        with:
-          path: docs
-          ref: gh-pages
-      - name: Setup environment
-        run: cd ios && bundle install
-      - name: Select Xcode Version
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-         xcode-version: 16.4
-      - name: Generate Archive
-        run:  xcodebuild docbuild -workspace ios/Example/SmileID.xcworkspace -scheme SmileID -destination 'generic/platform=iOS' DOCC_OUTPUT_DIR=.
-      - name: Generate Docs Site
-        run: $(xcrun --find docc) process-archive transform-for-static-hosting ios/Example/Pods/SmileID.doccarchive --output-path docs --hosting-base-path ios
-      - name: Push gh-pages branch
-        uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          repository: docs
-          branch: gh-pages

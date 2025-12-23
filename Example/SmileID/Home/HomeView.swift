@@ -57,6 +57,7 @@ struct HomeView: View {
                 userId: viewModel.newUserId,
                 jobId: viewModel.newJobId,
                 allowAgentMode: true,
+                smileSensitivity: .normal,
                 delegate: SmartSelfieEnrollmentDelegate(
                   userId: viewModel.newUserId,
                   onEnrollmentSuccess: viewModel.onSmartSelfieEnrollment,
@@ -186,6 +187,7 @@ private struct SmartSelfieAuthWithUserIdEntry: View {
       SmileID.smartSelfieAuthenticationScreen(
         userId: userId,
         allowAgentMode: true,
+        smileSensitivity: .normal,
         delegate: delegate)
     } else {
       EnterUserIDView(initialUserId: initialUserId) { userId in
