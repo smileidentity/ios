@@ -1,4 +1,4 @@
-import SmileIDUI
+import SmileID
 import SwiftUI
 import UIKit
 
@@ -22,22 +22,7 @@ class SmileIDUIKitTestViewController: UIViewController {
       self.testInstructionsScreen()
     }
 
-    let captureButton = createTestButton(title: "Capture Screen") {
-      self.testCaptureScreen()
-    }
-
-    let previewButton = createTestButton(title: "Preview Screen") {
-      self.testPreviewScreen()
-    }
-
-    let processingButton = createTestButton(title: "Processing Screen") {
-      self.testProcessingScreen()
-    }
-
     stackView.addArrangedSubview(instructionsButton)
-    stackView.addArrangedSubview(captureButton)
-    stackView.addArrangedSubview(previewButton)
-    stackView.addArrangedSubview(processingButton)
 
     view.addSubview(stackView)
 
@@ -69,67 +54,18 @@ class SmileIDUIKitTestViewController: UIViewController {
   }
 
   private func testInstructionsScreen() {
-    let viewController = SmileIDInstructionsScreen.viewController(
-      onContinue: {
-        print("Instructions: Continue tapped")
-        self.dismiss(animated: true)
-      },
-      onCancel: {
-        print("Instructions: Cancel tapped")
-        self.dismiss(animated: true)
-      }
+    OrchestratedSelfieCaptureScreen(
+      userId: "",
+      jobId: "",
+      isEnroll: true,
+      allowNewEnroll: true,
+      allowAgentMode: true,
+      showAttribution: true,
+      showInstructions: true,
+      smileSensitivity: .relaxed,
+      extraPartnerParams: [:],
+      skipApiSubmission: true,
+      onResult: (any SmartSelfieResultDelegate).self as! SmartSelfieResultDelegate
     )
-
-    viewController.title = "Instructions"
-    let navController = UINavigationController(rootViewController: viewController)
-    present(navController, animated: true)
-  }
-
-  private func testCaptureScreen() {
-    let viewController = SmileIDCaptureScreen.viewController(
-      scanType: .documentFront,
-      onContinue: {
-        print("Capture: Continue tapped")
-        self.dismiss(animated: true)
-      }
-    )
-
-    viewController.title = "Document Capture"
-    let navController = UINavigationController(rootViewController: viewController)
-    present(navController, animated: true)
-  }
-
-  private func testPreviewScreen() {
-    let viewController = SmileIDPreviewScreen.viewController(
-      onContinue: {
-        print("Preview: Continue tapped")
-        self.dismiss(animated: true)
-      },
-      onRetry: {
-        print("Preview: Retry tapped")
-        self.dismiss(animated: true)
-      }
-    )
-
-    viewController.title = "Preview"
-    let navController = UINavigationController(rootViewController: viewController)
-    present(navController, animated: true)
-  }
-
-  private func testProcessingScreen() {
-    let viewController = SmileIDProcessingScreen.viewController(
-      onContinue: {
-        print("Processing: Continue tapped")
-        self.dismiss(animated: true)
-      },
-      onCancel: {
-        print("Processing: Cancel tapped")
-        self.dismiss(animated: true)
-      }
-    )
-
-    viewController.title = "Processing"
-    let navController = UINavigationController(rootViewController: viewController)
-    present(navController, animated: true)
   }
 }

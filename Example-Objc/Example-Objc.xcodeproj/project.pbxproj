@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		202DBDE82D551F620078D980 /* SmileID in Frameworks */ = {isa = PBXBuildFile; productRef = 202DBDE72D551F620078D980 /* SmileID */; };
-		203A68A92E4DDD57007F2CEC /* SmileIDNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 203A68A82E4DDD57007F2CEC /* SmileIDNavigation */; };
-		203A68AB2E4DDD57007F2CEC /* SmileIDUI in Frameworks */ = {isa = PBXBuildFile; productRef = 203A68AA2E4DDD57007F2CEC /* SmileIDUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,9 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				203A68A92E4DDD57007F2CEC /* SmileIDNavigation in Frameworks */,
 				202DBDE82D551F620078D980 /* SmileID in Frameworks */,
-				203A68AB2E4DDD57007F2CEC /* SmileIDUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,8 +92,6 @@
 			name = "Example-Objc";
 			packageProductDependencies = (
 				202DBDE72D551F620078D980 /* SmileID */,
-				203A68A82E4DDD57007F2CEC /* SmileIDNavigation */,
-				203A68AA2E4DDD57007F2CEC /* SmileIDUI */,
 			);
 			productName = "Example-Objc";
 			productReference = 2054D6E92D524AAD0067713A /* Example-Objc.app */;
@@ -128,7 +122,7 @@
 			mainGroup = 2054D6E02D524AAD0067713A;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				202DBDE62D551F620078D980 /* XCLocalSwiftPackageReference "../../smile-identity-ios" */,
+				202DBDE62D551F620078D980 /* XCLocalSwiftPackageReference ".." */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2054D6EA2D524AAD0067713A /* Products */;
@@ -366,26 +360,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		202DBDE62D551F620078D980 /* XCLocalSwiftPackageReference "../../smile-identity-ios" */ = {
+		202DBDE62D551F620078D980 /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../smile-identity-ios";
+			relativePath = ..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		202DBDE72D551F620078D980 /* SmileID */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 202DBDE62D551F620078D980 /* XCLocalSwiftPackageReference ".." */;
 			productName = SmileID;
-		};
-		203A68A82E4DDD57007F2CEC /* SmileIDNavigation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 202DBDE62D551F620078D980 /* XCLocalSwiftPackageReference "../../smile-identity-ios" */;
-			productName = SmileIDNavigation;
-		};
-		203A68AA2E4DDD57007F2CEC /* SmileIDUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 202DBDE62D551F620078D980 /* XCLocalSwiftPackageReference "../../smile-identity-ios" */;
-			productName = SmileIDUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
