@@ -1,5 +1,11 @@
 # Release Notes
 
+## 11.1.7 - January 23, 2026
+
+### Added
+* Added more device intelligence
+* Additional image information
+
 ## 11.1.5 - December 23, 2025
 
 ### Added
