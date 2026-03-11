@@ -1,5 +1,18 @@
 # Release Notes
 
+## 11.1.8 - March 11, 2026
+
+### Added
+* Added `forceAgentMode` option on SmartSelfie Enrollment, SmartSelfie Authentication, Document Verification, Enhanced Document Verification and Biometric KYC. When enabled, the back camera is always used without showing a toggle switch to the user.
+
+### Fixed
+* Fixed decoding error when parsing `SmartSelfieResponse` by changing
+`partnerParams` type from `[String: String]` to `PartnerParams`.
+* Fixed `skipApiSubmission` in Biometric, Document and EnhancedDocument Jobs
+* Delete all images when onRetry is invoked to avoid submitting the same images again
+* Updated the document compression to stay under 3mbs per document side
+* Updated `allowAgentMode` to use back camera by default if enabled
+
 ## 11.1.7 - January 23, 2026
 
 ### Added
