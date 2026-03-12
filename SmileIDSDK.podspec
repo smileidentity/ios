@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name    = 'SmileIDSDK'
-  s.version = '11.1.8'
+  s.version = '11.1.9'
   s.summary = 'Binary SmileID SDK module.'
   s.homepage = 'https://docs.usesmileid.com/integration-options/mobile/getting-started'
   s.license  = { :type => 'MIT' }
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   }
   s.ios.deployment_target = '13.0'
   s.swift_version = '5.9'
-  s.source = { :http => 'https://github.com/smileidentity/ios/releases/download/v11.1.8/SmileIDSDK-xcframeworks-v11.1.8.zip', :sha256 => 'bc9f2899c040c4a2ba75652b21bbeb8041ba036b8a7ab656442c5b7260191bef' }
+  s.source = { :http => 'https://github.com/smileidentity/ios/releases/download/v11.1.9/SmileIDSDK-xcframeworks-v11.1.9.zip', :sha256 => 'f0702d05d97038a2fb66ac684a2546ad613d0def19c2dffc1624ac177374650e' }
   s.vendored_frameworks = 'SmileIDSDK-xcframeworks/SmileIDSDK.xcframework', 'SmileIDSDK-xcframeworks/Lottie.xcframework'
 
   s.dependency 'ZIPFoundation', '0.9.20'
