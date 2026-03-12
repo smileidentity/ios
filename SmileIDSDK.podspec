@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name    = 'SmileIDSDK'
-  s.version          = '11.1.9'
+  s.version = '11.1.9'
   s.summary = 'Binary SmileID SDK module.'
   s.homepage = 'https://docs.usesmileid.com/integration-options/mobile/getting-started'
   s.license  = { :type => 'MIT' }
