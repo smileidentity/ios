@@ -1,5 +1,10 @@
 # Release Notes
 
+## 11.1.9 - March 12, 2026
+
+### Fixed
+* Fixed the PartnerParams encoding and decoding to use an int instead of a string 
+
 ## 11.1.8 - March 11, 2026
 
 ### Added
