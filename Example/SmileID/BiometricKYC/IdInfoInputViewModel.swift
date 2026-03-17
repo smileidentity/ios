@@ -16,7 +16,9 @@ class IdInfoInputViewModel: ObservableObject {
 
   // MARK: - Other Properties
 
-  var isContinueEnabled: Bool { inputs.values.allSatisfy { !$0.isEmpty } }
+  var isContinueEnabled: Bool {
+    inputs.values.allSatisfy { !$0.isEmpty }
+  }
 
   var currentIdInfo: IdInfo {
     IdInfo(

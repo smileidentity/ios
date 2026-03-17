@@ -1,6 +1,5 @@
-import XCTest
-
 @testable import SmileID
+import XCTest
 
 class FaceValidatorTests: XCTestCase {
   var faceValidator: FaceValidator!

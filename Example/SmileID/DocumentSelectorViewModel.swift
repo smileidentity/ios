@@ -3,10 +3,10 @@ import Foundation
 import SmileID
 
 class DocumentSelectorViewModel: ObservableObject {
-  // Input Properties
+  /// Input Properties
   let jobType: JobType
 
-  // Other Properties
+  /// Other Properties
   private var subscriber: AnyCancellable?
 
   // UI Properties

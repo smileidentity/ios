@@ -20,7 +20,9 @@ struct DocumentVerificationIdTypeSelector: View {
   @ObservedObject private var viewModel: DocumentSelectorViewModel
 
   @State private var selectedCountry: ValidDocument?
-  private var idTypesForCountry: [IdType]? { selectedCountry?.idTypes }
+  private var idTypesForCountry: [IdType]? {
+    selectedCountry?.idTypes
+  }
 
   init(jobType: JobType, onIdTypeSelected: @escaping OnIdTypeSelectedCallback) {
     self.jobType = jobType
