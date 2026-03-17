@@ -127,7 +127,7 @@ struct HomeView: View {
   }
 }
 
-// This will no longer be needed after in-flow navigation work is complete.
+/// This will no longer be needed after in-flow navigation work is complete.
 struct ProductContainerView<Content: View>: View {
   let onCancel: () -> Void
   @ViewBuilder let content: () -> Content
@@ -149,10 +149,10 @@ struct ProductContainerView<Content: View>: View {
   }
 }
 
-// We need to define a separate proxy delegate because it's the same protocol for both Enrollment
-// and Authentication. However, since the result is still processing, the result parameter is not
-// yet populated (which is what contains the jobType). On Enroll, we need to perform a different
-// action (namely, save userId to clipboard)
+/// We need to define a separate proxy delegate because it's the same protocol for both Enrollment
+/// and Authentication. However, since the result is still processing, the result parameter is not
+/// yet populated (which is what contains the jobType). On Enroll, we need to perform a different
+/// action (namely, save userId to clipboard)
 struct SmartSelfieEnrollmentDelegate: SmartSelfieResultDelegate {
   let userId: String
   let onEnrollmentSuccess: (

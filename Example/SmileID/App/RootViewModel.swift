@@ -4,7 +4,7 @@ import SwiftUI
 class RootViewModel: ObservableObject {
   @Published private(set) var decodedConfig: Config?
 
-  // This is set by the SettingsView
+  /// This is set by the SettingsView
   @AppStorage("smileConfig") private var configJson = (
     UserDefaults.standard.string(forKey: "smileConfig") ?? ""
   )

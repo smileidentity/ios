@@ -32,8 +32,7 @@ extension Job {
     fetchRequest.predicate = predicate
     fetchRequest.sortDescriptors = sortDescriptors
     do {
-      let results = try context.fetch(fetchRequest)
-      return results
+      return try context.fetch(fetchRequest)
     } catch {
       throw DataStoreError.fetchError
     }

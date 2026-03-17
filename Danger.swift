@@ -2,7 +2,9 @@
 import Danger
 
 private extension Danger.File {
-  var isInTests: Bool { hasPrefix("Example/Tests/") }
+  var isInTests: Bool {
+    hasPrefix("Example/Tests/")
+  }
 
   var isSourceFile: Bool {
     hasSuffix(".swift") || hasSuffix(".h") || hasSuffix(".m")
@@ -15,7 +17,7 @@ let hasSourceChanges = (danger.git.modifiedFiles + danger.git.createdFiles).cont
 // SwiftLint
 SwiftLint.lint(inline: true, configFile: ".swiftlint.yml")
 
-// Encourage smaller PRs
+/// Encourage smaller PRs
 let bigPRThreshold = 70
 if danger.git.modifiedFiles.count > bigPRThreshold {
   warn("Pull Request size seems relatively large. If this Pull Request contains multiple changes,splitting each into separate PR will helps faster, easier review.")

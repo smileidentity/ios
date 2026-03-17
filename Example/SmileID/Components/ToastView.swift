@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct Toast<Presenting, Content>: View where Presenting: View, Content: View {
+struct Toast<Presenting: View, Content: View>: View {
   @Binding var isPresented: Bool
   let presenter: () -> Presenting
   let content: () -> Content

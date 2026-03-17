@@ -74,7 +74,7 @@ class HomeViewModel: ObservableObject,
     showToast = true
   }
 
-  // Called for SmartSelfie Enrollment by a proxy delegate in HomeView
+  /// Called for SmartSelfie Enrollment by a proxy delegate in HomeView
   func onSmartSelfieEnrollment(
     userId: String,
     selfieImage: URL,
@@ -112,7 +112,7 @@ class HomeViewModel: ObservableObject,
     }
   }
 
-  // Called only for SmartSelfie Authentication
+  /// Called only for SmartSelfie Authentication
   func didSucceed(
     selfieImage: URL,
     livenessImages _: [URL],

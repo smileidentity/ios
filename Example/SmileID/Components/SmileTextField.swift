@@ -7,7 +7,7 @@ struct SmileTextField: View {
   let backgroundColor = SmileID.theme.backgroundLight
   let textColor = SmileID.theme.onLight
 
-  // The @State Object
+  /// The @State Object
   @Binding var field: String
 
   var placeholder = ""

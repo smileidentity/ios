@@ -1,4 +1,4 @@
-/// The result of a Enhanced KYC job submission.
+// The result of a Enhanced KYC job submission.
 import Foundation
 import SmileID
 
