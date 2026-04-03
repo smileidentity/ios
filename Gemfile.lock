@@ -27,6 +27,9 @@ GEM
     base64 (0.3.0)
     benchmark (0.5.0)
     bigdecimal (4.0.1)
+    bundler-audit (0.9.3)
+      bundler (>= 1.2.0)
+      thor (~> 1.0)
     claide (1.1.0)
     cocoapods (1.16.2)
       addressable (~> 2.8)
@@ -97,6 +100,7 @@ GEM
     rexml (3.4.4)
     ruby-macho (2.5.1)
     securerandom (0.4.1)
+    thor (1.5.0)
     typhoeus (1.4.1)
       ethon (>= 0.9.0)
     tzinfo (2.0.6)
@@ -118,6 +122,7 @@ PLATFORMS
 
 DEPENDENCIES
   arkana
+  bundler-audit
   cocoapods (~> 1.16.2)
   rake (~> 13.3.1)
   xcodeproj

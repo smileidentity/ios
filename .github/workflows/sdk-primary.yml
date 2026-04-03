@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: SwiftFormat Lint
         uses: docker://ghcr.io/nicklockwood/swiftformat:latest
         with:
@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Write Smile Config
         id: write_smile_config
         # Mask the config so that it doesn't show up in the logs
@@ -59,7 +59,7 @@ jobs:
           echo "Current developer directory: $(xcode-select -p)"
           ls -1 /Applications | grep Xcode || true
       - name: Cache SwiftPM
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         with:
           path: |
             ~/.swiftpm
@@ -67,7 +67,7 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: ${{ runner.os }}-spm-
       - name: Cache CocoaPods (validator downloads)
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         with:
           path: |
             ~/Library/Caches/CocoaPods
