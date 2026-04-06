@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/fingerprintjs/fingerprintjs-ios",
       "state" : {
-        "revision" : "2e2ead3d02c46736d9b4a66373700489113e293a",
-        "version" : "1.6.0"
+        "revision" : "f31f75dfc5a12ea224bbf29dc5aa46b7168351ed",
+        "version" : "1.7.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/airbnb/lottie-spm",
       "state" : {
-        "revision" : "04f2fd18cc9404a0a0917265a449002674f24ec9",
-        "version" : "4.5.2"
+        "revision" : "69faaefa7721fba9e434a52c16adf4329c9084db",
+        "version" : "4.6.0"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
       "state" : {
-        "revision" : "8627bbc0e663238d516b541d8fc7edd62a627fde",
-        "version" : "8.57.3"
+        "revision" : "d459ff99b1912c9603c9e607e030b4b98e2e199a",
+        "version" : "9.9.0"
       }
     },
     {
