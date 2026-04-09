@@ -1,0 +1,119 @@
+name: Semgrep SAST
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  semgrep:
+    name: Semgrep Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: semgrep/semgrep:1.157.0
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+
+      - name: Run Semgrep
+        continue-on-error: true
+        run: semgrep scan --config p/security-audit --sarif -o semgrep.sarif
+
+      - name: Upload SARIF to GitHub Security
+        if: always()
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4
+        with:
+          sarif_file: semgrep.sarif
+
+      - name: Comment findings on PR
+        if: github.event_name == 'pull_request' && always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          python3 << 'PYEOF'
+          import json, os, urllib.request
+
+          marker = "<!-- semgrep-results -->"
+          repo = os.environ.get("GITHUB_REPOSITORY", "")
+          pr = os.environ.get("PR_NUMBER", "")
+          token = os.environ.get("GH_TOKEN", "")
+          api = f"https://api.github.com/repos/{repo}/issues/{pr}/comments"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+          }
+
+          findings = []
+          try:
+              with open("semgrep.sarif") as f:
+                  sarif = json.load(f)
+              for run in sarif.get("runs", []):
+                  for result in run.get("results", []):
+                      rule_id = result.get("ruleId", "unknown")
+                      message = result.get("message", {}).get("text", "")
+                      level = result.get("level", "warning")
+                      for loc in result.get("locations", []):
+                          phys = loc.get("physicalLocation", {})
+                          path = phys.get("artifactLocation", {}).get("uri", "?")
+                          line = phys.get("region", {}).get("startLine", "?")
+                          findings.append({"rule": rule_id, "message": message,
+                                           "level": level, "file": path, "line": line})
+          except (FileNotFoundError, json.JSONDecodeError):
+              pass
+
+          if findings:
+              body = f"{marker}\n## 🔍 Semgrep Security Scan Results\n\n"
+              body += f"**{len(findings)} finding(s)** detected by "
+              body += "[`p/security-audit`](https://semgrep.dev/p/security-audit) ruleset.\n\n"
+              body += "| # | Severity | Rule | File | Line | Message |\n"
+              body += "|---|----------|------|------|------|---------|\n"
+              for i, f in enumerate(findings[:25], 1):
+                  rule = f["rule"].split(".")[-1] if "." in f["rule"] else f["rule"]
+                  msg = f["message"].replace("|", "\\|").replace("\n", " ")
+                  msg = (msg[:80] + "...") if len(msg) > 80 else msg
+                  body += f'| {i} | {f["level"].upper()} | `{rule}` '
+                  body += f'| `{f["file"]}` | {f["line"]} | {msg} |\n'
+              if len(findings) > 25:
+                  body += f"\n*... and {len(findings) - 25} more. "
+                  body += "See full results in workflow logs.*\n"
+              body += "\n> ⚠️ These findings are **non-blocking**. "
+              body += "Please review and address as appropriate.\n"
+          else:
+              body = f"{marker}\n## 🔍 Semgrep Security Scan Results\n\n"
+              body += "✅ No security findings detected by "
+              body += "[`p/security-audit`](https://semgrep.dev/p/security-audit) ruleset.\n"
+
+          existing_id = None
+          try:
+              req = urllib.request.Request(api, headers=headers)
+              resp = urllib.request.urlopen(req)
+              for c in json.loads(resp.read()):
+                  if marker in c.get("body", ""):
+                      existing_id = c["id"]
+                      break
+          except Exception:
+              pass
+
+          data = json.dumps({"body": body}).encode()
+          if existing_id:
+              url = f"https://api.github.com/repos/{repo}/issues/comments/{existing_id}"
+              req = urllib.request.Request(url, data=data, headers=headers, method="PATCH")
+          else:
+              req = urllib.request.Request(api, data=data, headers=headers, method="POST")
+
+          try:
+              urllib.request.urlopen(req)
+              action = "Updated" if existing_id else "Posted"
+              print(f"{action} comment with {len(findings)} finding(s)")
+          except Exception as e:
+              print(f"Warning: Could not comment on PR: {e}")
+          PYEOF
