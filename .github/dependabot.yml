@@ -2,6 +2,7 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
+    open-pull-requests-limit: 5
     schedule:
       interval: weekly
       day: monday
@@ -11,6 +12,7 @@ updates:
           - '*'
   - package-ecosystem: "swift"
     directory: "/"
+    open-pull-requests-limit: 5
     schedule:
       interval: "weekly"
       day: monday
@@ -18,9 +20,9 @@ updates:
       swift-dependencies:
         patterns:
           - '*'
-          
   - package-ecosystem: "bundler"
     directory: "/"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
       day: monday
@@ -28,4 +30,3 @@ updates:
       bundler-dependencies:
         patterns:
           - '*'
-
