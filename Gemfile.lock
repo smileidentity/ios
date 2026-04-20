@@ -93,7 +93,7 @@ GEM
     netrc (0.11.0)
     public_suffix (4.0.7)
     rainbow (3.1.1)
-    rake (13.3.1)
+    rake (13.4.2)
     rexml (3.4.4)
     ruby-macho (2.5.1)
     securerandom (0.4.1)
@@ -119,7 +119,7 @@ PLATFORMS
 DEPENDENCIES
   arkana
   cocoapods (~> 1.16.2)
-  rake (~> 13.3.1)
+  rake (~> 13.4.2)
   xcodeproj
 
 BUNDLED WITH
