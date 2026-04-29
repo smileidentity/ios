@@ -1,5 +1,11 @@
 # Release Notes
 
+## 11.1.10 - April 29, 2026
+
+### Fixed
+* Fixed BiometricKYC `onSuccess` returning stale file URLs that pointed to non-existent files after job submission
+* Fixed duplicate Sentry SDK linking when host apps also depend on Sentry by vendoring it as an xcframework
+
 ## 11.1.9 - March 12, 2026
 
 ### Fixed
