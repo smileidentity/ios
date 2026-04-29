@@ -1,8 +1,3 @@
-# Triggered when an automated release PR (branch: release/ios-sdk-v*) from the
-# ios-sdk repo is merged into main. Tags the merge commit, creates the public
-# GitHub release with artifacts mirrored from ios-sdk, pushes both podspecs to
-# CocoaPods Trunk, and opens a release-notes PR syncing CHANGELOG.md.
-#
 # Required secrets: GH_PAT, COCOAPODS_TRUNK_TOKEN
 
 name: Release on Merge
@@ -114,7 +109,7 @@ jobs:
           done
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v2
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         with:
@@ -140,88 +135,3 @@ jobs:
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
         run: pod trunk push SmileIDSDK.podspec --allow-warnings
-
-      - name: Wait for SmileIDSDK to appear on the CocoaPods CDN
-        run: |
-          set -euo pipefail
-          pod_name="SmileIDSDK"
-          hash=$(printf '%s' "${pod_name}" | md5)
-          url="https://cdn.cocoapods.org/Specs/${hash:0:1}/${hash:1:1}/${hash:2:1}/${pod_name}/${RELEASE_VERSION}/${pod_name}.podspec.json"
-          echo "Polling ${url}"
-          for i in $(seq 1 40); do
-            if curl -sfLI "${url}" > /dev/null; then
-              echo "${pod_name} v${RELEASE_VERSION} indexed on attempt ${i}"
-              exit 0
-            fi
-            echo "attempt ${i}/40: not yet indexed, sleeping 15s"
-            sleep 15
-          done
-          echo "::error::Timed out waiting for ${pod_name} v${RELEASE_VERSION} on the CocoaPods CDN after 10 minutes"
-          exit 1
-
-      - name: Push SmileID.podspec to CocoaPods Trunk
-        env:
-          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-        run: pod trunk push SmileID.podspec --allow-warnings
-
-      - name: Prepare CHANGELOG update on main
-        id: changelog
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          set -euo pipefail
-          gh api repos/smileidentity/ios-sdk/contents/CHANGELOG.md \
-            --jq '.content' | base64 --decode > /tmp/sdk-changelog.md
-
-          section=$(awk -v ver="${RELEASE_VERSION}" '
-            $0 ~ "^## " ver "([[:space:]]|$)" { found=1; print; next }
-            found && /^## / { exit }
-            found { print }
-          ' /tmp/sdk-changelog.md)
-
-          if [[ -z "${section}" ]]; then
-            echo "::warning::No CHANGELOG section found for v${RELEASE_VERSION} in ios-sdk; skipping sync"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          git fetch origin main
-          git checkout main
-          git pull --ff-only origin main
-
-          if awk -v ver="${RELEASE_VERSION}" '
-            $0 ~ "^## " ver "([[:space:]]|$)" { found=1; exit }
-            END { exit !found }
-          ' CHANGELOG.md; then
-            echo "CHANGELOG.md already contains v${RELEASE_VERSION} entry; skipping sync"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          {
-            head -n 1 CHANGELOG.md
-            echo
-            printf '%s\n' "${section}"
-            tail -n +2 CHANGELOG.md
-          } > /tmp/changelog-new.md
-          mv /tmp/changelog-new.md CHANGELOG.md
-
-          if git diff --quiet CHANGELOG.md; then
-            echo "CHANGELOG.md unchanged; nothing to commit"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "skip=false" >> "$GITHUB_OUTPUT"
-
-      - name: Create CHANGELOG PR
-        if: steps.changelog.outputs.skip != 'true'
-        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8
-        with:
-          token: ${{ secrets.GH_PAT }}
-          commit-message: "chore: sync CHANGELOG for v${{ env.RELEASE_VERSION }}"
-          title: "iOS v${{ env.RELEASE_VERSION }} Release Notes"
-          body: Automated PR to sync release notes from the ios-sdk CHANGELOG.
-          branch: release-notes/v${{ env.RELEASE_VERSION }}
-          base: main
-          labels: "release-notes"
-          team-reviewers: "smileidentity/mobile"

@@ -1,0 +1,94 @@
+# Manually push SmileID.podspec to CocoaPods Trunk after a release.
+#
+# `release-on-merge.yml` does NOT push SmileID.podspec because it depends on
+# `SmileIDSDK == version`, and CocoaPods Trunk's aggregate index file lags the
+# per-version spec by 30 min – several hours after a push. Until the index
+# catches up, `pod trunk push SmileID.podspec` fails dependency validation.
+#
+# After a release is merged, monitor `pod trunk info SmileIDSDK` (or the
+# all_pods_versions CDN index) and trigger this workflow once the new version
+# appears. The workflow pre-flights the CDN check so dispatching it too early
+# fails fast (no wasted CocoaPods validation time).
+#
+# Required secrets: COCOAPODS_TRUNK_TOKEN
+
+name: Push SmileID.podspec
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to push (leave blank to use s.version from SmileID.podspec on main)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: push-smileid-podspec
+  cancel-in-progress: false
+
+jobs:
+  push:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: main
+
+      - name: Determine version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ -n "${INPUT_VERSION}" ]]; then
+            version="${INPUT_VERSION}"
+          else
+            version="$(awk -F\' '/^\s*s\.version\s*=/ { print $2; exit }' SmileID.podspec)"
+          fi
+          if [[ -z "${version}" ]]; then
+            echo "::error::Could not determine version (no input and SmileID.podspec has no s.version line)"
+            exit 1
+          fi
+          if ! [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?(\+[A-Za-z0-9.]+)?$ ]]; then
+            echo "::error::Version '${version}' is not valid semver"
+            exit 1
+          fi
+          echo "Pushing SmileID v${version}"
+          echo "value=${version}" >> "$GITHUB_OUTPUT"
+          echo "VERSION=${version}" >> "$GITHUB_ENV"
+
+      - name: Pre-flight — confirm SmileIDSDK is indexed on the CocoaPods CDN
+        run: |
+          set -euo pipefail
+          hash=$(printf '%s' "SmileIDSDK" | md5)
+          url="https://cdn.cocoapods.org/all_pods_versions_${hash:0:1}_${hash:1:1}_${hash:2:1}.txt"
+          echo "Index: ${url}"
+          versions="$(curl -sfL "${url}" | grep '^SmileIDSDK/' || true)"
+          echo "Indexed versions: ${versions}"
+          if ! printf '%s\n' "${versions}" | grep -q "/${VERSION}\(/\|$\)"; then
+            echo "::error::SmileIDSDK ${VERSION} is not yet listed in the CocoaPods CDN index."
+            echo "::error::Trunk-to-CDN propagation typically takes 30 min – several hours after the push."
+            echo "::error::Wait and re-run this workflow, or push locally:"
+            echo "::error::  pod trunk push SmileID.podspec --allow-warnings"
+            exit 1
+          fi
+          echo "SmileIDSDK ${VERSION} is indexed; safe to proceed."
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@c4e5b1316158f92e3d49443a9d58b31d25ac0f8f # v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: false
+
+      - name: Install CocoaPods
+        run: gem install cocoapods --no-document
+
+      - name: Push SmileID.podspec to CocoaPods Trunk
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        run: pod trunk push SmileID.podspec --allow-warnings
