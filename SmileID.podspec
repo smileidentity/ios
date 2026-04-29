@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'SmileID'
-  s.version          = '11.1.9'
+  s.version          = '11.1.10'
   s.summary          = 'The Official Smile Identity iOS SDK.'
   s.homepage         = 'https://docs.usesmileid.com/integration-options/mobile/getting-started'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
