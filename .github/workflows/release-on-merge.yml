@@ -1,0 +1,158 @@
+# Triggered when an automated release PR (branch: release/ios-sdk-v*) from the
+# ios-sdk repo is merged into main. Tags the merge commit, creates the public
+# GitHub release with artifacts mirrored from ios-sdk, pushes both podspecs to
+# CocoaPods Trunk, and opens a release-notes PR syncing CHANGELOG.md.
+#
+# Required secrets: GH_PAT, COCOAPODS_TRUNK_TOKEN
+
+name: Release on Merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-on-merge
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: >-
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'release/ios-sdk-v')
+    runs-on: macos-15
+    env:
+      MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+    steps:
+      - name: Extract version from branch name
+        id: version
+        run: |
+          set -euo pipefail
+          branch="${{ github.event.pull_request.head.ref }}"
+          version="${branch#release/ios-sdk-v}"
+          if [[ -z "${version}" || "${version}" == "${branch}" ]]; then
+            echo "::error::Failed to extract version from branch ${branch}"
+            exit 1
+          fi
+          echo "value=${version}" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_VERSION=${version}" >> "$GITHUB_ENV"
+
+      - name: Checkout merge commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.MERGE_SHA }}
+          fetch-depth: 0
+
+      - name: Tag merge commit
+        run: |
+          set -euo pipefail
+          git config user.name "Smile ID Release Bot"
+          git config user.email "mobile@smileidentity.com"
+          git tag -f "v${RELEASE_VERSION}" "${MERGE_SHA}"
+          git push origin -f "refs/tags/v${RELEASE_VERSION}"
+
+      - name: Download artifacts from ios-sdk release
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          gh release download "v${RELEASE_VERSION}" \
+            --repo smileidentity/ios-sdk \
+            --pattern "*.zip" \
+            --pattern "*.zip.sha256" \
+            --dir artifacts
+          ls -la artifacts
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        with:
+          tag_name: v${{ env.RELEASE_VERSION }}
+          name: SmileID iOS SDK v${{ env.RELEASE_VERSION }}
+          target_commitish: ${{ env.MERGE_SHA }}
+          make_latest: true
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/*.zip
+            artifacts/*.zip.sha256
+
+      - name: Setup Ruby and CocoaPods
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: false
+      - name: Install CocoaPods
+        run: gem install cocoapods --no-document
+
+      - name: Push SmileIDSDK.podspec to CocoaPods Trunk
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        run: pod trunk push SmileIDSDK.podspec --allow-warnings
+
+      - name: Wait for SmileIDSDK pod indexing
+        run: sleep 300
+
+      - name: Push SmileID.podspec to CocoaPods Trunk
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        run: pod trunk push SmileID.podspec --allow-warnings
+
+      - name: Prepare CHANGELOG update on main
+        id: changelog
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -euo pipefail
+          gh api repos/smileidentity/ios-sdk/contents/CHANGELOG.md \
+            --jq '.content' | base64 -d > /tmp/sdk-changelog.md
+
+          section=$(awk -v ver="${RELEASE_VERSION}" '
+            $0 ~ "^## " ver "([[:space:]]|$)" { found=1; print; next }
+            found && /^## / { exit }
+            found { print }
+          ' /tmp/sdk-changelog.md)
+
+          if [[ -z "${section}" ]]; then
+            echo "::warning::No CHANGELOG section found for v${RELEASE_VERSION} in ios-sdk; skipping sync"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git fetch origin main
+          git checkout main
+          git pull --ff-only origin main
+
+          {
+            head -n 1 CHANGELOG.md
+            echo
+            printf '%s\n' "${section}"
+            tail -n +2 CHANGELOG.md
+          } > /tmp/changelog-new.md
+          mv /tmp/changelog-new.md CHANGELOG.md
+
+          if git diff --quiet CHANGELOG.md; then
+            echo "CHANGELOG.md unchanged; nothing to commit"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - name: Create CHANGELOG PR
+        if: steps.changelog.outputs.skip != 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GH_PAT }}
+          commit-message: "chore: sync CHANGELOG for v${{ env.RELEASE_VERSION }}"
+          title: "iOS v${{ env.RELEASE_VERSION }} Release Notes"
+          body: Automated PR to sync release notes from the ios-sdk CHANGELOG.
+          branch: release-notes/v${{ env.RELEASE_VERSION }}
+          base: main
+          labels: "release-notes"
+          team-reviewers: "smileidentity/mobile"
