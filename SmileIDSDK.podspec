@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 
   s.dependency 'ZIPFoundation', '0.9.20'
   s.dependency 'FingerprintJS', '1.6.0'
-  s.dependency 'Sentry', '~> 8'
+  s.dependency 'Sentry', '~> 8.57'
 
   s.pod_target_xcconfig = {
     'BUILD_LIBRARY_FOR_DISTRIBUTION' => 'YES'

@@ -26,6 +26,12 @@ jobs:
 
   build:
     name: "Build App and Run Unit Tests"
+    # Skip on auto-generated release PRs: their Package.swift / SmileIDSDK.podspec
+    # point at GitHub release URLs that won't exist until the PR is merged
+    # (the companion release-on-merge.yml workflow creates the release post-merge).
+    # Diff review is sufficient verification for these PRs; the build runs on
+    # main once the release exists.
+    if: ${{ !startsWith(github.head_ref, 'release/ios-sdk-v') }}
     runs-on: macos-15
     timeout-minutes: 15
     steps:
