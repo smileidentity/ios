@@ -30,19 +30,24 @@ jobs:
     steps:
       - name: Extract version from branch name
         id: version
+        env:
+          BRANCH_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
-          branch="${{ github.event.pull_request.head.ref }}"
-          version="${branch#release/ios-sdk-v}"
-          if [[ -z "${version}" || "${version}" == "${branch}" ]]; then
-            echo "::error::Failed to extract version from branch ${branch}"
+          version="${BRANCH_REF#release/ios-sdk-v}"
+          if [[ -z "${version}" || "${version}" == "${BRANCH_REF}" ]]; then
+            echo "::error::Failed to extract version from branch"
+            exit 1
+          fi
+          if ! [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?(\+[A-Za-z0-9.]+)?$ ]]; then
+            echo "::error::Extracted version is not a valid semver"
             exit 1
           fi
           echo "value=${version}" >> "$GITHUB_OUTPUT"
           echo "RELEASE_VERSION=${version}" >> "$GITHUB_ENV"
 
       - name: Checkout merge commit
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: ${{ env.MERGE_SHA }}
           fetch-depth: 0
@@ -52,8 +57,22 @@ jobs:
           set -euo pipefail
           git config user.name "Smile ID Release Bot"
           git config user.email "mobile@smileidentity.com"
-          git tag -f "v${RELEASE_VERSION}" "${MERGE_SHA}"
-          git push origin -f "refs/tags/v${RELEASE_VERSION}"
+
+          existing_refs="$(git ls-remote origin "refs/tags/v${RELEASE_VERSION}" || true)"
+          if [[ -n "${existing_refs}" ]]; then
+            if printf '%s\n' "${existing_refs}" | awk '{print $1}' | grep -qx "${MERGE_SHA}"; then
+              echo "Tag v${RELEASE_VERSION} already points to ${MERGE_SHA}; skipping"
+              exit 0
+            fi
+            echo "::error::Tag v${RELEASE_VERSION} already exists but does not point to merge commit ${MERGE_SHA}"
+            echo "::error::Existing refs:"
+            printf '%s\n' "${existing_refs}" | sed 's/^/::error::  /'
+            echo "::error::Refusing to overwrite a published tag. Delete it manually if this is intentional."
+            exit 1
+          fi
+
+          git tag "v${RELEASE_VERSION}" "${MERGE_SHA}"
+          git push origin "refs/tags/v${RELEASE_VERSION}"
 
       - name: Download artifacts from ios-sdk release
         env:
@@ -68,8 +87,34 @@ jobs:
             --dir artifacts
           ls -la artifacts
 
+      - name: Verify artifact checksums
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          zips=(artifacts/*.zip)
+          if [[ ${#zips[@]} -eq 0 ]]; then
+            echo "::error::No .zip artifacts found to verify"
+            exit 1
+          fi
+          for zip in "${zips[@]}"; do
+            sha_file="${zip}.sha256"
+            if [[ ! -f "${sha_file}" ]]; then
+              echo "::error::Missing companion ${sha_file}"
+              exit 1
+            fi
+            expected="$(tr -d '[:space:]' < "${sha_file}")"
+            actual="$(swift package compute-checksum "${zip}")"
+            if [[ "${expected}" != "${actual}" ]]; then
+              echo "::error::Checksum mismatch for $(basename "${zip}")"
+              echo "  expected: ${expected}"
+              echo "  actual:   ${actual}"
+              exit 1
+            fi
+            echo "OK $(basename "${zip}"): ${actual}"
+          done
+
       - name: Create GitHub release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v2
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         with:
@@ -84,7 +129,7 @@ jobs:
             artifacts/*.zip.sha256
 
       - name: Setup Ruby and CocoaPods
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@c4e5b1316158f92e3d49443a9d58b31d25ac0f8f # v1
         with:
           ruby-version: "3.2"
           bundler-cache: false
@@ -96,8 +141,23 @@ jobs:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
         run: pod trunk push SmileIDSDK.podspec --allow-warnings
 
-      - name: Wait for SmileIDSDK pod indexing
-        run: sleep 300
+      - name: Wait for SmileIDSDK to appear on the CocoaPods CDN
+        run: |
+          set -euo pipefail
+          pod_name="SmileIDSDK"
+          hash=$(printf '%s' "${pod_name}" | md5)
+          url="https://cdn.cocoapods.org/Specs/${hash:0:1}/${hash:1:1}/${hash:2:1}/${pod_name}/${RELEASE_VERSION}/${pod_name}.podspec.json"
+          echo "Polling ${url}"
+          for i in $(seq 1 40); do
+            if curl -sfLI "${url}" > /dev/null; then
+              echo "${pod_name} v${RELEASE_VERSION} indexed on attempt ${i}"
+              exit 0
+            fi
+            echo "attempt ${i}/40: not yet indexed, sleeping 15s"
+            sleep 15
+          done
+          echo "::error::Timed out waiting for ${pod_name} v${RELEASE_VERSION} on the CocoaPods CDN after 10 minutes"
+          exit 1
 
       - name: Push SmileID.podspec to CocoaPods Trunk
         env:
@@ -111,7 +171,7 @@ jobs:
         run: |
           set -euo pipefail
           gh api repos/smileidentity/ios-sdk/contents/CHANGELOG.md \
-            --jq '.content' | base64 -d > /tmp/sdk-changelog.md
+            --jq '.content' | base64 --decode > /tmp/sdk-changelog.md
 
           section=$(awk -v ver="${RELEASE_VERSION}" '
             $0 ~ "^## " ver "([[:space:]]|$)" { found=1; print; next }
@@ -128,6 +188,15 @@ jobs:
           git fetch origin main
           git checkout main
           git pull --ff-only origin main
+
+          if awk -v ver="${RELEASE_VERSION}" '
+            $0 ~ "^## " ver "([[:space:]]|$)" { found=1; exit }
+            END { exit !found }
+          ' CHANGELOG.md; then
+            echo "CHANGELOG.md already contains v${RELEASE_VERSION} entry; skipping sync"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           {
             head -n 1 CHANGELOG.md
@@ -146,7 +215,7 @@ jobs:
 
       - name: Create CHANGELOG PR
         if: steps.changelog.outputs.skip != 'true'
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8
         with:
           token: ${{ secrets.GH_PAT }}
           commit-message: "chore: sync CHANGELOG for v${{ env.RELEASE_VERSION }}"
