@@ -1,5 +1,10 @@
 # Release Notes
 
+## 11.1.11 - May 14, 2026
+
+### Added
+* Collect more metadata
+
 ## 11.1.10 - April 29, 2026
 
 ### Fixed
