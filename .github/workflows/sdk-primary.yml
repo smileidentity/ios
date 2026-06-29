@@ -65,7 +65,7 @@ jobs:
           echo "Current developer directory: $(xcode-select -p)"
           ls -1 /Applications | grep Xcode || true
       - name: Cache SwiftPM
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: |
             ~/.swiftpm
@@ -73,7 +73,7 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: ${{ runner.os }}-spm-
       - name: Cache CocoaPods (validator downloads)
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: |
             ~/Library/Caches/CocoaPods
