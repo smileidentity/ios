@@ -32,6 +32,31 @@ jobs:
         with:
           sarif_file: semgrep.sarif
 
+      - name: Import results into DefectDojo
+        if: always()
+        continue-on-error: true
+        env:
+          DEFECTDOJO_URL: ${{ secrets.DEFECTDOJO_URL }}
+          DEFECTDOJO_API_TOKEN: ${{ secrets.DEFECTDOJO_API_TOKEN }}
+        run: |
+          if [ ! -s semgrep.sarif ]; then
+            echo "No semgrep.sarif file found, skipping DefectDojo import"
+            exit 0
+          fi
+          curl -sS -f \
+            -H "Authorization: Token ${DEFECTDOJO_API_TOKEN}" \
+            -F "scan_type=SARIF" \
+            -F "file=@semgrep.sarif" \
+            -F "product_type_name=GitHub" \
+            -F "product_name=${{ github.event.repository.name }}" \
+            -F "engagement_name=CI" \
+            -F "auto_create_context=true" \
+            -F "close_old_findings=true" \
+            -F "deduplication_on_engagement=true" \
+            -F "commit_hash=${{ github.sha }}" \
+            -F "branch_tag=${{ github.head_ref || github.ref_name }}" \
+            "${DEFECTDOJO_URL}/api/v2/reimport-scan/"
+
       - name: Comment findings on PR
         if: github.event_name == 'pull_request' && always()
         env:
