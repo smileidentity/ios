@@ -38,6 +38,8 @@ jobs:
         env:
           DEFECTDOJO_URL: ${{ secrets.DEFECTDOJO_URL }}
           DEFECTDOJO_API_TOKEN: ${{ secrets.DEFECTDOJO_API_TOKEN }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          BRANCH_TAG: ${{ github.head_ref || github.ref_name }}
         run: |
           if [ ! -s semgrep.sarif ]; then
             echo "No semgrep.sarif file found, skipping DefectDojo import"
@@ -48,13 +50,13 @@ jobs:
             -F "scan_type=SARIF" \
             -F "file=@semgrep.sarif" \
             -F "product_type_name=GitHub" \
-            -F "product_name=${{ github.event.repository.name }}" \
+            -F "product_name=${REPO_NAME}" \
             -F "engagement_name=CI" \
             -F "auto_create_context=true" \
             -F "close_old_findings=true" \
             -F "deduplication_on_engagement=true" \
             -F "commit_hash=${{ github.sha }}" \
-            -F "branch_tag=${{ github.head_ref || github.ref_name }}" \
+            -F "branch_tag=${BRANCH_TAG}" \
             "${DEFECTDOJO_URL}/api/v2/reimport-scan/"
 
       - name: Comment findings on PR
