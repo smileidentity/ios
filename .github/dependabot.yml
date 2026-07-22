@@ -20,6 +20,10 @@ updates:
       swift-dependencies:
         patterns:
           - '*'
+    ignore:
+      - dependency-name: "github.com/airbnb/lottie-spm"
+      - dependency-name: "github.com/fingerprintjs/fingerprintjs-ios"
+      - dependency-name: "github.com/getsentry/sentry-cocoa"
   - package-ecosystem: "bundler"
     directory: "/"
     open-pull-requests-limit: 0
