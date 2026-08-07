@@ -1,5 +1,21 @@
 # Release Notes
 
+## 11.2.0 - August 7, 2026
+
+### Fixed
+* Fixed `enableCrashReporting: false` being ignored by the config-based `initialize` overload
+* Non-JSON success responses (for example from captive portals) are now treated as network failures instead of decoding errors, so they can be retried
+* Selfie submission now checks captured files exist before submitting and reports a `.fileNotFound` error naming the missing files, instead of a generic "Selfie capture failed"
+
+### Changed
+* Job submissions now also retry on error code `2206`, as they already do for `2215`.
+* Enhanced SmartSelfie active liveness now measures head pose relative to the user's neutral pose and requires re-centring between tasks, so a held pose or a phone moved around a static face can no longer pass
+* Liveness progress now accrues by holding a pose past the trigger threshold (matching Android), and the "look up" threshold is eased to roughly match Android's
+* A diagonal pose can no longer satisfy two directions at once, and progress arcs now show only during the look left, right and up prompts
+* Bumped `active_liveness_version` metadata to `2.0.0` so submissions using the new head-pose logic are distinguishable server-side
+* Sentry now reports only from production builds and production traffic, throttles to one event per error fingerprint per hour, and records server errors and non-JSON responses as breadcrumbs and tags instead of events, matching Android
+* Removed the inert `enableCrashHandler` option — crash reporting is handled-errors-only by design
+
 ## 11.1.11 - May 14, 2026
 
 ### Added
