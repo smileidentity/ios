@@ -1,5 +1,15 @@
 # Release Notes
 
+## Unreleased
+
+### Changed
+* Removed the Sentry, ZIPFoundation and FingerprintJS dependency declarations from the Swift
+  Package Manager and CocoaPods manifests. The SDK binary already embeds these libraries, so
+  nothing changes at runtime — apps stop downloading a second copy, and apps that also use
+  `sentry_flutter` (or pin `sentry-cocoa` themselves) can now resolve under Swift Package
+  Manager. If your own code imports `Sentry`, `ZIPFoundation` or `FingerprintJS` without
+  declaring the dependency, add it to your project — it no longer arrives through this SDK.
+
 ## 11.2.0 - August 7, 2026
 
 ### Fixed

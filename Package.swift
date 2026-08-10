@@ -13,9 +13,7 @@ let package = Package(
     )
   ],
   dependencies: [
-    // Lottie is the one real external dependency: SmileIDSDK dynamically links
-    // @rpath/Lottie.framework, so the consumer's package graph must supply it,
-    // and the exact pin must match the version the binary was built against.
+    // SmileIDSDK dynamically links Lottie; the pin must match the version the binary was built against.
     .package(url: "https://github.com/airbnb/lottie-spm", exact: "4.5.2")
   ],
   targets: [
