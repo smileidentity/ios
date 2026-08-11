@@ -13,20 +13,15 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(url: "https://github.com/weichsel/ZIPFoundation.git", exact: "0.9.20"),
-    .package(url: "https://github.com/airbnb/lottie-spm", exact: "4.5.2"),
-    .package(url: "https://github.com/fingerprintjs/fingerprintjs-ios", exact: "1.6.0"),
-    .package(url: "https://github.com/getsentry/sentry-cocoa", exact: "8.57.3")
+    // SmileIDSDK dynamically links Lottie; the pin must match the version the binary was built against.
+    .package(url: "https://github.com/airbnb/lottie-spm", exact: "4.5.2")
   ],
   targets: [
     .target(
       name: "SmileID",
       dependencies: [
         "SmileIDSDK",
-        .product(name: "ZIPFoundation", package: "ZIPFoundation"),
-        .product(name: "Lottie", package: "lottie-spm"),
-        .product(name: "FingerprintJS", package: "fingerprintjs-ios"),
-        .product(name: "Sentry", package: "sentry-cocoa")
+        .product(name: "Lottie", package: "lottie-spm")
       ],
       path: "Sources",
       sources: ["Classes"]
