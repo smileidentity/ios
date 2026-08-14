@@ -1,5 +1,16 @@
 # Release Notes
 
+## 11.2.1 - August 14, 2026
+
+### Fixed
+* Fixed SmartSelfie™ results occasionally failing to be read, which surfaced to you as a decoding error instead of the result.
+* Fixed an unclear error when captured files were no longer available at submission time. The reason is now included.
+
+### Changed
+* Security and stability improvements.
+* The SDK now declares the required-reason APIs it uses in its own privacy manifest, which App
+  Store submissions previously picked up from other packages.
+
 ## Unreleased
 
 ### Changed
