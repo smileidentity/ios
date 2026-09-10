@@ -1,5 +1,10 @@
 # Release Notes
 
+## 11.2.2 - September 10, 2026
+
+### Fixed
+* Fixed SmartSelfie™ captures occasionally submitting the same liveness picture twice, which failed the job. Every liveness image is now a different frame.
+
 ## 11.2.1 - August 14, 2026
 
 ### Fixed
