@@ -48,7 +48,7 @@ jobs:
           if [[ -n "${INPUT_VERSION}" ]]; then
             version="${INPUT_VERSION}"
           else
-            version="$(awk -F\' '/^\s*s\.version\s*=/ { print $2; exit }' SmileID.podspec)"
+            version="$(awk -F\' '/^[[:space:]]*s\.version[[:space:]]*=/ { print $2; exit }' SmileID.podspec)"
           fi
           if [[ -z "${version}" ]]; then
             echo "::error::Could not determine version (no input and SmileID.podspec has no s.version line)"
