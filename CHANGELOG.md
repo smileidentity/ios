@@ -1,5 +1,11 @@
 # Release Notes
 
+## 11.2.3 - September 17, 2026
+
+### Changed
+* Improved liveness capture. Turning your head further past a prompt completes it sooner, and looking back at the camera no longer clears the progress you had made on that prompt.
+* Security and stability improvements.
+
 ## 11.2.2 - September 10, 2026
 
 ### Fixed
