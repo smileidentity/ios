@@ -1,7 +1,9 @@
-name: 'Close stale issues and PRs'
+name: Flag stale PRs
+
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: 30 16 * * *
+  workflow_dispatch:
 
 permissions:
   issues: write
@@ -9,14 +11,4 @@ permissions:
 
 jobs:
   stale:
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    steps:
-      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
-        with:
-          stale-issue-message: 'This issue is stale because it has been open 14 days with no activity. Remove stale label or comment or this will be closed in 7 days.'
-          stale-pr-message: 'This PR is stale because it has been open 14 days with no activity. Remove stale label or comment or this will be closed in 7 days.'
-          close-issue-message: 'This issue was closed because it has been stalled for 7 days with no activity.'
-          close-pr-message: 'This PR was closed because it has been stalled for 7 days with no activity.'
-          days-before-stale: 14
-          days-before-close: 7
+    uses: smileidentity/central-workflows/.github/workflows/stale.yml@e04941c6757ab31f0e5de5195a264530e8c373d0 # v1
