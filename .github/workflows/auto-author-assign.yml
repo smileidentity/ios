@@ -1,5 +1,4 @@
-# .github/workflows/auto-author-assign.yml
-name: Auto Author Assign
+name: Auto author assign
 
 on:
   pull_request_target:
@@ -9,8 +8,5 @@ permissions:
   pull-requests: write
 
 jobs:
-  assign-author:
-    if: ${{ !contains(github.event.pull_request.assignees, '') }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: toshimaru/auto-author-assign@a78a94b219445cece8ccf0d45fec60af449f212a # v3.1.0
+  assign:
+    uses: smileidentity/central-workflows/.github/workflows/auto-author-assign.yml@e04941c6757ab31f0e5de5195a264530e8c373d0 # v1
