@@ -187,8 +187,7 @@ public extension CodeScannerView {
       }
 
       @objc func updateOrientation() {
-        guard let orientation = view.window?.windowScene?.interfaceOrientation else { return }
-        guard let connection = captureSession?.connections.last, connection.isVideoOrientationSupported else { return }
+        guard let orientation = view.window?.windowScene?.interfaceOrientation, let connection = captureSession?.connections.last, connection.isVideoOrientationSupported else { return }
         switch orientation {
         case .portrait:
           connection.videoOrientation = .portrait
@@ -446,10 +445,7 @@ public extension CodeScannerView {
 
     public func metadataOutput(_: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from _: AVCaptureConnection) {
       if let metadataObject = metadataObjects.first {
-        guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
-        guard let stringValue = readableObject.stringValue else { return }
-
-        guard didFinishScanning == false else { return }
+        guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject, let stringValue = readableObject.stringValue, didFinishScanning == false else { return }
 
         let photoSettings = AVCapturePhotoSettings()
         guard !isCapturing else { return }
