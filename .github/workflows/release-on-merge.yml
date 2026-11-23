@@ -124,7 +124,7 @@ jobs:
             artifacts/*.zip.sha256
 
       - name: Setup Ruby and CocoaPods
-        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1
+        uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1
         with:
           ruby-version: "3.2"
           bundler-cache: false
