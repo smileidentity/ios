@@ -19,7 +19,7 @@ jobs:
     if: >-
       github.event.pull_request.merged == true &&
       startsWith(github.event.pull_request.head.ref, 'release/ios-sdk-v')
-    runs-on: macos-15
+    runs-on: blacksmith-6vcpu-macos-15
     env:
       MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
     steps:
