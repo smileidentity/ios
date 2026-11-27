@@ -1,5 +1,17 @@
 # Release Notes
 
+## 11.2.4 - November 27, 2026
+
+### Fixed
+* Fixed a SmartSelfie job failing with "Selfie files unavailable at upload" when the phone was tilted or laid down while the job was uploading. The camera kept checking that the phone was upright after the selfie was taken, and a tilt restarted the capture and deleted its images.
+* Fixed Biometric KYC and Document Verification jobs not sending `active_liveness_type` in the request's metadata. The selfie images carried it, but the request only did for a standalone SmartSelfie job. A selfie retaken after a rejection now also keeps `selfie_image_origin`, and Enhanced SmartSelfie jobs send it (`front_camera`), which they never did.
+* Fixed a job occasionally submitting liveness images from an earlier capture by the same user. If a previous selfie capture ended without submitting — cancelled, failed, or interrupted — its images stayed on the device and were sent with the next job alongside the new ones. Affects Biometric KYC and Document Verification with strict mode enabled.
+* Fixed offline jobs being re-submitted without their selfie and liveness images when strict mode was enabled, so the job went up with only its documents.
+* Fixed a crash when submitting a job whose `info.json` was missing from the device.
+* Fixed a Biometric KYC or Document Verification job occasionally being sent with the wrong number of liveness images. A job without the right number now returns an error instead of being sent.
+* Fixed Enhanced SmartSelfie™ occasionally not returning a result when used with `skipApiSubmission`.
+* Fixed a SmartSelfie™ job occasionally returning an error after a successful upload when the user switched cameras during capture.
+
 ## 11.2.3 - September 17, 2026
 
 ### Changed
