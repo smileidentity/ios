@@ -4,7 +4,7 @@
 
 ### Fixed
 * Fixed a SmartSelfie™ job failing with "Selfie files unavailable at upload" when the phone was tilted during upload.
-* Fixed Biometric KYC and Document Verification jobs not sending `active_liveness_type` metadata, and Enhanced SmartSelfie™ jobs not sending `selfie_image_origin`.
+* Fixed Biometric KYC and Document Verification jobs not sending `active_liveness_type` metadata. Retaken selfies now keep `selfie_image_origin`, and Enhanced SmartSelfie™ jobs now send it (`front_camera`).
 * Fixed Biometric KYC and Document Verification jobs with strict mode enabled occasionally submitting liveness images from an earlier capture.
 * Fixed offline jobs being re-submitted without their selfie and liveness images when strict mode was enabled.
 * Fixed a crash when submitting a job whose saved job details were missing from the device.
